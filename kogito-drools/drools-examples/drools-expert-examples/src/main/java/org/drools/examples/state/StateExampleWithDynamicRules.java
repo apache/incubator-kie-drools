@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.state;
 
 import java.io.InputStreamReader;
 
@@ -24,15 +24,15 @@ import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.compiler.PackageBuilder;
 
-public class StateExampleUsingSalience {
+public class StateExampleWithDynamicRules {
 
     /**
      * @param args
      */
     public static void main(final String[] args) throws Exception {
 
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingSalience.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );
@@ -46,6 +46,7 @@ public class StateExampleUsingSalience {
         final State b = new State( "B" );
         final State c = new State( "C" );
         final State d = new State( "D" );
+        final State e = new State( "E" );
 
         // By setting dynamic to TRUE, Drools will use JavaBean
         // PropertyChangeListeners so you don't have to call update().
@@ -59,12 +60,19 @@ public class StateExampleUsingSalience {
                         dynamic );
         session.insert( d,
                         dynamic );
+        session.insert( e,
+                        dynamic );
 
         session.fireAllRules();
 
+        builder = new PackageBuilder();
+        builder.addPackageFromDrl( new InputStreamReader( StateExampleWithDynamicRules.class.getResourceAsStream( "StateExampleDynamicRule.drl" ) ) );
+        ruleBase.addPackage( builder.getPackage() );
+
+        session.fireAllRules();
+        session.dispose();
+
         logger.writeToDisk();
-        
-        session.dispose(); // Stateful rule session must always be disposed when finished        
     }
 
 }
