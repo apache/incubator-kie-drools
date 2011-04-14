@@ -17,6 +17,7 @@
 package org.drools.examples.pacman;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,16 +31,16 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.ConsequenceException;
 
-public class Main {
+public class PacmanExample {
     StatefulKnowledgeSession ksession = null;
     PacMan                   pacMan;
 
-    public static void main(String[] args) throws Exception {
-        Main main = new Main();
-        main.initKsession();
-        main.buildGrid();
-        main.initGui();
-        main.run();
+    public static void main(String[] args) {
+        PacmanExample pacmanExample = new PacmanExample();
+        pacmanExample.initKsession();
+        pacmanExample.buildGrid();
+        pacmanExample.initGui();
+        pacmanExample.run();
     }
 
     public void run() {
@@ -104,19 +105,24 @@ public class Main {
         this.ksession.insert( tick );
     }
 
-    public void buildGrid() throws Exception {
+    public void buildGrid() {
 
-        BufferedReader reader = new BufferedReader( ResourceFactory.newClassPathResource( "grid1.dat",
-                                                                                          Main.class ).getReader() );
-
-        String line = null;
+        BufferedReader reader;
         List<String> lines = new ArrayList<String>();
-        while ( (line = reader.readLine()) != null ) {
-            lines.add( line );
+        try {
+            reader = new BufferedReader( ResourceFactory.newClassPathResource("grid1.dat",
+                    PacmanExample.class).getReader() );
+
+            String line;
+            while ( (line = reader.readLine()) != null ) {
+                lines.add( line );
+            }
+        } catch (IOException e) {
+            throw new IllegalStateException("Reading dat file failed.", e);
         }
 
         for ( int row = lines.size() - 1; row >= 0; row-- ) {
-            line = lines.get( row );
+            String line = lines.get( row );
             int whiteCellCount = 0;
             for ( int col = 0; col < line.length(); col++ ) {
                 char c = line.charAt( col );

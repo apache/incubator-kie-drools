@@ -22,16 +22,17 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.examples.sudoku.SudokuExample;
 import org.drools.io.ResourceFactory;
 
 public class DroolsUtil {
 
-    public static KnowledgeBase readKnowledgeBase( String drlFileName ) throws Exception {
+    public static KnowledgeBase readKnowledgeBase( String drlFileName ) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         // This parses and compiles a DRL file.
         kBuilder.add( ResourceFactory.newClassPathResource( drlFileName,
-                org.drools.examples.sudoku.Main.class ),
+                SudokuExample.class ),
                       ResourceType.DRL );
         if( kBuilder.hasErrors() ){
             for( KnowledgeBuilderError err: kBuilder.getErrors() ){

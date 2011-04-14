@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.examples
+package org.drools.examples.numberguess
 
 dialect "mvel"
 
-import org.drools.examples.NumberGuessExample.RandomNumber
-import org.drools.examples.NumberGuessExample.Guess
-import org.drools.examples.NumberGuessExample.Game
-import org.drools.examples.NumberGuessExample.GameRules
+import org.drools.examples.numberguess.NumberGuessExample.RandomNumber
+import org.drools.examples.numberguess.NumberGuessExample.Guess
+import org.drools.examples.numberguess.NumberGuessExample.Game
+import org.drools.examples.numberguess.NumberGuessExample.GameRules
 
 import java.io.InputStreamReader;
 import java.io.BufferedReader;

@@ -472,7 +472,7 @@ public class DRLParser {
     }
 
     /**
-     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation* SEMICOLON
+     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation* SEMICOLON?
      */
     private void field( DeclareDescrBuilder declare ) {
         FieldDescrBuilder field = null;

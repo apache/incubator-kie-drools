@@ -16,12 +16,33 @@
 
 package org.drools.core.util;
 
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.drools.spi.Activation;
 
 public class BinaryHeapQueue
     implements
@@ -38,6 +59,8 @@ public class BinaryHeapQueue
 
     /** The elements in this heap. */
     private Queueable[]      elements;
+    
+    private ReentrantLock    lock;
 
     public BinaryHeapQueue() {
 
@@ -71,6 +94,7 @@ public class BinaryHeapQueue
         //+1 as 0 is noop
         this.elements = new Queueable[capacity + 1];
         this.comparator = comparator;
+        this.lock = new ReentrantLock();
     }
 
     //-----------------------------------------------------------------------
@@ -90,8 +114,25 @@ public class BinaryHeapQueue
      * Clears all elements from queue.
      */
     public void clear() {
-        this.elements = new Queueable[this.elements.length]; // for gc
-        this.size = 0;
+        try {
+            this.lock.lock();            
+            this.elements = new Queueable[this.elements.length]; // for gc
+            this.size = 0;
+        } finally {
+            this.lock.unlock();
+        }        
+    }
+    
+    public Activation[] getAndClear() {
+        try {
+           this.lock.lock();
+           Activation[] queue = ( Activation[] )this.elements;
+           this.elements = new Queueable[this.elements.length]; // for gc
+           this.size = 0;
+           return queue;
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     /**
@@ -129,12 +170,17 @@ public class BinaryHeapQueue
      *
      * @param element the Queueable to be inserted
      */
-    public synchronized void enqueue(final Queueable element) {
-        if ( isFull() ) {
-            grow();
+    public void enqueue(final Queueable element) {
+        try {
+            this.lock.lock();
+            if ( isFull() ) {
+                grow();
+            }
+    
+            percolateUpMaxHeap( element );
+        } finally {
+            this.lock.unlock();
         }
-
-        percolateUpMaxHeap( element );
     }
 
     /**
@@ -143,56 +189,56 @@ public class BinaryHeapQueue
      * @return the Queueable at top of heap
      * @throws NoSuchElementException if <code>isEmpty() == true</code>
      */
-    public synchronized Queueable dequeue() throws NoSuchElementException {
-        if ( isEmpty() ) {
-            return null;
-        }
-
-        final Queueable result = this.elements[1];
-        result.dequeue();
-
-        // Code bellow was removed because it is already executed
-        // inside result.dequeue()
-        //
-        //        setElement(1, this.elements[this.size--]);
-        //        this.elements[this.size + 1] = null;
-        //
-        //        if (this.size != 0) {
-        //            percolateDownMinHeap(1);
-        //        }
-
-        return result;
+    public Queueable dequeue() throws NoSuchElementException {
+        try {
+            this.lock.lock();
+            if ( isEmpty() ) {
+                return null;
+            }
+    
+            final Queueable result = this.elements[1];
+            result.dequeue();
+            
+            return result;
+        } finally {
+            this.lock.unlock();
+        }        
     }
 
     /**
      *
      * @param index
      */
-    public synchronized Queueable dequeue(final int index) {
-        if ( index < 1 || index > this.size ) {
-            //throw new NoSuchElementException();
-            return null;
-        }
-
-        final Queueable result = this.elements[index];
-        setElement( index,
-                    this.elements[this.size] );
-        this.elements[this.size] = null;
-        this.size--;
-        if ( this.size != 0 && index <= this.size ) {
-            int compareToParent = 0;
-            if ( index > 1 ) {
-                compareToParent = compare( this.elements[index],
-                                           this.elements[index / 2] );
+    public Queueable dequeue(final int index) {
+        try {
+            this.lock.lock();        
+            if ( index < 1 || index > this.size ) {
+                //throw new NoSuchElementException();
+                return null;
             }
-            if ( index > 1 && compareToParent > 0 ) {
-                percolateUpMaxHeap( index );
-            } else {
-                percolateDownMaxHeap( index );
+    
+            final Queueable result = this.elements[index];
+            setElement( index,
+                        this.elements[this.size] );
+            this.elements[this.size] = null;
+            this.size--;
+            if ( this.size != 0 && index <= this.size ) {
+                int compareToParent = 0;
+                if ( index > 1 ) {
+                    compareToParent = compare( this.elements[index],
+                                               this.elements[index / 2] );
+                }
+                if ( index > 1 && compareToParent > 0 ) {
+                    percolateUpMaxHeap( index );
+                } else {
+                    percolateDownMaxHeap( index );
+                }
             }
-        }
-
-        return result;
+    
+            return result;
+        } finally {
+            this.lock.unlock();
+        }               
     }
 
 //    /**
@@ -373,36 +419,28 @@ public class BinaryHeapQueue
         element.enqueued( index );
     }
 
-    public Queueable[] getQueueable() {
-        return this.elements;
-    }
-
-    public Object[] toArray() {
-        final Object[] result = new Object[this.size];
-        System.arraycopy( this.elements,
-                          1,
-                          result,
-                          0,
-                          this.size );
-        return result;
-    }
-
     public Object[] toArray(Object a[]) {
-        if ( a.length < this.size ) {
-            a = (Object[]) java.lang.reflect.Array.newInstance( a.getClass().getComponentType(),
-                                                                this.size );
+        try {
+            this.lock.lock();
+        
+            if ( a.length < this.size ) {
+                a = (Object[]) java.lang.reflect.Array.newInstance( a.getClass().getComponentType(),
+                                                                    this.size );
+            }
+    
+            System.arraycopy( this.elements,
+                              1,
+                              a,
+                              0,
+                              this.size );
+    
+            if ( a.length > this.size ) {
+                a[this.size] = null;
+            }
+    
+            return a;
+        } finally {
+            this.lock.unlock();
         }
-
-        System.arraycopy( this.elements,
-                          1,
-                          a,
-                          0,
-                          this.size );
-
-        if ( a.length > this.size ) {
-            a[this.size] = null;
-        }
-
-        return a;
     }
 }
