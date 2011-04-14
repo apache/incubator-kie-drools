@@ -33,14 +33,6 @@
   </repositories>
 
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>src/main/rules</directory>
-      </resource>
-    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
