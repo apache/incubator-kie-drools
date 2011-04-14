@@ -16,12 +16,10 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -99,7 +97,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
 
             final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                         accumDescr,
-                                                                                                        func.getParams()[0],
+                                                                                                        func.getParams().length > 0 ? func.getParams()[0] : "\"\"",
                                                                                                         new BoundIdentifiers( declCls, context.getPackageBuilder().getGlobals() ) );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
@@ -110,7 +108,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
             final String className = "accumulateExpression" + context.getNextId();
 
             final Map<String, Object> map = createVariableContext( className,
-                                                                   func.getParams()[0],
+                                                                   func.getParams().length > 0 ? func.getParams()[0] : "\"\"",
                                                                    context,
                                                                    previousDeclarations,
                                                                    sourceDeclArr,
