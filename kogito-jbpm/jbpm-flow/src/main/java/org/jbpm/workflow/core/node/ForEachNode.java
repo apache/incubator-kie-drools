@@ -123,7 +123,7 @@ public class ForEachNode extends CompositeNode {
     }
     
     public Node[] getNodes() {
-    	return getCompositeNode().getNodes();
+		return getCompositeNode().getNodes();
     }
     
     public Node[] internalGetNodes() {
@@ -161,7 +161,7 @@ public class ForEachNode extends CompositeNode {
     public CompositeNode.NodeAndType internalGetLinkedOutgoingNode(String inType) {
         return super.getLinkedOutgoingNode(inType);
     }
-    
+     
     public void setVariable(String variableName, DataType type) {
         this.variableName = variableName;
         List<Variable> variables = new ArrayList<Variable>();
@@ -169,9 +169,9 @@ public class ForEachNode extends CompositeNode {
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
-        ((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
+    	((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
     }
-    
+
     public String getCollectionExpression() {
         return collectionExpression;
     }

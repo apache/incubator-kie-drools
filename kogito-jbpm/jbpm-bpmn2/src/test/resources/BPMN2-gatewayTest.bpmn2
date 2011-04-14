@@ -1,0 +1,32 @@
+<bpmn2:definitions xmlns:bpmn2='http://www.omg.org/spec/BPMN/20100524/MODEL' xmlns:xrm='http://www.intalio.com/cloud/xrm' typeLanguage='http://www.java.com/javaTypes' expressionLanguage='http://www.mvel.org/2.0' id='600355600991789200' targetNamespace=''>
+  <bpmn2:import importType='xrm' namespace='http://www.intalio.com/cloud/xrm'/>
+  <bpmn2:itemDefinition id='objectType' structureRef='java.lang.Object'/>
+  <bpmn2:process id='process'>
+    <bpmn2:property id='instanceMetadata' itemSubjectRef='objectType'/>
+    <bpmn2:property id='processMetadata' itemSubjectRef='objectType'/>
+    <bpmn2:property id='startMessage' itemSubjectRef='objectType'/>
+    <bpmn2:startEvent id='_4E889155-DB85-44AB-A1F4-8C332A5555DE' name=''/>
+    <bpmn2:scriptTask id='_F36C71AE-7F26-47F8-A587-F345C6563D65' name="">
+      <bpmn2:script>System.out.println("yes")</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id='_7617AD67-A5F9-4AD6-94D6-268582E350B1' sourceRef='_4E889155-DB85-44AB-A1F4-8C332A5555DE' targetRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873'/>
+    <bpmn2:scriptTask id='_FE038F3F-EED1-4666-BE50-B9763EB3F873' name="">
+      <bpmn2:script>System.out.println(startMessage)</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id='_7617AD67-A5F9-4AD6-94D6-268582E350B1' sourceRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873' targetRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873_after'/>
+    <bpmn2:endEvent id='_5962F6E6-3F7F-46F5-B1BA-249311F7A15E' name=''/>
+    <bpmn2:sequenceFlow id='_A359A596-4B55-4145-B958-AF33DC730CA4' sourceRef='_F36C71AE-7F26-47F8-A587-F345C6563D65' targetRef='_5962F6E6-3F7F-46F5-B1BA-249311F7A15E'/>
+    <bpmn2:exclusiveGateway id='_FE038F3F-EED1-4666-BE50-B9763EB3F873_after' name='' gatewayDirection='Diverging'/>
+    <bpmn2:sequenceFlow id='_6CA18166-98AD-49A5-8831-5B1F1ED84DFF' sourceRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873_after' targetRef='_F36C71AE-7F26-47F8-A587-F345C6563D65'>
+      <conditionExpression language='http://www.w3.org/1999/XPath'>$startMessage[@subject = 'foobar']</conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:scriptTask id='_4E734F9C-B54D-4C22-9EC1-99B81435BCD7' name="">
+      <bpmn2:script>System.out.println("no")</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id='_045317F1-1862-48B0-B3B6-A12940335090' sourceRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873_after' targetRef='_4E734F9C-B54D-4C22-9EC1-99B81435BCD7'>
+      <conditionExpression language='http://www.w3.org/1999/XPath'>$startMessage[@subject = 'foobar2']</conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id='_0DD21127-F74F-4F51-9506-6DC7F1356586' name=''/>
+    <bpmn2:sequenceFlow id='_61663EC6-2F27-49CF-9C50-BC97C4D16E94' sourceRef='_4E734F9C-B54D-4C22-9EC1-99B81435BCD7' targetRef='_0DD21127-F74F-4F51-9506-6DC7F1356586'/>
+  </bpmn2:process>
+</bpmn2:definitions>

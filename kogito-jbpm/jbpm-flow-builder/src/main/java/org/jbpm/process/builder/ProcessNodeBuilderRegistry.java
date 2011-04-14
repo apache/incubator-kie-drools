@@ -38,9 +38,9 @@ public class ProcessNodeBuilderRegistry {
         register( SubProcessNode.class,
                   new EventBasedNodeBuilder() );
         register( HumanTaskNode.class,
-                  new EventBasedNodeBuilder() );
+                  new WorkItemNodeBuilder() );
         register( WorkItemNode.class,
-                  new EventBasedNodeBuilder() );
+                  new WorkItemNodeBuilder() );
         register( FaultNode.class,
                   new ExtendedNodeBuilder() );
         register( TimerNode.class,

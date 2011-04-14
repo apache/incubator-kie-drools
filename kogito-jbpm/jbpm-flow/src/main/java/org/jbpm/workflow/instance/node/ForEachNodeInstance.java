@@ -76,32 +76,32 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             return (ForEachSplitNode) getNode();
         }
 
-        public void internalTrigger(org.drools.runtime.process.NodeInstance from, String type) {
+        public void internalTrigger(org.drools.runtime.process.NodeInstance fromm, String type) {
             String collectionExpression = getForEachNode().getCollectionExpression();
             Collection<?> collection = evaluateCollectionExpression(collectionExpression);
             ((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             if (collection.isEmpty()) {
             	ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
             } else {
-	            List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
-	            for (Object o: collection) {
-	                String variableName = getForEachNode().getVariableName();
-	                CompositeNodeInstance nodeInstance = (CompositeNodeInstance)
-	                    ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
-	                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-	                    nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
-	                variableScopeInstance.setVariable(variableName, o);
-	                nodeInstances.add(nodeInstance);
-	            }
-	            for (NodeInstance nodeInstance: nodeInstances) {
-	                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(this, getForEachSplitNode().getTo().getToType());
-	            }
+            	List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();
+            	for (Object o: collection) {
+            		String variableName = getForEachNode().getVariableName();
+            		NodeInstance nodeInstance = (NodeInstance)
+            		((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstance(getForEachSplitNode().getTo().getTo());
+            		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            			nodeInstance.resolveContextInstance(VariableScope.VARIABLE_SCOPE, variableName);
+            		variableScopeInstance.setVariable(variableName, o);
+            		nodeInstances.add(nodeInstance);
+            	}
+            	for (NodeInstance nodeInstance: nodeInstances) {
+            		((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(this, getForEachSplitNode().getTo().getToType());
+            	}
 	            if (!getForEachNode().isWaitForCompletion()) {
 	            	ForEachNodeInstance.this.triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, false);
 	            }
             }
         }
-        
+
         private Collection<?> evaluateCollectionExpression(String collectionExpression) {
             // TODO: should evaluate this expression using MVEL
         	Object collection = null;
@@ -134,7 +134,6 @@ public class ForEachNodeInstance extends CompositeNodeInstance {
             throw new IllegalArgumentException(
         		"Unexpected collection type: " + collection.getClass());
         }
-        
     }
     
     public class ForEachJoinNodeInstance extends NodeInstanceImpl {

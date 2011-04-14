@@ -20,23 +20,28 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
+import javax.xml.xpath.XPathFunction;
+import javax.xml.xpath.XPathFunctionException;
+import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
 
 import org.drools.runtime.process.ProcessContext;
 
-public class XPATHReturnValueEvaluator implements ReturnValueEvaluator, Externalizable {
-
+public class XPATHReturnValueEvaluator
+    implements
+    ReturnValueEvaluator,
+    Externalizable {
     private static final long   serialVersionUID = 510l;
 
-    private String              xpath;
+    private String              expression;
     private String              id;
 
     public XPATHReturnValueEvaluator() {
@@ -44,19 +49,19 @@ public class XPATHReturnValueEvaluator implements ReturnValueEvaluator, External
 
     public XPATHReturnValueEvaluator(final String xpath,
                                     final String id) {
-        this.xpath = xpath;
+        this.expression = xpath;
         this.id = id;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        id = in.readUTF();
-        xpath = (String) in.readObject();
+//        id = in.readUTF();
+        expression = (String) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeUTF( id );
-        out.writeObject(xpath);
+//        out.writeUTF( id );
+        out.writeObject(expression);
     }
 
     public String getDialect() {
@@ -65,35 +70,43 @@ public class XPATHReturnValueEvaluator implements ReturnValueEvaluator, External
 
     public Object evaluate(final ProcessContext context) throws Exception {        
     	XPathFactory factory = XPathFactory.newInstance();
-    	XPath xpath = factory.newXPath();
-    	xpath.setXPathVariableResolver( 
-    			new  XPathVariableResolver() {
-    				public Object resolveVariable(QName var)
-    				{
-    					if (var == null) {
-    						throw new NullPointerException("The variable name cannot be null");
-    					}
+    	XPath xpathEvaluator = factory.newXPath();
 
-    					if (context.getVariable(var.getLocalPart()) != null) {
-    						return context.getVariable(var.getLocalPart());
+    	xpathEvaluator.setXPathFunctionResolver( 
+    			new  XPathFunctionResolver() {
+    				public XPathFunction resolveFunction(QName functionName, int arity)
+    				{
+    					String localName = functionName.getLocalPart();
+    					if ("getVariable".equals(localName)) {
+    						return new GetVariableData();
     					}
     					else {
-    						return null;
+    						throw new RuntimeException("Unknown BPMN function: " + functionName);
     					}
     				}
 
+    				class GetVariableData implements XPathFunction {
+    					public Object evaluate(List args) throws XPathFunctionException {
+    						String varname = (String) args.get(0);
+    						return context.getVariable(varname);
+    					}
+    				}
     			}
     	);
-        
-        XPathExpression expr 
-         = xpath.compile(this.xpath);
+    	
+    	xpathEvaluator.setXPathVariableResolver(new XPathVariableResolver() {
+            
+            public Object resolveVariable(QName variableName) {
+                return context.getVariable(variableName.getLocalPart());
+            }
+        });
 
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        return expr.evaluate(builder.newDocument(), XPathConstants.BOOLEAN);
+        return xpathEvaluator.evaluate(this.expression, builder.newDocument(), XPathConstants.BOOLEAN);
     }
 
     public String toString() {
-        return this.xpath;
-    }    
+        return this.expression;
+    }
 
 }

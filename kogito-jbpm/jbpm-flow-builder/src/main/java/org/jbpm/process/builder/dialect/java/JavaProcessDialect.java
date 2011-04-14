@@ -8,6 +8,7 @@ import org.drools.lang.descr.ProcessDescr;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.jbpm.process.builder.ActionBuilder;
+import org.jbpm.process.builder.AssignmentBuilder;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ProcessClassBuilder;
 import org.jbpm.process.builder.ProcessErrorHandler;
@@ -87,6 +88,11 @@ public class JavaProcessDialect implements ProcessDialect {
 
 	public ReturnValueEvaluatorBuilder getReturnValueEvaluatorBuilder() {
 		return returnValueBuilder;
+	}
+
+	public AssignmentBuilder getAssignmentBuilder() {
+		throw new UnsupportedOperationException(
+			"Java assignments not supported");
 	}
 
 }
