@@ -811,8 +811,46 @@ public class QueryTest {
         str += "package org.drools.test  \n";
         str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, int $age ) \n";
-        str += "    $p : Person( $name : name, $likes : likes, $age : age ) \n";
+        str += "    $p : Person( $name : name, $likes : likes, $age : age; ) from new Person(\"darth\",\n" + 
+        		"                                                                            \"stilton\",\n" + 
+        		"                                                                             100)\n";
         str += "end\n";
+        str += "query peeps2( Person $p, String $name, String $likes, int $age ) \n";
+        str += "    $p : Person( $name : name, $likes : likes, $age : age; ) from new Person(\"darth\",\n" + 
+                "                                                                            \"stilton\",\n" + 
+                "                                                                             200)\n";
+        str += "end\n";        
+        str += "rule xxx\n" + 
+        		"when\n" + 
+        		"    String( this == \"go1\" )\n" +
+        		"    peeps($name1, \"stilton\", $age1 )\n" + 
+        		"then\n" + 
+        		"    System.out.println( $name1 + \" : \" + $age1 );\n" + 
+        		"end \n";
+        str += "rule yyy\n" + 
+            "when\n" + 
+            "    String( this == \"go2\" )\n" +
+            "    peeps($name1; $likes : \"stilton\", $age1 : $age )\n" + 
+            "then\n" + 
+            "    System.out.println( $name1 + \" : \" + $age1  );\n" + 
+            "end ";  
+        str += "rule zzz\n" + 
+        "when\n" + 
+        "    String( this == \"go3\" )\n" +
+        "    $n1 : String() from \"darth\"\n " +
+        "    peeps($n1; $likes : \"stilton\", $age1 : $age )\n" + 
+        "then\n" + 
+        "    System.out.println( $n1 + \" : \" + $age1 );\n" + 
+        "end ";      
+        
+        str += "rule qqq\n" + 
+        "when\n" + 
+        "    String( this == \"go4\" )\n" +
+        "    $n1 : String() from \"darth\"\n " +
+        "    peeps2($p, $n1; $likes : \"stilton\", $age1 : $age )\n" + 
+        "then\n" + 
+        "    System.out.println( $p +\":\"+ $n1 +  \":\" + $age1);\n" + 
+        "end ";          
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -825,92 +863,38 @@ public class QueryTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        kbase = SerializationHelper.serializeObject( kbase );
+        //kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        Person p1 = new Person( "darth",
-                                "stilton",
-                                100 );
-        Person p2 = new Person( "yoda",
-                                "stilton",
-                                300 );
-        Person p3 = new Person( "luke",
-                                "brie",
-                                300 );
-        Person p4 = new Person( "bobba",
-                                "cheddar",
-                                300 );
-
-        ksession.insert( p1 );
-        ksession.insert( p2 );
-        ksession.insert( p3 );
-        ksession.insert( p4 );
-
-        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{new Variable(), new Variable(), new Variable()} );
-        assertEquals( 4,
-                          results.size() );
-        List names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-            names.add( ((Person) row.get( "$p" )).getName() );
-        }
-        assertEquals( 4,
-                      names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
-        assertTrue( names.contains( "darth" ) );
-
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{new Variable(), new Variable(), 300} );
-        assertEquals( 3,
-                          results.size() );
-        names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-            names.add( ((Person) row.get( "$p" )).getName() );
-        }
-        assertEquals( 3,
-                      names.size() );
-        assertTrue( names.contains( "luke" ) );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "bobba" ) );
-
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{new Variable(), "stilton", 300} );
-        assertEquals( 1,
-                          results.size() );
-        names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-            names.add( ((Person) row.get( "$p" )).getName() );
-        }
-        assertEquals( 1,
-                      names.size() );
-        assertTrue( names.contains( "yoda" ) );
-
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{new Variable(), "stilton", new Variable()} );
-        assertEquals( 2,
-                          results.size() );
-        names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-            names.add( ((Person) row.get( "$p" )).getName() );
-        }
-        assertEquals( 2,
-                      names.size() );
-        assertTrue( names.contains( "yoda" ) );
-        assertTrue( names.contains( "darth" ) );
-
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{"darth", new Variable(), new Variable()} );
-        assertEquals( 1,
-                          results.size() );
-        names = new ArrayList();
-        for ( org.drools.runtime.rule.QueryResultsRow row : results ) {
-            names.add( ((Person) row.get( "$p" )).getName() );
-        }
-        assertEquals( 1,
-                      names.size() );
-        assertTrue( names.contains( "darth" ) );
+//        Person p1 = new Person( "darth",
+//                                "stilton",
+//                                100 );
+//        Person p2 = new Person( "yoda",
+//                                "stilton",
+//                                300 );
+//        Person p3 = new Person( "luke",
+//                                "brie",
+//                                300 );
+//        Person p4 = new Person( "bobba",
+//                                "cheddar",
+//                                300 );
+//
+//        ksession.insert( p1 );
+//        ksession.insert( p2 );
+//        ksession.insert( p3 );
+//        ksession.insert( p4 );
+        
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+        System.out.println( "" );
+        ksession.insert( "go2" );
+        ksession.fireAllRules();
+        System.out.println( "" );
+        ksession.insert( "go3" );
+        ksession.fireAllRules();   
+        System.out.println( "" );
+        ksession.insert( "go4" );
+        ksession.fireAllRules();         
     }    
 
     @Test
