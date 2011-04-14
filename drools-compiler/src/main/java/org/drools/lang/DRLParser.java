@@ -1604,9 +1604,11 @@ public class DRLParser {
             lhsAnd( or,
                     allowOr );
             if ( state.failed ) return null;
-
-            if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ||
-                    input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
+            
+            if ( allowOr &&
+                 ( helper.validateIdentifierKey( DroolsSoftKeywords.OR )
+                   ||
+                   input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) ) {
                 while ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ||
                         input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
                     if ( input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
@@ -1658,7 +1660,7 @@ public class DRLParser {
      */
     private BaseDescr lhsAnd( final CEDescrBuilder< ? , ? > ce,
                               boolean allowOr ) throws RecognitionException {
-        BaseDescr result = null;
+       BaseDescr result = null;
         if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN && helper.validateLT( 2,
                                                                         DroolsSoftKeywords.AND ) ) {
             CEDescrBuilder< ? , AndDescr> and = null;
