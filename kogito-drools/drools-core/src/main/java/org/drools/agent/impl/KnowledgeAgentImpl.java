@@ -1301,8 +1301,7 @@ public class KnowledgeAgentImpl
         if ( this.builderConfiguration != null ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.builderConfiguration );
         } else if ( this.isUseKBaseClassLoaderForCompiling() ) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                                              ((ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeBase()).getRuleBase()).getRootClassLoader() ) );
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.kbase);
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         }
