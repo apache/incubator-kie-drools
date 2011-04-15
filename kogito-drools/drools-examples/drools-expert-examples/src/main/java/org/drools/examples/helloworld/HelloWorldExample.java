@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.helloworld;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -16,7 +16,7 @@
 
 package org.drools.examples
  
-import org.drools.examples.HelloWorldExample.Message;
+import org.drools.examples.helloworld.HelloWorldExample.Message;
 
 global java.util.List list
  
@@ -28,7 +28,7 @@ rule "Hello World"
         System.out.println( message );
 //        modify ( m ) { setMessage( "Goodbyte cruel world" ),
 //                       setStatus( Message.GOODBYE ) };
-    modify ( m ) { message = "Goodbyte cruel world",
+    modify ( m ) { message = "Goodbye cruel world",
                    status = Message.GOODBYE };
 end
 
