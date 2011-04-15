@@ -43,8 +43,8 @@
     </fileSet>
     <!-- Examples -->
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-      <directory>../drools-examples/drools-expert-examples</directory>
-      <outputDirectory>examples/sources/drools-expert-examples</outputDirectory>
+      <directory>../drools-examples</directory>
+      <outputDirectory>examples/sources</outputDirectory>
       <excludes>
         <exclude>target/**</exclude>
         <exclude>local/**</exclude>
@@ -61,7 +61,7 @@
   <dependencySets>
     <dependencySet>
       <excludes>
-        <exclude>org.drools:drools-expert-examples</exclude>
+        <exclude>org.drools:drools-examples</exclude>
         <exclude>org.drools:drools-expert-docs</exclude>
         <exclude>org.drools:drools-fusion-docs</exclude>
         <exclude>*:*:jar:javadoc</exclude>
@@ -72,7 +72,7 @@
     </dependencySet>
     <dependencySet>
       <includes>
-        <include>org.drools:drools-expert-examples:jar</include>
+        <include>org.drools:drools-examples:jar</include>
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
@@ -145,7 +145,7 @@
         <include>org.drools:*:jar:sources</include>
       </includes>
       <excludes>
-        <exclude>org.drools:drools-expert-examples:jar:sources</exclude>
+        <exclude>org.drools:drools-examples:jar:sources</exclude>
       </excludes>
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>

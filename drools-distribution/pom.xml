@@ -136,11 +136,11 @@
     <!-- Examples -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-expert-examples</artifactId>
+      <artifactId>drools-examples</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-expert-examples</artifactId>
+      <artifactId>drools-examples</artifactId>
       <version>${project.version}</version>
       <classifier>sources</classifier>
     </dependency>
