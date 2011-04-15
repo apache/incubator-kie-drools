@@ -12,7 +12,7 @@ LC_AMOUNT
 AMOUNT
 LOG_EVENT: Boolean
 
-package org.drools.examples;
+package org.drools.examples.datadriventemplate;
 
 global FeeResult result;
 global Logger logger;
