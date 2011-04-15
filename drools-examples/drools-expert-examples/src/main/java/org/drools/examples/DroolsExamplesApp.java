@@ -27,6 +27,9 @@ import javax.swing.JPanel;
 
 import org.drools.examples.pacman.PacmanExample;
 import org.drools.examples.sudoku.SudokuExample;
+import org.drools.examples.troubleticket.TroubleTicketExample;
+import org.drools.examples.troubleticket.TroubleTicketExampleWithDSL;
+import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
 
 public class DroolsExamplesApp extends JFrame {
 
@@ -44,7 +47,7 @@ public class DroolsExamplesApp extends JFrame {
 
     private Container createContentPane() {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
-        contentPane.add(new JLabel("Which example do you want to see?"));
+        contentPane.add(new JLabel("Which GUI example do you want to see?"));
         contentPane.add(new JButton(new AbstractAction("SudokuExample") {
             public void actionPerformed(ActionEvent e) {
                 SudokuExample.main(new String[0]);
@@ -53,6 +56,22 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("PacmanExample") {
             public void actionPerformed(ActionEvent e) {
                 PacmanExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JLabel("Which output example do you want to see?"));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExample") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDT") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExampleWithDT.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDSL") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExampleWithDSL.main(new String[0]);
             }
         }));
         return contentPane;

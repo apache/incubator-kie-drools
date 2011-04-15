@@ -32,20 +32,20 @@ import org.drools.runtime.rule.FactHandle;
 /**
  * This shows off a decision table.
  */
-public class TroubleTicketWithDT {
+public class TroubleTicketExampleWithDT {
 
-    public static final void main(String[] args) throws Exception {
-        TroubleTicketWithDT launcher = new TroubleTicketWithDT();
+    public static final void main(String[] args) {
+        TroubleTicketExampleWithDT launcher = new TroubleTicketExampleWithDT();
         launcher.executeExample();
     }
 
-    public void executeExample() throws Exception {
+    public void executeExample() {
 
         final DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketWithDT.class ),
+        kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketExampleWithDT.class ),
                               ResourceType.DTABLE,
                               dtableconfiguration );
 
