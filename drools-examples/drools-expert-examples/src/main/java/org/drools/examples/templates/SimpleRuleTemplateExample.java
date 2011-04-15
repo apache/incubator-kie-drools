@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.templates;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,8 +29,6 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
-import org.drools.examples.templates.Cheese;
-import org.drools.examples.templates.Person;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -108,11 +106,11 @@ public class SimpleRuleTemplateExample {
     }
 
     private InputStream getSpreadsheetStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/ExampleCheese.xls").getInputStream();
+        return ResourceFactory.newClassPathResource("org/drools/examples/templates/ExampleCheese.xls").getInputStream();
     }
 
     private InputStream getRulesStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/Cheese.drt").getInputStream();
+        return ResourceFactory.newClassPathResource("org/drools/examples/templates/Cheese.drt").getInputStream();
     }
 
 }
