@@ -20,98 +20,7 @@ import org.junit.Test;
 
 
 public class BackwardChainingTest {
-//    @Test
-//    public void testQueryCE() throws Exception {
-//        String str = "";
-//        str += "package org.drools.test  \n";
-//        str += "import org.drools.Person \n";
-//        str += "query peeps( String $name, String $likes, int $age ) \n";
-//        str += "    $p : Person( $name : name, $likes : likes, $age : age; ) from new Person(\"darth\",\n" + 
-//                "                                                                            \"stilton\",\n" + 
-//                "                                                                             100)\n";
-//        str += "end\n";
-//        str += "query peeps2( Person $p, String $name, String $likes, int $age ) \n";
-//        str += "    $p : Person( $name : name, $likes : likes, $age : age; ) from new Person(\"darth\",\n" + 
-//                "                                                                            \"stilton\",\n" + 
-//                "                                                                             200)\n";
-//        str += "end\n";        
-//        str += "rule xxx\n" + 
-//                "when\n" + 
-//                "    String( this == \"go1\" )\n" +
-//                "    peeps($name1, \"stilton\", $age1 )\n" + 
-//                "then\n" + 
-//                "    System.out.println( $name1 + \" : \" + $age1 );\n" + 
-//                "end \n";
-//        str += "rule yyy\n" + 
-//            "when\n" + 
-//            "    String( this == \"go2\" )\n" +
-//            "    peeps($name1; $likes : \"stilton\", $age1 : $age )\n" + 
-//            "then\n" + 
-//            "    System.out.println( $name1 + \" : \" + $age1  );\n" + 
-//            "end ";  
-//        str += "rule zzz\n" + 
-//        "when\n" + 
-//        "    String( this == \"go3\" )\n" +
-//        "    $n1 : String() from \"darth\"\n " +
-//        "    peeps($n1; $likes : \"stilton\", $age1 : $age )\n" + 
-//        "then\n" + 
-//        "    System.out.println( $n1 + \" : \" + $age1 );\n" + 
-//        "end ";      
-//        
-//        str += "rule qqq\n" + 
-//        "when\n" + 
-//        "    String( this == \"go4\" )\n" +
-//        "    $n1 : String() from \"darth\"\n " +
-//        "    peeps2($p, $n1; $likes : \"stilton\", $age1 : $age )\n" + 
-//        "then\n" + 
-//        "    System.out.println( $p +\":\"+ $n1 +  \":\" + $age1);\n" + 
-//        "end ";          
-//
-//        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-//        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-//                          ResourceType.DRL );
-//
-//        if ( kbuilder.hasErrors() ) {
-//            fail( kbuilder.getErrors().toString() );
-//        }
-//
-//        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-//        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-//
-//        //kbase = SerializationHelper.serializeObject( kbase );
-//
-//        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-////        Person p1 = new Person( "darth",
-////                                "stilton",
-////                                100 );
-////        Person p2 = new Person( "yoda",
-////                                "stilton",
-////                                300 );
-////        Person p3 = new Person( "luke",
-////                                "brie",
-////                                300 );
-////        Person p4 = new Person( "bobba",
-////                                "cheddar",
-////                                300 );
-////
-////        ksession.insert( p1 );
-////        ksession.insert( p2 );
-////        ksession.insert( p3 );
-////        ksession.insert( p4 );
-//        
-//        ksession.insert( "go1" );
-//        ksession.fireAllRules();
-//        System.out.println( "" );
-//        ksession.insert( "go2" );
-//        ksession.fireAllRules();
-//        System.out.println( "" );
-//        ksession.insert( "go3" );
-//        ksession.fireAllRules();   
-//        System.out.println( "" );
-//        ksession.insert( "go4" );
-//        ksession.fireAllRules();         
-//    }    
-    
+     
     @Test
     public void testQueryPositional() throws Exception {
         String str = "" +
@@ -660,5 +569,61 @@ public class BackwardChainingTest {
         assertEquals( 1, list.size());
         assertTrue( list.contains( "yoda : stilton : s2" ));        
     }        
+    
+    @Test
+    public void testQueryWithDynamicData() throws Exception {
+        String str = "" +
+            "package org.drools.test  \n" +
+            "import org.drools.Person \n" +
+            "global java.util.List list\n" +
+            "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
+            "    $p : Person( ) from new Person( $name, $likes, $age ) \n"+
+            "end\n";
+
+        str += "rule x1\n" + 
+            "when\n" + 
+            "    $n1 : String( )\n" +
+            //     output, input     ,input                 ,input
+            "    peeps($p; $name : $n1, $likes : \"stilton\", $age : 100 )\n" + 
+            "then\n" + 
+            "   list.add( $p );\n" + 
+            "end \n";        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        
+        Person p1 = new Person( "darth",
+                                "stilton",
+                                100 );
+        
+        Person p2 = new Person( "yoda",
+                                "stilton",
+                                100 );        
+        
+        ksession.insert( "darth" );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size());
+        assertEquals( p1, list.get(0));     
+        
+        list.clear();
+        ksession.insert( "yoda" );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size());
+        assertEquals( p2, list.get(0));          
+    }         
     
 }
