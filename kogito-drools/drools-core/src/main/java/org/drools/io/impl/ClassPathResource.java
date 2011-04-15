@@ -209,6 +209,14 @@ public class ClassPathResource extends BaseResource
         return this.clazz;
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    protected void setLastRead(long lastRead) {
+        this.lastRead = lastRead;
+    }
+    
     public boolean equals(Object object) {
         if ( object == null || !(object instanceof ClassPathResource) ) {
             return false;
