@@ -2,7 +2,7 @@
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
-         type="RuleFlow" name="workitems" id="com.sample.ruleflow" package-name="com.sample" version="1" >
+         type="RuleFlow" name="workitems" id="com.sample.ruleflow" package-name="org.drools.examples.ruleflow" version="1" >
 
   <header>
   </header>

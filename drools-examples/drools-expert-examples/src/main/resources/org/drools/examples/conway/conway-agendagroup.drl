@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples
+package org.drools.examples.conway
  
 import org.drools.examples.conway.Cell;
 import org.drools.examples.conway.CellGrid;

@@ -2,7 +2,7 @@
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
-         type="RuleFlow" name="register neighbor" id="register neighbor" package-name="org.drools.examples" version="1" >
+         type="RuleFlow" name="register neighbor" id="register neighbor" package-name="org.drools.examples.conway" version="1" >
 
   <header>
   </header>

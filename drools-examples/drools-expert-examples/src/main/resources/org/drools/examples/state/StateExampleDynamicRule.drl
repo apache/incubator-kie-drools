@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples
+package org.drools.examples.state
  
 import org.drools.examples.state.State;
 
