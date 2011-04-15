@@ -186,6 +186,7 @@ public class QueryElementBuilder
                 pos = getPos( binding.getExpression(), params );
                 if ( pos < 0 ) {
                     // error this must be a binding on a slot
+                    throw new RuntimeException( "named argument does not exist" );
                 }
 
                 // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
