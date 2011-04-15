@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.examples;
+package org.drools.examples.decisiontable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,15 +26,13 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
-import org.drools.examples.decisiontable.Driver;
-import org.drools.examples.decisiontable.Policy;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
  * This shows off a rule template where the data provider is a spreadsheet.
- * This example uses the same spreadsheet as the Decision table example ({@link PricingRuleDTExample}) 
+ * This example uses the same spreadsheet as the Decision table example ({@link PricingRuleDTExample})
  * so that you can see the difference between the two.
  * 
  * Note that even though they  use the same spreadsheet, this example is just
@@ -119,14 +117,14 @@ public class PricingRuleTemplateExample {
     }
 
     private InputStream getSpreadsheetStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/ExamplePolicyPricing.xls").getInputStream();
+        return ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/ExamplePolicyPricing.xls").getInputStream();
     }
 
     private InputStream getBasePricingRulesStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/BasePricing.drt").getInputStream();
+        return ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/BasePricing.drt").getInputStream();
     }
 
     private InputStream getPromotionalPricingRulesStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/PromotionalPricing.drt").getInputStream();
+        return ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/PromotionalPricing.drt").getInputStream();
     }
 }
