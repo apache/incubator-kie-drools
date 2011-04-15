@@ -3630,8 +3630,8 @@ public class DRLParser {
             value = value.trim();
             if ( value.length() >= left.length() + right.length() &&
                  value.startsWith( left ) && value.endsWith( right ) ) {
-                value = value.substring( left.length() ),
-                                         value.length() - right.length() );
+                 value = value.substring( left.length(),
+                                          value.length() - right.length() );
             }
         }
         return value;
