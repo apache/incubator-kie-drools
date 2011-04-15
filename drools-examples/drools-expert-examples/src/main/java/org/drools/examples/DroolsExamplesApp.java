@@ -25,9 +25,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.drools.examples.conway.ui.ConwayGUI;
+import org.drools.examples.datadriventemplate.DataDrivenTemplateExample;
+import org.drools.examples.decisiontable.PricingRuleDTExample;
+import org.drools.examples.decisiontable.PricingRuleTemplateExample;
+import org.drools.examples.fibonacci.FibonacciExample;
+import org.drools.examples.golfing.GolfingExample;
+import org.drools.examples.helloworld.HelloWorldExample;
+import org.drools.examples.honestpolitician.HonestPoliticianExample;
 import org.drools.examples.pacman.PacmanExample;
+import org.drools.examples.petstore.PetStoreExample;
+import org.drools.examples.shopping.ShoppingExample;
+import org.drools.examples.state.StateExampleUsingAgendaGroup;
+import org.drools.examples.state.StateExampleUsingSalience;
+import org.drools.examples.state.StateExampleWithDynamicRules;
 import org.drools.examples.sudoku.SudokuExample;
+import org.drools.examples.templates.SimpleRuleTemplateExample;
+import org.drools.examples.troubleticket.TroubleTicketExample;
+import org.drools.examples.troubleticket.TroubleTicketExampleWithDSL;
+import org.drools.examples.troubleticket.TroubleTicketExampleWithDT;
 
 public class DroolsExamplesApp extends JFrame {
 
@@ -45,12 +60,8 @@ public class DroolsExamplesApp extends JFrame {
 
     private Container createContentPane() {
         JPanel contentPane = new JPanel(new GridLayout(0, 1));
-        contentPane.add(new JLabel("Which example do you want to see?"));
-        contentPane.add(new JButton(new AbstractAction("ConwayGUI") {
-            public void actionPerformed(ActionEvent e) {
-                ConwayGUI.main(new String[0]);
-            }
-        }));
+        contentPane.add(new JLabel("Which GUI example do you want to see?"));
+
         contentPane.add(new JButton(new AbstractAction("SudokuExample") {
             public void actionPerformed(ActionEvent e) {
                 SudokuExample.main(new String[0]);
@@ -59,6 +70,89 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("PacmanExample") {
             public void actionPerformed(ActionEvent e) {
                 PacmanExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("PetStoreExample") {
+            public void actionPerformed(ActionEvent e) {
+                PetStoreExample.main(new String[0]);
+            }
+        }));
+        
+        contentPane.add(new JLabel("Which output example do you want to see?"));
+
+        contentPane.add(new JButton(new AbstractAction("HelloWorldExample") {
+            public void actionPerformed(ActionEvent e) {
+                HelloWorldExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("FibonacciExample") {
+            public void actionPerformed(ActionEvent e) {
+                FibonacciExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("ShoppingExample") {
+            public void actionPerformed(ActionEvent e) {
+                ShoppingExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("HonestPoliticianExample") {
+            public void actionPerformed(ActionEvent e) {
+                HonestPoliticianExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("GolfingExample") {
+            public void actionPerformed(ActionEvent e) {
+                GolfingExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("SimpleRuleTemplateExample") {
+            public void actionPerformed(ActionEvent e) {
+                SimpleRuleTemplateExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExample") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDT") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExampleWithDT.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TroubleTicketExampleWithDSL") {
+            public void actionPerformed(ActionEvent e) {
+                TroubleTicketExampleWithDSL.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("StateExampleUsingSalience") {
+            public void actionPerformed(ActionEvent e) {
+                StateExampleUsingSalience.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("StateExampleUsingAgendaGroup") {
+            public void actionPerformed(ActionEvent e) {
+                StateExampleUsingAgendaGroup.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("StateExampleWithDynamicRules") {
+            public void actionPerformed(ActionEvent e) {
+                StateExampleWithDynamicRules.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("PricingRuleTemplateExample") {
+            public void actionPerformed(ActionEvent e) {
+                PricingRuleTemplateExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("PricingRuleDTExample") {
+            public void actionPerformed(ActionEvent e) {
+                PricingRuleDTExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("DataDrivenTemplateExample") {
+            public void actionPerformed(ActionEvent e) {
+                DataDrivenTemplateExample.main(new String[0]);
             }
         }));
         return contentPane;

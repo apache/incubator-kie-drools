@@ -39,7 +39,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * This example is incomplete, it run's, but is no way near correct.
  */
 public class WaltzDbBenchmark {
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "waltzdb.drl",
                                                                     WaltzDbBenchmark.class ),
@@ -78,43 +78,51 @@ public class WaltzDbBenchmark {
 
     }
 
-    private static List<Line> loadLines(String filename) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( filename ) ) );
-        Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
-        String line = reader.readLine();
+    private static List<Line> loadLines(String filename) {
         List<Line> result = new ArrayList<Line>();
-        while ( line != null ) {
-            Matcher m = pat.matcher( line );
-            if ( m.matches() ) {
-                Line l = new Line( Integer.parseInt( m.group( 1 ) ),
-                                   Integer.parseInt( m.group( 2 ) ) );
-                result.add( l );
+        try {
+            BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
+            Pattern pat = Pattern.compile( ".*make line \\^p1 ([0-9]*) \\^p2 ([0-9]*).*" );
+            String line = reader.readLine();
+            while ( line != null ) {
+                Matcher m = pat.matcher( line );
+                if ( m.matches() ) {
+                    Line l = new Line( Integer.parseInt( m.group( 1 ) ),
+                                       Integer.parseInt( m.group( 2 ) ) );
+                    result.add( l );
+                }
+                line = reader.readLine();
             }
-            line = reader.readLine();
+            reader.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read file with filename (" + filename + ").", e);
         }
-        reader.close();
         return result;
     }
 
-    private static List<Label> loadLabels(String filename) throws IOException {
-        BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( filename ) ) );
-        Pattern pat = Pattern.compile( ".*make label \\^type ([0-9a-z]*) \\^name ([0-9a-zA-Z]*) \\^id ([0-9]*) \\^n1 ([B+-]*) \\^n2 ([B+-]*)( \\^n3 ([B+-]*))?.*" );
-        String line = reader.readLine();
+    private static List<Label> loadLabels(String filename) {
         List<Label> result = new ArrayList<Label>();
-        while ( line != null ) {
-            Matcher m = pat.matcher( line );
-            if ( m.matches() ) {
-                Label l = new Label( m.group( 1 ),
-                                     m.group( 2 ),
-                                     m.group( 3 ),
-                                     m.group( 4 ),
-                                     m.group( 5 ),
-                                     m.group( 6 ) );
-                result.add( l );
+        try {
+            BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzDbBenchmark.class.getResourceAsStream( "data/" + filename ) ) );
+            Pattern pat = Pattern.compile( ".*make label \\^type ([0-9a-z]*) \\^name ([0-9a-zA-Z]*) \\^id ([0-9]*) \\^n1 ([B+-]*) \\^n2 ([B+-]*)( \\^n3 ([B+-]*))?.*" );
+            String line = reader.readLine();
+            while ( line != null ) {
+                Matcher m = pat.matcher( line );
+                if ( m.matches() ) {
+                    Label l = new Label( m.group( 1 ),
+                                         m.group( 2 ),
+                                         m.group( 3 ),
+                                         m.group( 4 ),
+                                         m.group( 5 ),
+                                         m.group( 6 ) );
+                    result.add( l );
+                }
+                line = reader.readLine();
             }
-            line = reader.readLine();
+            reader.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read file with filename (" + filename + ").", e);
         }
-        reader.close();
         return result;
     }
 }

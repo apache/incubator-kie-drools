@@ -33,7 +33,7 @@ public class RuleRunner {
     }
 
     public void runRules(String[] rules,
-                         Object[] facts) throws Exception {
+                         Object[] facts) {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

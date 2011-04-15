@@ -233,7 +233,7 @@ instanceOfExpression returns [BaseDescr result]
 inExpression returns [BaseDescr result]
 @init { ConstraintConnectiveDescr descr = null; } 
   : left=relationalExpression { if( buildDescr  ) { $result = $left.result; } }
-    ( not_key in=in_key LEFT_PAREN e1=expression 
+    ((not_key in_key)=> not_key in=in_key LEFT_PAREN e1=expression 
         {   descr = ConstraintConnectiveDescr.newAnd();
             RelationalExprDescr rel = new RelationalExprDescr( "!=", false, null, $left.result, $e1.result );
             descr.addOrMerge( rel );

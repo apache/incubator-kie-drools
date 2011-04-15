@@ -7,7 +7,7 @@
       <title>Pet Store Example</title>
 
       <programlisting><emphasis role="bold">Name:</emphasis> Pet Store 
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.PetStore
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.petstore.PetStoreExample
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> PetStore.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrate use of Agenda Groups, Global Variables and integration with a GUI,
@@ -187,9 +187,9 @@ ui.createAndShowGUI();
         <programlisting language="java">package org.drools.examples
 
 import org.drools.WorkingMemory
-import org.drools.examples.PetStore.Order
-import org.drools.examples.PetStore.Purchase
-import org.drools.examples.PetStore.Product
+import org.drools.examples.petstore.PetStoreExample.Order
+import org.drools.examples.petstore.PetStoreExample.Purchase
+import org.drools.examples.petstore.PetStoreExample.Product
 import java.util.ArrayList
 import javax.swing.JOptionPane;
 
