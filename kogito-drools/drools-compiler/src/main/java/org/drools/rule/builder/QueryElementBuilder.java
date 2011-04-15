@@ -176,7 +176,8 @@ public class QueryElementBuilder
                     MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
                     String expr = new MVELDumper().dump( result,
                                                          mvelCtx );
-                    arguments.set( pos, MVEL.eval( expr )); // for now we just work with literals                    
+                    Object o = MVEL.eval( expr );
+                    arguments.set( pos, o ); // for now we just work with literals                    
                 }                 
             } else {
                 // this is creating a new output binding
