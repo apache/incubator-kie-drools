@@ -48,6 +48,11 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
         return this;
     }
 
+    public PatternDescrBuilder<P> isQuery( boolean query ) {
+        descr.setQuery( query );
+        return this;
+    }
+
     public PatternDescrBuilder<P> constraint( String constraint ) {
         ExprConstraintDescr constr = new ExprConstraintDescr( constraint );
         constr.setType( ExprConstraintDescr.Type.NAMED );
