@@ -91,10 +91,6 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
-    <dependency><!-- TODO this must be removed because it causes a cyclic dependency which breaks MEAD -->
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-flow-builder</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
