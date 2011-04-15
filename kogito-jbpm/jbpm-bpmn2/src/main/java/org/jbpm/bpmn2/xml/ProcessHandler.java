@@ -210,6 +210,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 					if (connection.getExpression() != null) {
 						constraint.setConstraint(connection.getExpression());
 					}
+					constraint.setPriority(connection.getPriority());
 					split.addConstraint(
 						new ConnectionRef(target.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE),
 						constraint);

@@ -30,6 +30,7 @@ public class SequenceFlow implements Serializable {
 	private String type;
 	private String language;
 	private String name;
+	private int priority;
 	
 	public SequenceFlow(String id, String sourceRef, String targetRef) {
 		this.id = id;
@@ -89,4 +90,11 @@ public class SequenceFlow implements Serializable {
 		this.name = name;
 	}
 	
+	public int getPriority() {
+		return priority;
+	}
+	
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
 }

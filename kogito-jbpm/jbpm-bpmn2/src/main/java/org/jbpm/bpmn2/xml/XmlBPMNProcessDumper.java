@@ -641,6 +641,9 @@ public class XmlBPMNProcessDumper {
                     if (constraint.getName() != null && constraint.getName().trim().length() > 0) {
             			xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(constraint.getName()) + "\" ");
             		}
+                    if (constraint.getPriority() != 0) {
+                    	xmlDump.append("tns:priority=\"" + constraint.getPriority() + "\" ");
+                    }
             		xmlDump.append(">" + EOL +
     				"      <conditionExpression xsi:type=\"tFormalExpression\" ");
                     if ("code".equals(constraint.getType())) {

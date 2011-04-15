@@ -271,6 +271,17 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
 	}
 	
+	public void testExclusiveSplitPriority() throws Exception {
+		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitPriority.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		ksession.getWorkItemManager().registerWorkItemHandler("Email", new SystemOutWorkItemHandler());
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("x", "First");
+		params.put("y", "Second");
+		ProcessInstance processInstance = ksession.startProcess("com.sample.test", params);
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
+	}
+	
 	public void testExclusiveSplitDefault() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-ExclusiveSplitDefault.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
