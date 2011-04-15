@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.decisiontable;
 
 import java.util.Arrays;
 
@@ -25,8 +25,6 @@ import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.examples.decisiontable.Driver;
-import org.drools.examples.decisiontable.Policy;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatelessKnowledgeSession;
 
@@ -47,7 +45,7 @@ public class PricingRuleDTExample {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "org/drools/examples/ExamplePolicyPricing.xls",
+        kbuilder.add( ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/ExamplePolicyPricing.xls",
                                                             getClass() ),
                       ResourceType.DTABLE,
                       dtableconfiguration );
