@@ -77,12 +77,12 @@ public class DataDrivenTemplateExample {
 
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         DataDrivenTemplateExample example = new DataDrivenTemplateExample();
         example.testCompiler();
     }
 
-    public void testCompiler() throws Exception {
+    public void testCompiler() {
         ArrayList<FeeScheduleRule> rules = new ArrayList<FeeScheduleRule>();
         FeeScheduleType standard = new FeeScheduleType( "STANDARD" );
         FeeScheduleType flat = new FeeScheduleType( "FLAT" );

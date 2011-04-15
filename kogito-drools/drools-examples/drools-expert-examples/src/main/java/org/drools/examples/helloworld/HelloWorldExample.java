@@ -38,7 +38,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class HelloWorldExample {
 
-    public static final void main(final String[] args) throws Exception {
+    public static final void main(final String[] args) {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
                 .newKnowledgeBuilder();
 

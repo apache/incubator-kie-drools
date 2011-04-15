@@ -28,7 +28,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 public class FibonacciExample {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "Fibonacci.drl",

@@ -52,7 +52,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-public class PetStore {
+public class PetStoreExample {
 
     public static void main(String[] args) {
         try {
@@ -60,7 +60,7 @@ public class PetStore {
             KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
             kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
-                                                                        PetStore.class ),
+                                                                        PetStoreExample.class ),
                                   ResourceType.DRL );
             KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
             kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
