@@ -626,4 +626,64 @@ public class BackwardChainingTest {
         assertEquals( p2, list.get(0));          
     }         
     
+    @Test
+    public void testQueryWithDyanmicInsert() throws Exception {
+        String str = "" +
+            "package org.drools.test  \n" +
+            "import org.drools.Person \n" +
+            "global java.util.List list\n" +
+            "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
+            "    $p : Person( ) from new Person( $name, $likes, $age ) \n"+
+            "end\n";
+
+        str += "rule x1\n" + 
+            "when\n" + 
+            "    $n1 : String( )\n" +
+            "    not Person( name == 'darth' )\n "+
+            //     output, input     ,input                 ,input
+            "    peeps($p; $name : $n1, $likes : \"stilton\", $age : 100 )\n" + 
+            "then\n" + 
+            "   insert( $p );\n" + 
+            "end \n"; 
+        
+        str += "rule x2\n" + 
+            "when\n" + 
+            "    $p : Person( )\n" + 
+            "then\n" + 
+            "   list.add( $p );\n" + 
+            "end \n";        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        
+        Person p1 = new Person( "darth",
+                                "stilton",
+                                100 );
+        
+        Person p2 = new Person( "yoda",
+                                "stilton",
+                                100 );        
+        
+        ksession.insert( "darth" );
+        ksession.fireAllRules();        
+        ksession.insert( "yoda" ); // darth exists, so yoda won't get created 
+        ksession.fireAllRules();
+        assertEquals( 1, list.size());
+        assertEquals( p1, list.get(0));          
+    }      
+    
 }
