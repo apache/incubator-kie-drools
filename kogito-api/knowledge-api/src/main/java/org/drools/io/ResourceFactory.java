@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.KnowledgeBaseFactoryService;
 import org.drools.util.ServiceRegistryImpl;
 
 /**
@@ -110,6 +109,10 @@ public class ResourceFactory {
                                                 ClassLoader classLoader) {
         return getFactoryService().newClassPathResource( path,
                                                            classLoader );
+    }
+    
+    public static Resource newURLClassPathResource(String path) {
+        return getFactoryService().newURLClassPathResource( path );
     }
 
     private static synchronized void setFactoryService(ResourceFactoryService factoryService) {
