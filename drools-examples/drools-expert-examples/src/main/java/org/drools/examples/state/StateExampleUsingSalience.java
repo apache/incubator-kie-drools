@@ -16,12 +16,14 @@
 
 package org.drools.examples.state;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.audit.WorkingMemoryFileLogger;
+import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 
 public class StateExampleUsingSalience {
@@ -29,10 +31,16 @@ public class StateExampleUsingSalience {
     /**
      * @param args
      */
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingSalience.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
+        try {
+            builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingSalience.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
+        } catch (DroolsParserException e) {
+            throw new IllegalArgumentException("Invalid drl", e);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read drl", e);
+        }
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         ruleBase.addPackage( builder.getPackage() );

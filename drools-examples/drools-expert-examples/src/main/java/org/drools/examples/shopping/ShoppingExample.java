@@ -27,7 +27,7 @@ import org.drools.runtime.rule.FactHandle;
 
 public class ShoppingExample {
 
-    public static final void main(String[] args) throws Exception {
+    public static final void main(String[] args) {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "Shopping.drl", ShoppingExample.class ),
                               ResourceType.DRL );

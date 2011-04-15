@@ -37,12 +37,13 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * This shows off a very simple rule template where the data provider is a spreadsheet.
  */
 public class SimpleRuleTemplateExample {
-    public static void main(String[] args) throws Exception {
+
+    public static void main(String[] args) {
         SimpleRuleTemplateExample launcher = new SimpleRuleTemplateExample();
         launcher.executeExample();
     }
 
-    private void executeExample() throws Exception {
+    private void executeExample() {
 
         //BUILD THE KBASE
         final KnowledgeBase kbase = this.buildKBase();
@@ -73,12 +74,17 @@ public class SimpleRuleTemplateExample {
      * @return
      * @throws IOException
      */
-    private KnowledgeBase buildKBase() throws IOException {
+    private KnowledgeBase buildKBase() {
         //first we compile the decision table into a whole lot of rules.
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 
         //the data we are interested in starts at row 2, column 2 (e.g. B2)
-        String drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
+        String drl = null;
+        try {
+            drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read spreadsheet or rules stream." ,e);
+        }
 
         //compile the drl
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

@@ -17,9 +17,9 @@
 package org.drools.examples.petstore
 
 import org.drools.WorkingMemory
-import org.drools.examples.petstore.PetStore.Order
-import org.drools.examples.petstore.PetStore.Purchase
-import org.drools.examples.petstore.PetStore.Product
+import org.drools.examples.petstore.PetStoreExample.Order
+import org.drools.examples.petstore.PetStoreExample.Purchase
+import org.drools.examples.petstore.PetStoreExample.Product
 import java.util.ArrayList
 import javax.swing.JOptionPane;
  

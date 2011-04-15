@@ -40,12 +40,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class PricingRuleTemplateExample {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         PricingRuleTemplateExample launcher = new PricingRuleTemplateExample();
         launcher.executeExample();
     }
 
-    private int executeExample() throws Exception {
+    private int executeExample() {
 
         //BUILD THE KBASE
         KnowledgeBase kbase = this.buildKBase();
@@ -78,14 +78,20 @@ public class PricingRuleTemplateExample {
      * @return
      * @throws IOException
      */
-    private KnowledgeBase buildKBase() throws IOException {
+    private KnowledgeBase buildKBase() {
         //first we compile the decision table into a whole lot of rules.
         final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
 
-        //the data we are interested in starts at row 10, column 3
-        String basePricingDRL = converter.compile(getSpreadsheetStream(), getBasePricingRulesStream(), 10, 3);
-        //the data we are interested in starts at row 30, column 3
-        String promotionalPricingDRL = converter.compile(getSpreadsheetStream(), getPromotionalPricingRulesStream(), 30, 3);
+        String basePricingDRL = null;
+        String promotionalPricingDRL = null;
+        try {
+            //the data we are interested in starts at row 10, column 3
+            basePricingDRL = converter.compile(getSpreadsheetStream(), getBasePricingRulesStream(), 10, 3);
+            //the data we are interested in starts at row 30, column 3
+            promotionalPricingDRL = converter.compile(getSpreadsheetStream(), getPromotionalPricingRulesStream(), 30, 3);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Invalid spreadsheet stream.", e);
+        }
 
         //compile the drls
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

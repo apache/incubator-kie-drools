@@ -33,12 +33,12 @@ import org.drools.runtime.StatelessKnowledgeSession;
  */
 public class PricingRuleDTExample {
 
-    public static final void main(String[] args) throws Exception {
+    public static final void main(String[] args) {
         PricingRuleDTExample launcher = new PricingRuleDTExample();
         launcher.executeExample();
     }
 
-    public int executeExample() throws Exception {
+    public int executeExample() {
 
         DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
         dtableconfiguration.setInputType( DecisionTableInputType.XLS );
