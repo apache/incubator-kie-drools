@@ -1802,7 +1802,7 @@ public class DRLParser {
             // the order here is very important: this if branch must come before the lhsPatternBind bellow
             result = lhsParen( ce,
                                allowOr );
-        } else if ( input.LA( 1 ) == DRLLexer.ID ) {
+        } else if ( input.LA( 1 ) == DRLLexer.ID || input.LA( 1 ) == DRLLexer.QUESTION ) {
             result = lhsPatternBind( ce,
                                      allowOr );
         } else {
@@ -2255,7 +2255,7 @@ public class DRLParser {
     }
 
     /**
-     * lhsPattern := type LEFT_PAREN constraints? RIGHT_PAREN over? source?
+     * lhsPattern := QUESTION? type LEFT_PAREN constraints? RIGHT_PAREN over? source?
      * 
      * @param pattern
      * @param label
@@ -2263,12 +2263,23 @@ public class DRLParser {
      */
     private void lhsPattern( PatternDescrBuilder< ? > pattern,
                              String label ) throws RecognitionException {
-//        String type = unadornedType();
+        boolean query = false;
+        if( input.LA(1) == DRLLexer.QUESTION ) {
+            match( input,
+                   DRLLexer.QUESTION,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
+            query = true;
+        }
+        
         String type = this.qualifiedIdentifier();
         if ( state.failed ) return;
 
         if ( state.backtracking == 0 ) {
             pattern.type( type );
+            pattern.isQuery( query );
             if ( label != null ) {
                 pattern.id( label );
             }
