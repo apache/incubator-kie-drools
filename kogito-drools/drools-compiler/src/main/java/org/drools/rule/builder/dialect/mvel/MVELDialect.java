@@ -628,7 +628,7 @@ public class MVELDialect
         }
 
         String name;
-        if ( context != null && context.getPkg() != null & context.getPkg().getName() != null ) {
+        if ( context != null && context.getPkg() != null && context.getPkg().getName() != null ) {
             if ( context instanceof RuleBuildContext ) {
                 name = context.getPkg().getName() + "." + ((RuleBuildContext) context).getRuleDescr().getClassName();
             } else {
