@@ -21,9 +21,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
-import org.drools.SystemEventListener;
-import org.drools.agent.impl.PrintStreamSystemEventListener;
-import org.drools.core.util.DelegatingSystemEventListener;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
@@ -73,6 +70,10 @@ public class ResourceFactoryServiceImpl
                                          Class clazz) {
         return new ClassPathResource( path,
                                       clazz );
+    }
+    
+    public Resource newURLClassPathResource(String path) {
+        return new URLClassPathResource( path );
     }
 
     public Resource newFileSystemResource(File file) {

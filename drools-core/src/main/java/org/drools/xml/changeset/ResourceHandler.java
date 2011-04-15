@@ -23,6 +23,7 @@ import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.KnowledgeResource;
+import org.drools.io.impl.URLClassPathResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.io.internal.InternalResource;
 import org.drools.xml.BaseAbstractHandler;
@@ -78,6 +79,8 @@ public class ResourceHandler extends BaseAbstractHandler
         
         if ( src.trim().startsWith( "classpath:" ) ) {
             resource = new ClassPathResource( src.substring( src.indexOf( ':' ) + 1 ) );
+        } else if (src.trim().startsWith( "URLClasspath:" )){
+            resource = new URLClassPathResource( src.substring( src.indexOf( ':' ) + 1 ) );
         } else {
             resource = new UrlResource( src );
             ((UrlResource)resource).setBasicAuthentication(basicAuthentication);
