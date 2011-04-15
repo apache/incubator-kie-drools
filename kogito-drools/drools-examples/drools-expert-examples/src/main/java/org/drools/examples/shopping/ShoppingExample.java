@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples;
+package org.drools.examples.shopping;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
