@@ -289,7 +289,7 @@
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
-        <artifactId>drools-api</artifactId>
+        <artifactId>knowledge-api</artifactId>
         <version>${drools.version}</version>
       </dependency>
       <dependency>

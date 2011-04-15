@@ -89,6 +89,14 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		return processRuntime.startProcess(processId, parameters);
 	}
 
+	public ProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
+		return processRuntime.createProcessInstance(processId, parameters);
+	}
+
+	public ProcessInstance startProcessInstance(long processInstanceId) {
+		return processRuntime.startProcessInstance(processInstanceId);
+	}
+
 	public void addEventListener(ProcessEventListener listener) {
 		processRuntime.addEventListener(listener);
 	}
