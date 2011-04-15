@@ -32,7 +32,7 @@ public class HonestPoliticianExample {
     /**
      * @param args
      */
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
 
         KnowledgeBuilderConfiguration kbuilderconfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         kbuilderconfiguration.setProperty( "drools.dump.dir",

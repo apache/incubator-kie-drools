@@ -53,7 +53,7 @@ public class MannersBenchmark {
     /** Maximun number of hobbies each guest should have (default: 3). */
     private static int maxHobbies = 3;
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
         KnowledgeBuilderConfiguration kbuilderConfig = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbuilderConfig );
@@ -78,7 +78,7 @@ public class MannersBenchmark {
                 filename = "manners128.dat";
             }
     
-            InputStream is = MannersBenchmark.class.getResourceAsStream( filename );
+            InputStream is = MannersBenchmark.class.getResourceAsStream( "data/" + filename );
             List list = getInputObjects( is );
             for ( Iterator it = list.iterator(); it.hasNext(); ) {
                 Object object = it.next();
@@ -102,56 +102,60 @@ public class MannersBenchmark {
      * Convert the facts from the <code>InputStream</code> to a list of
      * objects.
      */
-    protected static List<Object> getInputObjects(InputStream inputStream) throws IOException {
+    protected static List<Object> getInputObjects(InputStream inputStream) {
         List<Object> list = new ArrayList<Object>();
 
-        BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
+        try {
+            BufferedReader br = new BufferedReader( new InputStreamReader( inputStream ) );
 
-        String line;
-        while ( (line = br.readLine()) != null ) {
-            if ( line.trim().length() == 0 || line.trim().startsWith( ";" ) ) {
-                continue;
+            String line;
+            while ( (line = br.readLine()) != null ) {
+                if ( line.trim().length() == 0 || line.trim().startsWith( ";" ) ) {
+                    continue;
+                }
+                StringTokenizer st = new StringTokenizer( line,
+                                                          "() " );
+                String type = st.nextToken();
+
+                if ( "guest".equals( type ) ) {
+                    if ( !"name".equals( st.nextToken() ) ) {
+                        throw new IOException( "expected 'name' in: " + line );
+                    }
+                    String name = st.nextToken();
+                    if ( !"sex".equals( st.nextToken() ) ) {
+                        throw new IOException( "expected 'sex' in: " + line );
+                    }
+                    String sex = st.nextToken();
+                    if ( !"hobby".equals( st.nextToken() ) ) {
+                        throw new IOException( "expected 'hobby' in: " + line );
+                    }
+                    String hobby = st.nextToken();
+
+                    Guest guest = new Guest( name,
+                                             Sex.resolve( sex ),
+                                             Hobby.resolve( hobby ) );
+
+                    list.add( guest );
+                }
+
+                if ( "last_seat".equals( type ) ) {
+                    if ( !"seat".equals( st.nextToken() ) ) {
+                        throw new IOException( "expected 'seat' in: " + line );
+                    }
+                    list.add( new LastSeat( new Integer( st.nextToken() ).intValue() ) );
+                }
+
+                if ( "context".equals( type ) ) {
+                    if ( !"state".equals( st.nextToken() ) ) {
+                        throw new IOException( "expected 'state' in: " + line );
+                    }
+                    list.add( new Context( st.nextToken() ) );
+                }
             }
-            StringTokenizer st = new StringTokenizer( line,
-                                                      "() " );
-            String type = st.nextToken();
-
-            if ( "guest".equals( type ) ) {
-                if ( !"name".equals( st.nextToken() ) ) {
-                    throw new IOException( "expected 'name' in: " + line );
-                }
-                String name = st.nextToken();
-                if ( !"sex".equals( st.nextToken() ) ) {
-                    throw new IOException( "expected 'sex' in: " + line );
-                }
-                String sex = st.nextToken();
-                if ( !"hobby".equals( st.nextToken() ) ) {
-                    throw new IOException( "expected 'hobby' in: " + line );
-                }
-                String hobby = st.nextToken();
-
-                Guest guest = new Guest( name,
-                                         Sex.resolve( sex ),
-                                         Hobby.resolve( hobby ) );
-
-                list.add( guest );
-            }
-
-            if ( "last_seat".equals( type ) ) {
-                if ( !"seat".equals( st.nextToken() ) ) {
-                    throw new IOException( "expected 'seat' in: " + line );
-                }
-                list.add( new LastSeat( new Integer( st.nextToken() ).intValue() ) );
-            }
-
-            if ( "context".equals( type ) ) {
-                if ( !"state".equals( st.nextToken() ) ) {
-                    throw new IOException( "expected 'state' in: " + line );
-                }
-                list.add( new Context( st.nextToken() ) );
-            }
+            inputStream.close();
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Could not read inputstream properly.", e);
         }
-        inputStream.close();
 
         return list;
     }

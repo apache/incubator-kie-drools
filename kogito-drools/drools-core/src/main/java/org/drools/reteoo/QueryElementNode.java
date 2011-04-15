@@ -120,13 +120,13 @@ public class QueryElementNode extends LeftTupleSource
         for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
             Declaration declr = (Declaration) arguments[declIndexes[i]];
             inputArgs[declIndexes[i]] = declr.getValue( workingMemory,
-                                           leftTuple.get( declr ).getObject() );
+                                                        leftTuple.get( declr ).getObject() );
         }
 
         UnificationNodeViewChangedEventListener collector = new UnificationNodeViewChangedEventListener( leftTuple,
-                                                                                                   this.queryElement.getVariables(),
-                                                                                                   this.sink,
-                                                                                                   this.tupleMemoryEnabled );
+                                                                                                         this.queryElement.getVariables(),
+                                                                                                         this.sink,
+                                                                                                         this.tupleMemoryEnabled );
         
         DroolsQuery queryObject = new DroolsQuery( this.queryElement.getQueryName(),
                                                    inputArgs,
