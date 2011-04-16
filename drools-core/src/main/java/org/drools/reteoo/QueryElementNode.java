@@ -16,6 +16,8 @@
 
 package org.drools.reteoo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.base.DroolsQuery;
@@ -32,6 +34,8 @@ import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.rule.Variable;
 import org.drools.spi.PropagationContext;
+
+import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 public class QueryElementNode extends LeftTupleSource
     implements
@@ -116,15 +120,45 @@ public class QueryElementNode extends LeftTupleSource
                           inputArgs.length );
 
         int[] declIndexes = this.queryElement.getDeclIndexes();
-
+        
+        List<Integer> srcVarIndexes = null;
+        List<Variable> trgVars = null;
+        
         for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
             Declaration declr = (Declaration) arguments[declIndexes[i]];
-            inputArgs[declIndexes[i]] = declr.getValue( workingMemory,
-                                                        leftTuple.get( declr ).getObject() );
+            Object o = declr.getValue( workingMemory,
+                                       leftTuple.get( declr ).getObject() );
+            if ( o instanceof Variable) {
+                Variable v = ( Variable ) o;
+                if ( v.getValue() == null ) {
+                    // If the declaration resolves to a variable being passed in, we need to add that to the variable indexes, so it's copied
+                    if ( srcVarIndexes == null ) {
+                        srcVarIndexes = new ArrayList<Integer>();
+                        trgVars = new ArrayList<Variable>();
+                    }
+                    trgVars.add( (Variable) o ); // this needs to be here, so we can pass the value back
+                    srcVarIndexes.add( declIndexes[i] );
+                } else {
+                    o = v.getValue(); // a previous output set this, so unify against it.
+                }
+            }
+            inputArgs[declIndexes[i]] = o;
+        }
+        
+        int[] varIndexes = this.queryElement.getVariables();
+        if ( srcVarIndexes != null ) {
+            // we have Variable inputs to handle            
+            // now merge the two, by adding new onto the end of the old
+            int length = varIndexes.length;
+            varIndexes = new int[varIndexes.length + srcVarIndexes.size()];
+            System.arraycopy( this.queryElement.getVariables(), 0, varIndexes, 0, length );
+            for ( int i = 0; i < srcVarIndexes.size(); i++ ) {
+                varIndexes[i+length] = srcVarIndexes.get( i );
+            }
         }
 
         UnificationNodeViewChangedEventListener collector = new UnificationNodeViewChangedEventListener( leftTuple,
-                                                                                                         this.queryElement.getVariables(),
+                                                                                                         varIndexes,
                                                                                                          this.sink,
                                                                                                          this.tupleMemoryEnabled );
         
@@ -152,10 +186,30 @@ public class QueryElementNode extends LeftTupleSource
         LeftTuple childLeftTuple = leftTuple.firstChild;
         LeftTuple temp = null;
         while ( childLeftTuple != null ) {
+            
+            if ( srcVarIndexes != null ) {
+                // we need to copy back output var results to the propagating tuple
+                int varsLength = this.queryElement.getVariables().length;
+                QueryElementFactHandle qeh  = ( QueryElementFactHandle ) childLeftTuple.getLastHandle();
+                Object[] resultObjects = ( Object[] ) qeh.getObject();
+                for ( int i = varsLength; i < trgVars.size(); i++ ) {
+                    Variable v = trgVars.get( i );
+                    v.setValue( resultObjects[i] );                                        
+                }
+            }
             temp = childLeftTuple;
             this.sink.doPropagateAssertLeftTuple( context, workingMemory, childLeftTuple, childLeftTuple.getLeftTupleSink() );
             childLeftTuple = childLeftTuple.getLeftParentNext();
             temp.setLeftParentNext( null );
+            
+            if ( srcVarIndexes != null ) {
+                // null anything we copied back
+                int varsLength = this.queryElement.getVariables().length;
+                for ( int i = varsLength; i < trgVars.size(); i++ ) {
+                    Variable v = trgVars.get( i );
+                    v.setValue( null );                                        
+                }
+            }            
         }
         leftTuple.firstChild = null;
 
@@ -174,9 +228,9 @@ public class QueryElementNode extends LeftTupleSource
         private boolean                   tupleMemoryEnabled;
 
         public UnificationNodeViewChangedEventListener(LeftTuple leftTuple,
-                                                    int[] variables,
-                                                    LeftTupleSinkPropagator sink,
-                                                    boolean                   tupleMemoryEnabled) {
+                                                       int[] variables,
+                                                       LeftTupleSinkPropagator sink,
+                                                       boolean                   tupleMemoryEnabled) {
             this.leftTuple = leftTuple;
             this.variables = variables;
             this.sink = sink;

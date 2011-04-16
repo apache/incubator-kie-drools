@@ -16,13 +16,17 @@
 
 package org.drools.base;
 
+import org.drools.rule.Declaration;
 import org.drools.rule.Query;
+import org.drools.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String         name;
     private InternalViewChangedEventListener resultsCollector;
     private Query                query;
     private boolean              open;
+    
+//    private int[]                 varIndexes;
 
     public DroolsQuery(final String name,
                        InternalViewChangedEventListener resultsCollector) {
@@ -40,7 +44,28 @@ public final class DroolsQuery extends ArrayElements {
         this.name = name;
         this.resultsCollector = resultsCollector;
         this.open = open;
+//        int j = 0;
+//        for ( int i = 0; i < params.length; i++ ) {
+//            // first get the needed int[] size
+//            if ( params[i] == Variable.variable ) {
+//                j++;
+//            }
+//        }
+//        
+//        varIndexes = new int[j];
+//        for ( int i = 0; i < params.length; i++ ) {
+//            // now record the var index positions and replace with null
+//            if ( params[i] == Variable.variable ) {
+//                varIndexes[j++] = i;
+//                params[i] = null;
+//            }
+//        }
+        
     }
+    
+//    public int[] getVarIndexes() {
+//        return this.varIndexes;
+//    }
 
     public String getName() {
         return this.name;
@@ -81,6 +106,23 @@ public final class DroolsQuery extends ArrayElements {
             if ( other.name != null ) return false;
         } else if ( !name.equals( other.name ) ) return false;
         return true;
+    }
+    
+    public String toString() {
+        StringBuilder sbuilder = new StringBuilder();
+        sbuilder.append( "query: " + name + "\n" + "parameters:\n" );
+        
+        if (this.query != null) {
+            for ( Declaration declr : this.query.getParameters() ) {
+                sbuilder.append( "   " );
+                sbuilder.append( declr.getExtractor().getExtractToClass() + ":" + declr.getIdentifier() );
+                sbuilder.append( "\n" );
+            }
+        }
+        
+        sbuilder.append( "collector: " + this.resultsCollector );
+        
+        return sbuilder.toString();
     }
 
 }

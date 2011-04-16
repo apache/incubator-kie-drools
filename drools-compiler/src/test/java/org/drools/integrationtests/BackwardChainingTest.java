@@ -16,6 +16,8 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Variable;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 import org.junit.Test;
 
 
@@ -684,6 +686,175 @@ public class BackwardChainingTest {
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertEquals( p1, list.get(0));          
-    }      
+    }  
+    
+    @Test
+    public void testGeneology() {
+        String str = "" +
+            "package org.drools.test  \n" +
+            "import org.drools.Person \n" +
+            "global java.util.List list\n" +
+            
+            "query man( String name ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Man( name : name ) \n"+
+            "end\n" +
+        
+            "query woman( String name ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Woman( name : name ) \n"+
+            "end\n" +    
+            
+            "query parent( String parent, String child ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Parent( parent : parent, child : child ) \n"+
+            "end\n" +              
+            
+            "query father( String father, String child ) \n" +
+            "   man( father; ) \n"+
+            "   parent( father, child ) \n"+
+            "end\n" + 
+            
+            "query mother( String mother, String child ) \n" +
+            "   woman( mother; ) \n"+
+            "   parent( mother, child ) \n"+
+            "end\n" +             
+        
+            "query son( String son, String parent ) \n" +
+            "   man( son ) \n"+
+            "   parent( parent, son ) \n"+
+            "end\n" +
+        
+            "query daughter( String daughter, String parent ) \n" +
+            "   woman( daughter ) \n"+
+            "   parent( parent, daughter ) \n"+
+            "end\n" +
+            
+            "query siblings( String c1, String c2 ) \n" +
+            "   parent( $p, c1 ) \n" +
+            "   parent( $p, c2 ) \n"+
+            "   eval( c1 != c2 )\n"+
+            "end\n";            
+    
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+    
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    
+        //kbase = SerializationHelper.serializeObject( kbase );
+    
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );     
+        
+        ksession.insert( new Man("adam") );
+        ksession.insert( new Man("peter") );
+        ksession.insert( new Man("paul") );
+
+        ksession.insert( new Woman("eve") );
+        ksession.insert( new Woman("mary") );        
+
+        ksession.insert( new Parent( "adam", "peter" ) );
+        ksession.insert( new Parent( "eve", "peter" ) );
+        ksession.insert( new Parent( "adam", "paul" ) );
+        ksession.insert( new Parent( "mary", "paul" ) );
+
+        
+        QueryResults results = null;
+        
+        
+        results = ksession.getQueryResults( "woman", new Object[] { new Variable() } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( result.get( "name" ) );
+        } 
+        
+        results = ksession.getQueryResults( "man", new Object[] { new Variable() } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( result.get( "name" ) );
+        }         
+        
+        results = ksession.getQueryResults( "father", new Object[] { new Variable(),  new Variable()  } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "father( " + result.get( "father" ) + ", " + result.get( "child" ) + " )" );
+        }       
+        
+        System.out.println( );        
+        
+        results = ksession.getQueryResults( "mother", new Object[] { new Variable(),  new Variable()  } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "mother( " + result.get( "mother" ) + ", " + result.get( "child" ) + " )" );
+        }      
+        
+        System.out.println( );         
+        
+//        results = ksession.getQueryResults( "siblings", new Object[] { new Variable(),  new Variable()  } );
+//        for ( QueryResultsRow result : results ) {
+//            System.out.println( "sibling( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+//        }             
+               
+    }
+    
+    public static class Man {
+        private String name;      
+
+        public Man(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }      
+    }
+    
+    public static class Woman {
+        private String name;      
+
+        public Woman(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }      
+    }  
+    
+    public static class Parent {
+        private String parent;
+        private String child;
+        
+        public Parent(String parent,
+                      String child) {
+            this.parent = parent;
+            this.child = child;
+        }
+        
+        public String getParent() {
+            return parent;
+        }
+        
+        public void setParent(String parent) {
+            this.parent = parent;
+        }
+        
+        public String getChild() {
+            return child;
+        }
+        
+        public void setChild(String child) {
+            this.child = child;
+        }
+
+    }
     
 }

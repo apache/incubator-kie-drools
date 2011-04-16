@@ -65,7 +65,11 @@ public class QueryResult {
      *      The Object
      */
     public Object get(final String identifier) {
-        return get( this.queryResults.getDeclarations().get( identifier ) );
+        Declaration decl = this.queryResults.getDeclarations().get( identifier );
+        if ( decl == null ) {
+            throw new IllegalArgumentException( "identifier '" + identifier + "' cannot be found" );
+        }
+        return get( decl );
     }
 
     /** 
