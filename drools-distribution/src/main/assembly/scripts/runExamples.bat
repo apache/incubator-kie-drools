@@ -1,4 +1,4 @@
-set mainJar=binaries\drools-expert-examples-${project.version}.jar
+set mainJar=binaries\drools-examples-${project.version}.jar
 set mainClass=org.drools.examples.DroolsExamplesApp
 
 echo "Usage: runExamples.bat"

@@ -16,14 +16,14 @@
       <title>Understanding the State Example</title>
 
       <screen><emphasis role="bold">Name:</emphasis> State Example
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.StateExampleUsingSalience
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.state.StateExampleUsingSalience
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> StateExampleUsingSalience.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates basic rule use
   and Conflict Resolution for rule firing priority.</screen>
 
       <para>Each <code>State</code> class has fields for its name and its
-      current state (see the class <code>org.drools.examples.State</code>).
+      current state (see the class <code>org.drools.examples.state.State</code>).
       The two possible states for each objects are:</para>
 
       <itemizedlist>
@@ -85,7 +85,7 @@ session.dispose(); // Stateful rule session must always be disposed when finishe
 
       <orderedlist>
         <listitem>
-          <para>Open the class <code>org.drools.examples.StateExampleUsingSalience</code> in your Eclipse IDE.</para>
+          <para>Open the class <code>org.drools.examples.state.StateExampleUsingSalience</code> in your Eclipse IDE.</para>
         </listitem>
 
         <listitem>
@@ -127,7 +127,7 @@ D finished
 
         <listitem>
           <para>In the "Audit View" click the "Open Log" button and select
-          the file "&lt;drools-expert-examples-dir&gt;/log/state.log".</para>
+          the file "&lt;drools-examples-dir&gt;/log/state.log".</para>
         </listitem>
       </orderedlist>
 
