@@ -16,6 +16,8 @@
 
 package org.drools.common;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -64,7 +66,8 @@ public class QueryElementFactHandle
     }
 
     public WorkingMemoryEntryPoint getEntryPoint() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        return null;
+        //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     public EqualityKey getEqualityKey() {
@@ -160,6 +163,10 @@ public class QueryElementFactHandle
 
     public boolean isDisconnected() {
         return true;
+    }
+    
+    public String toString() {
+        return "results: " + Arrays.asList( (Object[]) this.object ).toString();
     }
 
 }
