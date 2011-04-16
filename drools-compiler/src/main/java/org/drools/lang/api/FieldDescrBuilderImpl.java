@@ -43,7 +43,7 @@ public class FieldDescrBuilderImpl extends BaseDescrBuilderImpl<TypeFieldDescr>
 
     public FieldDescrBuilder processAnnotations() {
         if ( descr.getAnnotations().containsKey( TypeDeclaration.ATTR_FIELD_POSITION ) ) {
-             int pos = Integer.valueOf(descr.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getValue());
+             int pos = Integer.valueOf(descr.getAnnotation( TypeDeclaration.ATTR_FIELD_POSITION ).getSingleValue());
              descr.setIndex(pos);
         }
         return this;
