@@ -11,6 +11,8 @@ when
 	Answer(questionId : questionId);
 	invalidAnswer : InvalidAnswer( questionId == questionId )
 then
+    System.out.println("CAncelling invalid answer");
+
 	retract(invalidAnswer);
 end
 
@@ -20,6 +22,7 @@ when
 	answer : Answer(questionId : questionId);
 	question : Question(id == questionId)
 then
+    System.out.println("Copy new ans into quest " + answer);
 	retract(answer);
 	String basicAnswerType = question.getBasicAnswerType();
 	String answerValue = answer.getValue();
@@ -44,6 +47,7 @@ then
 		} else if (basicAnswerType.equals(Question.TYPE_LIST)) {
 			question.setListAnswer(answerValue);
 		}
+		System.out.println("Now question is "+ question);
 		update(question);
 	} catch (NumberFormatException e) {
 		// Note: this shouldn't occur since the client is expected to perform basic data type validation before sending the Answer 
@@ -87,6 +91,7 @@ then
 			}
 		} 
 	}
+	System.out.println(" NULLIFICATION of quest " + question);
 	question.setAnswer(null);
 	update(question);
 end
@@ -97,6 +102,7 @@ when
 	answer : Answer(questionId : questionId);
 	not(exists(Question(id == questionId)));
 then
+    System.out.println("Orphan " + answer);
 	// The client may try to send an Answer for a Question that has just been removed.
 	// We need to retract this so it doesn't stay around until the next time the same Question is created.  
 	retract(answer);

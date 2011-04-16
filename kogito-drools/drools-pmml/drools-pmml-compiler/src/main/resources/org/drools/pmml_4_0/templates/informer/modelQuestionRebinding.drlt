@@ -11,14 +11,14 @@
 rule "Model_Question_ReBinding_@{model}_@{name}"
 dialect "mvel"
 no-loop
-salience 99
 when
     $quest: Question( $id : id == "@{model+"_"+name}" )
     $bean : @{name}( context == @{format("string",context)} )
     $assoc : DomainModelAssociation( questionId == $id, object != $bean )
 then
+    System.out.println("Rebinding " + $bean + " using " + $assoc );
         $assoc.setObject($bean);
-    update($assoc);
+    //update($assoc);
 end
 @end{}
 

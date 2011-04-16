@@ -53,49 +53,30 @@ public abstract class DroolsAbstractPMMLTest {
     }
 
     protected StatefulKnowledgeSession getModelSession(String pmmlSource, boolean verbose) {
-
-//        PMML4Compiler compiler = new PMML4Compiler();
-//        String theory = compiler.compile(pmmlSource);
-//
-//        if (verbose)
-//            dump(theory,System.out);
+        return getModelSession(new String[] {pmmlSource}, verbose);
+    }
 
 
-
-//        KnowledgeAgent kAgent = KnowledgeAgentFactory.newKnowledgeAgent("PmmlAgent");
-//        kAgent.monitorResourceChangeEvents(true);
-//        ChangeSetImpl changeSet = (ChangeSetImpl) ((KnowledgeAgentImpl) kAgent).getChangeSet(ResourceFactory.newClassPathResource("changeset.xml"));
-//
-//        InternalResource model = (InternalResource) ResourceFactory.newFileResource(pmmlSource);
-//                model.setResourceType(ResourceType.PMML);
-//        changeSet.getResourcesAdded().add(model);
-
-
-
-//        kAgent.applyChangeSet(changeSet);
-//
-//        StatefulKnowledgeSession ksession = kAgent.getKnowledgeBase().newStatefulKnowledgeSession();
-
-//        KnowledgeBuilder builder = new KnowledgeBui
-//        assertNotNull(ksession);
-//
-//        return ksession;
-
+    protected StatefulKnowledgeSession getModelSession(String[] pmmlSources, boolean verbose) {
 
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-		    kbuilder.add(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/changeset.xml"), ResourceType.CHANGE_SET);
+		    kbuilder.add(ResourceFactory.newClassPathResource("org/drools/informer/informer-changeset.xml"), ResourceType.CHANGE_SET);
 //            kbuilder.add(ResourceFactory.newClassPathResource("Active.drl", Questionnaire.class),ResourceType.DRL);
 
 
         if (! verbose) {
-            kbuilder.add(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/"+pmmlSource),ResourceType.PMML);
+            for (String pmmlSource : pmmlSources) {
+                kbuilder.add(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/"+pmmlSource),ResourceType.PMML);
+            }
         } else {
             PMML4Compiler compiler = new PMML4Compiler();
             try {
-                String src = compiler.compile(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/" + pmmlSource).getInputStream());
-                System.out.println(src);
-                kbuilder.add(ResourceFactory.newByteArrayResource(src.getBytes()),ResourceType.DRL);
+                for (String pmmlSource : pmmlSources) {
+                    String src = compiler.compile(ResourceFactory.newClassPathResource("org/drools/pmml_4_0/" + pmmlSource).getInputStream());
+                    System.out.println(src);
+                    kbuilder.add(ResourceFactory.newByteArrayResource(src.getBytes()),ResourceType.DRL);
+                }
             } catch (IOException e) {
                 fail(e.getMessage());
             }

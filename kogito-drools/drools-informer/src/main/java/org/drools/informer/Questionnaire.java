@@ -20,7 +20,6 @@ package org.drools.informer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * <p>
@@ -201,7 +200,7 @@ public class Questionnaire extends Group {
 
 	private class NavigationStackEntry {
 
-		private List<String> items;
+		private String[] items;
 		private String activeItem;
 		private String completionAction;
 

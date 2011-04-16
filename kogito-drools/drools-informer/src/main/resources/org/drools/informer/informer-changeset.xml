@@ -21,6 +21,7 @@
     <resource type="DRL" source="classpath:org/drools/informer/Changes.drl" />
     <!-- <resource type="DRL" source="classpath:org/drools/informer/Listener.drl" /> -->
     <resource type="DRL" source="classpath:org/drools/informer/Item.drl" />
+    <resource type="DRL" source="classpath:org/drools/informer/Notes.drl" />
     <resource type="DRL" source="classpath:org/drools/informer/Queries.drl" />
     <resource type="DRL" source="classpath:org/drools/informer/Question.drl" />
     <resource type="DRL" source="classpath:org/drools/informer/ReadOnly.drl" />

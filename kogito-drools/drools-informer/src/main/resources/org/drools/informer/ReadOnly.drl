@@ -16,7 +16,7 @@ no-loop
 salience 1
 when
 	item : Item();
-	groups : ArrayList() from collect (Group(items contains item.id, active == true));
+	groups : ArrayList() from collect (Group(itemList contains item.id, active == true));
 	eval(item instanceof Question || item instanceof Group);
 then
 	boolean groupReadOnly = false;

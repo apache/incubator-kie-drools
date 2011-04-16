@@ -15,8 +15,9 @@ salience 99
 when
 then
     Question quest = new Question(@{format("string",model)}+"_"+@{format("string",name)});
+
         quest.setAnswerType("@{mapDatatypeToQuestion(dataType)}");
-        quest.setPreLabel("Please insert " + @{format("string",name)});
+        quest.setPreLabel("Please insert " + @{format("string",fullName)});
     insertLogical(quest);
 end
 @end{}

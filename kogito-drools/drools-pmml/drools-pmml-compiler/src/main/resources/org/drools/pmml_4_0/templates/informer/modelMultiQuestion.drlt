@@ -15,6 +15,7 @@ salience 99
 when
 then
     MultipleChoiceQuestion quest = new MultipleChoiceQuestion(@{format("string",model)}+"_"+@{format("string",name)});
+
         quest.setAnswerType("@{mapDatatypeToQuestion(dataType)}");
         quest.setPreLabel("Please insert " + @{format("string",name)});
 

@@ -14,13 +14,26 @@ no-loop
 salience 99
 when
     $quest: Question( $id : id == "@{model+"_"+name}" )
-    $bean : @{name}( context == @{format("string",context)} )
+    $bean : @{name}( $ctx : context == @{format("string",context)} , $val : value )
+    not DomainModelAssociation( questionId == $id, object == $bean, context == @{format("string",context)} )
 then
     DomainModelAssociation assoc = new DomainModelAssociation();
         assoc.setQuestionId($id);
+        assoc.setContext($ctx);
         assoc.setObject($bean);
         assoc.setProperty("value");
-    insertLogical(assoc);
+        assoc.setLastAnswer($val);
+
+    System.out.println("Binding " + $bean + " using " + assoc );
+
+
+
+        System.out.println("Insert @ssociation " + assoc);
+    insert(assoc);
+
+
+
+
 end
 @end{}
 

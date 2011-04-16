@@ -15,12 +15,8 @@
  */
 package org.drools.informer;
 
-
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -78,9 +74,14 @@ public class Group extends Item {
 	 * 
 	 * @return
 	 */
-	public List<String> getItems() {
-		return items == null ? null : (Arrays.asList(items.split(COMMA_SEPARATOR)));
+	public String[] getItems() {
+		return items == null ? null : items.split(COMMA_SEPARATOR);
 	}
+
+    public List<String> getItemList() {
+        String[] items = getItems();
+        return new ArrayList<String>(Arrays.asList(items));
+    }
 
 	/**
 	 * @param itemId
@@ -124,36 +125,6 @@ public class Group extends Item {
 		}
 	}
 
-
-
-    /**
-	 * Sets list of item ids. Values will NOT be trimmed.
-	 *
-	 * @param items
-	 */
-	public void setItems(List<String> items) {
-		if (items == null) {
-			this.items = null;
-		} else {
-			StringBuilder sb = new StringBuilder();
-            Iterator<String> iter = items.iterator();
-			while (iter.hasNext()) {
-				String temp = iter.next();
-				if (validItemId(temp)) {
-					if (sb.length() > 0) {
-						sb.append(COMMA_SEPARATOR);
-					}
-					sb.append(temp);
-				}
-			}
-			if (sb.length() > 0) {
-				this.items = sb.toString();
-			} else {
-				this.items = null;
-			}
-		}
-	}
-
 	/**
 	 * Adds itemId to the existing list. Value will NOT be trimmed. Duplicates allowed. Null will be ignored
 	 * 
@@ -183,8 +154,7 @@ public class Group extends Item {
 		if ((beforeItemId == null) || (beforeItemId.length() == 0) || (this.items == null)) {
 			addItem(itemId);
 		} else if (validItemId(itemId)) {
-//			List<String> items = new ArrayList<String>(Arrays.asList(getItems()));
-            List<String> items = getItems();
+			List<String> items = new ArrayList<String>(Arrays.asList(getItems()));
 			int pos = items.indexOf(beforeItemId);
 			if (pos < 0) {
 				addItem(itemId);
@@ -208,8 +178,7 @@ public class Group extends Item {
 		if ((afterItemId == null) || (afterItemId.length() == 0) || (this.items == null)) {
 			addItem(itemId);
 		} else if (validItemId(itemId)) {
-//			List<String> items = new ArrayList<String>(Arrays.asList(getItems()));
-            List<String> items = getItems();
+			List<String> items = new ArrayList<String>(Arrays.asList(getItems()));
 			int pos = items.indexOf(afterItemId);
 			if ((pos < 0) || ((pos + 1) == items.size())) {
 				addItem(itemId);
@@ -229,8 +198,7 @@ public class Group extends Item {
 	 */
 	public int removeItem(String itemId) {
 		if (validItemId(itemId)) {
-//			List<String> items = new ArrayList<String>(Arrays.asList(getItems()));
-            List<String> items = getItems();
+			List<String> items = new ArrayList<String>(Arrays.asList(getItems()));
 			int pos = items.indexOf(itemId);
 			if (pos >= 0) {
 				if (items.size() == 1) {

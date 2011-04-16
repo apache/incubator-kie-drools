@@ -1,30 +1,30 @@
 <PMML version="4.0" xsi:schemaLocation="http://www.dmg.org/PMML-4_0 http://www.dmg.org/v4-0/pmml-4-0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_0">
   <Header copyright="DMG.org"/>
   <DataDictionary numberOfFields="6">
-    <DataField dataType="string" name="gender" optype="categorical">
+    <DataField dataType="string" name="gender" optype="categorical" displayName="Gender of Person">
       <Value value="  female"/>
       <Value value="    male"/>
     </DataField>
-    <DataField dataType="string" name="no of claims" optype="categorical">
+    <DataField dataType="string" name="no of claims" optype="categorical" displayName="Number of Claims">
       <Value value="       0"/>
       <Value value="       1"/>
       <Value value="       3"/>
       <Value value="     > 3"/>
       <Value value="       2"/>
     </DataField>
-    <DataField dataType="integer" name="scrambled" optype="ordinal">
+    <DataField dataType="integer" name="scrambled" optype="ordinal" displayName="Meaningless out-of-order Field">
       <Value value="       4"/>
       <Value value="       3"/>
       <Value value="       7"/>
       <Value value="       2"/>
       <Value value="       9"/>
     </DataField>
-    <DataField dataType="string" name="domicile" optype="categorical">
+    <DataField dataType="string" name="domicile" optype="categorical" displayName="Type of Domicile">
       <Value value="suburban"/>
       <Value value="   urban"/>
       <Value value="   rural"/>
     </DataField>
-    <DataField dataType="double" name="age of car" optype="continuous"/>
-    <DataField dataType="integer" isCyclic="1" name="amount of claims" optype="continuous"/>
+    <DataField dataType="double" name="age of car" optype="continuous" displayName="Age of Car"/>
+    <DataField dataType="integer" isCyclic="1" name="amount of claims" optype="continuous" displayName="Amount of Claims"/>
   </DataDictionary>
 </PMML>

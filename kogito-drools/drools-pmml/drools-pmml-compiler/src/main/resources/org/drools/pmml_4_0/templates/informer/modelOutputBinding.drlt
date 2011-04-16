@@ -1,0 +1,30 @@
+
+@comment{
+   Creates a question to fill a specific input field of a predictive model
+
+   /**
+    * @param model        - model's identifier name, assigned to the questionnaire
+    */
+}
+
+@declare{'modelOutputBindingRule'}
+@code{ String noteId = format("string",model+"_"+name+"_Note"); }
+rule "Model_Output_Binding_@{model}_@{name}_@{outType}"
+dialect "mvel"
+no-loop
+salience 99
+when
+    $bean : @{name}( $ctx : context == @{format("string",context)} , $val : value )
+    $quest : Questionnaire( id == @{format("string",context)} )
+then
+    Note outNote = new Note(@{noteId});
+        outNote.setContext(@{format("string",context)});
+        outNote.setLabel(" @{fullName} [@{outType}] : " + $val);
+    insertLogical(outNote);
+
+end
+@end{}
+
+
+
+@includeNamed{'modelOutputBindingRule'}

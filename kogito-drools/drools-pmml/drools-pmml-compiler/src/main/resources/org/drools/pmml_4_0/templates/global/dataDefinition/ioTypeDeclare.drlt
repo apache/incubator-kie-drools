@@ -24,7 +24,7 @@
    value : @{type} @@key  @position(1) @comment{
                                         //@if{continuous} @@comparable @elseif{cyclic} @@comparable(cyclic) @elseif{ordinal} @@comparable(ordinal) @end{}
                                        }
-   displayValue : String
+   displayValue : String = @if{ fullName != null } @{format("string",fullName)} @else{} @{name} @end{}
 
    @if{ "NeuralNetwork".equals(modelType) }
      residual : Double
