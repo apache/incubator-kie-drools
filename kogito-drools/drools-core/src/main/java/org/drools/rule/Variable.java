@@ -17,6 +17,8 @@
 package org.drools.rule;
 
 public class Variable {
+    public static final Variable variable = new Variable();
+    
     private Object value;
 
     public Object getValue() {
@@ -27,6 +29,8 @@ public class Variable {
         this.value = value;
     }
     
-    
+    public String toString() {
+        return value.toString();
+    }
     
 }
