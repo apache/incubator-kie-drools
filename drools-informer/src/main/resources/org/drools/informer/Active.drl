@@ -11,13 +11,13 @@ rule "build list of available items"
 no-loop
 when
 	questionnaire : Questionnaire();
-	items : ArrayList() from collect (Item(id != questionnaire.id, questionnaire.items contains id));
+	items : ArrayList() from collect (Item(id != questionnaire.id, questionnaire.itemList contains id));
 then
 	List availableItemIds = new ArrayList();
 	for (Iterator iterator = items.iterator(); iterator.hasNext();) {
 		availableItemIds.add(((Item)iterator.next()).getId());
 	}
-	List itemIds = new ArrayList(questionnaire.getItems());
+	List itemIds = new ArrayList(questionnaire.getItemList());
 	for (Iterator iterator = itemIds.iterator(); iterator.hasNext();) {
 		String id = (String)iterator.next();
 		if (!availableItemIds.contains(id)) {
@@ -49,7 +49,7 @@ no-loop
 salience 4 # before: "activate/deactivate lower-level items (if Questionnaire.activeItem is used)"
 when
 	questionnaire : Questionnaire(activeItem != null);
-	item : Item(id memberOf questionnaire.items, id == questionnaire.activeItem, active == false);
+	item : Item(id memberOf questionnaire.itemList, id == questionnaire.activeItem, active == false);
 then
 	item.setActive(true);
 	update(item);
@@ -60,7 +60,7 @@ no-loop
 salience 4 # before: "activate/deactivate lower-level items (if Questionnaire.activeItem is used)"
 when
 	questionnaire : Questionnaire(activeItem != null);
-	item : Item(id memberOf questionnaire.items, id != questionnaire.activeItem, active == true);
+	item : Item(id memberOf questionnaire.itemList, id != questionnaire.activeItem, active == true);
 then
 	item.setActive(false);
 	update(item);
@@ -71,8 +71,8 @@ no-loop
 salience 3 # before: "activate/deactivate InvalidAnswers"
 when
 	questionnaire : Questionnaire(activeItem != null);
-	item : Item(id != questionnaire.id, id not memberOf questionnaire.items);
-	groups : ArrayList() from collect (Group(id != questionnaire.id, items contains item.id));
+	item : Item(id != questionnaire.id, id not memberOf questionnaire.itemList);
+	groups : ArrayList() from collect (Group(id != questionnaire.id, itemList contains item.id));
 then
 	boolean groupActive = false;
 	for (Iterator iterator = groups.iterator(); iterator.hasNext();) {
@@ -112,9 +112,9 @@ end
 rule "retract invalid answers for inactive questions"
 salience -1000 # ensure this is the last rule in the Agenda Group to fire
 when
-	questionnaire : Questionnaire(enableActionValidation == true);
     invalidAnswer : InvalidAnswer();
-    question : Question(id == invalidAnswer.questionId, active == false);
+    question : Question($id : id == invalidAnswer.questionId, active == false);
+    questionnaire : Questionnaire(enableActionValidation == true, itemList contains $id);
 then
     retract(invalidAnswer);
 end

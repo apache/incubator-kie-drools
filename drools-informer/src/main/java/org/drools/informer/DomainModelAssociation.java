@@ -33,6 +33,8 @@ public class DomainModelAssociation {
 
 	private String property;
 
+    private String context;
+
 	/**
 	 * A copy is kept of the last know answer. This is necessary to determine whether it is the answer that has changed or the
 	 * underlying domain model that has changed.
@@ -45,6 +47,14 @@ public class DomainModelAssociation {
 
 	public DomainModelAssociation(String questionId, Object object, String property) {
 		this.questionId = questionId;
+		this.object = object;
+		this.property = property;
+	}
+
+
+    public DomainModelAssociation(String questionId, String context, Object object, String property) {
+		this.questionId = questionId;
+        this.context = context;
 		this.object = object;
 		this.property = property;
 	}
@@ -81,6 +91,14 @@ public class DomainModelAssociation {
 		this.lastAnswer = lastAnswer;
 	}
 
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,6 +106,7 @@ public class DomainModelAssociation {
 
         DomainModelAssociation that = (DomainModelAssociation) o;
 
+        if (context != null ? !context.equals(that.context) : that.context != null) return false;
         if (object != null ? !object.equals(that.object) : that.object != null) return false;
         if (questionId != null ? !questionId.equals(that.questionId) : that.questionId != null) return false;
 
@@ -98,8 +117,10 @@ public class DomainModelAssociation {
     public int hashCode() {
         int result = questionId != null ? questionId.hashCode() : 0;
         result = 31 * result + (object != null ? object.hashCode() : 0);
+        result = 31 * result + (context != null ? context.hashCode() : 0);
         return result;
     }
+
 
     @Override
     public String toString() {
@@ -107,6 +128,7 @@ public class DomainModelAssociation {
                 "questionId='" + questionId + '\'' +
                 ", object=" + object +
                 ", property='" + property + '\'' +
+                ", context='" + context + '\'' +
                 ", lastAnswer=" + lastAnswer +
                 '}';
     }

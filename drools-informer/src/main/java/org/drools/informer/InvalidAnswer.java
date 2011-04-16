@@ -100,7 +100,7 @@ public class InvalidAnswer extends TohuObject {
 	}
 
 	/**
-	 * @see org.tohu.TohuObject#getId()
+	 * @see org.drools.informer.TohuObject#getId()
 	 */
 	public String getId() {
 		return questionId + ":" + reason;

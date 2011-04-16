@@ -1,0 +1,40 @@
+
+@comment{
+   Creates a question to fill a specific input field of a predictive model
+
+   /**
+    * @param model        - model's identifier name, assigned to the questionnaire
+    */
+}
+
+@declare{'modelRevalidateRule'}
+
+rule "Model_Revalidate"
+no-loop
+salience 8
+when
+    question : Question(questionId : id, answerType != null, answer : answer != null);
+	association : DomainModelAssociation(questionId == questionId, object : object, property : property, lastAnswer != answer);
+	$bean : DataField( this == object )
+then
+
+    $bean.setValid(false);
+
+    System.out.println(" HAXXED --------------------------------------- update question -> assoc   " + questionId + "  > " + object + " > " + answer);
+	Class propertyClass = PropertyUtils.getPropertyType(object, property);
+	Object propertyValue = DomainModelSupport.answerToObject(question.getBasicAnswerType(), answer, propertyClass);
+	Object oldPropertyValue = PropertyUtils.getProperty(object, property);
+	PropertyUtils.setProperty(object, property, propertyValue);
+
+	association.setLastAnswer(answer);
+	System.out.println("HAXXED Updated " + $bean);
+
+    update($bean);
+	update(association);
+
+end
+@end{}
+
+
+
+@includeNamed{'modelRevalidateRule'}

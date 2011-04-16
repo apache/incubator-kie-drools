@@ -134,7 +134,10 @@ public class PMML4Compiler {
             "informer/modelMultiQuestion.drlt",
             "informer/modelQuestionBinding.drlt",
             "informer/modelQuestionRebinding.drlt" ,
-            "informer/modelCreateByBinding.drlt"
+            "informer/modelCreateByBinding.drlt",
+            "informer/modelInvalidAnswer.drlt",
+            "informer/modelOutputBinding.drlt",
+            "informer/modelRevalidate.drlt"
 
     };
 

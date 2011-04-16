@@ -1,0 +1,28 @@
+package org.drools.informer
+
+
+
+rule "IncludeNotes"
+no-loop
+when
+    $n : Note( $ctx : context, $noteId : id )
+    $quest : Questionnaire( id == $ctx, itemList not contains $noteId )
+then
+    System.out.println(">>>>>>>>>>>>**********>>>>>>>>>>>>>> Trovata nota no inclusa" + $noteId);
+    $quest.addItem($noteId);
+    update($quest);
+end
+
+
+
+rule "RemoveUnusedNotes"
+no-loop
+when
+    $quest : Questionnaire( $itemz : itemList )
+    $itemId : String() from $itemz;
+    not Item( id == $itemId )
+then
+    System.out.println(">>>>>>>>>>>>**********>>>>>>>>>>>>>> Rimuovo nota non mappata " + $itemId);
+    $quest.removeItem($itemId);
+    update($quest);
+end

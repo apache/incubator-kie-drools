@@ -17,34 +17,57 @@ end
 
 rule "copy answers from the underlying domain model to the questions"
 no-loop
+salience 7
 when
-	question : Question(questionId : id, answerType != null);
-	association : DomainModelAssociation(questionId == questionId, lastAnswer == question.answer);
-	obj : Object();
-	eval(association.getObject() == obj);
+	question : Question(questionId : id, answerType != null, ans : answer)
+	association : DomainModelAssociation(questionId == questionId, lastAnswer == question.answer, object : object)
+	obj : Object( this == object )
 then
+ System.out.println("-------------------------------------------------------------------------------------------- update fact -> question   " + questionId + "  > " + ans);
 	Object propertyValue = PropertyUtils.getProperty(association.getObject(), association.getProperty());
 	Object answer = DomainModelSupport.objectToAnswer(propertyValue, question.getBasicAnswerType());
 	if (answer == null ? question.getAnswer() != null : !answer.equals(question.getAnswer())) {
+	    System.out.println("Quest : " + ans + ", propValue " + propertyValue);
+
+	    System.out.println("object" + object);
 		question.setAnswer(answer);
-		update(question);
+
 		association.setLastAnswer(answer);
+
+		update(question);
 		update(association);
 	}
+
 end
 
 rule "copy question answers to the underlying domain model"
+salience 7
 no-loop
 when
-	question : Question(questionId : id, answerType != null, answer : answer);
-	association : DomainModelAssociation(questionId == questionId, object : object, property : property);
+	question : Question(questionId : id, answerType != null, answer : answer != null);
+	association : DomainModelAssociation(questionId == questionId, object : object, property : property, lastAnswer != answer);
 then
-    System.out.println("-------------------------------------------------------------------------------------------- update question -> assoc");
+    System.out.println("-------------------------------------------------------------------------------------------- update question -> assoc   " + questionId + "  > " + object + " > " + answer);
 	Class propertyClass = PropertyUtils.getPropertyType(object, property); 
 	Object propertyValue = DomainModelSupport.answerToObject(question.getBasicAnswerType(), answer, propertyClass);
 	Object oldPropertyValue = PropertyUtils.getProperty(object, property);
 	PropertyUtils.setProperty(object, property, propertyValue);
-	update(object);
+
 	association.setLastAnswer(answer);
+    System.out.println("Updated " + object);
+
 	update(association);
+	update(object);
+end
+
+
+rule "Cleanup ununsed associations"
+when
+    $assoc : DomainModelAssociation( $id : questionId, $obj : object )
+    (not Question( id == $id )
+     or
+     not Object( this == $obj )
+    )
+then
+    retract($assoc);
 end

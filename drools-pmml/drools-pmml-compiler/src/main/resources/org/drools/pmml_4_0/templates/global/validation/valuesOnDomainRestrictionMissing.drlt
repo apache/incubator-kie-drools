@@ -9,13 +9,14 @@
 rule "Missing_Values_@{name}"
 dialect "mvel"
 no-loop
-salience 100
+salience 99
 when
     $in : @{name}( $val : value,
           @if{ context != null } context == @{context}, @end{}
           @foreach{ v : vals } value == @{v} @end{' || '}
           )
 then
+    System.out.println("--- Invalid -> missing");
     $in.missing=true;
     update($in);
 end

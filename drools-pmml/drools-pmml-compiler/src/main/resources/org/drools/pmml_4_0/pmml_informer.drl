@@ -22,6 +22,18 @@ global PMML4Wrapper utils;
 
 
 
+rule "Invalid_meta"
+salience -999
+dialect "mvel"
+when
+then
+    //System.err.println("Found Mined Field " + $fld.name );
+    HashMap map = new HashMap();
+    applyTemplate("modelInvalidAnswer.drlt", utils, registry, map, theory);
+    applyTemplate("modelRevalidate.drlt", utils, registry, map, theory);
+end
+
+
 rule "Questionnaire"
 dialect "mvel"
 when
@@ -36,16 +48,20 @@ end
 
 
 
+
+
+
 rule "Question"
 dialect "java"
 when
     MiningSchema(  $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs,  $name : name, usageType == null || usageType.value == "active" )
     TypeOfField( name == $name, $type : dataType )
-    $dfld : DataField( $vsize : values.size == 0, name == $name )
+    $dfld : DataField( $vsize : values.size == 0, name == $name, $full : displayName )
 then
     HashMap map = new HashMap();
         map.put("name",utils.compactUpperCase($name));
+        map.put("fullName",$full);
         map.put("model",utils.context);
         map.put("dataType",$type);
     applyTemplate("modelQuestion.drlt", utils, registry, map, theory);
@@ -61,7 +77,7 @@ when
     MiningSchema(  $inputs : miningFields )
     $fld : MiningField( this memberOf $inputs,  $name : name, usageType == null || usageType.value == "active" )
     TypeOfField( name == $name, $type : dataType )
-    $dfld : DataField( $vals : values, $vsize : values.size > 0, name == $name )
+    $dfld : DataField( $vals : values, $vsize : values.size > 0, name == $name, $full : displayName )
     $validz : List( size > 0 ) from accumulate(
                         $val : Value( property == null || (property != "missing" && property != "invalid") ) from $vals ,
                         init( List validz = new java.util.LinkedList(); ),
@@ -72,6 +88,7 @@ when
 then
     HashMap map = new HashMap();
         map.put("name",utils.compactUpperCase($name));
+        map.put("fullName",$full);
         map.put("model",utils.context);
         map.put("dataType",$type);
         map.put("valid",$validz);
@@ -81,4 +98,62 @@ then
     applyTemplate("modelQuestionBinding.drlt", utils, registry, map, theory);
     applyTemplate("modelQuestionRebinding.drlt", utils, registry, map, theory);
     applyTemplate("modelCreateByBinding.drlt", utils, registry, map, theory);
+end
+
+
+   //TODO Replicate for derivedFields in place of datafields
+
+
+
+
+rule "Output_Predicted_AsNotes"
+when
+    MiningSchema(  $inputs : miningFields )
+    $fld : MiningField( this memberOf $inputs,  $name : name, usageType.value == "predicted" )
+//    TypeOfField( name == $name, $type : dataType )
+    $dfld : DataField( name == $name, $full : displayName )
+then
+    System.out.println("Found Predicted Mined Field @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+    HashMap map = new HashMap();
+        map.put("name",utils.compactUpperCase($name));
+        map.put("fullName",$full);
+        map.put("model",utils.context);
+        map.put("outType","Predicted");
+//        map.put("dataType",$type);
+    applyTemplate("modelOutputBinding.drlt", utils, registry, map, theory);
+end
+
+
+
+rule "Outputs_AsNotes_Data"
+when
+    OutputField( $name : name, $tgt : targetField )
+    $dfld : DataField( name == $tgt, $full : displayName )
+then
+    System.out.println("Found Output Field @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+$name);
+    HashMap map = new HashMap();
+        map.put("name",utils.compactUpperCase($name));
+        map.put("fullName",$full);
+        map.put("model",utils.context);
+        map.put("outType","Out");
+//        map.put("dataType",$type);
+    applyTemplate("modelOutputBinding.drlt", utils, registry, map, theory);
+end
+
+
+
+rule "Outputs_AsNotes_Derived"
+when
+    OutputField( $name : name, $tgt : targetField )
+    $dfld : DerivedField( name == $tgt, $full : displayName )
+    not DataField( name == $tgt )
+then
+    System.out.println("Found Output Derived Field @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+$name);
+    HashMap map = new HashMap();
+        map.put("name",utils.compactUpperCase($name));
+        map.put("fullName",$full);
+        map.put("model",utils.context);
+        map.put("outType","Out");
+//        map.put("dataType",$type);
+    applyTemplate("modelOutputBinding.drlt", utils, registry, map, theory);
 end

@@ -40,6 +40,8 @@ public class Note extends Item {
 
 	private String label;
 
+    private String context;
+
 	public Note() {
 	}
 
@@ -60,11 +62,20 @@ public class Note extends Item {
 		this.label = label;
 	}
 
-	/**
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    /**
 	 * For debugging purposes.
 	 */
 	@Override
 	public String toString() {
-		return super.toString() + " label=" + getLabel();
+		return super.toString() + " label=" + getLabel() + " context=" +getContext();
 	}
 }

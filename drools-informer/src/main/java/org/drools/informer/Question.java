@@ -92,6 +92,8 @@ public class Question extends Item {
 
     private String preLabel;
 
+    private String label;
+
 	private String postLabel;
 
 	private boolean required;
@@ -103,6 +105,7 @@ public class Question extends Item {
 
 	@AnswerField
 	private Long numberAnswer;
+
 
 	@AnswerField
 	private BigDecimal decimalAnswer;
@@ -291,15 +294,22 @@ public class Question extends Item {
 	}
 
 	public void setAnswer(Object answer) {
+
 		if (answerType == null) {
 			throw new IllegalStateException("answerType has not been specified");
 		}
-		String basicAnswerType = getBasicAnswerType();
+        String basicAnswerType = getBasicAnswerType();
+
 		if (basicAnswerType.equals(TYPE_TEXT)) {
 			setTextAnswer((String) answer);
 		}
 		if (basicAnswerType.equals(TYPE_NUMBER)) {
-			setNumberAnswer((Long) answer);
+            if (answer != null) {
+			    setNumberAnswer(((Number) answer).longValue());
+            } else {
+                setNumberAnswer(null);
+            }
+
 		}
 		if (basicAnswerType.equals(TYPE_DECIMAL)) {
 			setDecimalAnswer((BigDecimal) answer);
@@ -314,6 +324,19 @@ public class Question extends Item {
 			setListAnswer((String) answer);
 		}
 	}
+
+    public void setAnswer(long l) {
+        setNumberAnswer(l);
+    }
+
+    public void setAnswer(double d) {
+        setDecimalAnswer(new BigDecimal(d));
+    }
+
+    public void setAnswer(boolean b) {
+         setBooleanAnswer(b);
+    }
+
 
 	public Object getAnswer() {
 		if (answerType == null) {
@@ -419,5 +442,10 @@ public class Question extends Item {
 	@Target( { FIELD })
 	public @interface AnswerField {
 	}
+
+
+
+
+
 
 }

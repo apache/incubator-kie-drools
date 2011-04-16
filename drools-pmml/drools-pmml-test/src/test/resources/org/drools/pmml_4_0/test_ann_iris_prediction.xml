@@ -3,7 +3,7 @@
     <Application name="IBM DB2 Intelligent Miner" version="8.1"/>
   </Header>
   <DataDictionary numberOfFields="5">
-    <DataField displayName="PETALLEN" name="PETALLEN" optype="continuous" dataType="integer">
+    <DataField displayName="Number of Petals" name="petal number" optype="continuous" dataType="integer">
       <Value value="14"/>
       <Value value="15"/>
       <Value value="17"/>
@@ -142,7 +142,7 @@
   </DataDictionary>
   <NeuralNetwork activationFunction="logistic" algorithmName="neuralNetwork" functionName="regression" modelName="neupre">
     <MiningSchema>
-      <MiningField name="PETALLEN"/>
+      <MiningField name="petal number"/>
       <MiningField name="PETALWID"/>
       <MiningField name="SEPALWID"/>
       <MiningField name="SPECIES"/>
@@ -152,7 +152,7 @@
         <OutputField name="OutSepLen" targetField="SEPALLEN"/>
     </Output>
     <ModelStats>
-      <UnivariateStats field="PETALLEN">
+      <UnivariateStats field="petal number">
         <Counts invalidFreq="0" missingFreq="0" totalFreq="150"/>
         <DiscrStats>
           <Array n="43" type="int">12 14 4 7 2 7 1 2 5 8 3 2 3 2 4 5 1 4 3 4 1 1 8 2 2 2 6 1 1 3 2 3 4 2 3 5 1 3 2 1 1 1 2</Array>
@@ -186,7 +186,7 @@
     <NeuralInputs>
       <NeuralInput id="0">
         <DerivedField dataType="double" optype="continuous">
-          <NormContinuous field="PETALLEN">
+          <NormContinuous field="petal number">
             <LinearNorm norm="0" orig="10"/>
             <LinearNorm norm="0.5" orig="39.5"/>
             <LinearNorm norm="1" orig="69"/>

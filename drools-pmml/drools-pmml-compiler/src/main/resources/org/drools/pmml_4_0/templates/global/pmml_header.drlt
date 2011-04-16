@@ -18,6 +18,7 @@
 package @{pack};
 
 import org.drools.informer.Group;
+import org.drools.informer.InvalidAnswer;
 import org.drools.informer.Question;
 import org.drools.informer.Questionnaire;
 import org.drools.informer.MultipleChoiceQuestion;
@@ -28,3 +29,4 @@ import org.drools.informer.Answer;
 import org.drools.informer.domain.DomainModelSupport;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;

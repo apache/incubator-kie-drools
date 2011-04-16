@@ -9,13 +9,14 @@
 rule "Valid_Values_@{name}"
 dialect "mvel"
 no-loop
-salience 100
+salience 9999
 when
     $in : @{name}( $val : value,
           @if{ context != null } context == @{context}, @end{}
           @foreach{ v : vals } value == @{v} @end{' || '}
           )
 then
+    System.out.println("--- Invalid -> valid " + $in);
     $in.valid=true;
     update($in);
 end
