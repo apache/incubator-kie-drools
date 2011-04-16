@@ -590,8 +590,8 @@ public class ParserHelper {
                 setStart( builderContext.empty() ? null : builderContext.peek() );
             } else if ( ImportDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 ImportDescrBuilder imp;
-                if ( validateLT( 2,
-                                 DroolsSoftKeywords.FUNCTION ) ) {
+                if ( validateLT( 2, DroolsSoftKeywords.FUNCTION ) ||
+                     validateLT( 2, DroolsSoftKeywords.STATIC ) ) {
                     imp = (builderContext.empty()) ?
                           DescrFactory.newPackage().newFunctionImport() :
                           ((PackageDescrBuilder) builderContext.peek()).newFunctionImport();

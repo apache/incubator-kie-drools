@@ -7,7 +7,7 @@
     <title>Fibonacci Example</title>
 
     <screen><emphasis role="bold">Name:</emphasis> Fibonacci 
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.FibonacciExample
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.fibonacci.FibonacciExample
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> Fibonacci.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates Recursion,
@@ -48,7 +48,7 @@
 
     <orderedlist>
       <listitem>
-        <para>Open the class <classname>org.drools.examples.FibonacciExample</classname> in your Eclipse IDE.</para>
+        <para>Open the class <classname>org.drools.examples.fibonacci.FibonacciExample</classname> in your Eclipse IDE.</para>
       </listitem>
 
       <listitem>

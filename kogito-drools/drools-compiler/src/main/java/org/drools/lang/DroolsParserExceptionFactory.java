@@ -273,16 +273,16 @@ public class DroolsParserExceptionFactory {
         StringBuilder sb = new StringBuilder();
         if ( paraphrases != null ) {
             for ( Map<DroolsParaphraseTypes, String> map : paraphrases ) {
-                for ( Entry<DroolsParaphraseTypes, String> activeEntry : map
-                        .entrySet() ) {
+                for ( Entry<DroolsParaphraseTypes, String> activeEntry : map.entrySet() ) {
                     if ( activeEntry.getValue().length() == 0 ) {
-                        sb.append( String.format( PARSER_LOCATION_MESSAGE_PART,
-                                                  getLocationName( activeEntry.getKey() ) ) );
+                        String kStr = getLocationName( activeEntry.getKey() );
+                        if( kStr.length() > 0 ){
+                            sb.append( String.format( PARSER_LOCATION_MESSAGE_PART, kStr ) );
+                        }
                     } else {
                         sb.append( String.format( PARSER_LOCATION_MESSAGE_COMPLETE,
                                                   getLocationName( activeEntry.getKey() ),
-                                                  activeEntry
-                                                          .getValue() ) );
+                                                  activeEntry.getValue() ) );
                     }
                 }
             }

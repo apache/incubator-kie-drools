@@ -107,11 +107,8 @@ public class RuleBuilder {
     public void buildMetaAttributes(final RuleBuildContext context ) {
         Rule rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
-            String value = context.getRuleDescr().getAnnotation(metaAttr).getValue();
-            if( value.startsWith( "\"" ) && value.endsWith( "\"" ) && value.length() > 2 ) {
-                value = value.substring( 1, value.length()-1 );
-            }
-            rule.addMetaAttribute( metaAttr, value );
+            rule.addMetaAttribute( metaAttr,
+                                   context.getRuleDescr().getAnnotation(metaAttr).getValueStripped() );
         }
     }
 

@@ -3,6 +3,7 @@ package org.drools.integrationtests;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.DrlParser;
@@ -48,27 +50,27 @@ public class AccumulateTest {
                                             null );
     }
 
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
+    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
 
-    private RuleBase loadRuleBase(final Reader reader) throws IOException,
-                                                      DroolsParserException,
-                                                      Exception {
+    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
+                                                        DroolsParserException,
+                                                        Exception {
         return loadRuleBase( reader,
                              new PackageBuilderConfiguration() );
     }
 
-    private RuleBase loadRuleBase(final Reader reader,
-                                  final PackageBuilderConfiguration conf) throws IOException,
-                                                                         DroolsParserException,
-                                                                         Exception {
+    private RuleBase loadRuleBase( final Reader reader,
+                                   final PackageBuilderConfiguration conf ) throws IOException,
+                                                                           DroolsParserException,
+                                                                           Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
         if ( parser.hasErrors() ) {
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors());
+            fail( "Error messages in parser, need to sort this our (or else collect error messages)\n" + parser.getErrors() );
         }
         // pre build the package
         JavaDialectConfiguration jconf = (JavaDialectConfiguration) conf.getDialectConfiguration( "java" );
@@ -91,8 +93,8 @@ public class AccumulateTest {
         return ruleBase;
     }
 
-    public KnowledgeBase loadKnowledgeBase(final String resource,
-                                           final KnowledgeBuilderConfiguration kbconf) {
+    public KnowledgeBase loadKnowledgeBase( final String resource,
+                                            final KnowledgeBuilderConfiguration kbconf ) {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbconf );
         kbuilder.add( ResourceFactory.newClassPathResource( resource,
                                                             getClass() ),
@@ -918,7 +920,7 @@ public class AccumulateTest {
         execTestAccumulateCollectSet( "test_AccumulateCollectSetMVEL.drl" );
     }
 
-    public void execTestAccumulateSum(String fileName) throws Exception {
+    public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -997,8 +999,8 @@ public class AccumulateTest {
 
     }
 
-    private void updateReferences(final StatefulSession session,
-                                  final DataSet data) {
+    private void updateReferences( final StatefulSession session,
+                                   final DataSet data ) {
         data.results = (List< ? >) session.getGlobal( "results" );
         for ( Iterator< ? > it = session.iterateObjects(); it.hasNext(); ) {
             Object next = (Object) it.next();
@@ -1015,7 +1017,7 @@ public class AccumulateTest {
         }
     }
 
-    public void execTestAccumulateCount(String fileName) throws Exception {
+    public void execTestAccumulateCount( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1085,7 +1087,7 @@ public class AccumulateTest {
 
     }
 
-    public void execTestAccumulateAverage(String fileName) throws Exception {
+    public void execTestAccumulateAverage( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1154,7 +1156,7 @@ public class AccumulateTest {
 
     }
 
-    public void execTestAccumulateMin(String fileName) throws Exception {
+    public void execTestAccumulateMin( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1223,7 +1225,7 @@ public class AccumulateTest {
 
     }
 
-    public void execTestAccumulateMax(String fileName) throws Exception {
+    public void execTestAccumulateMax( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1292,7 +1294,7 @@ public class AccumulateTest {
 
     }
 
-    public void execTestAccumulateCollectList(String fileName) throws Exception {
+    public void execTestAccumulateCollectList( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1346,7 +1348,7 @@ public class AccumulateTest {
 
     }
 
-    public void execTestAccumulateCollectSet(String fileName) throws Exception {
+    public void execTestAccumulateCollectSet( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1408,7 +1410,7 @@ public class AccumulateTest {
 
     }
 
-    public void execTestAccumulateReverseModifyMultiPattern(String fileName) throws Exception {
+    public void execTestAccumulateReverseModifyMultiPattern( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
         final RuleBase ruleBase = loadRuleBase( reader );
@@ -1545,7 +1547,8 @@ public class AccumulateTest {
         assertEquals( 15,
                       results.get( 0 ).intValue() );
         assertEquals( 15.0,
-                      order.getTotal(), 0.0 );
+                      order.getTotal(),
+                      0.0 );
     }
 
     @Test
@@ -1595,6 +1598,33 @@ public class AccumulateTest {
         assertTrue( kbuilder.getErrors().toString().contains( "Unknown accumulate function: 'nonExistingFunction' on rule 'Accumulate non existing function - Java'." ) );
         assertTrue( kbuilder.getErrors().toString().contains( "Unknown accumulate function: 'nonExistingFunction' on rule 'Accumulate non existing function - MVEL'." ) );
 
+    }
+
+    @Test
+    public void testAccumulateZeroParams() {
+        String rule = "rule fromIt\n" +
+                      "when\n" +
+                      "    Number( $c: intValue ) from accumulate( Integer(), count( ) )\n" +
+                      "then\n" +
+                      "    System.out.println( \"got \" + $c );\n" +
+                      "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
+
+            while ( errors.hasNext() ) {
+                System.out.println( "kbuilder error: " + errors.next().getMessage() );
+            }
+        }
+
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
     public static class DataSet {

@@ -16,6 +16,7 @@
 
 package org.drools.common;
 
+import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 
@@ -26,9 +27,9 @@ public interface InternalAgendaGroup extends AgendaGroup {
     
     public void setActive(boolean activate);
     
-    public Activation[] getQueue();
-    
     public void clear();
+    
+    public Activation[] getAndClear();
 
     public void remove(AgendaItem agendaItem);
 }

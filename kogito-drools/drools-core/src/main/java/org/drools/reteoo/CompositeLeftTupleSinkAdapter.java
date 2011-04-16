@@ -133,17 +133,18 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                                            final PropagationContext context,
                                                            final InternalWorkingMemory workingMemory) {
         LeftTuple child = leftTuple.firstChild;
+        InternalFactHandle rightParent = child.getRightParent().getFactHandle();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
             doPropagateRetractLeftTuple( context,
                                          workingMemory,
                                          child,
                                          child.getLeftTupleSink() );
-            workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
             child.unlinkFromRightParent();
             child.unlinkFromLeftParent();
             child = temp;
         }
+        workingMemory.getFactHandleFactory().destroyFactHandle( rightParent );
     }
 
     public void propagateRetractRightTuple(final RightTuple rightTuple,

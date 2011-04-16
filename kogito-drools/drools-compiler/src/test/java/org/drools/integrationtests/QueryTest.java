@@ -804,7 +804,7 @@ public class QueryTest {
         }
         assertTrue( names.contains( "darth" ) );
     }
-
+    
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";

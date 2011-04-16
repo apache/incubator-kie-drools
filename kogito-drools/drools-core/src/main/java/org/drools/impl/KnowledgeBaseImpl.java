@@ -242,7 +242,8 @@ public class KnowledgeBaseImpl
 
     public Rule getRule(String packageName,
                         String ruleName) {
-        return this.ruleBase.getPackage( packageName ).getRule( ruleName );
+        Package p = this.ruleBase.getPackage( packageName );
+        return p == null ? null : p.getRule( ruleName );
     }
     
     public Query getQuery(String packageName,

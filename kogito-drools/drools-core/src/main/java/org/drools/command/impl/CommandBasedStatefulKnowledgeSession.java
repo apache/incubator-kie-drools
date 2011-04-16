@@ -44,6 +44,7 @@ import org.drools.command.runtime.UnregisterExitPointCommand;
 import org.drools.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.command.runtime.process.CreateProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessEventListenersCommand;
 import org.drools.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.command.runtime.process.GetProcessInstancesCommand;
@@ -51,6 +52,7 @@ import org.drools.command.runtime.process.GetWorkItemCommand;
 import org.drools.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
+import org.drools.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.command.runtime.rule.AgendaGroupSetFocusCommand;
 import org.drools.command.runtime.rule.ClearActivationGroupCommand;
 import org.drools.command.runtime.rule.ClearAgendaCommand;
@@ -218,6 +220,20 @@ public class CommandBasedStatefulKnowledgeSession
         command.setParameters( (HashMap<String, Object>) parameters );
         return commandService.execute( command );
     }
+
+	public ProcessInstance createProcessInstance(String processId,
+			                                     Map<String, Object> parameters) {
+        CreateProcessInstanceCommand command = new CreateProcessInstanceCommand();
+        command.setProcessId( processId );
+        command.setParameters( (HashMap<String, Object>) parameters );
+        return commandService.execute( command );
+	}
+
+	public ProcessInstance startProcessInstance(long processInstanceId) {
+        StartProcessInstanceCommand command = new StartProcessInstanceCommand();
+        command.setProcessInstanceId( processInstanceId );
+        return commandService.execute( command );
+	}
 
     public void dispose() {
         commandService.execute( new DisposeCommand() );

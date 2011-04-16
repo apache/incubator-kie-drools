@@ -709,7 +709,9 @@ public class DefaultAgenda
     public void clearAndCancelAgendaGroup(final AgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        final Activation[] queueable = ((InternalAgendaGroup) agendaGroup).getQueue();
+        // this is thread safe for BinaryHeapQueue
+        // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
+        final Activation[] queueable = ((InternalAgendaGroup) agendaGroup).getAndClear();        
         for ( int i = 0, length = queueable.length; i < length; i++ ) {
             final AgendaItem item = (AgendaItem) queueable[i];
             if ( item == null ) {
@@ -734,7 +736,6 @@ public class DefaultAgenda
                                                                           this.workingMemory,
                                                                           ActivationCancelledCause.CLEAR );
         }
-        ((InternalAgendaGroup) agendaGroup).clear();
     }
 
     /*

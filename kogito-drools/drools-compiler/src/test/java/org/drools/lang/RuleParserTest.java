@@ -3472,6 +3472,31 @@ public class RuleParserTest extends TestCase {
                       fcd.getType() );
     }
 
+    public void testIsQuery() throws Exception {
+        final String text = "rule X when ?person( \"Mark\", 42; ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+        
+        assertTrue( pattern.isQuery() );
+
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+    }
+
     public void testPositionalsAndNamedConstraints() throws Exception {
         final String text = "rule X when Person( \"Mark\", 42; location == \"atlanta\" ) then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
