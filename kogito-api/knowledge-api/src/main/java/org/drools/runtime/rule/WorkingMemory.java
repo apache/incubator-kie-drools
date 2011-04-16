@@ -73,10 +73,7 @@ public interface WorkingMemory
      *            The arguments used for the query
      *
      * @return The QueryResults of the specified query.
-     *         If no results match the query it is empty.
-     *
-     * @throws IllegalArgumentException
-     *         if no query named "query" is found in the KnowledgeBase
+     *         If the query does not exist or no results match the query it is empty.
      */
     public QueryResults getQueryResults(String query,
                                         Object... arguments);
