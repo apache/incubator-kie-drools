@@ -51,5 +51,12 @@
       <version>5.2.0-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-pmml-compiler</artifactId>
+      <version>5.2.0-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

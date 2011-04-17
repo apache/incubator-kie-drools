@@ -38,7 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class PMML4Compiler {
+public class PMML4Compiler implements org.drools.compiler.PMMLCompiler {
 
 
     public static final String PMML = "org.drools.pmml_4_0.descr";
