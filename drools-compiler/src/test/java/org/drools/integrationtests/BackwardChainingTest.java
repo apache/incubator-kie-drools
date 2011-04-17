@@ -20,6 +20,8 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.junit.Test;
 
+import static org.drools.rule.Variable.variable;
+
 
 public class BackwardChainingTest {
      
@@ -690,11 +692,14 @@ public class BackwardChainingTest {
     
     @Test
     public void testGeneology() {
+        // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
+            
         String str = "" +
             "package org.drools.test  \n" +
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
-            
+            "dialect \"mvel\"\n" +                   
+                                    
             "query man( String name ) \n" +
             "   org.drools.integrationtests.BackwardChainingTest.Man( name : name ) \n"+
             "end\n" +
@@ -730,9 +735,35 @@ public class BackwardChainingTest {
             "query siblings( String c1, String c2 ) \n" +
             "   parent( $p, c1 ) \n" +
             "   parent( $p, c2 ) \n"+
-            "   eval( c1 != c2 )\n"+
-            "end\n";            
+            "   eval( !c1.equals( c2 ) )\n"+
+            "end\n"+        
+        
+            "query fullSiblings( String c1, String c2 )\n" +
+            "   parent( $p1, c1 ) parent( $p1, c2 )\n" +
+            "   parent( $p2, c1 ) parent( $p2, c2 )\n" +
+            "   eval( !c1.equals( c2 ) && !$p1.equals( $p2 )  )\n"+
+            "end\n" +
+            
+            "query fullSiblings2( String c1, String c2 )\n" +
+            "   father( $p1, c1 ) father( $p1, c2 )\n" +
+            "   mother( $p2, c1 ) mother( $p2, c2 )\n" +
+            "   eval( !c1.equals( c2 ) )\n"+
+            "end\n" +    
     
+            "query uncle( String uncle, String n )\n" +
+            "   man( uncle ) siblings( uncle, parent )\n" +
+            "   parent( parent, n )\n " +
+            "end\n" +   
+        
+            "query aunt( String aunt, String n )\n" +
+            "   woman( aunt ) siblings( aunt, parent )\n" +
+            "   parent( parent, n )\n " +
+            "end\n" +
+            
+            "query grantParents( String gp, String gc )\n" +
+            "   parent( gp, p ) parent( p, gc )\n" +
+            "end\n";            
+        
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                           ResourceType.DRL );
@@ -749,52 +780,127 @@ public class BackwardChainingTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );     
+
+        // grand parents
+        ksession.insert( new Man("john") );
+        ksession.insert( new Woman("janet") );
         
+        // parent
         ksession.insert( new Man("adam") );
+        ksession.insert(  new Parent( "john", "adam") );
+        ksession.insert(  new Parent( "janet", "adam") );
+        
+        ksession.insert( new Man("stan") );
+        ksession.insert(  new Parent( "john", "stan") );
+        ksession.insert(  new Parent( "janet", "stan") );        
+        
+        // grant parents
+        ksession.insert( new Man("carl") );
+        ksession.insert( new Woman("tina") );        
+ 
+        // parent         
+        ksession.insert( new Woman("eve") );        
+        ksession.insert(  new Parent( "carl", "eve") );
+        ksession.insert(  new Parent( "tina", "eve") ); 
+
+        
+        // parent         
+        ksession.insert( new Woman("mary") );  
+        ksession.insert(  new Parent( "carl", "mary") );
+        ksession.insert(  new Parent( "tina", "mary") );         
+        
+        
         ksession.insert( new Man("peter") );
-        ksession.insert( new Man("paul") );
-
-        ksession.insert( new Woman("eve") );
-        ksession.insert( new Woman("mary") );        
-
-        ksession.insert( new Parent( "adam", "peter" ) );
+        ksession.insert( new Parent( "adam", "peter" ) );        
         ksession.insert( new Parent( "eve", "peter" ) );
+        
+        
+        ksession.insert( new Man("paul") );
         ksession.insert( new Parent( "adam", "paul" ) );
         ksession.insert( new Parent( "mary", "paul" ) );
+                
+
+        ksession.insert( new Woman("jill") );
+        ksession.insert( new Parent( "adam", "jill" ) );        
+        ksession.insert( new Parent( "eve", "jill" ) );
+                
+
+
 
         
         QueryResults results = null;
         
-        
-        results = ksession.getQueryResults( "woman", new Object[] { new Variable() } );
+        System.out.println("woman");         
+        results = ksession.getQueryResults( "woman", new Object[] { variable } );
         for ( QueryResultsRow result : results ) {
-            System.out.println( result.get( "name" ) );
+            System.out.println( "  " + result.get( "name" ) );
         } 
         
-        results = ksession.getQueryResults( "man", new Object[] { new Variable() } );
+        System.out.println("\nman");        
+        results = ksession.getQueryResults( "man", new Object[] { variable } );
         for ( QueryResultsRow result : results ) {
-            System.out.println( result.get( "name" ) );
-        }         
+            System.out.println( "  " + result.get( "name" ) );
+        }   
         
-        results = ksession.getQueryResults( "father", new Object[] { new Variable(),  new Variable()  } );
+        System.out.println("\nfather");
+        results = ksession.getQueryResults( "father", new Object[] {variable,  variable  } );
         for ( QueryResultsRow result : results ) {
-            System.out.println( "father( " + result.get( "father" ) + ", " + result.get( "child" ) + " )" );
+            System.out.println( "  " + "father( " + result.get( "father" ) + ", " + result.get( "child" ) + " )" );
         }       
         
-        System.out.println( );        
-        
-        results = ksession.getQueryResults( "mother", new Object[] { new Variable(),  new Variable()  } );
+        System.out.println("\nmother");
+        results = ksession.getQueryResults( "mother", new Object[] { variable,  variable } );
         for ( QueryResultsRow result : results ) {
-            System.out.println( "mother( " + result.get( "mother" ) + ", " + result.get( "child" ) + " )" );
-        }      
+            System.out.println( "  " + "mother( " + result.get( "mother" ) + ", " + result.get( "child" ) + " )" );
+        }    
         
-        System.out.println( );         
+        System.out.println("\nson");
+        results = ksession.getQueryResults( "son", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "son( " + result.get( "son" ) + ", " + result.get( "parent" ) + " )" );
+        }     
         
-//        results = ksession.getQueryResults( "siblings", new Object[] { new Variable(),  new Variable()  } );
-//        for ( QueryResultsRow result : results ) {
-//            System.out.println( "sibling( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
-//        }             
-               
+        System.out.println("\ndaughter");
+        results = ksession.getQueryResults( "daughter", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "daughter( " + result.get( "daughter" ) + ", " + result.get( "parent" ) + " )" );
+        }         
+        
+        System.out.println("\nsiblings");
+        results = ksession.getQueryResults( "siblings", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "sibling( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+        }     
+        
+        System.out.println("\nfullSiblings");
+        results = ksession.getQueryResults( "fullSiblings", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "fullSiblings( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+        }        
+
+        System.out.println("\nfullSiblings2");
+        results = ksession.getQueryResults( "fullSiblings", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "fullSiblings2( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+        }  
+        
+        System.out.println("\nuncle");
+        results = ksession.getQueryResults( "uncle", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "uncle( " + result.get( "uncle" ) + ", " + result.get( "n" ) + " )" );
+        }        
+        
+        System.out.println("\naunt");
+        results = ksession.getQueryResults( "aunt", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "aunt( " + result.get( "aunt" ) + ", " + result.get( "n" ) + " )" );
+        }
+        
+        System.out.println("\ngrantParents");
+        results = ksession.getQueryResults( "grantParents", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "grantParents( " + result.get( "gp" ) + ", " + result.get( "gc" ) + " )" );
+        }          
     }
     
     public static class Man {
