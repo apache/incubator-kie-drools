@@ -17,20 +17,50 @@
 package org.drools.rule;
 
 public class Variable {
-    public static final Variable variable = new Variable();
+    public static final Variable variable = new Variable(null, -1);
     
-    private Object value;
+    private Object[] values;
+    
+    private int index;
+    private boolean set;    
+
+    public Variable(Object[] values, 
+                    int position) {
+        this.values = values;
+        this.index = position;
+    }
 
     public Object getValue() {
-        return value;
+        return this.values[this.index];
     }
 
     public void setValue(Object value) {
-        this.value = value;
+        this.set = true;
+        this.values[this.index] = value;
     }
     
     public String toString() {
-        return value.toString();
+        if ( values != null ) {
+            Object o = getValue();
+            if ( o != null ) {
+                return "var = " + o.toString();    
+            } 
+        }
+
+        return "var = null";
     }
+
+    public boolean isSet() {
+        return set;
+    }
+
+    public void unSet() {
+        this.set = false;
+        this.values[this.index] = null;
+    }
+
+    public int getIndex() {
+        return index;
+    }       
     
 }

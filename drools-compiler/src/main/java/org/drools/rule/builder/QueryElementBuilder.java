@@ -102,7 +102,7 @@ public class QueryElementBuilder
                     declr.setReadAccessor( reader );
 
                     varIndexes.add( arg.getPosition() );
-                    arguments.set( arg.getPosition(), new Variable() );                        
+                    arguments.set( arg.getPosition(), Variable.variable );                        
                 }
             } else {
                 // it's an expression and thus an input
@@ -198,7 +198,7 @@ public class QueryElementBuilder
                 declr.setReadAccessor( reader );
 
                 varIndexes.add( pos );
-                arguments.set( pos, new Variable() );                    
+                arguments.set( pos, Variable.variable );                    
             }  
         }
             
