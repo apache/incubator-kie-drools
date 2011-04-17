@@ -16,7 +16,9 @@
 
 package org.drools.planner.config.score.definition;
 
+import org.drools.planner.core.score.calculator.SimpleDoubleScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.score.definition.SimpleDoubleScoreDefinition;
 import org.drools.planner.core.score.definition.SimpleScoreDefinition;
 import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
@@ -76,6 +78,8 @@ public class ScoreDefinitionConfig {
             switch (scoreDefinitionType) {
                 case SIMPLE:
                     return new SimpleScoreDefinition();
+                case SIMPLE_DOUBLE:
+                    return new SimpleDoubleScoreDefinition();
                 case HARD_AND_SOFT:
                     return new HardAndSoftScoreDefinition();
                 default:
@@ -95,6 +99,8 @@ public class ScoreDefinitionConfig {
             switch (scoreDefinitionType) {
                 case SIMPLE:
                     return new SimpleScoreCalculator();
+                case SIMPLE_DOUBLE:
+                    return new SimpleDoubleScoreCalculator();
                 case HARD_AND_SOFT:
                     return new DefaultHardAndSoftConstraintScoreCalculator();
                 default:
@@ -116,6 +122,7 @@ public class ScoreDefinitionConfig {
 
     public static enum ScoreDefinitionType {
         SIMPLE,
+        SIMPLE_DOUBLE,
         HARD_AND_SOFT,
     }
 

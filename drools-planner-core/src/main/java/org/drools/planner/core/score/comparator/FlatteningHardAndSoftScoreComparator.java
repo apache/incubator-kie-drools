@@ -18,8 +18,8 @@ package org.drools.planner.core.score.comparator;
 
 import java.util.Comparator;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
+import org.drools.planner.core.score.Score;
 
 /**
  * Compares 2 HardAndSoftScore after flattening: the hard multiplied by a hardWeight gets added to the soft.

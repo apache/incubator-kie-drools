@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.score.constraint;
 
-import java.util.Arrays;
 import java.io.Serializable;
+import java.util.Arrays;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,20 +16,20 @@
 
 package org.drools.planner.core.score.definition;
 
-import org.drools.planner.core.score.DefaultSimpleScore;
+import org.drools.planner.core.score.DefaultSimpleDoubleScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.SimpleScore;
+import org.drools.planner.core.score.SimpleDoubleScore;
 
-public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
+public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 
-    private SimpleScore perfectMaximumScore = new DefaultSimpleScore(0);
-    private SimpleScore perfectMinimumScore = new DefaultSimpleScore(Integer.MIN_VALUE);
+    private SimpleDoubleScore perfectMaximumScore = new DefaultSimpleDoubleScore(0.0);
+    private SimpleDoubleScore perfectMinimumScore = new DefaultSimpleDoubleScore(-Double.MAX_VALUE);
 
-    public void setPerfectMaximumScore(SimpleScore perfectMaximumScore) {
+    public void setPerfectMaximumScore(SimpleDoubleScore perfectMaximumScore) {
         this.perfectMaximumScore = perfectMaximumScore;
     }
 
-    public void setPerfectMinimumScore(SimpleScore perfectMinimumScore) {
+    public void setPerfectMinimumScore(SimpleDoubleScore perfectMinimumScore) {
         this.perfectMinimumScore = perfectMinimumScore;
     }
 
@@ -37,31 +37,31 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     // Worker methods
     // ************************************************************************
 
-    public SimpleScore getPerfectMaximumScore() {
+    public SimpleDoubleScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
-    public SimpleScore getPerfectMinimumScore() {
+    public SimpleDoubleScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }
 
     public Score parseScore(String scoreString) {
-        return DefaultSimpleScore.parseScore(scoreString);
+        return DefaultSimpleDoubleScore.parseScore(scoreString);
     }
 
-    public double calculateTimeGradient(SimpleScore startScore, SimpleScore endScore, SimpleScore score) {
+    public double calculateTimeGradient(SimpleDoubleScore startScore, SimpleDoubleScore endScore, SimpleDoubleScore score) {
         if (score.getScore() >= endScore.getScore()) {
             return 1.0;
         } else if (startScore.getScore() >= score.getScore()) {
             return 0.0;
         }
-        int scoreTotal = endScore.getScore() - startScore.getScore();
-        int scoreDelta = score.getScore() - startScore.getScore();
-        return ((double) scoreDelta) / ((double) scoreTotal);
+        double scoreTotal = endScore.getScore() - startScore.getScore();
+        double scoreDelta = score.getScore() - startScore.getScore();
+        return scoreDelta / scoreTotal;
     }
 
-    public Double translateScoreToGraphValue(SimpleScore score) {
-        return Double.valueOf(score.getScore());
+    public Double translateScoreToGraphValue(SimpleDoubleScore score) {
+        return score.getScore();
     }
 
 }

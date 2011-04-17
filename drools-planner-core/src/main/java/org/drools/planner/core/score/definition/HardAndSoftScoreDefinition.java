@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.score.definition;
 
-import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 
 public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndSoftScore> {

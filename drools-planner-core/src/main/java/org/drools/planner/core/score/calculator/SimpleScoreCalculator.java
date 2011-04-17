@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.score.calculator;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.DefaultSimpleScore;
+import org.drools.planner.core.score.Score;
 
 public class SimpleScoreCalculator extends AbstractScoreCalculator {
 
