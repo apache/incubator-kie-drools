@@ -32,9 +32,11 @@ public class SubTourChangeMoveFactory extends CachedMoveFactory {
         TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<CityAssignment> cityAssignmentList = travelingSalesmanTour.getCityAssignmentList();
-        for (CityAssignment cityAssignment : cityAssignmentList) {
-            for (CityAssignment toAfterCityAssignment : cityAssignmentList) {
-                moveList.add(new SubTourChangeMove(cityAssignment, cityAssignment, toAfterCityAssignment));
+        for (CityAssignment startCityAssignment : cityAssignmentList) {
+            for (CityAssignment endCityAssignment : cityAssignmentList) {
+                for (CityAssignment toAfterCityAssignment : cityAssignmentList) {
+                    moveList.add(new SubTourChangeMove(startCityAssignment, endCityAssignment, toAfterCityAssignment));
+                }
             }
         }
         return moveList;

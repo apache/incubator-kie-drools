@@ -26,8 +26,10 @@ public class TspMoveHelper {
             CityAssignment cityAssignment, CityAssignment toNextCityAssignment) {
         FactHandle cityAssignmentFactHandle = workingMemory.getFactHandle(cityAssignment);
         FactHandle toNextCityAssignmentFactHandle = workingMemory.getFactHandle(toNextCityAssignment);
+
         cityAssignment.setNextCityAssignment(toNextCityAssignment);
         toNextCityAssignment.setPreviousCityAssignment(cityAssignment);
+
         workingMemory.update(cityAssignmentFactHandle, cityAssignment);
         // Note: for the score rules this isn't currently needed (and a performance leak)
         // but removing it would not be clean code.

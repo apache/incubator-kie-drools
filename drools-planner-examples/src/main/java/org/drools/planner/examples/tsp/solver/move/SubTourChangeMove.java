@@ -18,6 +18,7 @@ package org.drools.planner.examples.tsp.solver.move;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -41,7 +42,17 @@ public class SubTourChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(startCityAssignment.getPreviousCityAssignment(), toAfterCityAssignment);
+        CityAssignment nextCityAssignment = startCityAssignment;
+        while (!ObjectUtils.equals(nextCityAssignment, endCityAssignment)) {
+            if (ObjectUtils.equals(nextCityAssignment, toAfterCityAssignment)) {
+                return false;
+            }
+            nextCityAssignment = nextCityAssignment.getNextCityAssignment();
+        }
+        if (ObjectUtils.equals(endCityAssignment, toAfterCityAssignment)) {
+            return false;
+        }
+        return true;
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
@@ -50,9 +61,13 @@ public class SubTourChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        CityAssignment toBeforeCityAssignment = toAfterCityAssignment.getNextCityAssignment();
-        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, toAfterCityAssignment, startCityAssignment);
-        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, endCityAssignment, toBeforeCityAssignment);
+        CityAssignment newPreviousCityAssignment = toAfterCityAssignment;
+        CityAssignment newNextCityAssignment = newPreviousCityAssignment.getNextCityAssignment();
+        CityAssignment originalPreviousCityAssignment = startCityAssignment.getPreviousCityAssignment();
+        CityAssignment originalNextCityAssignment = endCityAssignment.getNextCityAssignment();
+        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, newPreviousCityAssignment, startCityAssignment);
+        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, endCityAssignment, newNextCityAssignment);
+        TspMoveHelper.moveCityAssignmentAfterCityAssignment(workingMemory, originalPreviousCityAssignment, originalNextCityAssignment);
     }
 
     public Collection<? extends Object> getTabuProperties() {

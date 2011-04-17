@@ -18,6 +18,6 @@
     </acceptor>
     <forager>
         <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
-        <!--<minimalAcceptedSelection>5000</minimalAcceptedSelection>-->
+        <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
 </localSearchSolver>
