@@ -14,7 +14,7 @@
   <process processType="Private" isExecutable="true" id="UserTask" name="User Task" >
 
     <laneSet>
-      <lane name="MyLane" >
+      <lane id="_5" name="MyLane" >
         <flowNodeRef>_2</flowNodeRef>
         <flowNodeRef>_3</flowNodeRef>
       </lane>
@@ -66,6 +66,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="_4" >
         <dc:Bounds x="360" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="1" y="1" width="300" height="100" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="_1-_2" >
         <di:waypoint x="40" y="40" />
