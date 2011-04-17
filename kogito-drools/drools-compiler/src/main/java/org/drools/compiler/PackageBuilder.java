@@ -25,7 +25,6 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
@@ -37,7 +36,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.process.Process;
-import org.drools.definition.type.*;
 import org.drools.definition.type.FactField;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
@@ -55,7 +53,6 @@ import org.drools.lang.descr.*;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
-import org.drools.pmml_4_0.PMML4Compiler;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.*;
 import org.drools.rule.Package;
@@ -120,6 +117,8 @@ public class PackageBuilder {
     protected DateFormats                     dateFormats;
 
     private ProcessBuilder                    processBuilder;
+
+    private PMMLCompiler                      pmmlCompiler;
 
     private Map<String, TypeDeclaration>      builtinTypes;
 
@@ -256,6 +255,15 @@ public class PackageBuilder {
         } catch ( IllegalArgumentException e ) {
             return null;
         }
+    }
+
+
+
+    private PMMLCompiler getPMMLCompiler() {
+        if (this.pmmlCompiler == null) {
+            this.pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
+        }
+        return this.pmmlCompiler;
     }
 
     /**
@@ -533,7 +541,7 @@ public class PackageBuilder {
                     confImpl.getClasses().add( cls );
                 }
             } else if ( ResourceType.PMML.equals( type ) ) {
-                PMML4Compiler compiler = new PMML4Compiler();
+                PMMLCompiler compiler = getPMMLCompiler();
                 String theory = compiler.compile(resource.getInputStream());
 
                 addKnowledgeResource(new ByteArrayResource(theory.getBytes()),ResourceType.DRL, configuration);
