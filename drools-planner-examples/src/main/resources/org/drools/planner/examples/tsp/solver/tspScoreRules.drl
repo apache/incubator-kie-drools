@@ -17,7 +17,7 @@
 package org.drools.planner.examples.tsp.solver;
     dialect "java"
 
-import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.calculator.SimpleDoubleScoreCalculator;
 import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -25,7 +25,7 @@ import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
-global SimpleScoreCalculator scoreCalculator;
+global SimpleDoubleScoreCalculator scoreCalculator;
 
 // ############################################################################
 // Soft constraints
@@ -51,5 +51,5 @@ rule "softConstraintsBroken"
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setScore(- $softTotal.intValue()); // TODO fixme should be double
+        scoreCalculator.setScore(- $softTotal.doubleValue()); // TODO fixme should be double
 end

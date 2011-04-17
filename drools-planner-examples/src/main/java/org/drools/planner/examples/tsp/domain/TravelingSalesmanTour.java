@@ -25,12 +25,13 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.score.SimpleDoubleScore;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("TravelingSalesmanTour")
-public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleScore> {
+public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleDoubleScore> {
 
     private String name;
     private List<City> cityList;
@@ -39,7 +40,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     private List<CityAssignment> cityAssignmentList;
     private CityAssignment startCityAssignment;
 
-    private SimpleScore score;
+    private SimpleDoubleScore score;
 
     public String getName() {
         return name;
@@ -81,11 +82,11 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.startCityAssignment = startCityAssignment;
     }
 
-    public SimpleScore getScore() {
+    public SimpleDoubleScore getScore() {
         return score;
     }
 
-    public void setScore(SimpleScore score) {
+    public void setScore(SimpleDoubleScore score) {
         this.score = score;
     }
 
