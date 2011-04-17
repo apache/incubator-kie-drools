@@ -26,7 +26,7 @@ public final class DroolsQuery extends ArrayElements {
     private Query                query;
     private boolean              open;
     
-//    private int[]                 varIndexes;
+    private Variable[]           vars;
 
     public DroolsQuery(final String name,
                        InternalViewChangedEventListener resultsCollector) {
@@ -44,31 +44,28 @@ public final class DroolsQuery extends ArrayElements {
         this.name = name;
         this.resultsCollector = resultsCollector;
         this.open = open;
-//        int j = 0;
-//        for ( int i = 0; i < params.length; i++ ) {
-//            // first get the needed int[] size
-//            if ( params[i] == Variable.variable ) {
-//                j++;
-//            }
-//        }
-//        
-//        varIndexes = new int[j];
-//        for ( int i = 0; i < params.length; i++ ) {
-//            // now record the var index positions and replace with null
-//            if ( params[i] == Variable.variable ) {
-//                varIndexes[j++] = i;
-//                params[i] = null;
-//            }
-//        }
+        
+        // build the indexes to the Variables  
+        if ( params != null ) {
+            vars = new Variable[params.length];
+            for ( int i = 0; i < params.length; i++ ) {
+                // now record the var index positions and replace with null
+                if ( params[i] == Variable.variable ) {
+                    vars[i] = new Variable( getElements(),
+                                           i );
+                    params[i] = null;
+                }
+            }
+        }
         
     }
-    
-//    public int[] getVarIndexes() {
-//        return this.varIndexes;
-//    }
 
     public String getName() {
         return this.name;
+    }
+    
+    public Variable[] getVariables() {
+        return this.vars;
     }
 
     public void setQuery(Query query) {

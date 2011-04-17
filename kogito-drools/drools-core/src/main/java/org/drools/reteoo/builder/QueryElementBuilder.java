@@ -36,7 +36,9 @@ public class QueryElementBuilder
         final QueryElement qe = (QueryElement) rce;
         context.pushRuleComponent( qe );
         
-        qe.getResultPattern().setOffset( context.getCurrentPatternOffset() );
+        final int currentOffset = context.getCurrentPatternOffset();
+        
+        qe.getResultPattern().setOffset( currentOffset );
         
         utils.checkUnboundDeclarations( context,
                                         qe.getRequiredDeclarations() );
@@ -48,6 +50,7 @@ public class QueryElementBuilder
                                                                                           false,
                                                                                           context ) ) );
         context.popRuleComponent();
+        context.incrementCurrentPatternOffset();
     }
 
     /**
