@@ -43,6 +43,9 @@ public class SubTourChangeMove implements Move, TabuPropertyEnabled {
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
         CityAssignment nextCityAssignment = startCityAssignment;
+        if (ObjectUtils.equals(startCityAssignment, toAfterCityAssignment.getNextCityAssignment())) {
+            return false;
+        }
         while (!ObjectUtils.equals(nextCityAssignment, endCityAssignment)) {
             if (ObjectUtils.equals(nextCityAssignment, toAfterCityAssignment)) {
                 return false;
