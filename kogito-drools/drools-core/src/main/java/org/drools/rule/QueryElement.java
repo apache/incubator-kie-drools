@@ -31,41 +31,41 @@ public class QueryElement extends ConditionalElement
     
     private Pattern       resultPattern;
     private String        queryName;
-    private Object[]      arguments;
+    private Object[]      argTemplate;
     private int[]         declIndexes;
-    private int[]         variables;
+    private int[]         variableIndexes;
 
     private Declaration[] requiredDeclarations;
 
     public QueryElement(Pattern       resultPattern,
                         String queryName,
-                        Object[] arguments,
+                        Object[] argTemplate,
                         Declaration[] requiredDeclarations,
                         int[] declIndexes,
-                        int[] variables) {
+                        int[] variableIndexes) {
         super();
         this.resultPattern = resultPattern;
         this.queryName = queryName;
-        this.arguments = arguments;
+        this.argTemplate = argTemplate;
         this.requiredDeclarations = requiredDeclarations;
         this.declIndexes = declIndexes;
-        this.variables = variables;
+        this.variableIndexes = variableIndexes;
     }
 
     public String getQueryName() {
         return queryName;
     }
 
-    public Object[] getArguments() {
-        return arguments;
+    public Object[] getArgTemplate() {
+        return argTemplate;
     }
 
     public int[] getDeclIndexes() {
         return declIndexes;
     }
 
-    public int[] getVariables() {
-        return variables;
+    public int[] getVariableIndexes() {
+        return variableIndexes;
     }
 
     public Map getInnerDeclarations() {
@@ -111,26 +111,26 @@ public class QueryElement extends ConditionalElement
 
     @Override
     public Object clone() {
-        return new QueryElement( resultPattern, queryName, arguments, requiredDeclarations, declIndexes, variables );
+        return new QueryElement( resultPattern, queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes );
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
        out.writeObject( this.resultPattern );
        out.writeObject( this.queryName );
-       out.writeObject( this.arguments );
+       out.writeObject( this.argTemplate );
        out.writeObject( this.requiredDeclarations );
        out.writeObject( this.declIndexes );
-       out.writeObject( this.variables );
+       out.writeObject( this.variableIndexes );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.resultPattern = ( Pattern ) in.readObject();
         this.queryName = (String) in.readObject();
-        this.arguments = (Object[]) in.readObject();
+        this.argTemplate = (Object[]) in.readObject();
         this.requiredDeclarations = ( Declaration[] ) in.readObject();
         this.declIndexes = ( int[] ) in.readObject();
-        this.variables = ( int[] ) in.readObject();
+        this.variableIndexes = ( int[] ) in.readObject();
     }
 
 

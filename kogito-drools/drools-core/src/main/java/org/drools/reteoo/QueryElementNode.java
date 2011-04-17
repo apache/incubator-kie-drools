@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.base.DroolsQuery;
 import org.drools.base.InternalViewChangedEventListener;
+import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -110,50 +111,69 @@ public class QueryElementNode extends LeftTupleSource
     public void assertLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        Object[] arguments = this.queryElement.getArguments();
-        Object[] inputArgs = new Object[arguments.length];
+        Object[] argTemplate = this.queryElement.getArgTemplate(); // an array of declr, variable and literals
+        Object[] args = new Object[argTemplate.length]; // the actual args, to be created from the  template
 
-        System.arraycopy( arguments,
+        // first copy everything, so that we get the literals. We will rewrite the declarations and variables next
+        System.arraycopy( argTemplate,
                           0,
-                          inputArgs,
+                          args,
                           0,
-                          inputArgs.length );
+                          args.length );
 
         int[] declIndexes = this.queryElement.getDeclIndexes();
-        
+
         List<Integer> srcVarIndexes = null;
         List<Variable> trgVars = null;
-        
+
         for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
-            Declaration declr = (Declaration) arguments[declIndexes[i]];
-            Object o = declr.getValue( workingMemory,
-                                       leftTuple.get( declr ).getObject() );
-            if ( o instanceof Variable) {
-                Variable v = ( Variable ) o;
-                if ( v.getValue() == null ) {
-                    // If the declaration resolves to a variable being passed in, we need to add that to the variable indexes, so it's copied
-                    if ( srcVarIndexes == null ) {
-                        srcVarIndexes = new ArrayList<Integer>();
-                        trgVars = new ArrayList<Variable>();
+            Declaration declr = (Declaration) argTemplate[declIndexes[i]];
+
+            Object tupleObject = leftTuple.get( declr ).getObject();
+
+            if ( tupleObject instanceof DroolsQuery ) {
+                ArrayElementReader reader = (ArrayElementReader) declr.getExtractor();
+                DroolsQuery q = (DroolsQuery) tupleObject;
+                Variable v = q.getVariables()[reader.getIndex()];
+
+                // is that parameter an output Variable
+                if ( v != null ) {
+                    if ( !v.isSet() ) {
+                        // it's not set yet, so we need to pass back any unified values
+
+                        // If the declaration resolves to a variable being passed in, we need to add that to the variable indexes, so it's copied
+                        if ( srcVarIndexes == null ) {
+                            srcVarIndexes = new ArrayList<Integer>();
+                            trgVars = new ArrayList<Variable>();
+                        }
+                        trgVars.add( v ); // this needs to be here, so we can pass the value back
+                        srcVarIndexes.add( declIndexes[i] );
+
+                        args[declIndexes[i]] = Variable.variable;
+                        continue;
                     }
-                    trgVars.add( (Variable) o ); // this needs to be here, so we can pass the value back
-                    srcVarIndexes.add( declIndexes[i] );
-                } else {
-                    o = v.getValue(); // a previous output set this, so unify against it.
                 }
             }
-            inputArgs[declIndexes[i]] = o;
+
+            Object o = declr.getValue( workingMemory,
+                                       tupleObject );
+
+            args[declIndexes[i]] = o;
         }
-        
-        int[] varIndexes = this.queryElement.getVariables();
+
+        int[] varIndexes = this.queryElement.getVariableIndexes();
         if ( srcVarIndexes != null ) {
             // we have Variable inputs to handle            
             // now merge the two, by adding new onto the end of the old
             int length = varIndexes.length;
             varIndexes = new int[varIndexes.length + srcVarIndexes.size()];
-            System.arraycopy( this.queryElement.getVariables(), 0, varIndexes, 0, length );
+            System.arraycopy( this.queryElement.getVariableIndexes(),
+                              0,
+                              varIndexes,
+                              0,
+                              length );
             for ( int i = 0; i < srcVarIndexes.size(); i++ ) {
-                varIndexes[i+length] = srcVarIndexes.get( i );
+                varIndexes[i + length] = srcVarIndexes.get( i );
             }
         }
 
@@ -161,9 +181,9 @@ public class QueryElementNode extends LeftTupleSource
                                                                                                          varIndexes,
                                                                                                          this.sink,
                                                                                                          this.tupleMemoryEnabled );
-        
+
         DroolsQuery queryObject = new DroolsQuery( this.queryElement.getQueryName(),
-                                                   inputArgs,
+                                                   args,
                                                    collector,
                                                    false );
         collector.setDroolsQuery( queryObject );
@@ -182,34 +202,36 @@ public class QueryElementNode extends LeftTupleSource
                                                                                                     queryObject ) );
 
         workingMemory.getFactHandleFactory().destroyFactHandle( handle );
-        
+
         LeftTuple childLeftTuple = leftTuple.firstChild;
         LeftTuple temp = null;
         while ( childLeftTuple != null ) {
-            
+            int varsLength = this.queryElement.getVariableIndexes().length;
             if ( srcVarIndexes != null ) {
-                // we need to copy back output var results to the propagating tuple
-                int varsLength = this.queryElement.getVariables().length;
-                QueryElementFactHandle qeh  = ( QueryElementFactHandle ) childLeftTuple.getLastHandle();
-                Object[] resultObjects = ( Object[] ) qeh.getObject();
-                for ( int i = varsLength; i < trgVars.size(); i++ ) {
-                    Variable v = trgVars.get( i );
-                    v.setValue( resultObjects[i] );                                        
+                QueryElementFactHandle qeh = (QueryElementFactHandle) childLeftTuple.getLastHandle();
+                Object[] resultObjects = (Object[]) qeh.getObject();
+                for ( int j = 0, i = varsLength; i < varIndexes.length; i++, j++ ) {
+                    Variable v = trgVars.get( j );
+                    v.setValue( resultObjects[i] );
                 }
             }
+
             temp = childLeftTuple;
-            this.sink.doPropagateAssertLeftTuple( context, workingMemory, childLeftTuple, childLeftTuple.getLeftTupleSink() );
+            this.sink.doPropagateAssertLeftTuple( context,
+                                                  workingMemory,
+                                                  childLeftTuple,
+                                                  childLeftTuple.getLeftTupleSink() );
+            if ( srcVarIndexes != null ) {
+                QueryElementFactHandle qeh = (QueryElementFactHandle) childLeftTuple.getLastHandle();
+                for ( int i = 0; i < trgVars.size(); i++ ) {
+                    Variable v = trgVars.get( i );
+                    v.unSet();
+                }
+            }
+
             childLeftTuple = childLeftTuple.getLeftParentNext();
             temp.setLeftParentNext( null );
-            
-            if ( srcVarIndexes != null ) {
-                // null anything we copied back
-                int varsLength = this.queryElement.getVariables().length;
-                for ( int i = varsLength; i < trgVars.size(); i++ ) {
-                    Variable v = trgVars.get( i );
-                    v.setValue( null );                                        
-                }
-            }            
+
         }
         leftTuple.firstChild = null;
 
@@ -224,13 +246,13 @@ public class QueryElementNode extends LeftTupleSource
 
         private DroolsQuery               query;
         private int[]                     variables;
-        
+
         private boolean                   tupleMemoryEnabled;
 
         public UnificationNodeViewChangedEventListener(LeftTuple leftTuple,
                                                        int[] variables,
                                                        LeftTupleSinkPropagator sink,
-                                                       boolean                   tupleMemoryEnabled) {
+                                                       boolean tupleMemoryEnabled) {
             this.leftTuple = leftTuple;
             this.variables = variables;
             this.sink = sink;
@@ -243,40 +265,40 @@ public class QueryElementNode extends LeftTupleSource
 
         public void rowAdded(final Rule rule,
                              LeftTuple resultLeftTuple,
-                        PropagationContext context,
-                        InternalWorkingMemory workingMemory) {
+                             PropagationContext context,
+                             InternalWorkingMemory workingMemory) {
 
-            Object[] args = query.getElements();
+            Variable[] vars = query.getVariables();
             Object[] objects = new Object[this.variables.length];
 
             for ( int i = 0, length = this.variables.length; i < length; i++ ) {
-                objects[i] = ((Variable) args[ this.variables[i]] ).getValue();
+                objects[i] = vars[this.variables[i]].getValue();
             }
 
-            QueryElementFactHandle handle = new QueryElementFactHandle(objects );
+            QueryElementFactHandle handle = new QueryElementFactHandle( objects );
             RightTuple rightTuple = new RightTuple( handle );
-            
-            this.sink.createChildLeftTuplesforQuery( this.leftTuple, 
-                                                     rightTuple, 
+
+            this.sink.createChildLeftTuplesforQuery( this.leftTuple,
+                                                     rightTuple,
                                                      this.tupleMemoryEnabled );
         }
-        
+
         public void rowRemoved(final Rule rule,
                                final LeftTuple tuple,
-                final PropagationContext context,
-                final InternalWorkingMemory workingMemory) {
+                               final PropagationContext context,
+                               final InternalWorkingMemory workingMemory) {
             //TODO
         }
-        
+
         public void rowUpdated(final Rule rule,
                                final LeftTuple tuple,
-                final PropagationContext context,
-                final InternalWorkingMemory workingMemory) {
+                               final PropagationContext context,
+                               final InternalWorkingMemory workingMemory) {
             //TODO
         }
 
         public List< ? extends Object> getResults() {
-            throw new UnsupportedOperationException(getClass().getCanonicalName()+" does not support the getResults() method.");
+            throw new UnsupportedOperationException( getClass().getCanonicalName() + " does not support the getResults() method." );
         }
     }
 
