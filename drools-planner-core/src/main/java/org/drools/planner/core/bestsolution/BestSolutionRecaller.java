@@ -44,12 +44,13 @@ public class BestSolutionRecaller implements AbstractSolverLifecycleListener {
     // ************************************************************************
 
     public void solvingStarted(AbstractSolverScope abstractSolverScope) {
-        Score initialScore = abstractSolverScope.getStartingScore();
-        logger.info("Initialization time spend ({}) for score ({}). Updating best solution and best score.",
-                abstractSolverScope.calculateTimeMillisSpend(), initialScore);
+        Score initialScore = abstractSolverScope.calculateScoreFromWorkingMemory();
+        abstractSolverScope.setStartingScore(initialScore);
         abstractSolverScope.setBestSolutionStepIndex(-1);
-        abstractSolverScope.setBestSolution(abstractSolverScope.getWorkingSolution().cloneSolution());
+        Solution newBestSolution = abstractSolverScope.getWorkingSolution().cloneSolution();
+        abstractSolverScope.setBestSolution(newBestSolution);
         abstractSolverScope.setBestScore(initialScore);
+        solverEventSupport.fireBestSolutionChanged(newBestSolution); // TODO if solution is initialized it should not fire an event
     }
 
     public void stepTaken(AbstractStepScope abstractStepScope) {

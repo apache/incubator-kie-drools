@@ -617,3 +617,6 @@ After in *.java:
                 .append(seat)
                 .toHashCode();
     }
+
+[MINOR] Your SolverEventListener will now a BestSolutionChangedEvent when the Solver starts too.
+So when the StartingSolutionInitializer initializes, the best solution changed event won't be missed.

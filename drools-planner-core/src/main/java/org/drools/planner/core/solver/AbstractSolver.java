@@ -143,8 +143,10 @@ public abstract class AbstractSolver implements Solver {
                 logger.debug("Solution is already initialized.");
             }
         }
-        abstractSolverScope.setStartingScore(abstractSolverScope.calculateScoreFromWorkingMemory());
         bestSolutionRecaller.solvingStarted(abstractSolverScope);
+        logger.info("Starting with time spend ({}), score ({}), new best score ({}).",
+                new Object[]{abstractSolverScope.calculateTimeMillisSpend(), abstractSolverScope.getStartingScore(),
+                        abstractSolverScope.getBestScore()});
     }
 
     public void addEventListener(SolverEventListener eventListener) {

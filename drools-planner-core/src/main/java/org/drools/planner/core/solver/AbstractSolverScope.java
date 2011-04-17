@@ -52,7 +52,7 @@ public abstract class AbstractSolverScope {
     protected ScoreCalculator workingScoreCalculator;
     protected Random workingRandom;
 
-    protected Score startingScore;
+    protected Score startingScore; // TODO after initialization => ambiguous with setStartingSolution
     protected long calculateCount;
 
     protected int bestSolutionStepIndex;

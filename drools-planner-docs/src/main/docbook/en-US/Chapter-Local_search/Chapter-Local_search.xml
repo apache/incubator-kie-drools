@@ -347,7 +347,7 @@
     <para>If we turn on INFO logging, this is reflected into the logging:</para>
 
     <programlisting>INFO  Solving with random seed (0).
-INFO  Initialization time spend (0) for score (-6). Updating best solution and best score.
+INFO  Starting with time spend (0), score (-6), new best score (-6).
 INFO  Step index (0), time spend (4), score (-3), new best score (-3), accepted move size (12) for picked step ([Queen-1] 1 @ 0 =&gt; 3).
 INFO  Step index (1), time spend (7), score (-1), new best score (-1), accepted move size (12) for picked step ([Queen-0] 0 @ 0 =&gt; 1).
 INFO  Step index (2), time spend (10), score (0), new best score (0), accepted move size (12) for picked step ([Queen-3] 3 @ 0 =&gt; 2).
@@ -423,7 +423,7 @@ INFO  Solved at step index (2) with time spend (10) for best score (0) with aver
 
     <programlisting>
 INFO  Solving with random seed (0).
-INFO  Initialization time spend (0) for score (-6). Updating best solution and best score.
+INFO  Starting with time spend (0), score (-6), new best score (-6).
 DEBUG     Ignoring not doable move ([Queen-0] 0 @ 0 =&gt; 0).
 DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-0] 0 @ 0 =&gt; 1).
 DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-0] 0 @ 0 =&gt; 2).
