@@ -698,13 +698,8 @@ public class BackwardChainingTest {
             "package org.drools.test  \n" +
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
-            "dialect \"mvel\"\n" +          
-            
-            "query human( String name ) \n" +
-            "   woman( name : name ) \n"+
-            "end\n" +            
-                        
-            
+            "dialect \"mvel\"\n" +                   
+                                    
             "query man( String name ) \n" +
             "   org.drools.integrationtests.BackwardChainingTest.Man( name : name ) \n"+
             "end\n" +
