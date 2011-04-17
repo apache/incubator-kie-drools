@@ -16,6 +16,7 @@
 
 package org.drools.planner.examples.tsp.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -27,8 +28,12 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
+import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.common.swingui.WorkflowFrame;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
@@ -38,66 +43,41 @@ import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
  */
 public class TspPanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = Color.YELLOW;
-
-    private GridLayout gridLayout;
+    private TspWorldPanel tspWorldPanel;
+    private TspListPanel tspListPanel;
 
     public TspPanel() {
-        gridLayout = new GridLayout(0, 1);
-        setLayout(gridLayout);
+        setLayout(new BorderLayout());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tspWorldPanel = new TspWorldPanel(this);
+        tspWorldPanel.setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
+        tabbedPane.add("World", tspWorldPanel);
+        tspListPanel = new TspListPanel(this);
+        JScrollPane tspListScrollPane = new JScrollPane(tspListPanel);
+        tabbedPane.add("List", tspListScrollPane);
+        add(tabbedPane, BorderLayout.CENTER);
     }
 
-    private TravelingSalesmanTour getTravelingSalesmanTour() {
+    @Override
+    public boolean isWrapInScrollPane() {
+        return false;
+    }
+
+    public TravelingSalesmanTour getTravelingSalesmanTour() {
         return (TravelingSalesmanTour) solutionBusiness.getSolution();
     }
 
     public void resetPanel() {
-        removeAll();
-        TravelingSalesmanTour travelingSalesmanTour = getTravelingSalesmanTour();
-        JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanTour.getName());
-        headerLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        headerLabel.setBackground(HEADER_COLOR);
-        headerLabel.setOpaque(true);
-        add(headerLabel);
-        if (travelingSalesmanTour.isInitialized()) {
-            for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-                JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
-                JButton button = new JButton(new CityAssignmentAction(cityAssignment));
-                cityAssignmentPanel.add(button);
-                JLabel distanceLabel = new JLabel("Distance to next: "
-                        + cityAssignment.getDistanceToNextCityAssignment());
-                cityAssignmentPanel.add(distanceLabel);
-                add(cityAssignmentPanel);
-            }
-        }
+        tspWorldPanel.resetPanel();
+        tspListPanel.resetPanel();
     }
 
-    private class CityAssignmentAction extends AbstractAction {
+    public void doMove(Move move) {
+        solutionBusiness.doMove(move);
+    }
 
-        private CityAssignment cityAssignment;
-
-        public CityAssignmentAction(CityAssignment cityAssignment) {
-            super(cityAssignment.getCity().toString());
-            this.cityAssignment = cityAssignment;
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<CityAssignment> afterCityAssignmentList = getTravelingSalesmanTour().getCityAssignmentList();
-            JComboBox afterCityAssignmentListField = new JComboBox(afterCityAssignmentList.toArray());
-            afterCityAssignmentListField.setSelectedItem(cityAssignment.getNextCityAssignment());
-            listFieldsPanel.add(afterCityAssignmentListField);
-            int result = JOptionPane.showConfirmDialog(TspPanel.this.getRootPane(), listFieldsPanel,
-                    "Select to move after city", JOptionPane.OK_CANCEL_OPTION);
-            if (result == JOptionPane.OK_OPTION) {
-                CityAssignment toAfterCityAssignment = (CityAssignment) afterCityAssignmentListField.getSelectedItem();
-                solutionBusiness.doMove(new SubTourChangeMove(cityAssignment, cityAssignment, toAfterCityAssignment));
-                workflowFrame.updateScreen();
-            }
-        }
-
+    public WorkflowFrame getWorkflowFrame() {
+        return workflowFrame;
     }
 
 }

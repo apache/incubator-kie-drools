@@ -110,8 +110,12 @@ public class WorkflowFrame extends JFrame {
     private JPanel createContentPane() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(createButtonPanel(), BorderLayout.NORTH);
-        JScrollPane solutionScrollPane = new JScrollPane(solutionPanel);
-        panel.add(solutionScrollPane, BorderLayout.CENTER);
+        if (solutionPanel.isWrapInScrollPane()) {
+            JScrollPane solutionScrollPane = new JScrollPane(solutionPanel);
+            panel.add(solutionScrollPane, BorderLayout.CENTER);
+        } else {
+            panel.add(solutionPanel, BorderLayout.CENTER);
+        }
         panel.add(createScorePanel(), BorderLayout.SOUTH);
         return panel;
     }

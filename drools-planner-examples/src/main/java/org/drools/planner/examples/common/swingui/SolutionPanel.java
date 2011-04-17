@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class SolutionPanel extends JPanel implements Scrollable {
 
-    private static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 500);
+    protected static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 500);
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -42,6 +42,10 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
+    }
+
+    public boolean isWrapInScrollPane() {
+        return true;
     }
 
     public abstract void resetPanel();
