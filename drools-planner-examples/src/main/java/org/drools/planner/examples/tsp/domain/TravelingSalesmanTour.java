@@ -26,7 +26,6 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.score.SimpleDoubleScore;
-import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 

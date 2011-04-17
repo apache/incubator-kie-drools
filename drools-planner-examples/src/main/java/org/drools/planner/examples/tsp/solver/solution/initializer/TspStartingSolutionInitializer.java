@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.score.DefaultSimpleDoubleScore;
@@ -28,15 +27,9 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
-import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.NurseRoster;
-import org.drools.planner.examples.nurserostering.domain.Shift;
-import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
-import org.drools.planner.examples.tsp.solver.move.TspMoveHelper;
 
 public class TspStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
