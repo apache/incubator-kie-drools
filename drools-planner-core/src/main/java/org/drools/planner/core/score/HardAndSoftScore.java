@@ -17,7 +17,7 @@
 package org.drools.planner.core.score;
 
 /**
- * A HardAndSoftScore is a Score based on hard constraints and soft constraints.
+ * A HardAndSoftScore is a Score based on hard constraints and soft int constraints.
  * Hard constraints have priority over soft constraints.
  * <p/>
  * Implementations must be immutable.
@@ -27,7 +27,7 @@ package org.drools.planner.core.score;
 public interface HardAndSoftScore extends Score<HardAndSoftScore> {
 
     /**
-     * The total of the broken negative hard constraints and fulfilled postive hard constraints.
+     * The total of the broken negative hard constraints and fulfilled positive hard constraints.
      * Their weight is included in the total.
      * The hard score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
@@ -35,7 +35,7 @@ public interface HardAndSoftScore extends Score<HardAndSoftScore> {
     int getHardScore();
 
     /**
-     * The total of the broken negative soft constraints and fulfilled postive soft constraints.
+     * The total of the broken negative soft constraints and fulfilled positive soft constraints.
      * Their weight is included in the total.
      * The soft score is usually a negative number because most use cases only have negative constraints.
      * <p/>

@@ -17,7 +17,7 @@
 package org.drools.planner.core.score;
 
 /**
- * A SimpleScore is a Score based on constraints.
+ * A SimpleScore is a Score based on int constraints.
  * <p/>
  * Implementations must be immutable.
  * @see Score
