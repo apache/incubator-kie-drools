@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>What is New and Noteworthy in Drools 5.2.0.M2</title>
 
   <section>
     <title>Maven artifactId changes</title>
 
-    <para>A couple of maven artifacts (jars, wars, ...) have been renamed so it is more clear what they do. Below is the
-    list of the GAV changes, adjust your <literal>pom.xml</literal> files accordingly when upgrading to the new
-    version.</para>
+    <para>A couple of maven artifacts (jars, wars, ...) have been renamed so
+    it is more clear what they do. Below is the list of the GAV changes,
+    adjust your <literal>pom.xml</literal> files accordingly when upgrading to
+    the new version.</para>
 
     <table>
       <title>Maven GAV changes overview</title>
@@ -67,17 +71,18 @@
 
             <entry>org.drools</entry>
 
-            <entry>drools-drl-examples</entry>
+            <entry>drools-examples</entry>
           </row>
 
           <row>
             <entry>org.drools</entry>
 
-            <entry>drools-examples-fusion</entry>
+            <entry>drools-examples-fusion / drools-examples-drl (jBPM using
+            parts)</entry>
 
             <entry>org.drools</entry>
 
-            <entry>drools-fusion-examples</entry>
+            <entry>droolsjbpm-integration-examples</entry>
           </row>
 
           <row>
@@ -117,7 +122,8 @@
 
             <entry>org.drools</entry>
 
-            <entry><emphasis role="bold">droolsjbpm-ide-common</emphasis></entry>
+            <entry><emphasis
+            role="bold">droolsjbpm-ide-common</emphasis></entry>
           </row>
 
           <row>
@@ -157,7 +163,8 @@
 
             <entry>org.drools</entry>
 
-            <entry><emphasis role="bold">drools-camel-server</emphasis></entry>
+            <entry><emphasis
+            role="bold">drools-camel-server</emphasis></entry>
           </row>
 
           <row>
@@ -183,7 +190,8 @@
           <row>
             <entry>org.drools</entry>
 
-            <entry><emphasis role="bold">drools-flow-compiler</emphasis></entry>
+            <entry><emphasis
+            role="bold">drools-flow-compiler</emphasis></entry>
 
             <entry>TODO</entry>
 
@@ -193,7 +201,8 @@
           <row>
             <entry>org.drools</entry>
 
-            <entry><emphasis role="bold">drools-flow-persistence-jpa</emphasis></entry>
+            <entry><emphasis
+            role="bold">drools-flow-persistence-jpa</emphasis></entry>
 
             <entry>TODO</entry>
 
@@ -213,8 +222,8 @@
       </tgroup>
     </table>
 
-    <para>For example: before, in your <literal>pom.xml</literal> files, you declared <literal>drools-api</literal> like
-    this:</para>
+    <para>For example: before, in your <literal>pom.xml</literal> files, you
+    declared <literal>drools-api</literal> like this:</para>
 
     <programlisting>  &lt;dependency&gt;
     &lt;groupId&gt;org.drools&lt;/groupId&gt;
@@ -222,8 +231,8 @@
     ...
   &lt;/dependency&gt;</programlisting>
 
-    <para>And now, afterwards, in your <literal>pom.xml</literal> files, you declare <literal>knowledge-api</literal>
-    like this instead:</para>
+    <para>And now, afterwards, in your <literal>pom.xml</literal> files, you
+    declare <literal>knowledge-api</literal> like this instead:</para>
 
     <programlisting>  &lt;dependency&gt;
     &lt;groupId&gt;org.drools&lt;/groupId&gt;
@@ -260,5 +269,135 @@
     <title>Guvnor</title>
 
     <para>TODO</para>
+
+    <section>
+      <title>Decision Tables</title>
+
+      <para>Further extension has been made to the decision table's
+      featureset.</para>
+
+      <section>
+        <title>Negation of Fact patterns</title>
+
+        <para>Fact Patterns in condition columns can be negated to match when
+        the defined pattern does not exist in WorkingMemory. In essence it is
+        now possible to construct rules within the decision table equivalent
+        to the following DRL fragment:-</para>
+
+        <programlisting>not Cheese( name == "Cheddar" ) </programlisting>
+
+        <figure>
+          <title>Negation of Fact Patterns</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Release_Notes/negate-fact-pattern.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Negation of rules</title>
+
+        <para>Entire rules can be negated, giving rise to DRL fragements such
+        as:-</para>
+
+        <programlisting>rule "no cheddar liked by Fred"
+  when
+    not (
+      $c : Cheese( name == "Cheddar" )
+      Person( name == "Fred", favouriteCheese == $c )
+    )
+  then
+    ..
+end
+ </programlisting>
+
+        <figure>
+          <title>Negation of rules</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Release_Notes/negate-rule-option.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Release_Notes/negate-rule.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Support for "otherwise"</title>
+
+        <para>Condition columns containing literal values that use the
+        equality (==, equal to) or inequality (!=, not equal to) operators can
+        now contain a meta-value for "otherwise" which represents all other
+        values not explicitly defined in the column. This feature gives rise
+        to DRL fragments such as the following:-</para>
+
+        <programlisting>#from row number: 1
+rule "Row 1 dtable"
+  salience 1
+  dialect "mvel"
+when
+  $p : Person( name == "Bill" , age != "30" )
+then
+  $p.setAge( 12345 );
+end
+
+#from row number: 2
+rule "Row 2 dtable"
+  salience 2
+  dialect "mvel"
+when
+  $p : Person( name == "Ben" , age in ( "30", "40", "50" ) )
+then
+  $p.setAge( 12345 );
+end
+
+#from row number: 3
+rule "Row 3 dtable"
+  salience 3
+  dialect "mvel"
+when
+  $p : Person( name == "Weed" , age != "40" )
+then
+  $p.setAge( 12345 );
+end
+
+#from row number: 4
+rule "Row 4 dtable"
+  salience 4
+  dialect "mvel"
+when
+  $p : Person( name not in ( "Bill", "Ben", "Weed" ) , age != "50" )
+then
+  $p.setAge( 12345 );
+end</programlisting>
+
+        <figure>
+          <title>Support for "otherwise"</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Release_Notes/otherwise.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+    </section>
   </section>
 </section>

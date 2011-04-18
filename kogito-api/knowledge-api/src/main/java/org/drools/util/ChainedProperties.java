@@ -148,8 +148,12 @@ public class ChainedProperties
         return enumeration;
     }
 
+    /**
+     * Specifically added properties take priority, so they go to the front of the list.
+     * @param properties
+     */
     public void addProperties(Properties properties) {
-        this.props.add( properties );
+        this.props.add( 0, properties );
     }
 
     public String getProperty(String key,

@@ -81,7 +81,6 @@ A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/exam
 A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/ticketing.dsl
 A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/StateExampleUsingSalience.drl
 A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/golf.drl
-A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/LogicalAssertionsNotPingPong.drl
 A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/StateExampleDynamicRule.drl
 A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/sudoku
 A    trunk/drools-examples/drools-expert-examples/src/main/rules/org/drools/examples/sudoku/sudoku.drl
