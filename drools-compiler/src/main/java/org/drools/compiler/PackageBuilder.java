@@ -396,11 +396,14 @@ public class PackageBuilder {
             Reader knowledge = provider.getKnowledgeReader( resource );
 
             DrlParser parser = new DrlParser();
-            DefaultExpander expander = getDslExpander();
 
-            if ( null != expander ) {
-                knowledge = new StringReader( expander.expand( knowledge ) );
-                if ( expander.hasErrors() ) this.results.addAll( expander.getErrors() );
+            if ( provider.hasDSLSentences() ) {
+                DefaultExpander expander = getDslExpander();
+
+                if ( null != expander ) {
+                    knowledge = new StringReader( expander.expand( knowledge ) );
+                    if ( expander.hasErrors() ) this.results.addAll( expander.getErrors() );
+                }
             }
 
             PackageDescr pkg = parser.parse( knowledge );
