@@ -52,6 +52,10 @@ public class CollectDescr extends PatternSourceDescr
     public void addDescr(final BaseDescr patternDescr) {
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );
     }
+
+    public boolean removeDescr(BaseDescr baseDescr) {
+        throw new UnsupportedOperationException("Can't remove descriptors from "+this.getClass().getName());
+    }
     
     public void insertBeforeLast(final Class<?> clazz ,final BaseDescr baseDescr ) {
         throw new UnsupportedOperationException( "Can't add descriptors to " + this.getClass().getName() );

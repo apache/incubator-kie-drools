@@ -1172,7 +1172,76 @@ public class BackwardChainingTest {
             System.out.println( "  You can go to " + result.get( "exits") );
         }         
         
-    }    
+    }
+
+
+
+    @Test
+       public void testPositionalConstraintsInPatterns() throws Exception {
+           String str = "" +
+               "package org.drools.test  \n" +
+               "import org.drools.Person \n" +
+               "global java.util.List list\n " +
+                   " \n " +
+                   "declare org.drools.Person \n" +
+                   "   name : String @position(1) \n " +
+                   "   age : int @position(2) \n" +
+                   "   likes : String @position(3) \n" +
+                   "   hair : String @position(4) \n" +
+                   "end \n";
+
+           str += "rule x1\n" +
+               "when\n" +
+               "    $p : Person( $name ,  35, $name  ; )\n" +
+               "then\n" +
+               "   list.add( $p );\n" +
+               "   System.err.println($p); \n" +
+               "end \n";
+
+           KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+           kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                             ResourceType.DRL );
+
+           if ( kbuilder.hasErrors() ) {
+               fail( kbuilder.getErrors().toString() );
+           }
+
+           KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+           kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+           //kbase = SerializationHelper.serializeObject( kbase );
+
+           StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+           List<String> list = new ArrayList<String>();
+           ksession.setGlobal( "list", list );
+
+           Person p1 = new Person( "darth",
+                                   "darth",
+                                   35 );
+           Person p2 = new Person( "darth",
+                                   "darth",
+                                   200 );
+           Person p3 = new Person( "yoda",
+                                   "yoda",
+                                   35 );
+           Person p4 = new Person( "luke",
+                                   "brie",
+                                   35 );
+           Person p5 = new Person( "bobba",
+                                   "bobba",
+                                   300 );
+
+           ksession.insert( p1 );
+           ksession.insert( p2 );
+           ksession.insert( p3 );
+           ksession.insert( p4 );
+           ksession.insert( p5 );
+
+
+           ksession.fireAllRules();
+
+       }
+
     
     public static class Man {
         private String name;      

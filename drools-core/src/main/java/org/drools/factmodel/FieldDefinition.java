@@ -27,33 +27,38 @@ import org.drools.definition.type.FactField;
  * Declares a field to be dynamically generated.
  */
 public class FieldDefinition
-    implements
-    FactField {
-    private String             name     = null;
-    private String             type     = null;
-    private boolean            key      = false;
+        implements
+        FactField,
+        Comparable<FieldDefinition> {
 
-    private ClassFieldAccessor accessor = null;
+    private String             name       = null;
+    private String             type       = null;
+    private boolean            key        = false;
+    private boolean            inherited  = false;
+    private int                index      = -1;
+    private String             initExpr   = null;
+
+    private ClassFieldAccessor accessor   = null;
 
     public FieldDefinition() {
     }
 
     /**
      * Default constructor
-     * 
+     *
      * @param name the field's name
      * @param type the fully qualified fields type
      */
     public FieldDefinition(String name,
                            String type) {
         this( name,
-              type,
-              false );
+                type,
+                false );
     }
 
     /**
      * Default constructor
-     * 
+     *
      * @param name the field's name
      * @param type the fully qualified fields type
      */
@@ -70,7 +75,7 @@ public class FieldDefinition
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+            ClassNotFoundException {
         this.name = (String) in.readObject();
         this.type = (String) in.readObject();
         this.key = in.readBoolean();
@@ -132,8 +137,6 @@ public class FieldDefinition
 
     /**
      * Creates the String name for the get method for a field with the given name and type
-     * @param name
-     * @param type
      * @return
      */
     public String getReadMethod() {
@@ -144,19 +147,17 @@ public class FieldDefinition
             prefix = "get";
         }
         return prefix + this.name.substring( 0,
-                                             1 ).toUpperCase() + this.name.substring( 1 );
+                1 ).toUpperCase() + this.name.substring( 1 );
     }
 
     /**
      * Creates the String name for the set method for a field with the given name and type
-     * 
-     * @param name
-     * @param type
+     *
      * @return
      */
     public String getWriteMethod() {
         return "set" + this.name.substring( 0,
-                                            1 ).toUpperCase() + this.name.substring( 1 );
+                1 ).toUpperCase() + this.name.substring( 1 );
     }
 
     /**
@@ -183,21 +184,21 @@ public class FieldDefinition
     /**
      * Sets the value of this attribute in the target
      * bean instance
-     * 
+     *
      * @param bean the target bean instance where the attribute shall be set
      * @param value the value to set the attribute to
      */
     public void setValue(Object bean,
                          Object value) {
         this.accessor.setValue( bean,
-                                value );
+                value );
     }
 
     /**
      * Returns the value of this attribute in the target bean instance
-     * 
+     *
      * @param bean the target bean instance
-     * 
+     *
      * @return target bean instance attribute value
      */
     public Object getValue(Object bean) {
@@ -211,7 +212,139 @@ public class FieldDefinition
     public void set(Object bean,
                     Object value) {
         this.accessor.setValue( bean,
-                                value );
+                value );
     }
 
+
+    public boolean isInherited() {
+        return inherited;
+    }
+
+    public void setInherited(boolean inherited) {
+        this.inherited = inherited;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public String getInitExpr() {
+        return initExpr;
+    }
+
+    public void setInitExpr(String initExpr) {
+        this.initExpr = initExpr;
+    }
+
+
+    public int compareTo(FieldDefinition other) {
+        return (this.index - other.index);
+    }
+
+
+    public String getDefaultValueAsString() {
+        return initExpr == null ? null : initExpr.substring(1,initExpr.length()-1);
+    }
+    public Boolean getDefaultValueAsBoolean() {
+        return "true".equals(initExpr);
+    }
+    public Byte getDefaultValueAsByte() {
+        try {
+            return initExpr == null ? 0 : Byte.parseByte(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
+    public Character getDefaultValueAsChar() {
+        return initExpr == null ? ' ' : initExpr.charAt(0);
+    }
+    public Double getDefaultValueAsDouble() {
+        try {
+            return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0.0;
+        }
+    }
+    public Float getDefaultValueAsFloat() {
+        try {
+            return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0.0f;
+        }
+    }
+    public Integer getDefaultValueAsInt() {
+        try {
+            return initExpr == null ? 0 : Integer.parseInt(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
+    public Long getDefaultValueAsLong() {
+        try {
+            return initExpr == null ? 0L : Long.parseLong(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0L;
+        }
+    }
+    public Short getDefaultValueAsShort() {
+        try {
+            return initExpr == null ? 0 : Short.parseShort(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
+
+
+    public boolean getDefaultValueAs_boolean() {
+        return "true".equals(initExpr);
+    }
+    public byte getDefaultValueAs_byte() {
+        try {
+            return initExpr == null ? 0 : Byte.parseByte(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
+    public char getDefaultValueAs_char() {
+        return initExpr == null ? ' ' : initExpr.charAt(0);
+    }
+    public double getDefaultValueAs_double() {
+        try {
+            return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0.0;
+        }
+    }
+    public float getDefaultValueAs_float() {
+        try {
+            return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0.0f;
+        }
+    }
+    public int getDefaultValueAs_int() {
+        try {
+            return initExpr == null ? 0 : Integer.parseInt(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
+    public long getDefaultValueAs_long() {
+        try {
+            return initExpr == null ? 0L : Long.parseLong(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0L;
+        }
+    }
+    public short getDefaultValueAs_short() {
+        try {
+            return initExpr == null ? 0 : Short.parseShort(initExpr);
+        } catch (NumberFormatException nfe) {
+            return 0;
+        }
+    }
 }
