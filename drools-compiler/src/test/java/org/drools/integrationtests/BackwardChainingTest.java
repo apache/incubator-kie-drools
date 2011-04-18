@@ -900,11 +900,19 @@ public class BackwardChainingTest {
     
     @Test
     public void testNaniSearch() {
-        // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
+        // http://www.amzi.com/AdventureInProlog/advtop.php
             
         String str = "" +
             "package org.drools.test  \n" +
-            "global java.util.List list\n" +
+            
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+            
+            "import org.drools.integrationtests.BackwardChainingTest.Location\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.Here\n" +
+            
+            "global List list\n" +
+            
             "dialect \"mvel\"\n" +                   
                                     
             "query room( String name ) \n" +
@@ -944,12 +952,20 @@ public class BackwardChainingTest {
             "    or \n"+
             "    door(y, x;)\n"+          
             "end\n" + 
-        
-            "query look() \n" +
-            "    here(place;)\n"+
-            "    location(thing, place;) \n"+
-            "    connect(place, room;)\n"+          
-            "end\n";          
+//            "query look() \n" +
+//            "    here(place;)\n"+
+//            "    things : List() from collect( location(thing, place;) ) \n"+
+//            "    rooms : List() from  collect( connect(place, room;) )\n"+          
+//            "end\n";   
+            
+              "query look() \n" +
+              "    here(place;)\n"+
+              "    things : List() from accumulate( location(thing, place;) ," +
+              "                                    collectList( thing ) )\n" +                    
+            
+              "    exits : List() from accumulate( connect(place, exit;) ," +
+              "                                    collectList( [place, exit] ) )\n" +       
+              "end\n";              
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -1019,8 +1035,11 @@ public class BackwardChainingTest {
         results = ksession.getQueryResults( "look", new Object[] {} );
         for ( QueryResultsRow result : results ) {
             System.out.println( "  You are in the " + result.get( "place" ) );
-            System.out.println( "  You can see"+ " : " + result.get( "thing"  ) );
-            System.out.println( "  You can go to"+ " : " + result.get( "room"  ) );
+            System.out.println( "  You can see " + result.get( "things") );
+            System.out.println( "  You can go to " + result.get( "exits") );
+//            System.out.println( "  You are in the " + result.get( "place" ) );
+//            System.out.println( "  You can see"+ " : " + result.get( "thing"  ) );
+//            System.out.println( "  You can go to"+ " : " + result.get( "room"  ) );
         }         
         
     }
