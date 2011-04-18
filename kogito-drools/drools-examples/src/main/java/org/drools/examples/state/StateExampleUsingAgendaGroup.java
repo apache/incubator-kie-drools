@@ -56,8 +56,8 @@ public class StateExampleUsingAgendaGroup {
             }
         } );
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/state" );
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "log/state.log" );
 
         final State a = new State( "A" );
         final State b = new State( "B" );
@@ -80,7 +80,7 @@ public class StateExampleUsingAgendaGroup {
         session.fireAllRules();
         session.dispose();
 
-        logger.writeToDisk();
+//        logger.writeToDisk();
     }
 
 }

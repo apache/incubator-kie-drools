@@ -55,7 +55,7 @@ public class TroubleTicketExampleWithDT {
         // typical decision tables are used statelessly
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -103,8 +103,7 @@ public class TroubleTicketExampleWithDT {
 
         ksession.dispose();
 
-        logger.close();
-
+//        logger.close();
     }
 
 }
