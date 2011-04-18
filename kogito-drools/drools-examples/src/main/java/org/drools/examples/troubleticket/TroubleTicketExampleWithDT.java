@@ -18,6 +18,8 @@ package org.drools.examples.troubleticket;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -27,24 +29,33 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-public class TroubleTicketExample {
+/**
+ * This shows off a decision table.
+ */
+public class TroubleTicketExampleWithDT {
 
-    /**
-     * @param args
-     */
-    public static void main(final String[] args) {
+    public static final void main(String[] args) {
+        TroubleTicketExampleWithDT launcher = new TroubleTicketExampleWithDT();
+        launcher.executeExample();
+    }
+
+    public void executeExample() {
+
+        final DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicket.drl",
-                                                                    TroubleTicketExample.class ),
-                              ResourceType.DRL );
+        kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketExampleWithDT.class ),
+                              ResourceType.DTABLE,
+                              dtableconfiguration );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        // typical decision tables are used statelessly
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -92,7 +103,7 @@ public class TroubleTicketExample {
 
         ksession.dispose();
 
-        logger.close();
+//        logger.close();
     }
 
 }

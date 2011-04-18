@@ -27,7 +27,7 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-public class TroubleTicketExampleWithDSL {
+public class TroubleTicketExample {
 
     /**
      * @param args
@@ -35,21 +35,17 @@ public class TroubleTicketExampleWithDSL {
     public static void main(final String[] args) {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newClassPathResource( "ticketing.dsl",
-                                                                    TroubleTicketExampleWithDSL.class ),
-                              ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicketWithDSL.dslr",
-                                                                    TroubleTicketExampleWithDSL.class ),
-                              ResourceType.DSLR );
+        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicket.drl",
+                                                                    TroubleTicketExample.class ),
+                              ResourceType.DRL );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
-        
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
+
         final Customer a = new Customer( "A",
                                          "Drools",
                                          "Gold" );
@@ -94,10 +90,9 @@ public class TroubleTicketExampleWithDSL {
 
         System.err.println( "[[ awake ]]" );
 
-        ksession.fireAllRules();
-
         ksession.dispose();
 
-        logger.close();
+//        logger.close();
     }
+
 }

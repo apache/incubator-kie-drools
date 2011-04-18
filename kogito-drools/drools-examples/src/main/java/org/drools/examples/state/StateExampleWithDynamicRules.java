@@ -47,8 +47,8 @@ public class StateExampleWithDynamicRules {
 
         final StatefulSession session = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/state" );
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "log/state" );
 
         final State a = new State( "A" );
         final State b = new State( "B" );
@@ -86,7 +86,7 @@ public class StateExampleWithDynamicRules {
         session.fireAllRules();
         session.dispose();
 
-        logger.writeToDisk();
+//        logger.writeToDisk();
     }
 
 }

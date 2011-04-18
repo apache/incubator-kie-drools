@@ -3,7 +3,7 @@
 # Change directory to the directory of the script
 cd `dirname $0`
 
-mainJar=binaries/drools-expert-examples-${project.version}.jar
+mainJar=binaries/drools-examples-${project.version}.jar
 mainClass=org.drools.examples.DroolsExamplesApp
 
 echo "Usage: ./runExamples.sh"

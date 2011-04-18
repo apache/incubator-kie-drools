@@ -93,7 +93,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         Pattern p = new Pattern();
         QueryElement qe = new QueryElement( p,
                                             "queryName1",
-                                            new Object[]{new Variable(), "x1", new Variable(), "x3", "x4", new Variable(),"x6",},
+                                            new Object[]{Variable.variable, "x1", Variable.variable, "x3", "x4",Variable.variable,"x6",},
                                             new Declaration[0],
                                             new int[0],
                                             new int[] { 0, 2, 5 } );
@@ -166,10 +166,10 @@ public class QueryElementNodeTest extends DroolsTestCase {
                 DroolsQuery query = ( DroolsQuery ) object;
                 UnificationNodeViewChangedEventListener collector = ( UnificationNodeViewChangedEventListener ) query.getQueryResultCollector();
                 for ( int i = 0; i < 3; i++ ) {
-                    Object[] args = query.getElements();
-                    ((Variable)args[0]).setValue( "string_0_" + i );
-                    ((Variable)args[2]).setValue( "string_2_" + i );
-                    ((Variable)args[5]).setValue( "string_5_" + i );
+                    Variable[] args = query.getVariables();
+                    args[0].setValue( "string_0_" + i );
+                    args[2].setValue( "string_2_" + i );
+                    args[5].setValue( "string_5_" + i );
                     collector.rowAdded( rule, null, null, this );
                 }
             } else {

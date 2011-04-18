@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.DroolsQuery;
+import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
@@ -68,7 +70,7 @@ public class UnificationRestriction
             return this.vr.isAllowedCachedLeft( ((UnificationContextEntry)context).getContextEntry(), handle );
         } else {
             VariableContextEntry vContext =  (VariableContextEntry) ((UnificationContextEntry)context).getContextEntry();
-            ((UnificationContextEntry)context).getVariable() .setValue( vContext.getFieldExtractor().getValue(handle.getObject() ) );
+            ((UnificationContextEntry)context).getVariable().setValue( vContext.getFieldExtractor().getValue(handle.getObject() ) );
             return true;
         }
     }
@@ -121,11 +123,13 @@ public class UnificationRestriction
         private ContextEntry contextEntry;
         private Declaration declaration;
         private Variable variable;
+        private ArrayElementReader reader;
         
         public UnificationContextEntry(ContextEntry contextEntry,
                                        Declaration declaration) {
             this.contextEntry = contextEntry;
             this.declaration = declaration;
+            reader = ( ArrayElementReader ) this.declaration.getExtractor();
         }
 
 
@@ -157,12 +161,14 @@ public class UnificationRestriction
 
         public void updateFromTuple(InternalWorkingMemory workingMemory,
                                     LeftTuple tuple) {
-            Object object = this.declaration.getValue( workingMemory, tuple.get( 0 ).getObject() );
-            if ( !(object instanceof Variable) ) {
+            DroolsQuery query = ( DroolsQuery ) tuple.get( 0 ).getObject(); 
+            Variable v = query.getVariables()[ this.reader.getIndex() ];
+            if ( v == null || v.isSet() ) {
+                // if there is no Variable or the Variable is set, handle it as a normal constraint
                 this.variable = null;
                 this.contextEntry.updateFromTuple( workingMemory, tuple );
             } else {
-                this.variable = (Variable) object;
+                this.variable = v;
             }
         }
 

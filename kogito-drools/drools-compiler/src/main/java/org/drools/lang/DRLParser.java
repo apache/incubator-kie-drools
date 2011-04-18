@@ -2952,7 +2952,7 @@ public class DRLParser {
                 }
                 // remove the "then" keyword and any subsequent spaces and line breaks
                 // keep indendation of 1st non-blank line
-                chunk = chunk.replaceFirst( "^then\\s*[\\r\\n]", "" );
+                chunk = chunk.replaceFirst( "^then\\s*[\\r\\n]?", "" );
             }
             rule.rhs( chunk );
 
@@ -3109,7 +3109,7 @@ public class DRLParser {
                        null,
                        DroolsEditorType.SYMBOL );
                 if ( state.failed ) return;
-            }
+            } 
 
             String value = elementValue();
             if ( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
@@ -3118,13 +3118,7 @@ public class DRLParser {
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
-                String actKey = key != null ? key : "value";
-                String actVal = annotation.getDescr().getValue( actKey );
-                if( actVal != null ){
-                    // TODO: error message?
-                    value = "\"" + AnnotationDescr.unquote( actVal ) + AnnotationDescr.unquote( value ) + "\"";
-                }
-                annotation.keyValue( actKey, value );
+                annotation.keyValue( key != null ? key : "value", value );
             }
 
         } catch ( RecognitionException re ) {

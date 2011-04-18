@@ -1096,6 +1096,15 @@ public abstract class AbstractWorkingMemory
                                             parameters );
     }
 
+	public ProcessInstance createProcessInstance(String processId,
+			                                     Map<String, Object> parameters) {
+		return processRuntime.createProcessInstance(processId, parameters);
+	}
+
+	public ProcessInstance startProcessInstance(long processInstanceId) {
+		return processRuntime.startProcessInstance(processInstanceId);
+	}
+
     public Collection<ProcessInstance> getProcessInstances() {
         return processRuntime.getProcessInstances();
     }
