@@ -86,9 +86,9 @@ public class PacmanExample {
 
         this.ksession.insert( new Score() );
 
-        KnowledgeRuntimeLoggerFactory.newThreadedFileLogger( this.ksession,
-                                                             "pacman.log",
-                                                             3000 );
+//        KnowledgeRuntimeLoggerFactory.newThreadedFileLogger( this.ksession,
+//                                                             "log/pacman.log",
+//                                                             3000 );
 
         Location pacLocation = new Location( this.pacMan,
                                              1,

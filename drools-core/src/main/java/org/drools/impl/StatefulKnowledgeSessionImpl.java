@@ -303,6 +303,15 @@ public class StatefulKnowledgeSessionImpl
                                           parameters );
     }
 
+	public ProcessInstance createProcessInstance(String processId,
+			                                     Map<String, Object> parameters) {
+		return this.session.createProcessInstance(processId, parameters);
+	}
+
+	public ProcessInstance startProcessInstance(long processInstanceId) {
+		return this.session.startProcessInstance(processInstanceId);
+	}
+
     public void signalEvent(String type,
                             Object event) {
         this.session.getProcessRuntime().signalEvent( type, event );

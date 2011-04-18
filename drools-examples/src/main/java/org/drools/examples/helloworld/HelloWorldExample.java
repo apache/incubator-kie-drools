@@ -68,8 +68,8 @@ public class HelloWorldExample {
         ksession.addEventListener(new DebugWorkingMemoryEventListener());
 
         // setup the audit logging
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
-                .newFileLogger(ksession, "log/helloworld");
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
+//                .newFileLogger(ksession, "log/helloworld.log");
 
         final Message message = new Message();
         message.setMessage("Hello World");
@@ -78,7 +78,7 @@ public class HelloWorldExample {
 
         ksession.fireAllRules();
 
-        logger.close();
+//        logger.close();
 
         ksession.dispose();
     }

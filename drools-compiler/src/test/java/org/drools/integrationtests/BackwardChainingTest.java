@@ -16,7 +16,11 @@ import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Variable;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.QueryResultsRow;
 import org.junit.Test;
+
+import static org.drools.rule.Variable.variable;
 
 
 public class BackwardChainingTest {
@@ -684,6 +688,738 @@ public class BackwardChainingTest {
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertEquals( p1, list.get(0));          
+    }  
+    
+    @Test
+    public void testQueryWithOr() throws Exception {
+        String str = "" +
+            "package org.drools.test  \n" +
+            
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+            
+            "global List list\n" +
+            
+            "dialect \"mvel\"\n" +            
+            "\n" + 
+            
+            "import org.drools.integrationtests.BackwardChainingTest.Q\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.R\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.S\n" +                      
+            
+//            "declare Q\n" + 
+//            "    value : int\n" + 
+//            "end \n" + 
+//            "\n" + 
+//            "declare R\n" + 
+//            "    value : int\n" + 
+//            "end \n" + 
+//            "\n" + 
+//            "declare S\n" + 
+//            "    value : int\n" + 
+//            "end \n" + 
+            "\n" + 
+            "query q(int x)\n" + 
+            "    Q( x : value )\n" + 
+            "end\n" + 
+            "\n" + 
+            "query r(int x)\n" + 
+            "    R( x : value )\n" + 
+            "end\n" + 
+            "\n" + 
+            "query s(int x)\n" + 
+            "    S( x : value )    \n" + 
+            "end\n" + 
+            "\n" + 
+            
+            "query p(int x)\n" + 
+            "    (q(x) and r(x) ) \n" + 
+            "    or\n" + 
+            "    s(x)\n" + 
+            "end\n" + 
+            
+            "rule init when\n" +
+            "then\n" +
+            " insert( new Q(1) );\n " +
+            " insert( new R(1) );\n " +
+            " insert( new R(2) );\n " +
+            " insert( new S(2) );\n " +
+            " insert( new S(3) );\n " +
+            "end\n" +  
+            
+//            "rule show when\n" +
+//            "    o : Object()\n" +
+//            "then\n" +
+//            " System.out.println( o );\n " +
+//            "end\n" +             
+            "";        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        
+        ksession.fireAllRules();
+
+        QueryResults results = null;
+        results = ksession.getQueryResults( "p", new Integer[] { 1 }  );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
+        } 
+        
+        System.out.println( );
+        
+        results = ksession.getQueryResults( "p", new Integer[] { 2 }  );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
+        } 
+        
+        System.out.println( );
+        
+        results = ksession.getQueryResults( "p", new Integer[] { 3 }  );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
+        }         
+        
+//        Person p1 = new Person( "darth",
+//                                "stilton",
+//                                100 );
+//        
+//        Person p2 = new Person( "yoda",
+//                                "stilton",
+//                                100 );        
+//        
+//        ksession.insert( "darth" );
+//        ksession.fireAllRules();        
+//        ksession.insert( "yoda" ); // darth exists, so yoda won't get created 
+//        ksession.fireAllRules();
+//        assertEquals( 1, list.size());
+//        assertEquals( p1, list.get(0));          
     }      
+    
+    @Test
+    public void testGeneology() {
+        // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
+            
+        String str = "" +
+            "package org.drools.test  \n" +
+            "global java.util.List list\n" +
+            "dialect \"mvel\"\n" +                   
+                                    
+            "query man( String name ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Man( name : name ) \n"+
+            "end\n" +
+        
+            "query woman( String name ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Woman( name : name ) \n"+
+            "end\n" +    
+            
+            "query parent( String parent, String child ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Parent( parent : parent, child : child ) \n"+
+            "end\n" +              
+            
+            "query father( String father, String child ) \n" +
+            "   man( father; ) \n"+
+            "   parent( father, child ) \n"+
+            "end\n" + 
+            
+            "query mother( String mother, String child ) \n" +
+            "   woman( mother; ) \n"+
+            "   parent( mother, child ) \n"+
+            "end\n" +             
+        
+            "query son( String son, String parent ) \n" +
+            "   man( son ) \n"+
+            "   parent( parent, son ) \n"+
+            "end\n" +
+        
+            "query daughter( String daughter, String parent ) \n" +
+            "   woman( daughter ) \n"+
+            "   parent( parent, daughter ) \n"+
+            "end\n" +
+            
+            "query siblings( String c1, String c2 ) \n" +
+            "   parent( $p, c1 ) \n" +
+            "   parent( $p, c2 ) \n"+
+            "   eval( !c1.equals( c2 ) )\n"+
+            "end\n"+        
+        
+            "query fullSiblings( String c1, String c2 )\n" +
+            "   parent( $p1, c1 ) parent( $p1, c2 )\n" +
+            "   parent( $p2, c1 ) parent( $p2, c2 )\n" +
+            "   eval( !c1.equals( c2 ) && !$p1.equals( $p2 )  )\n"+
+            "end\n" +
+            
+            "query fullSiblings2( String c1, String c2 )\n" +
+            "   father( $p1, c1 ) father( $p1, c2 )\n" +
+            "   mother( $p2, c1 ) mother( $p2, c2 )\n" +
+            "   eval( !c1.equals( c2 ) )\n"+
+            "end\n" +    
+    
+            "query uncle( String uncle, String n )\n" +
+            "   man( uncle ) siblings( uncle, parent )\n" +
+            "   parent( parent, n )\n " +
+            "end\n" +   
+        
+            "query aunt( String aunt, String n )\n" +
+            "   woman( aunt ) siblings( aunt, parent )\n" +
+            "   parent( parent, n )\n " +
+            "end\n" +
+            
+            "query grantParents( String gp, String gc )\n" +
+            "   parent( gp, p ) parent( p, gc )\n" +
+            "end\n";            
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+    
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    
+        //kbase = SerializationHelper.serializeObject( kbase );
+    
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );     
+
+        // grand parents
+        ksession.insert( new Man("john") );
+        ksession.insert( new Woman("janet") );
+        
+        // parent
+        ksession.insert( new Man("adam") );
+        ksession.insert(  new Parent( "john", "adam") );
+        ksession.insert(  new Parent( "janet", "adam") );
+        
+        ksession.insert( new Man("stan") );
+        ksession.insert(  new Parent( "john", "stan") );
+        ksession.insert(  new Parent( "janet", "stan") );        
+        
+        // grant parents
+        ksession.insert( new Man("carl") );
+        ksession.insert( new Woman("tina") );        
+ 
+        // parent         
+        ksession.insert( new Woman("eve") );        
+        ksession.insert(  new Parent( "carl", "eve") );
+        ksession.insert(  new Parent( "tina", "eve") ); 
+
+        
+        // parent         
+        ksession.insert( new Woman("mary") );  
+        ksession.insert(  new Parent( "carl", "mary") );
+        ksession.insert(  new Parent( "tina", "mary") );         
+        
+        
+        ksession.insert( new Man("peter") );
+        ksession.insert( new Parent( "adam", "peter" ) );        
+        ksession.insert( new Parent( "eve", "peter" ) );
+        
+        
+        ksession.insert( new Man("paul") );
+        ksession.insert( new Parent( "adam", "paul" ) );
+        ksession.insert( new Parent( "mary", "paul" ) );
+                
+
+        ksession.insert( new Woman("jill") );
+        ksession.insert( new Parent( "adam", "jill" ) );        
+        ksession.insert( new Parent( "eve", "jill" ) );
+        
+        QueryResults results = null;
+        
+        System.out.println("woman");         
+        results = ksession.getQueryResults( "woman", new Object[] { variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + result.get( "name" ) );
+        } 
+        
+        System.out.println("\nman");        
+        results = ksession.getQueryResults( "man", new Object[] { variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + result.get( "name" ) );
+        }   
+        
+        System.out.println("\nfather");
+        results = ksession.getQueryResults( "father", new Object[] {variable,  variable  } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "father( " + result.get( "father" ) + ", " + result.get( "child" ) + " )" );
+        }       
+        
+        System.out.println("\nmother");
+        results = ksession.getQueryResults( "mother", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "mother( " + result.get( "mother" ) + ", " + result.get( "child" ) + " )" );
+        }    
+        
+        System.out.println("\nson");
+        results = ksession.getQueryResults( "son", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "son( " + result.get( "son" ) + ", " + result.get( "parent" ) + " )" );
+        }     
+        
+        System.out.println("\ndaughter");
+        results = ksession.getQueryResults( "daughter", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "daughter( " + result.get( "daughter" ) + ", " + result.get( "parent" ) + " )" );
+        }         
+        
+        System.out.println("\nsiblings");
+        results = ksession.getQueryResults( "siblings", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "sibling( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+        }     
+        
+        System.out.println("\nfullSiblings");
+        results = ksession.getQueryResults( "fullSiblings", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "fullSiblings( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+        }        
+
+        System.out.println("\nfullSiblings2");
+        results = ksession.getQueryResults( "fullSiblings", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "fullSiblings2( " + result.get( "c1" ) + ", " + result.get( "c2" ) + " )" );
+        }  
+        
+        System.out.println("\nuncle");
+        results = ksession.getQueryResults( "uncle", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "uncle( " + result.get( "uncle" ) + ", " + result.get( "n" ) + " )" );
+        }        
+        
+        System.out.println("\naunt");
+        results = ksession.getQueryResults( "aunt", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "aunt( " + result.get( "aunt" ) + ", " + result.get( "n" ) + " )" );
+        }
+        
+        System.out.println("\ngrantParents");
+        results = ksession.getQueryResults( "grantParents", new Object[] { variable,  variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "grantParents( " + result.get( "gp" ) + ", " + result.get( "gc" ) + " )" );
+        }          
+    }
+    
+    @Test
+    public void testNaniSearch() {
+        // http://www.amzi.com/AdventureInProlog/advtop.php
+            
+        String str = "" +
+            "package org.drools.test  \n" +
+            
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+            
+            "import org.drools.integrationtests.BackwardChainingTest.Location\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.Here\n" +
+            
+            "global List list\n" +
+            
+            "dialect \"mvel\"\n" +                   
+                                    
+            "query room( String name ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Room( name : name ) \n"+
+            "end\n" +
+        
+            "query location( String thing, String location ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Location( thing : thing, location : location ) \n"+
+            "end\n" +    
+            
+            "query door( String fromLocation, String toLocation ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Door( fromLocation : fromLocation, toLocation : toLocation ) \n"+
+            "end\n" + 
+        
+            "query edible( String thing, String toLocation ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Edible( thing : thing ) \n"+
+            "end\n" +
+            
+            "query tastesYucky( String thing ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.TastesYucky( thing : thing ) \n"+
+            "end\n"    +  
+            
+            "query here( String location ) \n" +
+            "   org.drools.integrationtests.BackwardChainingTest.Here( location : location ) \n"+
+            "end\n" +
+        
+            "query whereFood( String thing, String location ) \n" +
+            "    ( location(thing, location) and\n"+
+            "    edible(thing) )\n " +
+            "    or \n"+
+            "    (location(thing, location) and\n"+
+            "    tastesYucky(thing)) \n"+            
+            "end\n" +   
+        
+            "query connect( String x, String y ) \n" +
+            "    door(x, y;)\n"+
+            "    or \n"+
+            "    door(y, x;)\n"+          
+            "end\n" + 
+                                    
+            "query look() \n" +
+            "    here(place;)\n"+
+            "    things : List() from accumulate( location(thing, place;) ," +
+            "                                    collectList( thing ) )\n" +                    
+            
+            "    exits : List() from accumulate( connect(place, exit;) ," +
+            "                                    collectList( [place, exit] ) )\n" +       
+            "end\n" +
+            
+            "query look2(String place, List things, List exits) \n" +
+            "    things : List() from accumulate( location(thing, place;) ," +
+            "                                    collectList( thing ) )\n" +                    
+            
+            "    exits : List() from accumulate( connect(place, exit;) ," +
+            "                                    collectList( [place, exit] ) )\n" +        
+            "end\n" +
+            
+            "rule reactiveLook when\n" +
+            "    Here( place : location) \n"+
+            "    look2(place, things, exits)\n"+
+            "then" +
+            "    System.out.println( \"  You are in the \" + place );\n" + 
+            "    System.out.println( \"  You can see \" + things );\n" + 
+            "    System.out.println( \"  You can go to \" + exits );\n" +
+            "end\n";            
+            
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+    
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    
+        //kbase = SerializationHelper.serializeObject( kbase );
+    
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );     
+
+        ksession.insert( new Room("kitchen") );
+        ksession.insert( new Room("office") );
+        ksession.insert( new Room("hall") );
+        ksession.insert( new Room("dining room") );
+        ksession.insert( new Room("cellar") );
+        
+        ksession.insert( new Location("desk", "office") );
+        ksession.insert( new Location("apple", "kitchen") );
+        ksession.insert( new Location("flashlight", "desk") );
+        ksession.insert( new Location("washing machine", "cellar") );
+        ksession.insert( new Location("nani", "washing machine") );
+        ksession.insert( new Location("broccoli", "kitchen") );
+        ksession.insert( new Location("crackers", "kitchen") );
+        ksession.insert( new Location("compuer", "office") );
+        
+        ksession.insert( new Door("office", "hall") );
+        ksession.insert( new Door("kitcehn", "office") );
+        ksession.insert( new Door("hall", "dining room") );
+        ksession.insert( new Door("kitchen", "cellar") );
+        ksession.insert( new Door("dining room", "kitchen") );
+        
+        
+        ksession.insert( new Edible("apple") );
+        ksession.insert( new Edible("crackers") );
+        
+        ksession.insert( new TastesYucky("broccoli") );        
+        
+        QueryResults results = null;
+        
+        System.out.println("whereFood");         
+        results = ksession.getQueryResults( "whereFood", new Object[] { variable, variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + result.get( "thing" ) + " : " + result.get( "location"  ) );
+        } 
+        
+        System.out.println("");   
+        
+        System.out.println("connect");         
+        results = ksession.getQueryResults( "connect", new Object[] { variable, variable } );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + result.get( "x" ) + " : " + result.get( "y"  ) );
+        }     
+        
+        System.out.println("");   
+        
+        ksession.insert( new Here("kitchen") );
+        ksession.fireAllRules();
+        
+        System.out.println("look");         
+        results = ksession.getQueryResults( "look", new Object[] {} );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  You are in the " + result.get( "place" ) );
+            System.out.println( "  You can see " + result.get( "things") );
+            System.out.println( "  You can go to " + result.get( "exits") );
+        }         
+        
+    }    
+    
+    public static class Man {
+        private String name;      
+
+        public Man(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }      
+    }
+    
+    public static class Woman {
+        private String name;      
+
+        public Woman(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }      
+    }  
+    
+    public static class Parent {
+        private String parent;
+        private String child;
+        
+        public Parent(String parent,
+                      String child) {
+            this.parent = parent;
+            this.child = child;
+        }
+        
+        public String getParent() {
+            return parent;
+        }
+        
+        public void setParent(String parent) {
+            this.parent = parent;
+        }
+        
+        public String getChild() {
+            return child;
+        }
+        
+        public void setChild(String child) {
+            this.child = child;
+        }
+    }
+    
+    public static class Room {
+        private String name;
+
+        public Room(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+        
+    }
+    
+    public static class Location {
+        private String thing;
+        private String location;
+        
+        public Location(String thing,
+                        String location) {
+            this.thing = thing;
+            this.location = location;
+        }
+
+        public String getThing() {
+            return thing;
+        }
+
+        public void setThing(String thing) {
+            this.thing = thing;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+    }
+    
+    public static class Door {
+        private String fromLocation;
+        private String toLocation;
+        
+        public Door(String fromLocation,
+                    String toLocation) {
+            this.fromLocation = fromLocation;
+            this.toLocation = toLocation;
+        }
+        public String getFromLocation() {
+            return fromLocation;
+        }
+        public void setFromLocation(String fromLocation) {
+            this.fromLocation = fromLocation;
+        }
+        public String getToLocation() {
+            return toLocation;
+        }
+        public void setToLocation(String toLocation) {
+            this.toLocation = toLocation;
+        }   
+    }
+    
+    public static class Edible {
+        private String thing;
+
+        public Edible(String thing) {
+            this.thing = thing;
+        }
+
+        public String getThing() {
+            return thing;
+        }
+
+        public void setThing(String thing) {
+            this.thing = thing;
+        }        
+    }
+    
+    public static class TastesYucky {
+        private String thing;
+
+        public TastesYucky(String thing) {
+            this.thing = thing;
+        }
+
+        public String getThing() {
+            return thing;
+        }
+
+        public void setThing(String thing) {
+            this.thing = thing;
+        }        
+    }    
+    
+    public static class turnedOff {
+        private String thing;
+
+        public turnedOff(String thing) {
+            this.thing = thing;
+        }
+
+        public String getThing() {
+            return thing;
+        }
+
+        public void setThing(String thing) {
+            this.thing = thing;
+        }
+    }
+    
+    public static class Here {
+        private String location;
+
+        public Here(String location) {
+            this.location = location;
+        }
+
+        public String getLocation() {
+            return location;
+        }
+
+        public void setLocation(String location) {
+            this.location = location;
+        }
+    }
+    
+    public static class Q {
+        int value;
+
+        public Q(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        public String toString() {
+            return "Q" + value;
+        }        
+    }
+    
+    public static class R {
+        int value;
+
+        public R(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        public String toString() {
+            return "R" + value;
+        }
+    }    
+    
+    public static class S {
+        int value;
+
+        public S(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        public String toString() {
+            return "S" + value;
+        }
+    }    
+    
     
 }

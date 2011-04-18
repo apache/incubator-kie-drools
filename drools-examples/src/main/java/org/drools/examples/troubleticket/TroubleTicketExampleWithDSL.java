@@ -18,8 +18,6 @@ package org.drools.examples.troubleticket;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -29,34 +27,29 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-/**
- * This shows off a decision table.
- */
-public class TroubleTicketExampleWithDT {
+public class TroubleTicketExampleWithDSL {
 
-    public static final void main(String[] args) {
-        TroubleTicketExampleWithDT launcher = new TroubleTicketExampleWithDT();
-        launcher.executeExample();
-    }
-
-    public void executeExample() {
-
-        final DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
+    /**
+     * @param args
+     */
+    public static void main(final String[] args) {
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketExampleWithDT.class ),
-                              ResourceType.DTABLE,
-                              dtableconfiguration );
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "ticketing.dsl",
+                                                                    TroubleTicketExampleWithDSL.class ),
+                              ResourceType.DSL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "TroubleTicketWithDSL.dslr",
+                                                                    TroubleTicketExampleWithDSL.class ),
+                              ResourceType.DSLR );
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        // typical decision tables are used statelessly
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
-
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
+        
         final Customer a = new Customer( "A",
                                          "Drools",
                                          "Gold" );
@@ -101,10 +94,10 @@ public class TroubleTicketExampleWithDT {
 
         System.err.println( "[[ awake ]]" );
 
+        ksession.fireAllRules();
+
         ksession.dispose();
 
-        logger.close();
-
+//        logger.close();
     }
-
 }
