@@ -3449,6 +3449,22 @@ public class RuleParserTest extends TestCase {
                       declarations.size() );
     }
 
+    public void testNullConstraints() throws Exception {
+        final String text = "rule X when Person( name == null ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "name == null",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.NAMED,
+                      fcd.getType() );
+    }
+
     public void testPositionalConstraintsOnly() throws Exception {
         final String text = "rule X when Person( \"Mark\", 42; ) then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
