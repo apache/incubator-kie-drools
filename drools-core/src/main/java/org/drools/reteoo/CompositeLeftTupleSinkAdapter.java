@@ -50,7 +50,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                               final RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled) {
         
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+        for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {
             LeftTuple child = new LeftTuple( leftTuple,
                                              rightTuple,
                                              null,
