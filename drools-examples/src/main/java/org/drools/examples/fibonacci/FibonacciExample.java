@@ -44,13 +44,13 @@ public class FibonacciExample {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci");
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci.log");
 
         ksession.insert( new Fibonacci( 10 ) );
 
         ksession.fireAllRules();
 
-        logger.close();
+//        logger.close();
 
         ksession.dispose(); // Stateful rule session must always be disposed when finished
 

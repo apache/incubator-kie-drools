@@ -48,7 +48,7 @@ public class TroubleTicketExampleWithDSL {
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket");
+//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
         
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -98,6 +98,6 @@ public class TroubleTicketExampleWithDSL {
 
         ksession.dispose();
 
-        logger.close();
+//        logger.close();
     }
 }

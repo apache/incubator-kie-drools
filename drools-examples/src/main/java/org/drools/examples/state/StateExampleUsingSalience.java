@@ -47,8 +47,8 @@ public class StateExampleUsingSalience {
 
         final StatefulSession session = ruleBase.newStatefulSession();
 
-        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-        logger.setFileName( "log/state" );
+//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+//        logger.setFileName( "log/state" );
 
         final State a = new State( "A" );
         final State b = new State( "B" );
@@ -70,7 +70,7 @@ public class StateExampleUsingSalience {
 
         session.fireAllRules();
 
-        logger.writeToDisk();
+//        logger.writeToDisk();
         
         session.dispose(); // Stateful rule session must always be disposed when finished        
     }
