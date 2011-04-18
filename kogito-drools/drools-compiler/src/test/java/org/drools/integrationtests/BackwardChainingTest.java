@@ -691,6 +691,125 @@ public class BackwardChainingTest {
     }  
     
     @Test
+    public void testQueryWithOr() throws Exception {
+        String str = "" +
+            "package org.drools.test  \n" +
+            
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+            
+            "global List list\n" +
+            
+            "dialect \"mvel\"\n" +            
+            "\n" + 
+            
+            "import org.drools.integrationtests.BackwardChainingTest.Q\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.R\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.S\n" +                      
+            
+//            "declare Q\n" + 
+//            "    value : int\n" + 
+//            "end \n" + 
+//            "\n" + 
+//            "declare R\n" + 
+//            "    value : int\n" + 
+//            "end \n" + 
+//            "\n" + 
+//            "declare S\n" + 
+//            "    value : int\n" + 
+//            "end \n" + 
+            "\n" + 
+            "query q(int x)\n" + 
+            "    Q( x : value )\n" + 
+            "end\n" + 
+            "\n" + 
+            "query r(int x)\n" + 
+            "    R( x : value )\n" + 
+            "end\n" + 
+            "\n" + 
+            "query s(int x)\n" + 
+            "    S( x : value )    \n" + 
+            "end\n" + 
+            "\n" + 
+            
+            "query p(int x)\n" + 
+            "    (q(x) and r(x) ) \n" + 
+            "    or\n" + 
+            "    s(x)\n" + 
+            "end\n" + 
+            
+            "rule init when\n" +
+            "then\n" +
+            " insert( new Q(1) );\n " +
+            " insert( new R(1) );\n " +
+            " insert( new R(2) );\n " +
+            " insert( new S(2) );\n " +
+            " insert( new S(3) );\n " +
+            "end\n" +  
+            
+//            "rule show when\n" +
+//            "    o : Object()\n" +
+//            "then\n" +
+//            " System.out.println( o );\n " +
+//            "end\n" +             
+            "";        
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        
+        ksession.fireAllRules();
+
+        QueryResults results = null;
+        results = ksession.getQueryResults( "p", new Integer[] { 1 }  );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
+        } 
+        
+        System.out.println( );
+        
+        results = ksession.getQueryResults( "p", new Integer[] { 2 }  );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
+        } 
+        
+        System.out.println( );
+        
+        results = ksession.getQueryResults( "p", new Integer[] { 3 }  );
+        for ( QueryResultsRow result : results ) {
+            System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
+        }         
+        
+//        Person p1 = new Person( "darth",
+//                                "stilton",
+//                                100 );
+//        
+//        Person p2 = new Person( "yoda",
+//                                "stilton",
+//                                100 );        
+//        
+//        ksession.insert( "darth" );
+//        ksession.fireAllRules();        
+//        ksession.insert( "yoda" ); // darth exists, so yoda won't get created 
+//        ksession.fireAllRules();
+//        assertEquals( 1, list.size());
+//        assertEquals( p1, list.get(0));          
+    }      
+    
+    @Test
     public void testGeneology() {
         // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
             
@@ -952,20 +1071,33 @@ public class BackwardChainingTest {
             "    or \n"+
             "    door(y, x;)\n"+          
             "end\n" + 
-//            "query look() \n" +
-//            "    here(place;)\n"+
-//            "    things : List() from collect( location(thing, place;) ) \n"+
-//            "    rooms : List() from  collect( connect(place, room;) )\n"+          
-//            "end\n";   
+                                    
+            "query look() \n" +
+            "    here(place;)\n"+
+            "    things : List() from accumulate( location(thing, place;) ," +
+            "                                    collectList( thing ) )\n" +                    
             
-              "query look() \n" +
-              "    here(place;)\n"+
-              "    things : List() from accumulate( location(thing, place;) ," +
-              "                                    collectList( thing ) )\n" +                    
+            "    exits : List() from accumulate( connect(place, exit;) ," +
+            "                                    collectList( [place, exit] ) )\n" +       
+            "end\n" +
             
-              "    exits : List() from accumulate( connect(place, exit;) ," +
-              "                                    collectList( [place, exit] ) )\n" +       
-              "end\n";              
+            "query look2(String place, List things, List exits) \n" +
+            "    things : List() from accumulate( location(thing, place;) ," +
+            "                                    collectList( thing ) )\n" +                    
+            
+            "    exits : List() from accumulate( connect(place, exit;) ," +
+            "                                    collectList( [place, exit] ) )\n" +        
+            "end\n" +
+            
+            "rule reactiveLook when\n" +
+            "    Here( place : location) \n"+
+            "    look2(place, things, exits)\n"+
+            "then" +
+            "    System.out.println( \"  You are in the \" + place );\n" + 
+            "    System.out.println( \"  You can see \" + things );\n" + 
+            "    System.out.println( \"  You can go to \" + exits );\n" +
+            "end\n";            
+            
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -1009,9 +1141,7 @@ public class BackwardChainingTest {
         ksession.insert( new Edible("apple") );
         ksession.insert( new Edible("crackers") );
         
-        ksession.insert( new TastesYucky("broccoli") );
-        
-        ksession.insert( new Here("kitchen") );
+        ksession.insert( new TastesYucky("broccoli") );        
         
         QueryResults results = null;
         
@@ -1031,15 +1161,15 @@ public class BackwardChainingTest {
         
         System.out.println("");   
         
+        ksession.insert( new Here("kitchen") );
+        ksession.fireAllRules();
+        
         System.out.println("look");         
         results = ksession.getQueryResults( "look", new Object[] {} );
         for ( QueryResultsRow result : results ) {
             System.out.println( "  You are in the " + result.get( "place" ) );
             System.out.println( "  You can see " + result.get( "things") );
             System.out.println( "  You can go to " + result.get( "exits") );
-//            System.out.println( "  You are in the " + result.get( "place" ) );
-//            System.out.println( "  You can see"+ " : " + result.get( "thing"  ) );
-//            System.out.println( "  You can go to"+ " : " + result.get( "room"  ) );
         }         
         
     }
@@ -1302,6 +1432,63 @@ public class BackwardChainingTest {
             this.location = location;
         }
     }
+    
+    public static class Q {
+        int value;
+
+        public Q(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        public String toString() {
+            return "Q" + value;
+        }        
+    }
+    
+    public static class R {
+        int value;
+
+        public R(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        public String toString() {
+            return "R" + value;
+        }
+    }    
+    
+    public static class S {
+        int value;
+
+        public S(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        public String toString() {
+            return "S" + value;
+        }
+    }    
     
     
 }
