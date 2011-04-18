@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
@@ -102,8 +103,9 @@ public class PacmanGui extends JFrame
     }
 
     private void addComponentsToPane() {
-        JButton button = new JButton( "Clear" );
-        button.addActionListener( this );
+
+        getContentPane().add( new JLabel("Press an arrow key to start the key event output."),
+                              BorderLayout.NORTH );
 
         displayArea = new JTextArea();
         displayArea.setEditable( false );
@@ -111,10 +113,12 @@ public class PacmanGui extends JFrame
         scrollPane.setPreferredSize( new Dimension( 600,
                                                     600 ) );
         displayArea.addKeyListener( this );
-
         getContentPane().add( scrollPane,
                               BorderLayout.CENTER );
-        getContentPane().add( button,
+
+        JButton clearButton = new JButton( "Clear" );
+        clearButton.addActionListener(this);
+        getContentPane().add( clearButton,
                               BorderLayout.PAGE_END );
     }
 
