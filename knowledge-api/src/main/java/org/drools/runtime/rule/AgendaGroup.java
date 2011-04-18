@@ -16,6 +16,8 @@
 
 package org.drools.runtime.rule;
 
+import java.util.Collection;
+
 public interface AgendaGroup {
     /**
      * @return
@@ -26,4 +28,6 @@ public interface AgendaGroup {
     public void clear();
 
     public void setFocus();
+    
+    //public Collection<Activation> getActivations();
 }
