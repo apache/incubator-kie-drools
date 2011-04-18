@@ -51,6 +51,10 @@ public class FromDescr extends PatternSourceDescr
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());
     }
 
+    public boolean removeDescr(BaseDescr baseDescr) {
+        throw new UnsupportedOperationException("Can't remove descriptors from "+this.getClass().getName());
+    }
+
     public String toString() {
         return "from "+this.dataSource.toString();
     }

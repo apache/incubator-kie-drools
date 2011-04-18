@@ -68,6 +68,11 @@ public class OrDescr extends BaseDescr
         }
     }
 
+
+     public boolean removeDescr(BaseDescr baseDescr) {
+        return baseDescr == null ? false : descrs.remove(baseDescr);
+    }
+
     @Override
     public String toString() {
         return "[OR "+descrs+" ]";

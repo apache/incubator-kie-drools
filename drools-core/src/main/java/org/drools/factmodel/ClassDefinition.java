@@ -43,7 +43,7 @@ public class ClassDefinition
     private String[]                     interfaces;
     private transient Class< ? >         definedClass;
 
-    private Map<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
+    private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
     public ClassDefinition() {
         this( null,
@@ -84,7 +84,7 @@ public class ClassDefinition
         this.className = (String) in.readObject();
         this.superClass = (String) in.readObject();
         this.interfaces = (String[]) in.readObject();
-        this.fields = (Map<String, FieldDefinition>) in.readObject();
+        this.fields = (LinkedHashMap<String, FieldDefinition>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -102,7 +102,7 @@ public class ClassDefinition
     }
 
     /**
-     * @param name The name to set.
+     * @param className The name to set.
      */
     public final void setClassName(final String className) {
         this.className = className;
@@ -116,7 +116,7 @@ public class ClassDefinition
     }
 
     /**
-     * @param className The class to set.
+     * @param definedClass The class to set.
      */
     public void setDefinedClass(final Class< ? > definedClass) {
 
@@ -148,6 +148,23 @@ public class ClassDefinition
     public final FieldDefinition getField(final String fieldName) {
         return this.fields.get( fieldName );
     }
+
+
+    /**
+     * Returns the field at position index, as defined by the builder using the @position annotation
+     * @param index
+     * @return    the index-th field
+     */
+    public FieldDefinition getField(int index) {
+        if (index >= fields.size() || index < 0)
+            throw new IndexOutOfBoundsException("Error trying to access field at position " + index);
+        Iterator<FieldDefinition> iter = fields.values().iterator();
+        for (int j = 0; j < index ; j++)
+            iter.next();
+        return iter.next();
+
+    }
+
 
     /**
      * @return Returns the interfaces.

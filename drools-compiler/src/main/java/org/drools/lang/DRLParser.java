@@ -454,7 +454,7 @@ public class DRLParser {
             }
 
             boolean qualified = type.indexOf( '.' ) >= 0;
-            while ( ! qualified &&
+            while ( //! qualified &&
                     input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
                 field( declare );

@@ -16,84 +16,35 @@
 
 package org.drools.rule.builder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.drools.base.ClassObjectType;
-import org.drools.base.DroolsQuery;
-import org.drools.base.EvaluatorWrapper;
-import org.drools.base.FieldFactory;
-import org.drools.base.ValueType;
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.RecognitionException;
+import org.drools.base.*;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.extractors.MVELClassFieldReader;
-import org.drools.compiler.AnalysisResult;
-import org.drools.compiler.BoundIdentifiers;
-import org.drools.compiler.DescrBuildError;
-import org.drools.compiler.Dialect;
-import org.drools.compiler.DrlExprParser;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageRegistry;
+import org.drools.compiler.*;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
+import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
-import org.drools.lang.descr.AtomicExprDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.BehaviorDescr;
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.ConstraintConnectiveDescr;
-import org.drools.lang.descr.ExprConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.OperatorDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.RelationalExprDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.lang.descr.*;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
-import org.drools.rule.AbstractCompositeConstraint;
-import org.drools.rule.Behavior;
-import org.drools.rule.Declaration;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.LiteralRestriction;
-import org.drools.rule.MutableTypeConstraint;
-import org.drools.rule.Pattern;
-import org.drools.rule.PatternSource;
-import org.drools.rule.PredicateConstraint;
-import org.drools.rule.Query;
-import org.drools.rule.ReturnValueRestriction;
-import org.drools.rule.Rule;
-import org.drools.rule.RuleConditionElement;
-import org.drools.rule.SlidingLengthWindow;
-import org.drools.rule.SlidingTimeWindow;
-import org.drools.rule.TypeDeclaration;
-import org.drools.rule.UnificationRestriction;
-import org.drools.rule.VariableConstraint;
-import org.drools.rule.VariableRestriction;
+import org.drools.rule.*;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.AcceptsReadAccessor;
-import org.drools.spi.Constraint;
+import org.drools.spi.*;
 import org.drools.spi.Constraint.ConstraintType;
-import org.drools.spi.Evaluator;
-import org.drools.spi.FieldValue;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.util.PropertyTools;
+
+import java.util.*;
 
 /**
  * A builder for patterns
@@ -117,8 +68,8 @@ public class PatternBuilder
      * context and using the given utils object
      *
      * @param context
-     * @param utils
-     * @param patternDescr
+     * @param descr
+     * @param prefixPattern
      * @return
      */
     public RuleConditionElement build( RuleBuildContext context,
@@ -221,6 +172,12 @@ public class PatternBuilder
             }
         }
 
+
+        List<BaseDescr> notAConstraints = processPositional(patternDescr.getDescrs(),context,patternDescr,pattern);
+        for (BaseDescr nac : notAConstraints)
+            patternDescr.removeConstraint(nac);
+
+
         for ( BindingDescr b : patternDescr.getBindings() ) {
             if ( true ) { // TODO: replace this by legacy mode configuration
                 String expression = b.getExpression();
@@ -267,11 +224,19 @@ public class PatternBuilder
             }
         }
 
-        for ( BaseDescr b : patternDescr.getDescrs() ) {
+//        BaseDescr temp = context.getParentDescr();
+//        context.setParentDescr(patternDescr);
+
+
+//        context.setParentDescr(temp);
+
+
+         for ( BaseDescr b : patternDescr.getDescrs() ) {
             build( context,
                    pattern,
                    (ExprConstraintDescr) b );
         }
+
 
         if ( patternDescr.getSource() != null ) {
             // we have a pattern source, so build it
@@ -308,6 +273,77 @@ public class PatternBuilder
         return pattern;
     }
 
+    private List<BaseDescr> processPositional(List<? extends BaseDescr> descrs, RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
+        List<BaseDescr> victims = new LinkedList<BaseDescr>();
+        for (BaseDescr baseDescr : descrs) {
+
+        ExprConstraintDescr descr = (ExprConstraintDescr) baseDescr;
+
+        if (descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType) {
+                Class klazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
+                TypeDeclaration tDecl = context.getPackageBuilder().getTypeDeclaration(klazz);
+
+                if (tDecl == null) {
+                    context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+                            descr,
+                            klazz,
+                            "Unable to find @positional definitions for :" + klazz + "\n"));
+                    continue;
+                }
+
+
+                FieldDefinition field = tDecl.getTypeClassDef().getField(descr.getPosition());
+                if (field == null) {
+                    context.getErrors().add(new DescrBuildError(context.getParentDescr(),
+                            descr,
+                            null,
+                            "Unable to find @positional field " + descr.getPosition()) + "\n");
+                    continue;
+                }
+//                System.err.println("Field is " + field.getName());
+
+
+                DRLLexer lex = new DRLLexer(new ANTLRStringStream(descr.getExpression()));
+                boolean isSimpleIdentifier = false;
+                try {
+                    lex.mID();
+                    isSimpleIdentifier = lex.getCharIndex() >= descr.getExpression().length();
+                } catch (RecognitionException e) {
+
+                }
+
+                boolean isBound = false;
+                if ( isSimpleIdentifier) {
+                    isBound = context.getDeclaration(descr.getExpression()) != null;
+                    if (! isBound) {
+                        Iterator<? extends BaseDescr> inner =  patternDescr.getConstraint().getDescrs().iterator();
+                        BaseDescr innerDescr = inner.next();
+                        while (! isBound && innerDescr != descr) {
+                            if (innerDescr.getText().equals(descr.getExpression()))
+                                isBound = true;
+                            innerDescr = inner.next();
+                        }
+
+                    }
+                }
+
+
+                if (isSimpleIdentifier && ! isBound) {
+                    BindingDescr binder = new BindingDescr();
+                        binder.setExpression(field.getName());
+                        binder.setVariable(descr.getExpression());
+                    patternDescr.addBinding(binder);
+                    victims.add(descr);
+                    continue;
+                } else {
+                    descr.setText(field.getName()+ " == " + descr.getExpression());
+                    descr.setType(ExprConstraintDescr.Type.NAMED);
+                }
+            }
+        }
+        return  victims;
+    }
+
     public void build( RuleBuildContext context,
                        Pattern pattern,
                        ExprConstraintDescr descr ) {
@@ -325,6 +361,7 @@ public class PatternBuilder
 
         for ( Iterator<BaseDescr> it = result.getDescrs().iterator(); it.hasNext(); ) {
             BaseDescr d = it.next();
+
 
             boolean simple = false;
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
@@ -666,7 +703,7 @@ public class PatternBuilder
     }
 
     /**
-     * @param pattern
+     * @param container
      * @param constraint
      */
     private void setConstraintType( final Pattern container,
@@ -699,6 +736,7 @@ public class PatternBuilder
         }
 
         Declaration declr = pattern.addDeclaration( fieldBindingDescr.getVariable() );
+        context.addDeclaration(declr);
 
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      fieldBindingDescr,
@@ -861,10 +899,8 @@ public class PatternBuilder
 
     /**
      * @param context
-     * @param utils
      * @param pattern
-     * @param usedIdentifiers
-     * @param NOT_BOUND_INDEX
+     * @param unboundIdentifiers
      * @param factDeclarations
      */
     private void createImplicitBindings( final RuleBuildContext context,
