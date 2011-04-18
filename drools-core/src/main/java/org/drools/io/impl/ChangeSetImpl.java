@@ -67,5 +67,10 @@ public class ChangeSetImpl implements ChangeSet {
         this.knowledgeDefinitionsRemoved = knowledgeDefinitionsRemoved;
     }
 
-    
+    public boolean isEmpty(){
+        return this.resourcesAdded.isEmpty() && 
+                this.resourcesModified.isEmpty() && 
+                this.resourcesRemoved.isEmpty() && 
+                this.knowledgeDefinitionsRemoved.isEmpty();
+    }
 }
