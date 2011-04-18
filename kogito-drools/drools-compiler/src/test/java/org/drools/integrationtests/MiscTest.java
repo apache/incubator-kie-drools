@@ -1201,15 +1201,9 @@ public class MiscTest {
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
         session.fireAllRules();
-<<<<<<< Updated upstream
-        System.out.println( ((List) session.getGlobal( "list" )).get( 0 ) );
-        assertEquals( 3,
-                      ((List) session.getGlobal( "list" )).size() );
-=======
         //System.out.println(((List) session.getGlobal("list")).get(0));
         assertEquals(3,
-                ((List) session.getGlobal("list")).size());
->>>>>>> Stashed changes
+                     ((List) session.getGlobal("list")).size());
 
         nullPerson = new Person( null );
 
