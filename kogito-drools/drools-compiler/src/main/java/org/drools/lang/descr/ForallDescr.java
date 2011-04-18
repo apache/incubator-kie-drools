@@ -99,7 +99,11 @@ public class ForallDescr extends BaseDescr
     public void addOrMerge(BaseDescr baseDescr) {
         this.patterns.add( baseDescr );
     }
-    
+
+    public boolean removeDescr(BaseDescr baseDescr) {
+        return baseDescr == null ? false : patterns.remove(baseDescr);
+    }
+
     @Override
     public String toString() {
         return "forall( "+patterns+" )";

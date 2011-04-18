@@ -45,6 +45,10 @@ public class ExistsDescr extends BaseDescr
         return this.descrs;
     }
 
+    public boolean removeDescr(BaseDescr baseDescr) {
+        return baseDescr == null ? false : descrs.remove(baseDescr);
+    }
+
     public void addOrMerge(BaseDescr baseDescr) {
         if( baseDescr instanceof ExistsDescr ) {
             this.descrs.addAll( ((ExistsDescr)baseDescr).getDescrs() );
