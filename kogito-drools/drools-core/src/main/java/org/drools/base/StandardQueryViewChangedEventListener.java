@@ -43,8 +43,8 @@ public class StandardQueryViewChangedEventListener
 
     public void rowAdded(final Rule rule,
                          final LeftTuple tuple,
-                    final PropagationContext context,
-                    final InternalWorkingMemory workingMemory) {
+                         final PropagationContext context,
+                         final InternalWorkingMemory workingMemory) {
         InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex() + 1];
         LeftTuple entry = tuple;
 
