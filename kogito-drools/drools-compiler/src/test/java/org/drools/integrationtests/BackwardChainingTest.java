@@ -949,7 +949,16 @@ public class BackwardChainingTest {
             "    here(place;)\n"+
             "    location(thing, place;) \n"+
             "    connect(place, room;)\n"+          
-            "end\n";          
+            "end\n"
+            
+//            "rule \"track location\" \n" +
+//            "    here : Here()\n"+
+//            "    look( \n"+
+//            "    connect(place, room;)\n"+          
+//            "end\n" +            
+            ;     
+        
+           
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
