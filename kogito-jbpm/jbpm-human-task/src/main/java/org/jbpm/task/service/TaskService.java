@@ -16,21 +16,8 @@
 
 package org.jbpm.task.service;
 
-import org.drools.SystemEventListener;
-import org.jbpm.eventmessaging.EventKeys;
-import org.jbpm.task.*;
-import org.jbpm.task.event.MessagingTaskEventListener;
-import org.jbpm.task.event.TaskEventListener;
-import org.jbpm.task.event.TaskEventSupport;
-import org.jbpm.task.query.DeadlineSummary;
-import org.jbpm.task.query.TaskSummary;
-import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
-import org.mvel2.compiler.ExpressionCompiler;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
@@ -39,6 +26,46 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.drools.SystemEventListener;
+import org.jbpm.eventmessaging.EventKeys;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.AllowedToDelegate;
+import org.jbpm.task.Attachment;
+import org.jbpm.task.BooleanExpression;
+import org.jbpm.task.Comment;
+import org.jbpm.task.Content;
+import org.jbpm.task.Deadline;
+import org.jbpm.task.Deadlines;
+import org.jbpm.task.Delegation;
+import org.jbpm.task.EmailNotification;
+import org.jbpm.task.EmailNotificationHeader;
+import org.jbpm.task.Escalation;
+import org.jbpm.task.Group;
+import org.jbpm.task.I18NText;
+import org.jbpm.task.Notification;
+import org.jbpm.task.NotificationType;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Reassignment;
+import org.jbpm.task.Status;
+import org.jbpm.task.StatusChange;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
+import org.jbpm.task.UserInfo;
+import org.jbpm.task.WorkItemNotification;
+import org.jbpm.task.event.MessagingTaskEventListener;
+import org.jbpm.task.event.TaskEventListener;
+import org.jbpm.task.event.TaskEventSupport;
+import org.jbpm.task.query.DeadlineSummary;
+import org.jbpm.task.query.TaskSummary;
+import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExpressionCompiler;
 
 public class TaskService {
     EntityManagerFactory emf;
@@ -88,8 +115,18 @@ public class TaskService {
 
         Map vars = new HashMap();
 
-        //Reader reader;
-        Reader reader = new InputStreamReader(getClass().getResourceAsStream("operations-dsl.mvel"));
+        // Search operations-dsl.mvel, if necessary using superclass if TaskService is subclassed
+        InputStream is = null;
+        for (Class c = getClass(); c != null; c = c.getSuperclass()) {
+            is = c.getResourceAsStream("operations-dsl.mvel");
+            if (is != null) {
+                break;
+            }
+        }
+        if (is == null) {
+        	throw new RuntimeException("Unable To initialise TaskService, could not find Operations DSL");
+        }
+        Reader reader = new InputStreamReader(is);
         try {
             operations = (Map<Operation, List<OperationCommand>>) eval(toString(reader),  vars);
         } catch (IOException e) {
