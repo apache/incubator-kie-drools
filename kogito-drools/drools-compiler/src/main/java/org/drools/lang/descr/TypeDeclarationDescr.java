@@ -22,18 +22,20 @@ import java.io.ObjectOutput;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import org.drools.rule.Namespaceable;
  
 public class TypeDeclarationDescr extends AnnotatedBaseDescr
     implements
-    Namespaceable {
+    Namespaceable, Comparable<TypeDeclarationDescr> {
 
     private static final long            serialVersionUID = 510l;
     private String                       namespace;
     private String                       typeName;
     private Map<String, TypeFieldDescr>  fields;
     private String                       superTypeName;
+    private String                       superTypeNamespace;
 
     public TypeDeclarationDescr() {
         this( null );
@@ -119,6 +121,24 @@ public class TypeDeclarationDescr extends AnnotatedBaseDescr
 
     public void setSuperTypeName( String type ) {
         this.superTypeName = type;
+    }
+
+
+    public String getSuperTypeNamespace() {
+        return superTypeNamespace;
+    }
+
+    public void setSuperTypeNamespace(String superTypeNamespace) {
+        this.superTypeNamespace = superTypeNamespace;
+    }
+
+    public int compareTo(TypeDeclarationDescr descr) {
+        int result = 0;
+        if (this.getSuperTypeName() == null && descr.getSuperTypeName() == null) result = 0;
+        else if (this.getSuperTypeName() != null && this.getSuperTypeName().equals(descr.getTypeName())) result = -1;
+        else if (descr.getSuperTypeName() != null && descr.getSuperTypeName().equals(this.getTypeName())) result = 1;
+        System.err.println("TypeDeclaration Descr compareTo : Compare descr "+ this.getTypeName() + " vs " + descr.getTypeName() + " >>  " + result);
+        return result;
     }
 
 }

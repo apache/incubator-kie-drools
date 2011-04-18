@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.definition.type.FactField;
 import org.mvel2.asm.*;
 
@@ -60,36 +61,39 @@ public class ClassBuilder {
      * @throws InstantiationException
      */
     public byte[] buildClass(ClassDefinition classDef) throws IOException,
-                                                      IntrospectionException,
-                                                      SecurityException,
-                                                      IllegalArgumentException,
-                                                      ClassNotFoundException,
-                                                      NoSuchMethodException,
-                                                      IllegalAccessException,
-                                                      InvocationTargetException,
-                                                      InstantiationException,
-                                                      NoSuchFieldException {
+            IntrospectionException,
+            SecurityException,
+            IllegalArgumentException,
+            ClassNotFoundException,
+            NoSuchMethodException,
+            IllegalAccessException,
+            InvocationTargetException,
+            InstantiationException,
+            NoSuchFieldException {
 
         ClassWriter cw = new ClassWriter( ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS );
         //ClassVisitor cw = new CheckClassAdapter(cwr);
 
         this.buildClassHeader( cw,
-                               classDef );
+                classDef );
 
         // Building fields
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
-            this.buildField( cw,
-                             fieldDef );
+            if (! fieldDef.isInherited())
+                this.buildField( cw,
+                        fieldDef );
         }
 
         // Building default constructor
         this.buildDefaultConstructor( cw,
-                                      classDef );
+                classDef );
 
         // Building constructor with all fields
-        this.buildConstructorWithFields( cw,
-                                         classDef,
-                                         classDef.getFieldsDefinitions() );
+        if (classDef.getFieldsDefinitions().size() > 0) {
+            this.buildConstructorWithFields( cw,
+                    classDef,
+                    classDef.getFieldsDefinitions() );
+        }
 
         // Building constructor with key fields only
         List<FieldDefinition> keys = new LinkedList<FieldDefinition>();
@@ -100,27 +104,29 @@ public class ClassBuilder {
         }
         if ( !keys.isEmpty() && keys.size() != classDef.getFieldsDefinitions().size() ) {
             this.buildConstructorWithFields( cw,
-                                             classDef,
-                                             keys );
+                    classDef,
+                    keys );
         }
 
         // Building methods
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
-            this.buildGetMethod( cw,
-                                 classDef,
-                                 fieldDef );
-            this.buildSetMethod( cw,
-                                 classDef,
-                                 fieldDef );
+            if (! fieldDef.isInherited()) {
+                this.buildGetMethod( cw,
+                        classDef,
+                        fieldDef );
+                this.buildSetMethod( cw,
+                        classDef,
+                        fieldDef );
+            }
         }
 
         this.buildEquals( cw,
-                          classDef );
+                classDef );
         this.buildHashCode( cw,
-                            classDef );
+                classDef );
 
         this.buildToString( cw,
-                            classDef );
+                classDef );
 
         cw.visitEnd();
 
@@ -144,14 +150,14 @@ public class ClassBuilder {
         }
         // Building class header
         cw.visit( Opcodes.V1_5,
-                  Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-                  getInternalType( classDef.getClassName() ),
-                  null,
-                  getInternalType( classDef.getSuperClass() ),
-                  interfaces );
+                Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+                getInternalType( classDef.getClassName() ),
+                null,
+                getInternalType( classDef.getSuperClass() ),
+                interfaces );
 
         cw.visitSource( classDef.getClassName() + ".java",
-                        null );
+                null );
     }
 
     /**
@@ -164,10 +170,10 @@ public class ClassBuilder {
                             FieldDefinition fieldDef) {
         FieldVisitor fv;
         fv = cw.visitField( Opcodes.ACC_PRIVATE,
-                            fieldDef.getName(),
-                            getTypeDescriptor( fieldDef.getTypeName() ),
-                            null,
-                            null );
+                fieldDef.getName(),
+                getTypeDescriptor( fieldDef.getTypeName() ),
+                null,
+                null );
         fv.visitEnd();
     }
 
@@ -182,11 +188,11 @@ public class ClassBuilder {
         // Building default constructor
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "<init>",
-                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           new Type[]{} ),
-                                 null,
-                                 null );
+                    "<init>",
+                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                            new Type[]{} ),
+                    null,
+                    null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -194,37 +200,67 @@ public class ClassBuilder {
                 mv.visitLabel( l0 );
             }
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
+
+            String sup = "";
             try {
-                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                    //Type.getInternalName( Object.class ),
-                                    Type.getInternalName(Class.forName(classDef.getSuperClass())),
-                                    "<init>",
-                                    Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                              new Type[]{} ) );
+                sup = Type.getInternalName(Class.forName(classDef.getSuperClass()));
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                sup = getInternalType( classDef.getSuperClass() );
             }
+            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                    sup,
+                    "<init>",
+                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                            new Type[]{} ) );
+
+            for (FieldDefinition field : classDef.getFieldsDefinitions()) {
+
+                if (! field.isInherited()) {
+                    Object val = getDefaultValue(field);
+
+                    if (val != null) {
+                        mv.visitVarInsn(Opcodes.ALOAD, 0);
+                        mv.visitLdcInsn(val);
+
+                        if (isBoxed(field.getTypeName())) {
+                            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                                    getInternalType(field.getTypeName()),
+                                    "valueOf",
+                                    "("+unBox(field.getTypeName())+")"+getTypeDescriptor(field.getTypeName()));
+                        }
+
+                        mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                getInternalType( classDef.getClassName() ),
+                                field.getName(),
+                                getTypeDescriptor( field.getTypeName() ) );
+
+                    }
+                }
+            }
+
+
+
             mv.visitInsn(Opcodes.RETURN);
             Label l1 = null;
             if ( this.debug ) {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       l1,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        l1,
+                        0 );
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
 
     /**
-     * Creates a constructor that takes and assigns values to all 
+     * Creates a constructor that takes and assigns values to all
      * fields in the order they are declared.
      *
      * @param cw
@@ -243,11 +279,11 @@ public class ClassBuilder {
             }
 
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "<init>",
-                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           params ),
-                                 null,
-                                 null );
+                    "<init>",
+                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                            params ),
+                    null,
+                    null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -255,17 +291,20 @@ public class ClassBuilder {
                 mv.visitLabel( l0 );
             }
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
+
+            String sup = "";
             try {
-                mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                    Type.getInternalName(Class.forName(classDef.getSuperClass())),
-                                    //Type.getInternalName( Object.class ),
-                                    "<init>",
-                                    Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                              new Type[]{} ) );
+                sup = Type.getInternalName(Class.forName(classDef.getSuperClass()));
             } catch (ClassNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                sup = getInternalType( classDef.getSuperClass() );
             }
+
+            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
+                    sup,
+                    "<init>",
+                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                            new Type[]{} ) );
 
             index = 1; // local vars start at 1, as 0 is "this"
             for ( FieldDefinition field : fieldDefs ) {
@@ -274,17 +313,27 @@ public class ClassBuilder {
                     mv.visitLabel( l11 );
                 }
                 mv.visitVarInsn( Opcodes.ALOAD,
-                                 0 );
+                        0 );
                 mv.visitVarInsn( Type.getType( getTypeDescriptor( field.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
-                                 index++ );
+                        index++ );
                 if ( field.getTypeName().equals( "long" ) || field.getTypeName().equals( "double" ) ) {
                     // long and double variables use 2 words on the variables table
                     index++;
                 }
-                mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                   getInternalType( classDef.getClassName() ),
-                                   field.getName(),
-                                   getTypeDescriptor( field.getTypeName() ) );
+
+                if (! field.isInherited()) {
+                    mv.visitFieldInsn( Opcodes.PUTFIELD,
+                            getInternalType( classDef.getClassName() ),
+                            field.getName(),
+                            getTypeDescriptor( field.getTypeName() ) );
+                } else {
+                    mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                            getInternalType(classDef.getClassName()),
+                            field.getWriteMethod(),
+                            Type.getMethodDescriptor(Type.VOID_TYPE,
+                                    new Type[]{Type.getType(getTypeDescriptor(field.getTypeName()))}
+                            ));
+                }
 
             }
 
@@ -294,24 +343,24 @@ public class ClassBuilder {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       l1,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        l1,
+                        0 );
                 for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
                     Label l11 = new Label();
                     mv.visitLabel( l11 );
                     mv.visitLocalVariable( field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ),
-                                           null,
-                                           l0,
-                                           l1,
-                                           0 );
+                            getTypeDescriptor( field.getTypeName() ),
+                            null,
+                            l0,
+                            l1,
+                            0 );
                 }
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
@@ -330,11 +379,11 @@ public class ClassBuilder {
         // set method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 fieldDef.getWriteMethod(),
-                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           new Type[]{Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) )} ),
-                                 null,
-                                 null );
+                    fieldDef.getWriteMethod(),
+                    Type.getMethodDescriptor( Type.VOID_TYPE,
+                            new Type[]{Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) )} ),
+                    null,
+                    null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -342,13 +391,13 @@ public class ClassBuilder {
                 mv.visitLabel( l0 );
             }
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
             mv.visitVarInsn( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
-                             1 );
+                    1 );
             mv.visitFieldInsn( Opcodes.PUTFIELD,
-                               getInternalType( classDef.getClassName() ),
-                               fieldDef.getName(),
-                               getTypeDescriptor( fieldDef.getTypeName() ) );
+                    getInternalType( classDef.getClassName() ),
+                    fieldDef.getName(),
+                    getTypeDescriptor( fieldDef.getTypeName() ) );
 
             mv.visitInsn( Opcodes.RETURN );
             Label l1 = null;
@@ -356,14 +405,14 @@ public class ClassBuilder {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       l1,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        l1,
+                        0 );
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
@@ -382,11 +431,11 @@ public class ClassBuilder {
         // Get method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 fieldDef.getReadMethod(),
-                                 Type.getMethodDescriptor( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ),
-                                                           new Type[]{} ),
-                                 null,
-                                 null );
+                    fieldDef.getReadMethod(),
+                    Type.getMethodDescriptor( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ),
+                            new Type[]{} ),
+                    null,
+                    null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -394,25 +443,25 @@ public class ClassBuilder {
                 mv.visitLabel( l0 );
             }
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
             mv.visitFieldInsn( Opcodes.GETFIELD,
-                               getInternalType( classDef.getClassName() ),
-                               fieldDef.getName(),
-                               getTypeDescriptor( fieldDef.getTypeName() ) );
+                    getInternalType( classDef.getClassName() ),
+                    fieldDef.getName(),
+                    getTypeDescriptor( fieldDef.getTypeName() ) );
             mv.visitInsn( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
             Label l1 = null;
             if ( this.debug ) {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       l1,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        l1,
+                        0 );
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
@@ -423,10 +472,10 @@ public class ClassBuilder {
         // Building equals method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "equals",
-                                 "(Ljava/lang/Object;)Z",
-                                 null,
-                                 null );
+                    "equals",
+                    "(Ljava/lang/Object;)Z",
+                    null,
+                    null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -436,55 +485,55 @@ public class ClassBuilder {
 
             // if ( this == obj ) return true;
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
+                    1 );
             Label l1 = new Label();
             mv.visitJumpInsn( Opcodes.IF_ACMPNE,
-                              l1 );
+                    l1 );
             mv.visitInsn( Opcodes.ICONST_1 );
             mv.visitInsn( Opcodes.IRETURN );
 
             // if ( obj == null ) return false;
             mv.visitLabel( l1 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
+                    1 );
             Label l2 = new Label();
             mv.visitJumpInsn( Opcodes.IFNONNULL,
-                              l2 );
+                    l2 );
             mv.visitInsn( Opcodes.ICONST_0 );
             mv.visitInsn( Opcodes.IRETURN );
 
             // if ( getClass() != obj.getClass() ) return false;
             mv.visitLabel( l2 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( Object.class ),
-                                "getClass",
-                                Type.getMethodDescriptor( Type.getType( Class.class ),
-                                                          new Type[]{} ) );
+                    Type.getInternalName( Object.class ),
+                    "getClass",
+                    Type.getMethodDescriptor( Type.getType( Class.class ),
+                            new Type[]{} ) );
             mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
+                    1 );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( Object.class ),
-                                "getClass",
-                                Type.getMethodDescriptor( Type.getType( Class.class ),
-                                                          new Type[]{} ) );
+                    Type.getInternalName( Object.class ),
+                    "getClass",
+                    Type.getMethodDescriptor( Type.getType( Class.class ),
+                            new Type[]{} ) );
             Label l3 = new Label();
             mv.visitJumpInsn( Opcodes.IF_ACMPEQ,
-                              l3 );
+                    l3 );
             mv.visitInsn( Opcodes.ICONST_0 );
             mv.visitInsn( Opcodes.IRETURN );
 
             // final <classname> other = (<classname>) obj;
             mv.visitLabel( l3 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
+                    1 );
             mv.visitTypeInsn( Opcodes.CHECKCAST,
-                              getInternalType( classDef.getClassName() ) );
+                    getInternalType( classDef.getClassName() ) );
             mv.visitVarInsn( Opcodes.ASTORE,
-                             2 );
+                    2 );
 
             // for each key field
             int count = 0;
@@ -495,39 +544,36 @@ public class ClassBuilder {
                     Label goNext = new Label();
 
                     if ( isPrimitive( field.getTypeName() ) ) {
-                        // if attr is primitive 
+                        // if attr is primitive
 
                         // if ( this.<attr> != other.<booleanAttr> ) return false;
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         0 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                0 );
 
-                        mv.visitVarInsn( Opcodes.ALOAD,
-                                         2 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
+                        mv.visitVarInsn(Opcodes.ALOAD,
+                                2);
+
+                        visitFieldOrGetter(mv, classDef, field);
 
                         if ( field.getTypeName().equals( "long" ) ) {
                             mv.visitInsn( Opcodes.LCMP );
                             mv.visitJumpInsn( Opcodes.IFEQ,
-                                              goNext );
+                                    goNext );
                         } else if ( field.getTypeName().equals( "double" ) ) {
                             mv.visitInsn( Opcodes.DCMPL );
                             mv.visitJumpInsn( Opcodes.IFEQ,
-                                              goNext );
+                                    goNext );
                         } else if ( field.getTypeName().equals( "float" ) ) {
                             mv.visitInsn( Opcodes.FCMPL );
                             mv.visitJumpInsn( Opcodes.IFEQ,
-                                              goNext );
+                                    goNext );
                         } else {
                             // boolean, byte, char, short, int
                             mv.visitJumpInsn( Opcodes.IF_ICMPEQ,
-                                              goNext );
+                                    goNext );
                         }
                         mv.visitInsn( Opcodes.ICONST_0 );
                         mv.visitInsn( Opcodes.IRETURN );
@@ -537,54 +583,49 @@ public class ClassBuilder {
                         // if ( this.<attr> == null && other.<attr> != null ||
                         //      this.<attr> != null && ! this.<attr>.equals( other.<attr> ) ) return false;
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         0 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                0 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         Label secondIfPart = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                          secondIfPart );
+                                secondIfPart );
 
                         // if ( other.objAttr != null ) return false;
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         2 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                2 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         Label returnFalse = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                          returnFalse );
+                                returnFalse );
 
                         mv.visitLabel( secondIfPart );
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         0 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                0 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         mv.visitJumpInsn( Opcodes.IFNULL,
-                                          goNext );
+                                goNext );
 
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         0 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                0 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         2 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                2 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            getInternalType( field.getTypeName() ),
-                                            "equals",
-                                            "(Ljava/lang/Object;)Z" );
+                                getInternalType( field.getTypeName() ),
+                                "equals",
+                                "(Ljava/lang/Object;)Z" );
                         mv.visitJumpInsn( Opcodes.IFNE,
-                                          goNext );
+                                goNext );
 
                         mv.visitLabel( returnFalse );
                         mv.visitInsn( Opcodes.ICONST_0 );
@@ -604,26 +645,26 @@ public class ClassBuilder {
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        lastLabel,
+                        0 );
                 mv.visitLocalVariable( "obj",
-                                       Type.getDescriptor( Object.class ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       1 );
+                        Type.getDescriptor( Object.class ),
+                        null,
+                        l0,
+                        lastLabel,
+                        1 );
                 mv.visitLocalVariable( "other",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       2 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        lastLabel,
+                        2 );
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
@@ -635,10 +676,10 @@ public class ClassBuilder {
         // Building hashCode() method
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "hashCode",
-                                 "()I",
-                                 null,
-                                 null );
+                    "hashCode",
+                    "()I",
+                    null,
+                    null );
             mv.visitCode();
             Label l0 = null;
             if ( this.debug ) {
@@ -649,7 +690,7 @@ public class ClassBuilder {
             // int result = 1;
             mv.visitInsn( Opcodes.ICONST_1 );
             mv.visitVarInsn( Opcodes.ISTORE,
-                             1 );
+                    1 );
 
             // for each key field
             for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
@@ -657,44 +698,41 @@ public class ClassBuilder {
 
                     // result = result * 31 + <attr_hash>
                     mv.visitVarInsn( Opcodes.ILOAD,
-                                     1 );
+                            1 );
                     mv.visitIntInsn( Opcodes.BIPUSH,
-                                     31 );
+                            31 );
                     mv.visitVarInsn( Opcodes.ILOAD,
-                                     1 );
+                            1 );
                     mv.visitInsn( Opcodes.IMUL );
 
-                    mv.visitVarInsn( Opcodes.ALOAD,
-                                     0 );
-                    mv.visitFieldInsn( Opcodes.GETFIELD,
-                                       getInternalType( classDef.getClassName() ),
-                                       field.getName(),
-                                       getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitVarInsn(Opcodes.ALOAD,
+                            0);
+
+                    visitFieldOrGetter(mv, classDef, field);
 
                     if ( "boolean".equals( field.getTypeName() ) ) {
                         // attr_hash ::== <boolean_attr> ? 1231 : 1237;
                         Label blabel1 = new Label();
                         mv.visitJumpInsn( Opcodes.IFEQ,
-                                          blabel1 );
+                                blabel1 );
                         mv.visitIntInsn( Opcodes.SIPUSH,
-                                         1231 );
+                                1231 );
                         Label blabel2 = new Label();
                         mv.visitJumpInsn( Opcodes.GOTO,
-                                          blabel2 );
+                                blabel2 );
                         mv.visitLabel( blabel1 );
                         mv.visitIntInsn( Opcodes.SIPUSH,
-                                         1237 );
+                                1237 );
                         mv.visitLabel( blabel2 );
                     } else if ( "long".equals( field.getTypeName() ) ) {
                         // attr_hash ::== (int) (longAttr ^ (longAttr >>> 32))
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         0 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                0 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         mv.visitIntInsn( Opcodes.BIPUSH,
-                                         32 );
+                                32 );
                         mv.visitInsn( Opcodes.LUSHR );
                         mv.visitInsn( Opcodes.LXOR );
                         mv.visitInsn( Opcodes.L2I );
@@ -702,18 +740,18 @@ public class ClassBuilder {
                     } else if ( "float".equals( field.getTypeName() ) ) {
                         // attr_hash ::== Float.floatToIntBits( floatAttr );
                         mv.visitMethodInsn( Opcodes.INVOKESTATIC,
-                                            Type.getInternalName( Float.class ),
-                                            "floatToIntBits",
-                                            "(F)I" );
+                                Type.getInternalName( Float.class ),
+                                "floatToIntBits",
+                                "(F)I" );
                     } else if ( "double".equals( field.getTypeName() ) ) {
                         // attr_hash ::== (int) (Double.doubleToLongBits( doubleAttr ) ^ (Double.doubleToLongBits( doubleAttr ) >>> 32));
                         mv.visitMethodInsn( Opcodes.INVOKESTATIC,
-                                            Type.getInternalName( Double.class ),
-                                            "doubleToLongBits",
-                                            "(D)J" );
+                                Type.getInternalName( Double.class ),
+                                "doubleToLongBits",
+                                "(D)J" );
                         mv.visitInsn( Opcodes.DUP2 );
                         mv.visitIntInsn( Opcodes.BIPUSH,
-                                         32 );
+                                32 );
                         mv.visitInsn( Opcodes.LUSHR );
                         mv.visitInsn( Opcodes.LXOR );
                         mv.visitInsn( Opcodes.L2I );
@@ -721,32 +759,31 @@ public class ClassBuilder {
                         // attr_hash ::== ((objAttr == null) ? 0 : objAttr.hashCode());
                         Label olabel1 = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
-                                          olabel1 );
+                                olabel1 );
                         mv.visitInsn( Opcodes.ICONST_0 );
                         Label olabel2 = new Label();
                         mv.visitJumpInsn( Opcodes.GOTO,
-                                          olabel2 );
+                                olabel2 );
                         mv.visitLabel( olabel1 );
                         mv.visitVarInsn( Opcodes.ALOAD,
-                                         0 );
-                        mv.visitFieldInsn( Opcodes.GETFIELD,
-                                           getInternalType( classDef.getClassName() ),
-                                           field.getName(),
-                                           getTypeDescriptor( field.getTypeName() ) );
+                                0 );
+
+                        visitFieldOrGetter(mv, classDef, field);
+
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                            getInternalType( field.getTypeName() ),
-                                            "hashCode",
-                                            "()I" );
+                                getInternalType( field.getTypeName() ),
+                                "hashCode",
+                                "()I" );
                         mv.visitLabel( olabel2 );
                     }
 
                     mv.visitInsn( Opcodes.IADD );
                     mv.visitVarInsn( Opcodes.ISTORE,
-                                     1 );
+                            1 );
                 }
             }
             mv.visitVarInsn( Opcodes.ILOAD,
-                             1 );
+                    1 );
             mv.visitInsn( Opcodes.IRETURN );
 
             Label lastLabel = null;
@@ -754,20 +791,20 @@ public class ClassBuilder {
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        lastLabel,
+                        0 );
                 mv.visitLocalVariable( "hash",
-                                       Type.getDescriptor( int.class ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       1 );
+                        Type.getDescriptor( int.class ),
+                        null,
+                        l0,
+                        lastLabel,
+                        1 );
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
@@ -777,10 +814,10 @@ public class ClassBuilder {
         MethodVisitor mv;
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
-                                 "toString",
-                                 "()Ljava/lang/String;",
-                                 null,
-                                 null );
+                    "toString",
+                    "()Ljava/lang/String;",
+                    null,
+                    null );
             mv.visitCode();
 
             Label l0 = null;
@@ -791,39 +828,39 @@ public class ClassBuilder {
 
             // StringBuilder buf = new StringBuilder();
             mv.visitTypeInsn( Opcodes.NEW,
-                              Type.getInternalName( StringBuilder.class ) );
+                    Type.getInternalName( StringBuilder.class ) );
             mv.visitInsn( Opcodes.DUP );
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                                Type.getInternalName( StringBuilder.class ),
-                                "<init>",
-                                "()V" );
+                    Type.getInternalName( StringBuilder.class ),
+                    "<init>",
+                    "()V" );
             mv.visitVarInsn( Opcodes.ASTORE,
-                             1 );
+                    1 );
 
             // buf.append(this.getClass().getSimpleName())
             mv.visitVarInsn( Opcodes.ALOAD,
-                             1 );
+                    1 );
             mv.visitVarInsn( Opcodes.ALOAD,
-                             0 );
+                    0 );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                getInternalType( classDef.getClassName() ),
-                                "getClass",
-                                "()Ljava/lang/Class;" );
+                    getInternalType( classDef.getClassName() ),
+                    "getClass",
+                    "()Ljava/lang/Class;" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( Class.class ),
-                                "getSimpleName",
-                                "()Ljava/lang/String;" );
+                    Type.getInternalName( Class.class ),
+                    "getSimpleName",
+                    "()Ljava/lang/String;" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuilder.class ),
-                                "append",
-                                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+                    Type.getInternalName( StringBuilder.class ),
+                    "append",
+                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
             // buf.append("( ");
             mv.visitLdcInsn( "( " );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuilder.class ),
-                                "append",
-                                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+                    Type.getInternalName( StringBuilder.class ),
+                    "append",
+                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
             boolean previous = false;
             for ( FieldDefinition field : classDef.getFieldsDefinitions() ) {
@@ -831,58 +868,57 @@ public class ClassBuilder {
                     // buf.append(", ");
                     mv.visitLdcInsn( ", " );
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( StringBuilder.class ),
-                                        "append",
-                                        "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+                            Type.getInternalName( StringBuilder.class ),
+                            "append",
+                            "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
                 }
                 // buf.append(attrName)
                 mv.visitLdcInsn( field.getName() );
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    Type.getInternalName( StringBuilder.class ),
-                                    "append",
-                                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+                        Type.getInternalName( StringBuilder.class ),
+                        "append",
+                        "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
                 // buf.append("=");
                 mv.visitLdcInsn( "=" );
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                    Type.getInternalName( StringBuilder.class ),
-                                    "append",
-                                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+                        Type.getInternalName( StringBuilder.class ),
+                        "append",
+                        "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
 
                 // buf.append(attrValue)
-                mv.visitVarInsn( Opcodes.ALOAD,
-                                 0 );
-                mv.visitFieldInsn( Opcodes.GETFIELD,
-                                   getInternalType( classDef.getClassName() ),
-                                   field.getName(),
-                                   getTypeDescriptor( field.getTypeName() ) );
+                mv.visitVarInsn(Opcodes.ALOAD,
+                        0);
+
+                visitFieldOrGetter(mv,classDef,field);
+
 
                 if ( isPrimitive( field.getTypeName() ) ) {
                     String type = field.getTypeName().matches( "(byte|short)" ) ? "int" : field.getTypeName();
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( StringBuilder.class ),
-                                        "append",
-                                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                                                  new Type[]{Type.getType( getTypeDescriptor( type ) )} ) );
+                            Type.getInternalName( StringBuilder.class ),
+                            "append",
+                            Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
+                                    new Type[]{Type.getType( getTypeDescriptor( type ) )} ) );
                 } else {
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                        Type.getInternalName( StringBuilder.class ),
-                                        "append",
-                                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                                                  new Type[]{Type.getType( Object.class )} ) );
+                            Type.getInternalName( StringBuilder.class ),
+                            "append",
+                            Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
+                                    new Type[]{Type.getType( Object.class )} ) );
                 }
                 previous = true;
             }
 
             mv.visitLdcInsn( " )" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuilder.class ),
-                                "append",
-                                "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
+                    Type.getInternalName( StringBuilder.class ),
+                    "append",
+                    "(Ljava/lang/String;)Ljava/lang/StringBuilder;" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                Type.getInternalName( StringBuilder.class ),
-                                "toString",
-                                "()Ljava/lang/String;" );
+                    Type.getInternalName( StringBuilder.class ),
+                    "toString",
+                    "()Ljava/lang/String;" );
             mv.visitInsn( Opcodes.ARETURN );
 
             Label lastLabel = null;
@@ -890,20 +926,20 @@ public class ClassBuilder {
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                                       getTypeDescriptor( classDef.getClassName() ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       0 );
+                        getTypeDescriptor( classDef.getClassName() ),
+                        null,
+                        l0,
+                        lastLabel,
+                        0 );
                 mv.visitLocalVariable( "buf",
-                                       Type.getDescriptor( StringBuilder.class ),
-                                       null,
-                                       l0,
-                                       lastLabel,
-                                       1 );
+                        Type.getDescriptor( StringBuilder.class ),
+                        null,
+                        l0,
+                        lastLabel,
+                        1 );
             }
             mv.visitMaxs( 0,
-                          0 );
+                    0 );
             mv.visitEnd();
         }
     }
@@ -911,11 +947,11 @@ public class ClassBuilder {
     /**
      * Returns the corresponding internal type representation for the
      * given type.
-     * 
+     *
      * I decided to not use the ASM Type class methods because they require
      * resolving the actual type into a Class instance and at this point,
      * I think it is best to delay type resolution until it is really needed.
-     * 
+     *
      * @param type
      * @return
      */
@@ -940,10 +976,10 @@ public class ClassBuilder {
         } else if ( "void".equals( type ) ) {
             internalType = "V";
         } else if ( type != null ) {
-            // I think this will fail for inner classes, but we don't really 
+            // I think this will fail for inner classes, but we don't really
             // support inner class generation at the moment
             internalType = type.replace( '.',
-                                         '/' );
+                    '/' );
         }
         return internalType;
     }
@@ -951,11 +987,11 @@ public class ClassBuilder {
     /**
      * Returns the corresponding type descriptor for the
      * given type.
-     * 
+     *
      * I decided to not use the ASM Type class methods because they require
      * resolving the actual type into a Class instance and at this point,
      * I think it is best to delay type resolution until it is really needed.
-     * 
+     *
      * @param type
      * @return
      */
@@ -980,17 +1016,17 @@ public class ClassBuilder {
         } else if ( "void".equals( type ) ) {
             internalType = "V";
         } else if ( type != null ) {
-            // I think this will fail for inner classes, but we don't really 
+            // I think this will fail for inner classes, but we don't really
             // support inner class generation at the moment
             internalType = "L" + type.replace( '.',
-                                               '/' ) + ";";
+                    '/' ) + ";";
         }
         return internalType;
     }
 
     /**
      * Returns true if the provided type is a primitive type
-     *  
+     *
      * @param type
      * @return
      */
@@ -1002,4 +1038,104 @@ public class ClassBuilder {
         return isPrimitive;
     }
 
+
+    private void visitFieldOrGetter(MethodVisitor mv, ClassDefinition classDef, FieldDefinition field) {
+        if (! field.isInherited()) {
+            mv.visitFieldInsn( Opcodes.GETFIELD,
+                    getInternalType( classDef.getClassName() ),
+                    field.getName(),
+                    getTypeDescriptor( field.getTypeName() ) );
+        } else {
+            mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
+                    getInternalType( classDef.getClassName()),
+                    field.getReadMethod(),
+                    Type.getMethodDescriptor( Type.getType( getTypeDescriptor( field.getTypeName() ) ),
+                            new Type[]{} )
+            );
+        }
+    }
+
+
+
+    private Object getDefaultValue(FieldDefinition fld) {
+        String type = fld.getTypeName();
+        if ( "byte".equals( type ) ) {
+            return fld.getDefaultValueAs_byte();
+        } else if ( "char".equals( type ) ) {
+            return fld.getDefaultValueAs_char();
+        } else if ( "double".equals( type ) ) {
+            return fld.getDefaultValueAs_double();
+        } else if ( "float".equals( type ) ) {
+            return fld.getDefaultValueAs_float();
+        } else if ( "int".equals( type ) ) {
+            return fld.getDefaultValueAs_int();
+        } else if ( "long".equals( type ) ) {
+            return fld.getDefaultValueAs_long();
+        } else if ( "short".equals( type ) ) {
+            return fld.getDefaultValueAs_short();
+        } else if ( "boolean".equals( type ) ) {
+            return fld.getDefaultValueAs_boolean();
+
+        } else if ( "java.lang.String".equals( type ) ) {
+            return fld.getDefaultValueAsString();
+
+        } else if ( "java.lang.Byte".equals( type ) || "Byte".equals( type )) {
+            return fld.getDefaultValueAsByte();
+        } else if ( "java.lang.Character".equals( type ) || "Character".equals( type ) ) {
+            return fld.getDefaultValueAsChar();
+        } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
+            return fld.getDefaultValueAsDouble();
+        } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
+            return fld.getDefaultValueAsFloat();
+        } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
+            return fld.getDefaultValueAsInt();
+        } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
+            return fld.getDefaultValueAsLong();
+        } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
+            return fld.getDefaultValueAsShort();
+        } else if ( "java.lang.Boolean".equals( type ) || "Boolean".equals( type )) {
+            return fld.getDefaultValueAsBoolean();
+        }
+
+        return null;
+
+    }
+
+    private boolean isBoxed(String type) {
+        if (type == null) return false;
+        return "java.lang.Short".equals(type)
+                || "java.lang.Byte".equals(type)
+                || "java.lang.Character".equals(type)
+                || "java.lang.Double".equals(type)
+                || "java.lang.Float".equals(type)
+                || "java.lang.Integer".equals(type)
+                || "java.lang.Boolean".equals(type)
+                || "java.lang.Long".equals(type) ;
+    }
+
+
+
+    private String unBox(String type) {
+        if ( "java.lang.Byte".equals( type ) || "Byte".equals( type )) {
+            return getInternalType("byte");
+        } else if ( "java.lang.Character".equals( type ) || "Character".equals( type ) ) {
+            return getInternalType("char");
+        } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
+            return getInternalType("double");
+        } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
+            return getInternalType("float");
+        } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
+            return getInternalType("int");
+        } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
+            return getInternalType("long");
+        } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
+            return getInternalType("short");
+        } else if ( "java.lang.Boolean".equals( type ) || "Boolean".equals( type )) {
+            return getInternalType("boolean");
+        } else {
+            throw new RuntimeDroolsException("Unable to recognize boxed primitive type " + type);
+        }
+    }
+
 }
+

@@ -16,11 +16,7 @@
 
 package org.drools.rule.builder;
 
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import org.drools.base.EnabledBoolean;
 import org.drools.compiler.Dialect;
@@ -30,10 +26,8 @@ import org.drools.core.util.DateUtils;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.rule.*;
 import org.drools.rule.Package;
-import org.drools.rule.Query;
-import org.drools.rule.Rule;
-import org.drools.rule.RuleConditionElement;
 import org.drools.spi.DeclarationScopeResolver;
 
 /**
@@ -56,6 +50,9 @@ public class RuleBuildContext extends PackageBuildContext {
 
     // a simple counter for patterns
     private int                         patternId = -1;
+
+
+    protected Map<String, Declaration> declarations;
 
     /**
      * Default constructor
@@ -140,6 +137,19 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public Stack<RuleConditionElement> getBuildStack() {
         return this.buildStack;
+    }
+
+
+
+
+    public void addDeclaration(Declaration decl) {
+        if (declarations == null)
+            declarations = new Hashtable<String,Declaration>();
+        this.declarations.put(decl.getIdentifier(),decl);
+    }
+
+    public Declaration getDeclaration(String identifier) {
+        return declarations == null ? null : declarations.get(identifier);
     }
 
 

@@ -69,8 +69,13 @@ public class AndDescr extends BaseDescr
             addDescr( baseDescr );
         }
     }
-    
-    @Override
+
+    public boolean removeDescr(BaseDescr baseDescr) {
+        return baseDescr == null ? false : descrs.remove(baseDescr);
+    }
+
+
+
     public String toString() {
         return "[AND "+descrs+" ]";
     }
