@@ -454,7 +454,7 @@ public class DRLParser {
                 if ( state.failed ) return null;
             }
 
-            boolean qualified = type.indexOf( '.' ) >= 0;
+            //boolean qualified = type.indexOf( '.' ) >= 0;
             while ( //! qualified &&
                     input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
@@ -2560,7 +2560,7 @@ public class DRLParser {
      * @throws RecognitionException
      */
     private void fromExpression( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        String expr = conditionalExpression();
+        String expr = conditionalOrExpression();
         if ( state.failed ) return;
 
         if ( state.backtracking == 0 ) {
@@ -2967,7 +2967,7 @@ public class DRLParser {
                 }
                 // remove the "then" keyword and any subsequent spaces and line breaks
                 // keep indendation of 1st non-blank line
-                chunk = chunk.replaceFirst( "^then\\s*[\\r\\n]", "" );
+                chunk = chunk.replaceFirst( "^then\\s*\\r?\\n?", "" );
             }
             rule.rhs( chunk );
 
@@ -3103,28 +3103,25 @@ public class DRLParser {
     }
 
     /**
-     * elementValuePair := (ID EQUALS)? elementValue
+     * elementValuePair := ID EQUALS elementValue
      * @param annotation
      */
     private void elementValuePair( AnnotationDescrBuilder annotation ) {
         try {
-            String key = null;
-            if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.EQUALS_ASSIGN ) {
-                Token id = match( input,
-                                  DRLLexer.ID,
-                                  null,
-                                  null,
-                                  DroolsEditorType.IDENTIFIER );
-                if ( state.failed ) return;
-                key = id.getText();
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return;
+            String key = id.getText();
 
-                match( input,
-                       DRLLexer.EQUALS_ASSIGN,
-                       null,
-                       null,
-                       DroolsEditorType.SYMBOL );
-                if ( state.failed ) return;
-            } 
+            match( input,
+                   DRLLexer.EQUALS_ASSIGN,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
 
             String value = elementValue();
             if ( value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
@@ -3451,6 +3448,26 @@ public class DRLParser {
     public String conditionalExpression() throws RecognitionException {
         int first = input.index();
         exprParser.conditionalExpression();
+        if ( state.failed ) return null;
+
+        if ( state.backtracking == 0 && input.index() > first ) {
+            // expression consumed something
+            String expr = input.toString( first,
+                                          input.LT( -1 ).getTokenIndex() );
+            return expr;
+        }
+        return null;
+    }
+
+    /**
+     * Matches a conditional || expression
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public String conditionalOrExpression() throws RecognitionException {
+        int first = input.index();
+        exprParser.conditionalOrExpression();
         if ( state.failed ) return null;
 
         if ( state.backtracking == 0 && input.index() > first ) {
