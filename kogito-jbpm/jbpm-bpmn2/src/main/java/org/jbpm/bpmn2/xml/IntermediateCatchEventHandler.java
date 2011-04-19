@@ -158,8 +158,18 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 while (subNode instanceof Element) {
                     String subNodeName = subNode.getNodeName();
                     if ("timeCycle".equals(subNodeName)) {
-                        String period = subNode.getTextContent();
-                        timer.setDelay(period);
+                        String delay = subNode.getTextContent();
+                    	int index = delay.indexOf("###");
+                    	if (index != -1) {
+                    		String period = delay.substring(index + 3);
+                    		delay = delay.substring(0, index);
+                            timer.setPeriod(period);
+                    	}
+                    	timer.setDelay(delay);
+                        break;
+                    } else if ("timeDuration".equals(subNodeName)) {
+                        String delay = subNode.getTextContent();
+                        timer.setDelay(delay);
                         break;
                     }
                     subNode = subNode.getNextSibling();

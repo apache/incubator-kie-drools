@@ -89,10 +89,18 @@ public class EventNodeHandler extends AbstractNodeHandler {
                     xmlDump.append("cancelActivity=\"false\" ");
                 }
                 xmlDump.append(">" + EOL);
-                xmlDump.append(
-                    "      <timerEventDefinition>" + EOL +
-                    "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars((String) eventNode.getMetaData("TimeCycle")) + "</timeCycle>" + EOL +
-                    "      </timerEventDefinition>" + EOL);
+                String duration = (String) eventNode.getMetaData("TimeDuration");
+                if (duration != null) {
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
+                } else {
+	                xmlDump.append(
+	                    "      <timerEventDefinition>" + EOL +
+	                    "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars((String) eventNode.getMetaData("TimeCycle")) + "</timeCycle>" + EOL +
+	                    "      </timerEventDefinition>" + EOL);
+                }
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Compensate-")) {
                 type = type.substring(attachedTo.length() + 7);

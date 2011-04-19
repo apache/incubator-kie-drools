@@ -279,12 +279,26 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     } else if (type.startsWith("Timer-")) {
                         boolean cancelActivity = (Boolean) node.getMetaData().get("CancelActivity");
                         CompositeContextNode compositeNode = (CompositeContextNode) attachedNode;
+                        String timeDuration = (String) node.getMetaData().get("TimeDuration");
                         String timeCycle = (String) node.getMetaData().get("TimeCycle");
                         Timer timer = new Timer();
-                        timer.setDelay(timeCycle);
-                        compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                            (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
-                            "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + "\", null);"));
+                        if (timeDuration != null) {
+                        	timer.setDelay(timeDuration);
+                            compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
+                                (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
+                                "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeDuration + "\", null);"));
+                        } else if (timeCycle != null) {
+                        	int index = timeCycle.indexOf("###");
+                        	if (index != -1) {
+                        		String period = timeCycle.substring(index + 3);
+                        		timeCycle = timeCycle.substring(0, index);
+                                timer.setPeriod(period);
+                        	}
+                        	timer.setDelay(timeCycle);
+                            compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
+                                (cancelActivity ? "((org.jbpm.workflow.instance.NodeInstance) kcontext.getNodeInstance()).cancel();" : "") +
+                                "kcontext.getProcessInstance().signalEvent(\"Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "\", null);"));
+                        }
                     } else if (type.startsWith("Compensate-")) {
                     	String uniqueId = (String) node.getMetaData().get("UniqueId");
             	        String eventType = "Compensate-" + uniqueId;

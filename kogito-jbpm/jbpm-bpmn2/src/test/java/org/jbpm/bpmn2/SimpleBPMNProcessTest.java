@@ -576,17 +576,40 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    public void testTimerBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEvent.bpmn2");
+    public void testTimerBoundaryEventDuration() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         Thread.sleep(1000);
         ksession = restoreSession(ksession, true);
-        System.out.println("Firing timer");
-        ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    public void testTimerBoundaryEventCycle1() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycle1.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+        ksession = restoreSession(ksession, true);
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    public void testTimerBoundaryEventCycle2() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventCycle2.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        Thread.sleep(1000);
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+        Thread.sleep(1000);
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		ksession.abortProcessInstance(processInstance.getId());
+        Thread.sleep(1000);
     }
 
     public void testTimerBoundaryEventInterrupting() throws Exception {
@@ -731,8 +754,8 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    public void testIntermediateCatchEventTimer() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimer.bpmn2");
+    public void testIntermediateCatchEventTimerDuration() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
@@ -743,6 +766,35 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    public void testIntermediateCatchEventTimerCycle1() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycle1.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now wait for 1 second for timer to trigger
+        Thread.sleep(1000);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ksession.fireAllRules();
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
+
+    public void testIntermediateCatchEventTimerCycle2() throws Exception {
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerCycle2.bpmn2");
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        // now wait for 1 second for timer to trigger
+        Thread.sleep(1000);
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+        Thread.sleep(1000);
+		assertProcessInstanceActive(processInstance.getId(), ksession);
+		ksession.abortProcessInstance(processInstance.getId());
+        Thread.sleep(1000);
     }
 
     public void testIntermediateCatchEventCondition() throws Exception {

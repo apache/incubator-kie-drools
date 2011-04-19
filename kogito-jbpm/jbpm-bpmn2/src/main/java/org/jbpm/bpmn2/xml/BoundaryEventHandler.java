@@ -165,17 +165,28 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
             if ("timerEventDefinition".equals(nodeName)) {
+                String timeDuration = null;
                 String timeCycle = null;
                 org.w3c.dom.Node subNode = xmlNode.getFirstChild();
                 while (subNode instanceof Element) {
                     String subNodeName = subNode.getNodeName();
-                    if ("timeCycle".equals(subNodeName)) {
+                    if ("timeDuration".equals(subNodeName)) {
+                        timeDuration = subNode.getTextContent();
+                        break;
+                    } else if ("timeCycle".equals(subNodeName)) {
                         timeCycle = subNode.getTextContent();
                         break;
                     }
                     subNode = subNode.getNextSibling();
                 }
-                if (timeCycle != null && timeCycle.trim().length() > 0) {
+                if (timeDuration != null && timeDuration.trim().length() > 0) {
+                    List<EventFilter> eventFilters = new ArrayList<EventFilter>();
+                    EventTypeFilter eventFilter = new EventTypeFilter();
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration);
+                    eventFilters.add(eventFilter);
+                    eventNode.setEventFilters(eventFilters);
+                    eventNode.setMetaData("TimeDuration", timeDuration);
+                } else if (timeCycle != null && timeCycle.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType("Timer-" + attachedTo + "-" + timeCycle);
