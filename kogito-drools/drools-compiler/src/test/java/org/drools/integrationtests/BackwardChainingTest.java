@@ -1140,7 +1140,7 @@ public class BackwardChainingTest {
             "end\n"            
             ;            
             
-//        System.out.println( str );
+        System.out.println( str );
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
