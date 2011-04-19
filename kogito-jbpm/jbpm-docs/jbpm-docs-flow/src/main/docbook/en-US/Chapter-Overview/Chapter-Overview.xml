@@ -28,13 +28,12 @@
     </section>
 
     <section>
-      <title>jBPM5 Eclipse Plugin for creating BPMN2 processes</title>
+      <title>New BPMN 2.0 Eclipse Plugin for creating BPMN2 processes</title>
 
-      <para>This new Eclipse plugin is being created to support the full BPMN2 specification.  It is currently still
-      under development and only supports a limited number of constructs and attributes, but can already be used to
-      create simple BPMN2 processes.</para>
+      <para>This new Eclipse plugin is being created to support the full BPMN 2.0 specification.  It is currently still
+      under development but can already be used to create executable BPMN2 processes.</para>
       <figure>
-        <title>The jBPM editor for creating BPMN2 processes</title>
+        <title>The BPMN 2.0 editor for creating BPMN2 processes</title>
         <mediaobject>
           <imageobject>
 	    <imagedata align="center" fileref="images/Chapter-Overview/EclipseJBPM.png" format="PNG" role="" />

@@ -77,22 +77,16 @@ public class BPMNPlaneHandler extends BaseAbstractHandler implements Handler {
                 break;
             }
         }
-        for (NodeInfo nodeInfo: processInfo.getNodeInfos()) {
-        	boolean found = processNodeInfo(nodeInfo, process.getNodes());
-            if (!found) {
-                throw new IllegalArgumentException(
-                    "Could not find node " + nodeInfo.getNodeRef());
-            }
-        }
-        postProcessNodeOffset(process.getNodes(), 0, 0);
-        for (ConnectionInfo connectionInfo: processInfo.getConnectionInfos()) {
-            if (connectionInfo.getBendpoints() != null) {
-            	boolean found = processConnectionInfo(connectionInfo, process.getNodes());
-                if (!found) {
-                    throw new IllegalArgumentException(
-                        "Could not find connection " + connectionInfo.getElementRef());
-                }
-            }
+        if (process != null) {
+	        for (NodeInfo nodeInfo: processInfo.getNodeInfos()) {
+	        	processNodeInfo(nodeInfo, process.getNodes());
+	        }
+	        postProcessNodeOffset(process.getNodes(), 0, 0);
+	        for (ConnectionInfo connectionInfo: processInfo.getConnectionInfos()) {
+	            if (connectionInfo.getBendpoints() != null) {
+	            	processConnectionInfo(connectionInfo, process.getNodes());
+	            }
+	        }
         }
         return processInfo;
     }

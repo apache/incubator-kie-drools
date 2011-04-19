@@ -70,6 +70,7 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 		final String targetRef = attrs.getValue("targetRef");
 		final String bendpoints = attrs.getValue("g:bendpoints");
 		final String name = attrs.getValue("name");
+		final String priority = attrs.getValue("http://www.jboss.org/drools", "priority");
 
 		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		
@@ -92,6 +93,9 @@ public class SequenceFlowHandler extends BaseAbstractHandler implements Handler 
 		SequenceFlow connection = new SequenceFlow(id, sourceRef, targetRef);
 		connection.setBendpoints(bendpoints);
 		connection.setName(name);
+		if (priority != null) {
+			connection.setPriority(Integer.parseInt(priority));
+		}
 		
 		connections.add(connection);
 

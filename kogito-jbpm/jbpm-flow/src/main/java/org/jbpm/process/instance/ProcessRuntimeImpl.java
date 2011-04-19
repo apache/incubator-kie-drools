@@ -114,6 +114,16 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
+    	ProcessInstance processInstance = createProcessInstance(processId, parameters);
+        if ( processInstance != null ) {
+            // start process instance
+        	return startProcessInstance(processInstance.getId());
+        }
+        return null;
+    }
+    
+    public ProcessInstance createProcessInstance(String processId,
+                                                 Map<String, Object> parameters) {
         try {
             kruntime.startOperation();
             if ( !kruntime.getActionQueue().isEmpty() ) {
@@ -123,15 +133,23 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             if ( process == null ) {
                 throw new IllegalArgumentException( "Unknown process ID: " + processId );
             }
-            org.jbpm.process.instance.ProcessInstance processInstance = startProcess( process, parameters );
-
-            if ( processInstance != null ) {
-                // start process instance
-                getProcessEventSupport().fireBeforeProcessStarted( processInstance, kruntime );
-                ((org.jbpm.process.instance.ProcessInstance) processInstance).start();
-                getProcessEventSupport().fireAfterProcessStarted( processInstance, kruntime );
+            return startProcess( process, parameters );
+        } finally {
+        	kruntime.endOperation();
+        }
+    }
+    
+    public ProcessInstance startProcessInstance(long processInstanceId) {
+        try {
+            kruntime.startOperation();
+            if ( !kruntime.getActionQueue().isEmpty() ) {
+            	kruntime.executeQueuedActions();
             }
-            return processInstance;
+            ProcessInstance processInstance = getProcessInstance(processInstanceId);
+	        getProcessEventSupport().fireBeforeProcessStarted( processInstance, kruntime );
+	        ((org.jbpm.process.instance.ProcessInstance) processInstance).start();
+	        getProcessEventSupport().fireAfterProcessStarted( processInstance, kruntime );
+	        return processInstance;
         } finally {
         	kruntime.endOperation();
         }

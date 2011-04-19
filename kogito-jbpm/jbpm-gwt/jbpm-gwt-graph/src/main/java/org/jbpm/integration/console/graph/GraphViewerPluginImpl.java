@@ -52,8 +52,8 @@ import org.jboss.bpm.console.client.model.DiagramNodeInfo;
 import org.jboss.bpm.console.server.plugin.GraphViewerPlugin;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.audit.ProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
@@ -64,15 +64,14 @@ import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	
 	private KnowledgeBase kbase;
-	private JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
 
 	public List<ActiveNodeInfo> getActiveNodeInfo(String instanceId) {
-		ProcessInstanceLog processInstance = log.findProcessInstance(new Long(instanceId));
+		ProcessInstanceLog processInstance = ProcessInstanceDbLog.findProcessInstance(new Long(instanceId));
 		if (processInstance == null) {
 			throw new IllegalArgumentException("Could not find process instance " + instanceId);
 		}
 		Map<String, NodeInstanceLog> nodeInstances = new HashMap<String, NodeInstanceLog>();
-		for (NodeInstanceLog nodeInstance: log.findNodeInstances(new Long(instanceId))) {
+		for (NodeInstanceLog nodeInstance: ProcessInstanceDbLog.findNodeInstances(new Long(instanceId))) {
 			if (nodeInstance.getType() == NodeInstanceLog.TYPE_ENTER) {
 				nodeInstances.put(nodeInstance.getNodeInstanceId(), nodeInstance);
 			} else {

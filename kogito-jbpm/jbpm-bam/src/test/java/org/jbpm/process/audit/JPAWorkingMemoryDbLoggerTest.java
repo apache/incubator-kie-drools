@@ -87,7 +87,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 		StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
         new JPAWorkingMemoryDbLogger(session);
-        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
+        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // start process instance
@@ -134,7 +134,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 		StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
         new JPAWorkingMemoryDbLogger(session);
-        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
+        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // start process instance
@@ -175,7 +175,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 		StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
         new JPAWorkingMemoryDbLogger(session);
-        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
+        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
         // start process instance
@@ -221,7 +221,7 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
 		StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
         new JPAWorkingMemoryDbLogger(session);
-        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog();
+        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
 			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
 				Map<String, Object> results = new HashMap<String, Object>();
