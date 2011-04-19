@@ -173,7 +173,12 @@ public class ClassObjectTypeConf
         final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
         for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
-            if ( node.isAssignableFrom( new ClassObjectType( clazz ) ) ) {
+            if ( clazz == DroolsQuery.class ) {
+                // for query objects only add direct matches
+                if ( ((ClassObjectType)node.getObjectType()).getClassType() == clazz ) {
+                    cache.add( node );    
+                }
+            } else if ( node.isAssignableFrom( new ClassObjectType( clazz ) ) ) {
                 cache.add( node );
             }
         }

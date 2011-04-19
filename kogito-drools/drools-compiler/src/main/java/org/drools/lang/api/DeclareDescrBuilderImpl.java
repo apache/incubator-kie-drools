@@ -15,6 +15,12 @@ public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<TypeDeclaratio
         return this;
     }
 
+
+    public DeclareDescrBuilder superType( String type ) {
+        descr.setSuperTypeName( type );
+        return this;
+    }
+
     public AnnotationDescrBuilder newAnnotation( String name ) {
         AnnotationDescrBuilder annotation = new AnnotationDescrBuilderImpl( name );
         descr.addAnnotation( annotation.getDescr() );
