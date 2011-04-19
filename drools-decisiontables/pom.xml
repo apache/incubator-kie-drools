@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
-    <version>5.2.0.M2</version>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-decisiontables</artifactId>
@@ -72,7 +72,7 @@
           <instructions>
             <Bundle-SymbolicName>org.drools.decisiontables;singleton:=true</Bundle-SymbolicName>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="5.2.0.M2"</Require-Bundle>
+            <Require-Bundle>org.drools.core;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
             <Import-Package>!org.drools.*, *</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>org.drools.*</DynamicImport-Package>
