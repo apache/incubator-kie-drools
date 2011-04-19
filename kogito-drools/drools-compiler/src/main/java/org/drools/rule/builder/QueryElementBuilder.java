@@ -74,9 +74,13 @@ public class QueryElementBuilder
         for ( int i = 0, length = args.size(); i < length; i++ ) {
             ExprConstraintDescr arg = ( ExprConstraintDescr ) args.get( i );
 
-            if( arg.getPosition() == -1 ) {
+            if( arg.getType() != ExprConstraintDescr.Type.POSITIONAL || arg.getPosition() == -1 ) {
                 // error, can't have non binding slots.
-                
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "Query's must use positional or bindings, not field constraints:\n" + arg.getExpression() ) );
+                continue;
             }
                             
             // it's a unary positional argument

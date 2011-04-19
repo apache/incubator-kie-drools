@@ -791,22 +791,7 @@ public class BackwardChainingTest {
         results = ksession.getQueryResults( "p", new Integer[] { 3 }  );
         for ( QueryResultsRow result : results ) {
             System.out.println( "  " + "result( " + result.get( "x" ) + " )" );
-        }         
-        
-//        Person p1 = new Person( "darth",
-//                                "stilton",
-//                                100 );
-//        
-//        Person p2 = new Person( "yoda",
-//                                "stilton",
-//                                100 );        
-//        
-//        ksession.insert( "darth" );
-//        ksession.fireAllRules();        
-//        ksession.insert( "yoda" ); // darth exists, so yoda won't get created 
-//        ksession.fireAllRules();
-//        assertEquals( 1, list.size());
-//        assertEquals( p1, list.get(0));          
+        }                 
     }      
     
     @Test
@@ -1027,77 +1012,155 @@ public class BackwardChainingTest {
             "import java.util.List\n" +
             "import java.util.ArrayList\n" +
             
-            "import org.drools.integrationtests.BackwardChainingTest.Location\n" +
-            "import org.drools.integrationtests.BackwardChainingTest.Here\n" +
+//            "import org.drools.integrationtests.BackwardChainingTest.Location\n" +
+//            "import org.drools.integrationtests.BackwardChainingTest.Here\n" +
             
             "global List list\n" +
             
-            "dialect \"mvel\"\n" +                   
+            "dialect \"mvel\"\n" +   
+            
+            "declare Room" +
+            "    name : String @position(1)\n" +
+            "end\n" +
+            "\n" +
+            "declare Location\n" +
+            "    thing : String @position(1)\n" +
+            "    location : String @position(2)\n" +
+            "end" +
+            "\n" +
+            "declare Door\n" +
+            "   fromLocation : String @Position(1)\n" +
+            "   toLocation : String @Position(2)\n" +
+            "end" +
+            "\n" +
+            "declare Edible\n" +
+            "   thing : String @Position(1)\n" +
+            "end" +     
+            "\n" +
+            "declare TastesYucky\n" +
+            "   thing : String @Position(1)\n" +
+            "end" +        
+            "\n" +
+            "declare TastesYucky\n" +
+            "   thing : String @Position(1)\n" +
+            "end\n" +
+            "\n" +  
+            "declare Here\n" +
+            "   place : String @Position(1)\n" +
+            "end\n" +
+            "\n" +               
+            
                                     
-            "query room( String name ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Room( name : name ) \n"+
-            "end\n" +
-        
-            "query location( String thing, String location ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Location( thing : thing, location : location ) \n"+
-            "end\n" +    
-            
-            "query door( String fromLocation, String toLocation ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Door( fromLocation : fromLocation, toLocation : toLocation ) \n"+
-            "end\n" + 
-        
-            "query edible( String thing, String toLocation ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Edible( thing : thing ) \n"+
-            "end\n" +
-            
-            "query tastesYucky( String thing ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.TastesYucky( thing : thing ) \n"+
-            "end\n"    +  
-            
-            "query here( String location ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Here( location : location ) \n"+
-            "end\n" +
+//            "query room( String name ) \n" +
+//            "   org.drools.integrationtests.BackwardChainingTest.Room( name : name ) \n"+
+//            "end\n" +
+//        
+//            "query location( String thing, String location ) \n" +
+//            "   org.drools.integrationtests.BackwardChainingTest.Location( thing : thing, location : location ) \n"+
+//            "end\n" +    
+//            
+//            "query door( String fromLocation, String toLocation ) \n" +
+//            "   org.drools.integrationtests.BackwardChainingTest.Door( fromLocation : fromLocation, toLocation : toLocation ) \n"+
+//            "end\n" + 
+//        
+//            "query edible( String thing, String toLocation ) \n" +
+//            "   org.drools.integrationtests.BackwardChainingTest.Edible( thing : thing ) \n"+
+//            "end\n" +
+//            
+//            "query tastesYucky( String thing ) \n" +
+//            "   org.drools.integrationtests.BackwardChainingTest.TastesYucky( thing : thing ) \n"+
+//            "end\n"    +  
+//            
+//            "query here( String location ) \n" +
+//            "   org.drools.integrationtests.BackwardChainingTest.Here( location : location ) \n"+
+//            "end\n" +
         
             "query whereFood( String thing, String location ) \n" +
-            "    ( location(thing, location) and\n"+
-            "    edible(thing) )\n " +
+            "    ( Location(thing, location;) and\n"+
+            "      Edible(thing;) )\n " +
             "    or \n"+
-            "    (location(thing, location) and\n"+
-            "    tastesYucky(thing)) \n"+            
-            "end\n" +   
+            "    ( Location(thing, location;) and\n"+
+            "      TastesYucky(thing;) ) \n"+            
+            "end\n" +
+            "\n" +   
         
             "query connect( String x, String y ) \n" +
-            "    door(x, y;)\n"+
+            "    Door(x, y;)\n"+
             "    or \n"+
-            "    door(y, x;)\n"+          
+            "    Door(y, x;)\n"+          
             "end\n" + 
-                                    
+            "\n" +                        
             "query look() \n" +
-            "    here(place;)\n"+
-            "    things : List() from accumulate( location(thing, place;) ," +
+            "    Here(place;)\n"+
+            "    things : List() from accumulate( Location(thing, place;) ," +
             "                                    collectList( thing ) )\n" +                    
             
             "    exits : List() from accumulate( connect(place, exit;) ," +
             "                                    collectList( [place, exit] ) )\n" +       
             "end\n" +
+            "\n" +
+            "query look2(String place, List things, List food, List exits) \n" +
+            "    things : List() from accumulate( Location(thing, place;),\n" +
+            "                                    collectList( thing ) )\n" +   
+            "    food : List() from accumulate( whereFood(thing, place;) ," +
+            "                                    collectList( thing ) )\n" +                
             
-            "query look2(String place, List things, List exits) \n" +
-            "    things : List() from accumulate( location(thing, place;) ," +
-            "                                    collectList( thing ) )\n" +                    
-            
-            "    exits : List() from accumulate( connect(place, exit;) ," +
+            "    exits : List() from accumulate( connect(place, exit;),\n" +
             "                                    collectList( [place, exit] ) )\n" +        
             "end\n" +
-            
+            "\n" +
             "rule reactiveLook when\n" +
-            "    Here( place : location) \n"+
-            "    look2(place, things, exits)\n"+
+            "    Here( place : place) \n"+
+            "    look2(place, things, exits;)\n"+
             "then" +
             "    System.out.println( \"  You are in the \" + place );\n" + 
             "    System.out.println( \"  You can see \" + things );\n" + 
             "    System.out.println( \"  You can go to \" + exits );\n" +
-            "end\n";            
+            "end\n" +
+            "\n" +
+            "rule init when\n" +
+            "then\n" +
+            "        insert( new Room(\"kitchen\") );\n" + 
+            "        insert( new Room(\"office\") );\n" + 
+            "        insert( new Room(\"hall\") );\n" + 
+            "        insert( new Room(\"dining room\") );\n" + 
+            "        insert( new Room(\"cellar\") );\n" + 
+            "        \n" + 
+            "        insert( new Location(\"desk\", \"office\") );\n" + 
+            "        insert( new Location(\"apple\", \"kitchen\") );\n" + 
+            "        insert( new Location(\"flashlight\", \"desk\") );\n" + 
+            "        insert( new Location(\"washing machine\", \"cellar\") );\n" + 
+            "        insert( new Location(\"nani\", \"washing machine\") );\n" + 
+            "        insert( new Location(\"broccoli\", \"kitchen\") );\n" + 
+            "        insert( new Location(\"crackers\", \"kitchen\") );\n" + 
+            "        insert( new Location(\"compuer\", \"office\") );\n" + 
+            "        \n" + 
+            "        insert( new Door(\"office\", \"hall\") );\n" + 
+            "        insert( new Door(\"kitcehn\", \"office\") );\n" + 
+            "        insert( new Door(\"hall\", \"dining room\") );\n" + 
+            "        insert( new Door(\"kitchen\", \"cellar\") );\n" + 
+            "        insert( new Door(\"dining room\", \"kitchen\") );\n" + 
+            "        \n" +  
+            "        insert( new Edible(\"apple\") );\n" + 
+            "        insert( new Edible(\"crackers\") );\n" + 
+            "        \n" + 
+            "        insert( new TastesYucky(\"broccoli\") );  " +
+            "end\n" +
+            "\n" +
+            "rule print when\n" +
+            "    $o : Object()\n" +
+            "then" +
+            "   System.out.println( $o );\n" +
+            "end\n" +
+            "" +
+            "rule go when\n" +
+            "   String( this == 'go' )\n" +
+            "then\n" +
+            "   insert( new Here(\"kitchen\") );\n" + 
+            "end\n"
+            ;            
             
+        System.out.println( str );
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -1106,6 +1169,8 @@ public class BackwardChainingTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
+        
+        System.out.println( str );
     
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -1116,32 +1181,32 @@ public class BackwardChainingTest {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );     
 
-        ksession.insert( new Room("kitchen") );
-        ksession.insert( new Room("office") );
-        ksession.insert( new Room("hall") );
-        ksession.insert( new Room("dining room") );
-        ksession.insert( new Room("cellar") );
-        
-        ksession.insert( new Location("desk", "office") );
-        ksession.insert( new Location("apple", "kitchen") );
-        ksession.insert( new Location("flashlight", "desk") );
-        ksession.insert( new Location("washing machine", "cellar") );
-        ksession.insert( new Location("nani", "washing machine") );
-        ksession.insert( new Location("broccoli", "kitchen") );
-        ksession.insert( new Location("crackers", "kitchen") );
-        ksession.insert( new Location("compuer", "office") );
-        
-        ksession.insert( new Door("office", "hall") );
-        ksession.insert( new Door("kitcehn", "office") );
-        ksession.insert( new Door("hall", "dining room") );
-        ksession.insert( new Door("kitchen", "cellar") );
-        ksession.insert( new Door("dining room", "kitchen") );
-        
-        
-        ksession.insert( new Edible("apple") );
-        ksession.insert( new Edible("crackers") );
-        
-        ksession.insert( new TastesYucky("broccoli") );        
+//        ksession.insert( new Room("kitchen") );
+//        ksession.insert( new Room("office") );
+//        ksession.insert( new Room("hall") );
+//        ksession.insert( new Room("dining room") );
+//        ksession.insert( new Room("cellar") );
+//        
+//        ksession.insert( new Location("desk", "office") );
+//        ksession.insert( new Location("apple", "kitchen") );
+//        ksession.insert( new Location("flashlight", "desk") );
+//        ksession.insert( new Location("washing machine", "cellar") );
+//        ksession.insert( new Location("nani", "washing machine") );
+//        ksession.insert( new Location("broccoli", "kitchen") );
+//        ksession.insert( new Location("crackers", "kitchen") );
+//        ksession.insert( new Location("compuer", "office") );
+//        
+//        ksession.insert( new Door("office", "hall") );
+//        ksession.insert( new Door("kitcehn", "office") );
+//        ksession.insert( new Door("hall", "dining room") );
+//        ksession.insert( new Door("kitchen", "cellar") );
+//        ksession.insert( new Door("dining room", "kitchen") );
+//        
+//        
+//        ksession.insert( new Edible("apple") );
+//        ksession.insert( new Edible("crackers") );
+//        
+//        ksession.insert( new TastesYucky("broccoli") );        
         
         QueryResults results = null;
         
@@ -1161,87 +1226,18 @@ public class BackwardChainingTest {
         
         System.out.println("");   
         
-        ksession.insert( new Here("kitchen") );
+        ksession.insert( "go" );
         ksession.fireAllRules();
         
-        System.out.println("look");         
-        results = ksession.getQueryResults( "look", new Object[] {} );
-        for ( QueryResultsRow result : results ) {
-            System.out.println( "  You are in the " + result.get( "place" ) );
-            System.out.println( "  You can see " + result.get( "things") );
-            System.out.println( "  You can go to " + result.get( "exits") );
-        }         
+//        System.out.println("look");         
+//        results = ksession.getQueryResults( "look", new Object[] {} );
+//        for ( QueryResultsRow result : results ) {
+//            System.out.println( "  You are in the " + result.get( "place" ) );
+//            System.out.println( "  You can see " + result.get( "things") );
+//            System.out.println( "  You can go to " + result.get( "exits") );
+//        }         
         
-    }
-
-
-
-    @Test
-       public void testPositionalConstraintsInPatterns() throws Exception {
-           String str = "" +
-               "package org.drools.test  \n" +
-               "import org.drools.Person \n" +
-               "global java.util.List list\n " +
-                   " \n " +
-                   "declare org.drools.Person \n" +
-                   "   name : String @position(1) \n " +
-                   "   age : int @position(2) \n" +
-                   "   likes : String @position(3) \n" +
-                   "   hair : String @position(4) \n" +
-                   "end \n";
-
-           str += "rule x1\n" +
-               "when\n" +
-               "    $p : Person( $name ,  35, $name  ; )\n" +
-               "then\n" +
-               "   list.add( $p );\n" +
-               "   System.err.println($p); \n" +
-               "end \n";
-
-           KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-           kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                             ResourceType.DRL );
-
-           if ( kbuilder.hasErrors() ) {
-               fail( kbuilder.getErrors().toString() );
-           }
-
-           KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-           kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-           //kbase = SerializationHelper.serializeObject( kbase );
-
-           StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-           List<String> list = new ArrayList<String>();
-           ksession.setGlobal( "list", list );
-
-           Person p1 = new Person( "darth",
-                                   "darth",
-                                   35 );
-           Person p2 = new Person( "darth",
-                                   "darth",
-                                   200 );
-           Person p3 = new Person( "yoda",
-                                   "yoda",
-                                   35 );
-           Person p4 = new Person( "luke",
-                                   "brie",
-                                   35 );
-           Person p5 = new Person( "bobba",
-                                   "bobba",
-                                   300 );
-
-           ksession.insert( p1 );
-           ksession.insert( p2 );
-           ksession.insert( p3 );
-           ksession.insert( p4 );
-           ksession.insert( p5 );
-
-
-           ksession.fireAllRules();
-
-       }
-
+    }    
     
     public static class Man {
         private String name;      
@@ -1302,136 +1298,136 @@ public class BackwardChainingTest {
         }
     }
     
-    public static class Room {
-        private String name;
-
-        public Room(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-        
-    }
-    
-    public static class Location {
-        private String thing;
-        private String location;
-        
-        public Location(String thing,
-                        String location) {
-            this.thing = thing;
-            this.location = location;
-        }
-
-        public String getThing() {
-            return thing;
-        }
-
-        public void setThing(String thing) {
-            this.thing = thing;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
-    }
-    
-    public static class Door {
-        private String fromLocation;
-        private String toLocation;
-        
-        public Door(String fromLocation,
-                    String toLocation) {
-            this.fromLocation = fromLocation;
-            this.toLocation = toLocation;
-        }
-        public String getFromLocation() {
-            return fromLocation;
-        }
-        public void setFromLocation(String fromLocation) {
-            this.fromLocation = fromLocation;
-        }
-        public String getToLocation() {
-            return toLocation;
-        }
-        public void setToLocation(String toLocation) {
-            this.toLocation = toLocation;
-        }   
-    }
-    
-    public static class Edible {
-        private String thing;
-
-        public Edible(String thing) {
-            this.thing = thing;
-        }
-
-        public String getThing() {
-            return thing;
-        }
-
-        public void setThing(String thing) {
-            this.thing = thing;
-        }        
-    }
-    
-    public static class TastesYucky {
-        private String thing;
-
-        public TastesYucky(String thing) {
-            this.thing = thing;
-        }
-
-        public String getThing() {
-            return thing;
-        }
-
-        public void setThing(String thing) {
-            this.thing = thing;
-        }        
-    }    
-    
-    public static class turnedOff {
-        private String thing;
-
-        public turnedOff(String thing) {
-            this.thing = thing;
-        }
-
-        public String getThing() {
-            return thing;
-        }
-
-        public void setThing(String thing) {
-            this.thing = thing;
-        }
-    }
-    
-    public static class Here {
-        private String location;
-
-        public Here(String location) {
-            this.location = location;
-        }
-
-        public String getLocation() {
-            return location;
-        }
-
-        public void setLocation(String location) {
-            this.location = location;
-        }
-    }
+//    public static class Room {
+//        private String name;
+//
+//        public Room(String name) {
+//            this.name = name;
+//        }
+//
+//        public String getName() {
+//            return name;
+//        }
+//
+//        public void setName(String name) {
+//            this.name = name;
+//        }
+//        
+//    }
+//    
+//    public static class Location {
+//        private String thing;
+//        private String location;
+//        
+//        public Location(String thing,
+//                        String location) {
+//            this.thing = thing;
+//            this.location = location;
+//        }
+//
+//        public String getThing() {
+//            return thing;
+//        }
+//
+//        public void setThing(String thing) {
+//            this.thing = thing;
+//        }
+//
+//        public String getLocation() {
+//            return location;
+//        }
+//
+//        public void setLocation(String location) {
+//            this.location = location;
+//        }
+//    }
+//    
+//    public static class Door {
+//        private String fromLocation;
+//        private String toLocation;
+//        
+//        public Door(String fromLocation,
+//                    String toLocation) {
+//            this.fromLocation = fromLocation;
+//            this.toLocation = toLocation;
+//        }
+//        public String getFromLocation() {
+//            return fromLocation;
+//        }
+//        public void setFromLocation(String fromLocation) {
+//            this.fromLocation = fromLocation;
+//        }
+//        public String getToLocation() {
+//            return toLocation;
+//        }
+//        public void setToLocation(String toLocation) {
+//            this.toLocation = toLocation;
+//        }   
+//    }
+//    
+//    public static class Edible {
+//        private String thing;
+//
+//        public Edible(String thing) {
+//            this.thing = thing;
+//        }
+//
+//        public String getThing() {
+//            return thing;
+//        }
+//
+//        public void setThing(String thing) {
+//            this.thing = thing;
+//        }        
+//    }
+//    
+//    public static class TastesYucky {
+//        private String thing;
+//
+//        public TastesYucky(String thing) {
+//            this.thing = thing;
+//        }
+//
+//        public String getThing() {
+//            return thing;
+//        }
+//
+//        public void setThing(String thing) {
+//            this.thing = thing;
+//        }        
+//    }    
+//    
+//    public static class TurnedOff {
+//        private String thing;
+//
+//        public TurnedOff(String thing) {
+//            this.thing = thing;
+//        }
+//
+//        public String getThing() {
+//            return thing;
+//        }
+//
+//        public void setThing(String thing) {
+//            this.thing = thing;
+//        }
+//    }
+//    
+//    public static class Here {
+//        private String location;
+//
+//        public Here(String location) {
+//            this.location = location;
+//        }
+//
+//        public String getLocation() {
+//            return location;
+//        }
+//
+//        public void setLocation(String location) {
+//            this.location = location;
+//        }
+//    }
     
     public static class Q {
         int value;
