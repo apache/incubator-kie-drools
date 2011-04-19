@@ -1,0 +1,10 @@
+
+declare LongTermStudent extends org.drools.compiler.test.Student
+    years : int
+end
+
+
+declare SubLTStudent extends LongTermStudent
+    field : String
+end
+

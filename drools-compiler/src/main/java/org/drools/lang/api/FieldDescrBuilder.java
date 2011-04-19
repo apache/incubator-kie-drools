@@ -32,5 +32,7 @@ public interface FieldDescrBuilder
     public FieldDescrBuilder type( String type );
 
     public FieldDescrBuilder initialValue( String value );
+
+    public FieldDescrBuilder processAnnotations();
     
 }

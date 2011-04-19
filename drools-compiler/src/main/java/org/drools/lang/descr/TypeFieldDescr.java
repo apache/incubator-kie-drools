@@ -16,6 +16,9 @@
 
 package org.drools.lang.descr;
 
+import org.drools.definition.type.FactField;
+import org.drools.rule.TypeDeclaration;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -30,6 +33,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
     private String                       fieldName;
     private String                       initExpr;
     private PatternDescr                 pattern;
+    private boolean                      inherited;
 
     public TypeFieldDescr() {
         this( null );
@@ -120,6 +124,40 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
 
     public void setIndex( int index ) {
         this.index = index;
+    }
+
+
+    public boolean isInherited() {
+        return inherited;
+    }
+
+    public void setInherited(boolean inherited) {
+        this.inherited = inherited;
+    }
+
+    public static TypeFieldDescr buildInheritedFromDefinition(FactField fld) {
+        PatternDescr fldType = new PatternDescr();
+        TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
+        inheritedFldDescr.setFieldName(fld.getName());
+        fldType.setObjectType(fld.getType().getName());
+        inheritedFldDescr.setPattern(fldType);
+        if (fld.isKey()) inheritedFldDescr.getAnnotations().put(TypeDeclaration.ATTR_KEY,new AnnotationDescr(TypeDeclaration.ATTR_KEY));
+        inheritedFldDescr.setIndex(fld.getIndex());
+        inheritedFldDescr.setInherited(true);
+        return inheritedFldDescr;
+
+    }
+
+
+    public TypeFieldDescr cloneAsInherited() {
+        TypeFieldDescr fieldDescr = new TypeFieldDescr(fieldName,pattern);
+        fieldDescr.setInitExpr(initExpr);
+        for (String key : getAnnotations().keySet())
+            fieldDescr.getAnnotations().put(key, getAnnotation(key));
+        fieldDescr.setIndex(index);
+        fieldDescr.setInherited(true);
+
+        return fieldDescr;
     }
 
 }

@@ -89,6 +89,10 @@ public class PatternDescr extends BaseDescr
         this.constraint.addDescr( base );
     }
 
+    public boolean removeConstraint( BaseDescr base ) {
+        return this.constraint.removeDescr(base);
+    }
+
     public ConditionalElementDescr getConstraint() {
         return this.constraint;
     }

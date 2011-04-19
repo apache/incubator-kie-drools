@@ -408,7 +408,7 @@ public class DRLParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * declare := DECLARE type annotation* field* END SEMICOLON?
+     * declare := DECLARE type (EXTENDS type)? annotation* field* END SEMICOLON?
      * 
      * @return
      * @throws RecognitionException
@@ -433,6 +433,21 @@ public class DRLParser {
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) declare.type( type );
 
+
+            if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXTENDS ) ) {
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.EXTENDS,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if (! state.failed ) {
+                    String superType = type();
+                    declare.superType(superType);
+                }
+
+            }
+
+
             while ( input.LA( 1 ) == DRLLexer.AT ) {
                 // metadata*
                 annotation( declare );
@@ -440,7 +455,7 @@ public class DRLParser {
             }
 
             boolean qualified = type.indexOf( '.' ) >= 0;
-            while ( ! qualified &&
+            while ( //! qualified &&
                     input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
                 field( declare );
@@ -515,6 +530,7 @@ public class DRLParser {
                 annotation( field );
                 if ( state.failed ) return;
             }
+            field.processAnnotations();
 
             if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
                 match( input,
@@ -1073,7 +1089,6 @@ public class DRLParser {
 
     /**
      * salience := SALIENCE conditionalExpression
-     * @param attribute
      * @throws RecognitionException
      */
     private AttributeDescr salience() throws RecognitionException {
@@ -1134,7 +1149,6 @@ public class DRLParser {
 
     /**
      * enabled := ENABLED conditionalExpression
-     * @param attribute
      * @throws RecognitionException
      */
     private AttributeDescr enabled() throws RecognitionException {
@@ -1195,7 +1209,7 @@ public class DRLParser {
 
     /**
      * booleanAttribute := attributeKey (BOOLEAN)?
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr booleanAttribute( String[] key ) throws RecognitionException {
@@ -1251,7 +1265,7 @@ public class DRLParser {
 
     /**
      * stringAttribute := attributeKey STRING
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr stringAttribute( String[] key ) throws RecognitionException {
@@ -1303,7 +1317,7 @@ public class DRLParser {
 
     /**
      * stringListAttribute := attributeKey STRING (COMMA STRING)*
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr stringListAttribute( String[] key ) throws RecognitionException {
@@ -1376,7 +1390,7 @@ public class DRLParser {
 
     /**
      * intOrChunkAttribute := attributeKey (DECIMAL | parenChunk)
-     * @param attribute
+     * @param key
      * @throws RecognitionException
      */
     private AttributeDescr intOrChunkAttribute( String[] key ) throws RecognitionException {
@@ -1524,7 +1538,8 @@ public class DRLParser {
      * lhsOr := LEFT_PAREN OR lhsAnd+ RIGHT_PAREN
      *        | lhsAnd (OR lhsAnd)*
      *        
-     * @param lhs
+     * @param ce
+     * @param allowOr
      * @throws RecognitionException 
      */
     private BaseDescr lhsOr( final CEDescrBuilder< ? , ? > ce,
@@ -2952,7 +2967,7 @@ public class DRLParser {
                 }
                 // remove the "then" keyword and any subsequent spaces and line breaks
                 // keep indendation of 1st non-blank line
-                chunk = chunk.replaceFirst( "^then\\s*[\\r\\n]?", "" );
+                chunk = chunk.replaceFirst( "^then\\s*[\\r\\n]", "" );
             }
             rule.rhs( chunk );
 
@@ -3118,7 +3133,13 @@ public class DRLParser {
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
-                annotation.keyValue( key != null ? key : "value", value );
+                String actKey = key != null ? key : "value";
+                String actVal = annotation.getDescr().getValue( actKey );
+                if( actVal != null ){
+                    // TODO: error message?
+                    value = "\"" + AnnotationDescr.unquote( actVal ) + AnnotationDescr.unquote( value ) + "\"";
+                }
+                annotation.keyValue( actKey, value );
             }
 
         } catch ( RecognitionException re ) {

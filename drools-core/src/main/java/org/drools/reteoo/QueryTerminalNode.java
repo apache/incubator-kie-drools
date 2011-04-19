@@ -139,6 +139,8 @@ public final class QueryTerminalNode extends BaseNode
         while ( entry.getParent() != null ) {
             entry = entry.getParent();
         }
+        
+        
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
         query.setQuery( (Query) this.rule );
 

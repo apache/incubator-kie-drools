@@ -49,7 +49,19 @@ public class QueryElementBuilder
                                       BaseDescr descr,
                                       Pattern prefixPattern) {
         PatternDescr patternDescr = (PatternDescr) descr;
+        if ( !patternDescr.isQuery() ) {
+            // error, can't have non binding slots.
+            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                          descr,
+                                                          null,
+                                                          "Query's must ? as they are pull only:\n" ) );
+            return null;            
+        }
         Query query = (Query) context.getPkg().getRule( patternDescr.getObjectType() );
+        if ( query == null ) { 
+            // we already checked this before, so we know it's either in the package or recursive on itself
+            query = (Query) context.getRule();            
+        }
 
         Declaration[] params = query.getParameters();
 
@@ -74,9 +86,13 @@ public class QueryElementBuilder
         for ( int i = 0, length = args.size(); i < length; i++ ) {
             ExprConstraintDescr arg = ( ExprConstraintDescr ) args.get( i );
 
-            if( arg.getPosition() == -1 ) {
+            if( arg.getType() != ExprConstraintDescr.Type.POSITIONAL || arg.getPosition() == -1 ) {
                 // error, can't have non binding slots.
-                
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "Query's must use positional or bindings, not field constraints:\n" + arg.getExpression() ) );
+                continue;
             }
                             
             // it's a unary positional argument
