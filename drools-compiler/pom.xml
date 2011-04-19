@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
-    <version>5.2.0-SNAPSHOT</version>
+    <version>5.2.0.M2</version>
   </parent>
 
   <artifactId>drools-compiler</artifactId>
@@ -256,7 +256,7 @@
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
             <Bundle-SymbolicName>org.drools.compiler;singleton:=true</Bundle-SymbolicName>
-            <Require-Bundle>org.drools.core;visibility:=reexport;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
+            <Require-Bundle>org.drools.core;visibility:=reexport;bundle-version="5.2.0.M2"</Require-Bundle>
             <Import-Package>!org.drools.*,
               <!-- java compilers are optional: only need one at most -->
               org.codehaus.janino.*;resolution:=optional,org.eclipse.jdt.*;resolution:=optional,
