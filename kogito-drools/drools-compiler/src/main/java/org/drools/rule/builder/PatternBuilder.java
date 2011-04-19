@@ -107,21 +107,33 @@ public class PatternBuilder
 
         // lets see if it maps to a query
         if ( objectType == null ) {
-            Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
-            if ( rule != null && rule instanceof Query ) {
+            RuleConditionElement rce = null;
+            // it might be a recursive query, so check for same names
+            if ( context.getRule().getName().equals( patternDescr.getObjectType() ) ) {
                 // it's a query so delegate to the QueryElementBuilder
                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
-                return qeBuilder.build( context,
+                rce = qeBuilder.build( context,
                                         descr,
                                         prefixPattern );
-            } else {
-                // this isn't a query either, so log an error
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              patternDescr,
-                                                              null,
-                                                              "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
-                return null;
             }
+
+            if ( rce == null ) {
+                Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
+                if ( rule != null && rule instanceof Query ) {
+                    // it's a query so delegate to the QueryElementBuilder
+                    QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                    rce = qeBuilder.build( context,
+                                           descr,
+                                           prefixPattern );
+                } else {
+                    // this isn't a query either, so log an error
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  patternDescr,
+                                                                  null,
+                                                                  "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
+                }
+            }
+            return rce;
         }
 
         Pattern pattern;

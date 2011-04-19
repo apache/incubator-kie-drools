@@ -27,6 +27,7 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
+import org.drools.rule.ContextEntry;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
@@ -61,12 +62,20 @@ public class JoinNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        memory.setOpen( true );
+        
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
+        ContextEntry[] contextEntry = memory.getContext();
+        
         boolean useLeftMemory = true;
         if ( this.tupleMemoryEnabled ) {
             memory.getLeftTupleMemory().add( leftTuple );
         } else {
+            if ( memory.isOpen() ) {
+                // we are re-entrant to force new ContextEntry
+                contextEntry = this.constraints.createContext();
+            }
             // This is a hack, to not add closed DroolsQuery objects
             Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
             if ( object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
@@ -77,7 +86,7 @@ public class JoinNode extends BetaNode {
             }
         }
 
-        this.constraints.updateFromTuple( memory.getContext(),
+        this.constraints.updateFromTuple(contextEntry,
                                           workingMemory,
                                           leftTuple );
         
@@ -86,7 +95,7 @@ public class JoinNode extends BetaNode {
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
             final InternalFactHandle handle = rightTuple.getFactHandle();
-            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+            if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        handle ) ) {
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
@@ -98,7 +107,8 @@ public class JoinNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( memory.getContext() );
+        this.constraints.resetTuple( contextEntry );
+        memory.setOpen( false );
     }
   
 

@@ -35,6 +35,7 @@ public class BetaMemory
     private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
     private Object            behaviorContext;
+    private boolean           open;
 
     public BetaMemory() {
     }
@@ -93,4 +94,14 @@ public class BetaMemory
     public void setBehaviorContext(Object behaviorContext) {
         this.behaviorContext = behaviorContext;
     }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+    
+    
 }

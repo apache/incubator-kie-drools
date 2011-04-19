@@ -24,6 +24,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
+import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -96,14 +97,19 @@ public class ExistsNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        memory.setOpen( true );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
-        this.constraints.updateFromTuple( memory.getContext(),
-                                          workingMemory,
-                                          leftTuple );
+        ContextEntry[] contextEntry = memory.getContext();
+
 
         boolean useLeftMemory = true;
         if ( !this.tupleMemoryEnabled ) {
+            if ( memory.isOpen() ) {
+                // we are re-entrant to force new ContextEntry
+                contextEntry = this.constraints.createContext();
+            }
+            
             // This is a hack, to not add closed DroolsQuery objects
             Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
             if ( memory.getLeftTupleMemory() == null || object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
@@ -111,10 +117,15 @@ public class ExistsNode extends BetaNode {
             }
         }
 
+        
+        this.constraints.updateFromTuple( contextEntry,
+                                          workingMemory,
+                                          leftTuple );
+        
         FastIterator it = getRightIterator( rightMemory );
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+            if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        rightTuple.getFactHandle() ) ) {
 
                 leftTuple.setBlocker( rightTuple );
@@ -126,7 +137,7 @@ public class ExistsNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( memory.getContext() );
+        this.constraints.resetTuple( contextEntry );
 
         if ( leftTuple.getBlocker() != null ) {
             // tuple is not blocked to propagate
@@ -138,6 +149,7 @@ public class ExistsNode extends BetaNode {
             // LeftTuple is not blocked, so add to memory so other RightTuples can match
             memory.getLeftTupleMemory().add( leftTuple );
         }
+        memory.setOpen( false );
     }
 
     /**
