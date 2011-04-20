@@ -270,10 +270,6 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return null;
         }
 
-        public void remove() {
-            throw new UnsupportedOperationException( "FieldIndexHashTableFullIterator does not support remove()." );
-        }
-
         /* (non-Javadoc)
          * @see org.drools.util.Iterator#reset()
          */
