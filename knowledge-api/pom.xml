@@ -122,11 +122,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>net.sf.jxls</groupId>
-      <artifactId>jxls-reader</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <scope>provided</scope>
