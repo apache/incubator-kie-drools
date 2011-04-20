@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2010, 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,7 +129,7 @@ public class DefaultMarshaller
                                                                      (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
                                                                      (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) session).session,
                                                                      RuleBaseNodes.getNodeMap( (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase() ),
-                                                                     ((StatefulKnowledgeSessionImpl)session).session.getObjectMarshallingStrategyStore(),
+                                                                     this.strategyStore,
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
                                                                      this.marshallingConfig.isMarshallWorkItems(), session.getEnvironment());
         OutputMarshaller.writeSession( context );
