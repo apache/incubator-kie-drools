@@ -248,14 +248,14 @@
       <title>Core</title>
 
       <para>drools.dialect.mvel.strict = &lt;true|false&gt;The MVEL dialect
-      has been improved architecture has been improved. We have moved all
-      variable lookups to the new indexed factories, which should allow faster
-      execution, as well as being simpler code. The build process for mvel has
-      been reviewed to streamline it to avoid wasteless object creation so
-      that the build time is faster. We still have some more improvements on
-      this to share the ParserConfiguration which will make each MVEL
-      compilation unit faster to initalise and use less memory, as they will
-      share import information for each package.</para>
+      has been improved. We have moved all variable lookups to the new indexed
+      factories, which should allow faster execution, as well as being simpler
+      code. The build process for mvel has been reviewed to streamline it to
+      avoid wasteless object creation so that the build time is faster. We
+      still have some more improvements on this to share the
+      ParserConfiguration which will make each MVEL compilation unit faster to
+      initalise and use less memory, as they will share import information for
+      each package.</para>
 
       <para>It was always possible to execute with MVEL in both dynamic and
       strict mode, with strict mode for static type safety the default. This
@@ -280,30 +280,61 @@
       <title>Free Form expressions in Constraints (New Parser)</title>
 
       <para>The parser has been rewritten. We had reached the limitations of
-      what we could achieve in pure Antlr and was spending far too much time
-      fighting it for each feature we wanted. Edson has since rewritten the
-      parser and we now have a lot more flexability. The parser still uses
-      Antlr's lexer at the core. This was a huge effort, not just to rewrite
-      the parser but to also re-integrate it back into Drools and the
-      tooling.</para>
+      what we could achieve in pure ANTLR and moved to a hybrid parser, that
+      adds flexibility to the language. </para>
 
-      <para>The main benefit from this is that we now support "free form"
-      expressions inside of patterns without the need for eval. So complex
-      expressions on nested accessors, method calls etc should now all be
-      possible as field constraints without wrapping with an eval(.....). This
-      was also important for us to start to move towards a single consistent
-      grammer for both the "when" left hand side and "then" right hand side.
-      As previously we had to document the restricted limitations of a field
-      constraint on the LHS compared to expressions used inside of an 'eval'
-      or used on the RHS. Complex expressions are still internally rewritten
-      as evals, so it's just syntacic sugar.</para>
+      <para>The main benefit with the new parser is that the language now
+      support free form expressions for constraints and 'from' statements. So
+      complex expressions on nested accessors, method calls etc should now all
+      be possible as simple constraints without wrapping them with an
+      eval(.....). This was also important for us to start to move towards a
+      single consistent grammer for both the "when" left hand side and "then"
+      right hand side. As previously we had to document the restricted
+      limitations of a field constraint on the LHS compared to expressions
+      used inside of an 'eval' or used on the RHS. Complex expressions are
+      still internally rewritten as evals, so it's just syntacic sugar.</para>
+
+      <para>Examples:</para>
+
+      <programlisting>Person( age * 2 &gt; $anotherPersonsAge + 2 ) // mathematical expressions
+Person( addresses["home"].streetName.startsWith( "High Park" ) ) // method calls and collections simplified syntax
+Person( isAdult() ) // boolean expression without relational operator</programlisting>
+
+      <para>The new parser also support free form expressions on the "from"
+      clause, allowing for instance, new syntaxes, like inline creation for
+      lists:</para>
+
+      <programlisting>Cheese( ) from [ $stilton, $brie, $provolone ] // inline list creation and iteration
+</programlisting>
+    </section>
+
+    <section>
+      <title>Rule API</title>
+
+      <para>A fluent API was created to allow programatic creation of rules as
+      an alternative to the previously suggested method of template
+      creation.</para>
+
+      <programlisting>PackageDescr pkg = DescrFactory.newPackage()
+                   .name("org.drools.example")
+                   .newRule().name("Xyz")
+                       .attribute("ruleflow-grou","bla")
+                   .lhs()
+                       .and()
+                           .pattern("Foo").id("$foo").constraint("bar==baz").constraint("x&gt;y").end()
+                           .not().pattern("Bar").constraint("a+b==c").end()
+                       .end()
+                   .end()
+                   .rhs( "System.out.println();" )
+                   .end();
+</programlisting>
     </section>
 
     <section>
       <title>Positional Arguments</title>
 
-      <para>Patterns now support positional arguments on type declarations.
-      </para>
+      <para>Patterns now support positional arguments on type
+      declarations.</para>
 
       <para>Positional arguments are ones where you don't need to specify the
       field name, as the position maps to a known named field. i.e. Person(
@@ -420,7 +451,7 @@ end
       <para>The other aspect to be aware of is that the implementation still
       executes with method recursion, so deeply recursive queries may have
       problems. Work is underway to an alternative algorithm that resolves
-      this issue. </para>
+      this issue.</para>
     </section>
 
     <section>
@@ -433,6 +464,43 @@ end
       collections that do not have any generics or mixed type
       collections.</para>
     </section>
+
+    <section>
+      <title>Session Reports</title>
+
+      <para>Added framework to inspect a session and generate a report, either
+      based on a predefined template or with a user created template.</para>
+
+      <programlisting>// Creates an inspector
+SessionInspector inspector = new SessionInspector( ksession );
+// Collects the session info
+StatefulKnowledgeSessionInfo info = inspector.getSessionInfo();
+// Generate a report using the "simple" report template
+String report = SessionReporter.generateReport( "simple", info, null );
+</programlisting>
+    </section>
+
+    <section>
+      <title>Support to parameterized constructor on declared types</title>
+
+      <para>Generate constructors with parameters for declared types.</para>
+
+      <para>Example: for a declare type like the following:</para>
+
+      <programlisting>declare Person
+    firstName : String @key
+    lastName : String @key
+    age : int
+end
+</programlisting>
+
+      <para>The compiler will implicitly generate 3 constructors: one without
+      parameters, one with the @key fields, and one with all fields.</para>
+
+      <programlisting>Person() // parameterless constructor
+Person( String firstName, String lastName )
+Person( String firstName, String lastName, int age )</programlisting>
+    </section>
   </section>
 
   <section>
@@ -444,7 +512,24 @@ end
   <section>
     <title>Drools and jBPM integration</title>
 
-    <para>TODO</para>
+    <section>
+      <title>Improved Camel integration</title>
+
+      <para>Camel integration using the Drools EndPoint was improved with the
+      creation of both DroolsConsumer and DroolsProducer components.
+      Configurations were added to support the insertion of either Camel's
+      Exchange, Message or Body into the Drools session, allowing for the easy
+      development of dynamic content based routing applications. Also, support
+      to entry points was added.</para>
+
+      <para>Examples of routes:</para>
+
+      <programlisting>from( "direct:test-no-ep" ).to( "drools://node/ksession1?action=insertBody" );
+from( "direct:test-with-ep" ).to( "drools://node/ksession1?action=insertBody&amp;entryPoint=ep1" );
+from( "direct:test-message" ).to( "drools://node/ksession1?action=insertMessage" );
+from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchange" );
+</programlisting>
+    </section>
   </section>
 
   <section>
