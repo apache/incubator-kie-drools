@@ -13,6 +13,77 @@
 
   <name>Knowledge API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
+            <Export-Package>org.drools.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.drools.osgi.api.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <excludePackageNames>org.drools.util*</excludePackageNames>
+          <groups>
+            <group>
+              <title>Knowledge Base API</title>
+              <packages>org.drools</packages>
+            </group>
+            <group>
+              <title>Builder API</title>
+              <packages>org.drools.builder</packages>
+            </group>
+            <group>
+              <title>Definition API</title>
+              <packages>org.drools.definition*</packages>
+            </group>
+            <group>
+              <title>Event API</title>
+              <packages>org.drools.event*</packages>
+            </group>
+            <group>
+              <title>Runtime API</title>
+              <packages>org.drools.runtime*</packages>
+            </group>
+            <group>
+              <title>Time API</title>
+              <packages>org.drools.time*</packages>
+            </group>
+          </groups>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
@@ -51,11 +122,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>net.sf.jxls</groupId>
-      <artifactId>jxls-reader</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <scope>provided</scope>
@@ -71,91 +137,4 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <manifestLocation>META-INF</manifestLocation>
-          <instructions>
-            <Bundle-SymbolicName>org.drools.api;singleton:=true</Bundle-SymbolicName>
-            <_removeheaders>Ignore-Package</_removeheaders>
-            <Import-Package>!org.drools.*,*;resolution:=optional,com.sun.tools.xjc;resolution:=optional</Import-Package>
-            <Export-Package>org.drools.*</Export-Package>
-            <DynamicImport-Package>*</DynamicImport-Package>
-            <Bundle-Activator>org.drools.osgi.api.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*Test.java</include>
-          </includes>
-          <!--excludes>
-            <exclude>**/LogicTransformerTest.java</exclude>
-            <exclude>**/LeapsMannersTest.java</exclude>
-            <exclude>**/ReteooMannersTest.java</exclude>
-            <exclude>**/LeapsWaltzTest.java</exclude>
-            <exclude>**/ReteooWaltzTest.java</exclude>
-            <exclude>**/TableTest.java</exclude>
-          </excludes-->
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <excludePackageNames>org.drools.util*</excludePackageNames>
-          <groups>
-            <group>
-              <title>Knowledge Base API</title>
-              <packages>org.drools</packages>
-            </group>
-            <group>
-              <title>Builder API</title>
-              <packages>org.drools.builder</packages>
-            </group>
-            <group>
-              <title>Definition API</title>
-              <packages>org.drools.definition*</packages>
-            </group>
-            <group>
-              <title>Event API</title>
-              <packages>org.drools.event*</packages>
-            </group>
-            <group>
-              <title>Runtime API</title>
-              <packages>org.drools.runtime*</packages>
-            </group>
-            <group>
-              <title>Time API</title>
-              <packages>org.drools.time*</packages>
-            </group>
-          </groups>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>
