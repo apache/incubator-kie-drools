@@ -108,7 +108,7 @@ public class RuleBuilder {
         Rule rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
             rule.addMetaAttribute( metaAttr,
-                                   context.getRuleDescr().getAnnotation(metaAttr).getValueStripped() );
+                                   context.getRuleDescr().getAnnotation(metaAttr).getValue() );
         }
     }
 
