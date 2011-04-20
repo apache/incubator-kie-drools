@@ -130,12 +130,12 @@ public class ConnectionImpl implements Connection, Serializable {
     
     public String toString() {
         final StringBuilder sb = new StringBuilder("Connection ");
-        sb.append(getFrom());
+        sb.append(getFrom() == null ? "null" : getFrom().getName());
         sb.append(" [type=");
         sb.append(getFromType());
         sb.append("]");
         sb.append(" - ");
-        sb.append(getTo());
+        sb.append(getTo() == null ? "null" : getTo().getName());
         sb.append(" [type=");
         sb.append(getToType());
         sb.append("]");
