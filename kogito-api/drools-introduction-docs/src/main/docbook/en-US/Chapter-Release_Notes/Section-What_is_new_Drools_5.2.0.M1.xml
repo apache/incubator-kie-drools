@@ -222,4 +222,27 @@
       through the eclipse plugin</para>
     </section>
   </section>
+
+  <section>
+    <title>Merging Drools Flow into jBPM5</title>
+    
+    <para>The Drools Flow project and the jBPM project have been merged into the
+    the newest version of the jBPM project, called jBPM5.  jBPM5 combines the best of both
+    worlds: merging the experience that was build up with the jBPM project over
+    several years in supporting stable, long-living business processes together with the
+    improvements that were prototyped as part of Drools Flow to support more flexible and
+    adaptive processes.  Now that jBPM 5.0 has been released, the Drools project
+    will be using jBPM5 as the engine to support process capabilities.  Drools Flow
+    as a subproject will no longer exist, but its vision will continue as part of the
+    jBPM project, still allowing (optional but) advanced integration between business rules, 
+    business processes and complex event processing and a unified environment for
+    all three paradigms.</para>
+    
+    <para>The impact for the end user however should be minimal, as the existing
+    (knowledge) API is still supported, the underlying implementation has just been replaced
+    with a newer version.  All existing features should still be supported, and many more.</para>
+    
+    <para>For more information, visit <ulink url="http://www.jboss.org/jbpm">http://www.jboss.org/jbpm</ulink></para>
+    
+  </section>
 </section>

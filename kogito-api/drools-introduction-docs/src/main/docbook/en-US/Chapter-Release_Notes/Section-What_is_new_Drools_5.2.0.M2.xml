@@ -182,9 +182,9 @@
 
             <entry><emphasis role="bold">drools-flow-core</emphasis></entry>
 
-            <entry>TODO</entry>
+            <entry>org.jbpm</entry>
 
-            <entry>TODO</entry>
+            <entry><emphasis role="bold">jbpm-flow</emphasis></entry>
           </row>
 
           <row>
@@ -193,9 +193,20 @@
             <entry><emphasis
             role="bold">drools-flow-compiler</emphasis></entry>
 
-            <entry>TODO</entry>
+            <entry>org.jbpm</entry>
 
-            <entry>TODO</entry>
+            <entry><emphasis role="bold">jbpm-flow-builder</emphasis></entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry><emphasis
+            role="bold">drools-bpmn2</emphasis></entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry><emphasis role="bold">jbpm-bpmn2</emphasis></entry>
           </row>
 
           <row>
@@ -204,9 +215,90 @@
             <entry><emphasis
             role="bold">drools-flow-persistence-jpa</emphasis></entry>
 
-            <entry>TODO</entry>
+            <entry>org.jbpm</entry>
 
-            <entry>TODO</entry>
+            <entry><emphasis
+            role="bold">jbpm-persistence-jpa</emphasis></entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-bam</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-bam</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-process-task</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-human-task</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-gwt-console</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-gwt-console</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-gwt-form</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-gwt-form</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-gwt-graph</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-gwt-graph</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-gwt-war</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-gwt-war</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-gwt-server-war</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-gwt-server-war</entry>
+          </row>
+
+          <row>
+            <entry>org.drools</entry>
+
+            <entry>drools-workitems</entry>
+
+            <entry>org.jbpm</entry>
+
+            <entry>jbpm-workitems</entry>
           </row>
 
           <row>
@@ -214,9 +306,9 @@
 
             <entry>drools-docs-flow</entry>
 
-            <entry>TODO</entry>
+            <entry>org.jbpm</entry>
 
-            <entry>TODO</entry>
+            <entry>jbpm-docs-flow</entry>
           </row>
         </tbody>
       </tgroup>
@@ -433,18 +525,6 @@ end
       collections that do not have any generics or mixed type
       collections.</para>
     </section>
-  </section>
-
-  <section>
-    <title>jBPM 5 (merged from Drools Fusion and jBPM 3-4)</title>
-
-    <para>TODO</para>
-  </section>
-
-  <section>
-    <title>Drools and jBPM integration</title>
-
-    <para>TODO</para>
   </section>
 
   <section>
