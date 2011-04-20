@@ -215,7 +215,7 @@ public class RuleBuilderTest {
         verify( rule ).addMetaAttribute( "author",
                                          "Bob Doe" );
         verify( rule ).addMetaAttribute( "text",
-                                         "It's a quoted\" string" );
+                                         "\"It's a quoted\" string\"" );
     }
 
     @Test

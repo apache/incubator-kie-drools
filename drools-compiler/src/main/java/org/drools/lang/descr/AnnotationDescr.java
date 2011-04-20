@@ -100,9 +100,7 @@ public class AnnotationDescr extends BaseDescr {
     }
 
     public String getSingleValue(){
-        Set<String> keySet = this.values.keySet();
-        if( keySet.size() == 1 &&
-            "value".equals( keySet.iterator().next() ) ){
+        if( values.size() == 1 && values.containsKey( "value" ) ){
             return this.values.get( "value" );
         } else {
             return null;
@@ -110,9 +108,7 @@ public class AnnotationDescr extends BaseDescr {
     }
     
     public String getSingleValueStripped(){
-        Set<String> keySet = this.values.keySet();
-        if( keySet.size() == 1 &&
-            "value".equals( keySet.iterator().next() ) ){
+        if( values.size() == 1 && values.containsKey( "value" ) ){
             return unquote( this.values.get( "value" ) );
         } else {
             return null;
