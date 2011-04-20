@@ -3,7 +3,7 @@ package org.drools.test;
 import org.drools.Cheese;
 
 function String throwException( ) {
-    throw new Exception( "this should throw an exception" );
+    throw new RuntimeException( "this should throw an exception" );
 }
 
 rule "Throw ReturnValue Exception"

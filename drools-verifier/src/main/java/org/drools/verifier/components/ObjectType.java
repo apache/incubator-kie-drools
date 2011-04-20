@@ -17,11 +17,12 @@
 package org.drools.verifier.components;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 import org.drools.verifier.data.VerifierComponent;
 
 public class ObjectType extends VerifierComponent
@@ -37,7 +38,8 @@ public class ObjectType extends VerifierComponent
 
     private Set<Field>          fields           = new HashSet<Field>();
 
-    private Map<String, String> metadata         = new HashMap<String, String>();
+
+    private Multimap<String, String> metadata         = TreeMultimap.create();
 
     public int getOffset() {
         offset++;
@@ -82,7 +84,7 @@ public class ObjectType extends VerifierComponent
         return "ObjectType: " + fullName;
     }
 
-    public Map<String, String> getMetadata() {
+    public Multimap<String, String> getMetadata() {
         return metadata;
     }
 }

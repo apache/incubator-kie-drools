@@ -18,6 +18,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELEnabledBuilder
     implements
@@ -49,7 +50,7 @@ public class MVELEnabledBuilder
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
             for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
-                previousDeclarations[i] = declrs.get( id );
+                previousDeclarations[i++] = declrs.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  );            
 
@@ -61,7 +62,9 @@ public class MVELEnabledBuilder
                                                                        previousDeclarations,
                                                                        null,
                                                                        otherVars,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELEnabledExpression expr = new MVELEnabledExpression( unit,
                                                                     dialect.getId() );

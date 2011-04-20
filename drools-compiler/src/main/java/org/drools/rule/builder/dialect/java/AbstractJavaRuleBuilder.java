@@ -31,10 +31,10 @@ public class AbstractJavaRuleBuilder {
 
         RULE_REGISTRY.addNamedTemplate( "rules",
                                         TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
-                                                                          (Map<String, Class<? extends Node>>)null ) );
+                                                                          (Map<String, Class< ? extends Node>>) null ) );
         INVOKER_REGISTRY.addNamedTemplate( "invokers",
                                            TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
-                                                                             (Map<String, Class<? extends Node>>)null ) );
+                                                                             (Map<String, Class< ? extends Node>>) null ) );
 
         /**
          * Process these templates
@@ -56,14 +56,14 @@ public class AbstractJavaRuleBuilder {
         return INVOKER_REGISTRY;
     }
 
-    public Map<String,Object> createVariableContext(final String className,
-                                     final String text,
-                                     final RuleBuildContext context,
-                                     final Declaration[] declarations,
-                                     final Declaration[] localDeclarations,
-                                     final Map<String, Class<?>> globals, 
-                                     JavaAnalysisResult analysis) {
-        final Map<String,Object> map = new HashMap<String,Object>();
+    public Map<String, Object> createVariableContext(final String className,
+                                                     final String text,
+                                                     final RuleBuildContext context,
+                                                     final Declaration[] declarations,
+                                                     final Declaration[] localDeclarations,
+                                                     final Map<String, Class< ? >> globals,
+                                                     JavaAnalysisResult analysis) {
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         map.put( "methodName",
                  className );
@@ -74,12 +74,8 @@ public class AbstractJavaRuleBuilder {
         map.put( "ruleClassName",
                  StringUtils.ucFirst( context.getRuleDescr().getClassName() ) );
 
-        map.put("invokerClassName",
-                context.getRuleDescr().getClassName() + StringUtils.ucFirst(className) + "Invoker");
-        
-        if ( analysis != null ) {
-            map.put( "methodExpr", analysis.isModifyExpr() );
-        }
+        map.put( "invokerClassName",
+                 context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker" );
 
         if ( text != null ) {
             map.put( "text",
@@ -116,14 +112,15 @@ public class AbstractJavaRuleBuilder {
         String[] globalStr = new String[globals.size()];
         String[] globalTypes = new String[globals.size()];
         int i = 0;
-        for ( Entry<String, Class<?>> entry : globals.entrySet() ) {
+        for ( Entry<String, Class< ? >> entry : globals.entrySet() ) {
             globalStr[i] = entry.getKey();
-            globalTypes[i] = entry.getValue().getName().replace('$','.');
+            globalTypes[i] = entry.getValue().getName().replace( '$',
+                                                                 '.' );
             i++;
         }
 
-        map.put("globals",
-                globalStr );
+        map.put( "globals",
+                 globalStr );
 
         map.put( "globalTypes",
                  globalTypes );
@@ -138,31 +135,28 @@ public class AbstractJavaRuleBuilder {
                                         final Map vars,
                                         final Object invokerLookup,
                                         final BaseDescr descrLookup) {
-        synchronized ( MVELDialect.COMPILER_LOCK ) {
-            AbstractParser.setLanguageLevel( 5 );
-            TemplateRegistry registry = getRuleTemplateRegistry();
+        AbstractParser.setLanguageLevel( 5 );
+        TemplateRegistry registry = getRuleTemplateRegistry();
 
-            context.getMethods().add(
-                                      TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
-                                                               null,
-                                                               new MapVariableResolverFactory( vars ),
-                                                               registry )
+        context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
+                                                           null,
+                                                           new MapVariableResolverFactory( vars ),
+                                                           registry )
                     );
 
-            registry = getInvokerTemplateRegistry();
-            final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
+        registry = getInvokerTemplateRegistry();
+        final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
-            context.getInvokers().put( invokerClassName,
+        context.getInvokers().put( invokerClassName,
                                        TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
                                                                 null,
                                                                 new MapVariableResolverFactory( vars ),
                                                                 registry )
                     );
 
-            context.getInvokerLookups().put( invokerClassName,
+        context.getInvokerLookups().put( invokerClassName,
                                              invokerLookup );
-            context.getDescrLookups().put( invokerClassName,
+        context.getDescrLookups().put( invokerClassName,
                                            descrLookup );
-        }
     }
 }

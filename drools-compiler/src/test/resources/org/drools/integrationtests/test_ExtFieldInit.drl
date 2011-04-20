@@ -1,0 +1,48 @@
+package org.drools.compiler;
+
+declare MyBean
+    fieldint  : int = 12
+    fieldstr : String = "xyz"
+    fielddbl : double = 3.23
+    field0 : int
+    field1 : float
+end
+
+declare MyBean2 extends MyBean
+    fieldflt  : float = 1.2
+    fieldsht  : short = 2 @key
+    field2 : int
+    fieldbyt  : byte = 1
+end
+
+declare MyBean3 extends MyBean2
+    fieldbln : boolean = true
+    fieldchr  : char = x
+    fieldlng  : long = 9999
+end
+
+
+
+
+declare MyBoxBean
+    f0 : String
+    fieldint : Integer = 12
+
+    fielddbl  : Double = 3.23
+    fieldflt  : Float = 1.2
+    fieldsht : Short = 2
+    fieldbyt : Byte = 1
+    fieldbln : Boolean = true
+    fieldchr : Character = x
+    fieldlng : Long = 9999
+
+
+end
+
+
+
+rule "mock"
+when
+    MyBean2( fieldsht > 10 )
+then
+end

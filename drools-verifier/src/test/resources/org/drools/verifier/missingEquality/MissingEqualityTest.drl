@@ -162,3 +162,11 @@ rule "Covered equality 6b"
     then
         #actions
 end
+
+rule "Missing equality 7"
+    when
+        Person( $name :name)
+        Person( name != $name )
+    then
+        #actions
+end

@@ -76,7 +76,7 @@ public class MVELReturnValueExpression
                                final Declaration[] requiredDeclarations,
                                final WorkingMemory workingMemory,
                                final Object ctx) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, object, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null, null, object, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -86,7 +86,7 @@ public class MVELReturnValueExpression
         }
 
         return org.drools.base.FieldFactory.getFieldValue( MVEL.executeExpression( this.expr,
-                                                                                   null,
+                                                                                   object,
                                                                                    factory ) );
     }
 
@@ -120,8 +120,8 @@ public class MVELReturnValueExpression
         if ( other.expr == null ) {
             throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
         }
-
-        return this.expr.equals( other.expr );
+                
+        return this.unit.getExpression().equals( other.unit.getExpression() );
     }
 
     public void replaceDeclaration(Declaration declaration,

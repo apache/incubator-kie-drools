@@ -7,7 +7,7 @@ import java.util.List;
  * A helper class used during java code parsing to identify
  * and handle update() blocks
  */
-public class JavaUpdateBlockDescr implements JavaBlockDescr {
+public class JavaUpdateBlockDescr extends AbstractJavaBlockDescr implements JavaBlockDescr {
     private int start;
     private int end;
     private String targetExpression;

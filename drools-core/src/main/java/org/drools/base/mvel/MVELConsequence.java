@@ -76,7 +76,7 @@ public class MVELConsequence
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( knowledgeHelper, knowledgeHelper.getRule(), (LeftTuple) knowledgeHelper.getTuple(), null, knowledgeHelper, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( knowledgeHelper, knowledgeHelper.getRule(), knowledgeHelper, (LeftTuple) knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -99,11 +99,11 @@ public class MVELConsequence
                     System.out.println( DebugTools.decompile( compexpr ) );
                 }
                 MVEL.executeDebugger( compexpr,
-                                      null,
+                                      knowledgeHelper,
                                       factory );
             } else {
                 MVEL.executeExpression( compexpr,
-                                        null,
+                                        knowledgeHelper,
                                         factory );
             }
         } finally {

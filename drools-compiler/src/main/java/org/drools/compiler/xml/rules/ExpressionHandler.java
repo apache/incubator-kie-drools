@@ -34,16 +34,6 @@ public class ExpressionHandler extends BaseAbstractHandler
     Handler {
 
     public ExpressionHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FromHandler.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( BaseDescr.class );
-
-            this.allowNesting = true;
-        }
     }
 
     public Class generateNodeFor() {
@@ -65,7 +55,7 @@ public class ExpressionHandler extends BaseAbstractHandler
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
 
-        final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText() + ";";
+        final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
         
         emptyContentCheck( localName, expression, parser );
 

@@ -49,7 +49,7 @@ public class EvaluatorRegistry
     public EvaluatorRegistry() {
         this( null );
     }
-    
+
     /**
      * Creates a new EvaluatorRegistry using the given classloader to load
      * the evaluator definition classes.
@@ -93,26 +93,27 @@ public class EvaluatorRegistry
      * Return the set of registered keys.
      * @return a Set of Strings
      */
-    public Set<String> keySet(){
+    public Set<String> keySet() {
         return evaluators.keySet();
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        evaluators  = (Map<String, EvaluatorDefinition>)in.readObject();
-        if (in instanceof DroolsObjectInput) {
-            classloader = ((DroolsObjectInput)in).getClassLoader();
+    @SuppressWarnings("unchecked")
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
+        evaluators = (Map<String, EvaluatorDefinition>) in.readObject();
+        if ( in instanceof DroolsObjectInput ) {
+            classloader = ((DroolsObjectInput) in).getClassLoader();
         } else {
             classloader = getDefaultClassLoader();
         }
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(evaluators);
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        out.writeObject( evaluators );
     }
 
     private static ClassLoader getDefaultClassLoader() {
-        if (Thread.currentThread().getContextClassLoader() != null)
-            return Thread.currentThread().getContextClassLoader();
+        if ( Thread.currentThread().getContextClassLoader() != null ) return Thread.currentThread().getContextClassLoader();
         return EvaluatorRegistry.class.getClassLoader();
     }
 
@@ -129,7 +130,8 @@ public class EvaluatorRegistry
      * @return true if the new class implementation is replacing an old
      *         implementation for the same evaluator ID. False otherwise.
      */
-    public void addEvaluatorDefinition(String className) {
+    @SuppressWarnings("unchecked")
+    public void addEvaluatorDefinition( String className ) {
         try {
             Class<EvaluatorDefinition> defClass = (Class<EvaluatorDefinition>) this.classloader.loadClass( className );
             EvaluatorDefinition def = defClass.newInstance();
@@ -153,7 +155,7 @@ public class EvaluatorRegistry
      *
      * @param def the evaluator definition to be added.
      */
-    public void addEvaluatorDefinition(EvaluatorDefinition def) {
+    public void addEvaluatorDefinition( EvaluatorDefinition def ) {
         for ( String id : def.getEvaluatorIds() ) {
             this.evaluators.put( id,
                                  def );
@@ -167,7 +169,7 @@ public class EvaluatorRegistry
      * @param evaluatorId
      * @return
      */
-    public EvaluatorDefinition getEvaluatorDefinition(String evaluatorId) {
+    public EvaluatorDefinition getEvaluatorDefinition( String evaluatorId ) {
         return this.evaluators.get( evaluatorId );
     }
 
@@ -178,7 +180,7 @@ public class EvaluatorRegistry
      * @param operator the operator implemented by the evaluator definition
      * @return
      */
-    public EvaluatorDefinition getEvaluatorDefinition(Operator operator) {
+    public EvaluatorDefinition getEvaluatorDefinition( Operator operator ) {
         return this.evaluators.get( operator.getOperatorString() );
     }
 
@@ -205,10 +207,10 @@ public class EvaluatorRegistry
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  String operatorId,
-                                  boolean isNegated,
-                                  String parameterText) {
+    public Evaluator getEvaluator( ValueType type,
+                                   String operatorId,
+                                   boolean isNegated,
+                                   String parameterText ) {
         return this.getEvaluatorDefinition( operatorId ).getEvaluator( type,
                                                                        operatorId,
                                                                        isNegated,
@@ -235,9 +237,9 @@ public class EvaluatorRegistry
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  Operator operator,
-                                  String parameterText) {
+    public Evaluator getEvaluator( ValueType type,
+                                   Operator operator,
+                                   String parameterText ) {
         return this.getEvaluatorDefinition( operator ).getEvaluator( type,
                                                                      operator,
                                                                      parameterText );
@@ -259,8 +261,8 @@ public class EvaluatorRegistry
      *         between values of the given type, or null in case the type
      *         is not supported.
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  Operator operator) {
+    public Evaluator getEvaluator( ValueType type,
+                                   Operator operator ) {
         return this.getEvaluatorDefinition( operator ).getEvaluator( type,
                                                                      operator );
     }

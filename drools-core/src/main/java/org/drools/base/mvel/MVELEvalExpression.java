@@ -79,7 +79,7 @@ public class MVELEvalExpression
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, (LeftTuple) tuple, null, null, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null, null, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -89,7 +89,7 @@ public class MVELEvalExpression
         }
 
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
-                                                                 new Object(),
+                                                                 null,
                                                                  factory );
         return result.booleanValue();
     }
@@ -112,5 +112,35 @@ public class MVELEvalExpression
         
         return clone;
     }
+    
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        if ( expr == null ) {
+            throw new RuntimeException( "this MVELPredicateExpression must be compiled for hashCode" );
+        }
+        result = prime * result + unit.getExpression().hashCode();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+
+        if ( expr == null ) {
+            throw new RuntimeException( "this MVELReturnValueExpression must be compiled for equality" );
+        }
+
+        MVELEvalExpression other = (MVELEvalExpression) obj;
+        if ( other.expr == null ) {
+            throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
+        }
+                
+        return this.unit.getExpression().equals( other.unit.getExpression() );
+    }
+        
 
 }

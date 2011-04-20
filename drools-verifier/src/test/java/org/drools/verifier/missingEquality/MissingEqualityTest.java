@@ -16,17 +16,9 @@
 
 package org.drools.verifier.missingEquality;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.drools.StatelessSession;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.data.VerifierReport;
@@ -35,8 +27,14 @@ import org.drools.verifier.report.components.Cause;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Test;
 
-public class MissingEqualityTest extends TestBase {
+import java.util.*;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+public class MissingEqualityTest extends TestBaseOld {
 
     @Test
     public void testMissingEqualityInLiteralRestrictions() throws Exception {
@@ -85,7 +83,7 @@ public class MissingEqualityTest extends TestBase {
                 .getResourceAsStream("MissingEquality.drl"));
 
         session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
-                "Missing restriction in VariableRestrictions"));
+                "Missing restriction in VariableRestrictions, equal operator"));
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
         Collection<? extends Object> testData = getTestData(this.getClass()
@@ -94,12 +92,116 @@ public class MissingEqualityTest extends TestBase {
 
         session.setGlobal("result", result);
 
+//        for (Object o : testData) {
+//            if (o instanceof VariableRestriction) {
+//                System.out.println(o);
+//                VariableRestriction variableRestriction = (VariableRestriction) o;
+//                System.out.println(variableRestriction.getOperator());
+//            }
+//        }
+
         session.executeWithResults(testData);
 
         Iterator<VerifierMessageBase> iter = result.getBySeverity(
                 Severity.WARNING).iterator();
 
-        Collection<String> ruleNames = new ArrayList<String>();
+        Set<String> ruleNames = new HashSet<String>();
+        while (iter.hasNext()) {
+            Object o = (Object) iter.next();
+            if (o instanceof VerifierMessage) {
+                Cause cause = ((VerifierMessage) o).getFaulty();
+                String name = ((VariableRestriction) cause).getRuleName();
+
+                ruleNames.add(name);
+            }
+        }
+
+        assertTrue(ruleNames.remove("Missing equality 5"));
+
+        if (!ruleNames.isEmpty()) {
+            for (String string : ruleNames) {
+                fail("Rule " + string + " caused an error.");
+            }
+        }
+    }
+
+    @Test
+    public void testMissingEqualityInVariableRestrictions2() throws Exception {
+        StatelessSession session = getStatelessSession(this.getClass()
+                .getResourceAsStream("MissingEquality.drl"));
+
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+                "Missing restriction in VariableRestrictions, unequal operator"));
+
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
+
+        session.setGlobal("result", result);
+
+//        for (Object o : testData) {
+//            if (o instanceof VariableRestriction) {
+//                System.out.println(o);
+//                VariableRestriction variableRestriction = (VariableRestriction) o;
+//                System.out.println(variableRestriction.getOperator());
+//            }
+//        }
+
+        session.executeWithResults(testData);
+
+        Iterator<VerifierMessageBase> iter = result.getBySeverity(
+                Severity.WARNING).iterator();
+
+        Set<String> ruleNames = new HashSet<String>();
+        while (iter.hasNext()) {
+            Object o = (Object) iter.next();
+            if (o instanceof VerifierMessage) {
+                Cause cause = ((VerifierMessage) o).getFaulty();
+                String name = ((VariableRestriction) cause).getRuleName();
+
+                ruleNames.add(name);
+            }
+        }
+
+        assertTrue(ruleNames.remove("Missing equality 7"));
+
+        if (!ruleNames.isEmpty()) {
+            for (String string : ruleNames) {
+                fail("Rule " + string + " caused an error.");
+            }
+        }
+    }
+
+    @Test
+    public void testMissingEqualityInVariableRestrictions3() throws Exception {
+        StatelessSession session = getStatelessSession(this.getClass()
+                .getResourceAsStream("MissingEquality.drl"));
+
+        session.setAgendaFilter(new RuleNameMatchesAgendaFilter(
+                "Missing restriction in VariableRestrictions, custom operator"));
+
+        VerifierReport result = VerifierReportFactory.newVerifierReport();
+        Collection<? extends Object> testData = getTestData(this.getClass()
+                .getResourceAsStream("MissingEqualityTest.drl"), result
+                .getVerifierData());
+
+        session.setGlobal("result", result);
+
+//        for (Object o : testData) {
+//            if (o instanceof VariableRestriction) {
+//                System.out.println(o);
+//                VariableRestriction variableRestriction = (VariableRestriction) o;
+//                System.out.println(variableRestriction.getOperator());
+//            }
+//        }
+
+        session.executeWithResults(testData);
+
+        Iterator<VerifierMessageBase> iter = result.getBySeverity(
+                Severity.WARNING).iterator();
+
+        Set<String> ruleNames = new HashSet<String>();
         while (iter.hasNext()) {
             Object o = (Object) iter.next();
             if (o instanceof VerifierMessage) {
@@ -112,7 +214,6 @@ public class MissingEqualityTest extends TestBase {
 
         assertTrue(ruleNames.remove("Missing equality 3"));
         assertTrue(ruleNames.remove("Missing equality 4"));
-        assertTrue(ruleNames.remove("Missing equality 5"));
         assertTrue(ruleNames.remove("Missing equality 6"));
 
         if (!ruleNames.isEmpty()) {

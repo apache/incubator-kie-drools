@@ -42,6 +42,16 @@ options {
     /** Overrided this method to not output mesages */
     public void emitErrorMessage(String msg) {
     }
+    
+    public String normalizeString( String input ) {
+        if( input != null && input.length() >= 4 ) {
+            input = input.substring( 1, input.length() - 1 ); 
+            input.replaceAll( "\'", "'" );
+            input.replaceAll( "\"", "\\\"" );
+            input = "\"" + input + "\"";
+        }
+        return input;
+    }
 }
 
 WS      :       (	' '
@@ -82,11 +92,11 @@ IntegerTypeSuffix : ('l'|'L') ;
 
 STRING
     :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
-    |  ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'') 
+    |  ('\'' ( EscapeSequence | ~('\\'|'\'') )* '\'') { setText( normalizeString( getText() ) ); }
     ;
 
 
-TimePeriod
+TIME_INTERVAL
     : (('0'..'9')+ 'd') (('0'..'9')+ 'h')?(('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
     | (('0'..'9')+ 'h') (('0'..'9')+ 'm')?(('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?
     | (('0'..'9')+ 'm') (('0'..'9')+ 's')?(('0'..'9')+ 'ms'?)?

@@ -100,8 +100,11 @@ public class MVELConsequenceBuilder
                                                             text,
                                                             new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
                                                                                  context.getPackageBuilder().getGlobals(),
+                                                                                 null,
                                                                                  KnowledgeHelper.class),
-                                                            null );
+                                                            null,
+                                                            "drools",
+                                                            KnowledgeHelper.class );
             
             if ( analysis == null ) {
                 // something bad happened, issue already logged in errors
@@ -118,14 +121,18 @@ public class MVELConsequenceBuilder
                 declarations[j++] = decls.get( str );
             }
             Arrays.sort( declarations, SortDeclarations.instance  );
+            for ( int i = 0; i < declrStr.length; i++) {
+                declrStr[i] = declarations[i].getIdentifier();
+            }
             context.getRule().setRequiredDeclarations( declrStr );
-            
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                        analysis,
                                                                        declarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELConsequence expr = new MVELConsequence( unit,
                                                         dialect.getId() );

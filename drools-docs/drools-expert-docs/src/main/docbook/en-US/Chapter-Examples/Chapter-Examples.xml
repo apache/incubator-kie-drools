@@ -18,6 +18,7 @@
       the examples in another project (or another IDE) then you will need
       to set up the dependencies by hand, of course. Many, but not all of the
       examples are documented below, enjoy!</para>
+    <para>Some examples require Java 1.6 to run.</para>
   </section>
 
   <xi:include href="Section-HelloWorldExample.xml" />

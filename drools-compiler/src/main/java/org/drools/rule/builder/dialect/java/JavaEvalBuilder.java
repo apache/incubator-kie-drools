@@ -17,9 +17,7 @@
 package org.drools.rule.builder.dialect.java;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;

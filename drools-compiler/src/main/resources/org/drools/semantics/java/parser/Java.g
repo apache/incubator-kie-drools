@@ -40,7 +40,7 @@
  *  Version 1.0.3 -- Chris Hogue, Feb 26, 2007
  *      Factored out an annotationName rule and used it in the annotation rule.
  *          Not sure why, but typeName wasn't recognizing references to inner
- *          annotations (e.g. @InterfaceName.InnerAnnotation())
+ *       	`1111111   annotations (e.g. @InterfaceName.InnerAnnotation())
  *      Factored out the elementValue section of an annotation reference.  Created 
  *          elementValuePair and elementValuePairs rules, then used them in the 
  *          annotation rule.  Allows it to recognize annotation references with 
@@ -80,6 +80,9 @@ options {k=2; backtrack=true; memoize=true;}
 @parser::header {
     package org.drools.rule.builder.dialect.java.parser;
     import java.util.Iterator;
+    import java.util.Queue;
+    import java.util.LinkedList;    
+    
 }
 
 @parser::members {
@@ -90,8 +93,30 @@ options {k=2; backtrack=true; memoize=true;}
     public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
     private List errors = new ArrayList();
     private int localVariableLevel = 0;
-    private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
-    public List<JavaBlockDescr> getBlockDescr() { return blocks; }
+    
+        private JavaRootBlockDescr rootBlockDescr = new JavaRootBlockDescr();
+        private LinkedList<JavaContainerBlockDescr> blocks;
+        
+        public void addBlockDescr(JavaBlockDescr blockDescr) {
+            if ( this.blocks == null ) {
+                this.blocks = new LinkedList<JavaContainerBlockDescr>();          
+                this.blocks.add( this.rootBlockDescr );
+            }
+            blocks.peekLast().addJavaBlockDescr( blockDescr );
+        }
+        
+            public void pushContainerBlockDescr(JavaContainerBlockDescr blockDescr, boolean addToParent) {
+                if ( addToParent ) {
+                    addBlockDescr(blockDescr);
+                }
+                blocks.add( blockDescr );
+            }      
+            
+            public void popContainerBlockDescr() {
+                blocks.removeLast( );
+            }          
+        
+        public JavaRootBlockDescr getRootBlockDescr() { return rootBlockDescr; }
 
     private String source = "unknown";
 
@@ -663,19 +688,17 @@ scope   {
 statement
     : block
     | 'assert' expression (':' expression)? ';'
-    | 'if' parExpression statement (options {k=1;}:'else' statement)?
-    | 'for' '(' forControl ')' statement
-    | 'while' parExpression statement
+    | ifStatement
+    | forStatement //'for' '(' forControl ')' statement
+    | whileStatement//'while' parExpression statement
     | 'do' statement 'while' parExpression ';'
-    | 'try' block
-      (	catches 'finally' block
-      | catches
-      | 'finally' block
-      )
+    
+    | tryStatement
+      
     | 'switch' parExpression '{' switchBlockStatementGroups '}'
     | 'synchronized' parExpression block
     | 'return' expression? ';'
-    | 'throw' expression ';'
+    |  throwStatement
     | 'break' Identifier? ';'
     | 'continue' Identifier? ';'
     // adding support to drools modify block
@@ -684,6 +707,148 @@ statement
     | statementExpression ';'
     | Identifier ':' statement
     ;
+    
+
+throwStatement
+    @init {
+        JavaThrowBlockDescr d = null;
+    }
+    : s='throw'
+    expression
+    c = ';'
+        {
+        d = new JavaThrowBlockDescr( );
+        d.setStart( ((CommonToken)$s).getStartIndex() );
+        d.setTextStart( ((CommonToken)$expression.start).getStartIndex() );        
+        this.addBlockDescr( d );
+        d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+        }
+    ;
+    
+ifStatement
+    @init {
+         JavaIfBlockDescr id = null;
+         JavaElseBlockDescr ed = null;         
+    }
+    :     
+    //    | 'if' parExpression statement (options {k=1;}:'else' statement)?
+    s='if' parExpression
+    {
+        this.localVariableLevel++;
+        id = new JavaIfBlockDescr();
+        id.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(id, true); 
+    }    
+    x=statement 
+    {
+        this.localVariableLevel--;
+        id.setTextStart(((CommonToken)$x.start).getStartIndex() );
+        id.setEnd(((CommonToken)$x.stop).getStopIndex() ); popContainerBlockDescr(); 
+    }
+    
+    (
+     y='else'  ('if' parExpression )?
+    {
+        this.localVariableLevel++;
+        ed = new JavaElseBlockDescr();
+        ed.setStart( ((CommonToken)$y).getStartIndex() );  pushContainerBlockDescr(ed, true); 
+    }             
+     z=statement
+    {
+        this.localVariableLevel--;
+        ed.setTextStart(((CommonToken)$z.start).getStartIndex() );
+        ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
+    })*       
+    ;      
+       
+forStatement
+options {k=3;}
+    @init {
+         JavaForBlockDescr fd = null;
+         
+     }
+    : 
+    x='for' y='('
+    {   fd = new JavaForBlockDescr( ); 
+        fd.setStart( ((CommonToken)$x).getStartIndex() ); pushContainerBlockDescr(fd, true);    
+        fd.setStartParen( ((CommonToken)$y).getStartIndex() );            
+    }      
+    (    
+        (variableModifier* type Identifier z=':' expression
+          {
+             fd.setInitEnd( ((CommonToken)$z).getStartIndex() );        
+          })
+        |  
+        (forInit? z=';' expression? ';' forUpdate?        
+         {
+             fd.setInitEnd( ((CommonToken)$z).getStartIndex() );        
+          })
+
+    
+      )    
+     ')' bs=statement
+    {                
+        fd.setTextStart(((CommonToken)$bs.start).getStartIndex() );
+        fd.setEnd(((CommonToken)$bs.stop).getStopIndex() ); popContainerBlockDescr();     
+    }
+    ;       
+
+whileStatement
+    @init {
+         JavaWhileBlockDescr wd = null;         
+    }
+    :         
+    // 'while' parExpression statement    
+    s='while' parExpression 
+    {   wd = new JavaWhileBlockDescr( ); wd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(wd, true);    
+    } 
+    bs= statement
+    {                
+        wd.setTextStart(((CommonToken)$bs.start).getStartIndex() );
+        wd.setEnd(((CommonToken)$bs.stop).getStopIndex() ); popContainerBlockDescr();     
+    }    
+    ;  
+    
+tryStatement
+    @init {
+         JavaTryBlockDescr td = null;
+         JavaCatchBlockDescr cd = null;
+         JavaFinalBlockDescr fd = null;
+         
+    }
+    :     
+    s='try' 
+    {   this.localVariableLevel++;
+        td = new JavaTryBlockDescr( ); td.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(td, true);    
+    } bs='{' blockStatement*
+    {
+                
+        td.setTextStart( ((CommonToken)$bs).getStartIndex() );        
+
+    } c='}' {td.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr();    }
+    
+ 
+    (s='catch' '(' formalParameter ')' 
+     {  this.localVariableLevel++;
+        cd = new JavaCatchBlockDescr( $formalParameter.text );
+        cd.setClauseStart( ((CommonToken)$formalParameter.start).getStartIndex() ); 
+        cd.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(cd, false);
+     } bs='{' blockStatement*
+     { 
+        cd.setTextStart( ((CommonToken)$bs).getStartIndex() );
+        td.addCatch( cd );        
+     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )* 
+     
+     
+     
+     (s='finally' 
+     {  this.localVariableLevel++;
+        fd = new JavaFinalBlockDescr( ); fd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(fd, false);
+     } bs='{' blockStatement*
+      {
+        fd.setTextStart( ((CommonToken)$bs).getStartIndex() );        
+        td.setFinally( fd );         
+      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )?     
+    ;    
 
 modifyStatement
     @init {
@@ -693,7 +858,7 @@ modifyStatement
     {
         d = new JavaModifyBlockDescr( $parExpression.text );
         d.setStart( ((CommonToken)$s).getStartIndex() );
-        this.blocks.add( d );
+        this.addBlockDescr( d );
 
     }
     '{' ( e = expression { d.getExpressions().add( $e.text ); }
@@ -715,10 +880,11 @@ updateStatement
         {
         d = new JavaUpdateBlockDescr( $expression.text );
         d.setStart( ((CommonToken)$s).getStartIndex() );
-        this.blocks.add( d );
-            d.setEnd( ((CommonToken)$c).getStopIndex() ); 
+        this.addBlockDescr( d );
+        d.setEnd( ((CommonToken)$c).getStopIndex() ); 
         }
     ;
+    
 retractStatement
     @init {
         JavaRetractBlockDescr d = null;
@@ -729,7 +895,7 @@ retractStatement
         {	
         d = new JavaRetractBlockDescr( $expression.text );
         d.setStart( ((CommonToken)$s).getStartIndex() );
-        this.blocks.add( d );
+        this.addBlockDescr( d );
         d.setEnd( ((CommonToken)$c).getStopIndex() );
 
     }
@@ -746,7 +912,7 @@ epStatement
             d.setType( JavaBlockDescr.BlockType.EXIT );
             d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-            this.blocks.add( d );
+            this.addBlockDescr( d );
         }
         |  s='entryPoints' '[' id=StringLiteral c=']' 
         {
@@ -754,7 +920,7 @@ epStatement
             d.setType( JavaBlockDescr.BlockType.ENTRY );
             d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-            this.blocks.add( d );
+            this.addBlockDescr( d );
         }
         |  s='channels' '[' id=StringLiteral c=']' 
         {
@@ -762,18 +928,10 @@ epStatement
             d.setType( JavaBlockDescr.BlockType.CHANNEL );
             d.setStart( ((CommonToken)$s).getStartIndex() );
             d.setEnd( ((CommonToken)$c).getStopIndex() ); 
-            this.blocks.add( d );
+            this.addBlockDescr( d );
         }
         ) 
         ;	
-
-catches
-    :	catchClause (catchClause)*
-    ;
-
-catchClause
-    :	'catch' '(' formalParameter ')' block
-    ;
 
 formalParameter
     :	variableModifier* type variableDeclaratorId

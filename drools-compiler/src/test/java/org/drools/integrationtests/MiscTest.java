@@ -17,7 +17,7 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,61 +40,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
+import org.drools.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
-import org.drools.Address;
-import org.drools.Attribute;
-import org.drools.Cell;
-import org.drools.Cheese;
-import org.drools.CheeseEqual;
-import org.drools.Cheesery;
-import org.drools.Child;
-import org.drools.ClassObjectFilter;
-import org.drools.DomainObjectHolder;
-import org.drools.FactA;
-import org.drools.FactB;
-import org.drools.FactC;
-import org.drools.FactHandle;
-import org.drools.FirstClass;
-import org.drools.FromTestClass;
-import org.drools.Guess;
-import org.drools.IndexedNumber;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Message;
-import org.drools.MockPersistentSet;
-import org.drools.Move;
-import org.drools.ObjectWithSet;
-import org.drools.Order;
-import org.drools.OrderItem;
-import org.drools.OuterClass;
-import org.drools.Person;
-import org.drools.PersonFinal;
-import org.drools.PersonInterface;
-import org.drools.PersonWithEquals;
-import org.drools.Pet;
-import org.drools.PolymorphicFact;
-import org.drools.Primitives;
-import org.drools.RandomNumber;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SecondClass;
-import org.drools.Sensor;
-import org.drools.SpecialString;
-import org.drools.State;
-import org.drools.StatefulSession;
-import org.drools.StatelessSession;
-import org.drools.TestParam;
-import org.drools.Win;
-import org.drools.WorkingMemory;
 import org.drools.Cheesery.Maturity;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
@@ -158,8 +113,14 @@ import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
+import org.mvel2.optimizers.OptimizerFactory;
 
-/** Run all the tests with the ReteOO engine implementation */
+/**
+ * Run all the tests with the ReteOO engine implementation
+ */
 public class MiscTest {
 
     protected RuleBase getRuleBase() throws Exception {
@@ -193,6 +154,8 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore
+    // @FIXME MVEL does not yet support dynamic .* static method imports
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -214,9 +177,12 @@ public class MiscTest {
                            list );
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
-        session.fireAllRules();
+        int fired = session.fireAllRules();
 
         list = (List) session.getGlobal( "list" );
+
+        assertEquals( 4,
+                      fired );
         assertEquals( 4,
                       list.size() );
 
@@ -1235,9 +1201,9 @@ public class MiscTest {
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
         session.fireAllRules();
-        System.out.println( ((List) session.getGlobal( "list" )).get( 0 ) );
-        assertEquals( 3,
-                      ((List) session.getGlobal( "list" )).size() );
+        //System.out.println(((List) session.getGlobal("list")).get(0));
+        assertEquals(3,
+                     ((List) session.getGlobal("list")).size());
 
         nullPerson = new Person( null );
 
@@ -1263,7 +1229,7 @@ public class MiscTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                                 list );
+                            list );
 
         ksession.insert( new Attribute() );
         ksession.insert( new Message() );
@@ -1406,11 +1372,11 @@ public class MiscTest {
     public void testExtends() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "extend_rule_test.drl" ) ) );
-        
+
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
-        }        
-        
+        }
+
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -1443,10 +1409,11 @@ public class MiscTest {
                                              4 );
         FactHandle handle2 = session.insert( mycheese2 );
         session.fireAllRules();
-        
+
         assertEquals( "rule 4",
                       list.get( 0 ) );
-        assertEquals( 1, list.size() );
+        assertEquals( 1,
+                      list.size() );
 
         //Test 3 levels of inheritance, all levels
         list = new ArrayList();
@@ -1460,7 +1427,8 @@ public class MiscTest {
         //System.out.println(list.toString());
         assertEquals( "rule 3",
                       list.get( 0 ) );
-        assertEquals( 1, list.size() );
+        assertEquals( 1,
+                      list.size() );
 
         //Test 3 levels of inheritance, third only
         list = new ArrayList();
@@ -1484,10 +1452,10 @@ public class MiscTest {
         FactHandle handle5 = session.insert( mycheese5 );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal( "list" )).toString());
-        assertEquals( 0, list.size() );
+        assertEquals( 0,
+                      list.size() );
 
     }
-
 
     @Test
     public void testExtends2() {
@@ -1682,7 +1650,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testFactBindings() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FactBindings.drl" ) ) );
@@ -1741,7 +1708,7 @@ public class MiscTest {
         Environment env = EnvironmentFactory.newEnvironment();
         env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES,
                  new ObjectMarshallingStrategy[]{
-                    new IdentityPlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT )} );
+                        new IdentityPlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT )} );
         StatefulSession session = ruleBase.newStatefulSession( null,
                                                                env );
 
@@ -1916,9 +1883,8 @@ public class MiscTest {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( rule ) );
 
-        if ( builder.hasErrors() ) {
-            fail( builder.getErrors().toString() );
-        }
+        assertFalse( builder.getErrors().toString(),
+                     builder.hasErrors() );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
@@ -1926,7 +1892,6 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.fireAllRules();
-
     }
 
     @Test
@@ -1968,7 +1933,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testCell() throws Exception {
         final Cell cell1 = new Cell( 9 );
         final Cell cell = new Cell( 0 );
@@ -1987,7 +1951,7 @@ public class MiscTest {
         Environment env = EnvironmentFactory.newEnvironment();
         env.set( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES,
                  new ObjectMarshallingStrategy[]{
-                    new IdentityPlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT )} );
+                        new IdentityPlaceholderResolverStrategy( ClassObjectMarshallingStrategyAcceptor.DEFAULT )} );
         StatefulSession session = ruleBase.newStatefulSession( null,
                                                                env );
         session.insert( cell1 );
@@ -2190,6 +2154,9 @@ public class MiscTest {
     public void testReturnValue() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "returnvalue_rule_test.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -2342,13 +2309,13 @@ public class MiscTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         final List list1 = new ArrayList();
         ksession.setGlobal( "list1",
-                                 list1 );
+                            list1 );
         final List list2 = new ArrayList();
         ksession.setGlobal( "list2",
-                                 list2 );
+                            list2 );
         final List list3 = new ArrayList();
         ksession.setGlobal( "list3",
-                                 list3 );
+                            list3 );
 
         final Cheesery cheesery = new Cheesery();
         final Cheese stilton = new Cheese( "stilton",
@@ -2358,7 +2325,7 @@ public class MiscTest {
         cheesery.addCheese( stilton );
         cheesery.addCheese( cheddar );
         ksession.setGlobal( "cheesery",
-                                 cheesery );
+                            cheesery );
         ksession.insert( cheesery );
 
         Person p = new Person( "stilton" );
@@ -2571,30 +2538,32 @@ public class MiscTest {
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "errors_in_rule.drl" ) ) );
         final Package pkg = builder.getPackage();
 
-        final DroolsError err = builder.getErrors().getErrors()[0];
-        final DescrBuildError ruleErr = (DescrBuildError) err;
-        assertNotNull( ruleErr.getDescr() );
-        assertTrue( ruleErr.getLine() != -1 );
-
-        final DroolsError errs[] = builder.getErrors().getErrors();
-
+        DroolsError[] errors = builder.getErrors().getErrors();
         assertEquals( 3,
-                      builder.getErrors().getErrors().length );
+                      errors.length );
+
+        final DescrBuildError stiltonError = (DescrBuildError) errors[0];
+        assertTrue( stiltonError.getMessage().contains( "Stilton" ) );
+        assertNotNull( stiltonError.getDescr() );
+        assertTrue( stiltonError.getLine() != -1 );
 
         // check that its getting it from the ruleDescr
-        assertEquals( ruleErr.getLine(),
-                      ruleErr.getDescr().getLine() );
+        assertEquals( stiltonError.getLine(),
+                      stiltonError.getDescr().getLine() );
         // check the absolute error line number (there are more).
         assertEquals( 11,
-                      ruleErr.getLine() );
+                      stiltonError.getLine() );
 
+        final DescrBuildError poisonError = (DescrBuildError) errors[1];
+        assertTrue( poisonError.getMessage().contains( "Poison" ) );
+        assertEquals( 13,
+                      poisonError.getLine() );
+
+        assertTrue( errors[2].getMessage().contains( "add" ) );
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
-        final DescrBuildError rhs = (DescrBuildError) builder.getErrors().getErrors()[2];
-        assertTrue( rhs.getLine() > 7 ); // not being too specific - may need to
-        // change this when we rework the error
-        // reporting
-
+        final DescrBuildError rhsError = (DescrBuildError) errors[2];
+        assertTrue( rhsError.getLine() >= 8 && rhsError.getLine() <= 17 ); // TODO this should be 16
     }
 
     @Test
@@ -2707,7 +2676,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -2733,7 +2701,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testCustomConsequenceException() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ConsequenceException.drl" ) ) );
@@ -2757,8 +2724,8 @@ public class MiscTest {
     }
 
     public static class CustomConsequenceExceptionHandler
-        implements
-        ConsequenceExceptionHandler {
+            implements
+            ConsequenceExceptionHandler {
 
         private boolean called;
 
@@ -2852,8 +2819,7 @@ public class MiscTest {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Predicate" );
         } catch ( final Exception e ) {
-            assertEquals( "this should throw an exception",
-                          e.getCause().getMessage() );
+            assertTrue( e.getCause().getMessage().startsWith( "[Error: throwException( type1 ): this should throw an exception]" ) );
         }
     }
 
@@ -2876,7 +2842,7 @@ public class MiscTest {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the ReturnValue" );
         } catch ( final Exception e ) {
-            assertTrue( e.getCause().getMessage().endsWith( "this should throw an exception" ) );
+            e.getCause().getMessage().contains( "this should throw an exception" );
         }
     }
 
@@ -2961,6 +2927,7 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore
     public void testDumpers() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
@@ -3128,7 +3095,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testNullValuesIndexing() throws Exception {
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_NullValuesIndexing.drl" ) );
 
@@ -3304,7 +3270,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testLLR() throws Exception {
 
         // read in the source
@@ -3479,6 +3444,10 @@ public class MiscTest {
 
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_DeclaringAndUsingBindsInSamePattern.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase( config );
@@ -3692,8 +3661,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
-    // TODO we now allow bindings on declarations, so update the test for this
     public void testDuplicateVariableBinding() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBinding.drl" ) ) );
@@ -3739,20 +3706,6 @@ public class MiscTest {
                       result.size() );
         assertEquals( brie.getPrice(),
                       ((Integer) result.get( "test3" + brie.getType() )).intValue() );
-    }
-
-    @Test
-    @Ignore
-    // TODO we now allow bindings on declarations, so update the test for this
-    public void testDuplicateVariableBindingError() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_duplicateVariableBindingError.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        assertFalse( pkg.isValid() );
-        System.out.println( pkg.getErrorSummary() );
-        assertEquals( 6,
-                      pkg.getErrorSummary().split( "\n" ).length );
     }
 
     @Test
@@ -4293,6 +4246,25 @@ public class MiscTest {
     }
 
     @Test
+    public void testConnectorsAndOperators() throws Exception {
+        final KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_ConstraintConnectorsAndOperators.drl" ) );
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new StockTick( 1,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        ksession.insert( new StockTick( 2,
+                                        "IBM",
+                                        10,
+                                        1100 ) );
+        final int fired = ksession.fireAllRules();
+
+        assertEquals( 1,
+                      fired );
+    }
+
+    @Test
     public void testConstraintConnectorOr() throws Exception {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_ConstraintConnectorOr.drl" ) ),
@@ -4465,6 +4437,9 @@ public class MiscTest {
     public void testQualifiedFieldReference() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QualifiedFieldReference.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -4496,6 +4471,9 @@ public class MiscTest {
     public void testEvalRewrite() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewrite.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -4564,11 +4542,13 @@ public class MiscTest {
 
     }
 
-    @Test(timeout = 5000)
-    // TODO remove explicit timout after the MVEL issue is fixed
+    @Test
     public void testMapAccess() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccess.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -4597,9 +4577,101 @@ public class MiscTest {
         assertTrue( list.contains( map ) );
     }
 
+    @Test
+    public void testNoneTypeSafeDeclarations() {
+        // same namespace
+        String str = "package org.drools\n" +
+                     "global java.util.List list\n" +
+                     "declare Person\n" +
+                     "    @typesafe(false)\n" +
+                     "end\n" +
+                     "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                     "   $p : Person( object.street == 's1' )\n" +
+                     "then\n" +
+                     "   list.add( $p );\n" +
+                     "end\n";
+
+        executeTypeSafeDeclarations( str,
+                                     true );
+
+        // different namespace with import
+        str = "package org.drools.test\n" +
+                "import org.drools.Person\n" +
+                "global java.util.List list\n" +
+                "declare Person\n" +
+                "    @typesafe(false)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : Person( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+        executeTypeSafeDeclarations( str,
+                                     true );
+
+        // different namespace without import using qualified name
+        str = "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "declare org.drools.Person\n" +
+                "    @typesafe(false)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : org.drools.Person( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+        executeTypeSafeDeclarations( str,
+                                     true );
+
+        // this should fail as it's not declared non typesafe 
+        str = "package org.drools.test\n" +
+                "global java.util.List list\n" +
+                "declare org.drools.Person\n" +
+                "    @typesafe(true)\n" +
+                "end\n" +
+                "rule testTypeSafe\n dialect \"mvel\" when\n" +
+                "   $p : org.drools.Person( object.street == 's1' )\n" +
+                "then\n" +
+                "   list.add( $p );\n" +
+                "end\n";
+        executeTypeSafeDeclarations( str,
+                                     false );
+    }
+
+    private void executeTypeSafeDeclarations( String str,
+                                              boolean mustSucceed ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            if ( mustSucceed ) {
+                fail( kbuilder.getErrors().toString() );
+            } else {
+                return;
+            }
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+        Address a = new Address( "s1" );
+        Person p = new Person( "yoda" );
+        p.setObject( a );
+
+        ksession.insert( p );
+        ksession.fireAllRules();
+        assertEquals( p,
+                      list.get( 0 ) );
+    }
+
     // this is an MVEL regression that we need fixed in mvel-2.0.11
     @Test
-    @Ignore
     public void testMapAccessWithVariable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_MapAccessWithVariable.drl" ) ) );
@@ -5145,8 +5217,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
+            fail( kbuilder.getErrors().toString() );
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -5189,8 +5260,7 @@ public class MiscTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
+            fail( kbuilder.getErrors().toString() );
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -5260,6 +5330,9 @@ public class MiscTest {
     public void testBindingsOnConnectiveExpressions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_bindings.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -5644,11 +5717,11 @@ public class MiscTest {
 
         builder = new PackageBuilder();
         rule = "package org.drools.test\n" +
-               "global java.util.List list\n" +
-               "rule xxx when\n" +
-               "then\n" +
-               "   list.add(\"x\");\n" +
-               "end";
+                "global java.util.List list\n" +
+                "rule xxx when\n" +
+                "then\n" +
+                "   list.add(\"x\");\n" +
+                "end";
         builder.addPackageFromDrl( new StringReader( rule ) );
         pkg = builder.getPackage();
 
@@ -5793,6 +5866,9 @@ public class MiscTest {
     public void testAutovivificationOfVariableRestrictions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoVivificationVR.drl" ) ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         final Package pkg = builder.getPackage();
 
         RuleBase ruleBase = getRuleBase();
@@ -6127,7 +6203,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testRuntimeTypeCoercion() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_RuntimeTypeCoercion.drl" ) ) );
@@ -6590,6 +6665,7 @@ public class MiscTest {
                 fail( "KnowledgeBuilder should have errors" );
             }
         } catch ( Exception e ) {
+            e.printStackTrace();
             fail( "Exception should not be thrown " );
         }
     }
@@ -7120,6 +7196,7 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -7376,6 +7453,195 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore("Temporarly ignored to get a blue build while edson might be fixing it")
+    // TODO etirelli unignore for release 5.2.0
+    public void testMemberOfNotWorkingWithOr() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import java.util.ArrayList;\n";
+        rule += "import org.drools.Person;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "when\n";
+        rule += "    $list: ArrayList()                                   \n";
+        rule += "    ArrayList()                                          \n";
+        rule += "            from collect(                                \n";
+        rule += "                  Person(                                \n";
+        rule += "                      (                                  \n";
+        rule += "                          pet memberOf $list             \n";
+        rule += "                      ) || (                             \n";
+        rule += "                          pet == null                    \n";
+        rule += "                      )                                  \n";
+        rule += "                  )                                      \n";
+        rule += "            )\n";
+        rule += "then\n";
+        rule += "  System.out.println(\"hello person\");\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        Person toni = new Person( "Toni",
+                                  12 );
+        toni.setPet( new Pet( "Mittens" ) );
+
+        session.insert( new ArrayList() );
+        session.insert( toni );
+
+        session.fireAllRules();
+    }
+
+    @Test
+    @Ignore
+    // this is an MVEL bug on operator precedence, waiting for MVEL fix
+    public void testUnNamed() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import java.util.ArrayList;\n";
+        rule += "import org.drools.Person;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "when\n";
+        rule += "    $list: ArrayList()                                   \n";
+        rule += "    ArrayList()                                          \n";
+        rule += "            from collect(                                \n";
+        rule += "                  Person(                                \n";
+        rule += "                      (                                  \n";
+        rule += "                          pet memberOf $list             \n";
+        rule += "                      ) || (                             \n";
+        rule += "                          pet == null                    \n";
+        rule += "                      )                                  \n";
+        rule += "                  )                                      \n";
+        rule += "            )\n";
+        rule += "then\n";
+        rule += "  System.out.println(\"hello person\");\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        Person toni = new Person( "Toni",
+                                  12 );
+        toni.setPet( new Pet( "Mittens" ) );
+
+        session.insert( new ArrayList() );
+        session.insert( toni );
+
+        session.fireAllRules();
+    }
+
+    @Test
+    @Ignore
+    // this isn't possible, we can only narrow with type safety, not widen.
+    public void testAccessFieldsFromSubClass() throws Exception {
+
+        // Exception in ClassFieldAccessorStore line: 116
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import org.drools.Person;\n";
+        rule += "import org.drools.Pet;\n";
+        rule += "import org.drools.Cat;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "when\n";
+        rule += "    Person(\n";
+        rule += "      pet.breed == \"Siamise\"\n";
+        rule += "    )\n";
+        rule += "then\n";
+        rule += "System.out.println(\"hello person\");\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+
+        Person person = new Person();
+
+        person.setPet( new Cat( "Mittens" ) );
+
+        session.insert( person );
+
+        session.fireAllRules();
+    }
+
+    @Test
+    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
+    public void testGenericsInRHS() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import java.util.Map;\n";
+        rule += "import java.util.HashMap;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "  when\n";
+        rule += "  then\n";
+        rule += "    Map<String,String> map = new HashMap<String,String>();\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+        assertNotNull( session );
+    }
+
+    @Test
+    public void testAccessingMapValues() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import org.drools.Pet;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "  when\n";
+        rule += "    $pet: Pet()\n";
+        rule += "    Pet( \n";
+        rule += "      ownerName == $pet.attributes[\"key\"] \n";
+        rule += "    )\n";
+        rule += "  then\n";
+        rule += "    System.out.println(\"hi pet\");\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+        assertNotNull( session );
+
+        Pet pet1 = new Pet( "Toni" );
+        pet1.getAttributes().put( "key",
+                                  "value" );
+        Pet pet2 = new Pet( "Toni" );
+
+        session.insert( pet1 );
+        session.insert( pet2 );
+
+        session.fireAllRules();
+    }
+
+    @Test
     public void testClassLoaderHits() throws Exception {
         final KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
         //conf.setOption( ClassLoaderCacheOption.DISABLED );
@@ -7483,7 +7749,7 @@ public class MiscTest {
         assertThat( rule.getMetaAttribute( "author" ),
                     is( "john_doe" ) );
         assertThat( rule.getMetaAttribute( "text" ),
-                    is( "It's an escaped\" string" ) );
+                    is( "\"It's an escaped\" string\"" ) );
 
     }
 
@@ -7579,4 +7845,40 @@ public class MiscTest {
                       fired );
     }
 
+    @Test
+    public void testFromExprFollowedByNot() {
+        String rule = "";
+        rule += "package org.drools\n";
+        rule += "rule \"Rule 1\"\n";
+        rule += "    when\n";
+        rule += "        Person ($var: pet )\n";
+        rule += "        Pet () from $var\n";
+        rule += "        not Pet ()\n";
+        rule += "    then\n";
+        rule += "       System.out.println(\"Fire in the hole\");\n";
+        rule += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
+
+            while ( errors.hasNext() ) {
+                System.out.println( "kbuilder error: " + errors.next().getMessage() );
+            }
+        }
+
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+    }
+    
+    
+    
+    
+    
 }

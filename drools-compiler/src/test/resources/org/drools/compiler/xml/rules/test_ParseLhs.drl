@@ -1,0 +1,36 @@
+package com.sample 
+
+import java.util.HashMap
+import org.drools.*
+
+global com.sample.X x
+global com.sample.Yada yada
+
+function void myFunc( Bar foo, Bing bada ) {
+    
+        System.out.println("hello world");
+    
+}
+
+
+rule "my rule"
+when
+    Foo(  )  
+    bar : Bar(  )  
+    Foo( var1 : field1, field1 == "value1" && == (1==1) && == var1, eval(1==1) )  
+    not( 
+    Bar(  )   ) 
+    exists( 
+    Bar(  )   ) 
+    
+    Yada(  )  and
+    
+    Bar(  )    or
+    
+    Zaa(  )  or
+    
+    Foo(  )    and
+    eval( 1==1 ) 
+then
+
+    end

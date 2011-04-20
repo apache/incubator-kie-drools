@@ -26,7 +26,6 @@ import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.Restriction;
-import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.components.PatternOperatorDescr;
@@ -97,7 +96,7 @@ rule "Optimise restrictions inside operator"
         )
 
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $sp.getRulePath(), $sp.getRuleName());
 
         Collection list = new ArrayList();
@@ -175,7 +174,7 @@ rule "Optimise restrictions inside constraint"
             path == $r1.patternPath
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $pattern.getPath(), $pattern.getRuleName());
 
         Collection list = new ArrayList();
@@ -216,7 +215,7 @@ rule "Optimise predicates inside operator"
             orderNumber > $eval.orderNumber
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put( $subPattern.getRulePath(), $subPattern.getRuleName());
 
         Collection list = new ArrayList();

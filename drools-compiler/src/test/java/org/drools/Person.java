@@ -23,28 +23,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Person
-    implements
-    Serializable,
-    PersonInterface {
+        implements
+        Serializable,
+        PersonInterface {
     private static final long serialVersionUID = 510l;
-    private String            name;
-    private String            likes;
-    private int               age;
-    private BigDecimal        bigDecimal;
-    private BigInteger        bigInteger;
-    private String            hair;
+    private String name;
+    private String likes;
+    private int age;
+    private BigDecimal bigDecimal;
+    private BigInteger bigInteger;
+    private String hair;
 
-    private char              sex;
+    private char sex;
 
-    private boolean           alive;
-    private boolean           happy;
+    private boolean alive;
+    private boolean happy;
 
-    private String            status;
+    private String status;
 
-    private Cheese            cheese;
+    private Cheese cheese;
 
-    private Address           address;
-    
+    private Address address;
+    private Pet pet;
+
     public Address getAddress() {
         return address;
     }
@@ -53,7 +54,9 @@ public class Person
         this.address = address;
     }
 
-    private List<Address>     addresses        = new ArrayList<Address>();
+    private List<Address> addresses = new ArrayList<Address>();
+
+    public Object object;
 
     //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
     //        name    = (String)in.readObject();
@@ -94,9 +97,9 @@ public class Person
     }
 
     public Person(final String name) {
-        this( name,
-              "",
-              0 );
+        this(name,
+                "",
+                0);
     }
 
     public List<Address> getAddresses() {
@@ -108,14 +111,14 @@ public class Person
     }
 
     public void addAddress(Address address) {
-        this.addresses.add( address );
+        this.addresses.add(address);
     }
 
     public Person(final String name,
                   final String likes) {
-        this( name,
-              likes,
-              0 );
+        this(name,
+                likes,
+                0);
     }
 
     public Person(final String name,
@@ -226,30 +229,30 @@ public class Person
      * @inheritDoc
      */
     public boolean equals(final Object obj) {
-        if ( this == obj ) {
+        if (this == obj) {
             return true;
         }
-        if ( obj == null ) {
+        if (obj == null) {
             return false;
         }
-        if ( getClass() != obj.getClass() ) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
         final Person other = (Person) obj;
-        if ( this.age != other.age ) {
+        if (this.age != other.age) {
             return false;
         }
-        if ( this.alive != other.alive ) {
+        if (this.alive != other.alive) {
             return false;
         }
-        if ( this.name == null ) {
-            if ( other.name != null ) {
+        if (this.name == null) {
+            if (other.name != null) {
                 return false;
             }
-        } else if ( !this.name.equals( other.name ) ) {
+        } else if (!this.name.equals(other.name)) {
             return false;
         }
-        if ( this.sex != other.sex ) {
+        if (this.sex != other.sex) {
             return false;
         }
         return true;
@@ -291,6 +294,15 @@ public class Person
         return this.cheese;
     }
 
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
     public void setCheese(final Cheese cheese) {
         this.cheese = cheese;
     }
@@ -302,5 +314,14 @@ public class Person
     public void setHappy(boolean happy) {
         this.happy = happy;
     }
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
+
 
 }

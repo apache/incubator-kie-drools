@@ -18,9 +18,11 @@ package org.drools.verifier.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.AgendaFilter;
+import org.mvel2.MVEL;
 
 public class ScopesAgendaFilter
     implements
@@ -68,12 +70,12 @@ public class ScopesAgendaFilter
     }
 
     public boolean accept(Activation activation) {
-        if ( acceptEmpty && activation.getRule().listMetaAttributes().isEmpty() ) {
+        if ( acceptEmpty && activation.getRule().getMetaData().isEmpty() ) {
             return true;
         }
 
-        if ( activation.getRule().listMetaAttributes().contains( VERIFYING_SCOPES ) ) {
-            String[] values = activation.getRule().getMetaAttribute( VERIFYING_SCOPES ).split( "," );
+        if ( activation.getRule().getMetaData().containsKey( VERIFYING_SCOPES ) ) {
+            List<String> values = (List< String >) MVEL.eval( "[ "+activation.getRule().getMetaData().get( VERIFYING_SCOPES )+" ]" );
 
             for ( String value : values ) {
                 if ( scopes.contains( value.trim() ) ) {

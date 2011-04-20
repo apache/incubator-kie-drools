@@ -28,13 +28,12 @@ import org.drools.verifier.data.VerifierReport;
 import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Gap;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class RangeCheckDoublesTest extends TestBase {
+public class RangeCheckDoublesTest extends TestBaseOld {
 
     @Test
     public void testSmallerOrEqual() throws Exception {

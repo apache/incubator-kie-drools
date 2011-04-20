@@ -18,8 +18,12 @@ package org.drools.compiler.xml.rules;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.ConnectiveDescr;
+import org.drools.lang.descr.ConnectiveDescr.RestrictionConnectiveType;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
 import org.drools.lang.descr.RestrictionConnectiveDescr;
 import org.drools.lang.descr.ReturnValueRestrictionDescr;
@@ -30,6 +34,7 @@ import org.drools.xml.Handler;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  *
@@ -40,25 +45,10 @@ public class RestrictionConnectiveHandler extends BaseAbstractHandler
     implements
     Handler {
 
-    public final static String AND = "and-restriction-connective";
-    public final static String OR  = "or-restriction-connective";
+    public final static String AND = "and-";
+    public final static String OR  = "or-";
 
    public RestrictionConnectiveHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FieldConstraintDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-
-            this.validPeers.add( LiteralRestrictionDescr.class );
-            this.validPeers.add( ReturnValueRestrictionDescr.class );
-            this.validPeers.add( VariableRestrictionDescr.class );
-            this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
-
-            this.allowNesting = true;
-        }
     }
 
     public Object start(final String uri,
@@ -67,35 +57,41 @@ public class RestrictionConnectiveHandler extends BaseAbstractHandler
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-
-        RestrictionConnectiveDescr connectiveDescr = null;
-        if ( localName.equals( RestrictionConnectiveHandler.OR ) ) {
-            connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.OR );
-        } else if ( localName.equals( RestrictionConnectiveHandler.AND ) ) {
-            connectiveDescr = new RestrictionConnectiveDescr( RestrictionConnectiveDescr.AND );
+        
+        if ( localName.startsWith( RestrictionConnectiveHandler.OR ) ) {
+            return new ConnectiveDescr(RestrictionConnectiveType.OR);    
+        } else if ( localName.startsWith( RestrictionConnectiveHandler.AND ) ) {
+            return new ConnectiveDescr(RestrictionConnectiveType.AND);   
+        } else {
+            throw new SAXParseException( "<" + localName + "> should have'",
+                                         parser.getLocator() );
         }
-
-        return connectiveDescr;
+        
+        
     }
 
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-
-        final RestrictionConnectiveDescr connectiveDescr = (RestrictionConnectiveDescr) parser.getCurrent();
-
-        final Object obj = parser.getParent();
-
-        if ( obj instanceof FieldConstraintDescr ) {
-            final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) obj;
-            fieldConstriantDescr.addRestriction( connectiveDescr );
-        } else if ( obj instanceof RestrictionConnectiveDescr ) {
-            final RestrictionConnectiveDescr restconective = (RestrictionConnectiveDescr) obj;
-            restconective.addRestriction( connectiveDescr );
+        
+        Object op = parser.getParent();
+        ConnectiveDescr c = (ConnectiveDescr) parser.getCurrent();
+        
+        if ( op instanceof PatternDescr ) {
+            StringBuilder sb = new StringBuilder();
+            c.buildExpression( sb );
+                  
+            ExprConstraintDescr expr = new ExprConstraintDescr( );
+            expr.setExpression( sb.toString() );
+              
+            final PatternDescr patternDescr = (PatternDescr)op;  
+            patternDescr.addConstraint( expr );    
+        } else {        
+            ConnectiveDescr p = (ConnectiveDescr)op;
+            p.add( c );
         }
-
-        return connectiveDescr;
+        return c;
     }
 
     public Class generateNodeFor() {

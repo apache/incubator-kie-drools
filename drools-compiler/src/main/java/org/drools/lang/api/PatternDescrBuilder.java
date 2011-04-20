@@ -37,10 +37,14 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?>>
 
     public PatternDescrBuilder<P> id( String id );
     public PatternDescrBuilder<P> type( String type );
+    public PatternDescrBuilder<P> isQuery( boolean query );
     public PatternDescrBuilder<P> constraint( String constraint );
+    public PatternDescrBuilder<P> constraint( String constraint, boolean positional );
     public PatternDescrBuilder<P> bind( String var, String target );
     
     public SourceDescrBuilder<?> from();
     
+    public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior();
+
     public P end();
 }

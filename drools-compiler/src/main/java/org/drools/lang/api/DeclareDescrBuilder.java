@@ -26,6 +26,8 @@ public interface DeclareDescrBuilder
     AnnotatedDescrBuilder<TypeDeclarationDescr> {
 
     public DeclareDescrBuilder type( String type );
+
+    public DeclareDescrBuilder superType( String type );
     
     public FieldDescrBuilder newField( String name );
 

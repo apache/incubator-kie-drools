@@ -34,15 +34,6 @@ public class FromHandler extends BaseAbstractHandler
     Handler {
 
     public FromHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( PatternDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( FieldConstraintDescr.class );
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,

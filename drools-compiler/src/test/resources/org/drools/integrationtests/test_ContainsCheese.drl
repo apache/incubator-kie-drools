@@ -14,7 +14,7 @@ rule "Cheesery contains stilton"
         list.add( stilton );
 end   
 
-rule "Cheesery do not contains brie"
+rule "Cheesery does not contain brie"
     when
         brie : Cheese( type == "brie" )
         Cheesery( cheeses not contains brie )

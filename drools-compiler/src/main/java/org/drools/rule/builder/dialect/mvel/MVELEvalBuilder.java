@@ -17,7 +17,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -35,6 +34,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELEvalBuilder
     implements
@@ -79,7 +79,7 @@ public class MVELEvalBuilder
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
             for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
-                previousDeclarations[i] = decls.get( id );
+                previousDeclarations[i++] = decls.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
             
@@ -88,7 +88,9 @@ public class MVELEvalBuilder
                                                                        previousDeclarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class);
             final EvalCondition eval = new EvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,

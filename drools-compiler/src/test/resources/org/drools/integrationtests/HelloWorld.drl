@@ -8,11 +8,12 @@ global java.util.List list;
 rule "Hello World"
     when
         $m : org.drools.Message(list contains "hello",
-                    text:message, message == "hola",
-                    number > 40,
-                    birthday > "10-Jul-1974",
-                    message matches ".*ho.*",
-                    list excludes "wax")
+                                text:message, message == "hola",
+                                fired == false,
+                                number > 40,
+                                birthday > "10-Jul-1974",
+                                message matches ".*ho.*",
+                                list excludes "wax")
     then
         // putting in a complex consequence, to make sure it picks up the variabels correctly
         if (1==1)  {
@@ -25,5 +26,5 @@ rule "Hello World"
         } finally {
             list.add( $m );
         }
-        $m.setFired(true);
+        modify($m) { setFired(true) }
 end

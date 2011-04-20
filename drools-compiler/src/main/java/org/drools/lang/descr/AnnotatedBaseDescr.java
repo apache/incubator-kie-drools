@@ -95,4 +95,8 @@ public class AnnotatedBaseDescr extends BaseDescr
     public Set<String> getAnnotationNames() {
         return annotations == null ? null : annotations.keySet();
     }
+    
+    public Map<String, AnnotationDescr> getAnnotations() {
+        return annotations;
+    }
 }

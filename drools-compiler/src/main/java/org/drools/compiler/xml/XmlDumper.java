@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.compiler.xml.rules.RestrictionConnectiveHandler;
 import org.drools.core.util.ReflectiveVisitor;
+import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
@@ -31,6 +32,7 @@ import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -113,17 +115,25 @@ public class XmlDumper extends ReflectiveVisitor
             visit( descr.getSource() );
             localString.append( this.template );
         }
+        for ( BindingDescr binding : descr.getBindings() ) {
+            visitFieldBindingDescr( binding );
+            localString.append( this.template );            
+        }        
         localString.append( "</pattern>" + XmlDumper.eol );
+        
+
+        
 
         this.template = localString.toString();
 
         this.patternContext = false;
     }
 
-    public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
-        if ( !descr.getRestrictions().isEmpty() ) {
-            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol + "</field-constraint>";
-        }
+    public void visitExprConstraintDescr(final ExprConstraintDescr descr) {        
+        this.template = "<expr>" + XmlDumper.eol + StringUtils.escapeXmlString(descr.getExpression()) + XmlDumper.eol + "</expr>";        
+//        if ( !descr.getRestrictions().isEmpty() ) {
+//            this.template = "<field-constraint field-name=\"" + descr.getFieldName() + "\"> " + XmlDumper.eol + processFieldConstraint( descr.getRestrictions() ) + XmlDumper.eol + "</field-constraint>";
+//        }
     }
 
     public void visitCollectDescr(final CollectDescr descr) {
@@ -224,8 +234,8 @@ public class XmlDumper extends ReflectiveVisitor
 
     public void visitPackageDescr(final PackageDescr packageDescr) {
         final String packageName = packageDescr.getName();
-        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-5.0\" " + XmlDumper.eol
-                                 + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol + "\txs:schemaLocation=\"http://drools.org/drools-5.0 drools.org/drools-5.0.xsd\"> " + XmlDumper.eol;
+        final String xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?> " + XmlDumper.eol + " <package name=\"" + packageName + "\"  " + XmlDumper.eol + "\txmlns=\"http://drools.org/drools-5.2\" " + XmlDumper.eol
+                                 + "\txmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\" " + XmlDumper.eol + "\txs:schemaLocation=\"http://drools.org/drools-5.2 drools.org/drools-5.2.xsd\"> " + XmlDumper.eol;
         appendXmlDump( xmlString );
         appendXmlDump( processImportsList( packageDescr.getImports() ) );
         appendXmlDump( processGlobalsList( packageDescr.getGlobals() ) );
@@ -275,27 +285,27 @@ public class XmlDumper extends ReflectiveVisitor
         return ruleList + XmlDumper.eol;
     }
 
-    private String processFieldConstraint(final List list) {
-        String descrString = "";
-        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
-            final Object temp = it.next();
-            visit( temp );
-            descrString += this.template;
-        }
-        return descrString;
-    }
-
-    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        this.template = new String();
-        final List restrictions = descr.getRestrictions();
-        final String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
-
-        if ( restrictions != Collections.EMPTY_LIST ) {
-            this.template = "<" + xmlTag + ">";
-            this.template += processDescrList( restrictions );
-            this.template += "</" + xmlTag + ">";
-        }
-    }
+//    private String processFieldConstraint(final List list) {
+//        String descrString = "";
+//        for ( final Iterator it = list.iterator(); it.hasNext(); ) {
+//            final Object temp = it.next();
+//            visit( temp );
+//            descrString += this.template;
+//        }
+//        return descrString;
+//    }
+//
+//    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
+//        this.template = new String();
+//        final List restrictions = descr.getRestrictions();
+//        final String xmlTag = descr.getConnective() == RestrictionConnectiveDescr.OR ? RestrictionConnectiveHandler.OR : RestrictionConnectiveHandler.AND;
+//
+//        if ( restrictions != Collections.EMPTY_LIST ) {
+//            this.template = "<" + xmlTag + ">";
+//            this.template += processDescrList( restrictions );
+//            this.template += "</" + xmlTag + ">";
+//        }
+//    }
 
     private String processDescrList(final List descr) {
         String descrString = "";

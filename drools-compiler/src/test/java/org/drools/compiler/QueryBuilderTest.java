@@ -11,6 +11,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -24,7 +25,6 @@ import org.junit.Test;
 
 public class QueryBuilderTest extends DroolsTestCase {
 
-    // FIXME: TODO: Fix the use of VariableDescr without disabling node memory indexing
     @Test
     @Ignore
     public void testRuleWithQuery() throws Exception {
@@ -44,20 +44,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         queryDescr.setLhs( lhs );
         PatternDescr pattern = new PatternDescr( Person.class.getName() );
         lhs.addDescr( pattern );
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$name" ) );
-        pattern.addConstraint( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "age" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$age" ) );
-        pattern.addConstraint( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "likes" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$likes" ) );
-        pattern.addConstraint( literalDescr );
+        pattern.addConstraint(  new ExprConstraintDescr("$name : name")  );
+        pattern.addConstraint( new ExprConstraintDescr("$age : age") );
+        pattern.addConstraint( new ExprConstraintDescr("$likes : likes") );
 
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -123,10 +112,7 @@ public class QueryBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new VariableRestrictionDescr( "==",
-                                                                   "$type" ) );
-        pattern.addConstraint( literalDescr );
+        pattern.addConstraint( new ExprConstraintDescr("type == $type") );
 
         // Another query, no parameters
         QueryDescr queryDescr2 = new QueryDescr( "query2" );

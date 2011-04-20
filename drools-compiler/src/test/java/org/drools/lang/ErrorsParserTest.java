@@ -56,10 +56,6 @@ public class ErrorsParserTest {
     public void testNotBindindShouldBarf() throws Exception {
         final DRLParser parser = parseResource( "not_with_binding_error.drl" );
         parser.compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
-
         assertTrue( parser.hasErrors() );
     }
 
@@ -69,18 +65,15 @@ public class ErrorsParserTest {
         final String name = "expander_post_errors.dslr";
         final Expander expander = new DefaultExpander();
         final String expanded = expander.expand( this.getReader( name ) );
-
+        
         final DRLParser parser = parse( name,
                                         expanded );
         parser.compilationUnit();
         assertTrue( parser.hasErrors() );
-//        for ( String message : this.parser.getErrorMessages() ) {
-//            System.out.println( message );
-//        }
 
-        final DroolsParserException err = (DroolsParserException) parser.getErrors().get( 0 );
         assertEquals( 1,
                       parser.getErrors().size() );
+        DroolsParserException err = (DroolsParserException) parser.getErrors().get( 0 );
         assertEquals( 6,
                       err.getLineNumber() );
     }
@@ -88,18 +81,12 @@ public class ErrorsParserTest {
     @Test
     public void testInvalidSyntax_Catches() throws Exception {
         parseResource( "invalid_syntax.drl" ).compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( this.parser.hasErrors() );
     }
 
     @Test
     public void testMultipleErrors() throws Exception {
         parseResource( "multiple_errors.drl" ).compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( this.parser.hasErrors() );
         assertEquals( 2,
                       this.parser.getErrors().size() );
@@ -109,40 +96,28 @@ public class ErrorsParserTest {
     public void testPackageGarbage() throws Exception {
 
         parseResource( "package_garbage.drl" ).compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( this.parser.hasErrors() );
     }
 
     @Test
     public void testEvalWithSemicolon() throws Exception {
         parseResource( "eval_with_semicolon.drl" ).compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( this.parser.hasErrors() );
         assertEquals( 1,
                       this.parser.getErrorMessages().size() );
-        assertEquals( "ERR 104",
+        assertEquals( "ERR 102",
                       this.parser.getErrors().get( 0 ).getErrorCode() );
     }
 
     @Test
     public void testLexicalError() throws Exception {
         parseResource( "lex_error.drl" ).compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( parser.hasErrors() );
     }
 
     @Test
     public void testTempleteError() throws Exception {
         parseResource( "template_test_error.drl" ).compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( parser.hasErrors() );
     }
 
@@ -151,35 +126,27 @@ public class ErrorsParserTest {
         final DRLParser parser = parseResource( "misplaced_parenthesis.drl" );
         parser.compilationUnit();
 
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
-        assertTrue( "Parser should have raised errors",
-                    parser.hasErrors() );
-
-        assertEquals( 2,
-                      parser.getErrors().size() );
-
-        assertEquals( "ERR 101",
-                      parser.getErrors().get( 0 ).getErrorCode() );
-        assertEquals( "ERR 102",
-                      parser.getErrors().get( 1 ).getErrorCode() );
-    }
-
-    @Test
-    public void testNPEOnParser() throws Exception {
-        final DRLParser parser = parseResource( "npe_on_parser.drl" );
-        parser.compilationUnit();
-        for ( String message : this.parser.getErrorMessages() ) {
-            System.out.println( message );
-        }
         assertTrue( "Parser should have raised errors",
                     parser.hasErrors() );
 
         assertEquals( 1,
                       parser.getErrors().size() );
 
-        assertTrue( parser.getErrors().get( 0 ).getErrorCode().equals( "ERR 101" ) );
+        assertEquals( "ERR 102",
+                      parser.getErrors().get( 0 ).getErrorCode() );
+    }
+
+    @Test
+    public void testNPEOnParser() throws Exception {
+        final DRLParser parser = parseResource( "npe_on_parser.drl" );
+        parser.compilationUnit();
+        assertTrue( "Parser should have raised errors",
+                    parser.hasErrors() );
+
+        assertEquals( 1,
+                      parser.getErrors().size() );
+
+        assertTrue( parser.getErrors().get( 0 ).getErrorCode().equals( "ERR 102" ) );
     }
 
     @Test
@@ -187,15 +154,8 @@ public class ErrorsParserTest {
         final DRLParser parser = parseResource( "comma_misuse.drl" );
         try {
             parser.compilationUnit();
-//            System.out.println( this.getName() );
-//            for ( String message : this.parser.getErrorMessages() ) {
-//                System.out.println( message );
-//            }
             assertTrue( "Parser should have raised errors",
                         parser.hasErrors() );
-            assertEquals( 4,
-                          parser.getErrors().size() );
-
         } catch ( NullPointerException npe ) {
             fail( "Should not raise NPE" );
         }

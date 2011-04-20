@@ -24,9 +24,7 @@ import java.util.Set;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
@@ -130,16 +128,16 @@ public class IncompatibilityPatternsTest extends IncompatibilityBase {
         Map<Cause, Set<Cause>> map = createIncompatibilityMap( VerifierComponentType.SUB_PATTERN,
                                                                sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                pp1,
-                                                pp2 ) ^ TestBase.causeMapContains( map,
-                                                                                   pp2,
-                                                                                   pp1 )) );
-        assertTrue( (TestBase.causeMapContains( map,
-                                                pp3,
-                                                pp4 ) ^ TestBase.causeMapContains( map,
-                                                                                   pp4,
-                                                                                   pp3 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                pp1,
+                pp2) ^ TestBaseOld.causeMapContains(map,
+                pp2,
+                pp1)) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                pp3,
+                pp4) ^ TestBaseOld.causeMapContains(map,
+                pp4,
+                pp3)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );

@@ -26,25 +26,13 @@ import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
-import org.drools.verifier.TestBase;
-import org.junit.After;
-import org.junit.Before;
+import org.drools.verifier.TestBaseOld;
+import org.drools.verifier.components.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.LiteralRestriction;
-import org.drools.verifier.components.Pattern;
-import org.drools.verifier.components.Variable;
-import org.drools.verifier.components.VariableRestriction;
-import org.drools.verifier.components.VerifierComponentType;
-import org.drools.verifier.components.VerifierRule;
+import org.drools.verifier.components.PatternVariable;
 import org.drools.verifier.report.components.Cause;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class OppositeRestrictionsTest extends OppositesBase {
 
@@ -106,21 +94,21 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r3,
-                                                r4 ) ^ TestBase.causeMapContains( map,
-                                                                                  r4,
-                                                                                  r3 )) );
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r5,
-                                                r6 ) ^ TestBase.causeMapContains( map,
-                                                                                  r6,
-                                                                                  r5 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r3,
+                r4) ^ TestBaseOld.causeMapContains(map,
+                r4,
+                r3)) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r5,
+                r6) ^ TestBaseOld.causeMapContains(map,
+                r6,
+                r5)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );
@@ -157,11 +145,11 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );
@@ -197,11 +185,11 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );
@@ -239,11 +227,11 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );
@@ -267,9 +255,9 @@ public class OppositeRestrictionsTest extends OppositesBase {
         /*
          * Working pair
          */
-        Variable variable1 = new Variable( rule );
-        variable1.setObjectTypePath( "1" );
-        variable1.setObjectTypeType( VerifierComponentType.FIELD.getType() );
+        PatternVariable variable1 = new PatternVariable( rule );
+        variable1.setParentPath( "1" );
+        variable1.setParentType(VerifierComponentType.FIELD);
         variable1.setOrderNumber( -1 );
 
         VariableRestriction r1 = new VariableRestriction( pattern1 );
@@ -286,9 +274,9 @@ public class OppositeRestrictionsTest extends OppositesBase {
 
         String containsOperator = "contains";
 
-        Variable variable2 = new Variable( rule );
-        variable2.setObjectTypePath( "2" );
-        variable2.setObjectTypeType( VerifierComponentType.FIELD.getType() );
+        PatternVariable variable2 = new PatternVariable( rule );
+        variable2.setParentPath( "2" );
+        variable2.setParentType(VerifierComponentType.FIELD);
         variable2.setOrderNumber( 3 );
 
         VariableRestriction r3 = new VariableRestriction( pattern2 );
@@ -308,9 +296,9 @@ public class OppositeRestrictionsTest extends OppositesBase {
         /*
          * Pair that doesn't work.
          */
-        Variable variable3 = new Variable( rule );
-        variable3.setObjectTypePath( "3" );
-        variable3.setObjectTypeType( VerifierComponentType.FIELD.getType() );
+        PatternVariable variable3 = new PatternVariable( rule );
+        variable3.setParentPath( "3" );
+        variable3.setParentType(VerifierComponentType.FIELD);
         variable3.setOrderNumber( 6 );
 
         VariableRestriction r5 = new VariableRestriction( pattern3 );
@@ -337,16 +325,16 @@ public class OppositeRestrictionsTest extends OppositesBase {
         Map<Cause, Set<Cause>> map = createOppositesMap( VerifierComponentType.RESTRICTION,
                                                          sessionResult.iterateObjects() );
 
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r1,
-                                                r2 ) ^ TestBase.causeMapContains( map,
-                                                                                  r2,
-                                                                                  r1 )) );
-        assertTrue( (TestBase.causeMapContains( map,
-                                                r3,
-                                                r4 ) ^ TestBase.causeMapContains( map,
-                                                                                  r4,
-                                                                                  r3 )) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r1,
+                r2) ^ TestBaseOld.causeMapContains(map,
+                r2,
+                r1)) );
+        assertTrue( (TestBaseOld.causeMapContains(map,
+                r3,
+                r4) ^ TestBaseOld.causeMapContains(map,
+                r4,
+                r3)) );
 
         if ( !map.isEmpty() ) {
             fail( "More opposites than was expected." );

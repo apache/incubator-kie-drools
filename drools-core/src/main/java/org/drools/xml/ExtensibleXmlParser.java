@@ -379,16 +379,12 @@ public class ExtensibleXmlParser extends DefaultHandler {
                   localName,
                   handler );
 
-        final Object node = handler.start( uri,
-                                           localName,
-                                           attrs,
-                                           this );
-
-        if ( node == null ) {
-            this.parents.add( Null.instance );
-        } else {
-            this.parents.add( node );
-        }
+        Object node = handler.start( uri,
+                                     localName,
+                                     attrs,
+                                     this );
+        
+        this.parents.add( node );    
     }
 
     /**
@@ -434,6 +430,10 @@ public class ExtensibleXmlParser extends DefaultHandler {
         final Set validParents = handler.getValidParents();
         final Set validPeers = handler.getValidPeers();
         boolean allowNesting = handler.allowNesting();
+        
+        if ( validParents == null || validPeers == null ) {
+            return;
+        }
 
         // get parent
         Object parent;
@@ -523,20 +523,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
                                   attrs.getValue( i ) );
         }
 
-        //        // lets add the namespaces as attributes
-        //        for ( final Iterator iter = this.namespaces.entrySet().iterator(); iter.hasNext(); ) {
-        //            final Map.Entry entry = (Map.Entry) iter.next();
-        //            String ns = (String) entry.getKey();
-        //            final String value = (String) entry.getValue();
-        //            if ( ns == null || ns.length() == 0 ) {
-        //                ns = "xmlns";
-        //            } else {
-        //                ns = "xmlns:" + ns;
-        //            }
-        //            config.setAttribute( ns,
-        //                                 value );
-        //        }
-
         if ( this.configurationStack.isEmpty() ) {
             this.configurationStack.addLast( element );
         } else {
@@ -603,9 +589,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
     public Object removeParent() {
         Object parent = this.parents.removeLast();
-        while ( parent == null && !this.parents.isEmpty() ) {
-            parent = this.parents.removeLast();
-        }
         return parent;
     }
 

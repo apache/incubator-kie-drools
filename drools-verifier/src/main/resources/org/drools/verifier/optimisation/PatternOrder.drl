@@ -68,7 +68,7 @@ rule "Optimise evals inside pattern"
             $pattern : pattern
         )
     then
-        Map<String,String> impactedRules = new HashMap<String,String>();
+        Map impactedRules = new HashMap();
         impactedRules.put(  $subRule.getRule().getPath(),
                             $subRule.getRule().getName());
 

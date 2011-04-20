@@ -24,8 +24,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.RuntimeDroolsException;
-
 public class Operator
     implements
     Externalizable, org.drools.runtime.rule.Operator {
@@ -83,9 +81,6 @@ public class Operator
                                              final boolean isNegated) {
         Operator op = CACHE.get( getKey( operatorId,
                                          isNegated ) );
-        if ( op == null ) {
-            throw new RuntimeDroolsException( "unable to determine operator for symbol [" + (isNegated ? "not " : "") + operatorId + "]" );
-        }
         return op;
     }
 

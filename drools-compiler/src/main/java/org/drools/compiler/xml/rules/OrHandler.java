@@ -24,9 +24,12 @@ import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ForallDescr;
+import org.drools.lang.descr.MultiPatternDestinationDescr;
 import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.QueryDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -38,24 +41,6 @@ public class OrHandler extends BaseAbstractHandler
     implements
     Handler {
     public OrHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( AndDescr.class );
-            this.validParents.add( PatternDescr.class );
-            this.validParents.add( AccumulateDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( AndDescr.class );
-            this.validPeers.add( OrDescr.class );
-            this.validPeers.add( NotDescr.class );
-            this.validPeers.add( ExistsDescr.class );
-            this.validPeers.add( EvalDescr.class );
-            this.validPeers.add( PatternDescr.class );
-            this.validPeers.add( ForallDescr.class );
-
-            this.allowNesting = true;
-        }
     }
 
     public Object start(final String uri,
@@ -78,12 +63,17 @@ public class OrHandler extends BaseAbstractHandler
 
         final Object parent = parser.getParent();
 
-        if ( parent instanceof ConditionalElementDescr ) {
-            final ConditionalElementDescr parentDescr = (ConditionalElementDescr) parent;
-            parentDescr.addDescr( orDescr );
-        } else if ( parent instanceof PatternDescr ) {
-            final PatternDescr parentDescr = (PatternDescr) parent;
-            parentDescr.addConstraint( orDescr );
+        if ( !orDescr.getDescrs().isEmpty() ) {
+            if ( parent instanceof RuleDescr || parent instanceof QueryDescr ) {
+                final RuleDescr ruleDescr = (RuleDescr) parent;
+                ruleDescr.getLhs().addDescr( orDescr );
+            } else if ( parent instanceof MultiPatternDestinationDescr ) {
+                final MultiPatternDestinationDescr mpDescr = (MultiPatternDestinationDescr) parent;
+                mpDescr.setInput( orDescr );
+            } else if ( parent instanceof ConditionalElementDescr ) {
+                final ConditionalElementDescr ceDescr = (ConditionalElementDescr) parent;
+                ceDescr.addDescr( orDescr );
+            }
         }
 
         return orDescr;

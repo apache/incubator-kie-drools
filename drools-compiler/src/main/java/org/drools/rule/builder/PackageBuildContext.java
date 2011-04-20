@@ -29,6 +29,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Dialectable;
 import org.drools.rule.Package;
+import org.drools.rule.builder.dialect.mvel.MVELDialect;
 
 /**
  * A context for the current build
@@ -64,6 +65,8 @@ public class PackageBuildContext {
     private DialectCompiletimeRegistry  dialectRegistry;
 
     private Dialect                     dialect;
+    
+    private boolean                     typesafe;
 
     public PackageBuildContext() {
 
@@ -94,6 +97,8 @@ public class PackageBuildContext {
 
         this.dialect = (component != null && component.getDialect() != null) ? this.dialectRegistry.getDialect( component.getDialect() ) : defaultDialect;
 
+        this.typesafe = ((MVELDialect) dialectRegistry.getDialect( "mvel" )).isStrictMode();
+
         if ( dialect == null && (component != null && component.getDialect() != null) ) {
             this.errors.add( new DescrBuildError( null,
                                                   parentDescr,
@@ -104,6 +109,10 @@ public class PackageBuildContext {
 
     public BaseDescr getParentDescr() {
         return this.parentDescr;
+    }
+
+    public void setParentDescr(BaseDescr descr) {
+        this.parentDescr = descr;
     }
 
     public Dialect getDialect() {
@@ -207,6 +216,14 @@ public class PackageBuildContext {
     
     public PackageBuilder getPackageBuilder() {
         return this.pkgBuilder;
+    }
+
+    public boolean isTypesafe() {
+        return typesafe;
+    }
+
+    public void setTypesafe(boolean stricttype) {
+        this.typesafe = stricttype;
     }
 
 }

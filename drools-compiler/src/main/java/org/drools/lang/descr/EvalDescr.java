@@ -76,6 +76,10 @@ public class EvalDescr extends BaseDescr
     public void addOrMerge(BaseDescr baseDescr) {
         throw new UnsupportedOperationException("Can't add descriptors to "+this.getClass().getName());
     }
+
+     public boolean removeDescr(BaseDescr baseDescr) {
+        throw new UnsupportedOperationException("Can't remove descriptors from "+this.getClass().getName());
+    }
     
     @Override
     public String toString() {

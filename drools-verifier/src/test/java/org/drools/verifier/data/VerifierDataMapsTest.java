@@ -18,13 +18,10 @@ package org.drools.verifier.data;
 
 import java.util.Collection;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.verifier.VerifierComponentMockFactory;
-import org.drools.verifier.components.Constraint;
 import org.drools.verifier.components.EnumField;
 import org.drools.verifier.components.EnumRestriction;
 import org.drools.verifier.components.Field;
@@ -43,7 +40,7 @@ import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.components.Variable;
+import org.drools.verifier.components.PatternVariable;
 import org.drools.verifier.components.VariableRestriction;
 import org.drools.verifier.components.VerifierAccessorDescr;
 import org.drools.verifier.components.VerifierAccumulateDescr;
@@ -102,7 +99,6 @@ public class VerifierDataMapsTest {
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
         saveVerifierComponentAndGet( pattern );
 
-        saveVerifierComponentAndGet( new Constraint( pattern ) );
         saveVerifierComponentAndGet( new InlineEvalDescr( pattern ) );
         saveVerifierComponentAndGet( new ObjectType() );
         saveVerifierComponentAndGet( new RuleOperatorDescr( rule,
@@ -115,7 +111,7 @@ public class VerifierDataMapsTest {
         saveVerifierComponentAndGet( new SubRule( rule,
                                                   0 ) );
         saveVerifierComponentAndGet( new TextConsequence( rule ) );
-        saveVerifierComponentAndGet( new Variable( rule ) );
+        saveVerifierComponentAndGet( new PatternVariable( rule ) );
         saveVerifierComponentAndGet( new VerifierAccessorDescr( rule ) );
         saveVerifierComponentAndGet( new VerifierAccumulateDescr( pattern ) );
         saveVerifierComponentAndGet( new VerifierCollectDescr( pattern ) );

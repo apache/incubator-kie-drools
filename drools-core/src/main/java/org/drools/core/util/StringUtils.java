@@ -871,7 +871,7 @@ public class StringUtils {
                         out.write('\'');
                         break;
                     case '\"':
-                        out.write('"');
+                        out.write("\"");
                         break;
                     case 'r':
                         out.write('\r');
@@ -1086,6 +1086,47 @@ public class StringUtils {
                                              " ",
                                              "%20" ) );
     }
+    
+    public static String escapeXmlString(String string) {
+        StringBuffer sb = new StringBuffer(string.length());
+        // true if last char was blank
+        boolean lastWasBlankChar = false;
+        int len = string.length();
+        char c;
+
+        for (int i = 0; i < len; i++)
+            {
+            c = string.charAt(i);
+            if (c == ' ') {
+                sb.append(' ');
+            } else {
+                lastWasBlankChar = false;
+                //
+                // HTML Special Chars
+                if (c == '"')
+                    sb.append("&quot;");
+                else if (c == '&')
+                    sb.append("&amp;");
+                else if (c == '<')
+                    sb.append("&lt;");
+                else if (c == '>')
+                    sb.append("&gt;");
+                else {
+                    int ci = 0xffff & c;
+                    if (ci < 160 )
+                        // nothing special only 7 Bit
+                        sb.append(c);
+                    else {
+                        // Not 7 Bit use the unicode system
+                        sb.append("&#");
+                        sb.append(new Integer(ci).toString());
+                        sb.append(';');
+                        }
+                    }
+                }
+            }
+        return sb.toString();
+    }    
     
     /**
      * Take a String which is a delimited list and convert it to a String array.

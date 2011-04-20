@@ -1,0 +1,29 @@
+package foo.bar
+
+
+rule rule1 
+        salience (42)
+        agenda-group "my_group"
+    when
+        Foo()
+    then
+        bar();
+end
+
+rule rule2 
+        salience (Integer.MIN_VALUE)
+        no-loop
+    when
+        Foo()
+    then
+        bar();
+end
+
+rule rule3 
+        enabled (Boolean.TRUE)
+        activation-group "my_activation_group"
+    when
+        Foo()
+    then
+        bar();
+end

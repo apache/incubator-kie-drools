@@ -34,10 +34,13 @@ import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
@@ -56,21 +59,27 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class RuleParserTest extends TestCase {
 
     private DRLParser parser;
 
+    @Before
     protected void setUp() throws Exception {
         super.setUp();
         // initializes pluggable operators
         new EvaluatorRegistry();
     }
 
+    @After
     protected void tearDown() throws Exception {
         super.tearDown();
     }
 
+    @Test
     public void testPackage_OneSegment() throws Exception {
         final String packageName = (String) parse( "packageStatement",
                                                    "package foo" );
@@ -78,6 +87,7 @@ public class RuleParserTest extends TestCase {
                       packageName );
     }
 
+    @Test
     public void testPackage_MultipleSegments() throws Exception {
         final String packageName = (String) parse( "packageStatement",
                                                    "package foo.bar.baz;" );
@@ -85,6 +95,7 @@ public class RuleParserTest extends TestCase {
                       packageName );
     }
 
+    @Test
     public void testPackage() throws Exception {
         final String source = "package foo.bar.baz";
         final DrlParser parser = new DrlParser();
@@ -94,6 +105,7 @@ public class RuleParserTest extends TestCase {
                       pkg.getName() );
     }
 
+    @Test
     public void testPackageWithError() throws Exception {
         final String source = "package 12 foo.bar.baz";
         final DrlParser parser = new DrlParser();
@@ -104,6 +116,7 @@ public class RuleParserTest extends TestCase {
                       pkg.getName() );
     }
 
+    @Test
     public void testPackageWithError2() throws Exception {
         final String source = "package 12 12312 231";
         final DrlParser parser = new DrlParser();
@@ -114,6 +127,7 @@ public class RuleParserTest extends TestCase {
                       pkg.getName() );
     }
 
+    @Test
     public void testCompilationUnit() throws Exception {
         final String source = "package foo; import com.foo.Bar; import com.foo.Baz;";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
@@ -141,6 +155,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getEndCharacter() );
     }
 
+    @Test
     public void testFunctionImport() throws Exception {
         final String source = "package foo\n" +
                               "import function java.lang.Math.max\n" +
@@ -191,6 +206,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testGlobal1() throws Exception {
         final String source = "package foo.bar.baz\n" +
                               "import com.foo.Bar\n" +
@@ -239,6 +255,7 @@ public class RuleParserTest extends TestCase {
                       global.getEndCharacter() );
     }
 
+    @Test
     public void testGlobal() throws Exception {
         PackageDescr pack = (PackageDescr) parseResource( "compilationUnit",
                                                           "globals.drl" );
@@ -267,6 +284,7 @@ public class RuleParserTest extends TestCase {
                       bar.getIdentifier() );
     }
 
+    @Test
     public void testFunctionImport2() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "test_FunctionImport.drl" );
@@ -284,6 +302,7 @@ public class RuleParserTest extends TestCase {
         assertFalse( ((FunctionImportDescr) pkg.getFunctionImports().get( 1 )).getEndCharacter() == -1 );
     }
 
+    @Test
     public void testFromComplexAcessor() throws Exception {
         String source = "rule \"Invalid customer id\" ruleflow-group \"validate\" lock-on-active true \n" +
                             " when \n" +
@@ -316,6 +335,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testFromWithInlineList() throws Exception {
         String source = "rule XYZ \n" +
                             " when \n" +
@@ -340,6 +360,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testFromWithInlineListMethod() throws Exception {
         String source = "rule XYZ \n" +
                         " when \n" +
@@ -365,6 +386,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testFromWithInlineListIndex() throws Exception {
         String source = "rule XYZ \n" +
                         " when \n" +
@@ -389,6 +411,7 @@ public class RuleParserTest extends TestCase {
                       ((FromDescr) number.getSource()).getDataSource().toString() );
     }
 
+    @Test
     public void testRuleWithoutEnd() throws Exception {
         String source = "rule \"Invalid customer id\" \n" +
                         " when \n" +
@@ -401,6 +424,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testOrWithSpecialBind() throws Exception {
         String source = "rule \"A and (B or C or D)\" \n" +
                         "    when \n" +
@@ -435,6 +459,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testCompatibleRestriction() throws Exception {
         String source = "package com.sample  rule test  when  Test( ( text == null || text2 matches \"\" ) )  then  end";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
@@ -449,6 +474,7 @@ public class RuleParserTest extends TestCase {
                           expr.getText() );
     }
 
+    @Test
     public void testSimpleConstraint() throws Exception {
         String source = "package com.sample  rule test  when  Cheese( type == 'stilton', price > 10 )  then  end";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
@@ -466,12 +492,13 @@ public class RuleParserTest extends TestCase {
         AndDescr constraint = (AndDescr) pattern.getConstraint();
         assertEquals( 2,
                       constraint.getDescrs().size() );
-        assertEquals( "type == 'stilton'",
+        assertEquals( "type == \"stilton\"",
                       constraint.getDescrs().get( 0 ).toString() );
         assertEquals( "price > 10",
                       constraint.getDescrs().get( 1 ).toString() );
     }
 
+    @Test
     public void testDialect() throws Exception {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
@@ -483,6 +510,7 @@ public class RuleParserTest extends TestCase {
                       attr.getValue() );
     }
 
+    @Test
     public void testDialect2() throws Exception {
         final String source = "dialect \"mvel\"";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
@@ -494,6 +522,7 @@ public class RuleParserTest extends TestCase {
                           attr.getValue() );
     }
 
+    @Test
     public void testEmptyRule() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                               "empty_rule.drl" );
@@ -506,6 +535,7 @@ public class RuleParserTest extends TestCase {
         assertNotNull( rule.getConsequence() );
     }
 
+    @Test
     public void testKeywordCollisions() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "eol_funny_business.drl" );
@@ -516,6 +546,7 @@ public class RuleParserTest extends TestCase {
                       pkg.getRules().size() );
     }
 
+    @Test
     public void testTernaryExpression() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "ternary_expression.drl" );
@@ -549,6 +580,7 @@ public class RuleParserTest extends TestCase {
     //
     //    }
     //
+    @Test
     public void testFunctionWithArrays() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "function_arrays.drl" );
@@ -573,6 +605,7 @@ public class RuleParserTest extends TestCase {
                           func.getParameterTypes().get( 0 ) );
     }
 
+    @Test
     public void testAlmostEmptyRule() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "almost_empty_rule.drl" );
@@ -590,6 +623,7 @@ public class RuleParserTest extends TestCase {
                       ((String) rule.getConsequence()).trim() );
     }
 
+    @Test
     public void testQuotedStringNameRule() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "quoted_string_name_rule.drl" );
@@ -605,6 +639,7 @@ public class RuleParserTest extends TestCase {
                           ((String) rule.getConsequence()).trim() );
     }
 
+    @Test
     public void testNoLoop() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "no-loop.drl" );
@@ -622,6 +657,7 @@ public class RuleParserTest extends TestCase {
                       att.getName() );
     }
 
+    @Test
     public void testAutofocus() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "autofocus.drl" );
@@ -640,6 +676,7 @@ public class RuleParserTest extends TestCase {
                       att.getName() );
     }
 
+    @Test
     public void testRuleFlowGroup() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "ruleflowgroup.drl" );
@@ -658,6 +695,7 @@ public class RuleParserTest extends TestCase {
                       att.getName() );
     }
 
+    @Test
     public void testConsequenceWithDeclaration() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "declaration-in-consequence.drl" );
@@ -684,6 +722,7 @@ public class RuleParserTest extends TestCase {
         // note, need to assert that "i++" is preserved as is, no extra spaces.
     }
 
+    @Test
     public void testRuleParseLhs() throws Exception {
         final String text = "rule X when Person(age < 42, location==\"atlanta\") \nor\nPerson(name==\"bob\") then end";
         RuleDescr rule = (RuleDescr) parse( "rule",
@@ -700,6 +739,7 @@ public class RuleParserTest extends TestCase {
                       ((OrDescr) lhs.getDescrs().get( 0 )).getDescrs().size() );
     }
 
+    @Test
     public void testRuleParseLhsWithStringQuotes() throws Exception {
         final String text = "rule X when Person( location==\"atlanta\\\"\") then end\n";
         RuleDescr rule = (RuleDescr) parse( "rule",
@@ -716,6 +756,7 @@ public class RuleParserTest extends TestCase {
                       constr.getText() );
     }
 
+    @Test
     public void testRuleParseLhsWithStringQuotes2() throws Exception {
         final String text = "rule X when Cheese( $x: type, type == \"s\\tti\\\"lto\\nn\" ) then end\n";
         RuleDescr rule = (RuleDescr) parse( "rule",
@@ -732,6 +773,7 @@ public class RuleParserTest extends TestCase {
                       constr.getText() );
     }
 
+    @Test
     public void testLiteralBoolAndNegativeNumbersRule() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                               "literal_bool_and_negative.drl" );
@@ -780,46 +822,55 @@ public class RuleParserTest extends TestCase {
                           fld.getText() );
     }
 
+    @Test
     public void testChunkWithoutParens() throws Exception {
         String input = "( foo )";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "foo",
                           returnData );
     }
 
+    @Test
     public void testChunkWithParens() throws Exception {
         String input = "(fnord())";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "fnord()",
                           returnData );
     }
 
+    @Test
     public void testChunkWithParensAndQuotedString() throws Exception {
         String input = "( fnord( \"cheese\" ) )";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "fnord( \"cheese\" )",
                           returnData );
     }
 
+    @Test
     public void testChunkWithRandomCharac5ters() throws Exception {
         String input = "( %*9dkj)";
         createParser( new ANTLRStringStream( input ) );
         String returnData = parser.chunk( DRLLexer.LEFT_PAREN,
-                                          DRLLexer.RIGHT_PAREN );
+                                          DRLLexer.RIGHT_PAREN,
+                                          -1 );
 
         assertEquals( "%*9dkj",
                           returnData );
     }
 
+    @Test
     public void testEmptyPattern() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "test_EmptyPattern.drl" );
@@ -843,6 +894,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testSimpleMethodCallWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                               "test_SimpleMethodCallWithFrom.drl" );
@@ -856,6 +908,7 @@ public class RuleParserTest extends TestCase {
                       method.getExpression() );
     }
 
+    @Test
     public void testSimpleFunctionCallWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleFunctionCallWithFrom.drl" );
@@ -869,6 +922,7 @@ public class RuleParserTest extends TestCase {
                       func.getExpression() );
     }
 
+    @Test
     public void testSimpleAccessorWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleAccessorWithFrom.drl" );
@@ -882,6 +936,7 @@ public class RuleParserTest extends TestCase {
                       accessor.getExpression() );
     }
 
+    @Test
     public void testSimpleAccessorAndArgWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_SimpleAccessorArgWithFrom.drl" );
@@ -895,6 +950,7 @@ public class RuleParserTest extends TestCase {
                       accessor.getExpression() );
     }
 
+    @Test
     public void testComplexChainedAcessor() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "test_ComplexChainedCallWithFrom.drl" );
@@ -908,6 +964,7 @@ public class RuleParserTest extends TestCase {
                           accessor.getExpression() );
     }
 
+    @Test
     public void testFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "from.drl" );
@@ -923,6 +980,7 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
     }
 
+    @Test
     public void testSimpleRule() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "simple_rule.drl" );
@@ -991,6 +1049,7 @@ public class RuleParserTest extends TestCase {
                                           (String) rule.getConsequence() );
     }
 
+    @Test
     public void testRestrictionsMultiple() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "restrictions_test.drl" );
@@ -1038,6 +1097,7 @@ public class RuleParserTest extends TestCase {
                           fld.getExpression() );
     }
 
+    @Test
     public void testLineNumberInAST() throws Exception {
         // also see testSimpleExpander to see how this works with an expander
         // (should be the same).
@@ -1090,6 +1150,7 @@ public class RuleParserTest extends TestCase {
                       third.getLine() );
     }
 
+    @Test
     public void testLineNumberIncludingCommentsInRHS() throws Exception {
         PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                          "test_CommentLineNumbersInConsequence.drl" );
@@ -1103,6 +1164,7 @@ public class RuleParserTest extends TestCase {
                                      Pattern.DOTALL | Pattern.MULTILINE ).matcher( rhs ).matches() );
     }
 
+    @Test
     public void testLhsSemicolonDelim() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "lhs_semicolon_delim.drl" );
@@ -1168,6 +1230,7 @@ public class RuleParserTest extends TestCase {
                                       (String) rule.getConsequence() );
     }
 
+    @Test
     public void testNotNode() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_not.drl" );
@@ -1199,6 +1262,7 @@ public class RuleParserTest extends TestCase {
                       fld.getExpression() );
     }
 
+    @Test
     public void testNotExistWithBrackets() throws Exception {
 
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -1232,6 +1296,7 @@ public class RuleParserTest extends TestCase {
                       exPattern.getObjectType() );
     }
 
+    @Test
     public void testSimpleQuery() throws Exception {
         final QueryDescr query = (QueryDescr) parseResource( "query",
                                                              "simple_query.drl" );
@@ -1282,6 +1347,7 @@ public class RuleParserTest extends TestCase {
                       bindingDescr.getVariable() );
     }
 
+    @Test
     public void testQueryRuleMixed() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "query_and_rule.drl" );
@@ -1305,6 +1371,7 @@ public class RuleParserTest extends TestCase {
                       query.getName() );
     }
 
+    @Test
     public void testMultipleRules() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "multiple_rules.drl" );
@@ -1349,6 +1416,7 @@ public class RuleParserTest extends TestCase {
                       first.getObjectType() );
     }
 
+    @Test
     public void testExpanderLineSpread() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
@@ -1368,6 +1436,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testExpanderMultipleConstraints() throws Exception {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
@@ -1399,6 +1468,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testExpanderMultipleConstraintsFlush() throws Exception {
         final DrlParser parser = new DrlParser();
         // this is similar to the other test, but it requires a flush to add the
@@ -1428,7 +1498,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    // public void testExpanderUnExpandableErrorLines() throws Exception {
+    // @Test public void testExpanderUnExpandableErrorLines() throws Exception {
     //
     // //stubb expander
     // final ExpanderResolver res = new ExpanderResolver() {
@@ -1479,6 +1549,7 @@ public class RuleParserTest extends TestCase {
     //
     // }
 
+    @Test
     public void testBasicBinding() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "basic_binding.drl" );
@@ -1500,6 +1571,7 @@ public class RuleParserTest extends TestCase {
                       fieldBinding.getExpression() );
     }
 
+    @Test
     public void testBoundVariables() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "bindings.drl" );
@@ -1528,6 +1600,7 @@ public class RuleParserTest extends TestCase {
                       fld.getExpression() );
     }
 
+    @Test
     public void testOrNesting() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_nesting.drl" );
@@ -1564,6 +1637,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** Test that explicit "&&", "||" works as expected */
+    @Test
     public void testAndOrRules() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "and_or_rule.drl" );
@@ -1634,6 +1708,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** test basic foo : Fact() || Fact() stuff */
+    @Test
     public void testOrWithBinding() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_binding.drl" );
@@ -1671,6 +1746,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** test basic foo : Fact() || Fact() stuff binding to an "or" */
+    @Test
     public void testOrBindingComplex() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_binding_complex.drl" );
@@ -1708,6 +1784,7 @@ public class RuleParserTest extends TestCase {
                                       (String) rule.getConsequence() );
     }
 
+    @Test
     public void testOrBindingWithBrackets() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_binding_with_brackets.drl" );
@@ -1744,6 +1821,7 @@ public class RuleParserTest extends TestCase {
     }
 
     /** */
+    @Test
     public void testBracketsPrecedence() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "brackets_precedence.drl" );
@@ -1781,6 +1859,7 @@ public class RuleParserTest extends TestCase {
                       butt.getObjectType() );
     }
 
+    @Test
     public void testEvalMultiple() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "eval_multiple.drl" );
@@ -1801,6 +1880,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testWithEval() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "with_eval.drl" );
@@ -1824,6 +1904,7 @@ public class RuleParserTest extends TestCase {
                                       (String) rule.getConsequence() );
     }
 
+    @Test
     public void testWithRetval() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "with_retval.drl" );
@@ -1845,6 +1926,7 @@ public class RuleParserTest extends TestCase {
                       fld.getExpression() );
     }
 
+    @Test
     public void testWithPredicate() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "with_predicate.drl" );
@@ -1870,6 +1952,7 @@ public class RuleParserTest extends TestCase {
                                       pred.getExpression() );
     }
 
+    @Test
     public void testNotWithConstraint() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "not_with_constraint.drl" );
@@ -1895,6 +1978,7 @@ public class RuleParserTest extends TestCase {
                       fld.getExpression() );
     }
 
+    @Test
     public void testFunctions() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "functions.drl" );
@@ -1940,6 +2024,7 @@ public class RuleParserTest extends TestCase {
                                       func.getText() );
     }
 
+    @Test
     public void testComment() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "comment.drl" );
@@ -1950,6 +2035,7 @@ public class RuleParserTest extends TestCase {
                       pkg.getName() );
     }
 
+    @Test
     public void testAttributes() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_attributes.drl" );
@@ -1999,6 +2085,69 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    @Test
+    public void testAttributes2() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "rule_attributes2.drl" );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        List<RuleDescr> rules = pkg.getRules();
+        assertEquals( 3,
+                      rules.size() );
+
+        RuleDescr rule = rules.get( 0 );
+        assertEquals( "rule1",
+                      rule.getName() );
+        Map<String, AttributeDescr> attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        AttributeDescr at = (AttributeDescr) attrs.get( "salience" );
+        assertEquals( "salience",
+                      at.getName() );
+        assertEquals( "(42)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "agenda-group" );
+        assertEquals( "agenda-group",
+                      at.getName() );
+        assertEquals( "my_group",
+                      at.getValue() );
+
+        rule = rules.get( 1 );
+        assertEquals( "rule2",
+                      rule.getName() );
+        attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        at = (AttributeDescr) attrs.get( "salience" );
+        assertEquals( "salience",
+                      at.getName() );
+        assertEquals( "(Integer.MIN_VALUE)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "no-loop" );
+        assertEquals( "no-loop",
+                      at.getName() );
+
+        rule = rules.get( 2 );
+        assertEquals( "rule3",
+                      rule.getName() );
+        attrs = rule.getAttributes();
+        assertEquals( 2,
+                      attrs.size() );
+        at = (AttributeDescr) attrs.get( "enabled" );
+        assertEquals( "enabled",
+                      at.getName() );
+        assertEquals( "(Boolean.TRUE)",
+                      at.getValue() );
+        at = (AttributeDescr) attrs.get( "activation-group" );
+        assertEquals( "activation-group",
+                      at.getName() );
+        assertEquals( "my_activation_group",
+                      at.getValue() );
+
+    }
+
+    @Test
     public void testEnabledExpression() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_enabled_expression.drl" );
@@ -2030,6 +2179,7 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    @Test
     public void testDurationExpression() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_duration_expression.drl" );
@@ -2055,6 +2205,7 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    @Test
     public void testCalendars() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_calendars_attribute.drl" );
@@ -2080,6 +2231,7 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    @Test
     public void testCalendars2() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_calendars_attribute2.drl" );
@@ -2107,6 +2259,7 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    @Test
     public void testAttributes_alternateSyntax() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_attributes_alt.drl" );
@@ -2156,6 +2309,7 @@ public class RuleParserTest extends TestCase {
                       at.getValue() );
     }
 
+    @Test
     public void testEnumeration() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "enumeration.drl" );
@@ -2174,11 +2328,13 @@ public class RuleParserTest extends TestCase {
                       fld.getExpression() );
     }
 
+    @Test
     public void testExtraLhsNewline() throws Exception {
         parseResource( "compilationUnit",
                        "extra_lhs_newline.drl" );
     }
 
+    @Test
     public void testSoundsLike() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "soundslike_operator.drl" );
@@ -2189,6 +2345,7 @@ public class RuleParserTest extends TestCase {
         pat.getConstraint();
     }
 
+    @Test
     public void testPackageAttributes() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "package_attributes.drl" );
@@ -2240,6 +2397,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testStatementOrdering1() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "statement_ordering_1.drl" );
@@ -2272,6 +2430,7 @@ public class RuleParserTest extends TestCase {
                       ((ImportDescr) pkg.getImports().get( 3 )).getTarget() );
     }
 
+    @Test
     public void testRuleNamesStartingWithNumbers() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "rule_names_number_prefix.drl" );
@@ -2285,11 +2444,13 @@ public class RuleParserTest extends TestCase {
                       ((RuleDescr) pkg.getRules().get( 1 )).getName() );
     }
 
+    @Test
     public void testEvalWithNewline() throws Exception {
         parseResource( "compilationUnit",
                        "eval_with_newline.drl" );
     }
 
+    @Test
     public void testEndPosition() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "test_EndPosition.drl" );
@@ -2302,6 +2463,7 @@ public class RuleParserTest extends TestCase {
         // col.getEndLine() );
     }
 
+    @Test
     public void testQualifiedClassname() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "qualified_classname.drl" );
@@ -2314,6 +2476,7 @@ public class RuleParserTest extends TestCase {
                       p.getObjectType() );
     }
 
+    @Test
     public void testAccumulate() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulate.drl" );
@@ -2341,6 +2504,7 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
     }
 
+    @Test
     public void testAccumulateWithBindings() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulate_with_bindings.drl" );
@@ -2367,6 +2531,7 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
     }
 
+    @Test
     public void testCollect() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "collect.drl" );
@@ -2385,6 +2550,7 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
     }
 
+    @Test
     public void testPredicate2() throws Exception {
         // predicates are also prefixed by the eval keyword
         final RuleDescr rule = (RuleDescr) parse( "rule",
@@ -2400,6 +2566,7 @@ public class RuleParserTest extends TestCase {
                         predicate.getExpression() );
     }
 
+    @Test
     public void testEscapedStrings() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "escaped-string.drl" );
@@ -2415,6 +2582,7 @@ public class RuleParserTest extends TestCase {
                                       (String) rule.getConsequence() );
     }
 
+    @Test
     public void testNestedCEs() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "nested_conditional_elements.drl" );
@@ -2450,6 +2618,7 @@ public class RuleParserTest extends TestCase {
                       "Cheese" );
     }
 
+    @Test
     public void testForall() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "forall.drl" );
@@ -2475,6 +2644,7 @@ public class RuleParserTest extends TestCase {
                       cheese.getObjectType() );
     }
 
+    @Test
     public void testForCE() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "forCE.drl" );
@@ -2501,6 +2671,7 @@ public class RuleParserTest extends TestCase {
         //                      cheese.getObjectType() );
     }
 
+    @Test
     public void testForallWithFrom() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "forallwithfrom.drl" );
@@ -2530,6 +2701,7 @@ public class RuleParserTest extends TestCase {
                       ((FromDescr) cheese.getSource()).getDataSource().toString() );
     }
 
+    @Test
     public void testMemberof() throws Exception {
         final String text = "rule X when Country( $cities : city )\nPerson( city memberOf $cities )\n then end";
         AndDescr descrs = ((RuleDescr) parse( "rule",
@@ -2544,6 +2716,7 @@ public class RuleParserTest extends TestCase {
                       fieldConstr.getExpression() );
     }
 
+    @Test
     public void testNotMemberof() throws Exception {
         final String text = "rule X when Country( $cities : city )\nPerson( city not memberOf $cities ) then end\n";
         AndDescr descrs = ((RuleDescr) parse( "rule",
@@ -2558,6 +2731,7 @@ public class RuleParserTest extends TestCase {
                       fieldConstr.getExpression() );
     }
 
+    @Test
     public void testInOperator() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "in_operator_test.drl" );
@@ -2602,6 +2776,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testNotInOperator() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "notin_operator_test.drl" );
@@ -2646,6 +2821,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testCheckOrDescr() throws Exception {
         final String text = "rule X when Person( eval( age == 25 ) || ( eval( name.equals( \"bob\" ) ) && eval( age == 30 ) ) ) then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
@@ -2661,6 +2837,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testConstraintAndConnective() throws Exception {
         final String text = "rule X when Person( age < 42 && location==\"atlanta\") then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
@@ -2673,6 +2850,7 @@ public class RuleParserTest extends TestCase {
                       fcd.getExpression() );
     }
 
+    @Test
     public void testConstraintOrConnective() throws Exception {
         final String text = "rule X when Person( age < 42 || location==\"atlanta\") then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
@@ -2685,6 +2863,7 @@ public class RuleParserTest extends TestCase {
                       fcd.getExpression() );
     }
 
+    @Test
     public void testRestrictions() throws Exception {
         final String text = "rule X when Foo( bar > 1 || == 1 ) then end\n";
 
@@ -2700,6 +2879,7 @@ public class RuleParserTest extends TestCase {
                       fieldConstr.getExpression() );
     }
 
+    @Test
     public void testSemicolon() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "semicolon.drl" );
@@ -2727,6 +2907,7 @@ public class RuleParserTest extends TestCase {
                       rule2.getLhs().getDescrs().size() );
     }
 
+    @Test
     public void testEval() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "eval_parsing.drl" );
@@ -2741,6 +2922,7 @@ public class RuleParserTest extends TestCase {
                       rule1.getLhs().getDescrs().size() );
     }
 
+    @Test
     public void testAccumulateReverse() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulateReverse.drl" );
@@ -2768,6 +2950,7 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
     }
 
+    @Test
     public void testAccumulateExternalFunction() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulateExternalFunction.drl" );
@@ -2791,6 +2974,7 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
     }
 
+    @Test
     public void testCollectWithNestedFrom() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "collect_with_nested_from.drl" );
@@ -2815,6 +2999,7 @@ public class RuleParserTest extends TestCase {
                       people.getObjectType() );
     }
 
+    @Test
     public void testAccumulateWithNestedFrom() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulate_with_nested_from.drl" );
@@ -2839,6 +3024,7 @@ public class RuleParserTest extends TestCase {
                       people.getObjectType() );
     }
 
+    @Test
     public void testOrCE() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "or_ce.drl" );
@@ -2870,6 +3056,7 @@ public class RuleParserTest extends TestCase {
         assertNull( cheese2.getIdentifier() );
     }
 
+    @Test
     public void testRuleSingleLine() throws Exception {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1); end";
         RuleDescr rule = (RuleDescr) parse( "rule",
@@ -2881,6 +3068,7 @@ public class RuleParserTest extends TestCase {
                       rule.getConsequence() );
     }
 
+    @Test
     public void testRuleTwoLines() throws Exception {
         final String text = "rule \"another test\" salience 10 when eval( true ) then System.out.println(1);\n end";
         RuleDescr rule = (RuleDescr) parse( "rule",
@@ -2892,6 +3080,7 @@ public class RuleParserTest extends TestCase {
                       rule.getConsequence() );
     }
 
+    @Test
     public void testRuleParseLhs3() throws Exception {
         final String text = "rule X when (or\nnot Person()\n(and Cheese()\nMeat()\nWine())) then end";
         AndDescr pattern = ((RuleDescr) parse( "rule",
@@ -2923,6 +3112,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testAccumulateMultiPattern() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulate_multi_pattern.drl" );
@@ -2955,6 +3145,7 @@ public class RuleParserTest extends TestCase {
                       cheese.getObjectType() );
     }
 
+    @Test
     public void testPluggableOperators() throws Exception {
 
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
@@ -3024,6 +3215,7 @@ public class RuleParserTest extends TestCase {
                       fcdE.getExpression() );
     }
 
+    @Test
     public void testTypeDeclaration() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "declare_type.drl" );
@@ -3056,11 +3248,11 @@ public class RuleParserTest extends TestCase {
         assertEquals( 5,
                       descr.getAnnotationNames().size() );
         assertNotNull( descr.getAnnotation( "name1" ) );
-        assertEquals( "value",
+        assertEquals( "\"value\"",
                           descr.getAnnotation( "name2" ).getValue() );
         assertEquals( "10",
                           descr.getAnnotation( "name3" ).getValue( "k1" ) );
-        assertEquals( "a",
+        assertEquals( "\"a\"",
                       descr.getAnnotation( "name4" ).getValue( "k1" ) );
         assertEquals( "Math.max( 10 + 25, 22 ) % 2 + someVariable",
                       descr.getAnnotation( "name4" ).getValue( "formula" ) );
@@ -3070,6 +3262,7 @@ public class RuleParserTest extends TestCase {
                       descr.getAnnotation( "name5" ).getValue() );
     }
 
+    @Test
     public void testRuleMetadata() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "Rule_with_Metadata.drl" );
@@ -3089,6 +3282,7 @@ public class RuleParserTest extends TestCase {
                                       (String) rule.getConsequence() );
     }
 
+    @Test
     public void testRuleExtends() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "Rule_with_Extends.drl" );
@@ -3114,6 +3308,7 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
     public void testTypeDeclarationWithFields() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "declare_type_with_fields.drl" );
@@ -3150,9 +3345,9 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( "fact",
                       type.getAnnotation( "role" ).getValue() );
-        assertEquals( "Models a person",
+        assertEquals( "\"Models a person\"",
                       type.getAnnotation( "doc" ).getValue( "descr" ) );
-        assertEquals( "Bob",
+        assertEquals( "\"Bob\"",
                       type.getAnnotation( "doc" ).getValue( "author" ) );
         assertEquals( "Calendar.getInstance().getDate()",
                       type.getAnnotation( "doc" ).getValue( "date" ) );
@@ -3186,223 +3381,374 @@ public class RuleParserTest extends TestCase {
 
     }
 
-    //
-    //    public void testEntryPoint() throws Exception {
-    //        final String text = "StockTick( symbol==\"ACME\") from entry-point StreamA";
-    //
-    //        PatternDescr pattern = (PatternDescr) parse( "pattern_source",
-    //                                                     "lhs",
-    //                                                     text );
-    //
-    //        assertEquals( 1,
-    //                      pattern.getDescrs().size() );
-    //        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "symbol",
-    //                      fcd.getFieldName() );
-    //
-    //        assertNotNull( pattern.getSource() );
-    //        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
-    //        assertEquals( "StreamA",
-    //                      entry.getEntryId() );
-    //    }
-    //
-    //    public void testEntryPoint2() throws Exception {
-    //        final String text = "StockTick( symbol==\"ACME\") from entry-point \"StreamA\"";
-    //
-    //        PatternDescr pattern = (PatternDescr) parse( "pattern_source",
-    //                                                     "lhs",
-    //                                                     text );
-    //
-    //        assertEquals( 1,
-    //                      pattern.getDescrs().size() );
-    //        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "symbol",
-    //                      fcd.getFieldName() );
-    //
-    //        assertNotNull( pattern.getSource() );
-    //        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
-    //        assertEquals( "StreamA",
-    //                      entry.getEntryId() );
-    //    }
-    //
-    //    public void testSlidingWindow() throws Exception {
-    //        final String text = "StockTick( symbol==\"ACME\") over window:length(10)";
-    //
-    //        PatternDescr pattern = (PatternDescr) parse( "pattern_source",
-    //                                                     "lhs",
-    //                                                     text );
-    //
-    //        assertEquals( 1,
-    //                      pattern.getDescrs().size() );
-    //        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
-    //        assertEquals( "symbol",
-    //                      fcd.getFieldName() );
-    //
-    //        List<BehaviorDescr> behaviors = pattern.getBehaviors();
-    //        assertNotNull( behaviors );
-    //        assertEquals( 1,
-    //                      behaviors.size() );
-    //        SlidingWindowDescr descr = (SlidingWindowDescr) behaviors.get( 0 );
-    //        assertEquals( "length",
-    //                      descr.getText() );
-    //        assertEquals( "length",
-    //                      descr.getType() );
-    //        assertEquals( "10",
-    //                      descr.getParameters() );
-    //    }
-    //
-    //    public void testNesting() throws Exception {
-    //        parseResource( "compilationUnit",
-    //                       "compilationUnit",
-    //                       "not_pluggable_operator.drl" );
-    //
-    //        assertNotNull( walker );
-    //    }
-    //
-    //    public void testNoEOLOnCommentInTheLastLine() throws Exception {
-    //        final String fileName = "no_eol_on_comment.drl";
-    //
-    //        // forcing ANTLR to use an input stream as a source
-    //        final URL url = getClass().getResource( fileName );
-    //        final Resource resource = ResourceFactory.newUrlResource( url );
-    //
-    //        final DrlParser parser = new DrlParser();
-    //        final PackageDescr pkg = parser.parse( resource.getInputStream() );
-    //
-    //        assertFalse( parser.hasErrors() );
-    //        assertNotNull( pkg );
-    //    }
-    //
-    //    public void testRuleOldSyntax1() throws Exception {
-    //        final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
-    //
-    //        parse( "compilationUnit",
-    //               "compilationUnit",
-    //               source );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertFalse( parser.hasErrors() );
-    //
-    //        assertEquals( "Test",
-    //                      rule.getName() );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //        assertEquals( 1,
-    //                      ((NotDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().size() );
-    //        NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get( 0 );
-    //        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
-    //        assertEquals( "$r",
-    //                      patternDescr.getIdentifier() );
-    //        assertEquals( 1,
-    //                      patternDescr.getDescrs().size() );
-    //        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
-    //        assertEquals( "operator",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestrictionDescr = (QualifiedIdentifierRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      qualifiedIdentifierRestrictionDescr.getEvaluator() );
-    //        assertEquals( "Operator.EQUAL",
-    //                      qualifiedIdentifierRestrictionDescr.getText() );
-    //    }
-    //
-    //    public void testRuleOldSyntax2() throws Exception {
-    //        final String source = "rule \"Test\" when ( $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
-    //
-    //        parse( "compilationUnit",
-    //               "compilationUnit",
-    //               source );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertFalse( parser.hasErrors() );
-    //
-    //        assertEquals( "Test",
-    //                      rule.getName() );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        assertEquals( "$r",
-    //                      patternDescr.getIdentifier() );
-    //        assertEquals( 1,
-    //                      patternDescr.getDescrs().size() );
-    //        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
-    //        assertEquals( "operator",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestrictionDescr = (QualifiedIdentifierRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      qualifiedIdentifierRestrictionDescr.getEvaluator() );
-    //        assertEquals( "Operator.EQUAL",
-    //                      qualifiedIdentifierRestrictionDescr.getText() );
-    //    }
-    //
-    //    public void testAndRestrictionConnective() throws Exception {
-    //        final String source = "rule \"Test\" when ( $r :Person( $n : name == 'Bob' && $a : age == 20) ) then end";
-    //
-    //        parse( "compilationUnit",
-    //               "compilationUnit",
-    //               source );
-    //
-    //        RuleDescr rule = (RuleDescr) this.walker.getPackageDescr().getRules().get( 0 );
-    //        assertFalse( parser.hasErrors() );
-    //
-    //        assertEquals( "Test",
-    //                      rule.getName() );
-    //        assertEquals( 1,
-    //                      rule.getLhs().getDescrs().size() );
-    //        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-    //        assertEquals( "$r",
-    //                      patternDescr.getIdentifier() );
-    //        assertEquals( 4,
-    //                      patternDescr.getDescrs().size() );
-    //        FieldBindingDescr nameBind = (FieldBindingDescr) patternDescr.getDescrs().get( 0 );
-    //        assertEquals( "$n",
-    //                      nameBind.getIdentifier() );
-    //        assertEquals( "name",
-    //                      nameBind.getFieldName() );
-    //        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 1 );
-    //        assertEquals( "name",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        LiteralRestrictionDescr literalRestrictionDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      literalRestrictionDescr.getEvaluator() );
-    //        assertEquals( "Bob",
-    //                      literalRestrictionDescr.getText() );
-    //
-    //        FieldBindingDescr ageBind = (FieldBindingDescr) patternDescr.getDescrs().get( 2 );
-    //        assertEquals( "$a",
-    //                      ageBind.getIdentifier() );
-    //        assertEquals( "age",
-    //                      ageBind.getFieldName() );
-    //        fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 3 );
-    //        assertEquals( "age",
-    //                      fieldConstraintDescr.getFieldName() );
-    //        assertEquals( 1,
-    //                      fieldConstraintDescr.getRestriction().getRestrictions().size() );
-    //        literalRestrictionDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestriction().getRestrictions().get( 0 );
-    //        assertEquals( "==",
-    //                      literalRestrictionDescr.getEvaluator() );
-    //        assertEquals( "20",
-    //                      literalRestrictionDescr.getText() );
-    //    }
-    //
-    //    public void testTypeWithMetaData() throws Exception {
-    //
-    //        parseResource( "compilationUnit",
-    //                       "compilationUnit",
-    //                       "type_with_meta.drl" );
-    //
-    //        final PackageDescr pack = walker.getPackageDescr();
-    //
-    //        final List<TypeDeclarationDescr> declarations = pack.getTypeDeclarations();
-    //
-    //        assertEquals( 3,
-    //                      declarations.size() );
-    //    }
+    @Test
+    public void testRuleWithLHSNesting() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "Rule_with_nested_LHS.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        assertEquals( "test",
+                      rule.getName() );
+
+        AndDescr lhs = rule.getLhs();
+        assertNotNull( lhs );
+        assertEquals( 2,
+                      lhs.getDescrs().size() );
+
+        PatternDescr a = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "A",
+                      a.getObjectType() );
+
+        OrDescr or = (OrDescr) lhs.getDescrs().get( 1 );
+        assertEquals( 3,
+                      or.getDescrs().size() );
+
+        AndDescr and1 = (AndDescr) or.getDescrs().get( 0 );
+        assertEquals( 2,
+                      and1.getDescrs().size() );
+        PatternDescr b = (PatternDescr) and1.getDescrs().get( 0 );
+        PatternDescr c = (PatternDescr) and1.getDescrs().get( 1 );
+        assertEquals( "B",
+                      b.getObjectType() );
+        assertEquals( "C",
+                      c.getObjectType() );
+
+        AndDescr and2 = (AndDescr) or.getDescrs().get( 1 );
+        assertEquals( 2,
+                      and2.getDescrs().size() );
+        PatternDescr d = (PatternDescr) and2.getDescrs().get( 0 );
+        PatternDescr e = (PatternDescr) and2.getDescrs().get( 1 );
+        assertEquals( "D",
+                      d.getObjectType() );
+        assertEquals( "E",
+                      e.getObjectType() );
+
+        AndDescr and3 = (AndDescr) or.getDescrs().get( 2 );
+        assertEquals( 2,
+                      and3.getDescrs().size() );
+        PatternDescr f = (PatternDescr) and3.getDescrs().get( 0 );
+        PatternDescr g = (PatternDescr) and3.getDescrs().get( 1 );
+        assertEquals( "F",
+                      f.getObjectType() );
+        assertEquals( "G",
+                      g.getObjectType() );
+    }
+
+    @Test
+    public void testEntryPoint() throws Exception {
+        final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point StreamA then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                     text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol==\"ACME\"",
+                      fcd.getExpression() );
+
+        assertNotNull( pattern.getSource() );
+        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+        assertEquals( "StreamA",
+                      entry.getEntryId() );
+    }
+
+    @Test
+    public void testEntryPoint2() throws Exception {
+        final String text = "rule X when StockTick( symbol==\"ACME\") from entry-point \"StreamA\" then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                     text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol==\"ACME\"",
+                      fcd.getExpression() );
+
+        assertNotNull( pattern.getSource() );
+        EntryPointDescr entry = (EntryPointDescr) pattern.getSource();
+        assertEquals( "StreamA",
+                      entry.getEntryId() );
+    }
+
+    @Test
+    public void testSlidingWindow() throws Exception {
+        final String text = "rule X when StockTick( symbol==\"ACME\") over window:length(10) then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        RuleDescr rule = pkg.getRules().get( 0 );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "symbol==\"ACME\"",
+                      fcd.getExpression() );
+
+        List<BehaviorDescr> behaviors = pattern.getBehaviors();
+        assertNotNull( behaviors );
+        assertEquals( 1,
+                      behaviors.size() );
+        BehaviorDescr descr = behaviors.get( 0 );
+        assertEquals( "window",
+                      descr.getType() );
+        assertEquals( "length",
+                      descr.getSubType() );
+        assertEquals( "10",
+                      descr.getParameters().get( 0 ) );
+    }
+
+    @Test
+    public void testRuleOldSyntax1() throws Exception {
+        final String source = "rule \"Test\" when ( not $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertEquals( "Test",
+                      rule.getName() );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        assertEquals( 1,
+                      ((NotDescr) rule.getLhs().getDescrs().get( 0 )).getDescrs().size() );
+        NotDescr notDescr = (NotDescr) rule.getLhs().getDescrs().get( 0 );
+        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
+        assertEquals( "$r",
+                      patternDescr.getIdentifier() );
+        assertEquals( 1,
+                      patternDescr.getDescrs().size() );
+        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
+        assertEquals( "operator == Operator.EQUAL",
+                      fieldConstraintDescr.getExpression() );
+    }
+
+    @Test
+    public void testRuleOldSyntax2() throws Exception {
+        final String source = "rule \"Test\" when ( $r :LiteralRestriction( operator == Operator.EQUAL ) ) then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertEquals( "Test",
+                      rule.getName() );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr patternDescr = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "$r",
+                      patternDescr.getIdentifier() );
+        assertEquals( 1,
+                      patternDescr.getDescrs().size() );
+        ExprConstraintDescr fieldConstraintDescr = (ExprConstraintDescr) patternDescr.getDescrs().get( 0 );
+        assertEquals( "operator == Operator.EQUAL",
+                      fieldConstraintDescr.getExpression() );
+    }
+
+    @Test
+    public void testTypeWithMetaData() throws Exception {
+
+        PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                         "type_with_meta.drl" );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        final List<TypeDeclarationDescr> declarations = pkg.getTypeDeclarations();
+
+        assertEquals( 3,
+                      declarations.size() );
+    }
+
+    @Test
+    public void testNullConstraints() throws Exception {
+        final String text = "rule X when Person( name == null ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 1,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "name == null",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.NAMED,
+                      fcd.getType() );
+    }
+
+    @Test
+    public void testPositionalConstraintsOnly() throws Exception {
+        final String text = "rule X when Person( \"Mark\", 42; ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+    }
+
+    @Test
+    public void testIsQuery() throws Exception {
+        final String text = "rule X when ?person( \"Mark\", 42; ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertTrue( pattern.isQuery() );
+
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+    }
+
+    @Test
+    public void testFromFollowedByQuery() throws Exception {
+        // the 'from' expression requires a ";" to disambiguate the "?" 
+        // prefix for queries from the ternary operator "? :"
+        final String text = "rule X when Cheese() from $cheesery ?person( \"Mark\", 42; ) then end";
+        RuleDescr rule = (RuleDescr) parse( "rule",
+                                             text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
+        assertEquals( "from $cheesery",
+                      pattern.getSource().getText() );
+        assertFalse( pattern.isQuery() );
+
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "person",
+                      pattern.getObjectType() );
+        assertTrue( pattern.isQuery() );
+
+    }
+
+    @Test
+    public void testFromWithTernaryFollowedByQuery() throws Exception {
+        // the 'from' expression requires a ";" to disambiguate the "?" 
+        // prefix for queries from the ternary operator "? :"
+        final String text = "rule X when Cheese() from (isFull ? $cheesery : $market) ?person( \"Mark\", 42; ) then end";
+        RuleDescr rule = (RuleDescr) parse( "rule",
+                                             text );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
+        assertEquals( "from (isFull ? $cheesery : $market)",
+                      pattern.getSource().getText() );
+        assertFalse( pattern.isQuery() );
+
+        pattern = (PatternDescr) rule.getLhs().getDescrs().get( 1 );
+        assertEquals( "person",
+                      pattern.getObjectType() );
+        assertTrue( pattern.isQuery() );
+
+    }
+
+    @Test
+    public void testMultiValueAnnotationsBackwardCompatibility() throws Exception {
+        // multiple values with no keys are parsed as a single value
+        final String text = "rule X @ann1( val1, val2 ) @ann2( \"val1\", \"val2\" ) when then end";
+        RuleDescr rule = (RuleDescr) parse( "rule",
+                                             text );
+
+        AnnotationDescr ann = rule.getAnnotation( "ann1" );
+        assertNotNull( ann );
+        assertEquals( "val1, val2",
+                      ann.getValue() );
+
+        ann = rule.getAnnotation( "ann2" );
+        assertNotNull( ann );
+        assertEquals( "\"val1\", \"val2\"",
+                      ann.getValue() );
+    }
+
+    @Test
+    public void testPositionalsAndNamedConstraints() throws Exception {
+        final String text = "rule X when Person( \"Mark\", 42; location == \"atlanta\" ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 3,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr fcd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "\"Mark\"",
+                      fcd.getExpression() );
+        assertEquals( 0,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "42",
+                      fcd.getExpression() );
+        assertEquals( 1,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.POSITIONAL,
+                      fcd.getType() );
+
+        fcd = (ExprConstraintDescr) pattern.getDescrs().get( 2 );
+        assertEquals( "location == \"atlanta\"",
+                      fcd.getExpression() );
+        assertEquals( 2,
+                      fcd.getPosition() );
+        assertEquals( ExprConstraintDescr.Type.NAMED,
+                      fcd.getType() );
+
+    }
 
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {

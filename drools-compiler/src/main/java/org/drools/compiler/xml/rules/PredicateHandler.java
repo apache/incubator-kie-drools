@@ -19,6 +19,7 @@ package org.drools.compiler.xml.rules;
 import java.util.HashSet;
 
 import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.PredicateDescr;
@@ -39,17 +40,6 @@ public class PredicateHandler extends BaseAbstractHandler
     implements
     Handler {
     public PredicateHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( PatternDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-            this.validPeers.add( FieldConstraintDescr.class );
-            this.validPeers.add( PredicateDescr.class );
-            this.validPeers.add( BindingDescr.class );
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,
@@ -58,17 +48,13 @@ public class PredicateHandler extends BaseAbstractHandler
                         final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder( localName,
                                     attrs );
-        final PredicateDescr predicateDescr = new PredicateDescr();
-
-        return predicateDescr;
+        return ""; // need to return something, otherwise it'll pop the parent
     }
 
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-
-        final PredicateDescr predicateDescr = (PredicateDescr) parser.getCurrent();
 
         final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
 
@@ -77,13 +63,13 @@ public class PredicateHandler extends BaseAbstractHandler
                                          parser.getLocator() );
         }
 
-        predicateDescr.setContent( expression );
-
         final PatternDescr patternDescr = (PatternDescr) parser.getParent();
+        
+        ExprConstraintDescr expr = new ExprConstraintDescr("eval(" + expression + ")");
 
-        patternDescr.addConstraint( predicateDescr );
+        patternDescr.addConstraint( expr );
 
-        return predicateDescr;
+        return expr;
     }
 
     public Class generateNodeFor() {

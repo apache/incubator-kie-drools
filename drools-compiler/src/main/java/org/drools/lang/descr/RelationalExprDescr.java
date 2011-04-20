@@ -16,6 +16,8 @@
 
 package org.drools.lang.descr;
 
+import java.util.List;
+
 /**
  * A descriptor to represent a relational expression
  */
@@ -24,17 +26,21 @@ public class RelationalExprDescr extends BaseDescr {
 
     private BaseDescr         left;
     private BaseDescr         right;
-    private String            operator;
+    private OperatorDescr     operator;
 
     public RelationalExprDescr() {
     }
 
     public RelationalExprDescr(String operator,
+                               boolean negated,
+                               List<String> parameters,
                                BaseDescr left,
                                BaseDescr right) {
         this.left = left;
         this.right = right;
-        this.operator = operator;
+        this.operator = new OperatorDescr( operator,
+                                           negated,
+                                           parameters );
     }
 
     public BaseDescr getLeft() {
@@ -54,15 +60,66 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     public String getOperator() {
-        return operator;
+        return operator != null ? operator.getOperator() : null;
     }
 
     public void setOperator( String operator ) {
+        if( this.operator == null ) {
+            this.operator = new OperatorDescr();
+        }
+        this.operator.setOperator( operator );
+    }
+
+    public boolean isNegated() {
+        return operator != null ? operator.isNegated() : false;
+    }
+
+    public void setNegated( boolean negated ) {
+        if( this.operator == null ) {
+            this.operator = new OperatorDescr();
+        }
+        this.operator.setNegated( negated );
+    }
+
+    public List<String> getParameters() {
+        return operator != null ? operator.getParameters() : null;
+    }
+
+    public String getParametersText() {
+        if ( operator != null && operator.getParameters() != null ) {
+            StringBuilder builder = new StringBuilder();
+            boolean first = true;
+            for ( String param : operator.getParameters() ) {
+                if ( first ) {
+                    first = false;
+                } else {
+                    builder.append( "," );
+                }
+                builder.append( param );
+            }
+            return builder.toString();
+        }
+        return null;
+    }
+
+    public void setParameters( List<String> parameters ) {
+        if( this.operator == null ) {
+            this.operator = new OperatorDescr();
+        }
+        this.operator.setParameters( parameters );
+    }
+    
+    public OperatorDescr getOperatorDescr() {
+        return this.operator;
+    }
+    
+    public void setOperatorDescr( OperatorDescr operator ) {
         this.operator = operator;
     }
 
     @Override
     public String toString() {
-        return this.left + " " + this.operator + " " + this.right;
+        return this.left + (isNegated() ? " not " : " ") + this.operator + (getParameters() != null ? getParameters().toString() + " " : " ") + this.right;
     }
+
 }

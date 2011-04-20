@@ -162,7 +162,7 @@ public class VariableConstraint extends MutableTypeConstraint
 
     public Object clone() {
         return new VariableConstraint( this.fieldExtractor,
-                                       (VariableRestriction) this.restriction.clone() );
+                                       (Restriction) this.restriction.clone() );
     }
 
 }

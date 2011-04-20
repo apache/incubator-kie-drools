@@ -54,18 +54,15 @@ public class AgendaItem
 
     /** The tuple. */
     private LeftTuple               tuple;
-
-    /** The rule. */
-    private Rule                rule;
-
+    
     /** The salience */
     private int                 salience;
 
     /** Used for sequential mode */
     private int                 sequenence;
-
-    /** The subrule */
-    private GroupElement        subrule;
+    
+    /** Rule terminal node, gives access to SubRule **/
+    private RuleTerminalNode    rtn;
 
     /** The propagation context */
     private PropagationContext  context;
@@ -106,13 +103,11 @@ public class AgendaItem
                       final LeftTuple tuple,
                       final int salience,
                       final PropagationContext context,
-                      final Rule rule,
-                      final GroupElement subrule) {
+                      final RuleTerminalNode rtn) {
         this.tuple = tuple;
         this.context = context;
-        this.rule = rule;
         this.salience = salience;
-        this.subrule = subrule;
+        this.rtn = rtn;
         this.activationNumber = activationNumber;
         this.index = -1;
     }
@@ -123,10 +118,9 @@ public class AgendaItem
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         tuple = (LeftTuple) in.readObject();
-        rule = (Rule) in.readObject();
         salience = in.readInt();
         sequenence = in.readInt();
-        subrule = (GroupElement) in.readObject();
+        rtn = ( RuleTerminalNode ) in.readObject();
         context = (PropagationContext) in.readObject();
         activationNumber = in.readLong();
         queue = (Queue) in.readObject();
@@ -140,10 +134,9 @@ public class AgendaItem
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( tuple );
-        out.writeObject( rule );
         out.writeInt( salience );
         out.writeInt( sequenence );
-        out.writeObject( subrule );
+        out.writeObject( rtn );
         out.writeObject( context );
         out.writeLong( activationNumber );
         out.writeObject( queue );
@@ -169,7 +162,7 @@ public class AgendaItem
      * @return The rule.
      */
     public Rule getRule() {
-        return this.rule;
+        return this.rtn.getRule();
     }
 
     /**
@@ -230,8 +223,8 @@ public class AgendaItem
         this.activated = activated;
     }
 
-    public String toString() {
-        return "[Activation rule=" + this.rule.getName() + ", tuple=" + this.tuple + "]";
+    public String toString() {                
+        return "[Activation rule=" + this.rtn.getRule().getName() + ", act#=" + this.activationNumber + ", salience="+ this.salience + ", tuple=" + this.tuple + "]";
     }
 
     /*
@@ -250,7 +243,7 @@ public class AgendaItem
 
         final AgendaItem otherItem = (AgendaItem) object;
 
-        return (this.rule.equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
+        return (this.rtn.getRule().equals( otherItem.getRule() ) && this.tuple.equals( otherItem.getTuple() ));
     }
 
     /**
@@ -307,7 +300,11 @@ public class AgendaItem
     }
 
     public GroupElement getSubRule() {
-        return this.subrule;
+        return this.rtn.getSubRule();
+    }
+    
+    public RuleTerminalNode getRuleTerminalNode() {
+        return this.rtn;
     }
 
     public List<FactHandle> getFactHandles() {

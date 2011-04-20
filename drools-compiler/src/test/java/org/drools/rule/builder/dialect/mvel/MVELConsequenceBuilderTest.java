@@ -22,6 +22,7 @@ import org.drools.base.mvel.MVELConsequence;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.common.AgendaItem;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.PropagationContextImpl;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
@@ -35,6 +36,8 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.ImportDeclaration;
@@ -107,6 +110,7 @@ public class MVELConsequenceBuilderTest {
         final LeftTuple tuple = new LeftTuple( f0,
                                                sink,
                                                true );
+        
 
         final AgendaItem item = new AgendaItem( 0,
                                                 tuple,
@@ -114,10 +118,9 @@ public class MVELConsequenceBuilderTest {
                                                 new PropagationContextImpl( 1,
                                                                             1,
                                                                             null,
-                                                                            null,
+                                                                            tuple,
                                                                             null ),
-                                                context.getRule(),
-                                                subrule );
+                                                new RuleTerminalNode(0, null, context.getRule(), subrule, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );
@@ -187,7 +190,6 @@ public class MVELConsequenceBuilderTest {
                                                 tuple,
                                                 10,
                                                 null,
-                                                context.getRule(),
                                                 null );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );

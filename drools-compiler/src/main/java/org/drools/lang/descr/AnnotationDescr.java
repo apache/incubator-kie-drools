@@ -1,7 +1,10 @@
 package org.drools.lang.descr;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * Copyright 2011 JBoss Inc
@@ -19,12 +22,23 @@ import java.util.Map;
  * limitations under the License.
  */
 public class AnnotationDescr extends BaseDescr {
+    
     private static final String VALUE            = "value";
     private static final long   serialVersionUID = 520l;
 
     private final String        name;
     private Map<String, String> values;
 
+    // '' and 'a' are passed through as 
+    public static String unquote( String s ){
+        if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ||
+            s.startsWith( "'" ) && s.endsWith( "'" ) ) {
+            return s.substring( 1, s.length() - 1 );
+        } else {
+            return s;
+        }
+    }
+    
     public AnnotationDescr(final String name) {
         this.name = name;
         this.values = new HashMap<String, String>();
@@ -34,33 +48,73 @@ public class AnnotationDescr extends BaseDescr {
                            final String value) {
         this.name = name;
         this.values = new HashMap<String, String>();
-        this.values.put( VALUE,
-                         value );
+        this.values.put( VALUE, value );
     }
 
     public String getName() {
         return this.name;
     }
-
-    public String getValue() {
-        return this.values.get( VALUE );
+    
+    public boolean hasValue() {
+        return !this.values.isEmpty();
     }
 
     public void setValue( final String value ) {
-        this.values.put( VALUE,
-                         value );
+        this.values.put( VALUE, value );
     }
 
     public void setKeyValue( final String key,
                              final String value ) {
-        this.values.put( key,
-                         value );
+        this.values.put( key, value );
     }
 
     public String getValue( final String key ) {
         return this.values.get( key );
     }
+    
+    public Map<String,String> getValues(){
+        return this.values;
+    }
+    
+    /**
+     * Returns the metadata value as a single object or a Map
+     * @return
+     */
+    public Object getValue() {
+        Object single = getSingleValue();
+        return single != null ? single : this.values;
+    }
 
+    public Object getValueStripped() {
+        Object single = getSingleValueStripped();
+        if( single != null ) return single;
+        Map<String,String> sMap = new HashMap<String,String>();
+        for( Map.Entry<String,String> entry: this.values.entrySet() ){
+            sMap.put( entry.getKey(), unquote( entry.getValue() ) );
+        }        
+        return sMap;
+    }
+
+    public Map<String,String> getValueMap() {
+        return this.values;
+    }
+
+    public String getSingleValue(){
+        if( values.size() == 1 && values.containsKey( "value" ) ){
+            return this.values.get( "value" );
+        } else {
+            return null;
+        }
+    }
+    
+    public String getSingleValueStripped(){
+        if( values.size() == 1 && values.containsKey( "value" ) ){
+            return unquote( this.values.get( "value" ) );
+        } else {
+            return null;
+        }
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -80,4 +134,5 @@ public class AnnotationDescr extends BaseDescr {
         } else if ( !name.equals( other.name ) ) return false;
         return true;
     }
+
 }

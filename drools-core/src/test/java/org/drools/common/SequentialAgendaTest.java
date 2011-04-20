@@ -21,6 +21,10 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 
@@ -50,13 +54,12 @@ public class SequentialAgendaTest {
     
     public Activation createActivation(int index) {
         Rule rule = new Rule( "test rule");
-        rule.setLoadOrder( index );
+        rule.setLoadOrder( index );        
         final AgendaItem item = new AgendaItem( 0,
                                                 null,
                                                 0,
                                                 null,
-                                                rule,
-                                                null );
+                                                new RuleTerminalNode(0, null, rule, new GroupElement(), new BuildContext( new ReteooRuleBase("x"), null )  ) );
         return item;
     }
 }

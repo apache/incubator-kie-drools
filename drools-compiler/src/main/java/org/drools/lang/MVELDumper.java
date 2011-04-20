@@ -16,203 +16,224 @@ package org.drools.lang;
  * limitations under the License.
  */
 
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.base.evaluators.Operator;
+import org.drools.compiler.DrlExprParser;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.lang.descr.BindingDescr;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralRestrictionDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
-import org.drools.lang.descr.RestrictionConnectiveDescr;
-import org.drools.lang.descr.RestrictionDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-import org.drools.rule.builder.RuleBuildContext;
+import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.OperatorDescr;
+import org.drools.lang.descr.RelationalExprDescr;
 
 public class MVELDumper extends ReflectiveVisitor {
 
-    private StringBuilder        mvelDump;
-    private boolean             isDateField;
-    private String              template;
-    private String              fieldName;
-    private RuleBuildContext context;
-    
-    public MVELDumper(RuleBuildContext context) {
-        this.context = context;
-    }
-    
-    public MVELDumper() {
-
-    }
-    
-    
-
-    public String getFieldName() {
-        return fieldName;
+    private static final String[] standard;
+    static {
+        standard = new String[]{"==", "<", ">", ">=", "<=", "!="};
+        Arrays.sort( standard );
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
+    public String dump( BaseDescr base ) {
+        return dump( new StringBuilder(),
+                     base,
+                     0,
+                     new MVELDumperContext() ).toString();
     }
 
-    public String dump(FieldConstraintDescr fieldConstr) {
-        return this.dump( fieldConstr, false );
+    public String dump( BaseDescr base,
+                        MVELDumperContext context ) {
+        return dump( new StringBuilder(),
+                     base,
+                     0,
+                     context ).toString();
     }
 
-    public String dump(FieldConstraintDescr fieldConstr, boolean isDateField ) {
-        mvelDump = new StringBuilder();
-        this.isDateField = isDateField;
-        this.visit( fieldConstr );
-        return mvelDump.toString();
+    public String dump( BaseDescr base,
+                        int parentPrecedence ) {
+        return dump( new StringBuilder(),
+                     base,
+                     parentPrecedence,
+                     new MVELDumperContext()).toString();
     }
 
-    public void visitFieldConstraintDescr(final FieldConstraintDescr descr) {
-        if ( !descr.getRestrictions().isEmpty() ) {
-            this.fieldName = descr.getFieldName();
-            mvelDump.append( processFieldConstraint( descr.getRestriction() ) );
+    public StringBuilder dump( StringBuilder sbuilder,
+                               BaseDescr base,
+                               int parentPriority,
+                               MVELDumperContext context ) {
+        if( context == null ) {
+            context = new MVELDumperContext();
         }
-    }
-
-    public void visitVariableRestrictionDescr(final VariableRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getIdentifier() );
-    }
-
-    public void visitFieldBindingDescr(final BindingDescr descr) {
-        // do nothing
-    }
-
-    public void visitLiteralRestrictionDescr(final LiteralRestrictionDescr descr) {
-        String text = descr.getText();
-        if ( text == null || descr.getType() == LiteralRestrictionDescr.TYPE_NULL ) {
-            text = "null";
-        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_NUMBER ) {
-            try {
-                Integer.parseInt( text );
-            } catch ( final NumberFormatException e ) {
-                text = "\"" + text + "\"";
+        if ( base instanceof ConstraintConnectiveDescr ) {
+            ConstraintConnectiveDescr ccd = (ConstraintConnectiveDescr) base;
+            boolean first = true;
+            boolean wrapParenthesis = parentPriority > ccd.getConnective().getPrecedence();
+            if ( wrapParenthesis ) {
+                sbuilder.append( "( " );
             }
-        } else if( descr.getType() == LiteralRestrictionDescr.TYPE_STRING ) {
-            text = "\"" + text + "\"";
-            if( this.isDateField ) {
-                text = "org.drools.util.DateUtils.parseDate( "+text+" )";
+            for ( BaseDescr constr : ccd.getDescrs() ) {
+                if ( first ) {
+                    first = false;
+                } else {
+                    sbuilder.append( " " );
+                    sbuilder.append( ccd.getConnective().toString() );
+                    sbuilder.append( " " );
+                }
+                //sbuilder.append( "(" );
+                dump( sbuilder,
+                      constr,
+                      ccd.getConnective().getPrecedence(),
+                      context );
+            }
+            if ( wrapParenthesis ) {
+                sbuilder.append( " )" );
+            }
+        } else if ( base instanceof AtomicExprDescr ) {
+            AtomicExprDescr atom = (AtomicExprDescr) base;
+            String expr = atom.getExpression().trim();
+            if ( expr.matches( "eval\\s*\\(.*\\)\\s*" ) ) {
+                // stripping "eval" as it is no longer necessary
+                expr = expr.substring( expr.indexOf( '(' ) + 1,
+                                       expr.lastIndexOf( ')' ) );
+            }
+            sbuilder.append( expr );
+        } else if ( base instanceof RelationalExprDescr ) {
+            RelationalExprDescr red = (RelationalExprDescr) base;
+            String left = dump( red.getLeft(),
+                                Integer.MAX_VALUE ); // maximum precedence, so wrap any child connective in parenthesis
+            String right = dump( red.getRight(),
+                                Integer.MAX_VALUE );
+            processRestriction( context,
+                                sbuilder,
+                                left, 
+                                red.getOperatorDescr(),
+                                right );// maximum precedence, so wrap any child connective in parenthesis
+        } else if ( base instanceof ExprConstraintDescr ) {
+            DrlExprParser expr = new DrlExprParser();
+            ConstraintConnectiveDescr result = expr.parse( ((ExprConstraintDescr) base).getExpression() );
+            if ( result.getDescrs().size() == 1 ) {
+                dump( sbuilder,
+                      result.getDescrs().get( 0 ),
+                      0,
+                      context );
+            } else {
+                dump( sbuilder,
+                      result,
+                      0,
+                      context );
             }
         }
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), text );
+        return sbuilder;
     }
 
-    public void visitQualifiedIdentifierRestrictionDescr(final QualifiedIdentifierRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(), descr.getText() );
-    }
-
-    public void visitRestrictionConnectiveDescr(final RestrictionConnectiveDescr descr) {
-        this.template = "( " + this.processFieldConstraint( descr ) + " )";
-    }
-
-    public void visitPredicateDescr(final PredicateDescr descr) {
-        this.template = "eval( " + descr.getContent() + " )";
-    }
-
-    public void visitReturnValueRestrictionDescr(final ReturnValueRestrictionDescr descr) {
-        this.template = processRestriction( descr.getEvaluator(), descr.isNegated(),  "( "+descr.getContent().toString()+" )" );
-    }
-
-    private String processFieldConstraint(final RestrictionConnectiveDescr restriction) {
-        String descrString = "";
-        String connective = null;
-
-        if ( restriction.getConnective() == RestrictionConnectiveDescr.OR ) {
-            connective = " || ";
+    public void processRestriction( MVELDumperContext context,
+                                    StringBuilder sbuilder,
+                                    String left,
+                                    OperatorDescr operator,
+                                    String right) {
+        Operator op = Operator.determineOperator( operator.getOperator(),
+                                                  operator.isNegated() );
+        if ( op == Operator.determineOperator( "memberOf",
+                                               operator.isNegated() ) ) {
+            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                    .append( right )
+                    .append( " contains " )
+                    .append( left )
+                    .append( evaluatorSufix( operator.isNegated() ) );
+        } else if ( op == Operator.determineOperator( "excludes",
+                                                      operator.isNegated() ) ) {
+            sbuilder.append( evaluatorPrefix( !operator.isNegated() ) )
+                    .append( left )
+                    .append( " contains " )
+                    .append( right )
+                    .append( evaluatorSufix( operator.isNegated() ) );
+        } else if ( op == Operator.determineOperator( "matches",
+                                                      operator.isNegated() ) ) {
+            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                    .append( left )
+                    .append( " ~= " )
+                    .append( right )
+                    .append( evaluatorSufix( operator.isNegated() ) );
+        } else if ( Arrays.binarySearch( standard,
+                                         op.getOperatorString() ) >= 0 ) {
+            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                    .append( left )
+                    .append( " " )
+                    .append( operator.getOperator() )
+                    .append( " " )
+                    .append( right )
+                    .append( evaluatorSufix( operator.isNegated() ) );
         } else {
-            connective = " && ";
+            // rewrite operator as a function call
+            String alias = context.createAlias( operator );
+            operator.setLeftString( left );
+            operator.setRightString( right );
+            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                    .append( alias )
+                    .append( ".evaluate( " )
+                    .append( left )
+                    .append( ", " )
+                    .append( right )
+                    .append( " )" )
+                    .append( evaluatorSufix( operator.isNegated() ) );
         }
-        for ( final Iterator<RestrictionDescr> it = restriction.getRestrictions().iterator(); it.hasNext(); ) {
-            final Object temp = it.next();
-            visit( temp );
-            descrString += this.template;
-            if ( it.hasNext() ) {
-                descrString += connective;
-            }
-        }
-        return descrString;
     }
 
-    public String processRestriction(String evaluator,
-                                      boolean isNegated,
-                                      String value) {
-        Operator op = Operator.determineOperator( evaluator, isNegated );
-        if( op == Operator.determineOperator( "memberOf", false ) ) {
-            evaluator = "contains";
-            return evaluatorPrefix( evaluator ) + 
-                   value + " " + 
-                   evaluator( evaluator ) + " " + 
-                   this.fieldName + evaluatorSufix( evaluator );
-        } else if(op == Operator.determineOperator( "memberOf", true )) {
-            evaluator = "not contains";
-            return evaluatorPrefix( evaluator ) + 
-                   value + " " + 
-                   evaluator( evaluator ) + " " + 
-                   this.fieldName + evaluatorSufix( evaluator );
-        } else if(op == Operator.determineOperator( "excludes", false ) ) {
-            evaluator = "not contains";
-            return evaluatorPrefix( evaluator ) + 
-                   this.fieldName + " " + 
-                   evaluator( evaluator ) + " " + 
-                   value + evaluatorSufix( evaluator );
-        } else if(op == Operator.determineOperator( "matches", false )) {
-            evaluator = "~=";
-            if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
-            } else {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value +
-                evaluatorSufix( evaluator );
-            }
-        } else if(op == Operator.determineOperator( "matches", true )) {
-            evaluator = "not ~=";
-            if(context != null && !context.getConfiguration().isProcessStringEscapes()) {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value.replaceAll( "\\\\", "\\\\\\\\" ) + evaluatorSufix( evaluator );
-            } else {
-                return evaluatorPrefix( evaluator ) +
-                this.fieldName + " " + 
-                evaluator( evaluator ) + " " + 
-                value + 
-                evaluatorSufix( evaluator );
-            }
-        }
-        return evaluatorPrefix( evaluator ) + 
-               this.fieldName + " " + 
-               evaluator( evaluator ) + " " + 
-               value + evaluatorSufix( evaluator );
-    }
-
-    private String evaluatorPrefix(String evaluator) {
-        if ( evaluator.startsWith( "not" ) ) {
+    private String evaluatorPrefix( final boolean isNegated ) {
+        if ( isNegated ) {
             return "!( ";
         }
         return "";
     }
 
-    private String evaluator(String evaluator) {
-        if ( evaluator.startsWith( "not" ) ) {
-            return evaluator.substring( 4 );
-        }
-        return evaluator;
-    }
-
-    private String evaluatorSufix(String evaluator) {
-        if ( evaluator.startsWith( "not" ) ) {
+    private String evaluatorSufix( final boolean isNegated ) {
+        if ( isNegated ) {
             return " )";
         }
         return "";
+    }
+    
+    public static class MVELDumperContext {
+        private Map<String, OperatorDescr> aliases;
+        private int counter;
+
+        public MVELDumperContext() {
+            this.aliases = new HashMap<String, OperatorDescr>();
+            this.counter = 0;
+        }
+
+        /**
+         * @return the aliases
+         */
+        public Map<String, OperatorDescr> getAliases() {
+            return aliases;
+        }
+
+        /**
+         * @param aliases the aliases to set
+         */
+        public void setAliases( Map<String, OperatorDescr> aliases ) {
+            this.aliases = aliases;
+        }
+        
+        /**
+         * Creates a new alias for the operator, setting it in the descriptor
+         * class, adding it to the internal Map and returning it as a String
+         * 
+         * @param operator
+         * @return
+         */
+        public String createAlias( OperatorDescr operator ) {
+            String alias = operator.getOperator()+counter++;
+            operator.setAlias( alias );
+            this.aliases.put( alias, operator );
+            return alias;
+        }
+        
+        
     }
 }

@@ -69,8 +69,8 @@ public class StrEvaluatorTest {
 
         ksession.insert(m);
         ksession.fireAllRules();
-        assertTrue(list.size() == 6);
-        assertTrue( ((String) list.get(3)).equals("Message length is 17") );
+        assertEquals( 6, list.size() );
+        assertEquals( "Message length is 17", list.get(2) );
 
     }
 

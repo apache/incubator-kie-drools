@@ -9,10 +9,10 @@ rule rule1
     insert( new InsertedObject( "value2") );
 end
 
-query "assertedobjquery" ( $value )
+query "assertedobjquery" ( String $value )
     assertedobj : InsertedObject( value == $value )
 end 
 
-query "assertedobjquery2" ( $value1, String $value2 )
+query "assertedobjquery2" ( String $value1, String $value2 )
     assertedobj : InsertedObject( value == $value2 )
 end 

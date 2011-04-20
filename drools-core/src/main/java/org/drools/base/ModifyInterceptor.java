@@ -21,8 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.base.mvel.DroolsMVELKnowledgeHelper;
-import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELResolverFactory;
+import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
 import org.drools.spi.KnowledgeHelper;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.WithNode;
@@ -49,7 +48,15 @@ public class ModifyInterceptor
     public int doAfter(Object value,
                        ASTNode node,
                        VariableResolverFactory factory) {
-        ((DroolsMVELResolverFactory)factory).getKnowledgeHelper().update( value );
+        while ( factory != null && !(factory instanceof DroolsMVELIndexedFactory)) {
+            factory = factory.getNextFactory();
+        }
+        
+        if ( factory == null ) {
+            throw new RuntimeException( "Unable to find DroolsMVELIndexedFactory" );
+        }
+        
+        ((DroolsMVELIndexedFactory)factory).getKnowledgeHelper().update( value );
         return 0;
     }
 }

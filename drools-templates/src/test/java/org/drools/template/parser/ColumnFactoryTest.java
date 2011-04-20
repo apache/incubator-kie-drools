@@ -1,9 +1,10 @@
 package org.drools.template.parser;
 
-import org.junit.After;
-import org.junit.Before;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ColumnFactoryTest {
 
@@ -40,7 +41,6 @@ public class ColumnFactoryTest {
         assertTrue(column instanceof ArrayColumn);
         assertEquals("column", column.getName());
         assertEquals("StringCell", ((ArrayColumn)column).getCellType());
-
     }
 
     @Test
@@ -60,6 +60,42 @@ public class ColumnFactoryTest {
         } catch (IllegalArgumentException expected) {
 
         }
+    }
+
+    @Test
+    public void testGetDollarColumn() {
+        ColumnFactory f = new ColumnFactory();
+        Column column = f.getColumn("$column");
+        assertTrue(column instanceof StringColumn);
+        assertEquals("$column", column.getName());
+        assertEquals("StringCell", column.getCellType());
+    }
+
+    @Test
+    public void testGetDollarArrayColumn() {
+        ColumnFactory f = new ColumnFactory();
+        Column column = f.getColumn("$column[]");
+        assertTrue(column instanceof ArrayColumn);
+        assertEquals("$column", column.getName());
+        assertEquals("StringCell", ((ArrayColumn)column).getCellType());
+    }
+
+    @Test
+    public void testGetDollarTypedColumn() {
+        ColumnFactory f = new ColumnFactory();
+        Column column = f.getColumn("$column: Long");
+        assertTrue(column instanceof LongColumn);
+        assertEquals("$column", column.getName());
+        assertEquals("LongCell", column.getCellType());
+    }
+
+    @Test
+    public void testGetDollarArrayTypedColumn() {
+        ColumnFactory f = new ColumnFactory();
+        Column column = f.getColumn("$column: Long[]");
+        assertTrue(column instanceof ArrayColumn);
+        assertEquals("$column", column.getName());
+        assertEquals("LongCell", ((ArrayColumn)column).getCellType());
     }
 
 }

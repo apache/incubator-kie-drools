@@ -43,9 +43,11 @@ public class TypeDeclaration
 
     public static final String ATTR_CLASS               = "class";
     public static final String ATTR_TEMPLATE            = "template";
+    public static final String ATTR_TYPESAFE            = "typesafe";
     public static final String ATTR_DURATION            = "duration";
     public static final String ATTR_TIMESTAMP           = "timestamp";
     public static final String ATTR_EXPIRE              = "expires";
+    public static final String ATTR_KEY                 = "key";
     public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
 
@@ -92,6 +94,8 @@ public class TypeDeclaration
     private ClassDefinition      typeClassDef;
     private Resource             resource;
     private boolean              dynamic;
+    private boolean              typesafe =  true;
+    private boolean              novel;
 
     private transient ObjectType objectType;
     private long                 expirationOffset = -1;
@@ -106,6 +110,7 @@ public class TypeDeclaration
         this.durationAttribute = null;
         this.timestampAttribute = null;
         this.typeTemplate = null;
+        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -123,6 +128,7 @@ public class TypeDeclaration
         this.resource = (Resource) in.readObject();
         this.expirationOffset = in.readLong();
         this.dynamic = in.readBoolean();
+        this.typesafe = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -139,6 +145,7 @@ public class TypeDeclaration
         out.writeObject( this.resource );
         out.writeLong( expirationOffset );
         out.writeBoolean( dynamic );
+        out.writeBoolean( typesafe );
     }
 
     /**
@@ -369,4 +376,20 @@ public class TypeDeclaration
         this.dynamic = dynamic;
     }
 
+    public boolean isTypesafe() {
+        return typesafe;
+    }
+
+    public void setTypesafe(boolean typesafe) {
+        this.typesafe = typesafe;
+    }
+
+
+    public boolean isNovel() {
+        return novel;
+    }
+
+    public void setNovel(boolean novel) {
+        this.novel = novel;
+    }
 }

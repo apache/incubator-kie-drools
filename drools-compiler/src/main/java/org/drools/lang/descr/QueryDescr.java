@@ -58,4 +58,13 @@ public class QueryDescr extends RuleDescr {
     public String[] getParameterTypes() {
         return this.parameterTypes.toArray( new String[this.parameterTypes.size()] );
     }
+
+    public boolean isRule() {
+        return false;
+    }
+    
+    public boolean isQuery() {
+        return true;
+    }
+    
 }

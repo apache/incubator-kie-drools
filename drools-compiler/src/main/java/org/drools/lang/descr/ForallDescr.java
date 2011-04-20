@@ -90,13 +90,7 @@ public class ForallDescr extends BaseDescr
             // forall( BASE_IDENTIFIER : Cheese() Cheese( this == BASE_IDENTIFIER, type == "stilton" ) )
             PatternDescr original = (PatternDescr) this.patterns.get( 0 );
             PatternDescr remaining = (PatternDescr) original.clone();
-            VariableRestrictionDescr restr = new VariableRestrictionDescr( "==",
-                                                                           false,
-                                                                           null,
-                                                                           BASE_IDENTIFIER );
-            FieldConstraintDescr constr = new FieldConstraintDescr( "this" );
-            constr.addRestriction( restr );
-            remaining.addConstraint( constr );
+            remaining.addConstraint( new ExprConstraintDescr( "this == " + BASE_IDENTIFIER ) );
             return Collections.singletonList( (BaseDescr)remaining );
         }
         return Collections.emptyList();
@@ -105,7 +99,11 @@ public class ForallDescr extends BaseDescr
     public void addOrMerge(BaseDescr baseDescr) {
         this.patterns.add( baseDescr );
     }
-    
+
+    public boolean removeDescr(BaseDescr baseDescr) {
+        return baseDescr == null ? false : patterns.remove(baseDescr);
+    }
+
     @Override
     public String toString() {
         return "forall( "+patterns+" )";

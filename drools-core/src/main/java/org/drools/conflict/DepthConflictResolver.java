@@ -54,10 +54,11 @@ public class DepthConflictResolver
         final int s1 = existing.getSalience();
         final int s2 = adding.getSalience();
         
-        if ( s1 != s2 ) {
-            return s1 - s2;
+        if ( s1 > s2 ) {
+            return 1;
+        } else if ( s1 < s2 ) {
+            return -1;
         }
-
 
         // we know that no two activations will have the same number
         return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );

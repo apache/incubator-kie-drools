@@ -48,8 +48,24 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
         return this;
     }
 
+    public PatternDescrBuilder<P> isQuery( boolean query ) {
+        descr.setQuery( query );
+        return this;
+    }
+
     public PatternDescrBuilder<P> constraint( String constraint ) {
-        descr.addConstraint( new ExprConstraintDescr( constraint ) );
+        ExprConstraintDescr constr = new ExprConstraintDescr( constraint );
+        constr.setType( ExprConstraintDescr.Type.NAMED );
+        constr.setPosition( descr.getConstraint().getDescrs().size() );
+        descr.addConstraint( constr );
+        return this;
+    }
+
+    public PatternDescrBuilder<P> constraint( String constraint, boolean positional ) {
+        ExprConstraintDescr constr = new ExprConstraintDescr( constraint );
+        constr.setType( positional ? ExprConstraintDescr.Type.POSITIONAL : ExprConstraintDescr.Type.NAMED );
+        constr.setPosition( descr.getConstraint().getDescrs().size() );
+        descr.addConstraint( constr );
         return this;
     }
 
@@ -61,6 +77,10 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
 
     public SourceDescrBuilder<PatternDescrBuilder<P>> from() {
         return new SourceDescrBuilderImpl<PatternDescrBuilder<P>>( this );
+    }
+
+    public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior() {
+        return new BehaviorDescrBuilderImpl<PatternDescrBuilder<P>>( this );
     }
 
     public P end() {

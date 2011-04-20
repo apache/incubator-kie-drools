@@ -21,7 +21,7 @@
   <para>It should be remembered that the JSR94 standard represents the "least
     common denominator" in features across rule engines. This means that
                 there is less functionality in the JSR94 API than in the standard
-                Drools API. So, by using JSR94, you forfeit the advantage of using the
+                Knowledge (Drools and jBPM) API. So, by using JSR94, you forfeit the advantage of using the
     full capabilities of the Drools Rule Engine. It is necessary to expose
     further functionality, like globals and support for DRL, DSL and XML,
     via property maps due to the very basic feature set of JSR94; this
@@ -29,5 +29,5 @@
                 provide a rule language, you are only solving a small fraction of the
                 complexity of switching rule engines with very little gain. So, while
                 we support JSR94, for those that insist on using it, we strongly
-                recommend you program against the Drools API.</para>
+                recommend you program against the Knowledge (Drools and jBPM) API.</para>
 </section>

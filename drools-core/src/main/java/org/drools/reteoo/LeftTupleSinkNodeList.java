@@ -87,7 +87,7 @@ public class LeftTupleSinkNodeList
             this.lastNode = node;
         }
         this.size++;
-    }
+    }  
 
     /**
      * Removes a <code>TupleSinkNode</code> from the list. This works by attach the previous reference to the child reference.

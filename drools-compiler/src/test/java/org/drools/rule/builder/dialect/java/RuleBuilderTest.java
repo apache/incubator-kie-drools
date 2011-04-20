@@ -42,6 +42,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -57,6 +58,8 @@ import org.drools.rule.builder.RuleBuilder;
 import org.drools.time.TimeUtils;
 import org.drools.time.impl.IntervalTimer;
 import org.drools.type.DateFormatsImpl;
+
+import antlr.collections.List;
 
 public class RuleBuilderTest {
 
@@ -76,38 +79,21 @@ public class RuleBuilderTest {
         // just checking there is no parsing errors
         assertFalse( parser.getErrors().toString(),
                             parser.hasErrors() );
+        
+        pkg.addGlobal( "results", List.class );
 
         final RuleDescr ruleDescr = (RuleDescr) pkgDescr.getRules().get( 0 );
         final String ruleClassName = "RuleClassName.java";
         ruleDescr.setClassName( ruleClassName );
         ruleDescr.addAttribute( new AttributeDescr( "dialect",
                                                     "java" ) );
+        
+        pkgBuilder.addPackage( pkgDescr );
 
-        final TypeResolver typeResolver = new ClassTypeResolver( new HashSet(),
-                                                                 this.getClass().getClassLoader() );
-        // make an automatic import for the current package
-        typeResolver.addImport( pkgDescr.getName() + ".*" );
-        typeResolver.addImport( "java.lang.*" );
+        assertTrue( pkgBuilder.getErrors().toString(),
+                    pkgBuilder.getErrors().isEmpty() );
 
-        final RuleBuilder builder = new RuleBuilder();
-
-        final PackageBuilderConfiguration conf = pkgBuilder.getPackageBuilderConfiguration();
-
-        DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
-        Dialect dialect = dialectRegistry.getDialect( "java" );
-
-        RuleBuildContext context = new RuleBuildContext( pkgBuilder,
-                                                         ruleDescr,
-                                                         dialectRegistry,
-                                                         pkg,
-                                                         dialect );
-
-        builder.build( context );
-
-        assertTrue( context.getErrors().toString(),
-                           context.getErrors().isEmpty() );
-
-        final Rule rule = context.getRule();
+        final Rule rule = pkgBuilder.getPackage().getRule( "test nested CEs" );
 
         assertEquals( "There should be 2 rule level declarations",
                       2,
@@ -207,11 +193,11 @@ public class RuleBuilderTest {
         // creates input object
         final RuleDescr ruleDescr = new RuleDescr( "my rule" );
         ruleDescr.addAnnotation( "ruleId",
-                                    "123" );
+                                 "123" );
         ruleDescr.addAnnotation( "author",
-                                    "Bob Doe" );
+                                 "Bob Doe" );
         ruleDescr.addAnnotation( "text",
-                                    "\"It's a quoted\\\" string\"" );
+                                 "\"It's a quoted\" string\"" );
 
         // creates expected results
         // defining expectations on the mock object
@@ -229,7 +215,7 @@ public class RuleBuilderTest {
         verify( rule ).addMetaAttribute( "author",
                                          "Bob Doe" );
         verify( rule ).addMetaAttribute( "text",
-                                         "It's a quoted\" string" );
+                                         "\"It's a quoted\" string\"" );
     }
 
     @Test
@@ -269,10 +255,7 @@ public class RuleBuilderTest {
         AndDescr andDescr = new AndDescr();
         PatternDescr patDescr = new PatternDescr( "java.math.BigDecimal",
                                                   "$bd" );
-        FieldConstraintDescr fcd = new FieldConstraintDescr( "this" );
-        LiteralRestrictionDescr restr = new LiteralRestrictionDescr( "==",
-                                                                     "10" );
-        fcd.addRestriction( restr );
+        ExprConstraintDescr fcd = new ExprConstraintDescr( "this == 10" );
         patDescr.addConstraint( fcd );
         andDescr.addDescr( patDescr );
         ruleDescr.setLhs( andDescr );
@@ -300,10 +283,7 @@ public class RuleBuilderTest {
         AndDescr andDescr = new AndDescr();
         PatternDescr patDescr = new PatternDescr( "java.math.BigInteger",
                                                   "$bd" );
-        FieldConstraintDescr fcd = new FieldConstraintDescr( "this" );
-        LiteralRestrictionDescr restr = new LiteralRestrictionDescr( "==",
-                                                                     "10" );
-        fcd.addRestriction( restr );
+        ExprConstraintDescr fcd = new ExprConstraintDescr( "this==10" );
         patDescr.addConstraint( fcd );
         andDescr.addDescr( patDescr );
         ruleDescr.setLhs( andDescr );

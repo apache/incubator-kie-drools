@@ -13,6 +13,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELSalienceBuilder
     implements
@@ -39,7 +40,7 @@ public class MVELSalienceBuilder
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
             for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
-                previousDeclarations[i] = decls.get( id );
+                previousDeclarations[i++] = decls.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
             
@@ -48,7 +49,9 @@ public class MVELSalienceBuilder
                                                                        previousDeclarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELSalienceExpression expr = new MVELSalienceExpression( unit,
                                                                       dialect.getId() );

@@ -373,7 +373,7 @@ public class AfterEvaluatorDefinition
         }
 
         public String toString() {
-            return this.getOperator().toString() + "[" + paramText + "]";
+            return this.getOperator().toString() + this.paramText != null ? "[" + paramText + "]" : "";
         }
 
         @Override

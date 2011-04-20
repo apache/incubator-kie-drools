@@ -1,0 +1,81 @@
+
+
+
+
+declare Person
+    age  : int     = 99          @position(2)
+    name : String  = "john doe"  @key    @position(1)
+end
+
+
+declare Student extends Person
+    school : String @key   @position(3)
+end
+
+
+declare LongTermStudent extends Student
+    years : int @key @position(5)
+    course : String @position(4)
+end
+
+
+declare EqualityPair
+    first : Person
+    second : Person
+end
+
+
+
+rule "Init"
+when
+    String( this == "Populate" )
+then
+    Person p = new Person();
+        p.setAge(18);
+        p.setName("joe");
+    insert(p);
+
+    Person p2 = new Person("john",42);
+    insert(p2);
+
+    Person p3 = new Person("john",30);
+    insert(p3);
+
+
+    Student s = new Student();
+        s.setName("adam");
+        s.setAge(8);
+        s.setSchool("Zkool");
+    insert(s);
+
+    Student s2 = new Student("adam",14,"Zkool");
+    insert(s2);
+
+    Student s3 = new Student("adam",14,"AnotherSchool");
+    insert(s3);
+
+end
+
+
+rule "TestReaction"
+when
+    $p : Person()
+then
+    System.out.println("Found person : " + $p);
+end
+
+
+rule "TestEquals"
+when
+    $p1 : Person()
+    $p2 : Person( this == $p1 )
+then
+    insert( new EqualityPair($p1,$p2) );
+end
+
+rule "LogPairs"
+when
+    $pair : EqualityPair( $x1 : first, $x2: second )
+then
+    System.out.println("Equality found " + $x1 + " vs " + $x2);
+end

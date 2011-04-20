@@ -26,6 +26,7 @@ import static org.junit.Assert.fail;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,10 +53,12 @@ import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
@@ -65,14 +68,13 @@ import org.drools.lang.descr.NotDescr;
 import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.PredicateDescr;
-import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.SlidingWindowDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooRuleBase;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -82,16 +84,15 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
+import org.drools.rule.VariableConstraint;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
-import org.drools.spi.Tuple;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
 import org.junit.Ignore;
@@ -116,27 +117,22 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
-        final FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
-                                                                     "x" ) );
-
-        pattern.addConstraint( returnValue );
+        pattern.addConstraint( new ExprConstraintDescr("price == x") );
 
         // There is no m this should produce errors.
         ruleDescr.setConsequence( "update(m);" );
 
         builder.addPackage( packageDescr );
 
-        assertLength( 1,
-                      builder.getErrors().getErrors() );
+        assertTrue( builder.getErrors().getErrors().length > 0  );
     }
 
     @Test
@@ -180,6 +176,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTuple tuple = new MockTuple( new HashMap() );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, rule,rule.getLhs(), new BuildContext(ruleBase, null) )  );        
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -263,6 +260,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTuple tuple = new MockTuple( new HashMap() );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, newRule,newRule.getLhs(), new BuildContext(ruleBase, null) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),
@@ -314,60 +312,6 @@ public class PackageBuilderTest extends DroolsTestCase {
     }
 
     @Test
-    public void testFactTemplate() {
-        final PackageBuilder builder = new PackageBuilder();
-
-        final PackageDescr packageDescr = new PackageDescr( "p1" );
-        final RuleDescr ruleDescr = new RuleDescr( "rule-1" );
-        packageDescr.addRule( ruleDescr );
-
-        final AndDescr lhs = new AndDescr();
-        ruleDescr.setLhs( lhs );
-
-        final FactTemplateDescr cheese = new FactTemplateDescr( "Cheese" );
-        cheese.addFieldTemplate( new FieldTemplateDescr( "name",
-                                                         "String" ) );
-        cheese.addFieldTemplate( new FieldTemplateDescr( "price",
-                                                         "Integer" ) );
-
-        packageDescr.addFactTemplate( cheese );
-
-        final PatternDescr pattern = new PatternDescr( "Cheese",
-                                                       "stilton" );
-        lhs.addDescr( pattern );
-
-        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "name" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "stilton" ) );
-
-        pattern.addConstraint( literalDescr );
-
-        ruleDescr.setConsequence( "String result = stilton.getFieldValue( \"name\" ) + \" \" + stilton.getFieldValue( \"price\" );" );
-
-        builder.addPackage( packageDescr );
-
-        //        assertFalse( Arrays.toString( builder.getErrors() ),
-        //                     builder.hasErrors() );
-
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final Package pkg = builder.getPackage();
-        try {
-            ruleBase.addPackage( pkg );
-        } catch ( final Exception e ) {
-            e.printStackTrace();
-        }
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        final Fact stilton = pkg.getFactTemplate( "Cheese" ).createFact( 1 );
-        stilton.setFieldValue( "name",
-                               "stilton" );
-        stilton.setFieldValue( "price",
-                               new Integer( 200 ) );
-        workingMemory.insert( stilton );
-        workingMemory.fireAllRules();
-
-    }
-
-    @Test
     public void testLiteral() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -382,11 +326,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                                        "stilton" );
         lhs.addDescr( pattern );
 
-        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "stilton" ) );
-
-        pattern.addConstraint( literalDescr );
+        pattern.addConstraint( new ExprConstraintDescr( "type == 'stilton'" ) );
 
         ruleDescr.setConsequence( "update(stilton);" );
 
@@ -413,19 +353,15 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
-        final FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
-                                                                     "(( (Integer) map.get( new Integer( x )) ).intValue() * y)" ) );
-
-        pattern.addConstraint( returnValue );
+        pattern.addConstraint( new ExprConstraintDescr("price == (( (Integer) map.get( new Integer( x )) ).intValue() * y)") );
 
         ruleDescr.setConsequence( "update(stilton);" );
 
@@ -443,8 +379,11 @@ public class PackageBuilderTest extends DroolsTestCase {
         createReturnValueRule( packageDescr1,
                                " x + y " );
         builder1.addPackage( packageDescr1 );
+        if ( builder1.hasErrors() ) {
+            fail( builder1.getErrors().toString() );
+        }
         final Pattern pattern1 = (Pattern) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final ReturnValueConstraint returnValue1 = (ReturnValueConstraint) pattern1.getConstraints().get( 2 );
+        final VariableConstraint returnValue1 = (VariableConstraint) pattern1.getConstraints().get( 0 );
 
         final PackageBuilder builder2 = new PackageBuilder();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
@@ -452,7 +391,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                " x + y " );
         builder2.addPackage( packageDescr2 );
         final Pattern pattern2 = (Pattern) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final ReturnValueConstraint returnValue2 = (ReturnValueConstraint) pattern2.getConstraints().get( 2 );
+        final VariableConstraint returnValue2 = (VariableConstraint) pattern2.getConstraints().get( 0 );
 
         final PackageBuilder builder3 = new PackageBuilder();
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
@@ -460,7 +399,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                " x - y " );
         builder3.addPackage( packageDescr3 );
         final Pattern pattern3 = (Pattern) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final ReturnValueConstraint returnValue3 = (ReturnValueConstraint) pattern3.getConstraints().get( 2 );
+        final VariableConstraint returnValue3 = (VariableConstraint) pattern3.getConstraints().get( 0 );
 
         assertEquals( returnValue1,
                       returnValue2 );
@@ -485,16 +424,16 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                                  "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
 
         final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
                                                                   "price" );
-        pattern.addConstraint( fieldBindingDescr2 );
+        pattern.addBinding( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
-        final PredicateDescr predicate = new PredicateDescr( "( ( Integer )map.get( new Integer(x) ) ).intValue() == y" );
+        final ExprConstraintDescr predicate = new ExprConstraintDescr( "eval(( ( Integer )map.get( new Integer(x) )).intValue() == y)" );
         pattern.addConstraint( predicate );
 
         ruleDescr.setConsequence( "update(stilton);" );
@@ -510,26 +449,36 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PackageBuilder builder1 = new PackageBuilder();
         final PackageDescr packageDescr1 = new PackageDescr( "package1" );
         createPredicateRule( packageDescr1,
-                             "x==y" );
+                             "eval(x==y)" );
         builder1.addPackage( packageDescr1 );
+        if ( builder1.hasErrors() ) {
+           fail( builder1.getErrors().toString() );
+        }
         final Pattern pattern1 = (Pattern) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate1 = (PredicateConstraint) pattern1.getConstraints().get( 2 );
+        final PredicateConstraint predicate1 = (PredicateConstraint) pattern1.getConstraints().get( 0 );
 
         final PackageBuilder builder2 = new PackageBuilder();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
         createPredicateRule( packageDescr2,
-                             "x==y" );
+                             "eval(x==y)" );
         builder2.addPackage( packageDescr2 );
+        if ( builder2.hasErrors() ) {
+            fail( builder2.getErrors().toString() );
+         }
+        
         final Pattern pattern2 = (Pattern) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate2 = (PredicateConstraint) pattern2.getConstraints().get( 2 );
+        final PredicateConstraint predicate2 = (PredicateConstraint) pattern2.getConstraints().get( 0 );
 
         final PackageBuilder builder3 = new PackageBuilder();
+        if ( builder3.hasErrors() ) {
+            fail( builder3.getErrors().toString() );
+         }        
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
         createPredicateRule( packageDescr3,
-                             "x!=y" );
+                             "eval(x!=y)" );
         builder3.addPackage( packageDescr3 );
         final Pattern pattern3 = (Pattern) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final PredicateConstraint predicate3 = (PredicateConstraint) pattern3.getConstraints().get( 2 );
+        final PredicateConstraint predicate3 = (PredicateConstraint) pattern3.getConstraints().get( 0 );
 
         assertEquals( predicate1,
                       predicate2 );
@@ -554,10 +503,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -658,8 +607,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Rule rule = createRule( new NotDescr(),
                                 builder,
                                 "update(stilton);" );
-        assertEquals( 1,
-                      builder.getErrors().getErrors().length );
+
+        assertTrue( builder.hasErrors() );
 
         builder = new PackageBuilder();
         rule = createRule( new NotDescr(),
@@ -688,8 +637,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         Rule rule = createRule( new ExistsDescr(),
                                 builder,
                                 "update(stilton);" );
-        assertEquals( 1,
-                      builder.getErrors().getErrors().length );
+        
+        assertTrue( builder.hasErrors() );
 
         builder = new PackageBuilder();
         rule = createRule( new ExistsDescr(),
@@ -713,118 +662,44 @@ public class PackageBuilderTest extends DroolsTestCase {
     @Test
     public void testNumbers() throws Exception {
         // test boolean
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "true" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "booleanPrimitive == true ") );
 
         // test boolean
-        literalDescr = new FieldConstraintDescr( "booleanPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "false" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "booleanPrimitive == false ") );
 
         // test char
-        literalDescr = new FieldConstraintDescr( "charPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "a" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "charPrimitive == 'a' ") );
+        createLiteralRule( new ExprConstraintDescr( "charPrimitive == \"a\" ") );
 
         // test byte
-        literalDescr = new FieldConstraintDescr( "bytePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "1" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "bytePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "bytePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "-1" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "bytePrimitive == 1 ")  );
+        createLiteralRule( new ExprConstraintDescr( "bytePrimitive == 0 ")  );
+        createLiteralRule(  new ExprConstraintDescr( "bytePrimitive == -1 ") );
 
         // test short
-        literalDescr = new FieldConstraintDescr( "shortPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "1" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "shortPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "shortPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "-1" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "shortPrimitive == 1 ")  );               
+        createLiteralRule(  new ExprConstraintDescr( "shortPrimitive == 0 ")  );        
+        createLiteralRule( new ExprConstraintDescr( "shortPrimitive == -1 ")  );
 
         // test int
-        literalDescr = new FieldConstraintDescr( "intPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "1" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "intPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "intPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "-1" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "intPrimitive == 1") );
+        createLiteralRule(  new ExprConstraintDescr( "intPrimitive == 0") );
+        createLiteralRule(  new ExprConstraintDescr( "intPrimitive == -1")  );
 
         // test long
-        literalDescr = new FieldConstraintDescr( "longPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "1" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "longPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "longPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "longPrimitive == 1") );
+        createLiteralRule( new ExprConstraintDescr( "longPrimitive == 0") );
+        createLiteralRule( new ExprConstraintDescr( "longPrimitive == -1") );
 
         // test float
-        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "1.1" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "-1.1" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule( new ExprConstraintDescr( "floatPrimitive == 1.1") );
+        createLiteralRule( new ExprConstraintDescr( "floatPrimitive == 0") );
+        createLiteralRule( new ExprConstraintDescr( "floatPrimitive == -1.1") );
 
         // test double
-        literalDescr = new FieldConstraintDescr( "doublePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "1.1" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "doublePrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "0" ) );
-        createLiteralRule( literalDescr );
-
-        literalDescr = new FieldConstraintDescr( "floatPrimitive" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "-1.1" ) );
-        createLiteralRule( literalDescr );
+        createLiteralRule(  new ExprConstraintDescr( "doublePrimitive == 1.1") );
+        createLiteralRule(  new ExprConstraintDescr( "doublePrimitive == 0") );
+        createLiteralRule(  new ExprConstraintDescr( "doublePrimitive == -1.1") );
     }
 
     @Test
@@ -1007,7 +882,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     @Test
     public void testTypeDeclaration() throws Exception {
-        PackageDescr pkgDescr = new PackageDescr( "org.test" );
+        PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         TypeDeclarationDescr typeDescr = new TypeDeclarationDescr( "StockTick" );
         typeDescr.addAnnotation( TypeDeclaration.Role.ID,
                                     "event" );
@@ -1017,7 +892,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         PackageBuilder builder = new PackageBuilder();
         builder.addPackage( pkgDescr );
-
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
         Package pkg = builder.getPackage();
         assertEquals( 1,
                       pkg.getTypeDeclarations().size() );
@@ -1100,19 +977,15 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
-        final FieldConstraintDescr returnValue = new FieldConstraintDescr( "price" );
-        returnValue.addRestriction( new ReturnValueRestrictionDescr( "==",
-                                                                     expression ) );
-
-        pattern.addConstraint( returnValue );
+        pattern.addConstraint( new ExprConstraintDescr("price == (" + expression + ")") );
 
         ruleDescr.setConsequence( "update(stilton);" );
     }
@@ -1131,17 +1004,16 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                                  "price" );
-        pattern.addConstraint( fieldBindingDescr );
+        pattern.addBinding( fieldBindingDescr );
 
         final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
                                                                   "price" );
-        pattern.addConstraint( fieldBindingDescr2 );
+        pattern.addBinding( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
 
-        final PredicateDescr predicate = new PredicateDescr( expression );
-        pattern.addConstraint( predicate );
+        pattern.addConstraint( new ExprConstraintDescr( expression ) );
 
         ruleDescr.setConsequence( "update(stilton);" );
     }
@@ -1163,7 +1035,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         ruleDescr.setConsequence( "" );
     }
 
-    private void createLiteralRule( final FieldConstraintDescr literalDescr ) {
+    private void createLiteralRule( final BaseDescr descr ) {
         final PackageBuilder builder = new PackageBuilder();
 
         final PackageDescr packageDescr = new PackageDescr( "p1" );
@@ -1176,7 +1048,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PatternDescr pattern = new PatternDescr( Primitives.class.getName() );
         lhs.addDescr( pattern );
 
-        pattern.addConstraint( literalDescr );
+        pattern.addConstraint( descr );
 
         ruleDescr.setConsequence( "" );
 
@@ -1201,11 +1073,7 @@ public class PackageBuilderTest extends DroolsTestCase {
         final PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
                                                             "stilton" );
 
-        final FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  "stilton" ) );
-
-        patternDescr.addConstraint( literalDescr );
+        patternDescr.addConstraint( new ExprConstraintDescr( "type == \"stilton\" ")  );
 
         ceDescr.addDescr( patternDescr );
 
@@ -1284,8 +1152,9 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final PatternDescr patternDescr = new PatternDescr( StockTick.class.getName(),
                                                             "$tick" );
-        final SlidingWindowDescr windowDescr = new SlidingWindowDescr( "time",
-                                                                       "60000" );
+        final BehaviorDescr windowDescr = new BehaviorDescr( "window" );
+        windowDescr.setSubType( "time" );
+        windowDescr.setParameters( Collections.singletonList( "60000" ) );
         patternDescr.addBehavior( windowDescr );
 
         lhs.addDescr( patternDescr );

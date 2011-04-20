@@ -166,6 +166,10 @@ public class KnowledgeAgentImpl
         return this.newInstance;
     }
 
+    public boolean isUseKBaseClassLoaderForCompiling() {
+        return useKBaseClassLoaderForCompiling;
+    }
+
     public void applyChangeSet(Resource resource) {
         applyChangeSet( getChangeSet( resource ) );
     }
@@ -959,12 +963,13 @@ public class KnowledgeAgentImpl
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 
-        KnowledgeBuilder kbuilder = this.createKBuilder();
+        //KnowledgeBuilder kbuilder = this.createKBuilder();
         List<Package> packages = new ArrayList<Package>();
 
         for ( Resource resource : changeSetState.addedResources ) {
-            KnowledgePackageImp createdPackage = this.createPackageFromResource( resource,
-                                                                                 kbuilder );
+            KnowledgePackageImp createdPackage = this.createPackageFromResource( resource);
+            //KnowledgePackageImp createdPackage = this.createPackageFromResource( resource,
+            //                                                                     kbuilder );
             changeSetState.createdPackages.put( resource,
                                                 createdPackage );
         }
@@ -1295,9 +1300,8 @@ public class KnowledgeAgentImpl
         KnowledgeBuilder kbuilder = null;
         if ( this.builderConfiguration != null ) {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.builderConfiguration );
-        } else if ( this.useKBaseClassLoaderForCompiling ) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                                              ((ReteooRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeBase()).getRuleBase()).getRootClassLoader() ) );
+        } else if ( this.isUseKBaseClassLoaderForCompiling() ) {
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(this.kbase);
         } else {
             kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         }
@@ -1308,7 +1312,7 @@ public class KnowledgeAgentImpl
                               ResourceType.DSL );
             }
         }
-
+        
         return kbuilder;
     }
 

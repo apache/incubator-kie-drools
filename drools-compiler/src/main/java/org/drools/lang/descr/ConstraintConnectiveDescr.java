@@ -79,6 +79,8 @@ public class ConstraintConnectiveDescr extends BaseDescr {
                 for( BaseDescr descr : con.getDescrs() ) {
                     addDescr( descr );
                 }
+            } else {
+                addDescr( con );
             }
         } else {
             addDescr( baseDescr );
