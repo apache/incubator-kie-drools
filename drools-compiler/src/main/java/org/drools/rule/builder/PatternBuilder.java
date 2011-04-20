@@ -107,21 +107,33 @@ public class PatternBuilder
 
         // lets see if it maps to a query
         if ( objectType == null ) {
-            Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
-            if ( rule != null && rule instanceof Query ) {
+            RuleConditionElement rce = null;
+            // it might be a recursive query, so check for same names
+            if ( context.getRule().getName().equals( patternDescr.getObjectType() ) ) {
                 // it's a query so delegate to the QueryElementBuilder
                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
-                return qeBuilder.build( context,
+                rce = qeBuilder.build( context,
                                         descr,
                                         prefixPattern );
-            } else {
-                // this isn't a query either, so log an error
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              patternDescr,
-                                                              null,
-                                                              "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
-                return null;
             }
+
+            if ( rce == null ) {
+                Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
+                if ( rule != null && rule instanceof Query ) {
+                    // it's a query so delegate to the QueryElementBuilder
+                    QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                    rce = qeBuilder.build( context,
+                                           descr,
+                                           prefixPattern );
+                } else {
+                    // this isn't a query either, so log an error
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  patternDescr,
+                                                                  null,
+                                                                  "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
+                }
+            }
+            return rce;
         }
 
         Pattern pattern;
@@ -174,8 +186,9 @@ public class PatternBuilder
 
 
         List<BaseDescr> notAConstraints = processPositional(patternDescr.getDescrs(),context,patternDescr,pattern);
-        for (BaseDescr nac : notAConstraints)
+        for (BaseDescr nac : notAConstraints) {
             patternDescr.removeConstraint(nac);
+        }
 
 
         for ( BindingDescr b : patternDescr.getBindings() ) {
@@ -184,7 +197,7 @@ public class PatternBuilder
 
                 DrlExprParser parser = new DrlExprParser();
                 ConstraintConnectiveDescr result = parser.parse( expression );
-                if ( parser.hasErrors() ) {
+                if ( result == null || parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
                         context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                       descr,
@@ -223,12 +236,6 @@ public class PatternBuilder
                                    null ); // null containers get added to the pattern
             }
         }
-
-//        BaseDescr temp = context.getParentDescr();
-//        context.setParentDescr(patternDescr);
-
-
-//        context.setParentDescr(temp);
 
 
          for ( BaseDescr b : patternDescr.getDescrs() ) {
@@ -273,75 +280,74 @@ public class PatternBuilder
         return pattern;
     }
 
-    private List<BaseDescr> processPositional(List<? extends BaseDescr> descrs, RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
+    private List<BaseDescr> processPositional(List< ? extends BaseDescr> descrs,
+                                              RuleBuildContext context,
+                                              PatternDescr patternDescr,
+                                              Pattern pattern) {
         List<BaseDescr> victims = new LinkedList<BaseDescr>();
-        for (BaseDescr baseDescr : descrs) {
+        for ( BaseDescr baseDescr : descrs ) {
 
-        ExprConstraintDescr descr = (ExprConstraintDescr) baseDescr;
+            ExprConstraintDescr descr = (ExprConstraintDescr) baseDescr;
 
-        if (descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType) {
+            if ( descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType ) {
                 Class klazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
-                TypeDeclaration tDecl = context.getPackageBuilder().getTypeDeclaration(klazz);
+                TypeDeclaration tDecl = context.getPackageBuilder().getTypeDeclaration( klazz );
 
-                if (tDecl == null) {
-                    context.getErrors().add(new DescrBuildError(context.getParentDescr(),
-                            descr,
-                            klazz,
-                            "Unable to find @positional definitions for :" + klazz + "\n"));
+                if ( tDecl == null ) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  descr,
+                                                                  klazz,
+                                                                  "Unable to find @positional definitions for :" + klazz + "\n" ) );
                     continue;
                 }
 
-
-                FieldDefinition field = tDecl.getTypeClassDef().getField(descr.getPosition());
-                if (field == null) {
-                    context.getErrors().add(new DescrBuildError(context.getParentDescr(),
-                            descr,
-                            null,
-                            "Unable to find @positional field " + descr.getPosition()) + "\n");
+                FieldDefinition field = tDecl.getTypeClassDef().getField( descr.getPosition() );
+                if ( field == null ) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  descr,
+                                                                  null,
+                                                                  "Unable to find @positional field " + descr.getPosition() ) + "\n" );
                     continue;
                 }
-//                System.err.println("Field is " + field.getName());
+                //                System.err.println("Field is " + field.getName());
 
-
-                DRLLexer lex = new DRLLexer(new ANTLRStringStream(descr.getExpression()));
+                DRLLexer lex = new DRLLexer( new ANTLRStringStream( descr.getExpression() ) );
                 boolean isSimpleIdentifier = false;
                 try {
                     lex.mID();
                     isSimpleIdentifier = lex.getCharIndex() >= descr.getExpression().length();
-                } catch (RecognitionException e) {
+                } catch ( RecognitionException e ) {
 
                 }
+//
+//                boolean isBound = false;
+//                if ( isSimpleIdentifier ) {
+//                    isBound = context.getDeclaration( descr.getExpression() ) != null;
+//                    if ( !isBound ) {
+//                        Iterator< ? extends BaseDescr> inner = patternDescr.getConstraint().getDescrs().iterator();
+//                        BaseDescr innerDescr = inner.next();
+//                        while ( !isBound && innerDescr != descr ) {
+//                            if ( innerDescr.getText().equals( descr.getExpression() ) ) isBound = true;
+//                            innerDescr = inner.next();
+//                        }
+//
+//                    }
+//                }
 
-                boolean isBound = false;
-                if ( isSimpleIdentifier) {
-                    isBound = context.getDeclaration(descr.getExpression()) != null;
-                    if (! isBound) {
-                        Iterator<? extends BaseDescr> inner =  patternDescr.getConstraint().getDescrs().iterator();
-                        BaseDescr innerDescr = inner.next();
-                        while (! isBound && innerDescr != descr) {
-                            if (innerDescr.getText().equals(descr.getExpression()))
-                                isBound = true;
-                            innerDescr = inner.next();
-                        }
-
-                    }
-                }
-
-
-                if (isSimpleIdentifier && ! isBound) {
+                if ( isSimpleIdentifier ) {
                     BindingDescr binder = new BindingDescr();
-                        binder.setExpression(field.getName());
-                        binder.setVariable(descr.getExpression());
-                    patternDescr.addBinding(binder);
-                    victims.add(descr);
+                    binder.setExpression( field.getName() );
+                    binder.setVariable( descr.getExpression() );
+                    patternDescr.addBinding( binder );
+                    victims.add( descr );
                     continue;
                 } else {
-                    descr.setText(field.getName()+ " == " + descr.getExpression());
-                    descr.setType(ExprConstraintDescr.Type.NAMED);
+                    descr.setText( field.getName() + " == " + descr.getExpression() );
+                    descr.setType( ExprConstraintDescr.Type.NAMED );
                 }
             }
         }
-        return  victims;
+        return victims;
     }
 
     public void build( RuleBuildContext context,
@@ -349,7 +355,7 @@ public class PatternBuilder
                        ExprConstraintDescr descr ) {
         DrlExprParser parser = new DrlExprParser();
         ConstraintConnectiveDescr result = parser.parse( descr.getText() );
-        if ( parser.hasErrors() ) {
+        if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               descr,

@@ -186,7 +186,8 @@ public class QueryElementNode extends LeftTupleSource
                                                    args,
                                                    collector,
                                                    false );
-        collector.setDroolsQuery( queryObject );
+        
+        collector.setDroolsQuery( queryObject );        
 
         InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( queryObject,
                                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
@@ -313,17 +314,36 @@ public class QueryElementNode extends LeftTupleSource
     public void retractLeftTuple(LeftTuple leftTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
+        if ( leftTuple.firstChild != null ) {
+            this.sink.propagateRetractLeftTuple( leftTuple,
+                                                 context,
+                                                 workingMemory );
+        }
     }
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
+        retractLeftTuple( leftTuple, context, workingMemory );
+        assertLeftTuple( leftTuple, context, workingMemory );
+        
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
+        LeftTuple leftTuple = modifyPreviousTuples.removeLeftTuple( this );
+        if ( leftTuple != null ) {
+            leftTuple.reAdd(); //
+            // LeftTuple previously existed, so retract it
+            retractLeftTuple( leftTuple, context, workingMemory );
+        } else {
+            leftTuple = new LeftTuple( factHandle,
+                                       this,
+                                       this.tupleMemoryEnabled )  ;          
+        }
+        assertLeftTuple( leftTuple, context, workingMemory );
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {

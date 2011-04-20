@@ -29,7 +29,8 @@ public class AnnotationDescr extends BaseDescr {
     private final String        name;
     private Map<String, String> values;
 
-    private static String unquote( String s ){
+    // '' and 'a' are passed through as 
+    public static String unquote( String s ){
         if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ||
             s.startsWith( "'" ) && s.endsWith( "'" ) ) {
             return s.substring( 1, s.length() - 1 );
@@ -99,9 +100,7 @@ public class AnnotationDescr extends BaseDescr {
     }
 
     public String getSingleValue(){
-        Set<String> keySet = this.values.keySet();
-        if( keySet.size() == 1 &&
-            "value".equals( keySet.iterator().next() ) ){
+        if( values.size() == 1 && values.containsKey( "value" ) ){
             return this.values.get( "value" );
         } else {
             return null;
@@ -109,9 +108,7 @@ public class AnnotationDescr extends BaseDescr {
     }
     
     public String getSingleValueStripped(){
-        Set<String> keySet = this.values.keySet();
-        if( keySet.size() == 1 &&
-            "value".equals( keySet.iterator().next() ) ){
+        if( values.size() == 1 && values.containsKey( "value" ) ){
             return unquote( this.values.get( "value" ) );
         } else {
             return null;

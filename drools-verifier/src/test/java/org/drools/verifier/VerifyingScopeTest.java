@@ -76,7 +76,7 @@ public class VerifyingScopeTest {
                       result.getBySeverity( Severity.ERROR ).size() );
         assertEquals( 0,
                       result.getBySeverity( Severity.WARNING ).size() );
-        assertEquals( 4,
+        assertEquals( 6,
                       result.getBySeverity( Severity.NOTE ).size() );
 
     }
