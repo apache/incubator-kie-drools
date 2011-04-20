@@ -197,7 +197,7 @@ public class PatternBuilder
 
                 DrlExprParser parser = new DrlExprParser();
                 ConstraintConnectiveDescr result = parser.parse( expression );
-                if ( parser.hasErrors() ) {
+                if ( result == null || parser.hasErrors() ) {
                     for ( DroolsParserException error : parser.getErrors() ) {
                         context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                       descr,
@@ -355,7 +355,7 @@ public class PatternBuilder
                        ExprConstraintDescr descr ) {
         DrlExprParser parser = new DrlExprParser();
         ConstraintConnectiveDescr result = parser.parse( descr.getText() );
-        if ( parser.hasErrors() ) {
+        if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               descr,
