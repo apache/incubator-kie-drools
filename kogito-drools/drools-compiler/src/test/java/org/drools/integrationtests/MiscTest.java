@@ -1201,9 +1201,9 @@ public class MiscTest {
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
         session.fireAllRules();
-        System.out.println( ((List) session.getGlobal( "list" )).get( 0 ) );
-        assertEquals( 3,
-                      ((List) session.getGlobal( "list" )).size() );
+        //System.out.println(((List) session.getGlobal("list")).get(0));
+        assertEquals(3,
+                     ((List) session.getGlobal("list")).size());
 
         nullPerson = new Person( null );
 
@@ -7749,7 +7749,7 @@ public class MiscTest {
         assertThat( rule.getMetaAttribute( "author" ),
                     is( "john_doe" ) );
         assertThat( rule.getMetaAttribute( "text" ),
-                    is( "It's an escaped\" string" ) );
+                    is( "\"It's an escaped\" string\"" ) );
 
     }
 

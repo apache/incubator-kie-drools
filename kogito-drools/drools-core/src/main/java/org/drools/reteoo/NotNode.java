@@ -24,6 +24,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
+import org.drools.rule.ContextEntry;
 import org.drools.spi.PropagationContext;
 
 public class NotNode extends BetaNode {
@@ -56,10 +57,18 @@ public class NotNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        memory.setOpen( true );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
+        
+        ContextEntry[] contextEntry = memory.getContext();
         
         boolean useLeftMemory = true;
         if ( !this.tupleMemoryEnabled ) {
+            if ( memory.isOpen() ) {
+                // we are re-entrant to force new ContextEntry
+                contextEntry = this.constraints.createContext();
+            }
+            
             // This is a hack, to not add closed DroolsQuery objects
             Object object = ((InternalFactHandle)context.getFactHandle()).getObject();
             if (  memory.getLeftTupleMemory() == null || object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
@@ -67,7 +76,7 @@ public class NotNode extends BetaNode {
             }
         }
         
-        this.constraints.updateFromTuple( memory.getContext(),
+        this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
         FastIterator it = getRightIterator( rightMemory );
@@ -85,7 +94,7 @@ public class NotNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( memory.getContext() );
+        this.constraints.resetTuple( contextEntry );
 
         if ( leftTuple.getBlocker() == null ) {
             // tuple is not blocked, so add to memory so other fact handles can attempt to match
@@ -98,6 +107,7 @@ public class NotNode extends BetaNode {
                                                 workingMemory,
                                                 useLeftMemory );
         }
+        memory.setOpen( false );
     }
 
     public void assertObject(final InternalFactHandle factHandle,
