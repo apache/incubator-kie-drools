@@ -8,10 +8,3 @@
 /*.ipr
 /*.iws
 /*.iml
-
-eclipse/
-jboss-*/
-repository/
-runtime/
-workspace/
-repository.xml
