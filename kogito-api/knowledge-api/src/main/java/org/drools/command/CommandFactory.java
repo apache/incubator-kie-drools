@@ -355,4 +355,12 @@ public class CommandFactory {
                                                        e2 );
         }
     }
+
+    public static Command newKBuilderSetPropertyCommand(String id, String name, String value) {
+        return getCommandFactoryProvider().newKBuilderSetPropertyCommand(id, name, value);
+    }
+
+    public static Command newNewKnowledgeBuilderConfigurationCommand(String localId) {
+        return getCommandFactoryProvider().newNewKnowledgeBuilderConfigurationCommand(localId);
+    }
 }

@@ -97,6 +97,8 @@ public interface CommandFactoryService {
 
     Command newAbortWorkItem(long workItemId);
 
+    public Command newKBuilderSetPropertyCommand(String id, String name, String value);
 
+    public Command newNewKnowledgeBuilderConfigurationCommand(String localId);
 
 }
