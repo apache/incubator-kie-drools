@@ -19,11 +19,8 @@ package org.drools.command.builder;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
-import org.drools.io.Resource;
 
 public class NewKnowledgeBuilderCommand
     implements
