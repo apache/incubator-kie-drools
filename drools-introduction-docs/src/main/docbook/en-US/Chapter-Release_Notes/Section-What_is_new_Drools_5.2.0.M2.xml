@@ -244,13 +244,195 @@
   <section>
     <title>Knowledge API (renamed from Drools API)</title>
 
-    <para>TODO</para>
+    <section>
+      <title>Core</title>
+
+      <para>drools.dialect.mvel.strict = &lt;true|false&gt;The MVEL dialect
+      has been improved architecture has been improved. We have moved all
+      variable lookups to the new indexed factories, which should allow faster
+      execution, as well as being simpler code. The build process for mvel has
+      been reviewed to streamline it to avoid wasteless object creation so
+      that the build time is faster. We still have some more improvements on
+      this to share the ParserConfiguration which will make each MVEL
+      compilation unit faster to initalise and use less memory, as they will
+      share import information for each package.</para>
+
+      <para>It was always possible to execute with MVEL in both dynamic and
+      strict mode, with strict mode for static type safety the default. This
+      is configurable via the MVEL dialect configuration:</para>
+
+      <para>drools.dialect.mvel.strict = &lt;true|false&gt;</para>
+
+      <para>However there were some places in execution when strict mode was
+      not enforced. Effort has now been done to ensure that type safety is
+      enforced through out, unless "strict == false". This means that some bad
+      code that compiled before may not compile now, because it is not type
+      safe. For those cases where the type safety cannot be achieved at
+      compile time we added the @typeSafe annotation, discussed in it's own
+      section.</para>
+    </section>
   </section>
 
   <section>
     <title>Drools Expert and Fusion</title>
 
-    <para>TODO</para>
+    <section>
+      <title>Free Form expressions in Constraints (New Parser)</title>
+
+      <para>The parser has been rewritten. We had reached the limitations of
+      what we could achieve in pure Antlr and was spending far too much time
+      fighting it for each feature we wanted. Edson has since rewritten the
+      parser and we now have a lot more flexability. The parser still uses
+      Antlr's lexer at the core. This was a huge effort, not just to rewrite
+      the parser but to also re-integrate it back into Drools and the
+      tooling.</para>
+
+      <para>The main benefit from this is that we now support "free form"
+      expressions inside of patterns without the need for eval. So complex
+      expressions on nested accessors, method calls etc should now all be
+      possible as field constraints without wrapping with an eval(.....). This
+      was also important for us to start to move towards a single consistent
+      grammer for both the "when" left hand side and "then" right hand side.
+      As previously we had to document the restricted limitations of a field
+      constraint on the LHS compared to expressions used inside of an 'eval'
+      or used on the RHS. Complex expressions are still internally rewritten
+      as evals, so it's just syntacic sugar.</para>
+    </section>
+
+    <section>
+      <title>Positional Arguments</title>
+
+      <para>Patterns now support positional arguments on type declarations.
+      </para>
+
+      <para>Positional arguments are ones where you don't need to specify the
+      field name, as the position maps to a known named field. i.e. Person(
+      name == "mark" ) can be rewritten as Person( "mark"; ). The semi colon
+      ';' is important so that the engine knows that everything before it is a
+      positional argument. Otherwise we might assume it was a boolean
+      expression, which is how it could be interpretted after the semi colon.
+      You can mix positional and named arguments on a pattern by using the
+      semi colon ';' to separate them. Any variables used in a positional that
+      have not yet been bound will be bound to the field that maps to that
+      position.</para>
+
+      <programlisting>declare Cheese
+    name : String
+    shop : String
+    price : int
+end
+</programlisting>
+
+      <para>Example patterns, with two constraints and a binding. Remember
+      semi colon ';' is used to differentiate the positional section from the
+      named argument section.</para>
+
+      <programlisting>
+Cheese( "stilton", "Cheese Shop", p; )
+Cheese( "stilton", "Cheese Shop"; p : price )
+Cheese( "stilton"; shop == "Cheese Shop", p : price )
+Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
+</programlisting>
+    </section>
+
+    <section>
+      <title>Backward Chaining</title>
+
+      <para>Drools now provides Prolog style derivation queries, as an
+      experimental feature. What this means is that a query or the 'when' part
+      of a rule may call a query, via a query element. This is also recursive
+      so that a query may call itself. A query element must be prefixed with a
+      question mark '?' which indicuates that we have a pattern construct that
+      will pull data, rather than the normal reactive push nature of
+      patterns.</para>
+
+      <para>A key aspect of BC is unification. This is where a query parameter
+      may be bound or unbound, when unbound it is considered an output
+      variable and will bind to each found value.</para>
+
+      <para>In the example below x and y are parameters. Unification is done
+      by subsequent bindings inside of patterns. If a value for x is passed
+      in, it's as though the pattern says "thing == x". If a value for x is
+      not passed in it's as though "x: thing" and x will be bound to each
+      found thing.</para>
+
+      <programlisting>declare Location
+    thing : String 
+    location : String 
+end
+
+query isContainedIn( String x, String y ) 
+    Location( x : thing, y : location)
+    or 
+    ( Location(z : thing, y : location) and ?isContainedIn(x : thing, z : location) )
+end
+</programlisting>
+
+      <para>Positional and mixed positional/named are supported.</para>
+
+      <programlisting>declare Location
+    thing : String 
+    location : String 
+end
+
+query isContainedIn( String x, String y ) 
+    Location(x, y;)
+    or 
+    ( Location(z, y;) and ?isContainedIn(x, z;) )
+end
+</programlisting>
+
+      <para>Here is an example of query element inside of a rule using mixed
+      positional/named arguments.</para>
+
+      <programlisting>query whereFood( String thing, String location ) 
+    ( Location(thing, location;) and
+      Edible(thing;) )
+     or 
+    ( Location(thing, location;) and
+      TastesYucky(thing;) ) 
+end
+
+query look(String place, List things, List food, List exits) 
+    Here(place;)
+    things : List() from accumulate( Location(thing, place;),
+                                    collectList( thing ) )
+    food : List() from accumulate( ?whereFood(thing, place;) ,                                    
+                                   collectList( thing ) )
+    exits : List() from accumulate( ?connect(place, exit;),
+                                    collectList( exit ) )
+end
+
+rule reactiveLook when
+    Here( place : place) 
+    ?look($place, $things; $food : food, $exits : exits)
+then
+    System.out.println( "You are in the " + $place);
+    System.out.println( "  You can see " + $things );
+    System.out.println( "  You can eat " + $food );
+    System.out.println( "  You can go to " + $exits );
+end
+</programlisting>
+
+      <para>Literal expressions can passed as query arguments, but at this
+      stage you cannot mix expressions with variables.</para>
+
+      <para>The other aspect to be aware of is that the implementation still
+      executes with method recursion, so deeply recursive queries may have
+      problems. Work is underway to an alternative algorithm that resolves
+      this issue. </para>
+    </section>
+
+    <section>
+      <title>Non Typesafe Classes</title>
+
+      <para>@type( &lt;boolean&gt;) has been added to type declarations. This
+      allows patterns with that annotation to be compiled without any static
+      compile time checks. All constrants are generated as MVEL constraints
+      and executed dynamially. This can be important when dealing with
+      collections that do not have any generics or mixed type
+      collections.</para>
+    </section>
   </section>
 
   <section>
