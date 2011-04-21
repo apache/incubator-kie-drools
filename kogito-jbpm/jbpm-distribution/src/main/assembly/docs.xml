@@ -7,7 +7,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>jbpm-docs/jbpm-docs-flow/target/docbook/publish/en-US/</directory>
+      <directory>../jbpm-docs/jbpm-docs-flow/target/docbook/publish/en-US/</directory>
       <outputDirectory>jbpm-docs</outputDirectory>
       <includes>
         <include>html/**</include>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>pre-bin</id>
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <includes>
+        <include>org.jbpm:jbpm-flow</include>
+        <include>org.jbpm:jbpm-flow-builder</include>
+        <include>org.jbpm:jbpm-persistence-jpa</include>
+        <include>org.jbpm:jbpm-bpmn2</include>
+        <include>org.jbpm:jbpm-bam</include>
+        <include>org.jbpm:jbpm-human-task</include>
+        <include>org.jbpm:jbpm-workitems</include>
+      </includes>
+      <outputDirectory></outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <excludes>
+        <exclude>org.jbpm:jbpm-flow</exclude>
+        <exclude>org.jbpm:jbpm-flow-builder</exclude>
+        <exclude>org.jbpm:jbpm-persistence-jpa</exclude>
+        <exclude>org.jbpm:jbpm-bpmn2</exclude>
+        <exclude>org.jbpm:jbpm-bam</exclude>
+        <exclude>org.jbpm:jbpm-human-task</exclude>
+        <exclude>org.jbpm:jbpm-workitems</exclude>
+        <!-- Exclude docs -->
+        <exclude>org.jbpm:jbpm-docs-flow</exclude>
+      </excludes>
+      <outputDirectory>lib</outputDirectory>
+    </dependencySet>
+  </dependencySets>
+</assembly>
