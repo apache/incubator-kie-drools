@@ -499,6 +499,28 @@ public class RuleParserTest extends TestCase {
     }
 
     @Test
+    public void testStringEscapes() throws Exception {
+        String source = "package com.sample  rule test  when  Cheese( type matches \"\\..*\\\\.\" )  then  end";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+        assertEquals( "com.sample",
+                          pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                          rule.getName() );
+
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        AndDescr constraint = (AndDescr) pattern.getConstraint();
+        assertEquals( 1,
+                      constraint.getDescrs().size() );
+        assertEquals( "type matches \"\\..*\\\\.\"",
+                      constraint.getDescrs().get( 0 ).toString() );
+    }
+
+    @Test
     public void testDialect() throws Exception {
         final String source = "dialect 'mvel'";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",

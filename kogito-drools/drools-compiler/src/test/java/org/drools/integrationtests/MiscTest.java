@@ -4425,6 +4425,36 @@ public class MiscTest {
     }
 
     @Test
+    public void testMatchesMVEL2() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_MatchesMVEL2.drl" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map map = new HashMap();
+        map.put( "content",
+                 "String with . and (routine)" );
+        ksession.insert( map );
+        int fired = ksession.fireAllRules();
+
+        assertEquals( 2,
+                      fired );
+    }
+
+    @Test
+    public void testMatchesMVEL3() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_MatchesMVEL2.drl" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Map map = new HashMap();
+        map.put( "content",
+                 "String with . and ()" );
+        ksession.insert( map );
+        int fired = ksession.fireAllRules();
+
+        assertEquals( 1,
+                      fired );
+    }
+
+    @Test
     public void testAutomaticBindingsErrors() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindingsErrors.drl" ) ) );
