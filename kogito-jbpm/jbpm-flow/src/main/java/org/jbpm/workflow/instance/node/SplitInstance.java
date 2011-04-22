@@ -68,11 +68,18 @@ public class SplitInstance extends NodeInstanceImpl {
                     final Connection connection = (Connection) iterator.next();
                     ConstraintEvaluator constraint = (ConstraintEvaluator) split.getConstraint( connection );
                     if ( constraint != null && constraint.getPriority() < priority && !constraint.isDefault()) {
-                        if ( constraint.evaluate( this,
-                                                  connection,
-                                                  constraint ) ) {
-                            selected = connection;
-                            priority = constraint.getPriority();
+                        try {
+                        	if ( constraint.evaluate( this,
+                                                      connection,
+                                                      constraint ) ) {
+                        		selected = connection;
+                        		priority = constraint.getPriority();
+                        	}
+                        } catch (RuntimeException e) {
+                        	throw new RuntimeException(
+                    			"Exception when trying to evaluate constraint "
+                        			+ constraint.getName() + " in split " 
+                        			+ split.getName(), e);
                         }
                     }
                 }

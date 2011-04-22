@@ -7,7 +7,7 @@
   <includeBaseDirectory>false</includeBaseDirectory>
   <fileSets>
     <fileSet>
-      <directory>jbpm-installer</directory>
+      <directory>../jbpm-installer</directory>
       <excludes>
         <exclude>eclipse/**</exclude>
         <exclude>jboss*/**</exclude>

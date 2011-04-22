@@ -467,29 +467,25 @@ public class StandaloneBPMNProcessTest extends TestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    public void testTimerBoundaryEvent() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEvent.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        Thread.sleep(1000);
-        ksession = restoreSession(ksession, true);
-        System.out.println("Firing timer");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-    }
-
-    public void testTimerBoundaryEventInterrupting() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
-		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        Thread.sleep(1000);
-        ksession = restoreSession(ksession, true);
-        System.out.println("Firing timer");
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
-    }
+//    public void testTimerBoundaryEvent() throws Exception {
+//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
+//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+//        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+//        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+//        Thread.sleep(1000);
+//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+//    }
+//
+//    public void testTimerBoundaryEventInterrupting() throws Exception {
+//        KnowledgeBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
+//		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+//        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
+//        ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
+//        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+//        Thread.sleep(1000);
+//		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+//    }
 
 //    public void testAdHocSubProcess() throws Exception {
 //		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
@@ -599,7 +595,7 @@ public class StandaloneBPMNProcessTest extends TestCase {
     }
 
     public void testIntermediateCatchEventTimer() throws Exception {
-        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimer.bpmn2");
+        KnowledgeBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");

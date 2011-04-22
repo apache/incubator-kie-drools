@@ -12,7 +12,7 @@
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
   <properties>
-    <drools.version>5.2.0-SNAPSHOT</drools.version>
+    <drools.version>5.2.0.M2</drools.version>
     <drools.osgi.version>5.2.0</drools.osgi.version>
     <jbpm.osgi.version>5.1.0.SNAPSHOT</jbpm.osgi.version>
   </properties>
@@ -57,19 +57,6 @@
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Maven Repository Group</name>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-public-repository-group-old</id>
-      <name>JBoss Public Maven Repository Group (Old)</name>
-      <url>http://repository.jboss.org/maven2/</url>
       <layout>default</layout>
       <releases>
         <enabled>true</enabled>
@@ -126,21 +113,7 @@
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
     <module>jbpm-gwt</module>
-  </modules>   
-   
-  <profiles>
-    <profile>
-      <id>documentation</id>
-      <activation>
-        <property>
-          <name>documentation</name>
-        </property>
-      </activation>
-      <modules>
-        <module>jbpm-docs</module>
-      </modules>
-    </profile>
-  </profiles>
+  </modules>
   
   <build>
     <testResources>
@@ -180,22 +153,6 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.2-beta-5</version>
-            <configuration>
-            <descriptors>
-              <descriptor>assembly/pre-bin.xml</descriptor>
-              <descriptor>assembly/bin.xml</descriptor>
-              <descriptor>assembly/src.xml</descriptor>
-              <descriptor>assembly/gwt-console.xml</descriptor>
-              <descriptor>assembly/installer.xml</descriptor>
-              <descriptor>assembly/docs-build.xml</descriptor>
-              <descriptor>assembly/docs.xml</descriptor>
-            </descriptors>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
           <version>2.1.0</version>
@@ -207,19 +164,6 @@
           <executions>
             <execution>
               <goals>
-                <goal>test-jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>2.1.2</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>jar</goal>
                 <goal>test-jar</goal>
               </goals>
             </execution>

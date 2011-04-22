@@ -17,6 +17,7 @@
 package org.jbpm.bpmn2.xml;
 
 import org.drools.compiler.xml.XmlDumper;
+import org.jbpm.process.core.timer.Timer;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.xml.sax.Attributes;
@@ -37,8 +38,12 @@ public class TimerNodeHandler extends AbstractNodeHandler {
 		writeNode("intermediateCatchEvent", timerNode, xmlDump, metaDataType);
 		xmlDump.append(">" + EOL);
 		xmlDump.append("      <timerEventDefinition>" + EOL);
-		if (timerNode.getTimer() != null && timerNode.getTimer().getDelay() != null) {
-		    xmlDump.append("        <timeCycle>" + XmlDumper.replaceIllegalChars(timerNode.getTimer().getDelay()) + "</timeCycle>" + EOL);
+		Timer timer = timerNode.getTimer(); 
+		if (timer != null && timer.getDelay() != null) {
+			if (timer.getPeriod() == null) {
+			    xmlDump.append("        <timeDuration>" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
+			} else {
+				xmlDump.append("        <timeCycle>" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);			}
 		}
 		xmlDump.append("      </timerEventDefinition>" + EOL);
 		endNode("intermediateCatchEvent", xmlDump);
