@@ -1,17 +1,11 @@
 package org.drools.compiler;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.Enumeration;
-
 import org.drools.CheckedDroolsException;
 import org.drools.util.ServiceRegistryImpl;
 
 public class BusinessRuleProviderFactory {
     private static BusinessRuleProviderFactory instance = new BusinessRuleProviderFactory();
-    private BusinessRuleProvider provider;
+    private static BusinessRuleProvider        provider;
 
     private BusinessRuleProviderFactory() {
     }
@@ -21,52 +15,18 @@ public class BusinessRuleProviderFactory {
     }
 
     public BusinessRuleProvider getProvider() throws CheckedDroolsException {
-        if (null == provider)
-            provider = loadProvider();
+        if ( null == provider ) loadProvider();
         return provider;
     }
 
-    private BusinessRuleProvider loadProvider() throws CheckedDroolsException {
-        String interfaceName = BusinessRuleProvider.class.getName();
-        try {
-            URL systemResource = null;
-            for (Enumeration<URL> systemResources = ClassLoader
-                    .getSystemResources("META-INF/services/" + interfaceName); systemResources
-                    .hasMoreElements();) {
-                if (null != systemResource)
-                    throwMultipleImplementationsDetected();
-                systemResource = systemResources.nextElement();
-            }
-
-            if (systemResource == null) {
-                throwNoImplementationFound();
-            }
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(systemResource.openStream()));
-            String className = null;
-            for (String currentName; (currentName = reader.readLine()) != null;) {
-                if (className != null) {
-                    throwMultipleImplementationsDetected();
-                }
-                className = currentName;
-            }
-
-            if (null == className) {
-                throwNoImplementationFound();
-            }
-
-            ServiceRegistryImpl.getInstance().addDefault(BusinessRuleProvider.class, className);
-            return ServiceRegistryImpl.getInstance().get(BusinessRuleProvider.class);
-        } catch (IOException e) {
-            throw new CheckedDroolsException("Error obtaining " + interfaceName, e);
-        }
+    public static synchronized void setDecisionTableProvider(BusinessRuleProvider provider) {
+        BusinessRuleProviderFactory.provider = provider;
     }
 
-    private void throwNoImplementationFound() throws CheckedDroolsException {
-        throw new CheckedDroolsException("Unable to find implementation for BusinessRuleProvider");
+    private void loadProvider() throws CheckedDroolsException {
+        ServiceRegistryImpl.getInstance().addDefault( BusinessRuleProvider.class,
+                                                      "org.drools.ide.common.BusinessRuleProviderDefaultImpl" );
+        setDecisionTableProvider( ServiceRegistryImpl.getInstance().get( BusinessRuleProvider.class ) );
     }
 
-    private void throwMultipleImplementationsDetected() {
-        throw new IllegalStateException("multiple BusinessRuleProvider implementations detected");
-    }
 }
