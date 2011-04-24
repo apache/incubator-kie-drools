@@ -47,7 +47,7 @@ public class WSHumanTaskHandlerMinaTest extends WSHumanTaskHandlerBaseTest {
 	}
 
 	protected void tearDown() throws Exception {
-		getHandler().dispose();
+		((WSHumanTaskHandler) getHandler()).dispose();
 		getClient().disconnect();
 		server.stop();
 		super.tearDown();
