@@ -604,9 +604,10 @@ public class MVELDialect
         strList = new ArrayList<String>();
         if ( otherInputVariables != null ) {
             int i = 0;
+            MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) analysis;
             for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
-                if ( !analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) || "rule".equals( entry.getKey() ) ) {
+                if ( (!analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) && !mvelAnalysis.getMvelVariables().keySet().contains( entry.getKey() ) )|| "rule".equals( entry.getKey() ) ) {
                     // no point including them if they aren't used
                     // and rule was already included
                     continue;
