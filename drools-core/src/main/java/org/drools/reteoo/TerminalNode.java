@@ -23,6 +23,6 @@ import org.drools.common.NetworkNode;
  */
 public interface TerminalNode
     extends
-    NetworkNode {
+    NetworkNode, LeftTupleSinkNode {
 
 }

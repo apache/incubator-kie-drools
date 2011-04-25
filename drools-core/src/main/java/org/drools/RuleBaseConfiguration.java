@@ -54,6 +54,7 @@ import org.drools.conf.SingleValueKnowledgeBaseOption;
 import org.drools.conflict.DepthConflictResolver;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.reteoo.LeftTupleSinkNode;
 import org.drools.runtime.rule.ConsequenceExceptionHandler;
 import org.drools.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.spi.ConflictResolver;
@@ -145,6 +146,8 @@ public class RuleBaseConfiguration
     private boolean                        mbeansEnabled;
 
     private ConflictResolver               conflictResolver;
+    
+    private Map<String, ActivationListenerFactory> activationListeners;
 
     private List<Map<String, Object>>      workDefinitions;
     private boolean                        advancedProcessRuleIntegration;
@@ -744,6 +747,32 @@ public class RuleBaseConfiguration
 
     public void setAdvancedProcessRuleIntegration(boolean advancedProcessRuleIntegration) {
         this.advancedProcessRuleIntegration = advancedProcessRuleIntegration;
+    }
+    
+    public void addActivationListener(String name, ActivationListenerFactory factory) {
+        if ( this.activationListeners == null ) {
+            this.activationListeners = new HashMap<String, ActivationListenerFactory>();
+        }
+        this.activationListeners.put( name, factory );
+    }
+    
+    public ActivationListenerFactory getActivationListenerFactory(String name) {
+        ActivationListenerFactory factory = null;
+        if ( this.activationListeners != null ) {
+            factory = this.activationListeners.get( name );
+        }
+        
+        if ( factory != null ) {
+            return factory;
+        } else {
+            if ( "query".equals( name )) {
+                return QueryTerminalNodeActivationListenerFactory.INSTANCE;
+            } else             if ( "agenda".equals( name )) {
+                return RuleTerminalNodeActivationListenerFactory.INSTANCE;
+            } 
+        } 
+        
+        throw new IllegalArgumentException( "ActivationListenerFactory not found for '" + name + "'" );
     }
 
     private boolean determineShadowProxy(String userValue) {
