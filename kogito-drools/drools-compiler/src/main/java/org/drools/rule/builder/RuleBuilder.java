@@ -30,6 +30,7 @@ import org.drools.compiler.RuleBuildError;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.DroolsSoftKeywords;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -154,6 +155,11 @@ public class RuleBuilder {
         buildSalience( context );
 
         buildEnabled( context );
+        
+        AnnotationDescr ann = ruleDescr.getAnnotation( "activationListener" );
+        if ( ann != null && !StringUtils.isEmpty( (String) ann.getValue() ) ) {
+            rule.setActivationListener( MVEL.evalToString( (String) ann.getValue() ) );
+        }
 
         //        buildDuration( context );
     }

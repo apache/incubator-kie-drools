@@ -124,6 +124,8 @@ public class Rule
     private Enabled                  enabled;
 
     private Resource                 resource;
+    
+    protected String                 activationListener;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( pkg );
@@ -158,6 +160,7 @@ public class Rule
         out.writeObject( dateExpires );
         out.writeObject( enabled );
         out.writeObject( resource );
+        out.writeObject( activationListener );
     }
 
     @SuppressWarnings("unchecked")
@@ -191,6 +194,7 @@ public class Rule
         dateExpires = (Calendar) in.readObject();
         enabled = (Enabled) in.readObject();
         resource = (Resource) in.readObject();
+        activationListener = ( String ) in.readObject();
     }
 
     // ------------------------------------------------------------
@@ -218,6 +222,7 @@ public class Rule
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
         this.metaAttributes = new HashMap<String, Object>();
+        setActivationListener( "agenda" );
 
     }
 
@@ -714,6 +719,14 @@ public class Rule
                                  Object value) {
         this.metaAttributes.put( key,
                                  value );
+    }
+
+    public String getActivationListener() {
+        return activationListener;
+    }
+
+    public void setActivationListener(String activationListener) {
+        this.activationListener = activationListener;
     }
 
     public Map<String, Object> getMetaData() {
