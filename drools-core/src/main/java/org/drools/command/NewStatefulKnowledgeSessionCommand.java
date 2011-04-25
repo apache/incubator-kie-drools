@@ -17,11 +17,9 @@
 package org.drools.command;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseConfiguration;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -30,21 +28,26 @@ public class NewStatefulKnowledgeSessionCommand
     GenericCommand<StatefulKnowledgeSession> {
 
     private KnowledgeSessionConfiguration ksessionConf;
+    private Environment environment;
 
     public NewStatefulKnowledgeSessionCommand(KnowledgeSessionConfiguration ksessionConf) {
         this.ksessionConf = ksessionConf;
+        
     }
+    
+    public NewStatefulKnowledgeSessionCommand(KnowledgeSessionConfiguration ksessionConf,
+                                                Environment env) { 
+        this(ksessionConf);
+        this.environment = env;
+        
+    }
+    
 
     public StatefulKnowledgeSession execute(Context context) {
         KnowledgeBase kbase = ((KnowledgeCommandContext) context).getKnowledgeBase();
-        StatefulKnowledgeSession ksession;
+        StatefulKnowledgeSession ksession = kbase
+                            .newStatefulKnowledgeSession( this.ksessionConf, environment );
         
-        if ( this.ksessionConf == null ) {
-            ksession = kbase.newStatefulKnowledgeSession();
-        } else {
-            ksession = kbase.newStatefulKnowledgeSession( this.ksessionConf, null );
-        }
-
         return ksession;
     }
 

@@ -594,6 +594,10 @@ public class AccumulateNode extends BetaNode {
                                                            leftTuple,
                                                            workingMemory );
 
+        if ( result[0] == null ) {
+            throw new IllegalArgumentException( "Accumulate's cannot return null" );
+        }
+        
         if ( accctx.result == null ) {
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result[0],
                                                                                                   workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
@@ -602,7 +606,7 @@ public class AccumulateNode extends BetaNode {
                                                                                                   null ); // so far, result is not an event
 
             accctx.result = new RightTuple( handle,
-                                            this );
+                                                this );
         } else {
             accctx.result.getFactHandle().setObject( result[0] );
         }

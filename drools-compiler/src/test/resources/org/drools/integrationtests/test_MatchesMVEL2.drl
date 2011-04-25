@@ -1,0 +1,26 @@
+package org.drools;
+
+import java.util.Map;
+
+rule "Matches mvel"
+when
+    Map( this["content"] matches ".*\\..*\\(.*" )
+then
+    // succeeded
+end
+
+rule "Matches mvel 2"
+when
+    Map( this["content"] matches "[^\\.]*\\(.*" )
+then
+    // succeeded
+end
+
+rule "Matches mvel 3"
+when
+    Map( this["content"] matches "(?i).*(ROUTINE).*" )
+then
+    // succeeded
+end
+
+

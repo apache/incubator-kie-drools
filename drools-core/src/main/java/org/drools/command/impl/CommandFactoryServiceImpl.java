@@ -24,10 +24,12 @@ import java.util.Map;
 import org.drools.command.BatchExecutionCommand;
 import org.drools.command.Command;
 import org.drools.command.CommandFactoryService;
+import org.drools.command.NewKnowledgeBuilderConfigurationCommand;
 import org.drools.command.Setter;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.GetGlobalCommand;
 import org.drools.command.runtime.SetGlobalCommand;
+import org.drools.command.runtime.KBuilderSetPropertyCommand;
 import org.drools.command.runtime.process.AbortWorkItemCommand;
 import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
@@ -179,5 +181,13 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
 
     public BatchExecutionCommand newBatchExecution(List<? extends Command> commands, String lookup) {
         return new BatchExecutionCommandImpl((List<GenericCommand<?>>) commands, lookup);
+    }
+
+    public Command newKBuilderSetPropertyCommand(String id, String name, String value) {
+        return new KBuilderSetPropertyCommand(id, name, value);
+    }
+    
+    public Command newNewKnowledgeBuilderConfigurationCommand(String localId){
+        return new NewKnowledgeBuilderConfigurationCommand(localId);
     }
 }
