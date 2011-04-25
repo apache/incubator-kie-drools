@@ -35,8 +35,9 @@ public class HonestPoliticianExample {
     public static void main(final String[] args) {
 
         KnowledgeBuilderConfiguration kbuilderconfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        kbuilderconfiguration.setProperty( "drools.dump.dir",
-                                           "target" );
+        // Note: target dir doesn't exist when downloading the examples
+//        kbuilderconfiguration.setProperty( "drools.dump.dir",
+//                                           "target" );
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "HonestPolitician.drl",

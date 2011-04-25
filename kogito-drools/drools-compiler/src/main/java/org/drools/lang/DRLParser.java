@@ -2725,12 +2725,14 @@ public class DRLParser {
                             source );
             }
 
-            match( input,
-                   DRLLexer.COMMA,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return;
+            if ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                match( input,
+                       DRLLexer.COMMA,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return;
+            }
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.INIT ) ) {
                 // custom code, inline accumulate

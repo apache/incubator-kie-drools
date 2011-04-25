@@ -102,7 +102,7 @@ options {k=2; backtrack=true; memoize=true;}
                 this.blocks = new LinkedList<JavaContainerBlockDescr>();          
                 this.blocks.add( this.rootBlockDescr );
             }
-            blocks.peekLast().addJavaBlockDescr( blockDescr );
+            blocks.getLast().addJavaBlockDescr( blockDescr );
         }
         
             public void pushContainerBlockDescr(JavaContainerBlockDescr blockDescr, boolean addToParent) {
