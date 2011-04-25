@@ -26,7 +26,7 @@ import org.drools.planner.examples.examination.domain.Topic;
 /**
  * Calculated during initialization, not modified during score calculation.
  */
-public class TopicConflict implements Serializable {
+public class TopicConflict implements Serializable, Comparable<TopicConflict> {
 
     private Topic leftTopic;
     private Topic rightTopic;
