@@ -58,14 +58,14 @@ public class MVELDumper extends ReflectiveVisitor {
         return dump( new StringBuilder(),
                      base,
                      parentPrecedence,
-                     new MVELDumperContext()).toString();
+                     new MVELDumperContext() ).toString();
     }
 
     public StringBuilder dump( StringBuilder sbuilder,
                                BaseDescr base,
                                int parentPriority,
                                MVELDumperContext context ) {
-        if( context == null ) {
+        if ( context == null ) {
             context = new MVELDumperContext();
         }
         if ( base instanceof ConstraintConnectiveDescr ) {
@@ -106,10 +106,10 @@ public class MVELDumper extends ReflectiveVisitor {
             String left = dump( red.getLeft(),
                                 Integer.MAX_VALUE ); // maximum precedence, so wrap any child connective in parenthesis
             String right = dump( red.getRight(),
-                                Integer.MAX_VALUE );
+                                 Integer.MAX_VALUE );
             processRestriction( context,
                                 sbuilder,
-                                left, 
+                                left,
                                 red.getOperatorDescr(),
                                 right );// maximum precedence, so wrap any child connective in parenthesis
         } else if ( base instanceof ExprConstraintDescr ) {
@@ -134,7 +134,7 @@ public class MVELDumper extends ReflectiveVisitor {
                                     StringBuilder sbuilder,
                                     String left,
                                     OperatorDescr operator,
-                                    String right) {
+                                    String right ) {
         Operator op = Operator.determineOperator( operator.getOperator(),
                                                   operator.isNegated() );
         if ( op == Operator.determineOperator( "memberOf",
@@ -144,13 +144,20 @@ public class MVELDumper extends ReflectiveVisitor {
                     .append( " contains " )
                     .append( left )
                     .append( evaluatorSufix( operator.isNegated() ) );
+        } else if ( op == Operator.determineOperator( "contains",
+                                                      operator.isNegated() ) ) {
+            sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
+                    .append( left )
+                    .append( " contains " )
+                    .append( right )
+                    .append( evaluatorSufix( operator.isNegated() ) );
         } else if ( op == Operator.determineOperator( "excludes",
                                                       operator.isNegated() ) ) {
             sbuilder.append( evaluatorPrefix( !operator.isNegated() ) )
                     .append( left )
                     .append( " contains " )
                     .append( right )
-                    .append( evaluatorSufix( operator.isNegated() ) );
+                    .append( evaluatorSufix( !operator.isNegated() ) );
         } else if ( op == Operator.determineOperator( "matches",
                                                       operator.isNegated() ) ) {
             sbuilder.append( evaluatorPrefix( operator.isNegated() ) )
@@ -196,10 +203,10 @@ public class MVELDumper extends ReflectiveVisitor {
         }
         return "";
     }
-    
+
     public static class MVELDumperContext {
         private Map<String, OperatorDescr> aliases;
-        private int counter;
+        private int                        counter;
 
         public MVELDumperContext() {
             this.aliases = new HashMap<String, OperatorDescr>();
@@ -219,7 +226,7 @@ public class MVELDumper extends ReflectiveVisitor {
         public void setAliases( Map<String, OperatorDescr> aliases ) {
             this.aliases = aliases;
         }
-        
+
         /**
          * Creates a new alias for the operator, setting it in the descriptor
          * class, adding it to the internal Map and returning it as a String
@@ -228,12 +235,12 @@ public class MVELDumper extends ReflectiveVisitor {
          * @return
          */
         public String createAlias( OperatorDescr operator ) {
-            String alias = operator.getOperator()+counter++;
+            String alias = operator.getOperator() + counter++;
             operator.setAlias( alias );
-            this.aliases.put( alias, operator );
+            this.aliases.put( alias,
+                              operator );
             return alias;
         }
-        
-        
+
     }
 }
