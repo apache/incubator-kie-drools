@@ -516,14 +516,14 @@ public class PatternBuilder
                                                                                     LiteralRestrictionDescr.TYPE_STRING ) ); // default type
             } else {
                 // is it an enum?
-                int dotPos = value.indexOf( '.' );
+                int dotPos = value.lastIndexOf( '.' );
                 if ( dotPos >= 0 ) {
-                    final String className = value.substring( 0,
-                                                              dotPos );
-                    String enumName = value.substring( dotPos + 1 );
+                    final String mainPart = value.substring( 0,
+                                                             dotPos );
+                    String lastPart = value.substring( dotPos + 1 );
                     try {
-                        final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( className );
-                        if ( enumName.indexOf( '(' ) < 0 && enumName.indexOf( '.' ) < 0 && enumName.indexOf( '[' ) < 0 ) {
+                        final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( mainPart );
+                        if ( lastPart.indexOf( '(' ) < 0 && lastPart.indexOf( '.' ) < 0 && lastPart.indexOf( '[' ) < 0 ) {
                             restriction = buildLiteralRestriction( context,
                                                                    extractor,
                                                                    new LiteralRestrictionDescr( operator,
