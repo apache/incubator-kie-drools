@@ -244,7 +244,7 @@ public class ObjectTypeNode extends ObjectSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        if ( this.skipOnModify && context.getDormantActivations() == 0 ) {
+        if ( this.skipOnModify && context.getDormantActivations() == 0  ) {
             // we do this after the shadowproxy update, just so that its up to date for the future
             return;
         }

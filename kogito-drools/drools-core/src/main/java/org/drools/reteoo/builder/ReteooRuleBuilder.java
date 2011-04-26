@@ -19,6 +19,7 @@ package org.drools.reteoo.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.ActivationListenerFactory;
 import org.drools.InitialFact;
 import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
@@ -152,21 +153,13 @@ public class ReteooRuleBuilder {
                        this.utils,
                        subrule );
 
-        TerminalNode terminal = null;
-
-        if ( !(rule instanceof Query) ) {
-            terminal = new RuleTerminalNode( context.getNextId(),
-                                             context.getTupleSource(),
-                                             rule,
-                                             subrule,
-                                             context );
-        } else {
-            terminal = new QueryTerminalNode( context.getNextId(),
-                                              context.getTupleSource(),
-                                              rule,
-                                              subrule,
-                                              context );
-        }
+        ActivationListenerFactory factory = context.getRuleBase().getConfiguration().getActivationListenerFactory( rule.getActivationListener() );
+        TerminalNode terminal = factory.createActivationListener( context.getNextId(),
+                                                                  context.getTupleSource(),
+                                                                  rule,
+                                                                  subrule,
+                                                                  context );
+        
         if ( context.getWorkingMemories().length == 0 ) {
             ((BaseNode) terminal).attach();
         } else {

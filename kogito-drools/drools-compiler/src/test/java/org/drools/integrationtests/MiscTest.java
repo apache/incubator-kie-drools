@@ -61,6 +61,7 @@ import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
@@ -100,7 +101,12 @@ import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ReteooWorkingMemory;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.TerminalNode;
+import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
@@ -111,6 +117,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
+import org.drools.spi.PropagationContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
@@ -7634,6 +7641,71 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
         assertNotNull( session );
     }
+    
+    @Test
+    public void testActivationListener() throws Exception {
+
+        String rule = "";
+        rule += "package org.drools;\n";
+        rule += "import java.util.Map;\n";
+        rule += "import java.util.HashMap;\n";
+        rule += "rule \"Test Rule\" @activationListener('blah')\n";
+        rule += "  when\n";
+        rule += "     String( this == \"xxx\" )\n ";
+        rule += "  then\n";
+        rule += "end";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+        final org.drools.rule.Package pkg = builder.getPackage();
+
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        final List list = new ArrayList();
+        conf.addActivationListener( "blah", new ActivationListenerFactory() {
+            
+            public TerminalNode createActivationListener(int id,
+                                                         LeftTupleSource source,
+                                                         org.drools.rule.Rule rule,
+                                                         GroupElement subrule,
+                                                         BuildContext context,
+                                                         Object... args) {
+                return new RuleTerminalNode( id, source, rule, subrule, context ) {
+                    @Override
+                    public void assertLeftTuple(LeftTuple tuple,
+                                                PropagationContext context,
+                                                InternalWorkingMemory workingMemory) {
+                        list.add( "inserted" );
+                    }
+                    
+                    @Override
+                    public void modifyLeftTuple(LeftTuple leftTuple,
+                                                PropagationContext context,
+                                                InternalWorkingMemory workingMemory) {
+                        list.add( "updated" );
+                    }
+                    
+                    @Override
+                    public void retractLeftTuple(LeftTuple leftTuple,
+                                                 PropagationContext context,
+                                                 InternalWorkingMemory workingMemory) {
+                        list.add( "retracted" );
+                    }
+                };
+            }
+        });
+        final RuleBase ruleBase = getRuleBase(conf);
+        ruleBase.addPackage( pkg );
+        StatefulSession session = ruleBase.newStatefulSession();
+        FactHandle fh = session.insert( "xxx" );
+        session.update( fh, "xxx" );
+        session.retract( fh );
+        
+        assertEquals( "inserted", list.get(0));
+        assertEquals( "updated", list.get(1));
+        assertEquals( "retracted", list.get(2));
+        
+        assertNotNull( session );
+    }    
 
     @Test
     public void testAccessingMapValues() throws Exception {

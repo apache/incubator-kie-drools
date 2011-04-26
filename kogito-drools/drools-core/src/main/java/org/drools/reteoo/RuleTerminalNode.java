@@ -54,7 +54,6 @@ import org.drools.time.impl.Timer;
  */
 public class RuleTerminalNode extends BaseNode
     implements
-    LeftTupleSinkNode,
     TerminalNode,
     Externalizable {
     // ------------------------------------------------------------

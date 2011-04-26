@@ -27,12 +27,11 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
-import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.ConsequenceException;
 
 public class PacmanExample {
-    StatefulKnowledgeSession ksession = null;
+    volatile StatefulKnowledgeSession ksession = null;
     PacMan                   pacMan;
 
     public static void main(String[] args) {
@@ -40,16 +39,7 @@ public class PacmanExample {
         pacmanExample.initKsession();
         pacmanExample.buildGrid();
         pacmanExample.initGui();
-        pacmanExample.run();
-    }
-
-    public void run() {
-        try {
-            // run forever
-            this.ksession.fireUntilHalt();
-        } catch ( ConsequenceException e ) {
-            throw e;
-        }
+        pacmanExample.runKSession();
     }
 
     public void initKsession() {
@@ -170,7 +160,22 @@ public class PacmanExample {
     }
 
     public void initGui() {
-        PacmanGui.init( this.ksession );
+        PacmanGui.createAndShowGUI( this.ksession );
+    }
+
+    public void runKSession() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    // run forever
+                    ksession.fireUntilHalt();
+                } catch ( ConsequenceException e ) {
+                    throw e;
+                }
+            }
+        };
+        Thread thread = new Thread(runnable); // In java 6 use Executors instead
+        thread.start();
     }
 
 }

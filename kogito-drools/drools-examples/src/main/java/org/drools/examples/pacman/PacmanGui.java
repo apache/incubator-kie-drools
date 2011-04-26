@@ -42,44 +42,7 @@ public class PacmanGui extends JFrame
     static final String     newline = System.getProperty( "line.separator" );
     WorkingMemoryEntryPoint keyListenerEntryPoint;
 
-    public static void init(final StatefulKnowledgeSession ksession) {
-        try {
-            String osName = System.getProperty( "os.name" );
-            if ( osName.indexOf( "Linux" ) >= 0 ) {
-                UIManager.setLookAndFeel( "com.sun.java.swing.plaf.gtk.GTKLookAndFeel" );
-            } else if ( osName.indexOf( "Windows" ) >= 0 ) {
-                UIManager.setLookAndFeel( "com.sun.java.swing.plaf.windows.WindowsLookAndFeel" );
-            } else if ( osName.indexOf( "Mac OS X" ) >= 0 ) {
-                UIManager.setLookAndFeel( "apple.laf.AquaLookAndFeel" );
-            } else {
-                UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
-            }
-        } catch ( UnsupportedLookAndFeelException ex ) {
-            ex.printStackTrace();
-        } catch ( IllegalAccessException ex ) {
-            ex.printStackTrace();
-        } catch ( InstantiationException ex ) {
-            ex.printStackTrace();
-        } catch ( ClassNotFoundException ex ) {
-            ex.printStackTrace();
-        }
-        UIManager.put( "swing.boldMetal",
-                       Boolean.FALSE );
-
-        //Schedule a job for event dispatch thread:
-        //creating and showing this application's GUI.
-        try {
-            javax.swing.SwingUtilities.invokeAndWait( new Runnable() {
-                public void run() {
-                    createAndShowGUI( ksession );
-                }
-            } );
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
-    private static void createAndShowGUI(StatefulKnowledgeSession ksession) {
+    public static void createAndShowGUI(StatefulKnowledgeSession ksession) {
         //Create and set up the window.
         PacmanGui frame = new PacmanGui( "KeyEventDemo",
                                          ksession );
