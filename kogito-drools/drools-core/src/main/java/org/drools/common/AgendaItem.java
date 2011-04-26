@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.drools.FactHandle;
+import org.drools.base.DroolsQuery;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
@@ -311,7 +312,10 @@ public class AgendaItem
         FactHandle[] factHandles = this.tuple.getFactHandles();
         List<FactHandle> list = new ArrayList<FactHandle>( factHandles.length );
         for ( FactHandle factHandle : factHandles ) {
-            list.add( factHandle );
+            Object o = ((InternalFactHandle) factHandle).getObject();
+            if ( !(o instanceof QueryElementFactHandle)) {
+                list.add( factHandle );
+            }
         }
         return Collections.unmodifiableList( list );
     }
@@ -324,7 +328,10 @@ public class AgendaItem
         FactHandle[] factHandles = this.tuple.getFactHandles();
         List<Object> list = new ArrayList<Object>( factHandles.length );
         for ( FactHandle factHandle : factHandles ) {
-            list.add( ((InternalFactHandle) factHandle).getObject() );
+            Object o = ((InternalFactHandle) factHandle).getObject();
+            if (!(o instanceof QueryElementFactHandle)) {
+                list.add( o );
+            }
         }
         return Collections.unmodifiableList( list );
     }
