@@ -41,6 +41,7 @@ public class Query extends Rule {
 
     public Query(final String name) {
         super( name );
+        setActivationListener( "query" );
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
