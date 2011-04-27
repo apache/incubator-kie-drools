@@ -51,6 +51,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
         initProcessEventListeners();
+        initProcessActivationListener();
 	}
 	
 	public ProcessRuntimeImpl(AbstractWorkingMemory workingMemory) {
