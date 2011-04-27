@@ -1,5 +1,6 @@
 package org.jbpm.process;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
@@ -322,27 +323,27 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	}
 
 	public void addEventListener(WorkingMemoryEventListener listener) {
-		throw new UnsupportedOperationException();
+		// Do nothing
 	}
 
 	public void addEventListener(AgendaEventListener listener) {
-		throw new UnsupportedOperationException();
+		// Do nothing
 	}
 
 	public Collection<AgendaEventListener> getAgendaEventListeners() {
-		throw new UnsupportedOperationException();
+		return new ArrayList<AgendaEventListener>();
 	}
 
 	public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-		throw new UnsupportedOperationException();
+		return new ArrayList<WorkingMemoryEventListener>();
 	}
 
 	public void removeEventListener(WorkingMemoryEventListener listener) {
-		throw new UnsupportedOperationException();
+		// Do nothing
 	}
 
 	public void removeEventListener(AgendaEventListener listener) {
-		throw new UnsupportedOperationException();
+		// Do nothing
 	}
 
 	public long getLastIdleTimestamp() {

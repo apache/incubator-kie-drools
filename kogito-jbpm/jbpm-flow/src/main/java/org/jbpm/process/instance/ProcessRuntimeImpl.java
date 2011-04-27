@@ -300,13 +300,15 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                 }
 			}
     	});
-        workingMemory.addEventListener( new org.drools.event.DefaultAgendaEventListener() {
-            public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
-                                                      final WorkingMemory workingMemory) {
-                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
-                                           null );
-            }
-        } );
+    	if (workingMemory != null) {
+	        workingMemory.addEventListener( new org.drools.event.DefaultAgendaEventListener() {
+	            public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event,
+	                                                      final WorkingMemory workingMemory) {
+	                signalManager.signalEvent( "RuleFlowGroup_" + event.getRuleFlowGroup().getName(),
+	                                           null );
+	            }
+	        } );
+    	}
     }
 
 	public void abortProcessInstance(long processInstanceId) {
