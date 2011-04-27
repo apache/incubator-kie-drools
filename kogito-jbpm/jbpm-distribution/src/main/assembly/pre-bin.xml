@@ -28,7 +28,7 @@
         <exclude>org.jbpm:jbpm-human-task</exclude>
         <exclude>org.jbpm:jbpm-workitems</exclude>
         <!-- Exclude docs -->
-        <exclude>org.jbpm:jbpm-docs-flow</exclude>
+        <exclude>org.jbpm:jbpm-docs</exclude>
       </excludes>
       <outputDirectory>lib</outputDirectory>
     </dependencySet>

@@ -270,11 +270,6 @@
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>jbpm-docs</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-docs-flow</artifactId>
         <type>jdocbook</type>
         <version>${project.version}</version>
       </dependency>

@@ -130,7 +130,7 @@
     <!-- Javadocs and documentation -->
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-docs-flow</artifactId>
+      <artifactId>jbpm-docs</artifactId>
       <type>jdocbook</type>
     </dependency>
   </dependencies>

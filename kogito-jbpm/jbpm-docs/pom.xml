@@ -7,23 +7,11 @@
     <groupId>org.jbpm</groupId>
     <version>5.1-SNAPSHOT</version>
   </parent>
+
   <artifactId>jbpm-docs</artifactId>
-  <packaging>pom</packaging>
-  <name>jBPM :: Documentation</name>
-
-  <modules>
-    <module>jbpm-docs-flow</module>
-  </modules>
-
-  <dependencyManagement>
-    <dependencies>      
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-docs-flow</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <packaging>jdocbook</packaging>
+  
+  <name>jBPM Documentation</name>
 
   <build>
     <plugins>
