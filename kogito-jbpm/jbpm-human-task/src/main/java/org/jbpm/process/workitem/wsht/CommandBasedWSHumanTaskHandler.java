@@ -241,7 +241,7 @@ public class CommandBasedWSHumanTaskHandler implements WorkItemHandler {
 					session.getWorkItemManager().completeWorkItem(workItemId, results);
 				}
 			} else {
-				System.out.println("Notification of completed task " + workItemId);
+				System.out.println("Notification of aborted task " + workItemId);
 				session.getWorkItemManager().abortWorkItem(workItemId);
 			}
 		}
