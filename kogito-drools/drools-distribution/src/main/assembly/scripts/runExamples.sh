@@ -12,7 +12,8 @@ echo "Some notes:"
 echo "- Working dir should be the directory of this script."
 echo "- Java is recommended to be JDK and java 6 for optimal performance"
 echo "- The environment variable JAVA_HOME should be set to the JDK installation directory"
-echo "  For example: export JAVA_HOME=/usr/lib/jvm/java-6-sun"
+echo "  For example (linux): export JAVA_HOME=/usr/lib/jvm/java-6-sun"
+echo "  For example (mac): export JAVA_HOME=/Library/Java/Home"
 echo
 echo "Starting examples app..."
 
