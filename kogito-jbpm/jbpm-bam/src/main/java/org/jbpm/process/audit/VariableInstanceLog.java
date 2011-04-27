@@ -53,7 +53,7 @@ public class VariableInstanceLog implements Serializable {
         this.processId = processId;
 		this.variableInstanceId = variableInstanceId;
 		this.variableId = variableId;
-		this.value = value;
+		setValue(value);
         this.date = new Date();
     }
 	
@@ -102,6 +102,9 @@ public class VariableInstanceLog implements Serializable {
 	}
 
 	public void setValue(String value) {
+		if (value != null && value.length() > 255) {
+			value = value.substring(0, 255);
+		}
 		this.value = value;
 	}
 

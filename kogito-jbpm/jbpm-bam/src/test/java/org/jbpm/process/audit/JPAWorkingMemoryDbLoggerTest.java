@@ -266,6 +266,71 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         log.dispose();
 	}
 	
+	public void testLogger4LargeVariable() throws Exception {
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );
+        Properties properties = new Properties();
+		properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
+		properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
+		KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(properties);
+		StatefulKnowledgeSession session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, config, env);
+        new JPAWorkingMemoryDbLogger(session);
+        JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+			public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+				Map<String, Object> results = new HashMap<String, Object>();
+				results.put("Result", "ResultValue");
+				manager.completeWorkItem(workItem.getId(), results);
+			}
+			public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+			}
+		});
+        
+        // start process instance
+		Map<String, Object> params = new HashMap<String, Object>();
+		List<String> list = new ArrayList<String>();
+		list.add("One");
+		list.add("Two");
+		String three = "";
+		for (int i = 0; i < 1024; i++) {
+			three += "*";
+		}
+		list.add(three);
+		params.put("list", list);
+		long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
+        
+        System.out.println("Checking process instances for process 'com.sample.ruleflow3'");
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(1, processInstances.size());
+        ProcessInstanceLog processInstance = processInstances.get(0);
+        System.out.print(processInstance);
+        System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
+        assertNotNull(processInstance.getStart());
+        assertNotNull(processInstance.getEnd());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+        assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+        List<VariableInstanceLog> variableInstances = log.findVariableInstances(processInstanceId);
+        assertEquals(6, variableInstances.size());
+        for (VariableInstanceLog variableInstance: variableInstances) {
+        	System.out.println(variableInstance);
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId());
+            assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+            assertNotNull(variableInstance.getDate());
+        }
+        log.clear();
+        processInstances = log.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(0, processInstances.size());
+        log.dispose();
+	}
+	
     private KnowledgeBase createKnowledgeBase() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
     	kbuilder.add(new ClassPathResource("ruleflow.rf"), ResourceType.DRF);
