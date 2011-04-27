@@ -55,7 +55,7 @@
         </property>
       </activation>
       <modules>
-        <module>drools-introduction-docs</module>
+        <module>droolsjbpm-introduction-docs</module>
       </modules>
     </profile>
   </profiles>

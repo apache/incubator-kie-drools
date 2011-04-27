@@ -9,7 +9,7 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-introduction-docs</artifactId>
+  <artifactId>droolsjbpm-introduction-docs</artifactId>
   <packaging>jdocbook</packaging>
 
   <name>Drools and jBPM introduction documentation</name>
