@@ -4,12 +4,14 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.drools.base.EvaluatorWrapper;
+import org.drools.rule.Declaration;
 
 public class BoundIdentifiers {
-    private Map<String, Class< ? >> declarations;
-    private Map<String, Class< ? >> globals;
-    private Map<String, EvaluatorWrapper>  operators;
-    private Class< ? >              thisClass;
+    private Map<String, Declaration>      declarations;
+    private Map<String, Class< ? >>       declrClasses;
+    private Map<String, Class< ? >>       globals;
+    private Map<String, EvaluatorWrapper> operators;
+    private Class< ? >                    thisClass;
 
     public BoundIdentifiers(Map<String, Class< ? >> declarations,
                             Map<String, Class< ? >> globals) {
@@ -32,14 +34,14 @@ public class BoundIdentifiers {
                             Map<String, Class< ? >> globals,
                             Map<String, EvaluatorWrapper> operators,
                             Class< ? > thisClass) {
-        this.declarations = declarations;
+        this.declrClasses = declarations;
         this.globals = globals;
         this.operators = operators;
         this.thisClass = thisClass;
     }
 
-    public Map<String, Class< ? >> getDeclarations() {
-        return declarations;
+    public Map<String, Class< ? >> getDeclrClasses() {
+        return declrClasses;
     }
 
     public Map<String, Class< ? >> getGlobals() {
@@ -58,10 +60,17 @@ public class BoundIdentifiers {
     public String toString() {
         StringBuilder sbuilder = new StringBuilder();
         sbuilder.append( "thisClass: " + thisClass + "\n" );
-        sbuilder.append( "declarations:" + declarations + "\n" );
+        sbuilder.append( "declarations:" + declrClasses + "\n" );
         sbuilder.append( "globals:" + globals + "\n" );
         sbuilder.append( "operators:" + operators + "\n" );
         return sbuilder.toString();
     }
 
+    public void setDeclarations(Map<String, Declaration> declarations) {
+       this.declarations = declarations;
+    }
+    
+    public Map<String, Declaration> getDeclarations() {
+        return this.declarations;
+    }
 }

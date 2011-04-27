@@ -46,10 +46,10 @@ public class MVELEnabledBuilder
                                                                  otherVars );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-            int i = usedIdentifiers.getDeclarations().keySet().size();
+            int i = usedIdentifiers.getDeclrClasses().keySet().size();
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
-            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+            for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
                 previousDeclarations[i++] = declrs.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  );            

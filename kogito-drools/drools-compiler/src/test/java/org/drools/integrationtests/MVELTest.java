@@ -13,8 +13,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -38,7 +36,6 @@ import org.drools.core.util.DateUtils;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.type.DateFormatsImpl;
 import org.mvel2.MVEL;
@@ -295,6 +292,59 @@ public class MVELTest {
         assertEquals(1, result);
         Collection<Object> insertedObjects = ksession.getObjects();
         assertEquals(3, insertedObjects.size());
+    }
+    
+    @Test
+    public void testNestedEnum() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + Triangle.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $t: Triangle(t == Triangle.Type.ACUTE) \n" + 
+           "then \n" + 
+           "    list.add($t.getT()); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        Triangle t = new Triangle( Triangle.Type.ACUTE);
+        ksession.insert( t );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals(Triangle.Type.ACUTE, list.get(0) );
+    }
+    
+    public static class Triangle {
+        public static enum Type {
+            ACUTE, OBTUSE;
+        }
+        
+        private Type t;
+        
+        public Triangle(Type t) {
+            this.t = t;
+        }
+
+        public Type getT() {
+            return t;
+        }
+
+        public void setT(Type t) {
+            this.t = t;
+        }
     }
     
 

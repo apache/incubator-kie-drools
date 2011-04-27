@@ -121,6 +121,8 @@ public class PackageBuilder {
     private PMMLCompiler                      pmmlCompiler;
 
     private Map<String, TypeDeclaration>      builtinTypes;
+    
+    private Map<String, TypeDeclaration>      cacheTypes;
 
     /**
      * Use this when package is starting from scratch.
@@ -919,7 +921,17 @@ public class PackageBuilder {
     }
 
     public TypeDeclaration getTypeDeclaration(Class<?> cls) {
-        TypeDeclaration tdecl = this.builtinTypes.get( (cls.getName()) );
+        if ( cls.isPrimitive() || cls.isArray() ) {
+            return null;
+        }
+        TypeDeclaration tdecl = null;
+        if ( this.cacheTypes != null ) {
+            tdecl = cacheTypes.get( cls.getName() );
+            if ( tdecl != null ) {
+                return tdecl;
+            }
+        }
+        tdecl = this.builtinTypes.get( (cls.getName()) );
 
         PackageRegistry pkgReg = null;
         if ( tdecl == null ) {
@@ -968,7 +980,11 @@ public class PackageBuilder {
                 }
             }
         }
-
+        
+        if ( this.cacheTypes == null ) {
+            this.cacheTypes = new HashMap<String, TypeDeclaration>();
+        }        
+        this.cacheTypes.put( originalCls.getName(), tdecl ); // should also cache null, to avoid expensive lookups with no results
         return tdecl;
     }
 

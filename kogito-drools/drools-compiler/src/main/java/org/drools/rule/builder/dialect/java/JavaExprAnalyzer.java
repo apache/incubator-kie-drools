@@ -129,7 +129,7 @@ public class JavaExprAnalyzer {
         Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
         Map<String, EvaluatorWrapper> usedOperators = new HashMap<String, EvaluatorWrapper>();
  
-        for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclarations().entrySet() ) {
+        for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedDecls.put( entry.getKey(),
                                entry.getValue() );

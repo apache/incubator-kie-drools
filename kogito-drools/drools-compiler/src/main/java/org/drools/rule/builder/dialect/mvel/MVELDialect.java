@@ -580,7 +580,7 @@ public class MVELDialect
         
         if ( previousDeclarations != null ) {
             for (Declaration decl : previousDeclarations ) {
-                if ( analysis.getBoundIdentifiers().getDeclarations().containsKey( decl.getIdentifier() ) ) {
+                if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
                                         decl.getExtractor().getExtractToClass() );
@@ -590,7 +590,7 @@ public class MVELDialect
         
         if ( localDeclarations != null ) {
             for (Declaration decl : localDeclarations ) {
-                if ( analysis.getBoundIdentifiers().getDeclarations().containsKey( decl.getIdentifier() ) ) {
+                if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
                                         decl.getExtractor().getExtractToClass() );
