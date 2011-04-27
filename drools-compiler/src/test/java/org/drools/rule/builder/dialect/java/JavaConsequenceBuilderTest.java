@@ -158,8 +158,8 @@ public class JavaConsequenceBuilderTest {
                                                                                       new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
             
             BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
-            bindings.getDeclarations().put( "$cheese", Cheese.class );
-            bindings.getDeclarations().put( "age", int.class );
+            bindings.getDeclrClasses().put( "$cheese", Cheese.class );
+            bindings.getDeclrClasses().put( "age", int.class );
             
             // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
             List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
@@ -270,8 +270,8 @@ public class JavaConsequenceBuilderTest {
                                                                                   new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
         BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
-        bindings.getDeclarations().put( "$cheese", Cheese.class );
-        bindings.getDeclarations().put( "age", int.class );
+        bindings.getDeclrClasses().put( "$cheese", Cheese.class );
+        bindings.getDeclrClasses().put( "age", int.class );
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
@@ -363,8 +363,8 @@ public class JavaConsequenceBuilderTest {
                                                                                   new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
         BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
-        bindings.getDeclarations().put( "$cheese", Cheese.class );
-        bindings.getDeclarations().put( "age", int.class );
+        bindings.getDeclrClasses().put( "$cheese", Cheese.class );
+        bindings.getDeclrClasses().put( "age", int.class );
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
@@ -450,8 +450,8 @@ public class JavaConsequenceBuilderTest {
                                                                                   new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
         BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
-        bindings.getDeclarations().put( "$cheese", Cheese.class );
-        bindings.getDeclarations().put( "age", int.class );
+        bindings.getDeclrClasses().put( "$cheese", Cheese.class );
+        bindings.getDeclrClasses().put( "age", int.class );
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
@@ -523,8 +523,8 @@ public class JavaConsequenceBuilderTest {
                                                                                   new BoundIdentifiers(declrCls, new HashMap<String, Class<?>>() ) );
         
         BoundIdentifiers bindings = new BoundIdentifiers( new HashMap(), new HashMap() );
-        bindings.getDeclarations().put( "$cheese", Cheese.class );
-        bindings.getDeclarations().put( "age", int.class );
+        bindings.getDeclrClasses().put( "$cheese", Cheese.class );
+        bindings.getDeclrClasses().put( "age", int.class );
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
