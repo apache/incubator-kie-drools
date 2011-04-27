@@ -42,6 +42,16 @@ public class ProcessInstanceDbLog {
         return result;
     }
 
+	public static List<ProcessInstanceLog> findActiveProcessInstances(String processId) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        List<ProcessInstanceLog> result = session.createQuery(
+            "from ProcessInstanceLog as log where log.processId = ? AND log.end is null")
+                .setString(0, processId).list();
+        session.getTransaction().commit();
+        return result;
+    }
+
     @SuppressWarnings("unchecked")
 	public static ProcessInstanceLog findProcessInstance(long processInstanceId) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();

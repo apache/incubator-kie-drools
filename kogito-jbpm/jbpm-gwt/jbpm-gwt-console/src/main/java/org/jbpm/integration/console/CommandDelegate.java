@@ -237,6 +237,10 @@ public class CommandDelegate {
 		return ProcessInstanceDbLog.findProcessInstances(processId);
 	}
 	
+	public List<ProcessInstanceLog> getActiveProcessInstanceLogsByProcessId(String processId) {
+		return ProcessInstanceDbLog.findActiveProcessInstances(processId);
+	}
+	
 	public ProcessInstanceLog startProcess(String processId, Map<String, Object> parameters) {
 		long processInstanceId = ksession.startProcess(processId, parameters).getId();
 		return ProcessInstanceDbLog.findProcessInstance(processInstanceId);

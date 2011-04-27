@@ -63,13 +63,10 @@ public class ProcessManagement implements org.jboss.bpm.console.server.integrati
 	}
 
 	public List<ProcessInstanceRef> getProcessInstances(String definitionId) {
-		// querys for active process instances only
-		List<ProcessInstanceLog> processInstances = delegate.getProcessInstanceLogsByProcessId(definitionId);
+		List<ProcessInstanceLog> processInstances = delegate.getActiveProcessInstanceLogsByProcessId(definitionId);
 		List<ProcessInstanceRef> result = new ArrayList<ProcessInstanceRef>();
 		for (ProcessInstanceLog processInstance: processInstances) {
-			if (processInstance.getEnd() == null) {
-				result.add(Transform.processInstance(processInstance));
-			}
+			result.add(Transform.processInstance(processInstance));
 		}
 		return result;
 	}
