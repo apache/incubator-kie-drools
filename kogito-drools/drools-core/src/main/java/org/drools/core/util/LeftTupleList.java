@@ -63,6 +63,11 @@ public class LeftTupleList
     public LeftTuple getLast(RightTuple lastTuple) {
         return this.first;
     }
+    
+    public void removeAdd(LeftTuple tuple) {
+        remove(tuple);
+        add(tuple);
+    }
 
     public void add(final LeftTuple leftTuple) {
         if ( this.last != null ) {

@@ -199,8 +199,7 @@ public class JoinNode extends BetaNode {
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
-        memory.getRightTupleMemory().remove( rightTuple );
-        memory.getRightTupleMemory().add( rightTuple );
+        memory.getRightTupleMemory().removeAdd( rightTuple );
 
         if ( memory.getLeftTupleMemory() != null && memory.getLeftTupleMemory().size() == 0 ) {
             // do nothing here, as we know there are no left tuples.

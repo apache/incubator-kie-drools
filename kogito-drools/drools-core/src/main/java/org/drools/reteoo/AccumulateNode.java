@@ -436,8 +436,7 @@ public class AccumulateNode extends BetaNode {
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
-        memory.betaMemory.getRightTupleMemory().remove( rightTuple );
-        memory.betaMemory.getRightTupleMemory().add( rightTuple );
+        memory.betaMemory.getRightTupleMemory().removeAdd( rightTuple );
 
         if ( memory.betaMemory.getLeftTupleMemory() == null || memory.betaMemory.getLeftTupleMemory().size() == 0 ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
