@@ -183,9 +183,9 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
     private Declaration[] collectRequiredDeclarations( Map<String, Declaration> declsInScope,
                                                        Set<Declaration> requiredDecl,
                                                        final BoundIdentifiers usedIdentifiers ) {
-        final Declaration[] previousDeclarations = new Declaration[usedIdentifiers.getDeclarations().size()];
+        final Declaration[] previousDeclarations = new Declaration[usedIdentifiers.getDeclrClasses().size()];
         int i = 0;
-        for ( String key : usedIdentifiers.getDeclarations().keySet() ) {
+        for ( String key : usedIdentifiers.getDeclrClasses().keySet() ) {
             Declaration d = declsInScope.get( key );
             previousDeclarations[i++] = d;
             requiredDecl.add( d );
@@ -267,9 +267,9 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                                                   accumDescr.getResultCode(),
                                                                                                   available );
 
-        final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
-        requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
-        requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+        final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+        requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+        requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
 
         final Map<String, Class< ? >> requiredGlobals = new HashMap<String, Class< ? >>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
         requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
@@ -280,7 +280,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                                                   accumDescr,
                                                                                                   accumDescr.getActionCode(),
                                                                                                   available );
-            requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+            requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
             requiredGlobals.putAll( reverseCodeAnalysis.getBoundIdentifiers().getGlobals() );
         }
 
@@ -355,7 +355,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                           context,
                           className,
                           map,
-                          accumulate,
+                          accumulate.new Wirer(0),
                           accumDescr );
         return accumulate;
     }
