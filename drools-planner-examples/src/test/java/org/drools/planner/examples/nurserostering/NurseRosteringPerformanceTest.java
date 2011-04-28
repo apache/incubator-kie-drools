@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.curriculumcourse;
+package org.drools.planner.examples.nurserostering;
 
 import java.io.File;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
+import org.drools.planner.examples.nurserostering.persistence.NurseRosteringDaoImpl;
 import org.junit.Test;
 
-public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
+public class NurseRosteringPerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+        return "/org/drools/planner/examples/nurserostering/solver/nurseRosteringSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDaoImpl();
+        return new NurseRosteringDaoImpl();
     }
 
     // ************************************************************************
@@ -41,15 +41,15 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 60000)
-    public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-99soft");
+    public void solveMedium_late01_initialized() {
+        File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "-45hard/-3335soft");
     }
 
     @Test(timeout = 60000)
-    public void solveDebugComp01_initializedDebug() {
-        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.DEBUG);
+    public void solveMedium_late01_initializedDebug() {
+        File unsolvedDataFile = new File("data/nurserostering/unsolved/medium_late01_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "-57hard/-3387soft", EnvironmentMode.DEBUG);
     }
 
 }
