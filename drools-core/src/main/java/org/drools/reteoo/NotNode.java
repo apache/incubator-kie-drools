@@ -382,19 +382,15 @@ public class NotNode extends BetaNode {
             FastIterator it = memory.getRightTupleMemory().fastIterator();
 
             final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
+            
+            // we must do this after we have the next in memory
+            // We add to the end to give an opportunity to re-match if in same bucket
+            memory.getRightTupleMemory().remove( rightTuple );
+            memory.getRightTupleMemory().add( rightTuple );            
 
             // iterate all the existing previous blocked LeftTuples
             for ( LeftTuple leftTuple = (LeftTuple) firstBlocked; leftTuple != null; ) {
                 LeftTuple temp = leftTuple.getBlockedNext();
-                if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-                                                            leftTuple ) ) {
-                    leftTuple.setBlockedPrevious( null ); // must null these as we are re-adding them to the list
-                    leftTuple.setBlockedNext( null );
-                    // in the same bucket and it still blocks, so add back into blocked list
-                    rightTuple.addBlocked( leftTuple ); // no need to set on LeftTuple, as it already has the reference
-                    leftTuple = temp;
-                    continue;
-                }
 
                 leftTuple.setBlocker( null );
                 leftTuple.setBlockedPrevious( null );
@@ -427,16 +423,16 @@ public class NotNode extends BetaNode {
 
                 leftTuple = temp;
             }
+        } else {
+            // we had to do this at the end, rather than beginning as this 'if' block needs the next memory tuple
+            memory.getRightTupleMemory().remove( rightTuple );
+            memory.getRightTupleMemory().add( rightTuple );            
         }
 
         this.constraints.resetFactHandle( memory.getContext() );
         this.constraints.resetTuple( memory.getContext() );
 
-        // Add and remove to make sure we are in the right bucket and at the end
-        // this is needed to fix for indexing and deterministic iterations 
-        // we do this at the end, rather than at the bigging as normal, so we don't iterate onto ourself when looking for other blockers
-        memory.getRightTupleMemory().remove( rightTuple );
-        memory.getRightTupleMemory().add( rightTuple );
+
     }
 
     protected void propagateAssertLeftTuple(final PropagationContext context,
