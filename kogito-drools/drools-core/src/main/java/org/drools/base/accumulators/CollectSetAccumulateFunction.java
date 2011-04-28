@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>An implementation of an accumulator capable of collecting sets of values.
@@ -139,4 +140,10 @@ public class CollectSetAccumulateFunction
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Class< ? > getResultType() {
+        return Set.class;
+    }
 }

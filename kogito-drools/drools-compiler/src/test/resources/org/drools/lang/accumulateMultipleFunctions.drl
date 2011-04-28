@@ -1,0 +1,13 @@
+package org.drools
+
+rule "Accumulate 1"
+when
+     accumulate( Cheese( $price : price ),
+                 $a1 : average( $price ),
+                 $m1 : min( $price ),
+                 max( $price ) // binds are optional, but it makes no sense to not have a binding in this case
+        )
+then
+     // do something
+end
+

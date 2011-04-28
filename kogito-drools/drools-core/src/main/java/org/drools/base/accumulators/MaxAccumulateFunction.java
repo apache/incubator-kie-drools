@@ -94,4 +94,11 @@ public class MaxAccumulateFunction implements AccumulateFunction {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Class< ? > getResultType() {
+        return Number.class;
+    }
+
 }
