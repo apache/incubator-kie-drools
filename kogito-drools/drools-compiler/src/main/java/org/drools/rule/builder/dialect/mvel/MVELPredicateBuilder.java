@@ -44,6 +44,7 @@ public class MVELPredicateBuilder
                        final PredicateConstraint predicate,
                        final PredicateDescr predicateDescr,
                        final AnalysisResult analysis ) {
+        boolean typesafe = context.isTypesafe();
         MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
         try {
@@ -78,6 +79,8 @@ public class MVELPredicateBuilder
                                                           predicateDescr,
                                                           e,
                                                           "Unable to build expression for 'inline-eval' : " + e.getMessage() + "'" + predicateDescr.getContent() + "'\n" + e.getMessage() ) );
+        } finally {
+            context.setTypesafe( typesafe );
         }
     }
 

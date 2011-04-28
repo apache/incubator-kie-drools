@@ -60,6 +60,7 @@ public class MVELEvalBuilder
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
+        boolean typesafe = context.isTypesafe();
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 
@@ -75,10 +76,10 @@ public class MVELEvalBuilder
                                                                                                    context.getPackageBuilder().getGlobals() ) );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-            int i = usedIdentifiers.getDeclarations().keySet().size();
+            int i = usedIdentifiers.getDeclrClasses().keySet().size();
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
-            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+            for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
                 previousDeclarations[i++] = decls.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
@@ -109,6 +110,8 @@ public class MVELEvalBuilder
                                                           e,
                                                           "Unable to build expression for 'eval':" + e.getMessage() + " '" + evalDescr.getContent() + "'" ) );
             return null;
+        } finally {
+            context.setTypesafe( typesafe );
         }
     }
 

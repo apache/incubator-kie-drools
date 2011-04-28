@@ -19,6 +19,7 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class MVELAccumulateBuilder
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
+        boolean typesafe = context.isTypesafe();
         try {
             final AccumulateDescr accumDescr = (AccumulateDescr) descr;
 
@@ -86,14 +88,18 @@ public class MVELAccumulateBuilder
             MVELDialect dialect = (MVELDialect) context.getDialect();
 
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());            
-            Map<String, Declaration> sourceOuterDeclr = source.getOuterDeclarations();               
+            Map<String, Declaration> sourceOuterDeclr = source.getOuterDeclarations();   
+            
+            Map<String, Declaration> mergedDecl = new HashMap(decls);
+            mergedDecl.putAll( sourceOuterDeclr );
 
             Map<String, Class<?>> declarationClasses = context.getDeclarationResolver().getDeclarationClasses( decls );
-            declarationClasses.putAll( context.getDeclarationResolver().getDeclarationClasses( sourceOuterDeclr ) );
+            declarationClasses.putAll(  context.getDeclarationResolver().getDeclarationClasses( sourceOuterDeclr ) );
             
             Accumulator accumulator = null;
                         
-            BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses, context.getPackageBuilder().getGlobals() ) ;          
+            BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses, context.getPackageBuilder().getGlobals() ) ;
+            boundIds.setDeclarations(mergedDecl);
             
             if ( accumDescr.isExternalFunction() ) {
                 // build an external function executor
@@ -149,19 +155,20 @@ public class MVELAccumulateBuilder
                                                                                                               boundIds,
                                                                                                               initCodeAnalysis.getMvelVariables() );
 
-                AnalysisResult reverseCodeAnalysis = null;
+                MVELAnalysisResult reverseCodeAnalysis = null;
                 if ( accumDescr.getReverseCode() != null ) {
-                    reverseCodeAnalysis = dialect.analyzeBlock( context,
-                                                                accumDescr,
-                                                                null,
-                                                                accumDescr.getActionCode(),
-                                                                boundIds,
-                                                                initCodeAnalysis.getMvelVariables(),
-                                                                "drools",
-                                                                KnowledgeHelper.class );
+                    reverseCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
+                                                                                     accumDescr,
+                                                                                     null,
+                                                                                     accumDescr.getActionCode(),
+                                                                                     boundIds,
+                                                                                     initCodeAnalysis.getMvelVariables(),
+                                                                                     "drools",
+                                                                                     KnowledgeHelper.class );
                 }
 
                 
+                context.setTypesafe( initCodeAnalysis.isTypesafe() );
                 MVELCompilationUnit initUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getInitCode(),
                                                                                initCodeAnalysis,
                                                                                getUsedDeclarations( decls, initCodeAnalysis ),
@@ -171,6 +178,7 @@ public class MVELAccumulateBuilder
                                                                                "drools",
                                                                                KnowledgeHelper.class );
 
+                context.setTypesafe( actionCodeAnalysis.isTypesafe() );
                 MVELCompilationUnit actionUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getActionCode(),
                                                                                  actionCodeAnalysis,
                                                                                  getUsedDeclarations( decls, actionCodeAnalysis ),
@@ -182,6 +190,7 @@ public class MVELAccumulateBuilder
 
                 MVELCompilationUnit reverseUnit = null;
                 if ( accumDescr.getReverseCode() != null ) {
+                    context.setTypesafe( reverseCodeAnalysis.isTypesafe() );
                     reverseUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getReverseCode(),
                                                                   reverseCodeAnalysis,
                                                                   getUsedDeclarations( decls, reverseCodeAnalysis ),
@@ -192,6 +201,7 @@ public class MVELAccumulateBuilder
                                                                   KnowledgeHelper.class );
                 }
 
+                context.setTypesafe( resultCodeAnalysis.isTypesafe() );
                 MVELCompilationUnit resultUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getResultCode(),
                                                                                  resultCodeAnalysis,
                                                                                  getUsedDeclarations( decls, resultCodeAnalysis ),
@@ -204,7 +214,7 @@ public class MVELAccumulateBuilder
                 if ( reverseUnit != null ) {
                     Set<String> shadow = new HashSet<String>( source.getOuterDeclarations().keySet() );
                     shadow.retainAll( reverseCodeAnalysis.getNotBoundedIdentifiers() );
-                    shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+                    shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
 
                     String[] shadowVars = (String[]) shadow.toArray( new String[shadow.size()] );
                     
@@ -237,14 +247,16 @@ public class MVELAccumulateBuilder
                                                           e,
                                                           "Unable to build expression for 'accumulate' : " + e.getMessage() ) );
             return null;
+        } finally {
+            context.setTypesafe( typesafe );
         }
     }
     
     private Declaration[] getUsedDeclarations(Map<String, Declaration> decls, AnalysisResult analysis) {
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-        int i = usedIdentifiers.getDeclarations().keySet().size();
+        int i = usedIdentifiers.getDeclrClasses().keySet().size();
         List<Declaration> usedDeclarations = new ArrayList<Declaration>();
-        for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+        for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
             if ( decls.containsKey( id )) {
                 usedDeclarations.add( decls.get( id ) );
             }

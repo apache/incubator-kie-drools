@@ -102,7 +102,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
-            final Declaration[] previousDeclarations = usedIdentifiers.getDeclarations().values().toArray(new Declaration[usedIdentifiers.getDeclarations().size()]);
+            final Declaration[] previousDeclarations = usedIdentifiers.getDeclrClasses().values().toArray(new Declaration[usedIdentifiers.getDeclrClasses().size()]);
             final Declaration[] sourceDeclArr = (Declaration[]) source.getOuterDeclarations().values().toArray( new Declaration[0] );
 
             final String className = "accumulateExpression" + context.getNextId();
@@ -152,9 +152,9 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                                                       accumDescr.getResultCode(),
                                                                                                       available );
 
-            final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
-            requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
-            requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+            final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+            requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+            requiredDeclarations.addAll( resultCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
 
             final Map<String, Class<?>> requiredGlobals = new HashMap<String, Class<?>>( initCodeAnalysis.getBoundIdentifiers().getGlobals() );
             requiredGlobals.putAll( actionCodeAnalysis.getBoundIdentifiers().getGlobals() );
@@ -165,7 +165,7 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                                                       accumDescr,
                                                                                                       accumDescr.getActionCode(),
                                                                                                       available );
-                requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+                requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
                 requiredGlobals.putAll( reverseCodeAnalysis.getBoundIdentifiers().getGlobals() );
             }
 
