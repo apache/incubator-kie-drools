@@ -7989,12 +7989,20 @@ public class MiscTest {
         str += "package org.simple \n";
         str += "import " + A.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
-        str += "rule xxx \n";
+        str += "rule x1 \n";
         str += "when \n";
+        str += "    $s : String( this == 'x1' ) \n";
         str += "    not A( this != null ) \n";
         str += "then \n";
-        str += "  list.add(\"fired\"); \n";
+        str += "  list.add(\"fired x1\"); \n";
         str += "end  \n";
+        str += "rule x2 \n";
+        str += "when \n";
+        str += "    $s : String( this == 'x2' ) \n";
+        str += "    not A( field1 == $s, this != null ) \n"; // this ensures an index bucket
+        str += "then \n";
+        str += "  list.add(\"fired x2\"); \n";
+        str += "end  \n";      
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -8012,12 +8020,17 @@ public class MiscTest {
         ksession.setGlobal( "list",
                             list );
 
-       
-        A a1 = new A("2", "2");        
-        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
+        ksession.insert( "x1" );
+        ksession.insert( "x2" );
+        A a1 = new A("x1", null);        
+        A a2 = new A("x2", null );
         
-        // make sure the 'not' is obeyed when fact is cycled causing add/remove node memory
-        ksession.update( fa1, a1 );    
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );        
+        FactHandle fa2 = (FactHandle) ksession.insert( a2 );
+        
+        // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
+        ksession.update( fa1, a1 );
+        ksession.update( fa2, a2 );    
         ksession.fireAllRules();
      
         assertEquals( 0, list.size() ); 
@@ -8035,12 +8048,20 @@ public class MiscTest {
         str += "package org.simple \n";
         str += "import " + A.class.getCanonicalName() + "\n";
         str += "global java.util.List list \n";
-        str += "rule xxx \n";
+        str += "rule x1 \n";
         str += "when \n";
+        str += "    $s : String( this == 'x1' ) \n";
         str += "    exists A( this != null ) \n";
         str += "then \n";
-        str += "  list.add(\"fired\"); \n";
+        str += "  list.add(\"fired x1\"); \n";
         str += "end  \n";
+        str += "rule x2 \n";
+        str += "when \n";
+        str += "    $s : String( this == 'x2' ) \n";
+        str += "    exists A( field1 == $s, this != null ) \n"; // this ensures an index bucket
+        str += "then \n";
+        str += "  list.add(\"fired x2\"); \n";
+        str += "end  \n";        
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
@@ -8059,14 +8080,20 @@ public class MiscTest {
                             list );
 
        
-        A a1 = new A("2", "2");        
-        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
+        ksession.insert( "x1" );
+        ksession.insert( "x2" );
+        A a1 = new A("x1", null);        
+        A a2 = new A("x2", null );
+        
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );        
+        FactHandle fa2 = (FactHandle) ksession.insert( a2 );
         
         // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
-        ksession.update( fa1, a1 );    
+        ksession.update( fa1, a1 );
+        ksession.update( fa2, a2 );    
         ksession.fireAllRules();
      
-        assertEquals( 1, list.size() ); 
+        assertEquals( 2, list.size() ); 
         
         ksession.dispose();
     }  
