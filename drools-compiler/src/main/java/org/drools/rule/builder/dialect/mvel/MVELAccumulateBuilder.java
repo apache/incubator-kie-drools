@@ -133,8 +133,9 @@ public class MVELAccumulateBuilder
                                                           isMultiFunction );
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+            int index = 0;
             for ( Accumulator accumulator : accumulators ) {
-                data.addCompileable( accumulate,
+                data.addCompileable( accumulate.new Wirer( index++ ),
                                      (MVELCompileable) accumulator );
                 ((MVELCompileable) accumulator).compile( context.getPackageBuilder().getRootClassLoader() );
             }
@@ -305,7 +306,7 @@ public class MVELAccumulateBuilder
         if ( reverseUnit != null ) {
             Set<String> shadow = new HashSet<String>( source.getOuterDeclarations().keySet() );
             shadow.retainAll( reverseCodeAnalysis.getNotBoundedIdentifiers() );
-            shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclarations().keySet() );
+            shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
 
             String[] shadowVars = (String[]) shadow.toArray( new String[shadow.size()] );
 

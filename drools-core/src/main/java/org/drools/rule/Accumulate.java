@@ -38,7 +38,6 @@ import org.drools.spi.Wireable;
  */
 public class Accumulate extends ConditionalElement
     implements
-    Wireable,
     PatternSource {
 
     private static final long    serialVersionUID = 510l;
@@ -60,7 +59,7 @@ public class Accumulate extends ConditionalElement
         this( source,
               new Declaration[0],
               new Declaration[0],
-              null,
+              new Accumulator[1], // default is 1 accumulator
               false );
     }
 
@@ -71,7 +70,7 @@ public class Accumulate extends ConditionalElement
         this( source,
               requiredDeclarations,
               innerDeclarations,
-              null,
+              new Accumulator[1], // default is 1 accumulator
               false );
     }
 
@@ -120,13 +119,6 @@ public class Accumulate extends ConditionalElement
 
     public Accumulator[] getAccumulators() {
         return this.accumulators;
-    }
-
-    public void wire(Object object) {
-        setAccumulators( new Accumulator[] { (Accumulator) object } );
-        for ( Accumulate clone : this.cloned ) {
-            clone.wire( object );
-        }
     }
 
     public void setAccumulators(final Accumulator[] accumulators) {
@@ -332,6 +324,23 @@ public class Accumulate extends ConditionalElement
      */
     public void setMultiFunction( boolean multiFunction ) {
         this.multiFunction = multiFunction;
+    }
+    
+    public final class Wirer implements Wireable, Serializable {
+        private static final long serialVersionUID = -9072646735174734614L;
+        
+        private final int index;
+        
+        public Wirer( int index ) {
+            this.index = index;
+        }
+
+        public void wire( Object object ) {
+            accumulators[index] = (Accumulator) object;
+            for ( Accumulate clone : cloned ) {
+                clone.accumulators[index] = (Accumulator) object;
+            }
+        }
     }
 
 }
