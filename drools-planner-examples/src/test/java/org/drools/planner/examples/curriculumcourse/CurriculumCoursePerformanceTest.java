@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,42 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.nqueens;
+package org.drools.planner.examples.curriculumcourse;
 
 import java.io.File;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
+import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
 import org.junit.Test;
 
-public class NQueensPerformanceTest extends SolverPerformanceTest {
+public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml";
+        return "/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new NQueensDaoImpl();
+        return new CurriculumCourseDaoImpl();
     }
 
     // ************************************************************************
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 10000)
-    public void solveDebug4QueensDebug() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.DEBUG);
+    @Test(timeout = 60000)
+    public void solveComp_set1_initialized() {
+        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-99soft");
     }
 
-    @Test(timeout = 10000)
-    public void solveDebug8QueensDebug() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"), "0", EnvironmentMode.DEBUG);
+    @Test(timeout = 60000)
+    public void solveDebugComp_set1_initializedDebug() {
+        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.DEBUG);
     }
 
 }

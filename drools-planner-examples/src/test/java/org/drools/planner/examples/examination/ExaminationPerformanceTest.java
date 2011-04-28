@@ -41,13 +41,13 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 60000)
-    public void solveComp_set1_initializedScore7925soft() {
+    public void solveComp_set1_initialized() {
         File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set1_initialized.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-7925soft");
     }
 
     @Test(timeout = 60000)
-    public void solveDebugComp_set1_initializedScore8072soft() {
+    public void solveDebugComp_set1_initializedDebug() {
         File unsolvedDataFile = new File("data/examination/unsolved/exam_comp_set1_initialized.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-8072soft", EnvironmentMode.DEBUG);
     }
