@@ -58,9 +58,14 @@ public class PatternBuilder
 
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr ) {
+        boolean typeSafe = context.isTypesafe();
+        try {
         return this.build( context,
                            descr,
                            null );
+        } finally {
+            context.setTypesafe( typeSafe );
+        }
     }
 
     /**
@@ -181,6 +186,8 @@ public class PatternBuilder
             TypeDeclaration typeDeclr = context.getPackageBuilder().getTypeDeclaration( cls );
             if ( typeDeclr != null ) {
                 context.setTypesafe( typeDeclr.isTypesafe() );
+            } else {
+                context.setTypesafe( true );
             }
         }
 
@@ -516,14 +523,14 @@ public class PatternBuilder
                                                                                     LiteralRestrictionDescr.TYPE_STRING ) ); // default type
             } else {
                 // is it an enum?
-                int dotPos = value.indexOf( '.' );
+                int dotPos = value.lastIndexOf( '.' );
                 if ( dotPos >= 0 ) {
-                    final String className = value.substring( 0,
-                                                              dotPos );
-                    String enumName = value.substring( dotPos + 1 );
+                    final String mainPart = value.substring( 0,
+                                                             dotPos );
+                    String lastPart = value.substring( dotPos + 1 );
                     try {
-                        final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( className );
-                        if ( enumName.indexOf( '(' ) < 0 && enumName.indexOf( '.' ) < 0 && enumName.indexOf( '[' ) < 0 ) {
+                        final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( mainPart );
+                        if ( lastPart.indexOf( '(' ) < 0 && lastPart.indexOf( '.' ) < 0 && lastPart.indexOf( '[' ) < 0 ) {
                             restriction = buildLiteralRestriction( context,
                                                                    extractor,
                                                                    new LiteralRestrictionDescr( operator,
@@ -834,7 +841,7 @@ public class PatternBuilder
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
-        for ( String id : usedIdentifiers.getDeclarations().keySet() ) {
+        for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                                       id );
             if ( decl.getPattern() == pattern ) {
@@ -974,7 +981,7 @@ public class PatternBuilder
                 throw new RuntimeException("Can't figure out: " + expr);
             }
             extractor = new MVELClassFieldReader(classType,
-                    expr, null);
+                                                 expr, null);
         } else {
             extractor = getFieldReadAccessor( context,
                                               implicitBinding,
@@ -1073,7 +1080,7 @@ public class PatternBuilder
 
         final List tupleDeclarations = new ArrayList();
         final List factDeclarations = new ArrayList();
-        for ( String id : usedIdentifiers.getDeclarations().keySet() ) {
+        for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
             final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                                       id );
             if ( decl.getPattern() == pattern ) {

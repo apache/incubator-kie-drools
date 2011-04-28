@@ -580,7 +580,7 @@ public class MVELDialect
         
         if ( previousDeclarations != null ) {
             for (Declaration decl : previousDeclarations ) {
-                if ( analysis.getBoundIdentifiers().getDeclarations().containsKey( decl.getIdentifier() ) ) {
+                if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
                                         decl.getExtractor().getExtractToClass() );
@@ -590,7 +590,7 @@ public class MVELDialect
         
         if ( localDeclarations != null ) {
             for (Declaration decl : localDeclarations ) {
-                if ( analysis.getBoundIdentifiers().getDeclarations().containsKey( decl.getIdentifier() ) ) {
+                if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
                                         decl.getExtractor().getExtractToClass() );
@@ -604,9 +604,10 @@ public class MVELDialect
         strList = new ArrayList<String>();
         if ( otherInputVariables != null ) {
             int i = 0;
+            MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) analysis;
             for ( Iterator it = otherInputVariables.entrySet().iterator(); it.hasNext(); ) {
                 Entry entry = (Entry) it.next();
-                if ( !analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) || "rule".equals( entry.getKey() ) ) {
+                if ( (!analysis.getNotBoundedIdentifiers().contains( entry.getKey() ) && !mvelAnalysis.getMvelVariables().keySet().contains( entry.getKey() ) )|| "rule".equals( entry.getKey() ) ) {
                     // no point including them if they aren't used
                     // and rule was already included
                     continue;

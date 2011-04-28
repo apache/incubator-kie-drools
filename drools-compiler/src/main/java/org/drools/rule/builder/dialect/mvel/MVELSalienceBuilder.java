@@ -20,6 +20,7 @@ public class MVELSalienceBuilder
     SalienceBuilder {
 
     public void build(RuleBuildContext context) {
+        boolean typesafe = context.isTypesafe();
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
@@ -29,17 +30,17 @@ public class MVELSalienceBuilder
             
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
 
-            AnalysisResult analysis = dialect.analyzeExpression( context,
-                                                                 context.getRuleDescr(),
-                                                                 (String) context.getRuleDescr().getSalience(),
-                                                                 new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
-                                                                                      context.getPackageBuilder().getGlobals() ) );
-
+            MVELAnalysisResult analysis = ( MVELAnalysisResult) dialect.analyzeExpression( context,
+                                                                                           context.getRuleDescr(),
+                                                                                           (String) context.getRuleDescr().getSalience(),
+                                                                                           new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
+                                                                                                                context.getPackageBuilder().getGlobals() ) );
+            context.setTypesafe( analysis.isTypesafe() );
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-            int i = usedIdentifiers.getDeclarations().keySet().size();
+            int i = usedIdentifiers.getDeclrClasses().keySet().size();
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
-            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+            for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
                 previousDeclarations[i++] = decls.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
@@ -67,6 +68,8 @@ public class MVELSalienceBuilder
                                                           context.getRuleDescr(),
                                                           null,
                                                           "Unable to build expression for 'salience' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );
+        } finally {
+            context.setTypesafe( typesafe );
         }
     }
 

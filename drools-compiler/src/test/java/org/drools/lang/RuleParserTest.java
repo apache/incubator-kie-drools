@@ -33,6 +33,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
 import org.drools.lang.descr.AccumulateDescr;
+import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -496,6 +497,28 @@ public class RuleParserTest extends TestCase {
                       constraint.getDescrs().get( 0 ).toString() );
         assertEquals( "price > 10",
                       constraint.getDescrs().get( 1 ).toString() );
+    }
+
+    @Test
+    public void testStringEscapes() throws Exception {
+        String source = "package com.sample  rule test  when  Cheese( type matches \"\\..*\\\\.\" )  then  end";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+        assertEquals( "com.sample",
+                          pkg.getName() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( "test",
+                          rule.getName() );
+
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+        PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+
+        AndDescr constraint = (AndDescr) pattern.getConstraint();
+        assertEquals( 1,
+                      constraint.getDescrs().size() );
+        assertEquals( "type matches \"\\..*\\\\.\"",
+                      constraint.getDescrs().get( 0 ).toString() );
     }
 
     @Test
@@ -3022,6 +3045,53 @@ public class RuleParserTest extends TestCase {
         final PatternDescr people = collect2.getInputPattern();
         assertEquals( "People",
                       people.getObjectType() );
+    }
+
+    @Test
+    public void testAccumulateMultipleFunctions() throws Exception {
+        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
+                                                               "accumulateMultipleFunctions.drl" );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Object[]",
+                      out.getObjectType() );
+        AccumulateDescr accum = (AccumulateDescr) out.getSource();
+        assertTrue( accum.isExternalFunction() );
+
+        List<AccumulateFunctionCallDescr> functions = accum.getFunctions();
+        assertEquals( 3,
+                      functions.size() );
+        assertEquals( "average",
+                      functions.get( 0 ).getFunction() );
+        assertEquals( "$a1",
+                      functions.get( 0 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 0 ).getParams()[0] );
+
+        assertEquals( "min",
+                      functions.get( 1 ).getFunction() );
+        assertEquals( "$m1",
+                      functions.get( 1 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 1 ).getParams()[0] );
+
+        assertEquals( "max",
+                      functions.get( 2 ).getFunction() );
+        assertEquals( null,
+                      functions.get( 2 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 2 ).getParams()[0] );
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
     }
 
     @Test

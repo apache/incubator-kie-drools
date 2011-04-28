@@ -229,6 +229,40 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         }
         return result;
     }
+    
+    public void removeAdd(LeftTuple leftTuple) {
+        LeftTupleList memory = leftTuple.getMemory();
+        memory.remove( leftTuple );
+        
+        final int newHashCode = this.index.hashCodeOf( leftTuple );
+        if ( newHashCode == memory.hashCode() ) {
+            // it's the same bucket, so re-use and return
+            memory.add( leftTuple );
+            return;
+        }
+           
+        // bucket is empty so remove.
+        this.factSize--;
+        if ( memory.first == null ) {
+            final int index = indexOf( memory.hashCode(),
+                                       this.table.length );
+            LeftTupleList previous = null;
+            LeftTupleList current = (LeftTupleList) this.table[index];
+            while ( current != memory ) {
+                previous = current;
+                current = (LeftTupleList) current.getNext();
+            }
+
+            if ( previous != null ) {
+                previous.next = current.next;
+            } else {
+                this.table[index] = current.next;
+            }
+            this.size--;
+        }
+
+        add( leftTuple );
+    }    
 
     public void add(final LeftTuple tuple) {
         final LeftTupleList entry = getOrCreate( tuple );
@@ -238,56 +272,25 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     }
 
     public void remove(final LeftTuple leftTuple) {
-        if ( leftTuple.getMemory() != null ) {
-            LeftTupleList memory = leftTuple.getMemory();
-            memory.remove( leftTuple );
-            this.factSize--;
-            if ( memory.first == null ) {
-                final int index = indexOf( memory.hashCode(),
-                                           this.table.length );
-                LeftTupleList previous = null;
-                LeftTupleList current = (LeftTupleList) this.table[index];
-                while ( current != memory ) {
-                    previous = current;
-                    current = (LeftTupleList) current.getNext();
-                }
-
-                if ( previous != null ) {
-                    previous.next = current.next;
-                } else {
-                    this.table[index] = current.next;
-                }
-                this.size--;
+        LeftTupleList memory = leftTuple.getMemory();
+        memory.remove( leftTuple );
+        this.factSize--;
+        if ( memory.first == null ) {
+            final int index = indexOf( memory.hashCode(),
+                                       this.table.length );
+            LeftTupleList previous = null;
+            LeftTupleList current = (LeftTupleList) this.table[index];
+            while ( current != memory ) {
+                previous = current;
+                current = (LeftTupleList) current.getNext();
             }
-            return;
-        }
 
-        final int hashCode = this.index.hashCodeOf( leftTuple );
-        final int index = indexOf( hashCode,
-                                   this.table.length );
-
-        // search the table for  the Entry, we need to track previous, so if the Entry
-        // is empty we can remove it.
-        LeftTupleList previous = null;
-        LeftTupleList current = (LeftTupleList) this.table[index];
-        while ( current != null ) {
-            if ( current.matches( leftTuple,
-                                  hashCode ) ) {
-                current.remove( leftTuple );
-                this.factSize--;
-
-                if ( current.first == null ) {
-                    if ( previous != null ) {
-                        previous.next = current.next;
-                    } else {
-                        this.table[index] = current.next;
-                    }
-                    this.size--;
-                }
-                break;
+            if ( previous != null ) {
+                previous.next = current.next;
+            } else {
+                this.table[index] = current.next;
             }
-            previous = current;
-            current = (LeftTupleList) current.next;
+            this.size--;
         }
         leftTuple.setNext( null );
         leftTuple.setPrevious( null );
