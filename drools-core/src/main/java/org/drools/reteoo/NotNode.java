@@ -22,6 +22,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
@@ -382,15 +383,19 @@ public class NotNode extends BetaNode {
             FastIterator it = memory.getRightTupleMemory().fastIterator();
 
             RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
-            if ( rootBlocker == null ) {
-                // we are at the end of the list, so set to self, to give self a chance to rematch
-                rootBlocker = rightTuple;
-            }
+            
+            RightTupleList list = rightTuple.getMemory();
+            
             
             // we must do this after we have the next in memory
             // We add to the end to give an opportunity to re-match if in same bucket
             memory.getRightTupleMemory().remove( rightTuple );
-            memory.getRightTupleMemory().add( rightTuple );            
+            memory.getRightTupleMemory().add( rightTuple );     
+            
+            if ( rootBlocker == null && list == rightTuple.getMemory() ) {
+                // we are at the end of the list, so set to self, to give self a chance to rematch
+                rootBlocker = rightTuple;
+            }
 
             // iterate all the existing previous blocked LeftTuples
             for ( LeftTuple leftTuple = (LeftTuple) firstBlocked; leftTuple != null; ) {
