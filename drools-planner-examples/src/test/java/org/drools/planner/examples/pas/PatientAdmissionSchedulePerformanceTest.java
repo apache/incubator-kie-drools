@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.curriculumcourse;
+package org.drools.planner.examples.pas;
 
 import java.io.File;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.curriculumcourse.persistence.CurriculumCourseDaoImpl;
+import org.drools.planner.examples.pas.persistence.PatientAdmissionScheduleDaoImpl;
 import org.junit.Test;
 
-public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
+public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
-        return "/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseSolverConfig.xml";
+        return "/org/drools/planner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CurriculumCourseDaoImpl();
+        return new PatientAdmissionScheduleDaoImpl();
     }
 
     // ************************************************************************
@@ -42,14 +42,14 @@ public class CurriculumCoursePerformanceTest extends SolverPerformanceTest {
 
     @Test(timeout = 60000)
     public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-99soft");
+        File unsolvedDataFile = new File("data/pas/unsolved/testdata01_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-8534soft");
     }
 
     @Test(timeout = 60000)
-    public void solveComp01_initializedDebug() {
-        File unsolvedDataFile = new File("data/curriculumcourse/unsolved/comp01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-140soft", EnvironmentMode.DEBUG);
+    public void solveTestdata01_initializedDebug() {
+        File unsolvedDataFile = new File("data/pas/unsolved/testdata01_initialized.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/-8758soft", EnvironmentMode.DEBUG);
     }
 
 }
