@@ -454,7 +454,11 @@ public class ExistsNode extends BetaNode {
             // now process existing blocks, we only process existing and not new from above loop
 
             FastIterator rightIt = memory.getRightTupleMemory().fastIterator();
-            final RightTuple rootBlocker = (RightTuple) rightIt.next(rightTuple);
+            RightTuple rootBlocker = (RightTuple) rightIt.next(rightTuple);
+            if ( rootBlocker == null ) {
+                // we are at the end of the list, so set to self, to give self a chance to rematch
+                rootBlocker = rightTuple;
+            }            
             
             // we must do this after we have the next in memory
             // We add to the end to give an opportunity to re-match if in same bucket
@@ -467,14 +471,6 @@ public class ExistsNode extends BetaNode {
 
                 leftTuple.setBlockedPrevious( null ); // must null these as we are re-adding them to the list
                 leftTuple.setBlockedNext( null );
-
-//                if ( this.constraints.isAllowedCachedRight( memory.getContext(),
-//                                                            leftTuple ) ) {
-//                    // in the same bucket and it still blocks, so add back into blocked list
-//                    rightTuple.addBlocked( leftTuple ); // no need to set on LeftTuple, as it already has the reference
-//                    leftTuple = temp;
-//                    continue;
-//                }
 
                 leftTuple.setBlocker( null );
 

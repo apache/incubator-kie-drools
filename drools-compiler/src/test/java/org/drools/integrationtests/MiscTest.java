@@ -7980,6 +7980,98 @@ public class MiscTest {
     }
     
     @Test
+    public void testLastMemoryEntryNotBug() {
+        // JBRULES-2809
+        // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
+        // And it gets no opportunity to rematch with itself
+        
+        String str = "";
+        str += "package org.simple \n";
+        str += "import " + A.class.getCanonicalName() + "\n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "when \n";
+        str += "    not A( this != null ) \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+       
+        A a1 = new A("2", "2");        
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
+        
+        // make sure the 'not' is obeyed when fact is cycled causing add/remove node memory
+        ksession.update( fa1, a1 );    
+        ksession.fireAllRules();
+     
+        assertEquals( 0, list.size() ); 
+        
+        ksession.dispose();
+    }   
+    
+    @Test
+    public void testLastMemoryEntryExistsBug() {
+        // JBRULES-2809
+        // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
+        // And it gets no opportunity to rematch with itself
+        
+        String str = "";
+        str += "package org.simple \n";
+        str += "import " + A.class.getCanonicalName() + "\n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "when \n";
+        str += "    exists A( this != null ) \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+       
+        A a1 = new A("2", "2");        
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
+        
+        // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
+        ksession.update( fa1, a1 );    
+        ksession.fireAllRules();
+     
+        assertEquals( 1, list.size() ); 
+        
+        ksession.dispose();
+    }  
+    
+    @Test
     public void testNotIterativeModifyBug() {
         // JBRULES-2809
         // This bug occurs when a tuple is modified, the remove/add puts it onto the memory end
