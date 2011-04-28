@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
-    <environmentMode>DEBUG</environmentMode>
+    <!--<environmentMode>DEBUG</environmentMode>-->
     <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
