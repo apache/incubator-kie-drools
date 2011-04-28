@@ -104,4 +104,11 @@ public class AverageAccumulateFunction implements AccumulateFunction {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Class< ? > getResultType() {
+        return Number.class;
+    }
+
 }

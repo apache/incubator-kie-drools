@@ -126,4 +126,11 @@ public class CollectListAccumulateFunction
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Class< ? > getResultType() {
+        return List.class;
+    }
+
 }

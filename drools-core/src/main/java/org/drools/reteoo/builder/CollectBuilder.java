@@ -107,7 +107,8 @@ public class CollectBuilder
         Accumulate accumulate = new Accumulate( sourcePattern,
                                                 sourcePattern.getRequiredDeclarations(),
                                                 (Declaration[]) collect.getInnerDeclarations().values().toArray( new Declaration[0] ),
-                                                new Accumulator[] { accumulator });
+                                                new Accumulator[] { accumulator },
+                                                false );
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                     new AccumulateNode( context.getNextId(),
                                                                                         context.getTupleSource(),
