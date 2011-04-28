@@ -13,6 +13,8 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlPackageReader;
+import org.drools.core.util.StringUtils;
+import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AccessorDescr;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
@@ -21,6 +23,7 @@ import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.ForallDescr;
 import org.drools.lang.descr.FromDescr;
@@ -57,7 +60,6 @@ public class XmlPackageReaderTest {
     }
 
     @Test
-    @Ignore
     public void testParseFrom() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseFrom.xml" ) ) );
@@ -218,53 +220,10 @@ public class XmlPackageReaderTest {
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
-        assertNotNull( packageDescr );
-
-        RuleDescr obj = (RuleDescr) packageDescr.getRules().get( 0 );
-        Object objectpattern = obj.getLhs().getDescrs().get( 0 );
-        assertTrue( objectpattern instanceof PatternDescr );
-
-        PatternDescr patterndescr = (PatternDescr) objectpattern;
-
-        assertEquals( patterndescr.getObjectType(),
-                                    "Cheese" );
-
-        Object collectobj = patterndescr.getSource();
-
-        assertTrue( collectobj instanceof CollectDescr );
-
-        CollectDescr collectDescr = (CollectDescr) collectobj;
-
-        PatternDescr inputpattern = collectDescr.getInputPattern();
-
-        assertEquals( inputpattern.getObjectType(),
-                      "Person" );
-        Object fieldContraintObject = inputpattern.getConstraint().getDescrs().get( 0 );
-        assertTrue( fieldContraintObject instanceof FieldConstraintDescr );
-        FieldConstraintDescr fieldconstraintdescr = (FieldConstraintDescr) fieldContraintObject;
-        assertEquals( fieldconstraintdescr.getFieldName(),
-                      "hair" );
-        Object literal1 = fieldconstraintdescr.getRestrictions().get( 0 );
-        assertTrue( literal1 instanceof LiteralRestrictionDescr );
-        LiteralRestrictionDescr literalDesc = (LiteralRestrictionDescr) literal1;
-        assertEquals( literalDesc.getEvaluator(),
-                      "==" );
-        assertEquals( literalDesc.getText(),
-                      "pink" );
-
-        fieldContraintObject = patterndescr.getConstraint().getDescrs().get( 0 );
-        assertTrue( fieldContraintObject instanceof FieldConstraintDescr );
-        fieldconstraintdescr = (FieldConstraintDescr) fieldContraintObject;
-        assertEquals( fieldconstraintdescr.getFieldName(),
-                      "type" );
-        literal1 = fieldconstraintdescr.getRestrictions().get( 0 );
-        assertTrue( literal1 instanceof LiteralRestrictionDescr );
-        literalDesc = (LiteralRestrictionDescr) literal1;
-        assertEquals( literalDesc.getEvaluator(),
-                      "==" );
-        assertEquals( literalDesc.getText(),
-                      "1" );
-
+        String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.drl" ) ) );
+        String actual = new DrlDumper().dump( packageDescr );
+        
+        DumperTestHelper.assertEqualsIgnoreWhitespace( expected, actual );
     }
 
     @Test
@@ -385,76 +344,17 @@ public class XmlPackageReaderTest {
         final XmlPackageReader xmlPackageReader = getXmReader();
         xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
-        assertNotNull( packageDescr );
-        assertEquals( "com.sample",
-                      packageDescr.getName() );
 
-        final List imports = packageDescr.getImports();
-        assertEquals( 2,
-                      imports.size() );
-        assertEquals( "java.util.HashMap",
-                      ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
-                      ((ImportDescr) imports.get( 1 )).getTarget() );
-
-        final List globals = packageDescr.getGlobals();
-        assertEquals( 2,
-                      globals.size() );
-        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
-        assertEquals( "com.sample.X",
-                      x.getType() );
-        assertEquals( "x",
-                      x.getIdentifier() );
-        assertEquals( "com.sample.Yada",
-                      yada.getType() );
-        assertEquals( "yada",
-                      yada.getIdentifier() );
-
-        final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
-        final List names = functionDescr.getParameterNames();
-        assertEquals( "foo",
-                      names.get( 0 ) );
-        assertEquals( "bada",
-                      names.get( 1 ) );
-
-        final List types = functionDescr.getParameterTypes();
-        assertEquals( "Bar",
-                      types.get( 0 ) );
-        assertEquals( "Bing",
-                      types.get( 1 ) );
-
-        assertEquals( "System.out.println(\"hello world\");",
-                      functionDescr.getText().trim() );
-
-        final RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
-        assertEquals( "simple_rule",
-                      ruleDescr.getName() );
-
-        assertEquals( 4,
-                      ruleDescr.getAttributes().size() );
-        final AttributeDescr attributeDescr = (AttributeDescr) ruleDescr.getAttributes().get( "salience" );
-        assertEquals( "salience",
-                      attributeDescr.getName() );
-        assertEquals( "10",
-                      attributeDescr.getValue() );
-
-        final AndDescr lhs = ruleDescr.getLhs();
-        assertEquals( 7,
-                      lhs.getDescrs().size() );
-        final PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
-        assertEquals( "Bar",
-                      patternDescr.getObjectType() );
-
-        final String consequence = (String) ruleDescr.getConsequence();
-        assertNotNull( consequence );
+        String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.drl" ) ) );
+        String actual = new DrlDumper().dump( packageDescr );
+        
+        DumperTestHelper.assertEqualsIgnoreWhitespace( expected, actual );
     }
-
+    
     @Test
-    @Ignore
-    public void testParseLhs() throws Exception {
+    public void testParseSimpleRule() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
-        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.xml" ) ) );
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_SimpleRule1.xml" ) ) );
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
         assertNotNull( packageDescr );
         assertEquals( "com.sample",
@@ -463,132 +363,87 @@ public class XmlPackageReaderTest {
         final List imports = packageDescr.getImports();
         assertEquals( 2,
                       imports.size() );
-        assertEquals( "java.util.HashMap",
+        assertEquals( "java.util.List",
                       ((ImportDescr) imports.get( 0 )).getTarget() );
-        assertEquals( "org.drools.*",
+        assertEquals( "org.drools.Person",
                       ((ImportDescr) imports.get( 1 )).getTarget() );
 
-        final List globals = packageDescr.getGlobals();
-        assertEquals( 2,
-                      globals.size() );
-        final GlobalDescr x = (GlobalDescr) globals.get( 0 );
-        final GlobalDescr yada = (GlobalDescr) globals.get( 1 );
-        assertEquals( "com.sample.X",
-                      x.getType() );
-        assertEquals( "x",
-                      x.getIdentifier() );
-        assertEquals( "com.sample.Yada",
-                      yada.getType() );
-        assertEquals( "yada",
-                      yada.getIdentifier() );
-
-        final FunctionDescr functionDescr = (FunctionDescr) packageDescr.getFunctions().get( 0 );
-        final List names = functionDescr.getParameterNames();
-        assertEquals( "foo",
-                      names.get( 0 ) );
-        assertEquals( "bada",
-                      names.get( 1 ) );
-
-        final List types = functionDescr.getParameterTypes();
-        assertEquals( "Bar",
-                      types.get( 0 ) );
-        assertEquals( "Bing",
-                      types.get( 1 ) );
-
-        assertEquals( "System.out.println(\"hello world\");",
-                      functionDescr.getText().trim() );
-
-        final RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
-        assertEquals( "my rule",
+        RuleDescr ruleDescr = (RuleDescr) packageDescr.getRules().get( 0 );
+        assertEquals( "simple_rule1",
                       ruleDescr.getName() );
-
-        final AndDescr lhsDescr = ruleDescr.getLhs();
-
-        AndDescr andDescr = (AndDescr) lhsDescr.getDescrs().get( 0 );
-        OrDescr orDescr = (OrDescr) lhsDescr.getDescrs().get( 1 );
-        final PatternDescr pattern1 = (PatternDescr) lhsDescr.getDescrs().get( 2 );
-        assertNull( pattern1.getIdentifier() );
-        assertEquals( "Foo",
-                      pattern1.getObjectType() );
-
-        final PatternDescr pattern2 = (PatternDescr) lhsDescr.getDescrs().get( 3 );
-        assertEquals( "Bar",
-                      pattern2.getObjectType() );
-        assertEquals( "bar",
-                      pattern2.getIdentifier() );
-
-        final PatternDescr pattern3 = (PatternDescr) lhsDescr.getDescrs().get( 4 );
-        //final LiteralDescr literalDescr = (LiteralDescr) pattern3.getDescrs().get( 0 );
-        final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) pattern3.getDescrs().get( 0 );
-        final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 0 );
-        assertEquals( "field1",
-                      fieldConstraintDescr.getFieldName() );
-        assertEquals( "==",
-                      literalDescr.getEvaluator() );
-        assertEquals( "value1",
-                      literalDescr.getText() );
-
-        final ReturnValueRestrictionDescr returnValueDescr = (ReturnValueRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 1 );
-        assertEquals( "==",
-                      returnValueDescr.getEvaluator() );
-        assertEquals( "1==1",
-                      returnValueDescr.getContent() );
-
-        final VariableRestrictionDescr variableDescr = (VariableRestrictionDescr) fieldConstraintDescr.getRestrictions().get( 2 );
-        assertEquals( "==",
-                      variableDescr.getEvaluator() );
-        assertEquals( "var1",
-                      variableDescr.getIdentifier() );
-
-        final PredicateDescr predicateDescr = (PredicateDescr) pattern3.getDescrs().get( 1 );
-        assertEquals( "1==1",
-                      predicateDescr.getContent() );
-
-        final BindingDescr fieldBindingDescr = (BindingDescr) pattern3.getBindings().get( 0 );
-        assertEquals( "field1",
-                      fieldBindingDescr.getExpression() );
-        assertEquals( "var1",
-                      fieldBindingDescr.getVariable() );
-
-        final NotDescr notDescr = (NotDescr) lhsDescr.getDescrs().get( 5 );
-        assertEquals( 1,
-                      notDescr.getDescrs().size() );
-        PatternDescr patternDescr = (PatternDescr) notDescr.getDescrs().get( 0 );
-        assertEquals( "Bar",
+        AndDescr lhs = ruleDescr.getLhs();
+        PatternDescr patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "Person",
                       patternDescr.getObjectType() );
+        ExprConstraintDescr expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "name == \"darth\"", expr.getExpression() );
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 1 );
+        assertEquals( "simple_rule2",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "age == 35 || == -3.5", expr.getExpression() );    
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 2 );
+        assertEquals( "simple_rule3",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 0 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "age == 35 || (!= 7.0 && != -70)", expr.getExpression() );      
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 3 );
+        assertEquals( "simple_rule3",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "name == $s", expr.getExpression() );               
 
-        final ExistsDescr existsDescr = (ExistsDescr) lhsDescr.getDescrs().get( 6 );
-        assertEquals( 1,
-                      existsDescr.getDescrs().size() );
-        patternDescr = (PatternDescr) existsDescr.getDescrs().get( 0 );
-        assertEquals( "Bar",
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 4 );
+        assertEquals( "simple_rule4",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "Person",
                       patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "(name == $s) || (age == 35 || (!= 7.0 && != -70))", expr.getExpression() );     
+        
+        
+        ruleDescr = (RuleDescr) packageDescr.getRules().get( 5 );
+        assertEquals( "simple_rule5",
+                      ruleDescr.getName() );
+        lhs = ruleDescr.getLhs();
+        patternDescr = (PatternDescr) lhs.getDescrs().get( 1 );
+        assertEquals( "Person",
+                      patternDescr.getObjectType() );
+        expr = ( ExprConstraintDescr ) ((AndDescr)patternDescr.getConstraint()).getDescrs().get( 0 );
+        assertEquals( "(name == $s) || ((age != 34) && (age != 37) && (name != \"yoda\"))", expr.getExpression() );           
 
-        andDescr = (AndDescr) lhsDescr.getDescrs().get( 7 );
-        assertEquals( 2,
-                      andDescr.getDescrs().size() );
-        orDescr = (OrDescr) andDescr.getDescrs().get( 1 );
-        patternDescr = (PatternDescr) orDescr.getDescrs().get( 0 );
-        assertEquals( "Bar",
-                      patternDescr.getObjectType() );
-        patternDescr = (PatternDescr) andDescr.getDescrs().get( 0 );
-        assertEquals( "Yada",
-                      patternDescr.getObjectType() );
+    }    
 
-        orDescr = (OrDescr) lhsDescr.getDescrs().get( 8 );
-        assertEquals( 2,
-                      orDescr.getDescrs().size() );
-        andDescr = (AndDescr) orDescr.getDescrs().get( 1 );
-        patternDescr = (PatternDescr) andDescr.getDescrs().get( 0 );
-        assertEquals( "Foo",
-                      patternDescr.getObjectType() );
-        patternDescr = (PatternDescr) orDescr.getDescrs().get( 0 );
-        assertEquals( "Zaa",
-                      patternDescr.getObjectType() );
+    @Test
+    public void testParseLhs() throws Exception {
+        final XmlPackageReader xmlPackageReader = getXmReader();
+        xmlPackageReader.read( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.xml" ) ) );
+        final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
-        final EvalDescr evalDescr = (EvalDescr) lhsDescr.getDescrs().get( 9 );
-        assertEquals( "1==1",
-                      evalDescr.getContent() );
+        String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.drl" ) ) );
+        String actual = new DrlDumper().dump( packageDescr );
+        
+        DumperTestHelper.assertEqualsIgnoreWhitespace( expected, actual );
     }
 
     @Test

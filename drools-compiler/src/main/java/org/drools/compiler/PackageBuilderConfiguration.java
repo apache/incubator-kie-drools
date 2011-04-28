@@ -53,6 +53,7 @@ import org.drools.xml.DefaultSemanticModule;
 import org.drools.xml.Handler;
 import org.drools.xml.SemanticModule;
 import org.drools.xml.SemanticModules;
+import org.drools.xml.WrapperSemanticModule;
 
 /**
  * This class configures the package compiler.
@@ -344,8 +345,11 @@ public class PackageBuilderConfiguration
 
     public void initSemanticModules() {
         this.semanticModules = new SemanticModules();
+        
+        RulesSemanticModule ruleModule = new RulesSemanticModule("http://ddefault");
 
-        this.semanticModules.addSemanticModule( new RulesSemanticModule() );
+        this.semanticModules.addSemanticModule( new WrapperSemanticModule("http://drools.org/drools-5.0",ruleModule) );
+        this.semanticModules.addSemanticModule( new WrapperSemanticModule("http://drools.org/drools-5.2", ruleModule) );
         this.semanticModules.addSemanticModule( new ChangeSetSemanticModule() );
 
         // split on each space

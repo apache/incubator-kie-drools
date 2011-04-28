@@ -18,6 +18,7 @@ package org.drools.compiler.xml.rules;
 
 import java.util.HashSet;
 
+import org.drools.lang.descr.ConnectiveDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
@@ -36,22 +37,6 @@ public class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
     implements
     Handler {
     public QualifiedIdentifierRestrictionHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FieldConstraintDescr.class );
-            this.validParents.add( RestrictionConnectiveDescr.class );
-
-            this.validPeers = new HashSet();
-
-            this.validPeers.add( null );
-            this.validPeers.add( LiteralRestrictionDescr.class );
-            this.validPeers.add( ReturnValueRestrictionDescr.class );
-            this.validPeers.add( VariableRestrictionDescr.class );
-            this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
-
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,
@@ -63,42 +48,23 @@ public class QualifiedIdentifierRestrictionHandler extends BaseAbstractHandler
 
         String evaluator = attrs.getValue( "evaluator" );
         emptyAttributeCheck( localName, "evaluator", evaluator, parser );
-        boolean isNegated = evaluator.startsWith( "not " );
-        if( isNegated ) {
-            evaluator = evaluator.substring( 4 );
-        }
 
-        final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = new QualifiedIdentifierRestrictionDescr( evaluator,
-                                                                                                                                isNegated,
-                                                                                                                                null,
-                                                                                                                                null );
-
-        return qualifiedIdentifierRestricionDescr;
+        return evaluator.trim() + " ";
     }
 
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
-
-        final QualifiedIdentifierRestrictionDescr qualifiedIdentifierRestricionDescr = (QualifiedIdentifierRestrictionDescr) parser.getCurrent();
-
         final String expression =((org.w3c.dom.Text)element.getChildNodes().item( 0 )).getWholeText();
 
         emptyContentCheck( localName, expression, parser );
 
-        qualifiedIdentifierRestricionDescr.setText( expression );
-        
-        final Object parent = parser.getParent();
+        ConnectiveDescr c = (ConnectiveDescr) parser.getParent();
+        String s = ( (String) parser.getCurrent()) + expression;
 
-        if ( parent instanceof FieldConstraintDescr ) {
-            final FieldConstraintDescr fieldConstraintDescr = (FieldConstraintDescr) parent;
-            fieldConstraintDescr.addRestriction( qualifiedIdentifierRestricionDescr );
-        } else if ( parent instanceof RestrictionConnectiveDescr ) {
-            final RestrictionConnectiveDescr restrictionConDescr = (RestrictionConnectiveDescr) parent;
-            restrictionConDescr.addRestriction( qualifiedIdentifierRestricionDescr );
-        }
-        return qualifiedIdentifierRestricionDescr;
+        c.add( s );
+        return null;      
     }
 
     public Class generateNodeFor() {

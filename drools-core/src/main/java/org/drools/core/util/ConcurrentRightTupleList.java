@@ -68,6 +68,10 @@ public class ConcurrentRightTupleList
     public RightTuple getLast(LeftTuple leftTuple) {
         return this.last.get();
     }
+    
+    public void removeAdd(final RightTuple rightTuple) {
+        throw new UnsupportedOperationException( "this method still needs to be implemented" );
+    }
 
     public void add(final RightTuple rightTuple) {
         if ( this.last != null ) {

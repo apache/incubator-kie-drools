@@ -49,6 +49,7 @@ import java.util.Iterator;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ValueType;
+import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.InternalReadAccessor;
@@ -201,7 +202,7 @@ public class Declaration
      * @return
      */
     public boolean isPatternDeclaration() {
-        return this.pattern != null && this.pattern.getDeclaration() == this;
+        return ( this.pattern != null && this.pattern.getDeclaration() == this ) || this.getIdentifier().equals( "this" ) ;
     }
 
     /**

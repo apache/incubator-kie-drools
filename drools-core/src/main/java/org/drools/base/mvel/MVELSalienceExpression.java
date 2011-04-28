@@ -74,7 +74,7 @@ public class MVELSalienceExpression
     public int getValue(final Tuple tuple,
                         final Rule rule,
                         final WorkingMemory workingMemory) {
-        VariableResolverFactory factory = unit.getFactory( null, rule, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null, rule, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver() );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

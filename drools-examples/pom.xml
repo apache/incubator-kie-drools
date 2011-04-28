@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -10,18 +9,13 @@
   </parent>
 
   <artifactId>drools-examples</artifactId>
-  <packaging>pom</packaging>
 
-  <name>Drools :: Examples</name>
-
-  <modules>
-    <module>drools-expert-examples</module>
-    <module>drools-fusion-examples</module>
-  </modules>
+  <name>Drools examples</name>
+  <description>Run DroolsExamplesApp to try the Drools rule engine examples.</description>
 
   <repositories>
-    <!-- This is included here so that people that download the examples
-       standalone can still find the parent pom -->
+    <!-- TODO remove this once maven central replicates the jboss repository -->
+    <!-- Included so the examples sources in the distribution zip build out-of-the-box with maven -->
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
@@ -33,9 +27,83 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
+        <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <configuration>
+            <archive>
+              <manifest>
+                <!-- Needed for runExamples.sh and runExamples.bat -->
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>../../binaries/</classpathPrefix>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <additionalBuildcommands>
+            <buildcommand>org.drools.eclipse.droolsbuilder</buildcommand>
+          </additionalBuildcommands>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <executable>java</executable>
+          <!-- only waltz12 is configured at the moment -->
+          <!-- TODO waltz50, manners64 and manners128 -->
+          <arguments>
+            <argument>-Xms1024M</argument>
+            <argument>-Xmx1024M</argument>
+            <argument>-cp</argument>
+            <classpath/>
+            <argument>org.drools.benchmark.waltz.WaltzBenchmark</argument>
+            <argument>waltz12.dat</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- Internal dependencies -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-templates</artifactId>
+    </dependency>
+
+    <!-- Needed for logging -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+    </dependency>
+  </dependencies>
 </project>

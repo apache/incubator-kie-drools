@@ -7,7 +7,7 @@
   <title>Hello World</title>
 
   <screen><emphasis role="bold">Name:</emphasis> Hello World
-<emphasis role="bold">Main class:</emphasis> org.drools.examples.HelloWorldExample
+<emphasis role="bold">Main class:</emphasis> org.drools.examples.helloworld.HelloWorldExample
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> HelloWorld.drl
 <emphasis role="bold">Objective:</emphasis> demonstrate basic rules in use</screen>
@@ -133,7 +133,7 @@ ksession.dispose();    </programlisting>
 
   <orderedlist>
     <listitem>
-      <para>Open the class org.drools.examples.HelloWorldExample in your
+      <para>Open the class org.drools.examples.helloworld.HelloWorldExample in your
       Eclipse IDE</para>
     </listitem>
 
@@ -173,19 +173,19 @@ Goodbye cruel world</programlisting>
     <title>HelloWorld: System.err in the Console window</title>
 
     <programlisting>==&gt;[ActivationCreated(0): rule=Hello World; 
-                   tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
-[ObjectInserted: handle=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]; 
-                 object=org.drools.examples.HelloWorldExample$Message@17cec96]
+                   tuple=[fid:1:1:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
+[ObjectInserted: handle=[fid:1:1:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96];
+                 object=org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]
 [BeforeActivationFired: rule=Hello World; 
-                   tuple=[fid:1:1:org.drools.examples.HelloWorldExample$Message@17cec96]]
+                   tuple=[fid:1:1:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
 ==&gt;[ActivationCreated(4): rule=Good Bye; 
-                   tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
-[ObjectUpdated: handle=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]; 
-                old_object=org.drools.examples.HelloWorldExample$Message@17cec96; 
-                new_object=org.drools.examples.HelloWorldExample$Message@17cec96]
+                   tuple=[fid:1:2:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
+[ObjectUpdated: handle=[fid:1:2:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96];
+                old_object=org.drools.examples.helloworld.HelloWorldExample$Message@17cec96;
+                new_object=org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]
 [AfterActivationFired(0): rule=Hello World]
 [BeforeActivationFired: rule=Good Bye; 
-                   tuple=[fid:1:2:org.drools.examples.HelloWorldExample$Message@17cec96]]
+                   tuple=[fid:1:2:org.drools.examples.helloworld.HelloWorldExample$Message@17cec96]]
 [AfterActivationFired(4): rule=Good Bye]  </programlisting>
   </example>
 

@@ -1,0 +1,56 @@
+package com.sample 
+
+import java.util.HashMap
+import org.drools.*
+
+global com.sample.X x
+global com.sample.Yada yada
+
+function void myFunc( Bar foo, Bing bada ) {
+    
+         System.out.println("hello world");
+    
+}
+
+
+rule "simple_rule"
+    salience 10
+    no-loop true
+    agenda-group agenda-group
+    activation-group activation-group
+when
+    foo2 : Bar( ((a (> 60 && < 70) || (< 50 && > 55)) && (a3 == "black")) || ((a == 40) && (a3 == "pink")) || ((a == 12) && (a3 == "yellow" || == "blue")) )  
+    not( 
+    Person( likes == type )  
+    exists( 
+    Person( likes == type )   )  ) 
+    
+    foo3 : Bar( a == 3 || == 4, a3 == "hello", a4 == null )  or
+    foo4 : Bar( a4 : a, a != 4 && != 5 )   or
+    foo5 : Bar( b == (a4 + 1) || > a4 || == 
+                     org.drools.Bar.BAR_ENUM_VALUE
+                   )  or
+    foo6 : Bar( a4 : a, b == 6 )  or
+    foo7 : Bar( a4 : a, b4 : b )  or
+    Baz(  )  
+then
+
+         if ( a == b ) {
+         assert( foo3 );
+         } else {
+         retract( foo4 );
+         }
+         System.out.println( a4 );
+  end
+
+rule "Check_NotNullof_rfqId"
+    agenda-group Check
+when
+    RFQBean( (m_rfqId == null) || (m_rfqId == "") )  
+then
+ response.setStatus("For RFQ Bean: The value of m_rfqId is
+         null.");
+
+         System.out.println(response.getStatus());
+
+end

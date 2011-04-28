@@ -85,6 +85,10 @@ public class BinaryHeapQueueAgendaGroup
     public void clear() {
         this.queue.clear();
     }
+    
+    public Activation[] getAndClear() {
+        return this.queue.getAndClear();
+    }
 
     /* (non-Javadoc)
      * @see org.drools.spi.AgendaGroup#size()
@@ -122,10 +126,6 @@ public class BinaryHeapQueueAgendaGroup
 
     public Activation[] getActivations() {
         return (Activation[]) this.queue.toArray( new AgendaItem[this.queue.size()] );
-    }
-
-    public Activation[] getQueue() {
-        return this.queue.getQueueable();
     }
 
     public String toString() {

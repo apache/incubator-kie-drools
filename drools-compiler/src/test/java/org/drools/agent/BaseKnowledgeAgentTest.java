@@ -135,7 +135,7 @@ public abstract class BaseKnowledgeAgentTest {
         
         if (!resourceCompilationFailedEvents.isEmpty()){
             //A compilation error occured
-            throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0) );
+            throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0).getKnowledgeBuilder().getErrors() );
         }
         
     }
@@ -378,6 +378,14 @@ public abstract class BaseKnowledgeAgentTest {
     
     public String createLhsRule(String ruleName, String lhs) {
         return createVersionedRule( null, new String[] { ruleName }, null, lhs, null );
+    }
+    
+    public String createLhsRule(String packageName, String ruleName, String lhs) {
+        return createVersionedRule( packageName, new String[] { ruleName }, null, lhs, null );
+    }
+    
+    public String createLhsRule(String packageName, String[] ruleNames, String lhs) {
+        return createVersionedRule( packageName, ruleNames, null, lhs, null );
     }
     
     public String createVersionedRule(String ruleName, String version) {

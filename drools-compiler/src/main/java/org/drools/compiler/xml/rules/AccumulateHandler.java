@@ -34,16 +34,6 @@ public class AccumulateHandler extends BaseAbstractHandler
     Handler {
 
     public AccumulateHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-
-            this.validParents.add( FromDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,

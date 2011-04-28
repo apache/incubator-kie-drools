@@ -309,58 +309,14 @@ public abstract class AbstractHashTable
             }
 
             // if no entry keep skipping rows until we come to the end, or find one that is populated
-            while ( this.entry == null && ++this.row < this.length ){
+            while ( this.entry == null && this.row < this.length ){
                 this.entry = this.table[this.row];
+                this.row++;
             }
 
             return this.entry;
         }
 
-        //        /* (non-Javadoc)
-        //         * @see org.drools.util.Iterator#next()
-        //         */
-        //        public Object next() {
-        //            if ( this.entry == null ) {
-        //                // keep skipping rows until we come to the end, or find one that is populated
-        //                while ( this.entry == null ) {
-        //                    this.row++;
-        //                    if ( this.row == this.length ) {
-        //                        return null;
-        //                    }
-        //                    this.entry = this.table[this.row];
-        //                }
-        //            } else {
-        //                this.entry = this.entry.getNext();
-        //                if ( this.entry == null ) {
-        //                    this.entry = (Entry) next();
-        //                }
-        //            }
-        //
-        //            return this.entry;
-        //        }
-
-        //        /* (non-Javadoc)
-        //         * @see org.drools.util.Iterator#next()
-        //         */
-        //        public Object next() {
-        //            if ( this.entry == null ) {
-        //                // keep skipping rows until we come to the end, or find one that is populated
-        //                while ( this.entry == null ) {
-        //                    this.row++;
-        //                    if ( this.row == this.length ) {
-        //                        return null;
-        //                    }
-        //                    this.entry = this.table[this.row];
-        //                }
-        //            } else {
-        //                this.entry = this.entry.getNext();
-        //                if ( this.entry == null ) {
-        //                    this.entry = (Entry) next();
-        //                }
-        //            }
-        //
-        //            return this.entry;
-        //        }
 
         /* (non-Javadoc)
          * @see org.drools.util.Iterator#reset()
@@ -368,8 +324,8 @@ public abstract class AbstractHashTable
         public void reset() {
             this.table = this.hashTable.getTable();
             this.length = this.table.length;
-            this.row = -1;
             this.entry = null;
+            this.row = 0;
         }
     }
 

@@ -40,6 +40,7 @@ public class BetaMemory
     private boolean           isLeftUnlinked = false;
     private boolean           isRightUnlinked = true;
 
+    private boolean           open;
 
     public BetaMemory() {
     }
@@ -103,11 +104,19 @@ public class BetaMemory
     public void setBehaviorContext(Object behaviorContext) {
         this.behaviorContext = behaviorContext;
     }
+
+    public boolean isOpen() {
+        return open;
+    }
+    
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
     
     public boolean isLeftUnlinked() {
         return this.isLeftUnlinked;
     }
-
+    
     public boolean isRightUnlinked() {
         return this.isRightUnlinked;
     }

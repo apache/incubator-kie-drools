@@ -34,6 +34,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.builder.ReturnValueBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELReturnValueBuilder
     implements
@@ -46,7 +47,7 @@ public class MVELReturnValueBuilder
                       final ReturnValueRestriction returnValueRestriction,
                       final ReturnValueRestrictionDescr returnValueRestrictionDescr,
                       final AnalysisResult analysis) {
-
+        boolean typesafe = context.isTypesafe();
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
             
@@ -54,12 +55,15 @@ public class MVELReturnValueBuilder
             
             Pattern p = ( Pattern ) context.getBuildStack().peek();
             
+            context.setTypesafe( ((MVELAnalysisResult)analysis).isTypesafe() );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), 
                                                                       analysis,  
                                                                       previousDeclarations, 
                                                                       localDeclarations, 
                                                                       null, 
-                                                                      context);
+                                                                      context,
+                                                                      "drools",
+                                                                      KnowledgeHelper.class);
     
             MVELReturnValueExpression expr = new MVELReturnValueExpression( unit,
                                                                             context.getDialect().getId() );
@@ -75,7 +79,10 @@ public class MVELReturnValueBuilder
                                                           context.getRuleDescr(),
                                                           null,
                                                           "Unable to build expression for 'returnValue' : " + e.getMessage() + "'" + context.getRuleDescr().getSalience() + "'" ) );
+        } finally {
+            context.setTypesafe( typesafe );
         }
+
     }
 
 }

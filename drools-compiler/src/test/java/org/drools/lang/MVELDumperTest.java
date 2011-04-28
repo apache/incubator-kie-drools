@@ -73,6 +73,54 @@ public class MVELDumperTest {
     }
 
     @Test
+    public void testDumpContains() throws Exception {
+        String input = "list contains \"b\"";
+        String expected = "list contains \"b\"";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+
+    @Test
+    public void testDumpContains2() throws Exception {
+        String input = "list not contains \"b\"";
+        String expected = "!( list contains \"b\" )";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+    
+    @Test
+    public void testDumpExcludes() throws Exception {
+        String input = "list excludes \"b\"";
+        String expected = "!( list contains \"b\" )";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+    
+    @Test
+    public void testDumpExcludes2() throws Exception {
+        String input = "list not excludes \"b\"";
+        String expected = "list contains \"b\"";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+    
+    @Test
     @Ignore
     public void testDumpWithDateAttr() throws Exception {
         String input = "son.birthDate == \"01-jan-2000\"";

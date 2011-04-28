@@ -31,7 +31,7 @@
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
+        <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
   </repositories>
@@ -64,6 +64,7 @@
       </activation>
       <modules>
         <module>drools-docs</module>
+        <module>drools-distribution</module>
       </modules>
     </profile>
   </profiles>

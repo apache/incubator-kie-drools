@@ -38,7 +38,6 @@ import org.drools.spi.Wireable;
  */
 public class Accumulate extends ConditionalElement
     implements
-    Wireable,
     PatternSource {
 
     private static final long    serialVersionUID = 510l;
@@ -47,6 +46,7 @@ public class Accumulate extends ConditionalElement
     private RuleConditionElement source;
     private Declaration[]        requiredDeclarations;
     private Declaration[]        innerDeclarations;
+    private boolean              multiFunction;
 
     private List<Accumulate>     cloned           = Collections.<Accumulate> emptyList();
 
@@ -59,7 +59,8 @@ public class Accumulate extends ConditionalElement
         this( source,
               new Declaration[0],
               new Declaration[0],
-              null );
+              new Accumulator[1], // default is 1 accumulator
+              false );
     }
 
     public Accumulate(final RuleConditionElement source,
@@ -69,18 +70,21 @@ public class Accumulate extends ConditionalElement
         this( source,
               requiredDeclarations,
               innerDeclarations,
-              null );
+              new Accumulator[1], // default is 1 accumulator
+              false );
     }
 
     public Accumulate(final RuleConditionElement source,
                       final Declaration[] requiredDeclarations,
                       final Declaration[] innerDeclarations,
-                      final Accumulator[] accumulators) {
+                      final Accumulator[] accumulators,
+                      final boolean multiFunction ) {
 
         this.source = source;
         this.requiredDeclarations = requiredDeclarations;
         this.innerDeclarations = innerDeclarations;
         this.accumulators = accumulators;
+        this.multiFunction = multiFunction;
     }
 
     @SuppressWarnings("unchecked")
@@ -90,6 +94,7 @@ public class Accumulate extends ConditionalElement
         for ( int i = 0; i < this.accumulators.length; i++ ) {
             this.accumulators[i] = (Accumulator) in.readObject();
         }
+        this.multiFunction = in.readBoolean();
         source = (RuleConditionElement) in.readObject();
         requiredDeclarations = (Declaration[]) in.readObject();
         innerDeclarations = (Declaration[]) in.readObject();
@@ -105,6 +110,7 @@ public class Accumulate extends ConditionalElement
                 out.writeObject( acc );
             }
         }
+        out.writeBoolean( multiFunction );
         out.writeObject( this.source );
         out.writeObject( this.requiredDeclarations );
         out.writeObject( this.innerDeclarations );
@@ -113,13 +119,6 @@ public class Accumulate extends ConditionalElement
 
     public Accumulator[] getAccumulators() {
         return this.accumulators;
-    }
-
-    public void wire(Object object) {
-        setAccumulators( new Accumulator[] { (Accumulator) object } );
-        for ( Accumulate clone : this.cloned ) {
-            clone.wire( object );
-        }
     }
 
     public void setAccumulators(final Accumulator[] accumulators) {
@@ -266,7 +265,8 @@ public class Accumulate extends ConditionalElement
         Accumulate clone = new Accumulate( this.source,
                                            this.requiredDeclarations,
                                            this.innerDeclarations,
-                                           this.accumulators );
+                                           this.accumulators,
+                                           this.multiFunction );
 
         if ( this.cloned == Collections.EMPTY_LIST ) {
             this.cloned = new ArrayList<Accumulate>( 1 );
@@ -310,6 +310,37 @@ public class Accumulate extends ConditionalElement
 
     public boolean isPatternScopeDelimiter() {
         return true;
+    }
+
+    /**
+     * @return the multiFunction
+     */
+    public boolean isMultiFunction() {
+        return multiFunction;
+    }
+
+    /**
+     * @param multiFunction the multiFunction to set
+     */
+    public void setMultiFunction( boolean multiFunction ) {
+        this.multiFunction = multiFunction;
+    }
+    
+    public final class Wirer implements Wireable, Serializable {
+        private static final long serialVersionUID = -9072646735174734614L;
+        
+        private final int index;
+        
+        public Wirer( int index ) {
+            this.index = index;
+        }
+
+        public void wire( Object object ) {
+            accumulators[index] = (Accumulator) object;
+            for ( Accumulate clone : cloned ) {
+                clone.accumulators[index] = (Accumulator) object;
+            }
+        }
     }
 
 }

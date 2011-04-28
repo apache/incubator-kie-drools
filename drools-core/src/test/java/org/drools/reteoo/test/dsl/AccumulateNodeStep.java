@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.tool.Rule;
+import org.drools.base.EvaluatorWrapper;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.base.accumulators.SumAccumulateFunction;
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -154,6 +155,7 @@ public class AccumulateNodeStep
                                                                            new String[]{}, // imported methods
                                                                            new String[]{}, // imported fields
                                                                            new String[]{}, // global identifiers
+                                                                           new EvaluatorWrapper[]{}, // operator identifiers
                                                                            new Declaration[]{}, // previous declarations
                                                                            new Declaration[]{decl}, // local declarations
                                                                            new String[]{}, // other identifiers
@@ -171,7 +173,8 @@ public class AccumulateNodeStep
             Accumulate accumulate = new Accumulate( sourcePattern,
                                                     new Declaration[]{}, // required declaration
                                                     new Declaration[]{}, // inner declarations
-                                                    new Accumulator[]{accumulator} );
+                                                    new Accumulator[]{accumulator},
+                                                    false );
             AccumulateNode accNode = new AccumulateNode( buildContext.getNextId(),
                                                          leftTupleSource,
                                                          rightObjectSource,

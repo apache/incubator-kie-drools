@@ -16,8 +16,11 @@
 
 package org.drools.compiler.xml.rules;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
+import org.drools.core.util.StringUtils;
+import org.drools.lang.descr.ConnectiveDescr;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.lang.descr.QualifiedIdentifierRestrictionDescr;
@@ -27,6 +30,7 @@ import org.drools.lang.descr.VariableRestrictionDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
+import org.mvel2.PropertyAccessor;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -35,22 +39,6 @@ public class LiteralRestrictionHandler extends BaseAbstractHandler
     implements
     Handler {
     public LiteralRestrictionHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( FieldConstraintDescr.class );
-            this.validParents.add( RestrictionConnectiveDescr.class );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-
-            this.validPeers.add( LiteralRestrictionDescr.class );
-            this.validPeers.add( ReturnValueRestrictionDescr.class );
-            this.validPeers.add( VariableRestrictionDescr.class );
-            this.validPeers.add( RestrictionConnectiveDescr.class );
-            this.validPeers.add( QualifiedIdentifierRestrictionDescr.class );
-
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,
@@ -60,34 +48,33 @@ public class LiteralRestrictionHandler extends BaseAbstractHandler
         parser.startElementBuilder( localName,
                                     attrs );
 
-        final String evaluator = attrs.getValue( "evaluator" );
+        String evaluator = attrs.getValue( "evaluator" );
         emptyAttributeCheck( localName, "evaluator", evaluator, parser );
-
-        final String text = attrs.getValue( "value" );
-
-        final LiteralRestrictionDescr literalDescr = new LiteralRestrictionDescr( evaluator,
-                                                                                  text );
-
-        return literalDescr;
+        
+        String text = attrs.getValue( "value" );
+        
+        if ( !text.trim().equals( "null" )) {
+            // find out if it's a valid integer or decimal, if not wrap in quotes
+            try {
+                new BigDecimal( text );
+            } catch ( NumberFormatException e ) {
+                text = "\"" + text.trim() + "\"";
+            }
+        }
+        
+        return evaluator.trim() + " " + text.trim();
     }
 
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
+        
+        ConnectiveDescr c = (ConnectiveDescr) parser.getParent();
+        String s = (String) parser.getCurrent();
 
-        final LiteralRestrictionDescr literalDescr = (LiteralRestrictionDescr) parser.getCurrent();
-
-        final Object parent = parser.getParent();
-
-        if ( parent instanceof FieldConstraintDescr ) {
-            final FieldConstraintDescr fieldConstriantDescr = (FieldConstraintDescr) parent;
-            fieldConstriantDescr.addRestriction( literalDescr );
-        } else if ( parent instanceof RestrictionConnectiveDescr ) {
-            final RestrictionConnectiveDescr restrictionDescr = (RestrictionConnectiveDescr) parent;
-            restrictionDescr.addRestriction( literalDescr );
-        }
-        return literalDescr;
+        c.add( s );
+        return null;
     }
 
     public Class generateNodeFor() {

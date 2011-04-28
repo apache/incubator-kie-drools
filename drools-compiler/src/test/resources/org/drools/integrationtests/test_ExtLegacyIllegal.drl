@@ -1,0 +1,9 @@
+package org.drools;
+
+
+
+declare LegacyBean
+@role(event)
+    objField : Object @position(1)  // extend declaration
+    newIllegalField : Object        // can't redefine class, need to extend instead
+end

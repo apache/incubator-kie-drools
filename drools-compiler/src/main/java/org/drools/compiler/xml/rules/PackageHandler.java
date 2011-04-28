@@ -40,15 +40,6 @@ public class PackageHandler extends BaseAbstractHandler
     implements
     Handler {
     public PackageHandler() {
-        if ( (this.validParents == null) && (this.validPeers == null) ) {
-            this.validParents = new HashSet();
-            this.validParents.add( null );
-
-            this.validPeers = new HashSet();
-            this.validPeers.add( null );
-
-            this.allowNesting = false;
-        }
     }
 
     public Object start(final String uri,

@@ -76,7 +76,7 @@ public class MVELReturnValueExpression
                                final Declaration[] requiredDeclarations,
                                final WorkingMemory workingMemory,
                                final Object ctx) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, object, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null, null, object, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );

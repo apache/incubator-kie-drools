@@ -16,20 +16,19 @@
 
 package org.drools.rule.builder.dialect.java;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.drools.base.EvaluatorWrapper;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.rule.builder.dialect.java.parser.JavaLexer;
 import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
@@ -66,6 +65,7 @@ public class JavaExprAnalyzer {
      * @throws RecognitionException 
      *             If an error occurs in the parser.
      */
+    @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeExpression(final String expr,
                                                 final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( expr );
@@ -76,11 +76,12 @@ public class JavaExprAnalyzer {
         parser.conditionalOrExpression();
         
         JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setIdentifiers(new HashSet( parser.getIdentifiers() ) );
+        result.setIdentifiers(new HashSet<String>( parser.getIdentifiers() ) );
         return analyze( result,
                         availableIdentifiers );
     }
 
+    @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeBlock(final String expr,
                                        final BoundIdentifiers availableIdentifiers) throws RecognitionException {
         final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
@@ -91,11 +92,11 @@ public class JavaExprAnalyzer {
         parser.block();
 
         JavaAnalysisResult result = new JavaAnalysisResult();
-        result.setIdentifiers( new HashSet( parser.getIdentifiers() ) );
+        result.setIdentifiers( new HashSet<String>( parser.getIdentifiers() ) );
         result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
-        for( Iterator it = parser.getLocalDeclarations().iterator(); it.hasNext(); ) {
+        for( Iterator<?> it = parser.getLocalDeclarations().iterator(); it.hasNext(); ) {
             JavaLocalDeclarationDescr descr = (JavaLocalDeclarationDescr) it.next();
-            for( Iterator identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
+            for( Iterator<?> identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
                 JavaLocalDeclarationDescr.IdentifierDescr ident = (JavaLocalDeclarationDescr.IdentifierDescr) identIt.next();
                 result.addLocalVariable( ident.getIdentifier(), descr );
             }
@@ -126,8 +127,9 @@ public class JavaExprAnalyzer {
         
         Map<String, Class<?>> usedDecls = new HashMap<String, Class<?>>();
         Map<String, Class<?>> usedGlobals = new HashMap<String, Class<?>>();
-
-        for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclarations().entrySet() ) {
+        Map<String, EvaluatorWrapper> usedOperators = new HashMap<String, EvaluatorWrapper>();
+ 
+        for ( Entry<String, Class<?>> entry : availableIdentifiers.getDeclrClasses().entrySet() ) {
             if ( identifiers.contains( entry.getKey() ) ) {
                 usedDecls.put( entry.getKey(),
                                entry.getValue() );
@@ -143,8 +145,16 @@ public class JavaExprAnalyzer {
             }
         }
 
+        for ( Map.Entry<String, EvaluatorWrapper> op : availableIdentifiers.getOperators().entrySet() ) {
+            if ( identifiers.contains( op.getKey() ) ) {
+                usedOperators.put( op.getKey(), op.getValue() );
+                notBound.remove( op );
+            }
+        }
+
         result.setBoundIdentifiers( new BoundIdentifiers( usedDecls,
-                                                          usedGlobals ) );
+                                                          usedGlobals,
+                                                          usedOperators ) );
         result.setNotBoundedIdentifiers( notBound );
 
         return result;

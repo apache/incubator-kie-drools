@@ -111,6 +111,10 @@ public class PackageBuildContext {
         return this.parentDescr;
     }
 
+    public void setParentDescr(BaseDescr descr) {
+        this.parentDescr = descr;
+    }
+
     public Dialect getDialect() {
         return dialect;
     }

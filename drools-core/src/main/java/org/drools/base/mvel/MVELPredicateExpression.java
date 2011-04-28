@@ -16,7 +16,6 @@
 
 package org.drools.base.mvel;
 
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -34,13 +33,17 @@ import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 
-public class MVELPredicateExpression implements PredicateExpression, MVELCompileable, Externalizable {
-    private static final long       serialVersionUID = 510l;
-    
+public class MVELPredicateExpression
+    implements
+    PredicateExpression,
+    MVELCompileable,
+    Externalizable {
+    private static final long   serialVersionUID = 510l;
+
     private MVELCompilationUnit unit;
-    private String id;
-    
-    private Serializable      expr;
+    private String              id;
+
+    private Serializable        expr;
 
     public MVELPredicateExpression() {
     }
@@ -51,17 +54,18 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
         this.id = id;
     }
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
         id = in.readUTF();
-        unit = ( MVELCompilationUnit ) in.readObject();
+        unit = (MVELCompilationUnit) in.readObject();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeUTF( id );
         out.writeObject( unit );
     }
-    
-    public void compile(ClassLoader classLoader) {
+
+    public void compile( ClassLoader classLoader ) {
         expr = unit.getCompiledExpression( classLoader );
     }
 
@@ -75,12 +79,18 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context ) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, object, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory );
+        VariableResolverFactory factory = unit.getFactory( null,
+                                                           null,
+                                                           object,
+                                                           (LeftTuple) tuple,
+                                                           null,
+                                                           (InternalWorkingMemory) workingMemory, 
+                                                           workingMemory.getGlobalResolver() );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
@@ -89,11 +99,11 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
                                                                  factory );
         return result.booleanValue();
     }
-    
+
     public String toString() {
         return this.unit.getExpression();
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -106,7 +116,7 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals( Object obj ) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
@@ -119,9 +129,8 @@ public class MVELPredicateExpression implements PredicateExpression, MVELCompile
         if ( other.expr == null ) {
             throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
         }
-                
+
         return this.unit.getExpression().equals( other.unit.getExpression() );
     }
-    
 
 }

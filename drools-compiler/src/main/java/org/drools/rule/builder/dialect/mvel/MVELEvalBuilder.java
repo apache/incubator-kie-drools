@@ -17,7 +17,6 @@
 package org.drools.rule.builder.dialect.mvel;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 import org.drools.base.mvel.MVELCompilationUnit;
@@ -35,6 +34,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import org.drools.spi.KnowledgeHelper;
 
 public class MVELEvalBuilder
     implements
@@ -60,6 +60,7 @@ public class MVELEvalBuilder
     public RuleConditionElement build(final RuleBuildContext context,
                                       final BaseDescr descr,
                                       final Pattern prefixPattern) {
+        boolean typesafe = context.isTypesafe();
         // it must be an EvalDescr
         final EvalDescr evalDescr = (EvalDescr) descr;
 
@@ -75,10 +76,10 @@ public class MVELEvalBuilder
                                                                                                    context.getPackageBuilder().getGlobals() ) );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-            int i = usedIdentifiers.getDeclarations().keySet().size();
+            int i = usedIdentifiers.getDeclrClasses().keySet().size();
             Declaration[] previousDeclarations = new Declaration[i];
             i = 0;
-            for ( String id :  usedIdentifiers.getDeclarations().keySet() ) {
+            for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
                 previousDeclarations[i++] = decls.get( id );
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  ); 
@@ -88,7 +89,9 @@ public class MVELEvalBuilder
                                                                        previousDeclarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class);
             final EvalCondition eval = new EvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,
@@ -107,6 +110,8 @@ public class MVELEvalBuilder
                                                           e,
                                                           "Unable to build expression for 'eval':" + e.getMessage() + " '" + evalDescr.getContent() + "'" ) );
             return null;
+        } finally {
+            context.setTypesafe( typesafe );
         }
     }
 

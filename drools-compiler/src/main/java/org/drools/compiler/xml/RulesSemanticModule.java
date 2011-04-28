@@ -6,6 +6,7 @@ import org.drools.compiler.xml.rules.AndHandler;
 import org.drools.compiler.xml.rules.CollectHandler;
 import org.drools.compiler.xml.rules.EvalHandler;
 import org.drools.compiler.xml.rules.ExistsHandler;
+import org.drools.compiler.xml.rules.ExprConstraintHandler;
 import org.drools.compiler.xml.rules.ExpressionHandler;
 import org.drools.compiler.xml.rules.FieldBindingHandler;
 import org.drools.compiler.xml.rules.FieldConstraintHandler;
@@ -30,8 +31,8 @@ import org.drools.xml.SemanticModule;
 public class RulesSemanticModule extends DefaultSemanticModule
     implements
     SemanticModule {
-    public RulesSemanticModule() {
-        super( "http://drools.org/drools-5.0" );
+    public RulesSemanticModule(String url) {
+        super( url );
 
         addHandler( "package",
                     new PackageHandler() );
@@ -53,6 +54,12 @@ public class RulesSemanticModule extends DefaultSemanticModule
 
         addHandler( "or-restriction-connective",
                     new RestrictionConnectiveHandler() );
+        
+
+        addHandler( "and-constraint-connective",
+                    new RestrictionConnectiveHandler() );
+        addHandler( "or-constraint-connective",
+                    new RestrictionConnectiveHandler() );        
 
         addHandler( "and-conditional-element",
                     new AndHandler() );
@@ -60,10 +67,6 @@ public class RulesSemanticModule extends DefaultSemanticModule
         addHandler( "or-conditional-element",
                     new OrHandler() );
 
-        addHandler( "and-constraint-connective",
-                    new AndHandler() );
-        addHandler( "or-constraint-connective",
-                    new OrHandler() );
 
         addHandler( "not",
                     new NotHandler() );
@@ -84,6 +87,8 @@ public class RulesSemanticModule extends DefaultSemanticModule
                     new AccumulateHandler() );
 
         // Field Constraints
+        addHandler( "expr",
+                    new ExprConstraintHandler() );        
         addHandler( "field-constraint",
                     new FieldConstraintHandler() );
         addHandler( "literal-restriction",

@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<package name="foo"  
-  xmlns="http://drools.org/drools-5.0"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
-  xs:schemaLocation="http://drools.org/drools-5.0 drools.org/drools-5.0.xsd">
-<import name="java.util.HashMap" /> 
-<import name="java.util.HashSet" /> 
-<import name="java.utilArrayList" /> 
+<package name="foo" xmlns="http://drools.org/drools-5.2"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="http://drools.org/drools-5.2 drools.org/drools-5.2.xsd">
+ <import name="java.util.HashMap" />
+ <import name="java.util.HashSet" />
+ <import name="java.utilArrayList" />
 
-<global identifier="m" type="HashMap" />
-<global identifier="s" type="HashSet" />
-<global identifier="p" type="org.drools.Person" />
+ <global identifier="m" type="HashMap" />
+ <global identifier="s" type="HashSet" />
+ <global identifier="p" type="org.drools.Person" />
 
-<importfunction name="org.drools.xml.DumperTest.testStaticMethod1"/>
-<importfunction name="org.drools.xml.DumperTest.testStaticMethod2"/>
-<importfunction name="org.drools.xml.DumperTest.testStaticMethod3"/>
+ <importfunction name="org.drools.xml.DumperTest.testStaticMethod1" />
+ <importfunction name="org.drools.xml.DumperTest.testStaticMethod2" />
+ <importfunction name="org.drools.xml.DumperTest.testStaticMethod3" />
+
 
 
 <rule name="simple_rule">
@@ -29,136 +28,71 @@
 <rule-attribute name="date-expires" value="01-Feb-2007" />
 
 <lhs><pattern identifier="foo2" object-type="Bar" >
-<or-constraint-connective><and-constraint-connective><field-constraint field-name="a"> 
-<or-restriction-connective><and-restriction-connective><literal-restriction evaluator="&gt;" value="60" />
-
-<literal-restriction evaluator="&lt;" value="70" />
-
-
-</and-restriction-connective>
-<and-restriction-connective><literal-restriction evaluator="&gt;" value="50" />
-
-<literal-restriction evaluator="&lt;" value="55" />
-
-
-</and-restriction-connective>
-
-</or-restriction-connective>
-</field-constraint>
-<field-constraint field-name="a3"> 
-<literal-restriction evaluator="==" value="black" />
-
-</field-constraint>
-
-</and-constraint-connective>
-<and-constraint-connective><field-constraint field-name="a"> 
-<literal-restriction evaluator="==" value="40" />
-
-</field-constraint>
-<field-constraint field-name="a3"> 
-<literal-restriction evaluator="==" value="pink" />
-
-</field-constraint>
-
-</and-constraint-connective>
-<and-constraint-connective><field-constraint field-name="a"> 
-<literal-restriction evaluator="==" value="12" />
-
-</field-constraint>
-<field-constraint field-name="a3"> 
-<literal-restriction evaluator="==" value="yellow" />
-
-</field-constraint>
-
-</and-constraint-connective>
-<field-constraint field-name="a3"> 
-<literal-restriction evaluator="==" value="blue" />
-
-</field-constraint>
-
-</or-constraint-connective>
+<expr>
+((a (&gt; 60 &amp;&amp; &lt; 70) || (&gt; 50 &amp;&amp; &lt; 55)) &amp;&amp; (a3 == &quot;black&quot;)) || ((a == 40) &amp;&amp; (a3 == &quot;pink&quot;)) || ((a == 12) &amp;&amp; (a3 == &quot;yellow&quot;)) || (a3 == &quot;blue&quot;)
+</expr>
 
 
 </pattern>
 
 <pattern identifier="foo3" object-type="Bar" >
-<field-constraint field-name="a"> 
-<or-restriction-connective><literal-restriction evaluator="==" value="3" />
-
-<literal-restriction evaluator="==" value="4" />
-
-
-</or-restriction-connective>
-</field-constraint>
-<field-constraint field-name="a3"> 
-<literal-restriction evaluator="==" value="hello" />
-
-</field-constraint>
-<field-constraint field-name="a4"> 
-<literal-restriction evaluator="==" value="null" />
-
-</field-constraint>
+<expr>
+a == 3 || == 4
+</expr>
+<expr>
+a3 == &quot;hello&quot;
+</expr>
+<expr>
+a4 == null
+</expr>
 
 
 </pattern>
 
 <pattern identifier="foo4" object-type="Bar" >
+<expr>
+a != 4 &amp;&amp; != 5
+</expr>
+
+
 <field-binding field-name="a" identifier="a4" />
-
-<field-constraint field-name="a"> 
-<literal-restriction evaluator="!=" value="4" />
-<literal-restriction evaluator="!=" value="5" />
-
-</field-constraint>
-
-
 </pattern>
 
 <pattern identifier="foo5" object-type="Bar" >
-<field-constraint field-name="b"> 
-<or-restriction-connective><return-value-restriction evaluator="==" >a4 + 1</return-value-restriction>
-
-<variable-restriction evaluator="&gt;" identifier="a4" />
-
-
-</or-restriction-connective>
-</field-constraint>
+<expr>
+b == (a4
+       + 1) || &gt; a4
+</expr>
 
 
 </pattern>
 
 <pattern identifier="foo6" object-type="Bar" >
+<expr>
+b == 6
+</expr>
+
+
 <field-binding field-name="a" identifier="a4" />
-
-<field-constraint field-name="b"> 
-<literal-restriction evaluator="==" value="6" />
-
-</field-constraint>
-
-
 </pattern>
 
 <pattern identifier="foo7" object-type="Bar" >
+
+
 <field-binding field-name="a" identifier="a4" />
-
 <field-binding field-name="b" identifier="b4" />
-
-
-
 </pattern>
 
 <pattern identifier="$cheeseList" object-type="ArrayList" >
-<field-constraint field-name="size"> 
-<literal-restriction evaluator="&gt;" value="2" />
-
-</field-constraint>
+<expr>
+size &gt; 2
+</expr>
 
 
 <from> <collect><pattern object-type="Cheese" >
-<field-constraint field-name="type"> 
-<variable-restriction evaluator="==" identifier="$likes" />
-
-</field-constraint>
+<expr>
+type == $likes
+</expr>
 
 
 </pattern>
@@ -170,48 +104,40 @@
 </pattern>
 
 
-</lhs>
-
-<rhs>  if ( a == b ) {
-    assert( foo3 );
-  } else {
-    retract( foo4 );
-  } 
-  System.out.println( a4 );
-  testStaticMethod1();
-  testStaticMethod2();
-  testStaticMethod3();
+</lhs><rhs> if ( a == b ) {
+   assert( foo3 );
+   } else {
+   retract( foo4 );
+   }
+   System.out.println( a4 );
+   testStaticMethod1();
+   testStaticMethod2();
+   testStaticMethod3();
 </rhs>
-
-
-</rule>
-
-<rule name="simple_rule2">
+</rule><rule name="simple_rule2">
 <rule-attribute name="salience" value="(10 + a)" />
 <rule-attribute name="dialect" value="mvel" />
 
 <lhs><pattern identifier="foo4" object-type="Bar" >
+<expr>
+a != 4 &amp;&amp; != 5
+</expr>
+
+
 <field-binding field-name="a" identifier="a4" />
-
-<field-constraint field-name="a"> 
-<literal-restriction evaluator="!=" value="4" />
-<literal-restriction evaluator="!=" value="5" />
-
-</field-constraint>
-
-
 </pattern>
 
 
-</lhs><rhs>  if ( a == b ) {
-    assert( foo3 );
-  } else {
-    retract( foo4 );
-  } 
-  System.out.println( a4 );
-  testStaticMethod1();  
-  testStaticMethod2();
-  testStaticMethod3();  
+</lhs><rhs> if ( a == b ) {
+   assert( foo3 );
+   } else {
+   retract( foo4 );
+   }
+   System.out.println( a4 );
+   testStaticMethod1();
+   testStaticMethod2();
+   testStaticMethod3();  
 </rhs>
 </rule>
+
 </package>

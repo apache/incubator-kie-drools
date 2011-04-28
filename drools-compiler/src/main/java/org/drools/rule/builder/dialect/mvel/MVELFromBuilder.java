@@ -38,6 +38,7 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.KnowledgeHelper;
 
 /**
  * A builder for "from" conditional element
@@ -78,10 +79,10 @@ public class MVELFromBuilder
             }
             
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();            
-            final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclarations().size()];
+            final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclrClasses().size()];
             String[] declrStr = new String[declarations.length];
             int j = 0;
-            for (String str : usedIdentifiers.getDeclarations().keySet() ) {
+            for (String str : usedIdentifiers.getDeclrClasses().keySet() ) {
                 declrStr[j] = str;
                 declarations[j++] = decls.get( str );
             }
@@ -92,7 +93,9 @@ public class MVELFromBuilder
                                                                        declarations,
                                                                        null,
                                                                        null,
-                                                                       context );
+                                                                       context,
+                                                                       "drools",
+                                                                       KnowledgeHelper.class );
 
             MVELDataProvider dataProvider = new MVELDataProvider( unit,
                                                                   context.getDialect().getId() );

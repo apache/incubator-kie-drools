@@ -49,8 +49,9 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
                                               final RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled) {
-        
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+        // this must be in reverse order to ensure that there is correct child tuple iteration
+        // for QueryElementNode. This is important for Accumulate now where it must propate to the right before the left input
+        for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {
             LeftTuple child = new LeftTuple( leftTuple,
                                              rightTuple,
                                              null,
@@ -133,17 +134,18 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                                            final PropagationContext context,
                                                            final InternalWorkingMemory workingMemory) {
         LeftTuple child = leftTuple.firstChild;
+        InternalFactHandle rightParent = child.getRightParent().getFactHandle();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
             doPropagateRetractLeftTuple( context,
                                          workingMemory,
                                          child,
                                          child.getLeftTupleSink() );
-            workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
             child.unlinkFromRightParent();
             child.unlinkFromLeftParent();
             child = temp;
         }
+        workingMemory.getFactHandleFactory().destroyFactHandle( rightParent );
     }
 
     public void propagateRetractRightTuple(final RightTuple rightTuple,

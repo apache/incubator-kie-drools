@@ -117,8 +117,8 @@ rule "Incoherent VariableRestrictions in pattern possibility, impossible range"
         $r2 :VariableRestriction(
             fieldPath == $r1.fieldPath,
             operator == Operator.GREATER,
-            variable.objectTypePath == $r1.variable.objectTypePath,
-            variable.objectTypeType == $r1.variable.objectTypeType,
+            variable.parentPath == $r1.variable.parentPath,
+            variable.parentType == $r1.variable.parentType,
             path != $r1.path
         )
     then

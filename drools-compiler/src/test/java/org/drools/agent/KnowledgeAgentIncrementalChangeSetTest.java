@@ -1226,4 +1226,105 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         ksession.dispose();
         kagent.dispose();
     }
+    
+    @Test
+    public void testMultiplePackages() throws Exception {
+        //One rule in some.pkg package
+        File f1 = fileManager.write( "rule1.drl",
+                                        createLhsRule("some.pkg","rule1", "String()") );
+        //Two rules in some.other.pkg package
+        File f2 = fileManager.write( "rule2.drl",
+                                        createLhsRule("some.other.pkg",new String[]{"rule2","rule3"}, "String()") );
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rule1.drl' type='DRL' />";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rule2.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent( kbase,
+                                                   false );
+
+        kagent.applyChangeSet(ResourceFactory.newUrlResource( fxml.toURI().toURL() ));
+
+        //Did the agent respected the packges?
+        assertEquals(2, kbase.getKnowledgePackages().size());
+        
+        //some.pkg has 1 rule
+        KnowledgePackage somePkg = kbase.getKnowledgePackage("some.pkg");
+        assertNotNull(somePkg);
+        assertEquals(1, somePkg.getRules().size());
+        assertEquals("rule1", somePkg.getRules().iterator().next().getName());
+        
+        //some.other.pkg has 2 rules
+        KnowledgePackage someOtherPkg = kbase.getKnowledgePackage("some.other.pkg");
+        assertNotNull(someOtherPkg);
+        assertEquals(2, someOtherPkg.getRules().size());
+        Iterator<Rule> someOtherPkgRules = someOtherPkg.getRules().iterator();
+        assertEquals("rule2", someOtherPkgRules.next().getName());
+        assertEquals("rule3", someOtherPkgRules.next().getName());
+        
+        //Delete rule2.drl content
+        this.fileManager.deleteFile(f2);
+        scan( kagent );
+        
+        //the empty package remains in the kbase
+        assertEquals(2, kbase.getKnowledgePackages().size());
+        
+        //some.pkg has 1 rule
+        somePkg = kbase.getKnowledgePackage("some.pkg");
+        assertNotNull(somePkg);
+        assertEquals(1, somePkg.getRules().size());
+        assertEquals("rule1", somePkg.getRules().iterator().next().getName());
+        
+        //some.other.pkg is empty
+        someOtherPkg = kbase.getKnowledgePackage("some.other.pkg");
+        assertNotNull(someOtherPkg);
+        assertTrue(someOtherPkg.getRules().isEmpty());
+        
+        
+        //Add 1 more rule in a different package
+        File f3 = fileManager.write( "rule3.drl",
+                                        createLhsRule("yet.another.pkg","rule4", "String()") );
+        
+        xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rule3.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        
+        this.applyChangeSet(kagent, xml);
+        
+        //There should be 3 packages now
+        assertEquals(3, kbase.getKnowledgePackages().size());
+        
+        //some.pkg has 1 rule
+        somePkg = kbase.getKnowledgePackage("some.pkg");
+        assertNotNull(somePkg);
+        assertEquals(1, somePkg.getRules().size());
+        assertEquals("rule1", somePkg.getRules().iterator().next().getName());
+        
+        //some.other.pkg is empty
+        someOtherPkg = kbase.getKnowledgePackage("some.other.pkg");
+        assertNotNull(someOtherPkg);
+        assertTrue(someOtherPkg.getRules().isEmpty());
+        //yet.another.pkg has 1 rule
+        KnowledgePackage yetAnotherPkg = kbase.getKnowledgePackage("yet.another.pkg");
+        assertNotNull(yetAnotherPkg);
+        assertEquals(1, yetAnotherPkg.getRules().size());
+        assertEquals("rule4", yetAnotherPkg.getRules().iterator().next().getName());
+        
+        
+        kagent.dispose();
+    }
 }

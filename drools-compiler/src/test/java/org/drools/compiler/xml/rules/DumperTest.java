@@ -12,37 +12,31 @@ public class DumperTest {
     // Xml Dumper test
 
     @Test
-    @Ignore
     public void testRoundTripAccumulateXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseAccumulate.xml" );
     }
 
     @Test
-    @Ignore
     public void testRoundTripCollectXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseCollect.xml" );
     }
 
     @Test
-    @Ignore
     public void testRoundTripExistsXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseExists.xml" );
     }
 
     @Test
-    @Ignore
     public void testRoundTripForallXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseForall.xml" );
     }
 
     @Test
-    @Ignore
     public void testRoundTripFromXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseFrom.xml" );
     }
 
     @Test
-    @Ignore
     public void testRoundTripComplexRuleXml() throws Exception {
         DumperTestHelper.XmlFile( "test_RoundTrip.xml" );
     }
@@ -90,7 +84,6 @@ public class DumperTest {
     }
 
     @Test
-    @Ignore
     public void testRoundTripPComplexXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseComplex.xml" );
     }

@@ -24,6 +24,7 @@ import java.util.PriorityQueue;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
 
 /**
@@ -115,6 +116,12 @@ public class ArrayAgendaGroup
     public int size() {
         return this.size;
     }
+    
+    public Activation[] getAndClear() {
+        Activation[] queue = getActivations();
+        clear();
+        return queue;
+    }    
 
     public void add(final Activation activation) {
         AgendaItem item = (AgendaItem) activation;
@@ -173,7 +180,7 @@ public class ArrayAgendaGroup
     public boolean isEmpty() {
         return this.size == 0;
     }
-
+    
     public Activation[] getActivations() {
         Activation[] activations = new Activation[this.size];
         int j = 0;
@@ -190,11 +197,7 @@ public class ArrayAgendaGroup
 
         }
         return activations;
-    }
-
-    public Activation[] getQueue() {
-        return getActivations();
-    }
+    }    
 
     public String toString() {
         return "AgendaGroup '" + this.name + "'";
