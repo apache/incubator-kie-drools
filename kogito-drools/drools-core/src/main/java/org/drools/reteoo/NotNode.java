@@ -381,7 +381,11 @@ public class NotNode extends BetaNode {
 
             FastIterator it = memory.getRightTupleMemory().fastIterator();
 
-            final RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
+            RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
+            if ( rootBlocker == null ) {
+                // we are at the end of the list, so set to self, to give self a chance to rematch
+                rootBlocker = rightTuple;
+            }
             
             // we must do this after we have the next in memory
             // We add to the end to give an opportunity to re-match if in same bucket
