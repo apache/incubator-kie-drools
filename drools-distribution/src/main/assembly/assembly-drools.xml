@@ -103,9 +103,9 @@
     <!-- Reference manual -->
     <dependencySet>
       <includes>
-        <include>org.drools:drools-introduction-docs:jdocbook</include>
+        <include>org.drools:droolsjbpm-introduction-docs:jdocbook</include>
       </includes>
-      <outputDirectory>reference_manual/drools-introduction-docs</outputDirectory>
+      <outputDirectory>reference_manual/droolsjbpm-introduction-docs</outputDirectory>
       <unpack>true</unpack>
       <unpackOptions>
         <excludes>

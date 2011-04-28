@@ -71,6 +71,7 @@ public class StatelessKnowledgeSessionImpl
     public AgendaEventSupport                                                 agendaEventSupport        = new AgendaEventSupport();
     public WorkingMemoryEventSupport                                          workingMemoryEventSupport = new WorkingMemoryEventSupport();
     public ProcessEventSupport                                                processEventSupport       = new ProcessEventSupport();
+    private boolean                                                           initialized;
 
     private KnowledgeSessionConfiguration                                     conf;
     private Environment                                                       environment;
@@ -130,6 +131,22 @@ public class StatelessKnowledgeSessionImpl
 
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
             wm.setKnowledgeRuntime( ksession );
+            if (!initialized) {
+            	// copy over the default generated listeners that are used for internal stuff once
+            	for (org.drools.event.AgendaEventListener listener: wm.getAgendaEventSupport().getEventListeners()) {
+            		this.agendaEventSupport.addEventListener(listener);
+            	}
+                for (org.drools.event.WorkingMemoryEventListener listener: wm.getWorkingMemoryEventSupport().getEventListeners()) {
+                	this.workingMemoryEventSupport.addEventListener(listener);
+                }
+                InternalProcessRuntime processRuntime = wm.getProcessRuntime();
+                if (processRuntime != null) {
+                	for (ProcessEventListener listener: processRuntime.getProcessEventListeners()) {
+                		this.processEventSupport.addEventListener(listener);
+                	}
+                }
+                initialized = true;
+            }
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             InternalProcessRuntime processRuntime = wm.getProcessRuntime();
