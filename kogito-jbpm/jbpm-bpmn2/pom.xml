@@ -55,7 +55,7 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-flow-builder</artifactId>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon</artifactId>
       <version>8.7</version>
@@ -64,7 +64,7 @@
       <groupId>net.sf.saxon</groupId>
       <artifactId>saxon-xpath</artifactId>
       <version>8.7</version>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>

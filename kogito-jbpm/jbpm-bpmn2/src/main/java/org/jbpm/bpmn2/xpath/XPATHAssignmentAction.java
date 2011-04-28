@@ -57,9 +57,9 @@ public class XPATHAssignmentAction implements AssignmentAction {
         
         Object targetElem = null;
         
-        XPATHExpressionModifier modifier = new XPATHExpressionModifier();
-        // modify the tree, returning the root node
-        target = modifier.insertMissingData(to, (org.w3c.dom.Node) target);
+//        XPATHExpressionModifier modifier = new XPATHExpressionModifier();
+//        // modify the tree, returning the root node
+//        target = modifier.insertMissingData(to, (org.w3c.dom.Node) target);
 
         // now pick the leaf for this operation
         if (target != null) {
