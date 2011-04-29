@@ -323,6 +323,7 @@ public class ExistsNode extends BetaNode {
             // check if we changed bucket
             if ( rightMemory.isIndexed() ) {
                 RightTuple newRightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
+                // if newRightTuple is null, we assume there was a bucket change and that bucket is empty
                 if ( newRightTuple == null || newRightTuple.getMemory() != blocker.getMemory() ) {
                     // we changed bucket, so blocker no longer blocks
                     blocker.removeBlocked( leftTuple );
