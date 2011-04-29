@@ -620,3 +620,7 @@ After in *.java:
 
 [MINOR] Your SolverEventListener will now a BestSolutionChangedEvent when the Solver starts too.
 So when the StartingSolutionInitializer initializes, the best solution changed event won't be missed.
+
+
+From 5.2.0 to 5.3.0.M1
+----------------------
