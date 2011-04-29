@@ -13,7 +13,7 @@
   <url>http://www.jboss.org/jbpm/</url>
   <properties>
     <drools.version>5.3.0-SNAPSHOT</drools.version>
-    <drools.osgi.version>5.3.0</drools.osgi.version>
+    <drools.osgi.version>5.3.0.SNAPSHOT</drools.osgi.version>
     <jbpm.osgi.version>5.2.0.SNAPSHOT</jbpm.osgi.version>
   </properties>
   <prerequisites>
