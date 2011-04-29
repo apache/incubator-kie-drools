@@ -3,19 +3,21 @@
     <benchmarkDirectory>local/data/examination</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</inheritedUnsolvedSolutionFile>
+    <inheritedSolverBenchmark>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</unsolvedSolutionFile>
 
-    <inheritedLocalSearchSolver>
-        <!--<environmentMode>DEBUG</environmentMode>-->
-        <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
-        <scoreDefinition>
-            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-        </scoreDefinition>
-        <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
-        <termination>
-            <maximumStepCount>70</maximumStepCount>
-        </termination>
-    </inheritedLocalSearchSolver>
+        <localSearchSolver>
+            <!--<environmentMode>DEBUG</environmentMode>-->
+            <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+            <scoreDefinition>
+                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+            </scoreDefinition>
+            <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+            <termination>
+                <maximumStepCount>70</maximumStepCount>
+            </termination>
+        </localSearchSolver>
+    </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <localSearchSolver>

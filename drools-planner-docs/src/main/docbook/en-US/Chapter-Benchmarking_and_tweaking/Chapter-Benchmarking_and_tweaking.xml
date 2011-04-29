@@ -35,23 +35,25 @@
 &lt;solverBenchmarkSuite&gt;
     &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
 
-    &lt;inheritedUnsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/inheritedUnsolvedSolutionFile&gt;
-    &lt;inheritedUnsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/inheritedUnsolvedSolutionFile&gt;
-    &lt;inheritedLocalSearchSolver&gt;
-        &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-        &lt;scoreDefinition&gt;
-            &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-        &lt;/scoreDefinition&gt;
-        &lt;termination&gt;
-            &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
-        &lt;/termination&gt;
-        &lt;selector&gt;
-            &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
-        &lt;/selector&gt;
-        &lt;forager&gt;
-            &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-        &lt;/forager&gt;
-    &lt;/inheritedLocalSearchSolver&gt;
+    &lt;inheritedSolverBenchmark&gt;
+        &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/unsolvedSolutionFile&gt;
+        &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/unsolvedSolutionFile&gt;
+        &lt;localSearchSolver&gt;
+            &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+            &lt;scoreDefinition&gt;
+                &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+            &lt;/scoreDefinition&gt;
+            &lt;termination&gt;
+                &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
+            &lt;/termination&gt;
+            &lt;selector&gt;
+                &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+            &lt;/selector&gt;
+            &lt;forager&gt;
+                &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+            &lt;/forager&gt;
+        &lt;/localSearchSolver&gt;
+    &lt;/inheritedSolverBenchmark&gt;
 
     &lt;solverBenchmark&gt;
         &lt;name&gt;Solution tabu&lt;/name&gt;
@@ -94,8 +96,9 @@
     <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example a local search
     solver) and one or more <literal>unsolvedSolutionFile</literal> entities. It will run the solver configuration on
     each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent. The common
-    part of multiple <literal>solverBenchmark</literal> entities can be extracted to the <literal>inherited</literal>
-    entities and can be overwritten per <literal>solverBenchmark</literal> entity.</para>
+    part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
+    <literal>inheritedSolverBenchmark</literal> entity, but they can still be overwritten per
+    <literal>solverBenchmark</literal> entity.</para>
 
     <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory).
     A summary statistic and the best solution of each solver run will be written in that directory.</para>

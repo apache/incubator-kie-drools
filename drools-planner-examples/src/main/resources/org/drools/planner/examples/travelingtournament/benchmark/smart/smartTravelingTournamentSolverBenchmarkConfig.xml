@@ -3,20 +3,22 @@
     <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
-    <inheritedUnsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</inheritedUnsolvedSolutionFile>
-    <inheritedLocalSearchSolver>
-        <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-        <scoreDefinition>
-            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-        </scoreDefinition>
-        <termination>
-            <maximumHoursSpend>2</maximumHoursSpend>
-            <!--<maximumMinutesSpend>10</maximumMinutesSpend>-->
-        </termination>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-        </selector>
-    </inheritedLocalSearchSolver>
+    <inheritedSolverBenchmark>
+        <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
+        <localSearchSolver>
+            <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
+            <scoreDefinition>
+                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+            </scoreDefinition>
+            <termination>
+                <maximumHoursSpend>2</maximumHoursSpend>
+                <!--<maximumMinutesSpend>10</maximumMinutesSpend>-->
+            </termination>
+            <selector>
+                <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+            </selector>
+        </localSearchSolver>
+    </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <name>tabuSearch</name>

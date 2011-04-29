@@ -2,15 +2,17 @@
 <solverBenchmarkSuite>
     <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
 
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</inheritedUnsolvedSolutionFile>
+    <inheritedSolverBenchmark>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</unsolvedSolutionFile>
 
-    <inheritedLocalSearchSolver>
-        <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-        <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-        <termination>
-            <maximumStepCount>2000</maximumStepCount>
-        </termination>
-    </inheritedLocalSearchSolver>
+      <localSearchSolver>
+          <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+          <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
+          <termination>
+              <maximumStepCount>2000</maximumStepCount>
+          </termination>
+      </localSearchSolver>
+    </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <localSearchSolver>

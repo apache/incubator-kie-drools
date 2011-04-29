@@ -85,42 +85,29 @@ public class SolverBenchmark {
     // Builder methods
     // ************************************************************************
 
-    public void inheritLocalSearchSolverConfig(LocalSearchSolverConfig inheritedLocalSearchSolverConfig) {
+    public void inherit(SolverBenchmark inheritedSolverBenchmark) {
         if (localSearchSolverConfig == null) {
-            localSearchSolverConfig = inheritedLocalSearchSolverConfig;
-        } else {
-            localSearchSolverConfig.inherit(inheritedLocalSearchSolverConfig);
+            localSearchSolverConfig = inheritedSolverBenchmark.getLocalSearchSolverConfig();
+        } else if (inheritedSolverBenchmark.getLocalSearchSolverConfig() != null) {
+            localSearchSolverConfig.inherit(inheritedSolverBenchmark.getLocalSearchSolverConfig());
+        }
+        if (unsolvedSolutionFileList == null) {
+            unsolvedSolutionFileList = inheritedSolverBenchmark.getUnsolvedSolutionFileList();
+        } else if (inheritedSolverBenchmark.getUnsolvedSolutionFileList() != null) {
+            for (File inheritedUnsolvedSolutionFile : inheritedSolverBenchmark.getUnsolvedSolutionFileList()) {
+                if (!unsolvedSolutionFileList.contains(inheritedUnsolvedSolutionFile)) {
+                    unsolvedSolutionFileList.add(inheritedUnsolvedSolutionFile);
+                }
+            }
         }
     }
 
-    public void inheritUnsolvedSolutionFileList(List<File> inheritedUnsolvedSolutionFileList) {
-        List<File> filesWithResult = new ArrayList<File>();
-        if (solverBenchmarkResultList != null) {
-            for (SolverBenchmarkResult result : solverBenchmarkResultList) {
-                filesWithResult.add(result.getUnsolvedSolutionFile());
-            }
-        } else {
-            solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
-        }
-        if (unsolvedSolutionFileList != null) {
-            for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
-                if (!filesWithResult.contains(unsolvedSolutionFile)) {
-                    SolverBenchmarkResult result = new SolverBenchmarkResult();
-                    result.setUnsolvedSolutionFile(unsolvedSolutionFile);
-                    solverBenchmarkResultList.add(result);
-                    filesWithResult.add(unsolvedSolutionFile);
-                }
-            }
-        }
-        if (inheritedUnsolvedSolutionFileList != null) {
-            for (File inheritedUnsolvedSolutionFile : inheritedUnsolvedSolutionFileList) {
-                if (!filesWithResult.contains(inheritedUnsolvedSolutionFile)) {
-                    SolverBenchmarkResult result = new SolverBenchmarkResult();
-                    result.setUnsolvedSolutionFile(inheritedUnsolvedSolutionFile);
-                    solverBenchmarkResultList.add(result);
-                    filesWithResult.add(inheritedUnsolvedSolutionFile);
-                }
-            }
+    public void resetSolverBenchmarkResultList() {
+        solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+        for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
+            SolverBenchmarkResult result = new SolverBenchmarkResult();
+            result.setUnsolvedSolutionFile(unsolvedSolutionFile);
+            solverBenchmarkResultList.add(result);
         }
     }
 

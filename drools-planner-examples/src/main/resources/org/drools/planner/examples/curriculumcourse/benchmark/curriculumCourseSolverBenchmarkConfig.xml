@@ -2,34 +2,36 @@
 <solverBenchmarkSuite>
     <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
-    
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp01.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp02.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp04.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp05.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp06.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp07.xml</inheritedUnsolvedSolutionFile>-->
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp09.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp10.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp11.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp12.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp13.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/curriculumcourse/unsolved/comp14.xml</inheritedUnsolvedSolutionFile>
 
-    <inheritedLocalSearchSolver>
-        <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-        <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-        <termination>
-            <!--
-                Official benchmark maximumSecondsSpend allowed on:
-                ge0ffrey's main pc: 429
-                ge0ffrey's old pc: 1152
-            -->
-            <maximumSecondsSpend>429</maximumSecondsSpend>
-        </termination>
-    </inheritedLocalSearchSolver>
+    <inheritedSolverBenchmark>
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp01.xml</unsolvedSolutionFile>-->
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp02.xml</unsolvedSolutionFile>-->
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp03.xml</unsolvedSolutionFile>-->
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp04.xml</unsolvedSolutionFile>-->
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp05.xml</unsolvedSolutionFile>-->
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp06.xml</unsolvedSolutionFile>-->
+      <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp07.xml</unsolvedSolutionFile>-->
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp08.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp09.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp10.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp11.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp12.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp13.xml</unsolvedSolutionFile>
+      <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp14.xml</unsolvedSolutionFile>
+
+      <localSearchSolver>
+          <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+          <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
+          <termination>
+              <!--
+                  Official benchmark maximumSecondsSpend allowed on:
+                  ge0ffrey's main pc: 429
+                  ge0ffrey's old pc: 1152
+              -->
+              <maximumSecondsSpend>429</maximumSecondsSpend>
+          </termination>
+      </localSearchSolver>
+    </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <name>propertyTabu10</name>

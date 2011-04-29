@@ -43,6 +43,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.XStreamException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
@@ -74,10 +75,7 @@ public class SolverBenchmarkSuite {
     private SolverStatisticType solverStatisticType = SolverStatisticType.NONE;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
 
-    @XStreamAlias("inheritedLocalSearchSolver")
-    private LocalSearchSolverConfig inheritedLocalSearchSolverConfig = null;
-    @XStreamImplicit(itemFieldName = "inheritedUnsolvedSolutionFile")
-    private List<File> inheritedUnsolvedSolutionFileList = null;
+    private SolverBenchmark inheritedSolverBenchmark = null;
 
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmark> solverBenchmarkList = null;
@@ -122,22 +120,6 @@ public class SolverBenchmarkSuite {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
     }
 
-    public LocalSearchSolverConfig getInheritedLocalSearchSolverConfig() {
-        return inheritedLocalSearchSolverConfig;
-    }
-
-    public void setInheritedLocalSearchSolverConfig(LocalSearchSolverConfig inheritedLocalSearchSolverConfig) {
-        this.inheritedLocalSearchSolverConfig = inheritedLocalSearchSolverConfig;
-    }
-
-    public List<File> getInheritedUnsolvedSolutionFileList() {
-        return inheritedUnsolvedSolutionFileList;
-    }
-
-    public void setInheritedUnsolvedSolutionFileList(List<File> inheritedUnsolvedSolutionFileList) {
-        this.inheritedUnsolvedSolutionFileList = inheritedUnsolvedSolutionFileList;
-    }
-
     public List<SolverBenchmark> getSolverBenchmarkList() {
         return solverBenchmarkList;
     }
@@ -163,12 +145,10 @@ public class SolverBenchmarkSuite {
             } else {
                 noNameBenchmarkSet.add(solverBenchmark);
             }
-            if (inheritedLocalSearchSolverConfig != null) {
-                solverBenchmark.inheritLocalSearchSolverConfig(inheritedLocalSearchSolverConfig);
+            if (inheritedSolverBenchmark != null) {
+                solverBenchmark.inherit(inheritedSolverBenchmark);
             }
-            if (inheritedUnsolvedSolutionFileList != null) {
-                solverBenchmark.inheritUnsolvedSolutionFileList(inheritedUnsolvedSolutionFileList);
-            }
+            solverBenchmark.resetSolverBenchmarkResultList();
         }
         int generatedNameIndex = 0;
         for (SolverBenchmark solverBenchmark : noNameBenchmarkSet) {
@@ -235,6 +215,8 @@ public class SolverBenchmarkSuite {
         try {
             reader = new InputStreamReader(new FileInputStream(unsolvedSolutionFile), "utf-8");
             unsolvedSolution = (Solution) xStream.fromXML(reader);
+        } catch (XStreamException e) {
+            throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + unsolvedSolutionFile, e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Problem reading unsolvedSolutionFile: " + unsolvedSolutionFile, e);
         } finally {
@@ -339,8 +321,10 @@ public class SolverBenchmarkSuite {
         StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
         htmlFragment.append("  <table border=\"1\">\n");
         htmlFragment.append("    <tr><th/>");
-        for (File unsolvedSolutionFile : inheritedUnsolvedSolutionFileList) {
-            htmlFragment.append("<th>").append(unsolvedSolutionFile.getName()).append("</th>");
+        if (inheritedSolverBenchmark != null && inheritedSolverBenchmark.getUnsolvedSolutionFileList() != null) {
+            for (File unsolvedSolutionFile : inheritedSolverBenchmark.getUnsolvedSolutionFileList()) {
+                htmlFragment.append("<th>").append(unsolvedSolutionFile.getName()).append("</th>");
+            }
         }
         htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
         boolean oddLine = true;

@@ -2,35 +2,37 @@
 <solverBenchmarkSuite>
     <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
-    
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long01.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long02.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long04.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long05.xml</inheritedUnsolvedSolutionFile>-->
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint01.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint02.xml</inheritedUnsolvedSolutionFile>
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_hint03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late01.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late02.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late03.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late04.xml</inheritedUnsolvedSolutionFile>-->
-    <!--<inheritedUnsolvedSolutionFile>data/nurserostering/unsolved/long_late05.xml</inheritedUnsolvedSolutionFile>-->
 
-    <inheritedLocalSearchSolver>
-        <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
-        <scoreDefinition>
-            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-        </scoreDefinition>
-        <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
-        <termination>
-            <!--
-                Official benchmark maximumSecondsSpend allowed on:
-                - ge0ffrey's main pc: sprint 11, medium 700, long 42000
-            -->
-            <maximumSecondsSpend>42000</maximumSecondsSpend>
-        </termination>
-    </inheritedLocalSearchSolver>
+    <inheritedSolverBenchmark>
+        <unsolvedSolutionFile>data/nurserostering/unsolved/long01.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/nurserostering/unsolved/long02.xml</unsolvedSolutionFile>
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long03.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long04.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long05.xml</unsolvedSolutionFile>-->
+        <unsolvedSolutionFile>data/nurserostering/unsolved/long_hint01.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/nurserostering/unsolved/long_hint02.xml</unsolvedSolutionFile>
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long_hint03.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long_late01.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long_late02.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long_late03.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long_late04.xml</unsolvedSolutionFile>-->
+        <!--<unsolvedSolutionFile>data/nurserostering/unsolved/long_late05.xml</unsolvedSolutionFile>-->
+
+        <localSearchSolver>
+            <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+            <scoreDefinition>
+                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+            </scoreDefinition>
+            <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
+            <termination>
+                <!--
+                    Official benchmark maximumSecondsSpend allowed on:
+                    - ge0ffrey's main pc: sprint 11, medium 700, long 42000
+                -->
+                <maximumSecondsSpend>42000</maximumSecondsSpend>
+            </termination>
+        </localSearchSolver>
+    </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <name>absolute300SeqLength2and3PillarPart</name>

@@ -2,32 +2,34 @@
 <solverBenchmarkSuite>
     <benchmarkDirectory>local/data/examination</benchmarkDirectory>
     <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
-    
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set1.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set2.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set3.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set4.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set5.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set6.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set7.xml</inheritedUnsolvedSolutionFile>
-    <inheritedUnsolvedSolutionFile>data/examination/unsolved/exam_comp_set8.xml</inheritedUnsolvedSolutionFile>
 
-    <inheritedLocalSearchSolver>
-        <!--<environmentMode>DEBUG</environmentMode>-->
-        <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
-        <scoreDefinition>
-            <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-        </scoreDefinition>
-        <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
-        <termination>
-            <!--
-                Official benchmark maximumSecondsSpend allowed on:
-                - ge0ffrey's main pc: 429
-                - ge0ffrey's old pc: 1152
-            -->
-            <maximumSecondsSpend>429</maximumSecondsSpend>
-        </termination>
-    </inheritedLocalSearchSolver>
+    <inheritedSolverBenchmark>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set2.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set3.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set4.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set5.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set6.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set7.xml</unsolvedSolutionFile>
+        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set8.xml</unsolvedSolutionFile>
+
+        <localSearchSolver>
+            <!--<environmentMode>DEBUG</environmentMode>-->
+            <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+            <scoreDefinition>
+                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+            </scoreDefinition>
+            <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+            <termination>
+                <!--
+                    Official benchmark maximumSecondsSpend allowed on:
+                    - ge0ffrey's main pc: 429
+                    - ge0ffrey's old pc: 1152
+                -->
+                <maximumSecondsSpend>429</maximumSecondsSpend>
+            </termination>
+        </localSearchSolver>
+    </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <name>absolute500_propertyTabu10</name>
