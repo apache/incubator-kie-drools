@@ -15,7 +15,6 @@ import static org.junit.Assert.*;
 public class Java5Test extends DroolsTestCase {
 
     @Test
-    @Ignore
     public void testJava5Rule() throws Exception {
         final String javaVersion = System.getProperty( "java.specification.version" );
         //do not execute tests under JDK 1.4

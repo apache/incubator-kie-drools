@@ -246,7 +246,7 @@ public final class ClassUtils {
      */
     public static String getPackage(Class<?> cls) {
         // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
-        java.lang.Package pkg = cls.getPackage();
+        java.lang.Package pkg = cls.isArray() ? cls.getComponentType().getPackage() : cls.getPackage();
         if ( pkg == null ) {
             int dotPos = cls.getName().lastIndexOf( '.' );
             return cls.getName().substring( 0,

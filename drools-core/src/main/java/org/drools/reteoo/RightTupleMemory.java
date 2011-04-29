@@ -24,7 +24,7 @@ import org.drools.core.util.Iterator;
 public interface RightTupleMemory {
     public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle);
     
-    public RightTuple getFirst(RightTuple rightTuple);
+    public void removeAdd(RightTuple rightTuple);
 
     public void add(RightTuple rightTuple);
 

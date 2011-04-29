@@ -25,7 +25,7 @@ public interface LeftTupleMemory {
 
     public LeftTuple getFirst(RightTuple rightTuple);
     
-    public LeftTuple getFirst(LeftTuple leftTuple);
+    public void removeAdd(LeftTuple tuple);
 
     public void add(LeftTuple tuple);
 
@@ -36,8 +36,6 @@ public interface LeftTupleMemory {
     public boolean isIndexed();
 
     public int size();
-
-    //    public Entry[] getTable();
 
     public Entry[] toArray();
 

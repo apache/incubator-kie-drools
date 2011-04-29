@@ -1250,6 +1250,9 @@ public abstract class AbstractWorkingMemory
         if ( processRuntime != null ) {
             this.processRuntime.dispose();
         }
+        if ( timerService != null ) {
+        	this.timerService.shutdown();
+        }
     }
 
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {

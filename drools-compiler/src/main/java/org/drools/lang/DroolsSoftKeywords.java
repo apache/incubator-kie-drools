@@ -56,6 +56,7 @@ public class DroolsSoftKeywords {
     public static final String ENTRY        = "entry";
     public static final String POINT        = "point";
     public static final String ACCUMULATE   = "accumulate";
+    public static final String ACC          = "acc"; 
     public static final String COLLECT      = "collect";
     public static final String ACTION       = "action";
     public static final String REVERSE      = "reverse";

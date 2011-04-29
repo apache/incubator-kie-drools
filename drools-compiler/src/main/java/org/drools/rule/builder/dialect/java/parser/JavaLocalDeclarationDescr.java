@@ -28,7 +28,7 @@ public class JavaLocalDeclarationDescr {
     private int end;
     private String type;
     private List modifiers;
-    private List identifiers;
+    private List<IdentifierDescr> identifiers;
     
     public JavaLocalDeclarationDescr() {
         this( -1, -1, "" );
@@ -39,7 +39,7 @@ public class JavaLocalDeclarationDescr {
         this.end = end;
         this.type = type;
         this.modifiers = new LinkedList();
-        this.identifiers = new LinkedList();
+        this.identifiers = new LinkedList<IdentifierDescr>();
     }
 
     public int getEnd() {
@@ -50,7 +50,7 @@ public class JavaLocalDeclarationDescr {
         this.end = finalOffset;
     }
 
-    public List getIdentifiers() {
+    public List<IdentifierDescr> getIdentifiers() {
         return identifiers;
     }
 
