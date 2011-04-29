@@ -72,7 +72,7 @@ public class WorkflowFrame extends JFrame {
     private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
 
     public WorkflowFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
-        super("Drools planner example " + exampleName);
+        super(exampleName + " Drools Planner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);
