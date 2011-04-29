@@ -32,6 +32,7 @@
     </inheritedLocalSearchSolver>
 
     <solverBenchmark>
+        <name>propertyTabu10</name>
         <localSearchSolver>
             <scoreDefinition>
                 <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
