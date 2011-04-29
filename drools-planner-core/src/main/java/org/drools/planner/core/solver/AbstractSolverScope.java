@@ -224,36 +224,68 @@ public abstract class AbstractSolverScope {
         if (summaryWorkingMemory == null) {
             return "  The workingMemory is null.";
         }
-        Map<String, Number> scoreTotalMap = new TreeMap<String, Number>();
+        Map<String, SummaryLine> summaryLineMap = new TreeMap<String, SummaryLine>();
         Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) summaryWorkingMemory.iterateObjects(
                 new ClassObjectFilter(ConstraintOccurrence.class));
         while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
             logger.trace("Adding ConstraintOccurrence ({})", occurrence);
-            Number scoreTotalNumber = scoreTotalMap.get(occurrence.getRuleId());
+            SummaryLine summaryLine = summaryLineMap.get(occurrence.getRuleId());
+            if (summaryLine == null) {
+                summaryLine = new SummaryLine();
+                summaryLineMap.put(occurrence.getRuleId(), summaryLine);
+            }
+            summaryLine.increment();
             if (occurrence instanceof IntConstraintOccurrence) {
-                int scoreTotal = scoreTotalNumber == null ? 0 : (Integer) scoreTotalNumber;
-                scoreTotal += ((IntConstraintOccurrence) occurrence).getWeight();
-                scoreTotalMap.put(occurrence.getRuleId(), scoreTotal);
+                summaryLine.addWeight(((IntConstraintOccurrence) occurrence).getWeight());
             } else if (occurrence instanceof DoubleConstraintOccurrence) {
-                double scoreTotal = scoreTotalNumber == null ? 0 : (Double) scoreTotalNumber;
-                scoreTotal += ((DoubleConstraintOccurrence) occurrence).getWeight();
-                scoreTotalMap.put(occurrence.getRuleId(), scoreTotal);
+                summaryLine.addWeight(((DoubleConstraintOccurrence) occurrence).getWeight());
             } else if (occurrence instanceof UnweightedConstraintOccurrence) {
-                int scoreTotal = scoreTotalNumber == null ? 0 : (Integer) scoreTotalNumber;
-                scoreTotal += 1;
-                scoreTotalMap.put(occurrence.getRuleId(), scoreTotal);
+                summaryLine.addWeight(1);
             } else {
                 throw new IllegalStateException("Cannot determine occurrenceScore of ConstraintOccurrence class: "
                         + occurrence.getClass());
             }
         }
         StringBuilder summary = new StringBuilder();
-        for (Map.Entry<String, Number> scoreTotalEntry : scoreTotalMap.entrySet()) {
-            summary.append("  Score rule (").append(scoreTotalEntry.getKey()).append(") has score total (")
-                    .append(scoreTotalEntry.getValue()).append(").\n");
+        for (Map.Entry<String, SummaryLine> summaryLineEntry : summaryLineMap.entrySet()) {
+            SummaryLine summaryLine = summaryLineEntry.getValue();
+            summary.append("  Score rule (").append(summaryLineEntry.getKey()).append(") has count (")
+                    .append(summaryLine.getCount()).append(") and weight total (")
+                    .append(summaryLine.getWeightTotal()).append(").\n");
         }
         return summary.toString();
+    }
+
+    private class SummaryLine {
+        private int count = 0;
+        private Number weightTotal = null;
+
+        public int getCount() {
+            return count;
+        }
+
+        public Number getWeightTotal() {
+            return weightTotal;
+        }
+
+        public void increment() {
+            count++;
+        }
+
+        public void addWeight(Integer weight) {
+            if (weightTotal == null) {
+                weightTotal = 0;
+            }
+            weightTotal = ((Integer) weightTotal) + weight;
+        }
+
+        public void addWeight(Double weight) {
+            if (weightTotal == null) {
+                weightTotal = 0.0;
+            }
+            weightTotal = ((Double) weightTotal) + weight;
+        }
     }
 
 }
