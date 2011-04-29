@@ -112,7 +112,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     public LeftTuple getFirst(final RightTuple rightTuple) {
         LeftTupleList bucket = get( rightTuple );
         if ( bucket != null ) {
-            return bucket.getFirst( (LeftTuple) null );
+            return bucket.getFirst( );
         } else {
             return null;
         }
@@ -121,7 +121,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     public LeftTuple getFirst(final LeftTuple leftTuple) {
         final LeftTupleList bucket = get( leftTuple );
         if ( bucket != null ) {
-            return bucket.getFirst( (LeftTuple) null );
+            return bucket.getFirst( );
         } else {
             return null;
         }
@@ -171,7 +171,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
                     
                     if ( this.list != null ) {
                         // we have a bucket so assign the first LeftTuple and return
-                        this.leftTuple = (LeftTuple) this.list.getFirst( (LeftTuple) null );
+                        this.leftTuple = (LeftTuple) this.list.getFirst( );
                         return this.leftTuple;
                     } else if ( this.row >= this.length ) {
                         // we've scanned the whole table and nothing is left, so return null
@@ -189,7 +189,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
                     // try the next bucket if we have a shared array position
                     if ( this.list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        this.leftTuple = (LeftTuple) this.list.getFirst( (LeftTuple) null );
+                        this.leftTuple = (LeftTuple) this.list.getFirst( );
                         return this.leftTuple;
                     }
                 }
@@ -219,7 +219,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         for ( int i = 0; i < this.table.length; i++ ) {
             LeftTupleList bucket = (LeftTupleList) this.table[i];
             while ( bucket != null ) {
-                LeftTuple entry = (LeftTuple) bucket.getFirst( (LeftTuple) null );
+                LeftTuple entry = (LeftTuple) bucket.getFirst( );
                 while ( entry != null ) {
                     result[index++] = entry;
                     entry = (LeftTuple) entry.getNext();
@@ -266,7 +266,6 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
     public void add(final LeftTuple tuple) {
         final LeftTupleList entry = getOrCreate( tuple );
-        tuple.setMemory( entry );
         entry.add( tuple );
         this.factSize++;
     }

@@ -55,6 +55,7 @@ public class BetaMemory
         createdHandles = (ObjectHashMap) in.readObject();
         context = (ContextEntry[]) in.readObject();
         behaviorContext = (Object) in.readObject();
+        open = ( boolean ) in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -63,6 +64,7 @@ public class BetaMemory
         out.writeObject( createdHandles );
         out.writeObject( context );
         out.writeObject( behaviorContext );
+        out.writeBoolean(  open  );
     }
 
     public RightTupleMemory getRightTupleMemory() {

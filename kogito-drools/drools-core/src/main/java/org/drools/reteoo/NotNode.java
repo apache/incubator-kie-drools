@@ -250,14 +250,16 @@ public class NotNode extends BetaNode {
             memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             // check if we changed bucket
-            if ( rightMemory.isIndexed() && rightMemory.getFirst( blocker ) != rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() ) ) {
-                // we changed bucket, so blocker no longer blocks
-                blocker.removeBlocked( leftTuple );
-                leftTuple.setBlocker( null );
-                leftTuple.setBlockedPrevious( null );
-                leftTuple.setBlockedNext( null );
-                blocker = null;
-
+            if ( rightMemory.isIndexed() ) {
+                RightTuple newRightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
+                if ( newRightTuple == null || newRightTuple.getMemory() != blocker.getMemory() ) {
+                    // we changed bucket, so blocker no longer blocks
+                    blocker.removeBlocked( leftTuple );
+                    leftTuple.setBlocker( null );
+                    leftTuple.setBlockedPrevious( null );
+                    leftTuple.setBlockedNext( null );
+                    blocker = null;
+                }
             }
         }
 
