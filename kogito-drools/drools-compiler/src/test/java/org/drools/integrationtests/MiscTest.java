@@ -161,8 +161,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
-    // @FIXME MVEL does not yet support dynamic .* static method imports
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -7233,7 +7231,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -7490,8 +7487,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore("Temporarly ignored to get a blue build while edson might be fixing it")
-    // TODO etirelli unignore for release 5.2.0
     public void testMemberOfNotWorkingWithOr() throws Exception {
 
         String rule = "";
@@ -7534,8 +7529,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
-    // this is an MVEL bug on operator precedence, waiting for MVEL fix
     public void testUnNamed() throws Exception {
 
         String rule = "";
@@ -7619,7 +7612,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
     public void testGenericsInRHS() throws Exception {
 
         String rule = "";
