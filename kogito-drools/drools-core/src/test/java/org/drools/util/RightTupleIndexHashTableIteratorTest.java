@@ -191,13 +191,13 @@ public class RightTupleIndexHashTableIteratorTest {
 
         // set return values for methods
         when( entries[0].getNext() ).thenReturn( null );
-        when( ((RightTupleList) entries[0]).getFirst( any( RightTuple.class ) ) ).thenReturn( tuples[0] );
+        when( ((RightTupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
         
         when( entries[5].getNext() ).thenReturn( null );
-        when( ((RightTupleList) entries[5]).getFirst( any( RightTuple.class ) ) ).thenReturn( tuples[1] );
+        when( ((RightTupleList) entries[5]).getFirst(  ) ).thenReturn( tuples[1] );
 
         when( entries[9].getNext() ).thenReturn( null );
-        when( ((RightTupleList) entries[9]).getFirst( any( RightTuple.class ) ) ).thenReturn( tuples[2] );
+        when( ((RightTupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
 
         // create the mock table for the iterator
         AbstractHashTable table = mock( AbstractHashTable.class );

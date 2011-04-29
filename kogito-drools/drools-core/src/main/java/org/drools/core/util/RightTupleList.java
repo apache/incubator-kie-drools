@@ -72,12 +72,17 @@ public class RightTupleList
         return this.first;
     }
     
-    public RightTuple getFirst(RightTuple leftTuple) {
+    public RightTuple getFirst() {
         return this.first;
     }
 
-    public RightTuple getLast(LeftTuple leftTuple) {
+    public RightTuple getLast() {
         return this.last;
+    }
+    
+    public void removeAdd(final RightTuple rightTuple) {
+        remove(rightTuple);
+        add(rightTuple);
     }
 
     public void add(final RightTuple rightTuple) {
@@ -89,6 +94,7 @@ public class RightTupleList
             this.first = rightTuple;
             this.last = rightTuple;;
         }
+        rightTuple.setMemory( this );
     }
 
     /**

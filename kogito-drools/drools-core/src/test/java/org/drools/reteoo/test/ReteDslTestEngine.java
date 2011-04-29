@@ -40,9 +40,12 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
@@ -332,16 +335,17 @@ public class ReteDslTestEngine {
                     List<InternalFactHandle> first = (List<InternalFactHandle>) expectedLeftTuples.get( 0 );
                     LeftTuple firstTuple = new LeftTuple( first.get( 0 ),
                                                           null,
-                                                          false );
+                                                          false);
                     for ( int i = 1; i < first.size(); i++ ) {
                         firstTuple = new LeftTuple( firstTuple,
+                                                    new RightTuple( first.get( i )),
                                                     null,
                                                     false );
                     }
 
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
 
-                    for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( firstTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                    for ( LeftTuple leftTuple = getFirst(memory.getLeftTupleMemory(), firstTuple); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
                         leftTuples.add( leftTuple );
                     }
                     List<List<InternalFactHandle>> actualLeftTuples = new ArrayList<List<InternalFactHandle>>( leftTuples.size() );
@@ -374,7 +378,7 @@ public class ReteDslTestEngine {
 
                     RightTuple first = new RightTuple( (InternalFactHandle) expectedFactHandles.get( 0 ) );
                     List<RightTuple> actualRightTuples = new ArrayList<RightTuple>();
-                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                    for ( RightTuple rightTuple = getFirst(memory.getRightTupleMemory(), first); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                         actualRightTuples.add( rightTuple );
                     }
 
@@ -396,6 +400,28 @@ public class ReteDslTestEngine {
             throw new IllegalArgumentException( "line " + step.getLine() + ": unable to execute step " + step,
                                                 e );
         }
+    }
+    
+    private LeftTuple getFirst(LeftTupleMemory memory, LeftTuple leftTuple) {
+        Iterator it = memory.iterator();
+        for ( LeftTuple next = ( LeftTuple ) it.next(); next != null; next = ( LeftTuple ) it.next() ) {
+          if (next.equals( leftTuple ) ) {
+              return next.getMemory().getFirst();
+          }            
+        }
+        
+        return null;
+    }    
+    
+    private RightTuple  getFirst(RightTupleMemory memory, RightTuple rightTuple) {
+        Iterator it = memory.iterator();
+        for ( RightTuple next = (RightTuple) it.next( ); next != null; next = ( RightTuple ) it.next()) {
+            if (next.equals( rightTuple ) ) {
+                return next.getMemory().getFirst();
+            }
+        }
+        
+        return null;
     }
 
     private void riaNode(DslStep step,

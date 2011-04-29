@@ -321,16 +321,17 @@ public class ExistsNode extends BetaNode {
             memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             // check if we changed bucket
-            if ( rightMemory.isIndexed() && rightMemory.getFirst( blocker ) != rightMemory.getFirst( leftTuple,
-                                                                                                     (InternalFactHandle) context.getFactHandle() ) ) {
-                // we changed bucket, so blocker no longer blocks
-                blocker.removeBlocked( leftTuple );
-                leftTuple.setBlocker( null );
-                leftTuple.setBlockedPrevious( null );
-                leftTuple.setBlockedNext( null );
-                blocker = null;
-
-            }
+            if ( rightMemory.isIndexed() ) {
+                RightTuple newRightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
+                if ( newRightTuple == null || newRightTuple.getMemory() != blocker.getMemory() ) {
+                    // we changed bucket, so blocker no longer blocks
+                    blocker.removeBlocked( leftTuple );
+                    leftTuple.setBlocker( null );
+                    leftTuple.setBlockedPrevious( null );
+                    leftTuple.setBlockedNext( null );
+                    blocker = null;
+                }
+            }            
         }
 
         this.constraints.updateFromTuple( memory.getContext(),
@@ -402,8 +403,7 @@ public class ExistsNode extends BetaNode {
             // do nothing here, as we know there are no left tuples
 
             //normally do this at the end, but as we are exiting early, make sure the buckets are still correct.
-            memory.getRightTupleMemory().remove( rightTuple );
-            memory.getRightTupleMemory().add( rightTuple );
+            memory.getRightTupleMemory().removeAdd( rightTuple );
             return;
         }
 
@@ -461,8 +461,7 @@ public class ExistsNode extends BetaNode {
             
             // we must do this after we have the next in memory
             // We add to the end to give an opportunity to re-match if in same bucket
-            memory.getRightTupleMemory().remove( rightTuple );
-            memory.getRightTupleMemory().add( rightTuple );                 
+            memory.getRightTupleMemory().removeAdd( rightTuple );
 
             if ( rootBlocker == null && list == rightTuple.getMemory() ) {
                 // we are at the end of the list, but still in same bucket, so set to self, to give self a chance to rematch
@@ -507,8 +506,7 @@ public class ExistsNode extends BetaNode {
             }
         } else {
             // we had to do this at the end, rather than beginning as this 'if' block needs the next memory tuple
-            memory.getRightTupleMemory().remove( rightTuple );
-            memory.getRightTupleMemory().add( rightTuple );            
+            memory.getRightTupleMemory().removeAdd( rightTuple );         
         }
 
         this.constraints.resetFactHandle( memory.getContext() );

@@ -1,5 +1,14 @@
 package org.drools.integrationtests;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -8,11 +17,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -38,10 +42,17 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.Activation;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 public class AccumulateTest {
     protected RuleBase getRuleBase() throws Exception {
@@ -919,7 +930,17 @@ public class AccumulateTest {
     public void testAccumulateCollectSetMVEL() throws Exception {
         execTestAccumulateCollectSet( "test_AccumulateCollectSetMVEL.drl" );
     }
-
+    
+    @Test
+    public void testAccumulateMultipleFunctionsJava() throws Exception {
+        execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
+    }
+    
+    @Test
+    public void testAccumulateMultipleFunctionsMVEL() throws Exception {
+        execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctionsMVEL.drl" );
+    }
+    
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
@@ -1625,6 +1646,90 @@ public class AccumulateTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+    }
+
+    
+    
+    
+    public void execTestAccumulateMultipleFunctions( String fileName ) throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( fileName, null );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        final Cheese[] cheese = new Cheese[]{ new Cheese( "stilton",
+                                                          10 ), 
+                                              new Cheese( "stilton",
+                                                          3 ), 
+                                              new Cheese( "stilton",
+                                                          5 ), 
+                                              new Cheese( "brie",
+                                                          15 ), 
+                                              new Cheese( "brie",
+                                                          17 ), 
+                                              new Cheese( "provolone",
+                                                          8 )};
+        final Person bob = new Person( "Bob",
+                                       "stilton" );
+
+        final FactHandle[] cheeseHandles = new FactHandle[cheese.length];
+        for ( int i = 0; i < cheese.length; i++ ) {
+            cheeseHandles[i] = (FactHandle) ksession.insert( cheese[i] );
+        }
+        final FactHandle bobHandle = (FactHandle) ksession.insert( bob );
+        
+        // ---------------- 1st scenario
+        ksession.fireAllRules();
+        
+        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass(AfterActivationFiredEvent.class);        
+        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        
+        Activation activation = cap.getValue().getActivation();
+        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 18 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 3 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 6 ) );
+
+        Mockito.reset( ael );
+        // ---------------- 2nd scenario
+        final int index = 1;
+        cheese[index].setPrice( 9 );
+        ksession.update( cheeseHandles[index],
+                   cheese[index] );
+        ksession.fireAllRules();
+
+        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        
+        activation = cap.getValue().getActivation();
+        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 24 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 5 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 8 ) );
+
+        Mockito.reset( ael );
+        // ---------------- 3rd scenario
+        bob.setLikes( "brie" );
+        ksession.update( bobHandle,
+                   bob );
+        ksession.fireAllRules();
+
+        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        
+        activation = cap.getValue().getActivation();
+        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 32 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 15 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 16 ) );
+
+        Mockito.reset( ael );
+        // ---------------- 4th scenario
+        ksession.retract( cheeseHandles[3] );
+        ksession.fireAllRules();
+
+        Mockito.verify( ael ).afterActivationFired( cap.capture() );
+        
+        activation = cap.getValue().getActivation();
+        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 17 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 17 ) );
+        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 17 ) );
     }
 
     public static class DataSet {

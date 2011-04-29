@@ -2235,6 +2235,128 @@ public class DRLParser {
         return result;
     }
 
+    /**
+     * lhsAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA
+     *                      accumulateFunction (COMMA accumulateFunction)*
+     *                  RIGHT_PAREN SEMICOLON?
+     *  
+     * @param ce
+     * @return
+     * @throws RecognitionException 
+     */
+    private BaseDescr lhsAcc( PatternContainerDescrBuilder< ? , ? > ce ) throws RecognitionException {
+        PatternDescrBuilder< ? > pattern = null;
+        BaseDescr result = null;
+
+        pattern = helper.start( PatternDescrBuilder.class,
+                                null,
+                                null );
+        if ( pattern != null ) {
+            result = pattern.getDescr();
+        }
+
+        try {
+            if ( state.backtracking == 0 ) {
+                pattern.type( "Object[]" );
+                pattern.isQuery( false );
+                // might have to add the implicit bindings as well
+            }
+
+            AccumulateDescrBuilder< ? > accumulate = helper.start( AccumulateDescrBuilder.class,
+                                                                   null,
+                                                                   null );
+            try {
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.ACCUMULATE,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+
+                if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+                    helper.emit( Location.LOCATION_LHS_FROM_ACCUMULATE );
+                }
+                match( input,
+                       DRLLexer.LEFT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+
+                CEDescrBuilder< ? , AndDescr> source = accumulate.source();
+                try {
+                    helper.start( CEDescrBuilder.class,
+                                  null,
+                                  source );
+                    lhsAnd( source,
+                            false );
+                    if ( state.failed ) return null;
+
+                    if ( source.getDescr() != null && source.getDescr() instanceof ConditionalElementDescr ) {
+                        ConditionalElementDescr root = (ConditionalElementDescr) source.getDescr();
+                        BaseDescr[] descrs = root.getDescrs().toArray( new BaseDescr[root.getDescrs().size()] );
+                        root.getDescrs().clear();
+                        for ( int i = 0; i < descrs.length; i++ ) {
+                            root.addOrMerge( descrs[i] );
+                        }
+                    }
+                } finally {
+                    helper.end( CEDescrBuilder.class,
+                                source );
+                }
+
+                match( input,
+                       DRLLexer.COMMA,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+
+                // accumulate functions
+                accumulateFunction( accumulate );
+                if ( state.failed ) return null;
+
+                while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                    match( input,
+                           DRLLexer.COMMA,
+                           null,
+                           null,
+                           DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+
+                    accumulateFunction( accumulate );
+                    if ( state.failed ) return null;
+                }
+
+                match( input,
+                       DRLLexer.RIGHT_PAREN,
+                       null,
+                       null,
+                       DroolsEditorType.SYMBOL );
+                if ( state.failed ) return null;
+            } finally {
+                helper.end( AccumulateDescrBuilder.class,
+                            null );
+                if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+                    helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+                }
+            }
+        } finally {
+            helper.end( PatternDescrBuilder.class,
+                        null );
+        }
+
+        if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
+            match( input,
+                   DRLLexer.SEMICOLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return null;
+        }
+        return result;
+    }
+    
     private void failMismatchedTokenException() throws DroolsMismatchedTokenException {
         if ( state.backtracking > 0 ) {
             state.failed = true;
@@ -2880,11 +3002,17 @@ public class DRLParser {
     }
 
     /**
-     * accumulateFunction := ID parameters
+     * accumulateFunction := label? ID parameters
      * @param accumulate
      * @throws RecognitionException
      */
     private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
+        String label = null;
+        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
+            label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
+            if ( state.failed ) return;
+        }
+
         Token function = match( input,
                                 DRLLexer.ID,
                                 null,
@@ -2897,6 +3025,7 @@ public class DRLParser {
 
         if ( state.backtracking == 0 ) {
             accumulate.function( function.getText(),
+                                 label,
                                  parameters.toArray( new String[parameters.size()] ) );
         }
     }

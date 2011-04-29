@@ -84,8 +84,8 @@ public class AccumulateNode extends BetaNode {
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
         super.readExternal( in );
         unwrapRightObject = in.readBoolean();
         accumulate = (Accumulate) in.readObject();
@@ -93,7 +93,7 @@ public class AccumulateNode extends BetaNode {
         resultBinder = (BetaConstraints) in.readObject();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeBoolean( unwrapRightObject );
         out.writeObject( accumulate );
@@ -119,9 +119,9 @@ public class AccumulateNode extends BetaNode {
      *
      *   Object result = this.accumulator.accumulate( ... );
      */
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
+    public void assertLeftTuple( final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory ) {
 
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
@@ -159,7 +159,7 @@ public class AccumulateNode extends BetaNode {
 
         FastIterator rightIt = memory.betaMemory.getRightTupleMemory().fastIterator();
         for ( RightTuple rightTuple = memory.betaMemory.getRightTupleMemory().getFirst( leftTuple,
-                                                                                        (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple) ) {
+                                                                                        (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
             InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                        handle ) ) {
@@ -194,9 +194,9 @@ public class AccumulateNode extends BetaNode {
      * As the accumulate node will always generate a resulting tuple,
      * we must always destroy it
      */
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
+    public void retractLeftTuple( final LeftTuple leftTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
         memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().remove( leftTuple );
@@ -225,9 +225,9 @@ public class AccumulateNode extends BetaNode {
      *  1. Select all matching tuples from left memory
      *  2. For each matching tuple, call a modify tuple
      */
-    public void assertObject(final InternalFactHandle factHandle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+    public void assertObject( final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory ) {
 
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
@@ -254,8 +254,8 @@ public class AccumulateNode extends BetaNode {
                                                factHandle );
 
         FastIterator it = memory.betaMemory.getLeftTupleMemory().fastIterator();
-        
-        for ( LeftTuple leftTuple = memory.betaMemory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
+
+        for ( LeftTuple leftTuple = memory.betaMemory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         leftTuple ) ) {
                 final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
@@ -286,9 +286,9 @@ public class AccumulateNode extends BetaNode {
      *  If an object is retract, call modify tuple for each
      *  tuple match.
      */
-    public void retractRightTuple(final RightTuple rightTuple,
-                                  final PropagationContext context,
-                                  final InternalWorkingMemory workingMemory) {
+    public void retractRightTuple( final RightTuple rightTuple,
+                                   final PropagationContext context,
+                                   final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
         final InternalFactHandle origin = (InternalFactHandle) context.getFactHandleOrigin();
         if ( context.getType() == PropagationContext.EXPIRATION ) {
@@ -312,9 +312,9 @@ public class AccumulateNode extends BetaNode {
 
     }
 
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
+    public void modifyLeftTuple( LeftTuple leftTuple,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
 
@@ -336,7 +336,7 @@ public class AccumulateNode extends BetaNode {
                                                       (InternalFactHandle) context.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-        if ( childLeftTuple != null && rightMemory.isIndexed() && rightTuple != rightMemory.getFirst( childLeftTuple.getRightParent() ) ) {
+        if ( childLeftTuple != null && rightMemory.isIndexed() && rightTuple.getMemory() !=  childLeftTuple.getRightParent().getMemory() ) {
             // our index has changed, so delete all the previous matchings
             removePreviousMatchesForLeftTuple( leftTuple,
                                                workingMemory,
@@ -353,7 +353,7 @@ public class AccumulateNode extends BetaNode {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple) ) {
+                for ( ; rightTuple != null; rightTuple = (RightTuple) rightIt.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
                     if ( this.constraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
                                                                handle ) ) {
@@ -429,15 +429,14 @@ public class AccumulateNode extends BetaNode {
                                    true );
     }
 
-    public void modifyRightTuple(RightTuple rightTuple,
-                                 PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
+    public void modifyRightTuple( RightTuple rightTuple,
+                                  PropagationContext context,
+                                  InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
-        memory.betaMemory.getRightTupleMemory().remove( rightTuple );
-        memory.betaMemory.getRightTupleMemory().add( rightTuple );
+        memory.betaMemory.getRightTupleMemory().removeAdd( rightTuple );
 
         if ( memory.betaMemory.getLeftTupleMemory() == null || memory.betaMemory.getLeftTupleMemory().size() == 0 ) {
             // do nothing here, as we know there are no left tuples at this stage in sequential mode.
@@ -464,7 +463,7 @@ public class AccumulateNode extends BetaNode {
                                                rightTuple.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-        if ( childLeftTuple != null && leftMemory.isIndexed() && leftTuple != leftMemory.getFirst( childLeftTuple.getLeftParent() ) ) {
+        if ( childLeftTuple != null && leftMemory.isIndexed() && leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory() ) {
             // our index has changed, so delete all the previous matches
             removePreviousMatchesForRightTuple( rightTuple,
                                                 context,
@@ -473,7 +472,7 @@ public class AccumulateNode extends BetaNode {
                                                 childLeftTuple );
             childLeftTuple = null; // null so the next check will attempt matches for new bucket
         }
-        
+
         FastIterator leftIt = memory.betaMemory.getLeftTupleMemory().fastIterator();
 
         // if LeftTupleMemory is empty, there are no matches to modify
@@ -580,39 +579,37 @@ public class AccumulateNode extends BetaNode {
      * @param accresult
      * @param handle
      */
-    private void evaluateResultConstraints(final ActivitySource source,
-                                           final LeftTuple leftTuple,
-                                           final PropagationContext context,
-                                           final InternalWorkingMemory workingMemory,
-                                           final AccumulateMemory memory,
-                                           final AccumulateContext accctx,
-                                           final boolean useLeftMemory) {
+    private void evaluateResultConstraints( final ActivitySource source,
+                                            final LeftTuple leftTuple,
+                                            final PropagationContext context,
+                                            final InternalWorkingMemory workingMemory,
+                                            final AccumulateMemory memory,
+                                            final AccumulateContext accctx,
+                                            final boolean useLeftMemory ) {
 
         // get the actual result
-        final Object[] result = this.accumulate.getResult( memory.workingMemoryContext,
-                                                           accctx.context,
-                                                           leftTuple,
-                                                           workingMemory );
+        final Object[] resultArray = this.accumulate.getResult( memory.workingMemoryContext,
+                                                                accctx.context,
+                                                                leftTuple,
+                                                                workingMemory );
+        // this is a quick hack for the 5.2 release
+        Object result = this.accumulate.isMultiFunction() ? resultArray : resultArray[0];
 
-        if ( result[0] == null ) {
-            throw new IllegalArgumentException( "Accumulate's cannot return null" );
-        }
-        
         if ( accctx.result == null ) {
-            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result[0],
+            final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,
                                                                                                   workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                                                        result[0] ),
+                                                                                                                                                                        result ),
                                                                                                   workingMemory,
                                                                                                   null ); // so far, result is not an event
 
             accctx.result = new RightTuple( handle,
-                                                this );
+                                            this );
         } else {
-            accctx.result.getFactHandle().setObject( result[0] );
+            accctx.result.getFactHandle().setObject( result );
         }
 
         // First alpha node filters
-        boolean isAllowed = result[0] != null;
+        boolean isAllowed = result != null;
         for ( int i = 0, length = this.resultConstraints.length; isAllowed && i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( accctx.result.getFactHandle(),
                                                        workingMemory,
@@ -682,9 +679,9 @@ public class AccumulateNode extends BetaNode {
 
     }
 
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
+    public void updateSink( final LeftTupleSink sink,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
@@ -709,8 +706,8 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    protected void doRemove(final InternalWorkingMemory workingMemory,
-                            final AccumulateMemory memory) {
+    protected void doRemove( final InternalWorkingMemory workingMemory,
+                             final AccumulateMemory memory ) {
         Iterator it = memory.betaMemory.getCreatedHandles().iterator();
         for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
             AccumulateContext ctx = (AccumulateContext) entry.getValue();
@@ -728,7 +725,7 @@ public class AccumulateNode extends BetaNode {
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
-    public boolean equals(final Object object) {
+    public boolean equals( final Object object ) {
         if ( this == object ) {
             return true;
         }
@@ -750,7 +747,7 @@ public class AccumulateNode extends BetaNode {
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */
-    public Object createMemory(final RuleBaseConfiguration config) {
+    public Object createMemory( final RuleBaseConfiguration config ) {
         AccumulateMemory memory = new AccumulateMemory();
         memory.betaMemory = this.constraints.createBetaMemory( config );
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
@@ -767,14 +764,14 @@ public class AccumulateNode extends BetaNode {
         return NodeTypeEnums.AccumulateNode;
     }
 
-    private void addMatch(final LeftTuple leftTuple,
-                          final RightTuple rightTuple,
-                          final LeftTuple currentLeftChild,
-                          final LeftTuple currentRightChild,
-                          final InternalWorkingMemory workingMemory,
-                          final AccumulateMemory memory,
-                          final AccumulateContext accresult,
-                          final boolean useLeftMemory) {
+    private void addMatch( final LeftTuple leftTuple,
+                           final RightTuple rightTuple,
+                           final LeftTuple currentLeftChild,
+                           final LeftTuple currentRightChild,
+                           final InternalWorkingMemory workingMemory,
+                           final AccumulateMemory memory,
+                           final AccumulateContext accresult,
+                           final boolean useLeftMemory ) {
         LeftTuple tuple = leftTuple;
         InternalFactHandle handle = rightTuple.getFactHandle();
         if ( this.unwrapRightObject ) {
@@ -807,12 +804,12 @@ public class AccumulateNode extends BetaNode {
      * @param match
      * @param result
      */
-    private void removeMatch(final RightTuple rightTuple,
-                             final LeftTuple match,
-                             final InternalWorkingMemory workingMemory,
-                             final AccumulateMemory memory,
-                             final AccumulateContext accctx,
-                             final boolean reaccumulate) {
+    private void removeMatch( final RightTuple rightTuple,
+                              final LeftTuple match,
+                              final InternalWorkingMemory workingMemory,
+                              final AccumulateMemory memory,
+                              final AccumulateContext accctx,
+                              final boolean reaccumulate ) {
         // save the matching tuple
         LeftTuple leftTuple = match.getLeftParent();
 
@@ -849,10 +846,10 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    private void reaccumulateForLeftTuple(final LeftTuple leftTuple,
-                                          final InternalWorkingMemory workingMemory,
-                                          final AccumulateMemory memory,
-                                          final AccumulateContext accctx) {
+    private void reaccumulateForLeftTuple( final LeftTuple leftTuple,
+                                           final InternalWorkingMemory workingMemory,
+                                           final AccumulateMemory memory,
+                                           final AccumulateContext accctx ) {
         this.accumulate.init( memory.workingMemoryContext,
                               accctx.context,
                               leftTuple,
@@ -874,10 +871,10 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    private void removePreviousMatchesForLeftTuple(final LeftTuple leftTuple,
-                                                   final InternalWorkingMemory workingMemory,
-                                                   final AccumulateMemory memory,
-                                                   final AccumulateContext accctx) {
+    private void removePreviousMatchesForLeftTuple( final LeftTuple leftTuple,
+                                                    final InternalWorkingMemory workingMemory,
+                                                    final AccumulateMemory memory,
+                                                    final AccumulateContext accctx ) {
         // so we just split the list keeping the head 
         LeftTuple[] matchings = splitList( leftTuple,
                                            accctx,
@@ -893,11 +890,11 @@ public class AccumulateNode extends BetaNode {
                               workingMemory );
     }
 
-    private void removePreviousMatchesForRightTuple(final RightTuple rightTuple,
-                                                    final PropagationContext context,
-                                                    final InternalWorkingMemory workingMemory,
-                                                    final AccumulateMemory memory,
-                                                    final LeftTuple firstChild) {
+    private void removePreviousMatchesForRightTuple( final RightTuple rightTuple,
+                                                     final PropagationContext context,
+                                                     final InternalWorkingMemory workingMemory,
+                                                     final AccumulateMemory memory,
+                                                     final LeftTuple firstChild ) {
         for ( LeftTuple match = firstChild; match != null; ) {
             final LeftTuple tmp = match.getRightParentNext();
             final LeftTuple parent = match.getLeftParent();
@@ -919,9 +916,9 @@ public class AccumulateNode extends BetaNode {
         }
     }
 
-    protected LeftTuple[] splitList(final LeftTuple parent,
-                                    final AccumulateContext accctx,
-                                    final boolean isUpdatingSink) {
+    protected LeftTuple[] splitList( final LeftTuple parent,
+                                     final AccumulateContext accctx,
+                                     final boolean isUpdatingSink ) {
         LeftTuple[] matchings = new LeftTuple[2];
 
         // save the matchings list
@@ -945,8 +942,8 @@ public class AccumulateNode extends BetaNode {
         return matchings;
     }
 
-    private void restoreList(final LeftTuple parent,
-                             final LeftTuple[] matchings) {
+    private void restoreList( final LeftTuple parent,
+                              final LeftTuple[] matchings ) {
         // concatenate matchings list at the end of the children list
         if ( parent.firstChild == null ) {
             parent.firstChild = matchings[0];
@@ -966,9 +963,9 @@ public class AccumulateNode extends BetaNode {
      * @param accctx
      * @return
      */
-    private LeftTuple getFirstMatch(final LeftTuple leftTuple,
-                                    final AccumulateContext accctx,
-                                    final boolean isUpdatingSink) {
+    private LeftTuple getFirstMatch( final LeftTuple leftTuple,
+                                     final AccumulateContext accctx,
+                                     final boolean isUpdatingSink ) {
         // unlink all right matches 
         LeftTuple child = leftTuple.firstChild;
 
@@ -993,15 +990,15 @@ public class AccumulateNode extends BetaNode {
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+        public void readExternal( ObjectInput in ) throws IOException,
+                                                  ClassNotFoundException {
             workingMemoryContext = (Object[]) in.readObject();
             betaMemory = (BetaMemory) in.readObject();
             resultsContext = (ContextEntry[]) in.readObject();
             alphaContexts = (ContextEntry[]) in.readObject();
         }
 
-        public void writeExternal(ObjectOutput out) throws IOException {
+        public void writeExternal( ObjectOutput out ) throws IOException {
             out.writeObject( workingMemoryContext );
             out.writeObject( betaMemory );
             out.writeObject( resultsContext );
@@ -1017,14 +1014,14 @@ public class AccumulateNode extends BetaNode {
         public RightTuple     result;
         public boolean        propagated;
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+        public void readExternal( ObjectInput in ) throws IOException,
+                                                  ClassNotFoundException {
             context = (Serializable[]) in.readObject();
             result = (RightTuple) in.readObject();
             propagated = in.readBoolean();
         }
 
-        public void writeExternal(ObjectOutput out) throws IOException {
+        public void writeExternal( ObjectOutput out ) throws IOException {
             out.writeObject( context );
             out.writeObject( result );
             out.writeBoolean( propagated );

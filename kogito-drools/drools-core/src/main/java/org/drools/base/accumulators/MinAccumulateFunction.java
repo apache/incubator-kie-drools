@@ -95,4 +95,11 @@ public class MinAccumulateFunction implements AccumulateFunction {
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Class< ? > getResultType() {
+        return Number.class;
+    }
+
 }

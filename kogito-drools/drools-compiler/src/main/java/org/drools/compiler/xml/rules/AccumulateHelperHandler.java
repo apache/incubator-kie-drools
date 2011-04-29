@@ -16,11 +16,8 @@
 
 package org.drools.compiler.xml.rules;
 
-import java.util.HashSet;
-
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.PatternDescr;
 import org.drools.xml.BaseAbstractHandler;
 import org.drools.xml.ExtensibleXmlParser;
 import org.drools.xml.Handler;
@@ -74,7 +71,9 @@ public class AccumulateHelperHandler extends BaseAbstractHandler
             emptyContentCheck( localName, expression, parser );
             accumulate.setReverseCode( expression.trim() );
         } else if ( localName.equals( "external-function" ) ) {
-            accumulate.addFunction( element.getAttribute( "evaluator" ), new String[] { element.getAttribute( "expression" ) });
+            accumulate.addFunction( element.getAttribute( "evaluator" ), 
+                                    null, // no support to bindings yet?
+                                    new String[] { element.getAttribute( "expression" ) });
         }
 
         return null;

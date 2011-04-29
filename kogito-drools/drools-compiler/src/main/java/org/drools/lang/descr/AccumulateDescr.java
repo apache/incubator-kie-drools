@@ -157,8 +157,10 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public void addFunction( String function,
+                             String bind, 
                              String[] params ) {
         addFunction( new AccumulateFunctionCallDescr( function,
+                                                      bind, 
                                                       params ) );
     }
 
@@ -222,16 +224,23 @@ public class AccumulateDescr extends PatternSourceDescr
         private static final long serialVersionUID = 520l;
 
         private final String      function;
+        private final String      bind;
         private final String[]    params;
 
         public AccumulateFunctionCallDescr(String function,
+                                           String bind,
                                            String[] params) {
             this.function = function;
+            this.bind = bind;
             this.params = params;
         }
 
         public String getFunction() {
             return function;
+        }
+        
+        public String getBind() {
+            return bind;
         }
 
         public String[] getParams() {
@@ -243,6 +252,7 @@ public class AccumulateDescr extends PatternSourceDescr
             final int prime = 31;
             int result = 1;
             result = prime * result + ((function == null) ? 0 : function.hashCode());
+            result = prime * result + ((bind == null) ? 0 : bind.hashCode());
             result = prime * result + Arrays.hashCode( params );
             return result;
         }
@@ -256,6 +266,9 @@ public class AccumulateDescr extends PatternSourceDescr
             if ( function == null ) {
                 if ( other.function != null ) return false;
             } else if ( !function.equals( other.function ) ) return false;
+            if ( bind == null ) {
+                if ( other.bind != null ) return false;
+            } else if ( !bind.equals( other.bind ) ) return false;
             if ( !Arrays.equals( params,
                                  other.params ) ) return false;
             return true;
