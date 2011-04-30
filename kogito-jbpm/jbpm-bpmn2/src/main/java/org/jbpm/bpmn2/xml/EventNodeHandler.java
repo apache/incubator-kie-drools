@@ -90,16 +90,24 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 }
                 xmlDump.append(">" + EOL);
                 String duration = (String) eventNode.getMetaData("TimeDuration");
-                if (duration != null) {
+                String cycle = (String) eventNode.getMetaData("TimeCycle");
+                
+                if (duration != null && cycle != null) {
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
+                            "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
+                } else if (duration != null) {
                     xmlDump.append(
                             "      <timerEventDefinition>" + EOL +
                             "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
                             "      </timerEventDefinition>" + EOL);
                 } else {
-	                xmlDump.append(
-	                    "      <timerEventDefinition>" + EOL +
-	                    "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars((String) eventNode.getMetaData("TimeCycle")) + "</timeCycle>" + EOL +
-	                    "      </timerEventDefinition>" + EOL);
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(cycle) + "</timeCycle>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
                 }
                 endNode("boundaryEvent", xmlDump);
             } else if (type.startsWith("Compensate-")) {

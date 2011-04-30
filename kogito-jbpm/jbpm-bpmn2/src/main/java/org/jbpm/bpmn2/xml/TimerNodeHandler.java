@@ -41,9 +41,9 @@ public class TimerNodeHandler extends AbstractNodeHandler {
 		Timer timer = timerNode.getTimer(); 
 		if (timer != null && timer.getDelay() != null) {
 			if (timer.getPeriod() == null) {
-			    xmlDump.append("        <timeDuration>" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
+			    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
 			} else {
-				xmlDump.append("        <timeCycle>" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);			}
+				xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);			}
 		}
 		xmlDump.append("      </timerEventDefinition>" + EOL);
 		endNode("intermediateCatchEvent", xmlDump);
