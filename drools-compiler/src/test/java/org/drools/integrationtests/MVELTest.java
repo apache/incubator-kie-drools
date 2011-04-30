@@ -1,29 +1,25 @@
 package org.drools.integrationtests;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.StringReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
+import org.drools.*;
+import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.rule.MapBackedClassLoader;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import org.drools.Cheese;
-import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.Person;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
 import org.drools.base.mvel.MVELDebugHandler;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -326,7 +322,86 @@ public class MVELTest {
         
         assertEquals(Triangle.Type.ACUTE, list.get(0) );
     }
-    
+
+    @Test
+    @Ignore("Added 30-APR-2011 -Rikkola-")
+    public void testNestedEnumFromJar() {
+        String str = ""+
+           "package org.test \n" +
+           "import org.drools.examples.eventing.EventRequest \n" +
+           "global java.util.List list \n" +
+           "rule 'zaa'\n  " +
+           "when \n  " +
+           "request: EventRequest( status == EventRequest.Status.ACTIVE )\n   " +
+           "then \n " +
+           "request.setStatus(EventRequest.Status.ACTIVE); \n  " +
+           "end";
+
+
+        JarInputStream jis = null;
+        try {
+            jis = new JarInputStream( this.getClass().getResourceAsStream( "/eventing-example.jar" ) );
+        } catch (IOException e) {
+            fail("Failed to load the jar");
+        }
+        MapBackedClassLoader loader = createClassLoader( jis );
+
+        KnowledgeBuilderConfiguration knowledgeBuilderConfiguration = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(knowledgeBuilderConfiguration);
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBaseConfiguration knowledgeBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null,loader);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(knowledgeBaseConfiguration);
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        Triangle t = new Triangle( Triangle.Type.ACUTE);
+        ksession.insert( t );
+
+        ksession.fireAllRules();
+
+        assertEquals(Triangle.Type.ACUTE, list.get(0) );
+    }
+
+    public static MapBackedClassLoader createClassLoader(JarInputStream jis) {
+        ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+
+        final ClassLoader p = parentClassLoader;
+
+        MapBackedClassLoader loader = AccessController.doPrivileged(new PrivilegedAction<MapBackedClassLoader>() {
+            public MapBackedClassLoader run() {
+                return new MapBackedClassLoader(p);
+            }
+        });
+
+        try {
+            JarEntry entry = null;
+            byte[] buf = new byte[1024];
+            int len = 0;
+            while ((entry = jis.getNextJarEntry()) != null) {
+                if (!entry.isDirectory() && !entry.getName().endsWith(".java")) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    while ((len = jis.read(buf)) >= 0) {
+                        out.write(buf, 0, len);
+                    }
+
+                    loader.addResource(entry.getName(), out.toByteArray());
+                }
+            }
+
+        } catch (IOException e) {
+            fail("failed to read the jar");
+        }
+        return loader;
+    }
+
     public static class Triangle {
         public static enum Type {
             ACUTE, OBTUSE;
