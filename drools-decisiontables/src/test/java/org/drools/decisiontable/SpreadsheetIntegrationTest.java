@@ -75,6 +75,38 @@ public class SpreadsheetIntegrationTest {
     }
 
     @Test
+    public void testExecuteJBRULES3005() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "/data/IntegrationExampleTest.xls", getClass() ),
+                              ResourceType.DTABLE );
+
+        assertFalse( kbuilder.hasErrors() );
+
+        //BUILD RULEBASE
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //NEW WORKING MEMORY
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        //ASSERT AND FIRE
+        session.insert( new Cheese( "stilton",
+                                    42 ) );
+        session.insert( new Person( "michael",
+                                    "stilton",
+                                    42 ) );
+        final List<String> list = new ArrayList<String>();
+        session.setGlobal( "list",
+                           list );
+        session.fireAllRules();
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "Old man stilton",
+                      list.get( 0 ) );
+    }
+    
+    @Test
     public void testNamedWorksheet() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
