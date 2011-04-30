@@ -83,6 +83,15 @@ import java.util.*;
  * you must either overload the compiler property before instantiating this
  * class or the PackageBuilder, or make sure Eclipse is in the classpath, as
  * Eclipse is the default.
+ * 
+ * Normally, a complete package is built using one of the applicable
+ * addPackageFromXXX methods. It is however possible to construct a package
+ * incrementally by adding individual component parts. When a package is built
+ * incrementally package level attributes are cached and applied to Rules
+ * subsequently added. Caution should be exercised when using the same
+ * PackageBuilder to construct packages from multiple sources as the cached
+ * package level attributes will still apply even if the resource added to
+ * PackageBuilder does not explicitly include package level attributes.
  */
 public class PackageBuilder {
 
