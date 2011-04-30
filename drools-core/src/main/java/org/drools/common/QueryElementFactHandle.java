@@ -55,14 +55,14 @@ public class QueryElementFactHandle
     }
 
     public LeftTuple getLastLeftTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public Object getObject() {
         if ( this.object != null ) {
             return this.object;
         }
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public WorkingMemoryEntryPoint getEntryPoint() {
@@ -71,15 +71,15 @@ public class QueryElementFactHandle
     }
 
     public EqualityKey getEqualityKey() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public RightTuple getRightTuple() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public void invalidate() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public boolean isEvent() {
@@ -91,31 +91,30 @@ public class QueryElementFactHandle
     }
 
     public void setEntryPoint(WorkingMemoryEntryPoint ep) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public void setEqualityKey(EqualityKey key) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public void setFirstLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     public void setObject(Object object) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public void setRecency(long recency) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public void setRightTuple(RightTuple rightTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public DefaultFactHandle clone() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
     public String toExternalForm() {
@@ -149,7 +148,6 @@ public class QueryElementFactHandle
 
     
     public void setLastLeftTuple(LeftTuple leftTuple) {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     

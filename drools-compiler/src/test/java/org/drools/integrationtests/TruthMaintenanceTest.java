@@ -907,5 +907,62 @@ public class TruthMaintenanceTest {
         assertThat( retracts.get( 0 ).getOldObject(), is( (Object) "rule 1" ) );
         assertThat( retracts.get( 1 ).getOldObject(), is( (Object) "rule 2" ) );
     }
+    
+    @Test
+    public void testTMSwithQueries() {
+        String str =""+
+                "package org.drools.test;\n" +
+                "\n" +
+                "global java.util.List list; \n" +
+                "\n" +
+                "declare Bean\n" +
+                "    str : String\n" +
+                "end\n" +
+                "\n" +
+                "query bean ( String $s )\n" +
+                "    Bean(  $s ; )\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "rule \"init\"\n" +
+                "when\n" +
+                "then\n" +
+                "    insert( new Bean(\"AAA\") );\n" +
+                "    insert( \"x\" );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"LogicIn\"\n" +
+                "when\n" +
+                "    String( this == \"x\" )\n" +
+                "    ?bean(  \"AAA\" ; )\n" +
+                "then\n" +
+                "    insertLogical(\"y\");\n" +
+                "    retract(\"x\");\n" +
+                "end " +
+                "\n" +
+                "rule \"Never\"\n" +
+                "salience -999\n" +
+                "when\n" +
+                "    $s : String( this == \"y\" )\n" +
+                "then\n" +
+                "    list.add($s);\n" +
+                "end";
+ 
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+ 
+        List list = new ArrayList();
+        kSession.setGlobal("list",list);
+ 
+ 
+        kSession.fireAllRules();
+        assertEquals(0,list.size());
+ 
+        //System.err.println(reportWMObjects(kSession));
+    }    
 
 }
