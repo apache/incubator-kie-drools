@@ -73,56 +73,62 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
-* This is the main compiler class for parsing and compiling rules and
-* assembling or merging them into a binary Package instance. This can be done
-* by merging into existing binary packages, or totally from source.
-*
-* If you are using the Java dialect the JavaDialectConfiguration will attempt
-* to validate that the specified compiler is in the classpath, using
-* ClassLoader.loasClass(String). If you intented to just Janino sa the compiler
-* you must either overload the compiler property before instantiating this
-* class or the PackageBuilder, or make sure Eclipse is in the classpath, as
-* Eclipse is the default.
-*/
+ * This is the main compiler class for parsing and compiling rules and
+ * assembling or merging them into a binary Package instance. This can be done
+ * by merging into existing binary packages, or totally from source.
+ * 
+ * If you are using the Java dialect the JavaDialectConfiguration will attempt
+ * to validate that the specified compiler is in the classpath, using
+ * ClassLoader.loasClass(String). If you intented to just Janino sa the compiler
+ * you must either overload the compiler property before instantiating this
+ * class or the PackageBuilder, or make sure Eclipse is in the classpath, as
+ * Eclipse is the default.
+ */
 public class PackageBuilder {
 
-    private Map<String, PackageRegistry>      pkgRegistryMap;
+    private Map<String, PackageRegistry>             pkgRegistryMap;
 
-    private List<DroolsError>                 results;
+    private List<DroolsError>                        results;
 
-    private final PackageBuilderConfiguration configuration;
+    private final PackageBuilderConfiguration        configuration;
 
-    public static final RuleBuilder           ruleBuilder = new RuleBuilder();
+    public static final RuleBuilder                  ruleBuilder       = new RuleBuilder();
 
     /**
      * Optional RuleBase for incremental live building
      */
-    private ReteooRuleBase                    ruleBase;
+    private ReteooRuleBase                           ruleBase;
 
     /**
      * default dialect
      */
-    private final String                      defaultDialect;
+    private final String                             defaultDialect;
 
-    private CompositeClassLoader              rootClassLoader;
+    private CompositeClassLoader                     rootClassLoader;
 
-    private Map<String, Class< ? >>           globals;
+    private Map<String, Class< ? >>                  globals;
 
-    private Resource                          resource;
+    private Resource                                 resource;
 
-    private List<DSLTokenizedMappingFile>     dslFiles;
+    private List<DSLTokenizedMappingFile>            dslFiles;
 
-    private TimeIntervalParser                timeParser;
+    private TimeIntervalParser                       timeParser;
 
-    protected DateFormats                     dateFormats;
+    protected DateFormats                            dateFormats;
 
-    private ProcessBuilder                    processBuilder;
+    private ProcessBuilder                           processBuilder;
 
-    private PMMLCompiler                      pmmlCompiler;
+    private PMMLCompiler                             pmmlCompiler;
 
-    private Map<String, TypeDeclaration>      builtinTypes;
+    private Map<String, TypeDeclaration>             builtinTypes;
 
-    private Map<String, TypeDeclaration>      cacheTypes;
+    private Map<String, TypeDeclaration>             cacheTypes;
+
+    //This list of package level attributes is initialised with the PackageDescr's attributes added to the builder.
+    //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
+    //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the 
+    //AttributeDescr's name.
+    private Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
     /**
      * Use this when package is starting from scratch.
@@ -148,12 +154,12 @@ public class PackageBuilder {
 
     /**
      * Pass a specific configuration for the PackageBuilder
-     *
+     * 
      * PackageBuilderConfiguration is not thread safe and it also contains
      * state. Once it is created and used in one or more PackageBuilders it
      * should be considered immutable. Do not modify its properties while it is
      * being used by a PackageBuilder.
-     *
+     * 
      * @param configuration
      */
     public PackageBuilder(final PackageBuilderConfiguration configuration) {
@@ -268,12 +274,12 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source.
-     *
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader reader ) throws DroolsParserException,
+    public void addPackageFromDrl(final Reader reader) throws DroolsParserException,
                                                         IOException {
         this.resource = new ReaderResource( reader );
         final DrlParser parser = new DrlParser();
@@ -285,7 +291,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDrl( Resource resource ) throws DroolsParserException,
+    public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                       IOException {
         this.resource = resource;
         final DrlParser parser = new DrlParser();
@@ -299,12 +305,12 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
-     *
+     * 
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromXml( final Reader reader ) throws DroolsParserException,
+    public void addPackageFromXml(final Reader reader) throws DroolsParserException,
                                                         IOException {
         this.resource = new ReaderResource( reader );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
@@ -320,7 +326,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromXml( final Resource resource ) throws DroolsParserException,
+    public void addPackageFromXml(final Resource resource) throws DroolsParserException,
                                                             IOException {
         this.resource = resource;
 
@@ -339,7 +345,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from DRL source using the supplied DSL configuration.
-     *
+     * 
      * @param source
      *            The source of the rules.
      * @param dsl
@@ -347,8 +353,8 @@ public class PackageBuilder {
      * @throws DroolsParserException
      * @throws IOException
      */
-    public void addPackageFromDrl( final Reader source,
-                                   final Reader dsl ) throws DroolsParserException,
+    public void addPackageFromDrl(final Reader source,
+                                   final Reader dsl) throws DroolsParserException,
                                                      IOException {
         this.resource = new ReaderResource( source );
 
@@ -362,7 +368,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromDslr( final Resource resource ) throws DroolsParserException,
+    public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
                                                              IOException {
         this.resource = resource;
 
@@ -389,7 +395,7 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addPackageFromBrl( final Resource resource ) throws DroolsParserException {
+    public void addPackageFromBrl(final Resource resource) throws DroolsParserException {
         this.resource = resource;
         try {
             BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
@@ -420,7 +426,7 @@ public class PackageBuilder {
         }
     }
 
-    public void addDsl( Resource resource ) throws IOException {
+    public void addDsl(Resource resource) throws IOException {
         this.resource = resource;
 
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
@@ -438,11 +444,11 @@ public class PackageBuilder {
     /**
      * Add a ruleflow (.rfm) asset to this package.
      */
-    public void addRuleFlow( Reader processSource ) {
+    public void addRuleFlow(Reader processSource) {
         addProcessFromXml( processSource );
     }
 
-    public void addProcessFromXml( Resource resource ) {
+    public void addProcessFromXml(Resource resource) {
         this.resource = resource;
 
         try {
@@ -458,13 +464,13 @@ public class PackageBuilder {
         this.resource = null;
     }
 
-    public void addProcessFromXml( Reader processSource ) {
+    public void addProcessFromXml(Reader processSource) {
         addProcessFromXml( new ReaderResource( processSource ) );
     }
 
-    public void addKnowledgeResource( Resource resource,
+    public void addKnowledgeResource(Resource resource,
                                       ResourceType type,
-                                      ResourceConfiguration configuration ) {
+                                      ResourceConfiguration configuration) {
         try {
             if ( ResourceType.DRL.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
@@ -575,8 +581,30 @@ public class PackageBuilder {
      * This adds a package from a Descr/AST This will also trigger a compile, if
      * there are any generated classes to compile of course.
      */
-    public void addPackage( final PackageDescr packageDescr ) {
+    public void addPackage(final PackageDescr packageDescr) {
         validateUniqueRuleNames( packageDescr );
+
+        //Derive namespace
+        if ( isEmpty( packageDescr.getNamespace() ) ) {
+            packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
+        }
+        if ( !checkNamespace( packageDescr.getNamespace() ) ) {
+            return;
+        }
+
+        //Copy package level attributes for inclusion on individual rules
+        if ( packageDescr.getAttributes().size() > 0 ) {
+            Map<String, AttributeDescr> pkgAttributes = packageAttributes.get( packageDescr.getNamespace() );
+            if ( pkgAttributes == null ) {
+                pkgAttributes = new HashMap<String, AttributeDescr>();
+                this.packageAttributes.put( packageDescr.getNamespace(),
+                                            pkgAttributes );
+            }
+            for ( AttributeDescr attr : packageDescr.getAttributes() ) {
+                pkgAttributes.put( attr.getName(),
+                                   attr );
+            }
+        }
 
         String dialectName = this.defaultDialect;
         // see if this packageDescr overrides the current default dialect
@@ -586,13 +614,6 @@ public class PackageBuilder {
                 dialectName = value.getValue();
                 break;
             }
-        }
-
-        if ( isEmpty( packageDescr.getNamespace() ) ) {
-            packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
-        }
-        if ( !checkNamespace( packageDescr.getNamespace() ) ) {
-            return;
         }
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
@@ -648,6 +669,11 @@ public class PackageBuilder {
                     // make sure namespace is set on components
                     ruleDescr.setNamespace( packageDescr.getNamespace() );
                 }
+
+                Map<String, AttributeDescr> pkgAttributes = packageAttributes.get( packageDescr.getNamespace() );
+                inheritPackageAttributes( pkgAttributes,
+                                          ruleDescr );
+
                 if ( isEmpty( ruleDescr.getDialect() ) ) {
                     ruleDescr.addAttribute( new AttributeDescr( "dialect",
                                                                 pkgRegistry.getDialect() ) );
@@ -678,7 +704,7 @@ public class PackageBuilder {
     /**
      * This checks to see if it should all be in the one namespace.
      */
-    private boolean checkNamespace( String newName ) {
+    private boolean checkNamespace(String newName) {
         if ( this.configuration == null ) return true;
         if ( (!this.pkgRegistryMap.isEmpty()) && (!this.pkgRegistryMap.containsKey( newName )) ) {
             return this.configuration.isAllowMultipleNamespaces();
@@ -686,7 +712,7 @@ public class PackageBuilder {
         return true;
     }
 
-    public boolean isEmpty( String string ) {
+    public boolean isEmpty(String string) {
         return (string == null || string.trim().length() == 0);
     }
 
@@ -707,14 +733,14 @@ public class PackageBuilder {
         }
     }
 
-    private List getResults( List results ) {
+    private List getResults(List results) {
         for ( PackageRegistry pkgRegistry : this.pkgRegistryMap.values() ) {
             results = pkgRegistry.getDialectCompiletimeRegistry().addResults( results );
         }
         return results;
     }
 
-    public synchronized void addPackage( final Package newPkg ) {
+    public synchronized void addPackage(final Package newPkg) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( newPkg.getName() );
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -758,13 +784,13 @@ public class PackageBuilder {
     }
 
     /**
-     * Merge a new package with an existing package.
-     * Most of the work is done by the concrete implementations,
-     * but this class does some work (including combining imports, compilation data, globals,
-     * and the actual Rule objects into the package).
+     * Merge a new package with an existing package. Most of the work is done by
+     * the concrete implementations, but this class does some work (including
+     * combining imports, compilation data, globals, and the actual Rule objects
+     * into the package).
      */
-    private void mergePackage( final Package pkg,
-                               final Package newPkg ) {
+    private void mergePackage(final Package pkg,
+                               final Package newPkg) {
         // Merge imports
         final Map<String, ImportDeclaration> imports = pkg.getImports();
         imports.putAll( newPkg.getImports() );
@@ -835,7 +861,7 @@ public class PackageBuilder {
     //        return;
     //    }
 
-    private void validateUniqueRuleNames( final PackageDescr packageDescr ) {
+    private void validateUniqueRuleNames(final PackageDescr packageDescr) {
         final Set<String> names = new HashSet<String>();
         for ( final RuleDescr rule : packageDescr.getRules() ) {
             final String name = rule.getName();
@@ -848,7 +874,7 @@ public class PackageBuilder {
         }
     }
 
-    private PackageRegistry newPackage( final PackageDescr packageDescr ) {
+    private PackageRegistry newPackage(final PackageDescr packageDescr) {
         Package pkg;
         if ( this.ruleBase == null || (pkg = this.ruleBase.getPackage( packageDescr.getName() )) == null ) {
             // there is no rulebase or it does not define this package so define it
@@ -885,7 +911,7 @@ public class PackageBuilder {
         return pkgRegistry;
     }
 
-    private void mergePackage( final PackageDescr packageDescr ) {
+    private void mergePackage(final PackageDescr packageDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         for ( final ImportDescr importEntry : packageDescr.getImports() ) {
@@ -920,7 +946,7 @@ public class PackageBuilder {
 
     }
 
-    public TypeDeclaration getTypeDeclaration( Class< ? > cls ) {
+    public TypeDeclaration getTypeDeclaration(Class< ? > cls) {
         if ( cls.isPrimitive() || cls.isArray() ) {
             return null;
         }
@@ -990,17 +1016,22 @@ public class PackageBuilder {
     }
 
     /**
-     * Tries to determine the namespace (package) of a simple type chosen to be the superclass of a declared bean.
-     * Looks among imports, local declarations and previous declarations.
-     * Means that a class can't extend another class declared in package that has not been loaded yet.
-     * @param sup               the simple name of the superclass
-     * @param packageDescr      the descriptor of the package the base class is declared in
-     * @param pkgRegistry       the current package registry
+     * Tries to determine the namespace (package) of a simple type chosen to be
+     * the superclass of a declared bean. Looks among imports, local
+     * declarations and previous declarations. Means that a class can't extend
+     * another class declared in package that has not been loaded yet.
+     * 
+     * @param sup
+     *            the simple name of the superclass
+     * @param packageDescr
+     *            the descriptor of the package the base class is declared in
+     * @param pkgRegistry
+     *            the current package registry
      * @return the fully qualified name of the superclass
      */
-    private String resolveSuperType( String sup,
+    private String resolveSuperType(String sup,
                                      PackageDescr packageDescr,
-                                     PackageRegistry pkgRegistry ) {
+                                     PackageRegistry pkgRegistry) {
 
         //look among imports
         for ( ImportDescr id : packageDescr.getImports() ) {
@@ -1029,14 +1060,19 @@ public class PackageBuilder {
     }
 
     /**
-     * Resolves and sets the superclass (name and package) for a given type declaration descriptor
-     * The declared supertype, if any, may be a simple name or a fully qualified one. In the former case,
-     * the simple name could be the local name of some f.q.n. which has to be resolved
-     * @param typeDescr         the descriptor of the declared superclass whose superclass will be identified
-     * @param packageDescr      the descriptor of the package the class is declared in
+     * Resolves and sets the superclass (name and package) for a given type
+     * declaration descriptor The declared supertype, if any, may be a simple
+     * name or a fully qualified one. In the former case, the simple name could
+     * be the local name of some f.q.n. which has to be resolved
+     * 
+     * @param typeDescr
+     *            the descriptor of the declared superclass whose superclass
+     *            will be identified
+     * @param packageDescr
+     *            the descriptor of the package the class is declared in
      */
-    private void fillSuperType( TypeDeclarationDescr typeDescr,
-                                PackageDescr packageDescr ) {
+    private void fillSuperType(TypeDeclarationDescr typeDescr,
+                                PackageDescr packageDescr) {
         String declaredSuperType = typeDescr.getSuperTypeName();
         if ( declaredSuperType != null ) {
             int separator = declaredSuperType.lastIndexOf( "." );
@@ -1061,21 +1097,26 @@ public class PackageBuilder {
     }
 
     /**
-     * In order to build a declared class, the fields inherited from its superclass(es) are added to its declaration.
-     * Inherited descriptors are marked as such to distinguish them from native ones.
-     * Various scenarioes are possible.
-     *   (i) The superclass has been declared in the DRL as well : the fields are cloned as inherited
-     *   (ii) The superclass is imported (external), but some of its fields have been tagged with metadata
-     *   (iii) The superclass is imported.
-     *
-     * The search for field descriptors is carried out in the order. (i) and (ii+iii) are mutually exclusive. The
-     * search is as such:
-     *   (i) The superclass' declared fields are used to build the base class additional fields
-     *   (iii) The superclass is inspected to discover its (public) fields, from which descriptors are generated
-     *   (ii) Both (i) and (iii) are applied, but the declared fields override the inspected ones
-     * @param typeDescr The base class descriptor, to be completed with the inherited fields descriptors
+     * In order to build a declared class, the fields inherited from its
+     * superclass(es) are added to its declaration. Inherited descriptors are
+     * marked as such to distinguish them from native ones. Various scenarioes
+     * are possible. (i) The superclass has been declared in the DRL as well :
+     * the fields are cloned as inherited (ii) The superclass is imported
+     * (external), but some of its fields have been tagged with metadata (iii)
+     * The superclass is imported.
+     * 
+     * The search for field descriptors is carried out in the order. (i) and
+     * (ii+iii) are mutually exclusive. The search is as such: (i) The
+     * superclass' declared fields are used to build the base class additional
+     * fields (iii) The superclass is inspected to discover its (public) fields,
+     * from which descriptors are generated (ii) Both (i) and (iii) are applied,
+     * but the declared fields override the inspected ones
+     * 
+     * @param typeDescr
+     *            The base class descriptor, to be completed with the inherited
+     *            fields descriptors
      */
-    private void mergeInheritedFields( TypeDeclarationDescr typeDescr ) {
+    private void mergeInheritedFields(TypeDeclarationDescr typeDescr) {
         if ( typeDescr.getSuperTypeName() == null ) return;
 
         String simpleSuperTypeName = typeDescr.getSuperTypeName();
@@ -1147,7 +1188,7 @@ public class PackageBuilder {
     /**
      * @param packageDescr
      */
-    private void processTypeDeclarations( final PackageDescr packageDescr ) {
+    private void processTypeDeclarations(final PackageDescr packageDescr) {
         PackageRegistry defaultRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
         PackageRegistry pkgRegistry = null;
@@ -1336,11 +1377,13 @@ public class PackageBuilder {
     }
 
     /**
-     * Checks whether a declaration is novel, or is a retagging of an external one
+     * Checks whether a declaration is novel, or is a retagging of an external
+     * one
+     * 
      * @param typeDescr
      * @return
      */
-    private boolean isNovelClass( TypeDeclarationDescr typeDescr ) {
+    private boolean isNovelClass(TypeDeclarationDescr typeDescr) {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if ( reg != null ) {
@@ -1355,7 +1398,7 @@ public class PackageBuilder {
     }
 
     /**
-     *
+     * 
      * @param pkgRegistry
      * @throws SecurityException
      * @throws IllegalArgumentException
@@ -1368,8 +1411,8 @@ public class PackageBuilder {
      * @throws InvocationTargetException
      * @throws NoSuchFieldException
      */
-    private final void buildFieldAccessors( final TypeDeclaration type,
-                                            final PackageRegistry pkgRegistry ) throws SecurityException,
+    private final void buildFieldAccessors(final TypeDeclaration type,
+                                            final PackageRegistry pkgRegistry) throws SecurityException,
                                                                                IllegalArgumentException,
                                                                                InstantiationException,
                                                                                IllegalAccessException,
@@ -1392,9 +1435,9 @@ public class PackageBuilder {
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
      */
-    private void generateDeclaredBean( TypeDeclarationDescr typeDescr,
+    private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
                                        TypeDeclaration type,
-                                       PackageRegistry pkgRegistry ) {
+                                       PackageRegistry pkgRegistry) {
 
         // extracts type, supertype and interfaces
         String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
@@ -1446,17 +1489,17 @@ public class PackageBuilder {
     }
 
     /**
-     * Sorts a bean's fields according to the positional index metadata.
-     * The order is as follows
-     *   (i) as defined using the @position metadata
-     *   (ii) as resulting from the inspection of an external java superclass, if applicable
-     *   (iii) in declaration order, superclasses first
+     * Sorts a bean's fields according to the positional index metadata. The
+     * order is as follows (i) as defined using the @position metadata (ii) as
+     * resulting from the inspection of an external java superclass, if
+     * applicable (iii) in declaration order, superclasses first
+     * 
      * @param flds
      * @param pkgRegistry
      * @return
      */
-    private PriorityQueue<FieldDefinition> sortFields( Map<String, TypeFieldDescr> flds,
-                                                       PackageRegistry pkgRegistry ) {
+    private PriorityQueue<FieldDefinition> sortFields(Map<String, TypeFieldDescr> flds,
+                                                       PackageRegistry pkgRegistry) {
         PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>();
         int last = 0;
 
@@ -1495,7 +1538,7 @@ public class PackageBuilder {
         return queue;
     }
 
-    private void addFunction( final FunctionDescr functionDescr ) {
+    private void addFunction(final FunctionDescr functionDescr) {
         functionDescr.setResource( this.resource );
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
@@ -1504,22 +1547,22 @@ public class PackageBuilder {
                              this.resource );
     }
 
-    private void preCompileAddFunction( final FunctionDescr functionDescr ) {
+    private void preCompileAddFunction(final FunctionDescr functionDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.preCompileAddFunction( functionDescr,
                                        pkgRegistry.getTypeResolver() );
     }
 
-    private void postCompileAddFunction( final FunctionDescr functionDescr ) {
+    private void postCompileAddFunction(final FunctionDescr functionDescr) {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( functionDescr.getNamespace() );
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect( functionDescr.getDialect() );
         dialect.postCompileAddFunction( functionDescr,
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addFactTemplate( final PackageDescr pkgDescr,
-                                  final FactTemplateDescr factTemplateDescr ) {
+    private void addFactTemplate(final PackageDescr pkgDescr,
+                                  final FactTemplateDescr factTemplateDescr) {
         final List fields = new ArrayList();
         int index = 0;
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( pkgDescr.getNamespace() );
@@ -1544,7 +1587,7 @@ public class PackageBuilder {
                                                                 (FieldTemplate[]) fields.toArray( new FieldTemplate[fields.size()] ) );
     }
 
-    private void addRule( final RuleDescr ruleDescr ) {
+    private void addRule(final RuleDescr ruleDescr) {
         ruleDescr.setResource( resource );
 
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
@@ -1587,8 +1630,8 @@ public class PackageBuilder {
      *         can report on by calling getErrors or printErrors. If you try to
      *         add an invalid package (or rule) to a RuleBase, you will get a
      *         runtime exception.
-     *
-     * Compiled packages are serializable.
+     * 
+     *         Compiled packages are serializable.
      */
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
@@ -1626,14 +1669,14 @@ public class PackageBuilder {
 
     /**
      * Return the PackageBuilderConfiguration for this PackageBuilder session
-     *
+     * 
      * @return The PackageBuilderConfiguration
      */
     public PackageBuilderConfiguration getPackageBuilderConfiguration() {
         return this.configuration;
     }
 
-    public PackageRegistry getPackageRegistry( String name ) {
+    public PackageRegistry getPackageRegistry(String name) {
         return this.pkgRegistryMap.get( name );
     }
 
@@ -1646,7 +1689,8 @@ public class PackageBuilder {
     }
 
     /**
-     * Returns an expander for DSLs (only if there is a DSL configured for this package).
+     * Returns an expander for DSLs (only if there is a DSL configured for this
+     * package).
      */
     public DefaultExpander getDslExpander() {
         DefaultExpander expander = new DefaultExpander();
@@ -1716,7 +1760,7 @@ public class PackageBuilder {
      * report a compile error of its type, should it happen. This is needed, as
      * the compiling is done as one hit at the end, and we need to be able to
      * work out what rule/ast element caused the error.
-     *
+     * 
      * An error handler it created for each class task that is queued to be
      * compiled. This doesn't mean an error has occurred, it just means it *may*
      * occur in the future and we need to be able to map it back to the AST
@@ -1734,13 +1778,13 @@ public class PackageBuilder {
             return this.inError;
         }
 
-        public void addError( final CompilationProblem err ) {
+        public void addError(final CompilationProblem err) {
             this.errors.add( err );
             this.inError = true;
         }
 
         /**
-         *
+         * 
          * @return A DroolsError object populated as appropriate, should the
          *         unthinkable happen and this need to be reported.
          */
@@ -1872,7 +1916,7 @@ public class PackageBuilder {
         }
     }
 
-    private String ucFirst( final String name ) {
+    private String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
@@ -1881,14 +1925,16 @@ public class PackageBuilder {
     }
 
     /**
-     * Utility method to sort declared beans. Linearizes the hierarchy, i.e.generates a sequence of
-     * declaration such that, if Sub is subclass of Sup, then the index of Sub will be > than the index
-     * of Sup in the resulting collection.
-     * This ensures that superclasses are processed before their subclasses
+     * Utility method to sort declared beans. Linearizes the hierarchy,
+     * i.e.generates a sequence of declaration such that, if Sub is subclass of
+     * Sup, then the index of Sub will be > than the index of Sup in the
+     * resulting collection. This ensures that superclasses are processed before
+     * their subclasses
+     * 
      * @param typeDeclarations
      * @return
      */
-    public static Collection<TypeDeclarationDescr> sortByHierarchy( List<TypeDeclarationDescr> typeDeclarations ) {
+    public static Collection<TypeDeclarationDescr> sortByHierarchy(List<TypeDeclarationDescr> typeDeclarations) {
 
         Node<TypeDeclarationDescr> root = new Node<TypeDeclarationDescr>( null );
         Map<String, Node<TypeDeclarationDescr>> map = new HashMap<String, Node<TypeDeclarationDescr>>();
@@ -1937,6 +1983,7 @@ public class PackageBuilder {
 
     /**
      * Utility class for the sorting algorithm
+     * 
      * @param <T>
      */
     private static class Node<T> {
@@ -1955,7 +2002,7 @@ public class PackageBuilder {
             this.data = content;
         }
 
-        public void addChild( Node<T> child ) {
+        public void addChild(Node<T> child) {
             this.children.add( child );
         }
 
@@ -1971,17 +2018,33 @@ public class PackageBuilder {
             return data;
         }
 
-        public void setData( T content ) {
+        public void setData(T content) {
             this.data = content;
         }
 
-        public void accept( List<T> list ) {
+        public void accept(List<T> list) {
             if ( this.data != null ) {
                 list.add( this.data );
             }
 
             for ( int j = 0; j < children.size(); j++ )
                 children.get( j ).accept( list );
+        }
+    }
+
+    //Individual rules inherit package attributes
+    private void inheritPackageAttributes(Map<String, AttributeDescr> pkgAttributes,
+                                          RuleDescr ruleDescr) {
+        if ( pkgAttributes == null ) {
+            return;
+        }
+        for ( AttributeDescr attrDescr : pkgAttributes.values() ) {
+            String name = attrDescr.getName();
+            AttributeDescr ruleAttrDescr = ruleDescr.getAttributes().get( name );
+            if ( ruleAttrDescr == null ) {
+                ruleDescr.getAttributes().put( name,
+                                               attrDescr );
+            }
         }
     }
 
