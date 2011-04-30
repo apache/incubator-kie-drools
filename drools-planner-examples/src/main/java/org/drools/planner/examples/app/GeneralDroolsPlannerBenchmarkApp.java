@@ -40,8 +40,11 @@ public class GeneralDroolsPlannerBenchmarkApp extends CommonBenchmarkApp {
     public GeneralDroolsPlannerBenchmarkApp(String solverBenchmarkConfig) {
         super(solverBenchmarkConfig,
                 NQueens.class, Manners2009.class, TravelingSalesmanTour.class, TravelingTournament.class,
-                CloudBalance.class, CurriculumCourseSchedule.class, Examination.class,
-                PatientAdmissionSchedule.class, NurseRoster.class);
+                CloudBalance.class,
+//                CurriculumCourseSchedule.class, // TODO crashes loading of xstream file because Day is not unique
+                Examination.class,
+//                PatientAdmissionSchedule.class, // TODO crashes loading of xstream file because Room is not unique
+                NurseRoster.class);
     }
 
 }

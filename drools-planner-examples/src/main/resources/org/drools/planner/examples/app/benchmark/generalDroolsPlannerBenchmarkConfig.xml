@@ -27,39 +27,40 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
-    <solverBenchmark>
-        <name>curriculumcourse_tabuSearch</name>
-        <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp08.xml</unsolvedSolutionFile>
-        <localSearchSolver>
-            <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-            <termination>
-                <maximumMinutesSpend>5</maximumMinutesSpend>
-            </termination>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-                <minimalAcceptedSelection>900</minimalAcceptedSelection>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+  <!-- TODO crashes loading of xstream file because Day is not unique -->
+    <!--<solverBenchmark>-->
+        <!--<name>curriculumcourse_tabuSearch</name>-->
+        <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp08.xml</unsolvedSolutionFile>-->
+        <!--<localSearchSolver>-->
+            <!--<scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>-->
+            <!--<scoreDefinition>-->
+                <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
+            <!--</scoreDefinition>-->
+            <!--<startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>-->
+            <!--<termination>-->
+                <!--<maximumMinutesSpend>5</maximumMinutesSpend>-->
+            <!--</termination>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+                <!--</selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<acceptor>-->
+                <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+                <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+            <!--</acceptor>-->
+            <!--<forager>-->
+                <!--<pickEarlyType>NEVER</pickEarlyType>-->
+                <!--<minimalAcceptedSelection>900</minimalAcceptedSelection>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
     <solverBenchmark>
         <name>examination_tabuSearch</name>
         <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set2.xml</unsolvedSolutionFile>
@@ -93,33 +94,34 @@
             </forager>
         </localSearchSolver>
     </solverBenchmark>
-    <solverBenchmark>
-        <name>pas_tabuSearch</name>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata01.xml</unsolvedSolutionFile>
-        <localSearchSolver>
-            <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
-            <termination>
-                <maximumMinutesSpend>5</maximumMinutesSpend>
-            </termination>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-                <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-                <minimalAcceptedSelection>500</minimalAcceptedSelection>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+    <!-- TODO crashes loading of xstream file because Room is not unique -->
+    <!--<solverBenchmark>-->
+        <!--<name>pas_tabuSearch</name>-->
+        <!--<unsolvedSolutionFile>data/pas/unsolved/testdata01.xml</unsolvedSolutionFile>-->
+        <!--<localSearchSolver>-->
+            <!--<scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>-->
+            <!--<scoreDefinition>-->
+                <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
+            <!--</scoreDefinition>-->
+            <!--<startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>-->
+            <!--<termination>-->
+                <!--<maximumMinutesSpend>5</maximumMinutesSpend>-->
+            <!--</termination>-->
+            <!--<selector>-->
+                <!--<selector>-->
+                    <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>-->
+                <!--</selector>-->
+            <!--</selector>-->
+            <!--<acceptor>-->
+                <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+                <!--<completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>-->
+            <!--</acceptor>-->
+            <!--<forager>-->
+                <!--<pickEarlyType>NEVER</pickEarlyType>-->
+                <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+            <!--</forager>-->
+        <!--</localSearchSolver>-->
+    <!--</solverBenchmark>-->
     <solverBenchmark>
         <name>nurseRostering_tabuSearch</name>
         <unsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</unsolvedSolutionFile>
