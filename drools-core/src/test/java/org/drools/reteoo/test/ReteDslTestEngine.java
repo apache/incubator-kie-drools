@@ -37,6 +37,7 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.Tree;
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
@@ -758,7 +759,7 @@ public class ReteDslTestEngine {
                                                                                       PropagationContext.MODIFICATION,
                                                                                       null,
                                                                                       tuple,
-                                                                                      null );
+                                                                                      new DefaultFactHandle(1, "") );
                             ((LeftTupleSink) sink).modifyLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );
