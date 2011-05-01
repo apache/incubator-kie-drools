@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
 
@@ -19,10 +21,17 @@ public class DecisionTableProviderImpl
         return compileStream( is,
                               configuration );
     }
-    
+
     private String compileStream(InputStream is,
                                  DecisionTableConfiguration configuration) {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();
+
+        //JBRULES-3005: Sensible default when DecisionTableConfiguration is not provided
+        if ( configuration == null ) {
+            configuration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+            configuration.setInputType( DecisionTableInputType.XLS );
+        }
+
         switch ( configuration.getInputType() ) {
             case XLS : {
                 if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
@@ -43,8 +52,8 @@ public class DecisionTableProviderImpl
     }
 
     /**
-     * Adapts a <code>Reader</code> as an <code>InputStream</code>.
-     * Adapted from <CODE>StringInputStream</CODE>.
+     * Adapts a <code>Reader</code> as an <code>InputStream</code>. Adapted from
+     * <CODE>StringInputStream</CODE>.
      */
     public static class ReaderInputStream extends InputStream {
 
@@ -58,22 +67,24 @@ public class DecisionTableProviderImpl
         private int    begin;
 
         /**
-         * Construct a <CODE>ReaderInputStream</CODE>
-         * for the specified <CODE>Reader</CODE>.
-         *
-         * @param reader   <CODE>Reader</CODE>.  Must not be <code>null</code>.
+         * Construct a <CODE>ReaderInputStream</CODE> for the specified
+         * <CODE>Reader</CODE>.
+         * 
+         * @param reader
+         *            <CODE>Reader</CODE>. Must not be <code>null</code>.
          */
         public ReaderInputStream(Reader reader) {
             in = reader;
         }
 
         /**
-         * Construct a <CODE>ReaderInputStream</CODE>
-         * for the specified <CODE>Reader</CODE>,
-         * with the specified encoding.
-         *
-         * @param reader     non-null <CODE>Reader</CODE>.
-         * @param encoding   non-null <CODE>String</CODE> encoding.
+         * Construct a <CODE>ReaderInputStream</CODE> for the specified
+         * <CODE>Reader</CODE>, with the specified encoding.
+         * 
+         * @param reader
+         *            non-null <CODE>Reader</CODE>.
+         * @param encoding
+         *            non-null <CODE>String</CODE> encoding.
          */
         public ReaderInputStream(Reader reader,
                                  String encoding) {
@@ -87,10 +98,11 @@ public class DecisionTableProviderImpl
 
         /**
          * Reads from the <CODE>Reader</CODE>, returning the same value.
-         *
+         * 
          * @return the value of the next character in the <CODE>Reader</CODE>.
-         *
-         * @exception IOException if the original <code>Reader</code> fails to be read
+         * 
+         * @exception IOException
+         *                if the original <code>Reader</code> fails to be read
          */
         public synchronized int read() throws IOException {
             if ( in == null ) {
@@ -122,13 +134,17 @@ public class DecisionTableProviderImpl
 
         /**
          * Reads from the <code>Reader</code> into a byte array
-         *
-         * @param b  the byte array to read into
-         * @param off the offset in the byte array
-         * @param len the length in the byte array to fill
-         * @return the actual number read into the byte array, -1 at
-         *         the end of the stream
-         * @exception IOException if an error occurs
+         * 
+         * @param b
+         *            the byte array to read into
+         * @param off
+         *            the offset in the byte array
+         * @param len
+         *            the length in the byte array to fill
+         * @return the actual number read into the byte array, -1 at the end of
+         *         the stream
+         * @exception IOException
+         *                if an error occurs
          */
         public synchronized int read(byte[] b,
                                      int off,
@@ -170,9 +186,10 @@ public class DecisionTableProviderImpl
 
         /**
          * Marks the read limit of the StringReader.
-         *
-         * @param limit the maximum limit of bytes that can be read before the
-         *              mark position becomes invalid
+         * 
+         * @param limit
+         *            the maximum limit of bytes that can be read before the
+         *            mark position becomes invalid
          */
         public synchronized void mark(final int limit) {
             try {
@@ -183,8 +200,9 @@ public class DecisionTableProviderImpl
         }
 
         /**
-         * @return   the current number of bytes ready for reading
-         * @exception IOException if an error occurs
+         * @return the current number of bytes ready for reading
+         * @exception IOException
+         *                if an error occurs
          */
         public synchronized int available() throws IOException {
             if ( in == null ) {
@@ -209,8 +227,9 @@ public class DecisionTableProviderImpl
 
         /**
          * Resets the StringReader.
-         *
-         * @exception IOException if the StringReader fails to be reset
+         * 
+         * @exception IOException
+         *                if the StringReader fails to be reset
          */
         public synchronized void reset() throws IOException {
             if ( in == null ) {
@@ -222,8 +241,9 @@ public class DecisionTableProviderImpl
 
         /**
          * Closes the Stringreader.
-         *
-         * @exception IOException if the original StringReader fails to be closed
+         * 
+         * @exception IOException
+         *                if the original StringReader fails to be closed
          */
         public synchronized void close() throws IOException {
             if ( in != null ) {

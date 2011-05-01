@@ -234,8 +234,6 @@ public class QueryElementNode extends LeftTupleSource
             temp.setLeftParentNext( null );
 
         }
-        leftTuple.firstChild = null;
-
     }
 
     public static class UnificationNodeViewChangedEventListener
