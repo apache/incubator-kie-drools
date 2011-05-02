@@ -19,6 +19,7 @@ package org.drools.planner.core.move;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Collections;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class CompositeMove implements Move, TabuPropertyEnabled {
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        Set<Object> tabuProperties = new HashSet<Object>(moveList.size() * 2);
+        Set<Object> tabuProperties = new LinkedHashSet<Object>(moveList.size() * 2);
         for (Move move : moveList) {
             tabuProperties.addAll(((TabuPropertyEnabled) move).getTabuProperties());
         }

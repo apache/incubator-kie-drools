@@ -17,9 +17,18 @@
 package org.drools.planner.core.localsearch.decider.acceptor.tabu;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public interface TabuPropertyEnabled {
 
+    /**
+     * The returned Collection should a stable order.
+     * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
+     * Duplicates entries in the returned Collection are best avoided.
+     * @return never null
+     */
     Collection<? extends Object> getTabuProperties();
 
 }
