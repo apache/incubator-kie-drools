@@ -30,6 +30,7 @@ import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTupleSource;
@@ -134,27 +135,31 @@ public class AccumulateNodeStep
                 }
             }
 
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) buildContext.getRuleBase().getPackage( buildContext.getRule().getPackageName() ).getDialectRuntimeRegistry().getDialectData( "mvel" );
+            data.onAdd( null, ((InternalRuleBase) buildContext.getRuleBase()).getRootClassLoader() );
+            //MvelD data = (MVELDialectRuntimeData) buildContext.getRuleBase().getPackage( buildContext.getRule().getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" );
+            
             NodeTestCase testCase = (NodeTestCase) context.get( "TestCase" );
-            List<String> classImports = new ArrayList<String>();
-            List<String> pkgImports = new ArrayList<String>();
-            for ( String imp : testCase.getImports() ) {
-                if ( imp.endsWith( ".*" ) ) {
-                    pkgImports.add( imp.substring( 0,
-                                                   imp.lastIndexOf( '.' ) ) );
-                } else {
-                    classImports.add( imp );
-                }
 
+            try {
+                for ( String imp : testCase.getImports() ) {
+                    if ( imp.endsWith( ".*" ) ) {
+                        data.getPackageImports().add( imp.substring( 0,
+                                                       imp.lastIndexOf( '.' ) ) );
+                    } else {
+                        //classImports.add( imp );
+                        Class cls = data.getRootClassLoader().loadClass( imp ) ;
+                        data.getImports().put(  cls.getSimpleName(),  cls);
+                    }
+                }  
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to load class",e );
             }
 
             Declaration decl = (Declaration) context.get( expr );
             // build an external function executor
             MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
                                                                            expr,
-                                                                           pkgImports.toArray( new String[0] ), // pkg imports
-                                                                           classImports.toArray( new String[0] ), // imported classes
-                                                                           new String[]{}, // imported methods
-                                                                           new String[]{}, // imported fields
                                                                            new String[]{}, // global identifiers
                                                                            new EvaluatorWrapper[]{}, // operator identifiers
                                                                            new Declaration[]{}, // previous declarations
@@ -169,7 +174,7 @@ public class AccumulateNodeStep
 
             Accumulator accumulator = new MVELAccumulatorFunctionExecutor( compilationUnit,
                                                                            accFunction );
-            ((MVELCompileable) accumulator).compile(  (MVELDialectRuntimeData) buildContext.getRuleBase().getPackage( buildContext.getRule().getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
+            ((MVELCompileable) accumulator).compile( data );
 
             Accumulate accumulate = new Accumulate( sourcePattern,
                                                     new Declaration[]{}, // required declaration

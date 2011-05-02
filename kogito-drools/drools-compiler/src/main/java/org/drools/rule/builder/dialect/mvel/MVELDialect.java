@@ -635,10 +635,6 @@ public class MVELDialect
         }
         MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
                                                                        expression,
-                                                                       pkgImports,
-                                                                       importClasses.toArray( new String[importClasses.size()] ),
-                                                                       importMethods.toArray( new String[importMethods.size()] ),
-                                                                       importFields.toArray( new String[importFields.size()] ),
                                                                        globalIdentifiers,
                                                                        operators,
                                                                        previousDeclarations,
