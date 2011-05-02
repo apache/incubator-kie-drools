@@ -225,6 +225,10 @@ public abstract class BetaNode extends LeftTupleSource
         }
         return array;
     }
+    
+    public BetaConstraints getRawConstraints() {
+        return this.constraints;
+    }
 
     public Behavior[] getBehaviors() {
         return this.behavior.getBehaviors();
