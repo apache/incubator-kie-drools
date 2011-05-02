@@ -170,6 +170,10 @@ MOD_ASSIGN
     :	'%='
     ;
 
+UNIFY
+    :	':='
+    ;
+
 DECR	:	'--' 
     ;
 
