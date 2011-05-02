@@ -249,8 +249,13 @@ public final class ClassUtils {
         java.lang.Package pkg = cls.isArray() ? cls.getComponentType().getPackage() : cls.getPackage();
         if ( pkg == null ) {
             int dotPos = cls.getName().lastIndexOf( '.' );
-            return cls.getName().substring( 0,
-                                            dotPos - 1 );
+            if ( dotPos > 0 ) {
+                return cls.getName().substring( 0,
+                                                dotPos - 1 );
+            } else {
+                // must be default package.
+                return "";
+            }
         } else {
             return pkg.getName();
         }

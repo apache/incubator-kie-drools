@@ -75,10 +75,6 @@ public class MVELCompilationUnit
 
     private String                               expression;
 
-    private String[]                             pkgImports;
-    private String[]                             importClasses;
-    private String[]                             importMethods;
-    private String[]                             importFields;
     private String[]                             globalIdentifiers;
     private EvaluatorWrapper[]                   operators;
 
@@ -137,10 +133,6 @@ public class MVELCompilationUnit
 
     public MVELCompilationUnit(String name,
                                String expression,
-                               String[] pkgImports,
-                               String[] importClasses,
-                               String[] importMethods,
-                               String[] importFields,
                                String[] globalIdentifiers,
                                EvaluatorWrapper[] operators,
                                Declaration[] previousDeclarations,
@@ -153,10 +145,6 @@ public class MVELCompilationUnit
         this.name = name;
         this.expression = expression;
 
-        this.pkgImports = pkgImports;
-        this.importClasses = importClasses;
-        this.importMethods = importMethods;
-        this.importFields = importFields;
         this.globalIdentifiers = globalIdentifiers;
         this.operators = operators;
 
@@ -180,10 +168,6 @@ public class MVELCompilationUnit
 
         out.writeUTF( expression );
 
-        out.writeObject( pkgImports );
-        out.writeObject( importClasses );
-        out.writeObject( importMethods );
-        out.writeObject( importFields );
         out.writeObject( globalIdentifiers );
         out.writeObject( operators );
 
@@ -203,10 +187,6 @@ public class MVELCompilationUnit
         name = in.readUTF();
         expression = in.readUTF();
 
-        pkgImports = (String[]) in.readObject();
-        importClasses = (String[]) in.readObject();
-        importMethods = (String[]) in.readObject();
-        importFields = (String[]) in.readObject();
         globalIdentifiers = (String[]) in.readObject();
         operators = (EvaluatorWrapper[]) in.readObject();
 
@@ -475,10 +455,6 @@ public class MVELCompilationUnit
     public MVELCompilationUnit clone() {
         MVELCompilationUnit unit = new MVELCompilationUnit( name,
                                                             expression,
-                                                            pkgImports,
-                                                            importClasses,
-                                                            importMethods,
-                                                            importFields,
                                                             globalIdentifiers,
                                                             operators,
                                                             previousDeclarations,
@@ -499,23 +475,7 @@ public class MVELCompilationUnit
     public String getName() {
         return name;
     }
-
-    public String[] getPkgImports() {
-        return pkgImports;
-    }
-
-    public String[] getImportClasses() {
-        return importClasses;
-    }
-
-    public String[] getImportMethods() {
-        return importMethods;
-    }
-
-    public String[] getImportFields() {
-        return importFields;
-    }
-
+    
     public String[] getGlobalIdentifiers() {
         return globalIdentifiers;
     }

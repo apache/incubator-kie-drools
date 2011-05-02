@@ -261,7 +261,7 @@ public class ClassTypeResolver
                 this.cachedImports = new HashMap();
             }
 
-            this.cachedImports.put( className,
+            this.cachedImports.put( clazz.getSimpleName(),
                                     clazz );
         }
 
