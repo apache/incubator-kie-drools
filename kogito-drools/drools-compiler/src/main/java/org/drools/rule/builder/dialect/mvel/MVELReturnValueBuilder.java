@@ -69,11 +69,11 @@ public class MVELReturnValueBuilder
                                                                             context.getDialect().getId() );
             returnValueRestriction.setReturnValueExpression( expr );
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( returnValueRestriction,
                                   expr );
             
-            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+            expr.compile( data );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),

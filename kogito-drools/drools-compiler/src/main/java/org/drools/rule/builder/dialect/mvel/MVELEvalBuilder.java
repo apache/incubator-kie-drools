@@ -98,11 +98,11 @@ public class MVELEvalBuilder
                                                               dialect.getId() );
             eval.setEvalExpression( expr );
 
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( eval,
                                   expr );
 
-            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+            expr.compile( data );
             return eval;
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),

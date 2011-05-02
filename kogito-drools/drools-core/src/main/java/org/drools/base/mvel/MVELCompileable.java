@@ -16,6 +16,8 @@
 
 package org.drools.base.mvel;
 
+import org.drools.rule.MVELDialectRuntimeData;
+
 public interface MVELCompileable {
-    public void compile(ClassLoader classLoader);
+    public void compile(MVELDialectRuntimeData runtimeData);
 }

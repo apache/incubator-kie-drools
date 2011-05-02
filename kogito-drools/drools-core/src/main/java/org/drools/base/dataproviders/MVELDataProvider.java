@@ -32,6 +32,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.ArrayIterator;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.WorkingMemory;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
@@ -78,8 +79,8 @@ public class MVELDataProvider
     }
 
     @SuppressWarnings("unchecked")
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        expr = unit.getCompiledExpression( runtimeData );
         
 //        @TODO URGENT DO NOT FORGET!!!!
 //        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();

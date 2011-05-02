@@ -137,7 +137,7 @@ public class MVELAccumulateBuilder
             for ( Accumulator accumulator : accumulators ) {
                 data.addCompileable( accumulate.new Wirer( index++ ),
                                      (MVELCompileable) accumulator );
-                ((MVELCompileable) accumulator).compile( context.getPackageBuilder().getRootClassLoader() );
+                ((MVELCompileable) accumulator).compile( data );
             }
 
             return accumulate;
@@ -240,17 +240,17 @@ public class MVELAccumulateBuilder
                                                                                                       boundIds,
                                                                                                       initCodeAnalysis.getMvelVariables() );
 
-        MVELAnalysisResult reverseCodeAnalysis = null;
-        if ( accumDescr.getReverseCode() != null ) {
-            reverseCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
-                                                                             accumDescr,
-                                                                             null,
-                                                                             accumDescr.getActionCode(),
-                                                                             boundIds,
-                                                                             initCodeAnalysis.getMvelVariables(),
-                                                                             "drools",
-                                                                             KnowledgeHelper.class );
-        }
+//        MVELAnalysisResult reverseCodeAnalysis = null;
+//        if ( accumDescr.getReverseCode() != null ) {
+//            reverseCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
+//                                                                             accumDescr,
+//                                                                             null,
+//                                                                             accumDescr.getActionCode(),
+//                                                                             boundIds,
+//                                                                             initCodeAnalysis.getMvelVariables(),
+//                                                                             "drools",
+//                                                                             KnowledgeHelper.class );
+//        }
 
         context.setTypesafe( initCodeAnalysis.isTypesafe() );
         MVELCompilationUnit initUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getInitCode(),
@@ -278,13 +278,13 @@ public class MVELAccumulateBuilder
 
         MVELCompilationUnit reverseUnit = null;
         if ( accumDescr.getReverseCode() != null ) {
-            context.setTypesafe( reverseCodeAnalysis.isTypesafe() );
+            context.setTypesafe( actionCodeAnalysis.isTypesafe() );
             reverseUnit = dialect.getMVELCompilationUnit( (String) accumDescr.getReverseCode(),
-                                                          reverseCodeAnalysis,
+                                                          actionCodeAnalysis,
                                                           getUsedDeclarations( decls,
-                                                                               reverseCodeAnalysis ),
+                                                                               actionCodeAnalysis ),
                                                           getUsedDeclarations( sourceOuterDeclr,
-                                                                               reverseCodeAnalysis ),
+                                                                               actionCodeAnalysis ),
                                                           initCodeAnalysis.getMvelVariables(),
                                                           context,
                                                           "drools",
@@ -303,16 +303,16 @@ public class MVELAccumulateBuilder
                                                                          "drools",
                                                                          KnowledgeHelper.class );
 
-        if ( reverseUnit != null ) {
-            Set<String> shadow = new HashSet<String>( source.getOuterDeclarations().keySet() );
-            shadow.retainAll( reverseCodeAnalysis.getNotBoundedIdentifiers() );
-            shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
-
-            String[] shadowVars = (String[]) shadow.toArray( new String[shadow.size()] );
-
-            actionUnit.setShadowIdentifiers( shadowVars );
-            reverseUnit.setShadowIdentifiers( shadowVars );
-        }
+//        if ( reverseUnit != null ) {
+//            Set<String> shadow = new HashSet<String>( source.getOuterDeclarations().keySet() );
+//            shadow.retainAll( reverseCodeAnalysis.getNotBoundedIdentifiers() );
+//            shadow.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
+//
+//            String[] shadowVars = (String[]) shadow.toArray( new String[shadow.size()] );
+//
+//            actionUnit.setShadowIdentifiers( shadowVars );
+//            reverseUnit.setShadowIdentifiers( shadowVars );
+//        }
 
         accumulators = new Accumulator[]{new MVELAccumulator( initUnit,
                                                               actionUnit,

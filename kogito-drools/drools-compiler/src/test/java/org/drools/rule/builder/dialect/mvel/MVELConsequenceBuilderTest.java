@@ -41,6 +41,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.ImportDeclaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
@@ -123,7 +124,7 @@ public class MVELConsequenceBuilderTest {
                                                 new RuleTerminalNode(0, null, context.getRule(), subrule, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
-        ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );
+        ((MVELConsequence) context.getRule().getConsequence()).compile(  (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
         context.getRule().getConsequence().evaluate( kbHelper,
                                                      wm );
 
@@ -194,7 +195,7 @@ public class MVELConsequenceBuilderTest {
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         try {
-            ((MVELConsequence) context.getRule().getConsequence()).compile( Thread.currentThread().getContextClassLoader() );
+            ((MVELConsequence) context.getRule().getConsequence()).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
             context.getRule().getConsequence().evaluate( kbHelper,
                                                          wm );
             fail( "should throw an exception, as 'if' is not allowed" );
@@ -285,7 +286,7 @@ public class MVELConsequenceBuilderTest {
             final Rule rule = context.getRule();
 
             MVELConsequence mvelCons = (MVELConsequence) rule.getConsequence();
-            mvelCons.compile( Thread.currentThread().getContextClassLoader() );
+            mvelCons.compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
             String s = DebugTools.decompile( mvelCons.getCompExpr() );
 
             int fromIndex = 0;

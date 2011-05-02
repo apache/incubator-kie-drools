@@ -29,6 +29,7 @@ import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
@@ -117,7 +118,7 @@ public class MVELPredicateBuilderTest {
                        predicateDescr,
                        analysis );
         
-        ( (MVELPredicateExpression) predicate.getPredicateExpression()).compile( Thread.currentThread().getContextClassLoader() );
+        ( (MVELPredicateExpression) predicate.getPredicateExpression()).compile( (MVELDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
