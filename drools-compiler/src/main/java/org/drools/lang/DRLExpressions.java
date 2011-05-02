@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g 2011-04-14 11:01:57
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g 2011-05-02 00:24:55
 
     package org.drools.lang;
 
@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.HashMap;
 public class DRLExpressions extends Parser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "WS", "Exponent", "FloatTypeSuffix", "FLOAT", "HexDigit", "IntegerTypeSuffix", "HEX", "DECIMAL", "EscapeSequence", "STRING", "TIME_INTERVAL", "UnicodeEscape", "OctalEscape", "BOOL", "NULL", "AT", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "DECR", "INCR", "ARROW", "SEMICOLON", "COLON", "EQUALS", "NOT_EQUALS", "GREATER_EQUALS", "LESS_EQUALS", "GREATER", "LESS", "EQUALS_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "COMMA", "DOT", "DOUBLE_AMPER", "DOUBLE_PIPE", "QUESTION", "NEGATION", "TILDE", "PIPE", "AMPER", "XOR", "MOD", "STAR", "MINUS", "PLUS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "ID", "DIV", "MISC"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "WS", "Exponent", "FloatTypeSuffix", "FLOAT", "HexDigit", "IntegerTypeSuffix", "HEX", "DECIMAL", "EscapeSequence", "STRING", "TIME_INTERVAL", "UnicodeEscape", "OctalEscape", "BOOL", "NULL", "AT", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "UNIFY", "DECR", "INCR", "ARROW", "SEMICOLON", "COLON", "EQUALS", "NOT_EQUALS", "GREATER_EQUALS", "LESS_EQUALS", "GREATER", "LESS", "EQUALS_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "COMMA", "DOT", "DOUBLE_AMPER", "DOUBLE_PIPE", "QUESTION", "NEGATION", "TILDE", "PIPE", "AMPER", "XOR", "MOD", "STAR", "MINUS", "PLUS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "ID", "DIV", "MISC"
     };
     public static final int EOF=-1;
     public static final int EOL=4;
@@ -52,46 +52,47 @@ public class DRLExpressions extends Parser {
     public static final int OR_ASSIGN=26;
     public static final int XOR_ASSIGN=27;
     public static final int MOD_ASSIGN=28;
-    public static final int DECR=29;
-    public static final int INCR=30;
-    public static final int ARROW=31;
-    public static final int SEMICOLON=32;
-    public static final int COLON=33;
-    public static final int EQUALS=34;
-    public static final int NOT_EQUALS=35;
-    public static final int GREATER_EQUALS=36;
-    public static final int LESS_EQUALS=37;
-    public static final int GREATER=38;
-    public static final int LESS=39;
-    public static final int EQUALS_ASSIGN=40;
-    public static final int LEFT_PAREN=41;
-    public static final int RIGHT_PAREN=42;
-    public static final int LEFT_SQUARE=43;
-    public static final int RIGHT_SQUARE=44;
-    public static final int LEFT_CURLY=45;
-    public static final int RIGHT_CURLY=46;
-    public static final int COMMA=47;
-    public static final int DOT=48;
-    public static final int DOUBLE_AMPER=49;
-    public static final int DOUBLE_PIPE=50;
-    public static final int QUESTION=51;
-    public static final int NEGATION=52;
-    public static final int TILDE=53;
-    public static final int PIPE=54;
-    public static final int AMPER=55;
-    public static final int XOR=56;
-    public static final int MOD=57;
-    public static final int STAR=58;
-    public static final int MINUS=59;
-    public static final int PLUS=60;
-    public static final int SH_STYLE_SINGLE_LINE_COMMENT=61;
-    public static final int C_STYLE_SINGLE_LINE_COMMENT=62;
-    public static final int MULTI_LINE_COMMENT=63;
-    public static final int IdentifierStart=64;
-    public static final int IdentifierPart=65;
-    public static final int ID=66;
-    public static final int DIV=67;
-    public static final int MISC=68;
+    public static final int UNIFY=29;
+    public static final int DECR=30;
+    public static final int INCR=31;
+    public static final int ARROW=32;
+    public static final int SEMICOLON=33;
+    public static final int COLON=34;
+    public static final int EQUALS=35;
+    public static final int NOT_EQUALS=36;
+    public static final int GREATER_EQUALS=37;
+    public static final int LESS_EQUALS=38;
+    public static final int GREATER=39;
+    public static final int LESS=40;
+    public static final int EQUALS_ASSIGN=41;
+    public static final int LEFT_PAREN=42;
+    public static final int RIGHT_PAREN=43;
+    public static final int LEFT_SQUARE=44;
+    public static final int RIGHT_SQUARE=45;
+    public static final int LEFT_CURLY=46;
+    public static final int RIGHT_CURLY=47;
+    public static final int COMMA=48;
+    public static final int DOT=49;
+    public static final int DOUBLE_AMPER=50;
+    public static final int DOUBLE_PIPE=51;
+    public static final int QUESTION=52;
+    public static final int NEGATION=53;
+    public static final int TILDE=54;
+    public static final int PIPE=55;
+    public static final int AMPER=56;
+    public static final int XOR=57;
+    public static final int MOD=58;
+    public static final int STAR=59;
+    public static final int MINUS=60;
+    public static final int PLUS=61;
+    public static final int SH_STYLE_SINGLE_LINE_COMMENT=62;
+    public static final int C_STYLE_SINGLE_LINE_COMMENT=63;
+    public static final int MULTI_LINE_COMMENT=64;
+    public static final int IdentifierStart=65;
+    public static final int IdentifierPart=66;
+    public static final int ID=67;
+    public static final int DIV=68;
+    public static final int MISC=69;
 
     // delegates
     // delegators
@@ -695,7 +696,7 @@ public class DRLExpressions extends Parser {
             if ( (LA12_0==ID) ) {
                 int LA12_1 = input.LA(2);
 
-                if ( (((synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))))) ) {
+                if ( (((synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))||(synpred3_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))))) ) {
                     alt12=1;
                 }
                 else if ( (true) ) {
@@ -3958,7 +3959,7 @@ public class DRLExpressions extends Parser {
             int alt60=2;
             int LA60_0 = input.LA(1);
 
-            if ( (LA60_0==ID) && ((!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))))) {
+            if ( (LA60_0==ID) && ((!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))||!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))))) {
                 int LA60_1 = input.LA(2);
 
                 if ( (!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))) ) {
@@ -6954,13 +6955,13 @@ public class DRLExpressions extends Parser {
     static final String DFA3_minS =
         "\1\10\1\0\21\uffff";
     static final String DFA3_maxS =
-        "\1\102\1\0\21\uffff";
+        "\1\103\1\0\21\uffff";
     static final String DFA3_acceptS =
         "\2\uffff\1\2\17\uffff\1\1";
     static final String DFA3_specialS =
         "\1\uffff\1\0\21\uffff}>";
     static final String[] DFA3_transitionS = {
-            "\1\2\2\uffff\2\2\1\uffff\2\2\2\uffff\2\2\11\uffff\2\2\10\uffff"+
+            "\1\2\2\uffff\2\2\1\uffff\2\2\2\uffff\2\2\12\uffff\2\2\10\uffff"+
             "\1\2\1\uffff\1\2\1\uffff\1\1\10\uffff\2\2\5\uffff\2\2\5\uffff"+
             "\1\2",
             "\1\uffff",
@@ -7049,13 +7050,13 @@ public class DRLExpressions extends Parser {
     static final String DFA4_minS =
         "\1\10\1\0\21\uffff";
     static final String DFA4_maxS =
-        "\1\102\1\0\21\uffff";
+        "\1\103\1\0\21\uffff";
     static final String DFA4_acceptS =
         "\2\uffff\1\2\17\uffff\1\1";
     static final String DFA4_specialS =
         "\1\uffff\1\0\21\uffff}>";
     static final String[] DFA4_transitionS = {
-            "\1\2\2\uffff\2\2\1\uffff\2\2\2\uffff\2\2\11\uffff\2\2\10\uffff"+
+            "\1\2\2\uffff\2\2\1\uffff\2\2\2\uffff\2\2\12\uffff\2\2\10\uffff"+
             "\1\2\1\uffff\1\2\1\uffff\1\1\10\uffff\2\2\5\uffff\2\2\5\uffff"+
             "\1\2",
             "\1\uffff",
@@ -7144,13 +7145,13 @@ public class DRLExpressions extends Parser {
     static final String DFA17_minS =
         "\1\24\13\0\2\uffff";
     static final String DFA17_maxS =
-        "\1\102\13\0\2\uffff";
+        "\1\103\13\0\2\uffff";
     static final String DFA17_acceptS =
         "\14\uffff\1\2\1\1";
     static final String DFA17_specialS =
         "\1\uffff\1\11\1\10\1\1\1\0\1\4\1\3\1\7\1\6\1\12\1\5\1\2\2\uffff}>";
     static final String[] DFA17_transitionS = {
-            "\1\14\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\3\uffff\2\14\4\uffff"+
+            "\1\14\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\4\uffff\2\14\4\uffff"+
             "\1\13\1\12\1\1\1\uffff\1\14\1\uffff\1\14\1\uffff\2\14\22\uffff"+
             "\1\14",
             "\1\uffff",
@@ -7384,13 +7385,13 @@ public class DRLExpressions extends Parser {
     static final String DFA30_minS =
         "\1\24\1\uffff\3\0\17\uffff\2\0\11\uffff";
     static final String DFA30_maxS =
-        "\1\102\1\uffff\3\0\17\uffff\2\0\11\uffff";
+        "\1\103\1\uffff\3\0\17\uffff\2\0\11\uffff";
     static final String DFA30_acceptS =
         "\1\uffff\1\2\32\uffff\3\1";
     static final String DFA30_specialS =
         "\1\0\1\uffff\1\1\1\2\1\3\17\uffff\1\4\1\5\11\uffff}>";
     static final String[] DFA30_transitionS = {
-            "\11\1\3\uffff\2\1\1\3\1\4\1\35\1\34\1\25\1\24\1\1\1\36\1\1\1"+
+            "\11\1\4\uffff\2\1\1\3\1\4\1\35\1\34\1\25\1\24\1\1\1\36\1\1\1"+
             "\uffff\1\1\1\uffff\2\1\1\uffff\3\1\2\uffff\3\1\11\uffff\1\2",
             "",
             "\1\uffff",
@@ -7579,13 +7580,13 @@ public class DRLExpressions extends Parser {
     static final String DFA31_minS =
         "\1\24\10\uffff\1\0\26\uffff";
     static final String DFA31_maxS =
-        "\1\102\10\uffff\1\0\26\uffff";
+        "\1\103\10\uffff\1\0\26\uffff";
     static final String DFA31_acceptS =
         "\1\uffff\1\2\35\uffff\1\1";
     static final String DFA31_specialS =
         "\11\uffff\1\0\26\uffff}>";
     static final String[] DFA31_transitionS = {
-            "\11\1\3\uffff\13\1\1\uffff\1\1\1\uffff\2\1\1\uffff\1\1\1\11"+
+            "\11\1\4\uffff\13\1\1\uffff\1\1\1\uffff\2\1\1\uffff\1\1\1\11"+
             "\1\1\2\uffff\3\1\11\uffff\1\1",
             "",
             "",
@@ -7686,13 +7687,13 @@ public class DRLExpressions extends Parser {
     static final String DFA33_minS =
         "\1\24\10\uffff\1\0\26\uffff";
     static final String DFA33_maxS =
-        "\1\102\10\uffff\1\0\26\uffff";
+        "\1\103\10\uffff\1\0\26\uffff";
     static final String DFA33_acceptS =
         "\1\uffff\1\2\35\uffff\1\1";
     static final String DFA33_specialS =
         "\11\uffff\1\0\26\uffff}>";
     static final String[] DFA33_transitionS = {
-            "\11\1\3\uffff\13\1\1\uffff\1\1\1\uffff\2\1\1\uffff\1\11\2\1"+
+            "\11\1\4\uffff\13\1\1\uffff\1\1\1\uffff\2\1\1\uffff\1\11\2\1"+
             "\2\uffff\3\1\11\uffff\1\1",
             "",
             "",
@@ -7793,13 +7794,13 @@ public class DRLExpressions extends Parser {
     static final String DFA35_minS =
         "\1\24\4\uffff\2\0\32\uffff";
     static final String DFA35_maxS =
-        "\1\102\4\uffff\2\0\32\uffff";
+        "\1\103\4\uffff\2\0\32\uffff";
     static final String DFA35_acceptS =
         "\1\uffff\1\2\36\uffff\1\1";
     static final String DFA35_specialS =
         "\5\uffff\1\0\1\1\32\uffff}>";
     static final String[] DFA35_transitionS = {
-            "\11\1\3\uffff\6\1\1\6\1\5\3\1\1\uffff\1\1\1\uffff\2\1\1\uffff"+
+            "\11\1\4\uffff\6\1\1\6\1\5\3\1\1\uffff\1\1\1\uffff\2\1\1\uffff"+
             "\3\1\2\uffff\3\1\11\uffff\1\1",
             "",
             "",
@@ -7916,13 +7917,13 @@ public class DRLExpressions extends Parser {
     static final String DFA42_minS =
         "\1\10\2\uffff\1\0\13\uffff";
     static final String DFA42_maxS =
-        "\1\102\2\uffff\1\0\13\uffff";
+        "\1\103\2\uffff\1\0\13\uffff";
     static final String DFA42_acceptS =
         "\1\uffff\1\1\1\2\1\uffff\1\4\11\uffff\1\3";
     static final String DFA42_specialS =
         "\3\uffff\1\0\13\uffff}>";
     static final String[] DFA42_transitionS = {
-            "\1\4\2\uffff\2\4\1\uffff\2\4\2\uffff\2\4\23\uffff\1\4\1\uffff"+
+            "\1\4\2\uffff\2\4\1\uffff\2\4\2\uffff\2\4\24\uffff\1\4\1\uffff"+
             "\1\3\1\uffff\1\4\10\uffff\1\2\1\1\14\uffff\1\4",
             "",
             "",
@@ -8004,9 +8005,9 @@ public class DRLExpressions extends Parser {
     static final String DFA44_eofS =
         "\12\uffff";
     static final String DFA44_minS =
-        "\1\102\1\0\10\uffff";
+        "\1\103\1\0\10\uffff";
     static final String DFA44_maxS =
-        "\1\102\1\0\10\uffff";
+        "\1\103\1\0\10\uffff";
     static final String DFA44_acceptS =
         "\2\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10";
     static final String DFA44_specialS =
@@ -8115,13 +8116,13 @@ public class DRLExpressions extends Parser {
     static final String DFA49_minS =
         "\1\10\11\uffff\2\0\6\uffff";
     static final String DFA49_maxS =
-        "\1\102\11\uffff\2\0\6\uffff";
+        "\1\103\11\uffff\2\0\6\uffff";
     static final String DFA49_acceptS =
         "\1\uffff\1\1\1\2\7\3\2\uffff\1\4\1\5\1\6\1\11\1\7\1\10";
     static final String DFA49_specialS =
         "\1\0\11\uffff\1\1\1\2\6\uffff}>";
     static final String[] DFA49_transitionS = {
-            "\1\6\2\uffff\1\5\1\4\1\uffff\1\3\1\11\2\uffff\1\7\1\10\23\uffff"+
+            "\1\6\2\uffff\1\5\1\4\1\uffff\1\3\1\11\2\uffff\1\7\1\10\24\uffff"+
             "\1\2\1\uffff\1\1\1\uffff\1\13\26\uffff\1\12",
             "",
             "",
@@ -8222,7 +8223,7 @@ public class DRLExpressions extends Parser {
 
                         else if ( ((synpred24_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.NEW))))) ) {s = 13;}
 
-                        else if ( (((synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))))) ) {s = 14;}
+                        else if ( (((synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.LONG))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.INT))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT))))||(synpred25_DRLExpressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))))) ) {s = 14;}
 
                         else if ( (synpred28_DRLExpressions()) ) {s = 15;}
 
@@ -8260,14 +8261,14 @@ public class DRLExpressions extends Parser {
     static final String DFA48_minS =
         "\1\24\2\0\43\uffff";
     static final String DFA48_maxS =
-        "\1\103\2\0\43\uffff";
+        "\1\104\2\0\43\uffff";
     static final String DFA48_acceptS =
         "\3\uffff\1\2\41\uffff\1\1";
     static final String DFA48_specialS =
         "\1\uffff\1\0\1\1\43\uffff}>";
     static final String[] DFA48_transitionS = {
-            "\13\3\1\uffff\11\3\1\2\1\3\1\1\1\3\1\uffff\6\3\2\uffff\7\3\5"+
-            "\uffff\2\3",
+            "\11\3\1\uffff\2\3\1\uffff\11\3\1\2\1\3\1\1\1\3\1\uffff\6\3\2"+
+            "\uffff\7\3\5\uffff\2\3",
             "\1\uffff",
             "\1\uffff",
             "",
@@ -8388,14 +8389,14 @@ public class DRLExpressions extends Parser {
     static final String DFA53_minS =
         "\1\24\42\uffff\1\0\2\uffff";
     static final String DFA53_maxS =
-        "\1\103\42\uffff\1\0\2\uffff";
+        "\1\104\42\uffff\1\0\2\uffff";
     static final String DFA53_acceptS =
         "\1\uffff\1\2\43\uffff\1\1";
     static final String DFA53_specialS =
         "\43\uffff\1\0\2\uffff}>";
     static final String[] DFA53_transitionS = {
-            "\13\1\1\uffff\13\1\1\43\1\1\1\uffff\6\1\2\uffff\7\1\5\uffff"+
-            "\2\1",
+            "\11\1\1\uffff\2\1\1\uffff\13\1\1\43\1\1\1\uffff\6\1\2\uffff"+
+            "\7\1\5\uffff\2\1",
             "",
             "",
             "",
@@ -8501,14 +8502,14 @@ public class DRLExpressions extends Parser {
     static final String DFA62_minS =
         "\1\24\1\0\44\uffff";
     static final String DFA62_maxS =
-        "\1\103\1\0\44\uffff";
+        "\1\104\1\0\44\uffff";
     static final String DFA62_acceptS =
         "\2\uffff\1\2\42\uffff\1\1";
     static final String DFA62_specialS =
         "\1\uffff\1\0\44\uffff}>";
     static final String[] DFA62_transitionS = {
-            "\13\2\1\uffff\13\2\1\1\1\2\1\uffff\6\2\2\uffff\7\2\5\uffff\2"+
-            "\2",
+            "\11\2\1\uffff\2\2\1\uffff\13\2\1\1\1\2\1\uffff\6\2\2\uffff\7"+
+            "\2\5\uffff\2\2",
             "\1\uffff",
             "",
             "",
@@ -8614,14 +8615,14 @@ public class DRLExpressions extends Parser {
     static final String DFA71_minS =
         "\1\24\1\0\44\uffff";
     static final String DFA71_maxS =
-        "\1\103\1\0\44\uffff";
+        "\1\104\1\0\44\uffff";
     static final String DFA71_acceptS =
         "\2\uffff\1\2\42\uffff\1\1";
     static final String DFA71_specialS =
         "\1\uffff\1\0\44\uffff}>";
     static final String[] DFA71_transitionS = {
-            "\13\2\1\uffff\11\2\1\1\3\2\1\uffff\6\2\2\uffff\7\2\5\uffff\2"+
-            "\2",
+            "\11\2\1\uffff\2\2\1\uffff\11\2\1\1\3\2\1\uffff\6\2\2\uffff\7"+
+            "\2\5\uffff\2\2",
             "\1\uffff",
             "",
             "",
@@ -8727,14 +8728,14 @@ public class DRLExpressions extends Parser {
     static final String DFA73_minS =
         "\1\24\1\0\44\uffff";
     static final String DFA73_maxS =
-        "\1\103\1\0\44\uffff";
+        "\1\104\1\0\44\uffff";
     static final String DFA73_acceptS =
         "\2\uffff\1\2\42\uffff\1\1";
     static final String DFA73_specialS =
         "\1\uffff\1\0\44\uffff}>";
     static final String[] DFA73_transitionS = {
-            "\13\2\1\uffff\11\2\1\1\3\2\1\uffff\6\2\2\uffff\7\2\5\uffff\2"+
-            "\2",
+            "\11\2\1\uffff\2\2\1\uffff\11\2\1\1\3\2\1\uffff\6\2\2\uffff\7"+
+            "\2\5\uffff\2\2",
             "\1\uffff",
             "",
             "",
@@ -8838,16 +8839,16 @@ public class DRLExpressions extends Parser {
     static final String DFA78_eofS =
         "\17\uffff";
     static final String DFA78_minS =
-        "\1\25\12\uffff\2\46\2\uffff";
+        "\1\25\12\uffff\2\47\2\uffff";
     static final String DFA78_maxS =
-        "\1\50\12\uffff\1\46\1\50\2\uffff";
+        "\1\51\12\uffff\1\47\1\51\2\uffff";
     static final String DFA78_acceptS =
         "\1\uffff\1\1\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\12\2\uffff\1\13"+
         "\1\14";
     static final String DFA78_specialS =
         "\14\uffff\1\0\2\uffff}>";
     static final String[] DFA78_transitionS = {
-            "\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\11\uffff\1\13\1\12\1\1",
+            "\1\2\1\3\1\4\1\5\1\6\1\7\1\10\1\11\12\uffff\1\13\1\12\1\1",
             "",
             "",
             "",
@@ -8939,137 +8940,137 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_GREATER_EQUALS_in_relationalOp316 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LESS_in_relationalOp329 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_GREATER_in_relationalOp352 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_not_key_in_relationalOp370 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_neg_operator_key_in_relationalOp374 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_not_key_in_relationalOp370 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_neg_operator_key_in_relationalOp374 = new BitSet(new long[]{0x0000100000000002L});
     public static final BitSet FOLLOW_squareArguments_in_relationalOp392 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_operator_key_in_relationalOp407 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_operator_key_in_relationalOp407 = new BitSet(new long[]{0x0000100000000002L});
     public static final BitSet FOLLOW_squareArguments_in_relationalOp426 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_type_in_typeList459 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_COMMA_in_typeList462 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_type_in_typeList464 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_type_in_typeList459 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_typeList462 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_type_in_typeList464 = new BitSet(new long[]{0x0001000000000002L});
     public static final BitSet FOLLOW_typeMatch_in_type486 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitiveType_in_typeMatch517 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_typeMatch527 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_typeMatch529 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_ID_in_typeMatch543 = new BitSet(new long[]{0x0001088000000002L});
-    public static final BitSet FOLLOW_typeArguments_in_typeMatch550 = new BitSet(new long[]{0x0001080000000002L});
-    public static final BitSet FOLLOW_DOT_in_typeMatch555 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_typeMatch557 = new BitSet(new long[]{0x0001088000000002L});
-    public static final BitSet FOLLOW_typeArguments_in_typeMatch564 = new BitSet(new long[]{0x0001080000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_typeMatch579 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_typeMatch581 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_LESS_in_typeArguments606 = new BitSet(new long[]{0x0008000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_typeArgument_in_typeArguments608 = new BitSet(new long[]{0x0000804000000000L});
-    public static final BitSet FOLLOW_COMMA_in_typeArguments611 = new BitSet(new long[]{0x0008000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_typeArgument_in_typeArguments613 = new BitSet(new long[]{0x0000804000000000L});
+    public static final BitSet FOLLOW_primitiveType_in_typeMatch517 = new BitSet(new long[]{0x0000100000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_typeMatch527 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_typeMatch529 = new BitSet(new long[]{0x0000100000000002L});
+    public static final BitSet FOLLOW_ID_in_typeMatch543 = new BitSet(new long[]{0x0002110000000002L});
+    public static final BitSet FOLLOW_typeArguments_in_typeMatch550 = new BitSet(new long[]{0x0002100000000002L});
+    public static final BitSet FOLLOW_DOT_in_typeMatch555 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_typeMatch557 = new BitSet(new long[]{0x0002110000000002L});
+    public static final BitSet FOLLOW_typeArguments_in_typeMatch564 = new BitSet(new long[]{0x0002100000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_typeMatch579 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_typeMatch581 = new BitSet(new long[]{0x0000100000000002L});
+    public static final BitSet FOLLOW_LESS_in_typeArguments606 = new BitSet(new long[]{0x0010000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_typeArgument_in_typeArguments608 = new BitSet(new long[]{0x0001008000000000L});
+    public static final BitSet FOLLOW_COMMA_in_typeArguments611 = new BitSet(new long[]{0x0010000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_typeArgument_in_typeArguments613 = new BitSet(new long[]{0x0001008000000000L});
     public static final BitSet FOLLOW_GREATER_in_typeArguments617 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_type_in_typeArgument634 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_QUESTION_in_typeArgument642 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000004L});
-    public static final BitSet FOLLOW_extends_key_in_typeArgument646 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_super_key_in_typeArgument650 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_QUESTION_in_typeArgument642 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000008L});
+    public static final BitSet FOLLOW_extends_key_in_typeArgument646 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_super_key_in_typeArgument650 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_type_in_typeArgument653 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_dummy677 = new BitSet(new long[]{0x0000040100100000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_expression_in_dummy677 = new BitSet(new long[]{0x0000080200100000L,0x0000000000000008L});
     public static final BitSet FOLLOW_set_in_dummy679 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_relationalExpression_in_dummy2717 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_dummy2719 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_conditionalExpression_in_expression742 = new BitSet(new long[]{0x000001C01FE00002L});
-    public static final BitSet FOLLOW_assignmentOperator_in_expression763 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_conditionalExpression_in_expression742 = new BitSet(new long[]{0x000003801FE00002L});
+    public static final BitSet FOLLOW_assignmentOperator_in_expression763 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_expression_in_expression767 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_conditionalOrExpression_in_conditionalExpression794 = new BitSet(new long[]{0x0008000000000002L});
-    public static final BitSet FOLLOW_QUESTION_in_conditionalExpression808 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_conditionalExpression812 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_COLON_in_conditionalExpression814 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_conditionalOrExpression_in_conditionalExpression794 = new BitSet(new long[]{0x0010000000000002L});
+    public static final BitSet FOLLOW_QUESTION_in_conditionalExpression808 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_conditionalExpression812 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_COLON_in_conditionalExpression814 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_expression_in_conditionalExpression818 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_conditionalAndExpression_in_conditionalOrExpression843 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_conditionalOrExpression852 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_conditionalAndExpression_in_conditionalOrExpression856 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_inclusiveOrExpression_in_conditionalAndExpression893 = new BitSet(new long[]{0x0002000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_conditionalAndExpression901 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_inclusiveOrExpression_in_conditionalAndExpression905 = new BitSet(new long[]{0x0002000000000002L});
-    public static final BitSet FOLLOW_exclusiveOrExpression_in_inclusiveOrExpression941 = new BitSet(new long[]{0x0040000000000002L});
-    public static final BitSet FOLLOW_PIPE_in_inclusiveOrExpression949 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_exclusiveOrExpression_in_inclusiveOrExpression953 = new BitSet(new long[]{0x0040000000000002L});
-    public static final BitSet FOLLOW_andExpression_in_exclusiveOrExpression989 = new BitSet(new long[]{0x0100000000000002L});
-    public static final BitSet FOLLOW_XOR_in_exclusiveOrExpression997 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_andExpression_in_exclusiveOrExpression1001 = new BitSet(new long[]{0x0100000000000002L});
-    public static final BitSet FOLLOW_equalityExpression_in_andExpression1039 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_AMPER_in_andExpression1047 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_equalityExpression_in_andExpression1051 = new BitSet(new long[]{0x0080000000000002L});
-    public static final BitSet FOLLOW_instanceOfExpression_in_equalityExpression1091 = new BitSet(new long[]{0x0000000C00000002L});
-    public static final BitSet FOLLOW_EQUALS_in_equalityExpression1103 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_NOT_EQUALS_in_equalityExpression1109 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_instanceOfExpression_in_equalityExpression1126 = new BitSet(new long[]{0x0000000C00000002L});
-    public static final BitSet FOLLOW_inExpression_in_instanceOfExpression1162 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000004L});
-    public static final BitSet FOLLOW_instanceof_key_in_instanceOfExpression1172 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_conditionalAndExpression_in_conditionalOrExpression843 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_conditionalOrExpression852 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_conditionalAndExpression_in_conditionalOrExpression856 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_inclusiveOrExpression_in_conditionalAndExpression893 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_conditionalAndExpression901 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_inclusiveOrExpression_in_conditionalAndExpression905 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_exclusiveOrExpression_in_inclusiveOrExpression941 = new BitSet(new long[]{0x0080000000000002L});
+    public static final BitSet FOLLOW_PIPE_in_inclusiveOrExpression949 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_exclusiveOrExpression_in_inclusiveOrExpression953 = new BitSet(new long[]{0x0080000000000002L});
+    public static final BitSet FOLLOW_andExpression_in_exclusiveOrExpression989 = new BitSet(new long[]{0x0200000000000002L});
+    public static final BitSet FOLLOW_XOR_in_exclusiveOrExpression997 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_andExpression_in_exclusiveOrExpression1001 = new BitSet(new long[]{0x0200000000000002L});
+    public static final BitSet FOLLOW_equalityExpression_in_andExpression1039 = new BitSet(new long[]{0x0100000000000002L});
+    public static final BitSet FOLLOW_AMPER_in_andExpression1047 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_equalityExpression_in_andExpression1051 = new BitSet(new long[]{0x0100000000000002L});
+    public static final BitSet FOLLOW_instanceOfExpression_in_equalityExpression1091 = new BitSet(new long[]{0x0000001800000002L});
+    public static final BitSet FOLLOW_EQUALS_in_equalityExpression1103 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_NOT_EQUALS_in_equalityExpression1109 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_instanceOfExpression_in_equalityExpression1126 = new BitSet(new long[]{0x0000001800000002L});
+    public static final BitSet FOLLOW_inExpression_in_instanceOfExpression1162 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000008L});
+    public static final BitSet FOLLOW_instanceof_key_in_instanceOfExpression1172 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_type_in_instanceOfExpression1187 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_relationalExpression_in_inExpression1228 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000004L});
-    public static final BitSet FOLLOW_not_key_in_inExpression1244 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_in_key_in_inExpression1248 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_inExpression1250 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_inExpression1254 = new BitSet(new long[]{0x0000840000000000L});
-    public static final BitSet FOLLOW_COMMA_in_inExpression1274 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_inExpression1278 = new BitSet(new long[]{0x0000840000000000L});
+    public static final BitSet FOLLOW_relationalExpression_in_inExpression1228 = new BitSet(new long[]{0x0000000000000002L,0x0000000000000008L});
+    public static final BitSet FOLLOW_not_key_in_inExpression1244 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_in_key_in_inExpression1248 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_inExpression1250 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_inExpression1254 = new BitSet(new long[]{0x0001080000000000L});
+    public static final BitSet FOLLOW_COMMA_in_inExpression1274 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_inExpression1278 = new BitSet(new long[]{0x0001080000000000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_inExpression1299 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_in_key_in_inExpression1309 = new BitSet(new long[]{0x0000020000000000L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_inExpression1311 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_inExpression1315 = new BitSet(new long[]{0x0000840000000000L});
-    public static final BitSet FOLLOW_COMMA_in_inExpression1335 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_inExpression1339 = new BitSet(new long[]{0x0000840000000000L});
+    public static final BitSet FOLLOW_in_key_in_inExpression1309 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_inExpression1311 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_inExpression1315 = new BitSet(new long[]{0x0001080000000000L});
+    public static final BitSet FOLLOW_COMMA_in_inExpression1335 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_inExpression1339 = new BitSet(new long[]{0x0001080000000000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_inExpression1360 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_shiftExpression_in_relationalExpression1387 = new BitSet(new long[]{0x000002FC00000002L,0x0000000000000004L});
-    public static final BitSet FOLLOW_orRestriction_in_relationalExpression1408 = new BitSet(new long[]{0x000002FC00000002L,0x0000000000000004L});
-    public static final BitSet FOLLOW_andRestriction_in_orRestriction1445 = new BitSet(new long[]{0x0004000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_orRestriction1465 = new BitSet(new long[]{0x000002FC00000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_andRestriction_in_orRestriction1469 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_shiftExpression_in_relationalExpression1387 = new BitSet(new long[]{0x000005F800000002L,0x0000000000000008L});
+    public static final BitSet FOLLOW_orRestriction_in_relationalExpression1408 = new BitSet(new long[]{0x000005F800000002L,0x0000000000000008L});
+    public static final BitSet FOLLOW_andRestriction_in_orRestriction1445 = new BitSet(new long[]{0x0008000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_orRestriction1465 = new BitSet(new long[]{0x000005F800000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_andRestriction_in_orRestriction1469 = new BitSet(new long[]{0x0008000000000002L});
     public static final BitSet FOLLOW_EOF_in_orRestriction1490 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_singleRestriction_in_andRestriction1515 = new BitSet(new long[]{0x0002000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_andRestriction1533 = new BitSet(new long[]{0x000002FC00000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_singleRestriction_in_andRestriction1537 = new BitSet(new long[]{0x0002000000000002L});
-    public static final BitSet FOLLOW_operator_in_singleRestriction1583 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_singleRestriction_in_andRestriction1515 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_andRestriction1533 = new BitSet(new long[]{0x000005F800000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_singleRestriction_in_andRestriction1537 = new BitSet(new long[]{0x0004000000000002L});
+    public static final BitSet FOLLOW_operator_in_singleRestriction1583 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_shiftExpression_in_singleRestriction1587 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_singleRestriction1605 = new BitSet(new long[]{0x000002FC00000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_orRestriction_in_singleRestriction1609 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_singleRestriction1605 = new BitSet(new long[]{0x000005F800000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_orRestriction_in_singleRestriction1609 = new BitSet(new long[]{0x0000080000000000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_singleRestriction1612 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_additiveExpression_in_shiftExpression1648 = new BitSet(new long[]{0x000000C000000002L});
-    public static final BitSet FOLLOW_shiftOp_in_shiftExpression1662 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_additiveExpression_in_shiftExpression1664 = new BitSet(new long[]{0x000000C000000002L});
-    public static final BitSet FOLLOW_LESS_in_shiftOp1684 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_additiveExpression_in_shiftExpression1648 = new BitSet(new long[]{0x0000018000000002L});
+    public static final BitSet FOLLOW_shiftOp_in_shiftExpression1662 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_additiveExpression_in_shiftExpression1664 = new BitSet(new long[]{0x0000018000000002L});
+    public static final BitSet FOLLOW_LESS_in_shiftOp1684 = new BitSet(new long[]{0x0000010000000000L});
     public static final BitSet FOLLOW_LESS_in_shiftOp1686 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_shiftOp1699 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_shiftOp1701 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_shiftOp1699 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_GREATER_in_shiftOp1701 = new BitSet(new long[]{0x0000008000000000L});
     public static final BitSet FOLLOW_GREATER_in_shiftOp1703 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_shiftOp1716 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_shiftOp1716 = new BitSet(new long[]{0x0000008000000000L});
     public static final BitSet FOLLOW_GREATER_in_shiftOp1718 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1746 = new BitSet(new long[]{0x1800000000000002L});
-    public static final BitSet FOLLOW_set_in_additiveExpression1767 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1775 = new BitSet(new long[]{0x1800000000000002L});
-    public static final BitSet FOLLOW_unaryExpression_in_multiplicativeExpression1803 = new BitSet(new long[]{0x0600000000000002L,0x0000000000000008L});
-    public static final BitSet FOLLOW_set_in_multiplicativeExpression1815 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_unaryExpression_in_multiplicativeExpression1829 = new BitSet(new long[]{0x0600000000000002L,0x0000000000000008L});
-    public static final BitSet FOLLOW_PLUS_in_unaryExpression1855 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1746 = new BitSet(new long[]{0x3000000000000002L});
+    public static final BitSet FOLLOW_set_in_additiveExpression1767 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_multiplicativeExpression_in_additiveExpression1775 = new BitSet(new long[]{0x3000000000000002L});
+    public static final BitSet FOLLOW_unaryExpression_in_multiplicativeExpression1803 = new BitSet(new long[]{0x0C00000000000002L,0x0000000000000010L});
+    public static final BitSet FOLLOW_set_in_multiplicativeExpression1815 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_unaryExpression_in_multiplicativeExpression1829 = new BitSet(new long[]{0x0C00000000000002L,0x0000000000000010L});
+    public static final BitSet FOLLOW_PLUS_in_unaryExpression1855 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_unaryExpression_in_unaryExpression1859 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_MINUS_in_unaryExpression1878 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_MINUS_in_unaryExpression1878 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_unaryExpression_in_unaryExpression1882 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_INCR_in_unaryExpression1903 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_INCR_in_unaryExpression1903 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_primary_in_unaryExpression1905 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DECR_in_unaryExpression1915 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DECR_in_unaryExpression1915 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_primary_in_unaryExpression1917 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_unaryExpressionNotPlusMinus_in_unaryExpression1929 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_TILDE_in_unaryExpressionNotPlusMinus1959 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_TILDE_in_unaryExpressionNotPlusMinus1959 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1961 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_NEGATION_in_unaryExpressionNotPlusMinus1970 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_NEGATION_in_unaryExpressionNotPlusMinus1970 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_unaryExpression_in_unaryExpressionNotPlusMinus1972 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_castExpression_in_unaryExpressionNotPlusMinus1986 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primary_in_unaryExpressionNotPlusMinus2008 = new BitSet(new long[]{0x0001080060000002L});
-    public static final BitSet FOLLOW_selector_in_unaryExpressionNotPlusMinus2025 = new BitSet(new long[]{0x0001080060000002L});
+    public static final BitSet FOLLOW_primary_in_unaryExpressionNotPlusMinus2008 = new BitSet(new long[]{0x00021000C0000002L});
+    public static final BitSet FOLLOW_selector_in_unaryExpressionNotPlusMinus2025 = new BitSet(new long[]{0x00021000C0000002L});
     public static final BitSet FOLLOW_set_in_unaryExpressionNotPlusMinus2056 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2093 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_primitiveType_in_castExpression2095 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2097 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2093 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_primitiveType_in_castExpression2095 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2097 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_unaryExpression_in_castExpression2101 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2119 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_type_in_castExpression2121 = new BitSet(new long[]{0x0000040000000000L});
-    public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2123 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_castExpression2119 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_type_in_castExpression2121 = new BitSet(new long[]{0x0000080000000000L});
+    public static final BitSet FOLLOW_RIGHT_PAREN_in_castExpression2123 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_unaryExpressionNotPlusMinus_in_castExpression2125 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_boolean_key_in_primitiveType2148 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_char_key_in_primitiveType2156 = new BitSet(new long[]{0x0000000000000002L});
@@ -9080,117 +9081,117 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_float_key_in_primitiveType2196 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_double_key_in_primitiveType2204 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_parExpression_in_primary2232 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_primary2249 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_primary2249 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_explicitGenericInvocationSuffix_in_primary2252 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_this_key_in_primary2256 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_this_key_in_primary2256 = new BitSet(new long[]{0x0000040000000000L});
     public static final BitSet FOLLOW_arguments_in_primary2258 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_literal_in_primary2274 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_super_key_in_primary2296 = new BitSet(new long[]{0x0001020000000000L});
+    public static final BitSet FOLLOW_super_key_in_primary2296 = new BitSet(new long[]{0x0002040000000000L});
     public static final BitSet FOLLOW_superSuffix_in_primary2298 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_new_key_in_primary2314 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_new_key_in_primary2314 = new BitSet(new long[]{0x0000010000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_creator_in_primary2316 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_primitiveType_in_primary2332 = new BitSet(new long[]{0x0001080000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_primary2335 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_primary2337 = new BitSet(new long[]{0x0001080000000000L});
-    public static final BitSet FOLLOW_DOT_in_primary2341 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_primitiveType_in_primary2332 = new BitSet(new long[]{0x0002100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_primary2335 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_primary2337 = new BitSet(new long[]{0x0002100000000000L});
+    public static final BitSet FOLLOW_DOT_in_primary2341 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_class_key_in_primary2343 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_inlineMapExpression_in_primary2364 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_inlineListExpression_in_primary2380 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_primary2396 = new BitSet(new long[]{0x00010A0000000002L});
-    public static final BitSet FOLLOW_DOT_in_primary2415 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_primary2419 = new BitSet(new long[]{0x00010A0000000002L});
+    public static final BitSet FOLLOW_ID_in_primary2396 = new BitSet(new long[]{0x0002140000000002L});
+    public static final BitSet FOLLOW_DOT_in_primary2415 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_primary2419 = new BitSet(new long[]{0x0002140000000002L});
     public static final BitSet FOLLOW_identifierSuffix_in_primary2439 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineListExpression2461 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expressionList_in_inlineListExpression2463 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineListExpression2461 = new BitSet(new long[]{0x30603500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expressionList_in_inlineListExpression2463 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_inlineListExpression2466 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineMapExpression2488 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_mapExpressionList_in_inlineMapExpression2490 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_inlineMapExpression2488 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_mapExpressionList_in_inlineMapExpression2490 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_inlineMapExpression2492 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2510 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_COMMA_in_mapExpressionList2513 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2515 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_expression_in_mapEntry2538 = new BitSet(new long[]{0x0000000200000000L});
-    public static final BitSet FOLLOW_COLON_in_mapEntry2540 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
+    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2510 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_mapExpressionList2513 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_mapEntry_in_mapExpressionList2515 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_expression_in_mapEntry2538 = new BitSet(new long[]{0x0000000400000000L});
+    public static final BitSet FOLLOW_COLON_in_mapEntry2540 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
     public static final BitSet FOLLOW_expression_in_mapEntry2542 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_parExpression2564 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_parExpression2568 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_parExpression2564 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_parExpression2568 = new BitSet(new long[]{0x0000080000000000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_parExpression2570 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2605 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2646 = new BitSet(new long[]{0x0001080000000000L});
-    public static final BitSet FOLLOW_DOT_in_identifierSuffix2691 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2605 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2646 = new BitSet(new long[]{0x0002100000000000L});
+    public static final BitSet FOLLOW_DOT_in_identifierSuffix2691 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_class_key_in_identifierSuffix2695 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2711 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_identifierSuffix2742 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2771 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_identifierSuffix2711 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_identifierSuffix2742 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_identifierSuffix2771 = new BitSet(new long[]{0x0000100000000002L});
     public static final BitSet FOLLOW_arguments_in_identifierSuffix2787 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_creator2810 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_createdName_in_creator2813 = new BitSet(new long[]{0x00000A0000000000L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_creator2810 = new BitSet(new long[]{0x0000010000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_createdName_in_creator2813 = new BitSet(new long[]{0x0000140000000000L});
     public static final BitSet FOLLOW_arrayCreatorRest_in_creator2824 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_classCreatorRest_in_creator2828 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_createdName2846 = new BitSet(new long[]{0x0001008000000002L});
-    public static final BitSet FOLLOW_typeArguments_in_createdName2848 = new BitSet(new long[]{0x0001000000000002L});
-    public static final BitSet FOLLOW_DOT_in_createdName2861 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_createdName2863 = new BitSet(new long[]{0x0001008000000002L});
-    public static final BitSet FOLLOW_typeArguments_in_createdName2865 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_ID_in_createdName2846 = new BitSet(new long[]{0x0002010000000002L});
+    public static final BitSet FOLLOW_typeArguments_in_createdName2848 = new BitSet(new long[]{0x0002000000000002L});
+    public static final BitSet FOLLOW_DOT_in_createdName2861 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_createdName2863 = new BitSet(new long[]{0x0002010000000002L});
+    public static final BitSet FOLLOW_typeArguments_in_createdName2865 = new BitSet(new long[]{0x0002000000000002L});
     public static final BitSet FOLLOW_primitiveType_in_createdName2880 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_innerCreator2900 = new BitSet(new long[]{0x00000A0000000000L});
+    public static final BitSet FOLLOW_ID_in_innerCreator2900 = new BitSet(new long[]{0x0000140000000000L});
     public static final BitSet FOLLOW_classCreatorRest_in_innerCreator2902 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2921 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2931 = new BitSet(new long[]{0x0000280000000000L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2934 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2936 = new BitSet(new long[]{0x0000280000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2921 = new BitSet(new long[]{0x30603500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2931 = new BitSet(new long[]{0x0000500000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2934 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2936 = new BitSet(new long[]{0x0000500000000000L});
     public static final BitSet FOLLOW_arrayInitializer_in_arrayCreatorRest2940 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2954 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2956 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2961 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2963 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2965 = new BitSet(new long[]{0x0000080000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2977 = new BitSet(new long[]{0x0000100000000000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2979 = new BitSet(new long[]{0x0000080000000002L});
+    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2954 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2956 = new BitSet(new long[]{0x0000100000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2961 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_arrayCreatorRest2963 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2965 = new BitSet(new long[]{0x0000100000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_arrayCreatorRest2977 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_arrayCreatorRest2979 = new BitSet(new long[]{0x0000100000000002L});
     public static final BitSet FOLLOW_arrayInitializer_in_variableInitializer3008 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_expression_in_variableInitializer3022 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_arrayInitializer3039 = new BitSet(new long[]{0x18306A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer3042 = new BitSet(new long[]{0x0000C00000000000L});
-    public static final BitSet FOLLOW_COMMA_in_arrayInitializer3045 = new BitSet(new long[]{0x18302A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer3047 = new BitSet(new long[]{0x0000C00000000000L});
-    public static final BitSet FOLLOW_COMMA_in_arrayInitializer3052 = new BitSet(new long[]{0x0000400000000000L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_arrayInitializer3039 = new BitSet(new long[]{0x3060D500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer3042 = new BitSet(new long[]{0x0001800000000000L});
+    public static final BitSet FOLLOW_COMMA_in_arrayInitializer3045 = new BitSet(new long[]{0x30605500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_variableInitializer_in_arrayInitializer3047 = new BitSet(new long[]{0x0001800000000000L});
+    public static final BitSet FOLLOW_COMMA_in_arrayInitializer3052 = new BitSet(new long[]{0x0000800000000000L});
     public static final BitSet FOLLOW_RIGHT_CURLY_in_arrayInitializer3059 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_arguments_in_classCreatorRest3076 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_explicitGenericInvocation3094 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_explicitGenericInvocation3094 = new BitSet(new long[]{0x0000040000000000L});
     public static final BitSet FOLLOW_arguments_in_explicitGenericInvocation3096 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LESS_in_nonWildcardTypeArguments3113 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_typeList_in_nonWildcardTypeArguments3115 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_LESS_in_nonWildcardTypeArguments3113 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_typeList_in_nonWildcardTypeArguments3115 = new BitSet(new long[]{0x0000008000000000L});
     public static final BitSet FOLLOW_GREATER_in_nonWildcardTypeArguments3117 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_super_key_in_explicitGenericInvocationSuffix3134 = new BitSet(new long[]{0x0001020000000000L});
+    public static final BitSet FOLLOW_super_key_in_explicitGenericInvocationSuffix3134 = new BitSet(new long[]{0x0002040000000000L});
     public static final BitSet FOLLOW_superSuffix_in_explicitGenericInvocationSuffix3136 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ID_in_explicitGenericInvocationSuffix3147 = new BitSet(new long[]{0x0000020000000000L});
+    public static final BitSet FOLLOW_ID_in_explicitGenericInvocationSuffix3147 = new BitSet(new long[]{0x0000040000000000L});
     public static final BitSet FOLLOW_arguments_in_explicitGenericInvocationSuffix3149 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_selector3174 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_super_key_in_selector3178 = new BitSet(new long[]{0x0001020000000000L});
+    public static final BitSet FOLLOW_DOT_in_selector3174 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_super_key_in_selector3178 = new BitSet(new long[]{0x0002040000000000L});
     public static final BitSet FOLLOW_superSuffix_in_selector3180 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_selector3196 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_new_key_in_selector3200 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_selector3203 = new BitSet(new long[]{0x0000008000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOT_in_selector3196 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_new_key_in_selector3200 = new BitSet(new long[]{0x0000010000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_nonWildcardTypeArguments_in_selector3203 = new BitSet(new long[]{0x0000010000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_innerCreator_in_selector3207 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_selector3223 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_selector3246 = new BitSet(new long[]{0x0000020000000002L});
+    public static final BitSet FOLLOW_DOT_in_selector3223 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_selector3246 = new BitSet(new long[]{0x0000040000000002L});
     public static final BitSet FOLLOW_arguments_in_selector3275 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_selector3296 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_selector3323 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_selector3296 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_selector3323 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_selector3349 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_arguments_in_superSuffix3368 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_superSuffix3379 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
-    public static final BitSet FOLLOW_ID_in_superSuffix3381 = new BitSet(new long[]{0x0000020000000002L});
+    public static final BitSet FOLLOW_DOT_in_superSuffix3379 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
+    public static final BitSet FOLLOW_ID_in_superSuffix3381 = new BitSet(new long[]{0x0000040000000002L});
     public static final BitSet FOLLOW_arguments_in_superSuffix3390 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_squareArguments3413 = new BitSet(new long[]{0x18301A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expressionList_in_squareArguments3418 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_squareArguments3413 = new BitSet(new long[]{0x30603500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expressionList_in_squareArguments3418 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_squareArguments3424 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_arguments3441 = new BitSet(new long[]{0x18300E80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expressionList_in_arguments3453 = new BitSet(new long[]{0x0000040000000000L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_arguments3441 = new BitSet(new long[]{0x30601D00C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expressionList_in_arguments3453 = new BitSet(new long[]{0x0000080000000000L});
     public static final BitSet FOLLOW_RIGHT_PAREN_in_arguments3465 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_expression_in_expressionList3495 = new BitSet(new long[]{0x0000800000000002L});
-    public static final BitSet FOLLOW_COMMA_in_expressionList3506 = new BitSet(new long[]{0x18300A80600CD900L,0x0000000000000004L});
-    public static final BitSet FOLLOW_expression_in_expressionList3510 = new BitSet(new long[]{0x0000800000000002L});
+    public static final BitSet FOLLOW_expression_in_expressionList3495 = new BitSet(new long[]{0x0001000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_expressionList3506 = new BitSet(new long[]{0x30601500C00CD900L,0x0000000000000008L});
+    public static final BitSet FOLLOW_expression_in_expressionList3510 = new BitSet(new long[]{0x0001000000000002L});
     public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3531 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_PLUS_ASSIGN_in_assignmentOperator3539 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_MINUS_ASSIGN_in_assignmentOperator3547 = new BitSet(new long[]{0x0000000000000002L});
@@ -9200,15 +9201,15 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_OR_ASSIGN_in_assignmentOperator3579 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_XOR_ASSIGN_in_assignmentOperator3587 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_MOD_ASSIGN_in_assignmentOperator3595 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LESS_in_assignmentOperator3603 = new BitSet(new long[]{0x0000008000000000L});
-    public static final BitSet FOLLOW_LESS_in_assignmentOperator3605 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_LESS_in_assignmentOperator3603 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_LESS_in_assignmentOperator3605 = new BitSet(new long[]{0x0000020000000000L});
     public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3607 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3625 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3627 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3629 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3625 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3627 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3629 = new BitSet(new long[]{0x0000020000000000L});
     public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3631 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3647 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3649 = new BitSet(new long[]{0x0000010000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3647 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_GREATER_in_assignmentOperator3649 = new BitSet(new long[]{0x0000020000000000L});
     public static final BitSet FOLLOW_EQUALS_ASSIGN_in_assignmentOperator3651 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_extends_key3683 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_super_key3713 = new BitSet(new long[]{0x0000000000000002L});
@@ -9232,28 +9233,28 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_squareArguments_in_synpred1_DRLExpressions386 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_squareArguments_in_synpred2_DRLExpressions420 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_primitiveType_in_synpred3_DRLExpressions510 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred4_DRLExpressions521 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred4_DRLExpressions521 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred4_DRLExpressions523 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_typeArguments_in_synpred5_DRLExpressions547 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_typeArguments_in_synpred6_DRLExpressions561 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred7_DRLExpressions573 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred7_DRLExpressions573 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred7_DRLExpressions575 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_assignmentOperator_in_synpred8_DRLExpressions756 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_not_key_in_synpred9_DRLExpressions1238 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_not_key_in_synpred9_DRLExpressions1238 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_in_key_in_synpred9_DRLExpressions1240 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_orRestriction_in_synpred10_DRLExpressions1401 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_PIPE_in_synpred11_DRLExpressions1457 = new BitSet(new long[]{0x000002FC00000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOUBLE_PIPE_in_synpred11_DRLExpressions1457 = new BitSet(new long[]{0x000005F800000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_andRestriction_in_synpred11_DRLExpressions1459 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOUBLE_AMPER_in_synpred12_DRLExpressions1525 = new BitSet(new long[]{0x000002FC00000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOUBLE_AMPER_in_synpred12_DRLExpressions1525 = new BitSet(new long[]{0x000005F800000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_singleRestriction_in_synpred12_DRLExpressions1527 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_shiftOp_in_synpred13_DRLExpressions1659 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_synpred14_DRLExpressions1760 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_castExpression_in_synpred15_DRLExpressions1983 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_selector_in_synpred16_DRLExpressions2022 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_set_in_synpred17_DRLExpressions2049 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred18_DRLExpressions2086 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred18_DRLExpressions2086 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_primitiveType_in_synpred18_DRLExpressions2088 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred19_DRLExpressions2112 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_LEFT_PAREN_in_synpred19_DRLExpressions2112 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_type_in_synpred19_DRLExpressions2114 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_parExpression_in_synpred20_DRLExpressions2226 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_nonWildcardTypeArguments_in_synpred21_DRLExpressions2245 = new BitSet(new long[]{0x0000000000000002L});
@@ -9264,27 +9265,27 @@ public class DRLExpressions extends Parser {
     public static final BitSet FOLLOW_inlineMapExpression_in_synpred26_DRLExpressions2360 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_inlineListExpression_in_synpred27_DRLExpressions2376 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ID_in_synpred28_DRLExpressions2391 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred29_DRLExpressions2410 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOT_in_synpred29_DRLExpressions2410 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_ID_in_synpred29_DRLExpressions2412 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_identifierSuffix_in_synpred30_DRLExpressions2436 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred31_DRLExpressions2599 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred31_DRLExpressions2599 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred31_DRLExpressions2601 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred32_DRLExpressions2706 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred33_DRLExpressions2971 = new BitSet(new long[]{0x0000100000000000L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred33_DRLExpressions2971 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred33_DRLExpressions2973 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred34_DRLExpressions3169 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOT_in_synpred34_DRLExpressions3169 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_super_key_in_synpred34_DRLExpressions3171 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred35_DRLExpressions3191 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOT_in_synpred35_DRLExpressions3191 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_new_key_in_synpred35_DRLExpressions3193 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_DOT_in_synpred36_DRLExpressions3218 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_DOT_in_synpred36_DRLExpressions3218 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000008L});
     public static final BitSet FOLLOW_ID_in_synpred36_DRLExpressions3220 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_synpred37_DRLExpressions3270 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred38_DRLExpressions3293 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_LEFT_PAREN_in_synpred39_DRLExpressions3385 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3617 = new BitSet(new long[]{0x0000004000000000L});
-    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3619 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3617 = new BitSet(new long[]{0x0000008000000000L});
+    public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3619 = new BitSet(new long[]{0x0000008000000000L});
     public static final BitSet FOLLOW_GREATER_in_synpred40_DRLExpressions3621 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_GREATER_in_synpred41_DRLExpressions3641 = new BitSet(new long[]{0x0000004000000000L});
+    public static final BitSet FOLLOW_GREATER_in_synpred41_DRLExpressions3641 = new BitSet(new long[]{0x0000008000000000L});
     public static final BitSet FOLLOW_GREATER_in_synpred41_DRLExpressions3643 = new BitSet(new long[]{0x0000000000000002L});
 
 }
