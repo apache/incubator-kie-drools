@@ -38,6 +38,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.runtime.rule.AccumulateFunction;
 import org.drools.spi.Accumulator;
@@ -168,7 +169,7 @@ public class AccumulateNodeStep
 
             Accumulator accumulator = new MVELAccumulatorFunctionExecutor( compilationUnit,
                                                                            accFunction );
-            ((MVELCompileable) accumulator).compile( Thread.currentThread().getContextClassLoader() );
+            ((MVELCompileable) accumulator).compile(  (MVELDialectRuntimeData) buildContext.getRuleBase().getPackage( buildContext.getRule().getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
             Accumulate accumulate = new Accumulate( sourcePattern,
                                                     new Declaration[]{}, // required declaration

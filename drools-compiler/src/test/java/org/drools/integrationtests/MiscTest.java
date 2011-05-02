@@ -2824,7 +2824,7 @@ public class MiscTest {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Predicate" );
         } catch ( final Exception e ) {
-            assertTrue( e.getCause().getMessage().startsWith( "[Error: throwException( type1 ): this should throw an exception]" ) );
+            assertTrue( e.getCause().getMessage().contains( "this should throw an exception" ) );
         }
     }
 
@@ -6915,6 +6915,10 @@ public class MiscTest {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EvalWithLineBreaks.drl" ) ),
                       ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -8105,7 +8109,7 @@ public class MiscTest {
         str += "rule xxx \n";
         str += "when \n";
         str += "  $f1 : A() \n";
-        str += "    not A(this != $f1,  eval(field2 == $f1.field2)) \n";
+        str += "    not A(this != $f1,  eval(field2 == $f1.getField2())) \n";
         str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
         str += "then \n";
         str += "  list.add($f1); \n";
@@ -8172,7 +8176,7 @@ public class MiscTest {
         str += "rule xxx \n";
         str += "when \n";
         str += "  $f1 : A() \n";
-        str += "    exists A(this != $f1, eval(field2 == $f1.field2)) \n";
+        str += "    exists A(this != $f1, eval(field2 == $f1.getField2())) \n";
         str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
         str += "then \n";
         str += "  list.add($f1); \n";

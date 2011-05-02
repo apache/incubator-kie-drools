@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
+import org.drools.base.mvel.MVELCompilationUnit.DroolsVarFactory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
@@ -90,13 +90,13 @@ public class MVELAccumulator
         out.writeObject( resultUnit );
     }
 
-    public void compile(ClassLoader classLoader) {
-        init = initUnit.getCompiledExpression( classLoader );
-        action = actionUnit.getCompiledExpression( classLoader );
-        result = resultUnit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        init = initUnit.getCompiledExpression( runtimeData );
+        action = actionUnit.getCompiledExpression( runtimeData );
+        result = resultUnit.getCompiledExpression( runtimeData );
                 
         if ( reverseUnit != null ) {
-            reverse = reverseUnit.getCompiledExpression( classLoader );
+            reverse = reverseUnit.getCompiledExpression( runtimeData );
         }
     }
 
@@ -104,9 +104,9 @@ public class MVELAccumulator
      * @see org.drools.spi.Accumulator#createContext()
      */
     public Serializable createContext() {
-        Map<Integer, DroolsMVELIndexedFactory> shadow = null;
+        Map<Integer, Object[]> shadow = null;
         if ( this.reverse != null ) {
-            shadow = new HashMap<Integer, DroolsMVELIndexedFactory>();
+            shadow = new HashMap<Integer, Object[]>();
         }
         return new MVELAccumulatorContext( shadow );
     }
@@ -120,7 +120,10 @@ public class MVELAccumulator
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
         Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
-        DroolsMVELIndexedFactory factory = initUnit.getFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+        
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        VariableResolverFactory factory = factoryContext.getInitFactory();
+        initUnit.updateFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
         
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -132,9 +135,11 @@ public class MVELAccumulator
                                 null,
                                 factory );
         
+        
+        DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
         if ( localVars.length > 0 ) {
-            for ( int i = 0; i < factory.getOtherVarsLength(); i++ ) {
-                localVars[i] = factory.getIndexedVariableResolver( factory.getOtherVarsPos() + i ).getValue();
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
             }
         }
         
@@ -152,19 +157,30 @@ public class MVELAccumulator
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
-        DroolsMVELIndexedFactory factory = actionUnit.getFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );       
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        VariableResolverFactory factory = factoryContext.getActionFactory();
+        actionUnit.updateFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );       
 
+        DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
+        
         if ( reverse != null ) {
+            Object[] shadow = new Object [df.getOtherVarsPos()];
+            for ( int i = 0; i < df.getOtherVarsPos(); i++ ) {
+                shadow[i] = factory.getIndexedVariableResolver( i ).getValue();
+                
+                
+            }
             // SNAPSHOT variable values
-            ((MVELAccumulatorContext) context).getShadow().put( handle.getId(), factory);
+            ((MVELAccumulatorContext) context).getShadow().put( handle.getId(), shadow);
         }
         MVEL.executeExpression( this.action,
                                 null,
                                 factory );
         
+        
         if ( localVars.length > 0 ) {
-            for ( int i = 0; i < factory.getOtherVarsLength(); i++ ) {
-                localVars[i] = factory.getIndexedVariableResolver( factory.getOtherVarsPos() + i ).getValue();
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
             }
         }
         
@@ -179,21 +195,34 @@ public class MVELAccumulator
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
-        DroolsMVELIndexedFactory factory = ((MVELAccumulatorContext) context).shadow.remove( handle.getId() );
-        // we need the latest local vars
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        
+        VariableResolverFactory factory = factoryContext.getActionFactory();
+        DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
+        
+        Object[] vars = ((MVELAccumulatorContext) context).getShadow().remove( handle.getId() );
+        for ( int i = 0; i < df.getOtherVarsPos(); i++ ) {
+            factory.getIndexedVariableResolver( i ).setValue(vars[i]);  
+        }
+
         if ( localVars.length > 0 ) {
-            for ( int i = 0; i < factory.getOtherVarsLength(); i++ ) {
-                factory.getIndexedVariableResolver( factory.getOtherVarsPos() + i ).setValue(localVars[i]);
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).setValue( localVars[i] );
             }
-        }         
+        }
+        
+
+//        reverseUnit.updateFactory( null, null, handle.getObject(), (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );        
+        
+
 
         MVEL.executeExpression( this.reverse,
                                 null,
                                 factory );
         
         if ( localVars.length > 0 ) {
-            for ( int i = 0; i < factory.getOtherVarsLength(); i++ ) {
-                localVars[i] = factory.getIndexedVariableResolver( factory.getOtherVarsPos() + i ).getValue();
+            for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
+                localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
             }
         }
         
@@ -209,7 +238,10 @@ public class MVELAccumulator
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
-        VariableResolverFactory factory = resultUnit.getFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+        
+        MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
+        VariableResolverFactory factory = factoryContext.getResultFactory();
+        resultUnit.updateFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );        
 
         final Object result = MVEL.executeExpression( this.result,
                                                       null,
@@ -221,8 +253,33 @@ public class MVELAccumulator
         return this.reverse != null;
     }
 
-    public Object createWorkingMemoryContext() {
-        return null;
+    public Object createWorkingMemoryContext() {        
+        return new MVELAccumulatorFactoryContext(initUnit.createFactory(), 
+                                                 actionUnit.createFactory(),
+                                                 resultUnit.createFactory() );
+    }
+    
+    private static class MVELAccumulatorFactoryContext {
+        VariableResolverFactory initFactory;
+        VariableResolverFactory actionFactory;
+        VariableResolverFactory resultFactory;
+        public MVELAccumulatorFactoryContext(VariableResolverFactory initFactory,
+                                             VariableResolverFactory actionFactory,
+                                             VariableResolverFactory resultFactory) {
+            this.initFactory = initFactory;
+            this.actionFactory = actionFactory;
+            this.resultFactory = resultFactory;
+        }
+        public VariableResolverFactory getInitFactory() {
+            return initFactory;
+        }
+        public VariableResolverFactory getActionFactory() {
+            return actionFactory;
+        }
+
+        public VariableResolverFactory getResultFactory() {
+            return resultFactory;
+        }
     }
 
     private static class MVELAccumulatorContext
@@ -232,9 +289,9 @@ public class MVELAccumulator
         private static final long                      serialVersionUID = 510l;
 
         private Object[]               variables;
-        private Map<Integer,DroolsMVELIndexedFactory> shadow;
+        private Map<Integer, Object[]> shadow;
 
-        public MVELAccumulatorContext(Map<Integer,  DroolsMVELIndexedFactory> shadow) {
+        public MVELAccumulatorContext(Map<Integer,  Object[]> shadow) {
             this.shadow = shadow;
         }
 
@@ -246,11 +303,11 @@ public class MVELAccumulator
             this.variables = variables;
         }
 
-        public Map<Integer, DroolsMVELIndexedFactory> getShadow() {
+        public Map<Integer, Object[]> getShadow() {
             return shadow;
         }
 
-        public void setShadow(Map<Integer,  DroolsMVELIndexedFactory> shadow) {
+        public void setShadow(Map<Integer,  Object[]> shadow) {
             this.shadow = shadow;
         }
         

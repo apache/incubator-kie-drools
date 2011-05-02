@@ -22,6 +22,7 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Accumulate;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
 
@@ -58,7 +59,7 @@ public class MVELAccumulateBuilderTest {
         final Accumulate acc = (Accumulate) builder.build( context,
                                                            accDescr );
 
-        ((MVELCompileable) acc.getAccumulators()[0]).compile( pkgBuilder.getRootClassLoader() );
+        ((MVELCompileable) acc.getAccumulators()[0]).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();

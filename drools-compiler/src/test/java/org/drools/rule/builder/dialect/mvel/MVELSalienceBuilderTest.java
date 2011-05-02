@@ -22,6 +22,7 @@ import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.builder.SalienceBuilder;
@@ -73,7 +74,8 @@ public class MVELSalienceBuilderTest {
         SalienceBuilder salienceBuilder = new MVELSalienceBuilder();
         salienceBuilder.build( context );
 
-        ((MVELSalienceExpression) context.getRule().getSalience()).compile( Thread.currentThread().getContextClassLoader() );
+        
+        ((MVELSalienceExpression) context.getRule().getSalience()).compile( (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
     }
 

@@ -20,17 +20,26 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.base.mvel.MVELCompileable;
+import static org.drools.base.mvel.MVELCompilationUnit.loadClass;
 import org.drools.spi.Wireable;
 import org.drools.util.CompositeClassLoader;
+import org.mvel2.ParserConfiguration;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 
@@ -45,18 +54,38 @@ public class MVELDialectRuntimeData
     private CompositeClassLoader           rootClassLoader;
 
     private List<Wireable>                 wireList = Collections.<Wireable> emptyList();
+    
+    private Map<String, Object>           imports;
+    private HashSet<String>               packageImports;
+    private ParserConfiguration           parserConfiguration;
 
     public MVELDialectRuntimeData() {
         this.functionFactory = new MapFunctionResolverFactory();
-        invokerLookups = new IdentityHashMap<Wireable, MVELCompileable>();
+        this.invokerLookups = new IdentityHashMap<Wireable, MVELCompileable>();
+        this.imports = new HashMap();
+        this.packageImports = new HashSet();        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        for ( Entry<String, Object> entry : getImports().entrySet() ) {
+            // Field and Method are not serializable, so tokenise them
+            if ( entry.getValue() instanceof Method ) {
+                entry.setValue( "m:" + ((Method)entry.getValue()).getDeclaringClass().getName() );
+            } else if ( entry.getValue() instanceof Field ) {
+                entry.setValue( "f:" + ((Field)entry.getValue()).getDeclaringClass().getName() );
+            }
+        }
+        out.writeObject( imports );
+        out.writeObject( packageImports );
+        
         out.writeObject( invokerLookups );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        imports = (Map) in.readObject();
+        packageImports = (HashSet) in.readObject();
+        
         invokerLookups = (Map<Wireable, MVELCompileable>) in.readObject();
         if ( !invokerLookups.isEmpty() ) {
             // we need a wireList for serialisation
@@ -67,6 +96,8 @@ public class MVELDialectRuntimeData
     public void merge(DialectRuntimeRegistry registry,
                       DialectRuntimeData newData) {
         MVELDialectRuntimeData other = (MVELDialectRuntimeData) newData;
+        this.imports.putAll( other.getImports() );
+        this.packageImports.addAll( other.getPackageImports() );
         for ( Entry<Wireable, MVELCompileable> entry : other.invokerLookups.entrySet() ) {
             invokerLookups.put( entry.getKey(),
                                 entry.getValue() );
@@ -118,7 +149,7 @@ public class MVELDialectRuntimeData
     public void onBeforeExecute() {
         for ( Wireable target : wireList ) {
             MVELCompileable compileable = invokerLookups.get( target );
-            compileable.compile( rootClassLoader );
+            compileable.compile( this );
 
             // now wire up the target
             target.wire( compileable );
@@ -194,6 +225,65 @@ public class MVELDialectRuntimeData
             throw new RuntimeException( "variable is a read-only function pointer" );
         }
     }
+    
+    public ParserConfiguration getParserConfiguration() {
+        if ( parserConfiguration == null ) {
+            String[] pkgImports  = getPackageImports().toArray( new String[getPackageImports().size()] );
+            ClassLoader classLoader = rootClassLoader;
+            
+            {
+                String  key = null;
+                Object value = null;
+                try {
+                    // First replace fields and method tokens with actual instances
+                    for ( Entry<String, Object> entry : getImports().entrySet() ) {
+                        key = entry.getKey();
+                        value = entry.getValue();
+                        if ( entry.getValue() instanceof String ) {
+                            String str = (String ) value;                 
+                            Class cls = this.rootClassLoader.loadClass( str.substring( 2 ) );
+                            if ( str.startsWith( "m:" ) ) {
+                                String methodName =  key;
+                                for ( Method method : cls.getDeclaredMethods() ) {
+                                    if ( method.getName().equals( methodName ) ) {
+                                        getImports().put( methodName,
+                                                          method );
+                                        continue;
+                                    }
+                                }                        
+                            } else {
+                                String fieldName = key;                    
+                                for ( Field field : cls.getFields() ) {
+                                    if ( field.isAccessible() && field.getName().equals( fieldName ) ) {
+                                        getImports().put( fieldName,
+                                                          "f:" + cls.getName()  );
+                                        continue;
+                                    }
+                                }                        
+                            }
+                        }
+                    }
+                } catch ( ClassNotFoundException e ) {
+                    throw new IllegalArgumentException( "Unable to resolve method of field: " + key + " - " + value, e );
+                
+                }
+            }
+    
+            this.parserConfiguration = new ParserConfiguration();
+            this.parserConfiguration.setImports( getImports() );
+            this.parserConfiguration.setPackageImports( getPackageImports() );
+            this.parserConfiguration.setClassLoader( classLoader );  
+        }
+        return this.parserConfiguration;
+    }
+
+    public Map<String, Object> getImports() {
+        return imports;
+    }
+
+    public HashSet<String> getPackageImports() {
+        return packageImports;
+    }
 
     public void addCompileable(Wireable wireable,
                               MVELCompileable compilable) {
@@ -208,4 +298,10 @@ public class MVELDialectRuntimeData
     public Map<Wireable, MVELCompileable> getLookup() {
         return this.invokerLookups;
     }
+
+    public CompositeClassLoader getRootClassLoader() {
+        return rootClassLoader;
+    }
+    
+    
 }
