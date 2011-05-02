@@ -3820,6 +3820,35 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
+    public void testUnificationBinding() throws Exception {
+        final String text = "rule X when $p := Person( $name := name, $loc : location ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+        
+        assertEquals( "$p",
+                      pattern.getIdentifier() );
+        assertTrue( pattern.isUnification() );
+
+        assertEquals( 2, 
+                      pattern.getBindings().size() );
+        BindingDescr bindingDescr = pattern.getBindings().get( 0 );
+        assertEquals( "$name",
+                      bindingDescr.getVariable() );
+        assertEquals( "name",
+                      bindingDescr.getExpression() );
+        assertTrue( bindingDescr.isUnification() );
+
+        bindingDescr = pattern.getBindings().get( 1 );
+        assertEquals( "$loc",
+                      bindingDescr.getVariable() );
+        assertEquals( "location",
+                      bindingDescr.getExpression() );
+        assertFalse( bindingDescr.isUnification() );
+
+        
+    }
+
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {
         return execParser( parserRuleName,
