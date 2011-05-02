@@ -649,6 +649,11 @@ After in *BenchmarkConfig.xml:
         </localSearchSolver>
     </inheritedSolverBenchmark>
 
-
 From 5.2.0 to 5.3.0.M1
 ----------------------
+
+[MINOR] If you implemented a custom Acceptor, the buildAcceptor method's signature has changed.
+Before in *AcceptorConfig.java:
+    public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
+After in *AcceptorConfig.java:
+    public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {

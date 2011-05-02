@@ -39,6 +39,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected int partialTabuSize = 0;
     protected boolean aspirationEnabled = true;
 
+    protected boolean assertTabuHashCodeCorrectness = false;
+
     protected Map<Object, Integer> tabuToStepIndexMap;
     protected List<Object> tabuSequenceList;
 
@@ -56,6 +58,10 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     public void setAspirationEnabled(boolean aspirationEnabled) {
         this.aspirationEnabled = aspirationEnabled;
+    }
+
+    public void setAssertTabuHashCodeCorrectness(boolean assertTabuHashCodeCorrectness) {
+        this.assertTabuHashCodeCorrectness = assertTabuHashCodeCorrectness;
     }
 
     // ************************************************************************
@@ -80,12 +86,26 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
-        Collection<? extends Object> tabus = findTabu(moveScope);
+        Collection<? extends Object> checkingTabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
-        for (Object tabu : tabus) {
-            Integer tabuStepIndexInteger = tabuToStepIndexMap.get(tabu);
+        for (Object checkingTabu : checkingTabus) {
+            Integer tabuStepIndexInteger = tabuToStepIndexMap.get(checkingTabu);
             if (tabuStepIndexInteger != null) {
                 maximumTabuStepIndex = Math.max(tabuStepIndexInteger, maximumTabuStepIndex);
+            }
+            if (assertTabuHashCodeCorrectness) {
+                for (Object tabu : tabuSequenceList) {
+                    if (tabu.equals(checkingTabu)) {
+                        if (tabu.hashCode() != checkingTabu.hashCode()) {
+                            throw new IllegalStateException("HashCode violation: tabu (" + tabu + ") and checkingTabu ("
+                                    + checkingTabu + ") are equal but have a different hashCode.");
+                        }
+                        if (tabuStepIndexInteger == null) {
+                            throw new IllegalStateException("HashCode violation: the hashCode of tabu (" + tabu
+                                    + ") probably changed since it was inserted in the tabu Map or Set.");
+                        }
+                    }
+                }
             }
         }
         if (maximumTabuStepIndex < 0) {
@@ -127,7 +147,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 tabuSequenceList.remove(tabu);
             }
             int maximumTabuListSize = completeTabuSize + partialTabuSize; // is at least 1
-            while (tabuSequenceList.size() >= maximumTabuListSize) {
+            while (tabuSequenceList.size() >= maximumTabuListSize) { // TODO FIXME JBRULES-3007
                 Iterator<Object> it = tabuSequenceList.iterator();
                 Object removeTabu = it.next();
                 it.remove();

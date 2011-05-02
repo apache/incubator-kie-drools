@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang.ObjectUtils;
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.CompositeAcceptor;
 import org.drools.planner.core.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
@@ -172,7 +173,7 @@ public class AcceptorConfig {
     // Builder methods
     // ************************************************************************
 
-    public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
+    public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         List<Acceptor> acceptorList = new ArrayList<Acceptor>();
         if (acceptor != null) {
             acceptorList.add(acceptor);
@@ -199,6 +200,9 @@ public class AcceptorConfig {
             if (partialMoveTabuSize != null) {
                 moveTabuAcceptor.setPartialTabuSize(partialMoveTabuSize);
             }
+            if (environmentMode == EnvironmentMode.TRACE) {
+                moveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+            }
             acceptorList.add(moveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.UNDO_MOVE_TABU))
@@ -211,6 +215,9 @@ public class AcceptorConfig {
             if (partialUndoMoveTabuSize != null) {
                 undoMoveTabuAcceptor.setPartialTabuSize(partialUndoMoveTabuSize);
             }
+            if (environmentMode == EnvironmentMode.TRACE) {
+                undoMoveTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+            }
             acceptorList.add(undoMoveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PROPERTY_TABU))
@@ -222,6 +229,9 @@ public class AcceptorConfig {
             if (partialPropertyTabuSize != null) {
                 propertyTabuAcceptor.setPartialTabuSize(partialPropertyTabuSize);
             }
+            if (environmentMode == EnvironmentMode.TRACE) {
+                propertyTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+            }
             acceptorList.add(propertyTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
@@ -232,6 +242,9 @@ public class AcceptorConfig {
             }
             if (partialSolutionTabuSize != null) {
                 solutionTabuAcceptor.setPartialTabuSize(partialSolutionTabuSize);
+            }
+            if (environmentMode == EnvironmentMode.TRACE) {
+                solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
             acceptorList.add(solutionTabuAcceptor);
         }
@@ -262,6 +275,9 @@ public class AcceptorConfig {
         } else {
             SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
             solutionTabuAcceptor.setCompleteTabuSize(1500); // TODO number pulled out of thin air
+            if (environmentMode == EnvironmentMode.TRACE) {
+                solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
+            }
             return solutionTabuAcceptor;
         }
     }

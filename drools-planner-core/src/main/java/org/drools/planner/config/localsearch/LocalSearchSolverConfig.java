@@ -111,7 +111,7 @@ public class LocalSearchSolverConfig extends AbstractSolverConfig {
         DefaultDecider decider = new DefaultDecider();
         decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector(scoreDefinition));
-        decider.setAcceptor(acceptorConfig.buildAcceptor(scoreDefinition));
+        decider.setAcceptor(acceptorConfig.buildAcceptor(environmentMode, scoreDefinition));
         decider.setForager(foragerConfig.buildForager(scoreDefinition));
         if (environmentMode == EnvironmentMode.TRACE) {
             decider.setAssertMoveScoreIsUncorrupted(true);
