@@ -16,9 +16,11 @@
 
 package org.drools.time.impl;
 
+import java.io.Serializable;
+
 import org.drools.runtime.Calendars;
 import org.drools.time.Trigger;
 
-public interface Timer {
+public interface Timer extends Serializable {
     Trigger createTrigger(long timestamp, String[] calendarNames, Calendars calendars);
 }
