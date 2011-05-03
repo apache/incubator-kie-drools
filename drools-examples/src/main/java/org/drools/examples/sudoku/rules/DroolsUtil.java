@@ -30,7 +30,7 @@ public class DroolsUtil {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         // This parses and compiles a DRL file.
-        kBuilder.add(ResourceFactory.newClassPathResource(drlFileName, org.drools.examples.sudoku.Main.class ),
+        kBuilder.add(ResourceFactory.newClassPathResource(drlFileName, org.drools.examples.sudoku.SudokuExample.class ),
                      ResourceType.DRL);
         if (kBuilder.hasErrors()){
             for (KnowledgeBuilderError err: kBuilder.getErrors()) {
