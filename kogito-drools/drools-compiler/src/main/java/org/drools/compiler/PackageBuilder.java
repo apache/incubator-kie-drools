@@ -709,6 +709,8 @@ public class PackageBuilder {
             }
         }        
     }
+    
+    //  test
 
     /**
      * This checks to see if it should all be in the one namespace.
