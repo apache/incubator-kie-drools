@@ -1,0 +1,16 @@
+package org.drools;
+
+declare StockTick 
+    @role( event )
+    @timestamp( time )
+end
+
+rule "2 operators"
+when
+    $a : StockTick( company == "A" )
+    not( StockTick( company == "B", this after[0,20s] $a ) )
+    not( StockTick( company == "C", this after[0,20s] $a ) )
+then
+    // do something
+end
+
