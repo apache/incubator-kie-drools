@@ -33,7 +33,7 @@ public class Cell extends SetOfNine {
      * Constructor, leaving all references at null. You must call
      * makeReferences to complete the object. 
      */
-    public Cell(){
+    public Cell() {
         super();
     }
     
@@ -43,15 +43,15 @@ public class Cell extends SetOfNine {
      * @param col the cell group for the column
      * @param sqr the cell group for the square 3x3 area
      */
-    public void makeReferences( CellRow row, CellCol col, CellSqr sqr ){
+    public void makeReferences(CellRow row, CellCol col, CellSqr sqr) {
         this.cellRow = row;
         this.cellCol = col;
         this.cellSqr = sqr;
         this.exCells = new HashSet<Cell>();
-        this.exCells.addAll( this.cellRow.getCells() );
-        this.exCells.addAll( this.cellCol.getCells() );
-        this.exCells.addAll( this.cellSqr.getCells() );
-        this.exCells.remove( this );
+        this.exCells.addAll(this.cellRow.getCells());
+        this.exCells.addAll(this.cellCol.getCells());
+        this.exCells.addAll(this.cellSqr.getCells());
+        this.exCells.remove(this);
     }
 
     /**
@@ -77,7 +77,7 @@ public class Cell extends SetOfNine {
      * 
      * @return a Set of Cell objects not including this cell.
      */
-    public Set<Cell> getExCells(){
+    public Set<Cell> getExCells() {
         return exCells;
     }
     
@@ -126,14 +126,16 @@ public class Cell extends SetOfNine {
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString(){
-        String rowNo = cellRow == null ? "?" : Integer.toString( cellRow.getNumber() );
-        String colNo = cellCol == null ? "?" : Integer.toString( cellCol.getNumber() );
-        return "[" + rowNo + "," + colNo + "]: " + (value == null ? " " : value.toString());
+    public String toString() {
+        return posAsString() + ": " + valueAsString();
     }
 
-    public String valueAsString(){
+    public String valueAsString() {
         return value == null ? " " : value.toString();
+    }
+
+    public String posAsString(){
+        return "[" + cellRow.getNumber() + "," + cellCol.getNumber() + "]";
     }
 
 }

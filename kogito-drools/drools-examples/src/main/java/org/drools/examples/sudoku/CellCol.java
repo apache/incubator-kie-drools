@@ -25,7 +25,7 @@ public class CellCol extends CellFile {
      * 
      * @param number the column number.
      */
-    public CellCol(int number){
+    public CellCol(int number) {
         super( number );
     }
     
