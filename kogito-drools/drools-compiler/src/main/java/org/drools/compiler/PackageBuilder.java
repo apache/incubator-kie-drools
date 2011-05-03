@@ -707,11 +707,7 @@ public class PackageBuilder {
                 this.ruleBase.addRule( pkgRegistry.getPackage(),
                                        pkgRegistry.getPackage().getRule( ruleDescr.getName() ) );
             }
-        }
-        
-        if ( hasErrors() ) {
-            System.out.println( getErrors().toString() );
-        }
+        }        
     }
 
     /**
