@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic;
+package org.drools.planner.benchmark.statistic.bestscore;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.planner.core.event.BestSolutionChangedEvent;
 import org.drools.planner.core.event.SolverEventListener;
 
 public class BestScoreStatisticListener implements SolverEventListener {
 
-    private List<BestScoreStatisticPoint> bestScoreStatisticPointList
-            = new ArrayList<BestScoreStatisticPoint>();
+    private List<BestScoreStatisticPoint> statisticPointList = new ArrayList<BestScoreStatisticPoint>();
 
     public void bestSolutionChanged(BestSolutionChangedEvent event) {
-        bestScoreStatisticPointList.add(new BestScoreStatisticPoint(event));
+        statisticPointList.add(new BestScoreStatisticPoint(event));
     }
 
-    public List<BestScoreStatisticPoint> getBestScoreStatisticPointList() {
-        return bestScoreStatisticPointList;
+    public List<BestScoreStatisticPoint> getStatisticPointList() {
+        return statisticPointList;
     }
 
 }

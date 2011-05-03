@@ -20,7 +20,7 @@ import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
-class MillisecondsSpendNumberFormat extends NumberFormat {
+public class MillisecondsSpendNumberFormat extends NumberFormat {
 
     private final static long DAY_MILLIS = 3600000L * 24L;
     private final static long HOUR_MILLIS = 3600000L;

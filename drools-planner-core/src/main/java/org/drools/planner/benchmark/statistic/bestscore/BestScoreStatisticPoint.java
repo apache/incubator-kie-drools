@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic;
+package org.drools.planner.benchmark.statistic.bestscore;
 
 import org.drools.planner.core.event.BestSolutionChangedEvent;
 import org.drools.planner.core.score.Score;

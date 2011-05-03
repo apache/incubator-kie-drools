@@ -17,6 +17,7 @@
 package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 
 /**
  * A LocalSearchSolver is a Solver which uses a local search algorithm,
@@ -25,5 +26,9 @@ import org.drools.planner.core.Solver;
  * @see DefaultLocalSearchSolver
  */
 public interface LocalSearchSolver extends Solver {
+
+    void addLocalSearchSolverLifecycleListener(LocalSearchSolverLifecycleListener lifecycleListener);
+
+    void removeLocalSearchSolverLifecycleListener(LocalSearchSolverLifecycleListener lifecycleListener);
 
 }

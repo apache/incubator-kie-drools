@@ -48,12 +48,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
+import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.benchmark.statistic.BestScoreStatistic;
+import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -383,7 +383,8 @@ public class SolverBenchmarkSuite {
 
     public static enum SolverStatisticType {
         NONE,
-        BEST_SOLUTION_CHANGED;
+        BEST_SOLUTION_CHANGED,
+        CALCULATE_COUNT_PER_SECOND;
 
         public SolverStatistic create() {
             switch (this) {
@@ -391,6 +392,8 @@ public class SolverBenchmarkSuite {
                     return null;
                 case BEST_SOLUTION_CHANGED:
                     return new BestScoreStatistic();
+                case CALCULATE_COUNT_PER_SECOND:
+                    return new CalculateCountStatistic();
                 default:
                     throw new IllegalStateException("The solverStatisticType (" + this + ") is not implemented");
             }

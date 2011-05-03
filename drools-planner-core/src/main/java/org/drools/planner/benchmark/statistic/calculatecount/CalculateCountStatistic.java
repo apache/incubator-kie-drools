@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,43 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic;
+package org.drools.planner.benchmark.statistic.calculatecount;
 
 import java.awt.image.BufferedImage;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.io.File;
-import java.io.Writer;
-import java.io.OutputStreamWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.imageio.ImageIO;
 
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.score.Score;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
+import org.drools.planner.benchmark.statistic.SolverStatistic;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.localsearch.LocalSearchSolver;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYStepRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class BestScoreStatistic implements SolverStatistic {
+public class CalculateCountStatistic implements SolverStatistic {
 
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
-    private Map<String, BestScoreStatisticListener> bestScoreStatisticListenerMap
-            = new HashMap<String, BestScoreStatisticListener>();
+    private Map<String, CalculateCountStatisticListener> statisticListenerMap
+            = new HashMap<String, CalculateCountStatisticListener>();
     private ScoreDefinition scoreDefinition = null;
 
     public void addListener(Solver solver, String configName) {
@@ -58,9 +59,9 @@ public class BestScoreStatistic implements SolverStatistic {
                     + ") twice.");
         }
         configNameList.add(configName);
-        BestScoreStatisticListener bestScoreStatisticListener = new BestScoreStatisticListener();
-        solver.addEventListener(bestScoreStatisticListener);
-        bestScoreStatisticListenerMap.put(configName, bestScoreStatisticListener);
+        CalculateCountStatisticListener statisticListener = new CalculateCountStatisticListener();
+        ((LocalSearchSolver) solver).addLocalSearchSolverLifecycleListener(statisticListener);
+        statisticListenerMap.put(configName, statisticListener);
         if (scoreDefinition == null) {
             scoreDefinition = solver.getScoreDefinition();
         } else {
@@ -72,8 +73,8 @@ public class BestScoreStatistic implements SolverStatistic {
     }
 
     public void removeListener(Solver solver, String configName) {
-        BestScoreStatisticListener bestScoreStatisticListener = bestScoreStatisticListenerMap.get(configName);
-        solver.removeEventListener(bestScoreStatisticListener);
+        CalculateCountStatisticListener statisticListener = statisticListenerMap.get(configName);
+        ((LocalSearchSolver) solver).removeLocalSearchSolverLifecycleListener(statisticListener);
     }
 
     public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
@@ -83,55 +84,54 @@ public class BestScoreStatistic implements SolverStatistic {
         return htmlFragment;
     }
 
-    private List<TimeToBestScoresLine> extractTimeToBestScoresLineList() {
-        Map<Long, TimeToBestScoresLine> timeToBestScoresLineMap = new HashMap<Long, TimeToBestScoresLine>();
-        for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
+    private List<CalculateCountScvLine> extractCalculateCountScvLineList() {
+        Map<Long, CalculateCountScvLine> timeToBestScoresLineMap = new HashMap<Long, CalculateCountScvLine>();
+        for (Map.Entry<String, CalculateCountStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            List<BestScoreStatisticPoint> statisticPointList = listenerEntry.getValue()
-                    .getBestScoreStatisticPointList();
-            for (BestScoreStatisticPoint statisticPoint : statisticPointList) {
+            List<CalculateCountStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
+            for (CalculateCountStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
-                TimeToBestScoresLine line = timeToBestScoresLineMap.get(timeMillisSpend);
+                CalculateCountScvLine line = timeToBestScoresLineMap.get(timeMillisSpend);
                 if (line == null) {
-                    line = new TimeToBestScoresLine(timeMillisSpend);
+                    line = new CalculateCountScvLine(timeMillisSpend);
                     timeToBestScoresLineMap.put(timeMillisSpend, line);
                 }
-                line.getConfigNameToScoreMap().put(configName, statisticPoint.getScore());
+                line.getConfigNameToCalculateCountPerSecondMap().put(configName, statisticPoint.getCalculateCountPerSecond());
             }
         }
-        List<TimeToBestScoresLine> timeToBestScoresLineList
-                = new ArrayList<TimeToBestScoresLine>(timeToBestScoresLineMap.values());
-        Collections.sort(timeToBestScoresLineList);
-        return timeToBestScoresLineList;
+        List<CalculateCountScvLine> calculateCountScvLineList
+                = new ArrayList<CalculateCountScvLine>(timeToBestScoresLineMap.values());
+        Collections.sort(calculateCountScvLineList);
+        return calculateCountScvLineList;
     }
 
-    protected class TimeToBestScoresLine implements Comparable<TimeToBestScoresLine> {
+    protected class CalculateCountScvLine implements Comparable<CalculateCountScvLine> {
 
         private long timeMillisSpend;
-        private Map<String, Score> configNameToScoreMap;
+        private Map<String, Long> configNameToCalculateCountPerSecondMap;
 
-        public TimeToBestScoresLine(long timeMillisSpend) {
+        public CalculateCountScvLine(long timeMillisSpend) {
             this.timeMillisSpend = timeMillisSpend;
-            configNameToScoreMap = new HashMap<String, Score>();
+            configNameToCalculateCountPerSecondMap = new HashMap<String, Long>();
         }
 
         public long getTimeMillisSpend() {
             return timeMillisSpend;
         }
 
-        public Map<String, Score> getConfigNameToScoreMap() {
-            return configNameToScoreMap;
+        public Map<String, Long> getConfigNameToCalculateCountPerSecondMap() {
+            return configNameToCalculateCountPerSecondMap;
         }
 
-        public int compareTo(TimeToBestScoresLine other) {
+        public int compareTo(CalculateCountScvLine other) {
             return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 
     }
 
     private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
-        List<TimeToBestScoresLine> timeToBestScoresLineList = extractTimeToBestScoresLineList();
-        File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.csv");
+        List<CalculateCountScvLine> calculateCountScvLineList = extractCalculateCountScvLineList();
+        File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "CalculateCountStatistic.csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "utf-8");
@@ -140,16 +140,13 @@ public class BestScoreStatistic implements SolverStatistic {
                 writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append("\"");
             }
             writer.append("\n");
-            for (TimeToBestScoresLine timeToBestScoresLine : timeToBestScoresLineList) {
-                writer.write(Long.toString(timeToBestScoresLine.getTimeMillisSpend()));
+            for (CalculateCountScvLine line : calculateCountScvLineList) {
+                writer.write(Long.toString(line.getTimeMillisSpend()));
                 for (String configName : configNameList) {
                     writer.append(",");
-                    Score score = timeToBestScoresLine.getConfigNameToScoreMap().get(configName);
-                    if (score != null) {
-                        Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                        if (scoreGraphValue != null) {
-                            writer.append(scoreGraphValue.toString());
-                        }
+                    Long calculateCountPerSecond = line.getConfigNameToCalculateCountPerSecondMap().get(configName);
+                    if (calculateCountPerSecond != null) {
+                        writer.append(calculateCountPerSecond.toString());
                     }
                 }
                 writer.append("\n");
@@ -164,32 +161,28 @@ public class BestScoreStatistic implements SolverStatistic {
 
     private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
-        for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
+        for (Map.Entry<String, CalculateCountStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
             XYSeries configSeries = new XYSeries(configName);
-            List<BestScoreStatisticPoint> statisticPointList = listenerEntry.getValue()
-                    .getBestScoreStatisticPointList();
-            for (BestScoreStatisticPoint statisticPoint : statisticPointList) {
+            List<CalculateCountStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
+            for (CalculateCountStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
-                Score score = statisticPoint.getScore();
-                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                if (scoreGraphValue != null) {
-                    configSeries.add(timeMillisSpend, scoreGraphValue);
-                }
+                long calculateCountPerSecond = statisticPoint.getCalculateCountPerSecond();
+                configSeries.add(timeMillisSpend, calculateCountPerSecond);
             }
             seriesCollection.addSeries(configSeries);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
-        NumberAxis yAxis = new NumberAxis("Score");
+        NumberAxis yAxis = new NumberAxis("Calculate count per second");
         yAxis.setAutoRangeIncludesZero(false);
-        XYItemRenderer renderer = new XYStepRenderer();
+        XYItemRenderer renderer = new XYLineAndShapeRenderer();
         XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart(baseName + " best score statistic",
+        JFreeChart chart = new JFreeChart(baseName + " calculate count statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "Statistic.png");
+        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "CalculateCountStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);

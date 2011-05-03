@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch;
+package org.drools.planner.core.localsearch.event;
 
-public interface LocalSearchSolverLifecycleListener {
+import java.util.EventListener;
+
+import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
+
+public interface LocalSearchSolverLifecycleListener extends EventListener {
 
     void solvingStarted(LocalSearchSolverScope localSearchSolverScope);
 

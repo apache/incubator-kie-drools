@@ -19,7 +19,7 @@ package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 import java.util.Comparator;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 
 /**
  * A DeciderScoreComparatorFactory creates a new DeciderScoreComparator each step,

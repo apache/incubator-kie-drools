@@ -16,7 +16,10 @@
 
 package org.drools.planner.core.localsearch;
 
+import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.localsearch.decider.Decider;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleSupport;
 import org.drools.planner.core.localsearch.termination.Termination;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solver.AbstractSolver;
@@ -27,6 +30,9 @@ import org.drools.planner.core.solver.AbstractSolverScope;
  */
 public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSearchSolver,
         LocalSearchSolverLifecycleListener {
+
+    protected LocalSearchSolverLifecycleSupport localSearchSolverLifecycleSupport
+            = new LocalSearchSolverLifecycleSupport();
 
     protected Termination termination;
     protected Decider decider;
@@ -117,25 +123,30 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
         super.solvingStarted(localSearchSolverScope);
         termination.solvingStarted(localSearchSolverScope);
         decider.solvingStarted(localSearchSolverScope);
+        localSearchSolverLifecycleSupport.fireSolvingStarted(localSearchSolverScope);
     }
 
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         termination.beforeDeciding(localSearchStepScope);
         decider.beforeDeciding(localSearchStepScope);
+        localSearchSolverLifecycleSupport.fireBeforeDeciding(localSearchStepScope);
     }
 
     public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         termination.stepDecided(localSearchStepScope);
         decider.stepDecided(localSearchStepScope);
+        localSearchSolverLifecycleSupport.fireStepDecided(localSearchStepScope);
     }
 
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         bestSolutionRecaller.stepTaken(localSearchStepScope);
         termination.stepTaken(localSearchStepScope);
         decider.stepTaken(localSearchStepScope);
+        localSearchSolverLifecycleSupport.fireStepTaken(localSearchStepScope);
     }
 
     public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+        localSearchSolverLifecycleSupport.fireSolvingEnded(localSearchSolverScope);
         decider.solvingEnded(localSearchSolverScope);
         termination.solvingEnded(localSearchSolverScope);
         bestSolutionRecaller.solvingEnded(localSearchSolverScope);
@@ -152,6 +163,14 @@ public class DefaultLocalSearchSolver extends AbstractSolver implements LocalSea
                 localSearchSolverScope.getBestScore(),
                 averageCalculateCountPerSecond
         });
+    }
+
+    public void addLocalSearchSolverLifecycleListener(LocalSearchSolverLifecycleListener lifecycleListener) {
+        localSearchSolverLifecycleSupport.addEventListener(lifecycleListener);
+    }
+
+    public void removeLocalSearchSolverLifecycleListener(LocalSearchSolverLifecycleListener lifecycleListener) {
+        localSearchSolverLifecycleSupport.removeEventListener(lifecycleListener);
     }
 
 }

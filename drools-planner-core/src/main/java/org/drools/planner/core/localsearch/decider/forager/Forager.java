@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.decider.forager;
 
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.move.Move;
