@@ -1007,14 +1007,12 @@ public class PatternBuilder
                                                         final LiteralRestrictionDescr literalRestrictionDescr ) {
         FieldValue field = null;
         try {
-            String value = literalRestrictionDescr.getText().trim();
-
-            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            ParserConfiguration pconf = new ParserConfiguration();
-            pconf.setImports( dialect.getImports() );
-            pconf.setPackageImports( (HashSet) dialect.getPackgeImports() );
+            String value = literalRestrictionDescr.getText().trim();            
+            
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+            ParserConfiguration pconf = data.getParserConfiguration();
             ParserContext pctx = new ParserContext( pconf );
-
+            
             field = FieldFactory.getFieldValue( MVEL.executeExpression( MVEL.compileExpression( value,
                                                                                                 pctx ) ),
                                                 extractor.getValueType(),

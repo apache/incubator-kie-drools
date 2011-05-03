@@ -708,6 +708,10 @@ public class PackageBuilder {
                                        pkgRegistry.getPackage().getRule( ruleDescr.getName() ) );
             }
         }
+        
+        if ( hasErrors() ) {
+            System.out.println( getErrors().toString() );
+        }
     }
 
     /**
