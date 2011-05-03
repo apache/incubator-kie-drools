@@ -105,22 +105,12 @@
   </section>
 
   <section>
-    <title>Best score over time statistic (graph and CSV)</title>
+    <title>Statistics (graph and CSV)</title>
 
-    <para>The benchmarker supports outputting the best score over time statistic as a graph and a CSV (comma separated
-    values) file. Here's an example of a graph:</para>
+    <para>The benchmarker supports outputting statistics as graphs and CSV (comma separated values) files
+    to the <literal>benchmarkDirectory</literal>.</para>
 
-    <figure>
-      <title>Best score over time statistic</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreOverTimeGraph.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>To configure graph and CSV output of the best score over time, just add a
+    <para>To configure graph and CSV output of a statistic, just add a
     <literal>solverStatisticType</literal> line:</para>
 
     <programlisting language="xml">&lt;solverBenchmarkSuite&gt;
@@ -129,6 +119,43 @@
     ...
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
-    <para>It will output all graphs and CSV files in the <literal>benchmarkDirectory</literal>.</para>
+    <para>Multiple <literal>solverStatisticType</literal> entries are allowed. The following types are are supported:
+    </para>
+
+    <section>
+      <title>Best score over time statistic (graph and CSV)</title>
+
+      <para>To see how the best score evolves over time, use <literal>BEST_SOLUTION_CHANGED</literal>
+      as <literal>solverStatisticType</literal>.</para>
+
+      <figure>
+        <title>Best score over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionChangedStatistic.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Calculate count per second statistic (graph and CSV)</title>
+
+      <para>To see how fast the scores are calculated, use <literal>CALCULATE_COUNT_PER_SECOND</literal>
+      as <literal>solverStatisticType</literal>.</para>
+
+      <figure>
+        <title>Best score over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
   </section>
+
 </chapter>
