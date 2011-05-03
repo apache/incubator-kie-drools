@@ -143,11 +143,11 @@ public class MVELConsequenceBuilder
                 context.getRule().getNamedConsequences().put(consequenceName, expr);
             }
             
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( context.getRule(),
                                  expr );
             
-            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+            expr.compile( data );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),

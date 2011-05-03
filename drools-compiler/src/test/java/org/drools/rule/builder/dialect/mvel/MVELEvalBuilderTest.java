@@ -26,6 +26,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
@@ -79,7 +80,7 @@ public class MVELEvalBuilderTest {
         final MVELEvalBuilder builder = new MVELEvalBuilder();
         final EvalCondition eval = (EvalCondition) builder.build( context,
                                                                   evalDescr );
-        ((MVELEvalExpression) eval.getEvalExpression()).compile( Thread.currentThread().getContextClassLoader() );
+        ((MVELEvalExpression) eval.getEvalExpression()).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final WorkingMemory wm = ruleBase.newStatefulSession();

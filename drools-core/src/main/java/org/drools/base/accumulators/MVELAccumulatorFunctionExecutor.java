@@ -31,6 +31,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.spi.Accumulator;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
@@ -74,8 +75,8 @@ public class MVELAccumulatorFunctionExecutor
         out.writeObject( function );
     }
 
-    public void compile(ClassLoader classLoader) {
-        expression = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        expression = unit.getCompiledExpression( runtimeData );
     }
 
     /* (non-Javadoc)

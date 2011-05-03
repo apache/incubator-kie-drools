@@ -67,8 +67,8 @@ public class MVELSalienceExpression
         out.writeUTF( id );
     }
 
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        expr = unit.getCompiledExpression( runtimeData );
     }
 
     public int getValue(final Tuple tuple,

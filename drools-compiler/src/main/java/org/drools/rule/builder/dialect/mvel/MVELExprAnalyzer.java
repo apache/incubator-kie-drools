@@ -30,6 +30,7 @@ import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.PackageBuildContext;
 import org.mvel2.MVEL;
@@ -73,11 +74,9 @@ public class MVELExprAnalyzer {
         if ( expr.trim().length() > 0 ) {
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-
-            // creating a reusable parser configuration
-            ParserConfiguration conf = new ParserConfiguration();
-            conf.setImports( dialect.getImports() );
-            conf.setPackageImports( (HashSet) dialect.getPackgeImports() );
+            
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+            ParserConfiguration conf = data.getParserConfiguration();
 
             conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
 

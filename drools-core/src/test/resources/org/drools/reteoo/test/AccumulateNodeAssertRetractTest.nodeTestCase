@@ -24,7 +24,7 @@ Setup
 /**
  * check single left assertion and retraction
  */
-Test "Simple assertion and retraction"	
+Test "Simple assertion and retraction"  
     assert:
         acc, [[h0]];
     acc:
