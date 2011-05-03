@@ -32,6 +32,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.ReturnValueRestriction;
@@ -119,7 +120,7 @@ public class MVELReturnValueBuilderTest {
                        returnValueDescr,
                        analysis );
         
-        ((MVELReturnValueExpression)returnValue.getExpression()).compile( Thread.currentThread().getContextClassLoader() );
+        ((MVELReturnValueExpression)returnValue.getExpression()).compile((MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
 
         ContextEntry retValContext = returnValue.createContextEntry();
 

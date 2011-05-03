@@ -136,11 +136,10 @@ public class MVELDialect
 
     private PackageRegistry                                packageRegistry;
 
-    private Map<String, Object>                             imports;
-    private Set<String>                                    packageImports;
-
     private boolean                                        strictMode;
     private int                                            languageLevel;
+    
+    private MVELDialectRuntimeData                         data;
 
     public MVELDialect(PackageBuilder builder,
                        PackageRegistry pkgRegistry,
@@ -163,9 +162,6 @@ public class MVELDialect
         setLanguageLevel( this.configuration.getLangLevel() );
         this.strictMode = this.configuration.isStrict();
 
-        this.imports = new HashMap();
-        this.packageImports = new HashSet();
-
         // setting MVEL option directly
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
 
@@ -181,7 +177,6 @@ public class MVELDialect
         // this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
         // this.data );
 
-        MVELDialectRuntimeData data = null;
         // initialise the dialect runtime data if it doesn't already exist
         if ( pkg.getDialectRuntimeRegistry().getDialectData( getId() ) == null ) {
             data = new MVELDialectRuntimeData();
@@ -189,6 +184,8 @@ public class MVELDialect
                                                                  data );
             data.onAdd( this.pkg.getDialectRuntimeRegistry(),
                         this.pkgBuilder.getRootClassLoader() );
+        } else {
+            data = ( MVELDialectRuntimeData ) this.pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
         }
 
         this.results = new ArrayList();
@@ -207,9 +204,8 @@ public class MVELDialect
         pkg = (Package) in.readObject();
         packageRegistry = (PackageRegistry) in.readObject();
         configuration = (MVELDialectConfiguration) in.readObject();
-        imports = (Map) in.readObject();
-        packageImports = (Set) in.readObject();
         strictMode = in.readBoolean();
+        data = ( MVELDialectRuntimeData ) this.pkg.getDialectRuntimeRegistry().getDialectData("mvel" );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -219,9 +215,8 @@ public class MVELDialect
         out.writeObject( pkg );
         out.writeObject( packageRegistry );
         out.writeObject( configuration );
-        out.writeObject( imports );
-        out.writeObject( packageImports );
         out.writeBoolean( strictMode );
+        out.writeObject( data );
     }
 
     public void setLanguageLevel(int languageLevel) {
@@ -372,25 +367,17 @@ public class MVELDialect
         if ( importEntry.endsWith( ".*" ) ) {
             importEntry = importEntry.substring( 0,
                                                  importEntry.length() - 2 );
-            this.packageImports.add( importEntry );
+            data.addPackageImport( importEntry );
         } else {
             try {
                 Class cls = this.packageRegistry.getTypeResolver().resolveType( importEntry );
-                this.imports.put( cls.getSimpleName(),
-                                  cls );
+                data.addImport( cls.getSimpleName(),
+                                       cls );
             } catch ( ClassNotFoundException e ) {
                 this.results.add( new ImportError( importEntry,
                                                    1 ) );
             }
         }
-    }
-
-    public Map<String, Object> getImports() {
-        return this.imports;
-    }
-
-    public Set<String> getPackgeImports() {
-        return this.packageImports;
     }
 
     public void addStaticImport(String staticImportEntry) {
@@ -410,8 +397,8 @@ public class MVELDialect
                 // First try and find a matching method
                 for ( Method method : cls.getDeclaredMethods() ) {
                     if ( method.getName().equals( methodName ) ) {
-                        this.imports.put( methodName,
-                                          method );
+                        this.data.addImport( methodName,
+                                             method );
                         return;
                     }
                 }
@@ -419,8 +406,8 @@ public class MVELDialect
                 //no matching method, so now try and find a matching public property
                 for ( Field field : cls.getFields() ) {
                     if ( field.isAccessible() && field.getName().equals( methodName ) ) {
-                        this.imports.put( methodName,
-                                          field );
+                        this.data.addImport( methodName,
+                                             field  );
                         return;
                     }
                 }
@@ -521,25 +508,6 @@ public class MVELDialect
                                                       final PackageBuildContext context,
                                                       String contextIndeifier,
                                                       Class kcontextClass) {
-        String[] pkgImports  = this.packageImports.toArray( new String[this.packageImports.size()] );
-
-        //String[] imports = new String[this.imports.size()];
-        List<String> importClasses = new ArrayList<String>();
-        List<String> importMethods = new ArrayList<String>();
-        List<String> importFields = new ArrayList<String>();
-        for ( Iterator it = this.imports.values().iterator(); it.hasNext(); ) {
-            Object object = it.next();
-            if ( object instanceof Class ) {
-                importClasses.add( ((Class) object).getName() );
-            } else if ( object instanceof Method ) {
-                Method method = (Method) object;
-                importMethods.add( method.getDeclaringClass().getName() + "." + method.getName() );
-            } else {
-                Field field = (Field) object;
-                importFields.add( field.getDeclaringClass().getName() + "." + field.getName() );
-            }
-        }
-
         Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
         List<String> ids = new ArrayList<String>();
         
@@ -640,10 +608,6 @@ public class MVELDialect
         }
         MVELCompilationUnit compilationUnit = new MVELCompilationUnit( name,
                                                                        expression,
-                                                                       pkgImports,
-                                                                       importClasses.toArray( new String[importClasses.size()] ),
-                                                                       importMethods.toArray( new String[importMethods.size()] ),
-                                                                       importFields.toArray( new String[importFields.size()] ),
                                                                        globalIdentifiers,
                                                                        operators,
                                                                        previousDeclarations,

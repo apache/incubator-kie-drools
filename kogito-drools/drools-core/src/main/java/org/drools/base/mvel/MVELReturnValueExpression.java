@@ -28,6 +28,8 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.PredicateConstraint.PredicateContextEntry;
+import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.spi.FieldValue;
 import org.drools.spi.ReturnValueExpression;
 import org.drools.spi.Tuple;
@@ -66,9 +68,13 @@ public class MVELReturnValueExpression
         out.writeObject( unit );
     }
 
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        expr = unit.getCompiledExpression( runtimeData );
     }
+    
+    public Object createContext() {
+        return this.unit.createFactory();
+    }    
 
     public FieldValue evaluate(final Object object,
                                final Tuple tuple,
@@ -76,7 +82,17 @@ public class MVELReturnValueExpression
                                final Declaration[] requiredDeclarations,
                                final WorkingMemory workingMemory,
                                final Object ctx) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, object, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+        VariableResolverFactory factory = ( VariableResolverFactory )ctx;
+        
+        unit.updateFactory( null,
+                            null,
+                            object,
+                            (LeftTuple) tuple,
+                            null,
+                            (InternalWorkingMemory) workingMemory,
+                            workingMemory.getGlobalResolver(),
+                            factory );
+
         
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
@@ -128,11 +144,6 @@ public class MVELReturnValueExpression
                                    Declaration resolved) {
         this.unit.replaceDeclaration( declaration,
                                       resolved );
-    }
-
-    public Object createContext() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

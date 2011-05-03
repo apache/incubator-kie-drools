@@ -244,12 +244,13 @@ public class ReturnValueRestriction
                              final InternalWorkingMemory workingMemory,
                              final ContextEntry context) {
         try {
+            ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;            
             FieldValue value = this.expression.evaluate( handle.getObject(),
                                                          null,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
                                                          workingMemory,
-                                                         null );
+                                                         ctx.dialectContext );
             return this.evaluator.evaluate( workingMemory,
                                             this.readAccessor,
                                             handle.getObject(),

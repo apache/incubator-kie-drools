@@ -45,6 +45,7 @@ import org.mvel2.ParserContext;
 import org.mvel2.util.PropertyTools;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * A builder for patterns
@@ -53,6 +54,8 @@ public class PatternBuilder
     implements
     RuleConditionBuilder {
 
+    private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(", java.util.regex.Pattern.MULTILINE );
+    
     public PatternBuilder() {
     }
 
@@ -390,21 +393,19 @@ public class PatternBuilder
                 }
             }
 
-            if ( expr.startsWith( "eval" ) ) {
-                // strip evals, as mvel won't understand those.
-                int startParen = expr.indexOf( '(' ) + 1;
-                int endParen = expr.lastIndexOf( ')' );
-                expr = expr.substring( startParen,
-                                       endParen );
-
-                // this will build the eval using the specified dialect
-                PredicateDescr pdescr = new PredicateDescr( expr );
-                buildEval( context,
-                           pattern,
-                           pdescr,
-                           null,
-                           aliases );
-                continue;
+            if ( d instanceof AtomicExprDescr ) {
+                Matcher m = evalRegexp.matcher( ((AtomicExprDescr)d).getExpression() );                
+                if (m.find()) {  
+                    // MVELDumper already stripped the eval
+                    // this will build the eval using the specified dialect
+                    PredicateDescr pdescr = new PredicateDescr( expr );
+                    buildEval( context,
+                               pattern,
+                               pdescr,
+                               null,
+                               aliases );
+                    continue;
+                }
             }
 
             if ( !simple || !context.isTypesafe() ) {
@@ -664,10 +665,9 @@ public class PatternBuilder
                             Class thisClass,
                             String expr ) {
         MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-
-        ParserConfiguration conf = new ParserConfiguration();
-        conf.setImports( dialect.getImports() );
-        conf.setPackageImports( (HashSet) dialect.getPackgeImports() );
+        
+        MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+        ParserConfiguration conf = data.getParserConfiguration();
 
         conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
 
@@ -924,7 +924,9 @@ public class PatternBuilder
             Declaration declaration = createDeclarationObject( context,
                                                                identifier,
                                                                pattern );
-
+            // the name may not be a local field, such as enums
+            // maybe should have a safer way to detect this, as other issues may cause null too 
+            // that we would need to know about
             if ( declaration != null ) {
                 factDeclarations.add( declaration );
             }
@@ -1005,14 +1007,12 @@ public class PatternBuilder
                                                         final LiteralRestrictionDescr literalRestrictionDescr ) {
         FieldValue field = null;
         try {
-            String value = literalRestrictionDescr.getText().trim();
-
-            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            ParserConfiguration pconf = new ParserConfiguration();
-            pconf.setImports( dialect.getImports() );
-            pconf.setPackageImports( (HashSet) dialect.getPackgeImports() );
+            String value = literalRestrictionDescr.getText().trim();            
+            
+            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+            ParserConfiguration pconf = data.getParserConfiguration();
             ParserContext pctx = new ParserContext( pconf );
-
+            
             field = FieldFactory.getFieldValue( MVEL.executeExpression( MVEL.compileExpression( value,
                                                                                                 pctx ) ),
                                                 extractor.getValueType(),

@@ -68,8 +68,8 @@ public class MVELEnabledExpression
         out.writeUTF( id );
     }
 
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        expr = unit.getCompiledExpression( runtimeData );
     }
 
     public boolean getValue(final Tuple tuple,

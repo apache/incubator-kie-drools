@@ -28,6 +28,7 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.ReturnValueRestriction.ReturnValueContextEntry;
 import org.drools.WorkingMemory;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.Tuple;
@@ -67,19 +68,28 @@ public class MVELEvalExpression
         out.writeObject( unit );
     }
 
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData runtimeData) {
+        expr = unit.getCompiledExpression( runtimeData );
     }
 
     public Object createContext() {
-        return null;
-    }
+        return this.unit.createFactory();
+    }    
 
     public boolean evaluate(final Tuple tuple,
                             final Declaration[] requiredDeclarations,
                             final WorkingMemory workingMemory,
                             final Object context) throws Exception {
-        VariableResolverFactory factory = unit.getFactory( null, null, null, (LeftTuple) tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
+        VariableResolverFactory factory = ( VariableResolverFactory ) context;
+        
+        unit.updateFactory( null,
+                            null,
+                            null,
+                            (LeftTuple) tuple,
+                            null,
+                            (InternalWorkingMemory) workingMemory,
+                            workingMemory.getGlobalResolver(),
+                            factory );
 
         // do we have any functions for this namespace?
         Package pkg = workingMemory.getRuleBase().getPackage( "MAIN" );
