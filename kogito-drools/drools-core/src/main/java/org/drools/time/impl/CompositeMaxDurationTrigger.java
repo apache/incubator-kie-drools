@@ -39,7 +39,7 @@ public class CompositeMaxDurationTrigger
         if ( this.timestamp != null ) {
             return this.timestamp;
         } else {
-            return this.trigger.hasNextFireTime();
+            return this.trigger != null ? this.trigger.hasNextFireTime() : null;
         }
     }
 
@@ -49,7 +49,7 @@ public class CompositeMaxDurationTrigger
             this.timestamp = null;
             return next;
         } else {
-            return trigger.nextFireTime();
+            return this.trigger != null ? trigger.nextFireTime() : null;
         }
     }
 

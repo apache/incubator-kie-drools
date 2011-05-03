@@ -32,6 +32,8 @@ public class CompositeMaxDurationTimer
     implements
     Timer {
 
+    private static final long   serialVersionUID = -2531364489959820962L;
+
     private List<DurationTimer> durations;
 
     private Timer               timer;
@@ -40,24 +42,24 @@ public class CompositeMaxDurationTimer
 
     }
 
-    public void addDurationTimer(final DurationTimer durationTimer) {
+    public void addDurationTimer( final DurationTimer durationTimer ) {
         if ( this.durations == null ) {
             this.durations = new LinkedList<DurationTimer>();
         }
         this.durations.add( durationTimer );
     }
 
-    public void setTimer(Timer timer) {
+    public void setTimer( Timer timer ) {
         this.timer = timer;
     }
 
-    public Trigger createTrigger(long timestamp,
-                                 String[] calendarNames,
-                                 Calendars calendars) {
+    public Trigger createTrigger( long timestamp,
+                                  String[] calendarNames,
+                                  Calendars calendars ) {
         return new CompositeMaxDurationTrigger( new Date( getMaxDuration() + timestamp ),
-                                                timer.createTrigger( timestamp,
-                                                                     calendarNames,
-                                                                     calendars ),
+                                                timer != null ? timer.createTrigger( timestamp,
+                                                                                     calendarNames,
+                                                                                     calendars ) : null,
                                                 calendarNames,
                                                 calendars );
     }
