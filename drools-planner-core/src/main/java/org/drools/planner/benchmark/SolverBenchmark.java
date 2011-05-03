@@ -94,11 +94,14 @@ public class SolverBenchmark {
         if (unsolvedSolutionFileList == null) {
             unsolvedSolutionFileList = inheritedSolverBenchmark.getUnsolvedSolutionFileList();
         } else if (inheritedSolverBenchmark.getUnsolvedSolutionFileList() != null) {
-            for (File inheritedUnsolvedSolutionFile : inheritedSolverBenchmark.getUnsolvedSolutionFileList()) {
-                if (!unsolvedSolutionFileList.contains(inheritedUnsolvedSolutionFile)) {
-                    unsolvedSolutionFileList.add(inheritedUnsolvedSolutionFile);
+            // The inherited unsolvedSolutionFiles should be before the non-inherited unsolvedSolutionFiles.
+            List<File> mergedList = new ArrayList<File>(inheritedSolverBenchmark.getUnsolvedSolutionFileList());
+            for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
+                if (!mergedList.contains(unsolvedSolutionFile)) {
+                    mergedList.add(unsolvedSolutionFile);
                 }
             }
+            unsolvedSolutionFileList = mergedList;
         }
     }
 
