@@ -29,6 +29,11 @@ public interface SolverStatistic {
 
     void removeListener(Solver solver, String configName);
 
+    /**
+     * @param solverStatisticFilesDirectory never null
+     * @param baseName never null
+     * @return a htmFragment, never null
+     */
     CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName);
 
 }
