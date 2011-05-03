@@ -67,7 +67,7 @@ public class MVELDialectRuntimeData
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        for ( Entry<String, Object> entry : getImports().entrySet() ) {
+        for ( Entry<String, Object> entry : this.imports.entrySet() ) {
             // Field and Method are not serializable, so tokenise them
             if ( entry.getValue() instanceof Method ) {
                 entry.setValue( "m:" + ((Method)entry.getValue()).getDeclaringClass().getName() );
@@ -96,8 +96,8 @@ public class MVELDialectRuntimeData
     public void merge(DialectRuntimeRegistry registry,
                       DialectRuntimeData newData) {
         MVELDialectRuntimeData other = (MVELDialectRuntimeData) newData;
-        this.imports.putAll( other.getImports() );
-        this.packageImports.addAll( other.getPackageImports() );
+        this.imports.putAll( other.imports );
+        this.packageImports.addAll( other.packageImports );
         for ( Entry<Wireable, MVELCompileable> entry : other.invokerLookups.entrySet() ) {
             invokerLookups.put( entry.getKey(),
                                 entry.getValue() );
@@ -228,7 +228,6 @@ public class MVELDialectRuntimeData
     
     public ParserConfiguration getParserConfiguration() {
         if ( parserConfiguration == null ) {
-            String[] pkgImports  = getPackageImports().toArray( new String[getPackageImports().size()] );
             ClassLoader classLoader = rootClassLoader;
             
             {
@@ -236,7 +235,7 @@ public class MVELDialectRuntimeData
                 Object value = null;
                 try {
                     // First replace fields and method tokens with actual instances
-                    for ( Entry<String, Object> entry : getImports().entrySet() ) {
+                    for ( Entry<String, Object> entry : this.imports.entrySet() ) {
                         key = entry.getKey();
                         value = entry.getValue();
                         if ( entry.getValue() instanceof String ) {
@@ -246,20 +245,19 @@ public class MVELDialectRuntimeData
                                 String methodName =  key;
                                 for ( Method method : cls.getDeclaredMethods() ) {
                                     if ( method.getName().equals( methodName ) ) {
-                                        getImports().put( methodName,
-                                                          method );
+                                        entry.setValue( method );
                                         continue;
                                     }
                                 }                        
                             } else {
-                                String fieldName = key;                    
-                                for ( Field field : cls.getFields() ) {
-                                    if ( field.isAccessible() && field.getName().equals( fieldName ) ) {
-                                        getImports().put( fieldName,
-                                                          "f:" + cls.getName()  );
-                                        continue;
-                                    }
-                                }                        
+                                // @TODO MVEL doesn't yet support importing of fields
+//                                String fieldName = key;                    
+//                                for ( Field field : cls.getFields() ) {
+//                                    if ( field.isAccessible() && field.getName().equals( fieldName ) ) {
+//                                        entry.setValue( field );
+//                                        continue;
+//                                    }
+//                                }                        
                             }
                         }
                     }
@@ -270,20 +268,48 @@ public class MVELDialectRuntimeData
             }
     
             this.parserConfiguration = new ParserConfiguration();
-            this.parserConfiguration.setImports( getImports() );
-            this.parserConfiguration.setPackageImports( getPackageImports() );
+            this.parserConfiguration.setImports( this.imports );
+            this.parserConfiguration.setPackageImports( this.packageImports );
             this.parserConfiguration.setClassLoader( classLoader );  
         }
         return this.parserConfiguration;
     }
 
-    public Map<String, Object> getImports() {
-        return imports;
+    public void addImport(String str, Class cls) {
+        this.imports.put( str, cls );
+        if ( this.parserConfiguration != null ) {
+            this.parserConfiguration.addImport( str,  cls );
+        }
     }
-
-    public HashSet<String> getPackageImports() {
-        return packageImports;
+    
+    public void addImport(String str, Method method) {
+        this.imports.put( str, method );
+        if ( this.parserConfiguration != null ) {
+            this.parserConfiguration.addImport( str,  method );
+        }        
     }
+    
+    public void addImport(String str, Field field) {
+//        this.imports.put( str, field );
+//        if ( this.parserConfiguration != null ) {
+//            this.parserConfiguration.addImport( str,  field );
+//        }
+    }
+    
+    public void addPackageImport(String str) {
+        this.packageImports.add( str );
+        if ( this.parserConfiguration != null ) {
+            this.parserConfiguration.addPackageImport( str );
+        }
+    }
+    
+//    public Map<String, Object> getImports() {
+//        return imports;
+//    }
+//
+//    public HashSet<String> getPackageImports() {
+//        return packageImports;
+//    }
 
     public void addCompileable(Wireable wireable,
                               MVELCompileable compilable) {

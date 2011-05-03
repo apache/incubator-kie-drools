@@ -144,12 +144,12 @@ public class AccumulateNodeStep
             try {
                 for ( String imp : testCase.getImports() ) {
                     if ( imp.endsWith( ".*" ) ) {
-                        data.getPackageImports().add( imp.substring( 0,
-                                                       imp.lastIndexOf( '.' ) ) );
+                        data.addPackageImport( imp.substring( 0,
+                                                imp.lastIndexOf( '.' ) ) );
                     } else {
                         //classImports.add( imp );
                         Class cls = data.getRootClassLoader().loadClass( imp ) ;
-                        data.getImports().put(  cls.getSimpleName(),  cls);
+                        data.addImport( cls.getSimpleName(),  cls);
                     }
                 }  
             } catch (Exception e) {
