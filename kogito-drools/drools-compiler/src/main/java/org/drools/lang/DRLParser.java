@@ -36,6 +36,7 @@ import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -51,10 +52,10 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 
 public class DRLParser {
 
-    private TokenStream input;
+    private TokenStream           input;
     private RecognizerSharedState state;
-    private ParserHelper helper;
-    private DRLExpressions exprParser;
+    private ParserHelper          helper;
+    private DRLExpressions        exprParser;
 
     public DRLParser(TokenStream input) {
         this.input = input;
@@ -67,7 +68,7 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * GENERAL INTERFACING METHODS
+     *                         GENERAL INTERFACING METHODS
      * ------------------------------------------------------------------------------------------------ */
     public ParserHelper getHelper() {
         return helper;
@@ -110,16 +111,16 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * GRAMMAR RULES
+     *                         GRAMMAR RULES
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * Entry point method of a DRL compilation unit
-     *
+     * 
      * compilationUnit := package_statement? statement*
-     *
+     *   
      * @return a PackageDescr with the content of the whole compilation unit
-     *
+     * 
      * @throws RecognitionException
      */
     public final PackageDescr compilationUnit() throws RecognitionException {
@@ -174,9 +175,9 @@ public class DRLParser {
     /**
      * Parses a package statement and returns the name of the package
      * or null if none is defined.
-     *
-     * packageStatement := PACKAGE qualifiedIdentifier SEMICOLON?
-     *
+     * 
+     * packageStatement := PACKAGE qualifiedIdentifier SEMICOLON?  
+     * 
      * @return the name of the package or null if none is defined
      */
     public String packageStatement() throws RecognitionException {
@@ -221,14 +222,14 @@ public class DRLParser {
 
     /**
      * statement := importStatement
-     * | globalStatement
-     * | declare
-     * | rule
-     * | ruleAttribute
-     * | function
-     * | query
-     * ;
-     *
+     *           |  globalStatement
+     *           |  declare
+     *           |  rule
+     *           |  ruleAttribute
+     *           |  function
+     *           |  query
+     *           ;
+     *           
      * @throws RecognitionException
      */
     public BaseDescr statement() throws RecognitionException {
@@ -265,12 +266,12 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * IMPORT STATEMENT
+     *                         IMPORT STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * importStatement := IMPORT FUNCTION? qualifiedIdentifier (DOT STAR)? SEMICOLON?
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -342,12 +343,12 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * GLOBAL STATEMENT
+     *                         GLOBAL STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * globalStatement := GLOBAL type ID SEMICOLON?
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -403,12 +404,12 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * DECLARE STATEMENT
+     *                         DECLARE STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * declare := DECLARE type (EXTENDS type)? annotation* field* END SEMICOLON?
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -428,7 +429,7 @@ public class DRLParser {
             if ( state.failed ) return null;
 
             // type may be qualified when adding metadata
-            String type = qualifiedIdentifier();
+            String type = qualifiedIdentifier();           
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) declare.type( type );
 
@@ -487,29 +488,17 @@ public class DRLParser {
     }
 
     /**
-     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation* SEMICOLON?
+     * field := label type (EQUALS_ASSIGN expression)? annotation* SEMICOLON?
      */
     private void field( DeclareDescrBuilder declare ) {
         FieldDescrBuilder field = null;
         try {
-            // ID
-            Token id = match( input,
-                              DRLLexer.ID,
-                              null,
-                              null,
-                              DroolsEditorType.IDENTIFIER );
+            String fname = label( DroolsEditorType.IDENTIFIER );
             if ( state.failed ) return;
-
+            
             field = helper.start( FieldDescrBuilder.class,
-                                  id.getText(),
-                                  null );
-
-            match( input,
-                   DRLLexer.COLON,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
-            if ( state.failed ) return;
+                    fname,
+                    null );
 
             // type
             String type = qualifiedIdentifier();
@@ -561,12 +550,12 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * FUNCTION STATEMENT
+     *                         FUNCTION STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * function := FUNCTION type? ID arguments curly_chunk
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -638,8 +627,8 @@ public class DRLParser {
     /**
      * parameters := LEFT_PAREN ( parameter ( COMMA parameter )* )? RIGHT_PAREN
      * @param statement
-     * @param requiresType
-     * @throws RecognitionException
+     * @param requiresType 
+     * @throws RecognitionException 
      */
     private void parameters( ParameterSupportBuilder< ? > statement,
                              boolean requiresType ) throws RecognitionException {
@@ -680,7 +669,7 @@ public class DRLParser {
     /**
      * parameter := ({requiresType}?=>type)? ID (LEFT_SQUARE RIGHT_SQUARE)*
      * @param statement
-     * @param requiresType
+     * @param requiresType 
      * @throws RecognitionException
      */
     private void parameter( ParameterSupportBuilder< ? > statement,
@@ -722,12 +711,12 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * QUERY STATEMENT
+     *                         QUERY STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * query := QUERY stringId arguments? annotation* lhs END
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -827,12 +816,12 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * RULE STATEMENT
+     *                         RULE STATEMENT
      * ------------------------------------------------------------------------------------------------ */
 
     /**
      * rule := RULE ruleId (EXTENDS ruleId)? annotation* attributes? lhs? rhs END
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -958,7 +947,7 @@ public class DRLParser {
     }
 
     /**
-     * attributes := (ATTRIBUTES COMMA)? attribute ( COMMA? attribute )*
+     * attributes := (ATTRIBUTES COLON)? attribute ( COMMA? attribute )*
      * @param rule
      * @throws RecognitionException
      */
@@ -1000,20 +989,20 @@ public class DRLParser {
 
     /**
      * attribute :=
-     * salience
-     * | enabled
-     * | noLoop
-     * | autoFocus
-     * | lockOnActive
-     * | agendaGroup
-     * | activationGroup
-     * | ruleflowGroup
-     * | dateEffective
-     * | dateExpires
-     * | dialect
-     * | calendars
-     * | timer
-     *
+     *       salience 
+     *   |   enabled 
+     *   |   noLoop
+     *   |   autoFocus 
+     *   |   lockOnActive
+     *   |   agendaGroup  
+     *   |   activationGroup 
+     *   |   ruleflowGroup 
+     *   |   dateEffective 
+     *   |   dateExpires 
+     *   |   dialect 
+     *   |   calendars    
+     *   |   timer  
+     * 
      * @return
      */
     public AttributeDescr attribute() {
@@ -1438,8 +1427,7 @@ public class DRLParser {
                                       -1 );
                 if ( state.failed ) return null;
                 if ( state.backtracking == 0 ) {
-                    attribute.value( safeStripDelimiters( value,
-                                                          new String[]{"(", ")"} ) );
+                    attribute.value( safeStripDelimiters( value, "(", ")" ) );
                     attribute.type( AttributeDescr.Type.EXPRESSION );
                 }
             } else {
@@ -1483,7 +1471,7 @@ public class DRLParser {
     }
 
     /**
-     * lhs := WHEN COLON? lhsStatement*
+     * lhs := WHEN COLON? lhsStatement
      * @param rule
      * @throws RecognitionException
      */
@@ -1510,9 +1498,9 @@ public class DRLParser {
 
     /**
      * lhsStatement := lhsOr*
-     *
+     * 
      * @param lhs
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void lhsStatement( CEDescrBuilder< ? , AndDescr> lhs ) throws RecognitionException {
         helper.start( CEDescrBuilder.class,
@@ -1548,11 +1536,11 @@ public class DRLParser {
 
     /**
      * lhsOr := LEFT_PAREN OR lhsAnd+ RIGHT_PAREN
-     * | lhsAnd (OR lhsAnd)*
-     *
+     *        | lhsAnd (OR lhsAnd)*
+     *        
      * @param ce
      * @param allowOr
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsOr( final CEDescrBuilder< ? , ? > ce,
                              boolean allowOr ) throws RecognitionException {
@@ -1668,10 +1656,10 @@ public class DRLParser {
 
     /**
      * lhsAnd := LEFT_PAREN AND lhsUnary+ RIGHT_PAREN
-     * | lhsUnary (AND lhsUnary)*
-     *
+     *         | lhsUnary (AND lhsUnary)*
+     *        
      * @param ce
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsAnd( final CEDescrBuilder< ? , ? > ce,
                               boolean allowOr ) throws RecognitionException {
@@ -1784,17 +1772,17 @@ public class DRLParser {
     }
 
     /**
-     * lhsUnary :=
-     * ( lhsExists
-     * | lhsNot
-     * | lhsEval
-     * | lhsForall
-     * | lhsAccumulate
-     * | LEFT_PAREN lhsOr RIGHT_PAREN
-     * | lhsPattern
-     * )
-     * SEMICOLON?
-     *
+     * lhsUnary := 
+     *           ( lhsExists
+     *           | lhsNot
+     *           | lhsEval
+     *           | lhsForall
+     *           | lhsAccumulate
+     *           | LEFT_PAREN lhsOr RIGHT_PAREN
+     *           | lhsPattern
+     *           ) 
+     *           SEMICOLON?
+     * 
      * @param ce
      * @return
      */
@@ -1811,8 +1799,8 @@ public class DRLParser {
             result = lhsEval( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
             result = lhsForall( ce );
-// } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
-            // TODO: handle this
+        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
+            result = lhsAcc( ce );
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
             // the order here is very important: this if branch must come before the lhsPatternBind bellow
             result = lhsParen( ce,
@@ -1837,14 +1825,14 @@ public class DRLParser {
 
     /**
      * lhsExists := EXISTS
-     * ( (LEFT_PAREN (or_key|and_key))=> lhsOr // prevents '((' for prefixed and/or
-     * | LEFT_PAREN lhsOr RIGHT_PAREN
-     * | lhsPattern
-     * )
-     *
+     *           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
+     *           | LEFT_PAREN lhsOr RIGHT_PAREN 
+     *           | lhsPattern
+     *           )
+     *  
      * @param ce
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsExists( CEDescrBuilder< ? , ? > ce,
                                  boolean allowOr ) throws RecognitionException {
@@ -1910,14 +1898,14 @@ public class DRLParser {
 
     /**
      * lhsNot := NOT
-     * ( (LEFT_PAREN (or_key|and_key))=> lhsOr // prevents '((' for prefixed and/or
-     * | LEFT_PAREN lhsOr RIGHT_PAREN
-     * | lhsPattern
-     * )
-     *
+     *           ( (LEFT_PAREN (or_key|and_key))=> lhsOr  // prevents '((' for prefixed and/or
+     *           | LEFT_PAREN lhsOr RIGHT_PAREN 
+     *           | lhsPattern
+     *           )
+     *  
      * @param ce
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsNot( CEDescrBuilder< ? , ? > ce,
                               boolean allowOr ) throws RecognitionException {
@@ -1984,11 +1972,11 @@ public class DRLParser {
     }
 
     /**
-     * lhsForall := FORALL LEFT_PAREN lhsPattern+ RIGHT_PAREN
-     *
+     * lhsForall := FORALL LEFT_PAREN lhsPattern+ RIGHT_PAREN 
+     *  
      * @param ce
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsForall( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
         ForallDescrBuilder< ? > forall = helper.start( ForallDescrBuilder.class,
@@ -2041,10 +2029,10 @@ public class DRLParser {
 
     /**
      * lhsEval := EVAL LEFT_PAREN expression RIGHT_PAREN
-     *
+     *  
      * @param ce
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsEval( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
         EvalDescrBuilder< ? > eval = null;
@@ -2093,11 +2081,11 @@ public class DRLParser {
     }
 
     /**
-     * lhsParen := LEFT_PAREN lhsOr RIGHT_PAREN
-     *
+     * lhsParen := LEFT_PAREN lhsOr RIGHT_PAREN 
+     *  
      * @param ce
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private BaseDescr lhsParen( CEDescrBuilder< ? , ? > ce,
                                 boolean allowOr ) throws RecognitionException {
@@ -2126,13 +2114,13 @@ public class DRLParser {
     }
 
     /**
-     * lhsPatternBind := label?
-     * ( LEFT_PAREN lhsPattern (OR pattern)* RIGHT_PAREN
-     * | lhsPattern )
-     *
+     * lhsPatternBind := label? 
+     *                ( LEFT_PAREN lhsPattern (OR pattern)* RIGHT_PAREN
+     *                | lhsPattern )
+     *  
      * @param ce
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     @SuppressWarnings("unchecked")
     private BaseDescr lhsPatternBind( PatternContainerDescrBuilder< ? , ? > ce,
@@ -2152,7 +2140,7 @@ public class DRLParser {
         String label = null;
         boolean isUnification = false;
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
-            label = label();
+            label = label( DroolsEditorType.IDENTIFIER_PATTERN );
             if ( state.failed ) return null;
         } else if (input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY && !helper.validateCEKeyword( 1 )) {
             label = unif( DroolsEditorType.IDENTIFIER_PATTERN );
@@ -2181,7 +2169,7 @@ public class DRLParser {
 
                 if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) && ce instanceof CEDescrBuilder ) {
                     if ( state.backtracking == 0 ) {
-                        // this is necessary because of the crappy bind with multi-pattern OR syntax
+                        // this is necessary because of the crappy bind with multi-pattern OR syntax 
                         or = ((CEDescrBuilder<DescrBuilder< ? >, OrDescr>) ce).or();
                         result = or.getDescr();
 
@@ -2401,7 +2389,7 @@ public class DRLParser {
 
     /**
      * lhsPattern := QUESTION? type LEFT_PAREN constraints? RIGHT_PAREN over? source?
-     *
+     * 
      * @param pattern
      * @param label
      * @param isUnification
@@ -2466,14 +2454,14 @@ public class DRLParser {
     /**
      * label := ID COLON
      * @return
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
-    private String label() throws RecognitionException {
+    private String label( DroolsEditorType edType ) throws RecognitionException {
         Token label = match( input,
                              DRLLexer.ID,
                              null,
                              null,
-                             DroolsEditorType.IDENTIFIER_PATTERN );
+                             edType );
         if ( state.failed ) return null;
 
         match( input,
@@ -2528,7 +2516,7 @@ public class DRLParser {
     /**
      * positionalConstraints := constraint (COMMA constraint)* SEMICOLON
      * @param pattern
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void positionalConstraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         constraint( pattern, true );
@@ -2557,7 +2545,7 @@ public class DRLParser {
     /**
      * constraints := constraint (COMMA constraint)*
      * @param pattern
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void constraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         constraint( pattern, false );
@@ -2577,9 +2565,9 @@ public class DRLParser {
     }
 
     /**
-     * constraint := conditionalExpression
+     * constraint := label? conditionalExpression
      * @param pattern
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void constraint( PatternDescrBuilder< ? > pattern, boolean positional ) throws RecognitionException {
         if ( state.backtracking == 0 && !state.errorRecovery ) {
@@ -2588,21 +2576,7 @@ public class DRLParser {
         String bind = null;
         boolean unification = false;
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
-            // bind
-            Token id = match( input,
-                              DRLLexer.ID,
-                              null,
-                              null,
-                              DroolsEditorType.IDENTIFIER_VARIABLE );
-            if ( state.failed ) return;
-
-            bind = id.getText();
-
-            match( input,
-                   DRLLexer.COLON,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
+            bind = label( DroolsEditorType.IDENTIFIER_VARIABLE );
             if ( state.failed ) return;
         } else if( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY ) {
             bind = unif( DroolsEditorType.IDENTIFIER_VARIABLE );
@@ -2638,9 +2612,9 @@ public class DRLParser {
 
     /**
      * patternBehavior := ( PIPE behaviorDef )+
-     * | OVER behaviorDef
+     *                    | OVER behaviorDef 
      * @param pattern
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void patternBehavior( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         if ( input.LA( 1 ) == DRLLexer.PIPE ) {
@@ -2669,27 +2643,16 @@ public class DRLParser {
     }
 
     /**
-     * behaviorDef := label ID LEFT_PAREN expression RIGHT_PAREN
+     * behaviorDef := label ID LEFT_PAREN expression RIGHT_PAREN                    
      * @param pattern
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void behaviorDef( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         BehaviorDescrBuilder< ? > behavior = helper.start( BehaviorDescrBuilder.class,
                                                            null,
                                                            null );
         try {
-            Token type = match( input,
-                                DRLLexer.ID,
-                                null,
-                                null,
-                                DroolsEditorType.IDENTIFIER_PATTERN );
-            if ( state.failed ) return;
-
-            match( input,
-                   DRLLexer.COLON,
-                   null,
-                   null,
-                   DroolsEditorType.SYMBOL );
+            String bName = label( DroolsEditorType.IDENTIFIER_PATTERN );
             if ( state.failed ) return;
 
             Token subtype = match( input,
@@ -2700,7 +2663,7 @@ public class DRLParser {
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
-                behavior.type( type.getText(),
+                behavior.type( bName,
                                subtype.getText() );
             }
 
@@ -2716,14 +2679,15 @@ public class DRLParser {
         }
     }
 
+    
     /**
      * patternSource := FROM
-     * ( accumulate
-     * | collect
-     * | entryPoint
-     * | expression )
+     *                ( accumulate
+     *                | collect
+     *                | entryPoint
+     *                | expression )
      * @param pattern
-     * @throws RecognitionException
+     * @throws RecognitionException 
      */
     private void patternSource( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         match( input,
@@ -2764,7 +2728,7 @@ public class DRLParser {
 
     /**
      * fromExpression := conditionalExpression
-     *
+     * 
      * @param pattern
      * @throws RecognitionException
      */
@@ -2782,7 +2746,7 @@ public class DRLParser {
 
     /**
      * fromEntryPoint := ENTRY-POINT (STRING | ID)
-     *
+     * 
      * @param pattern
      * @throws RecognitionException
      */
@@ -2836,7 +2800,7 @@ public class DRLParser {
 
     /**
      * fromCollect := COLLECT LEFT_PAREN lhsPatternBind RIGHT_PAREN
-     *
+     * 
      * @param pattern
      * @throws RecognitionException
      */
@@ -2882,11 +2846,11 @@ public class DRLParser {
     }
 
     /**
-     * fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA
-     * ( initBlock COMMA actionBlock COMMA (reverseBlock COMMA)? resultBlock
-     * | accumulateFunction (COMMA accumulateFunction)* )
-     * RIGHT_PAREN
-     *
+     * fromAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA 
+     *                   ( initBlock COMMA actionBlock COMMA (reverseBlock COMMA)? resultBlock
+     *                   | accumulateFunction 
+     *                   RIGHT_PAREN
+     * 
      * @param pattern
      * @throws RecognitionException
      */
@@ -3107,7 +3071,7 @@ public class DRLParser {
 
     /**
      * parameters := LEFT_PAREN (conditionalExpression (COMMA conditionalExpression)* )? RIGHT_PAREN
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -3195,7 +3159,7 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * ANNOTATION
+     *                         ANNOTATION
      * ------------------------------------------------------------------------------------------------ */
     /**
      * annotation := AT ID (elementValuePairs | parenChunk )?
@@ -3259,9 +3223,9 @@ public class DRLParser {
     /**
      * Invokes elementValuePairs() rule with backtracking
      * to check if the next token sequence matches it or not.
-     *
+     * 
      * @return true if the sequence of tokens will match the
-     * elementValuePairs() syntax. false otherwise.
+     *         elementValuePairs() syntax. false otherwise.
      */
     private boolean speculateElementValuePairs() {
         state.backtracking++;
@@ -3348,8 +3312,13 @@ public class DRLParser {
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
-                annotation.keyValue( key != null ? key : "value",
-                                     value );
+                String actKey = key != null ? key : "value";
+                String actVal = annotation.getDescr().getValue( actKey );
+                if( actVal != null ){
+                    // TODO: error message?
+                    value = "\"" + AnnotationDescr.unquote( actVal ) + AnnotationDescr.unquote( value ) + "\"";
+                }
+                annotation.keyValue( actKey, value );
             }
 
         } catch ( RecognitionException re ) {
@@ -3358,7 +3327,7 @@ public class DRLParser {
     }
 
     /**
-     * elementValue := elementValueArrayInitializer | conditionalExpression
+     * elementValue := elementValueArrayInitializer | conditionalExpression 
      * @return
      */
     private String elementValue() {
@@ -3429,16 +3398,16 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-     * UTILITY RULES
+     *                         UTILITY RULES
      * ------------------------------------------------------------------------------------------------ */
     
     /**
      * Matches a type name
-     *
+     * 
      * type := ID typeArguments? ( DOT ID typeArguments? )* (LEFT_SQUARE RIGHT_SQUARE)*
-     *
+     * 
      * @param doQualify set to true if qualification is acceptable
-     * @param doGenPar set to true if generic arguments and brackets are acceptable
+     * @param doGenPar  set to true if generic arguments and brackets are acceptable
      * @return
      * @throws RecognitionException
      */
@@ -3503,9 +3472,9 @@ public class DRLParser {
 
     /**
      * Matches type arguments
-     *
+     * 
      * typeArguments := LESS typeArgument (COMMA typeArgument)* GREATER
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -3552,11 +3521,11 @@ public class DRLParser {
 
     /**
      * Matches a type argument
-     *
-     * typeArguments := QUESTION (( EXTENDS | SUPER ) type )?
-     * | type
-     * ;
-     *
+     * 
+     * typeArguments := QUESTION (( EXTENDS | SUPER ) type )? 
+     *               |  type
+     *               ;
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -3613,9 +3582,9 @@ public class DRLParser {
 
     /**
      * Matches a qualified identifier
-     *
+     * 
      * qualifiedIdentifier := ID ( DOT ID )*
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -3654,7 +3623,7 @@ public class DRLParser {
 
     /**
      * Matches a conditional expression
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -3674,7 +3643,7 @@ public class DRLParser {
 
     /**
      * Matches a conditional || expression
-     *
+     * 
      * @return
      * @throws RecognitionException
      */
@@ -3694,7 +3663,7 @@ public class DRLParser {
 
     /**
      * Matches a chunk started by the leftDelimiter and ended by the rightDelimiter.
-     *
+     * 
      * @param leftDelimiter
      * @param rightDelimiter
      * @param location
@@ -3747,13 +3716,13 @@ public class DRLParser {
     }
 
     /* ------------------------------------------------------------------------------------------------
-      * GENERAL UTILITY METHODS
+      *                         GENERAL UTILITY METHODS
       * ------------------------------------------------------------------------------------------------ */
-    /**
-     * Match current input symbol against ttype and optionally
-     * check the text of the token against text. Attempt
-     * single token insertion or deletion error recovery. If
-     * that fails, throw MismatchedTokenException.
+    /** 
+     *  Match current input symbol against ttype and optionally
+     *  check the text of the token against text.  Attempt
+     *  single token insertion or deletion error recovery.  If
+     *  that fails, throw MismatchedTokenException.
      */
     private Token match( TokenStream input,
                          int ttype,
@@ -3785,32 +3754,32 @@ public class DRLParser {
 
     /** Attempt to recover from a single missing or extra token.
     *
-    * EXTRA TOKEN
+    *  EXTRA TOKEN
     *
-    * LA(1) is not what we are looking for. If LA(2) has the right token,
-    * however, then assume LA(1) is some extra spurious token. Delete it
-    * and LA(2) as if we were doing a normal match(), which advances the
-    * input.
+    *  LA(1) is not what we are looking for.  If LA(2) has the right token,
+    *  however, then assume LA(1) is some extra spurious token.  Delete it
+    *  and LA(2) as if we were doing a normal match(), which advances the
+    *  input.
     *
-    * MISSING TOKEN
+    *  MISSING TOKEN
     *
-    * If current token is consistent with what could come after
-    * ttype then it is ok to "insert" the missing token, else throw
-    * exception For example, Input "i=(3;" is clearly missing the
-    * ')'. When the parser returns from the nested call to expr, it
-    * will have call chain:
+    *  If current token is consistent with what could come after
+    *  ttype then it is ok to "insert" the missing token, else throw
+    *  exception For example, Input "i=(3;" is clearly missing the
+    *  ')'.  When the parser returns from the nested call to expr, it
+    *  will have call chain:
     *
-    * stat -> expr -> atom
+    *    stat -> expr -> atom
     *
-    * and it will be trying to match the ')' at this point in the
-    * derivation:
+    *  and it will be trying to match the ')' at this point in the
+    *  derivation:
     *
-    * => ID '=' '(' INT ')' ('+' atom)* ';'
-    * ^
-    * match() will see that ';' doesn't match ')' and report a
-    * mismatched token error. To recover, it sees that LA(1)==';'
-    * is in the set of tokens that can follow the ')' token
-    * reference in rule atom. It can assume that you forgot the ')'.
+    *       => ID '=' '(' INT ')' ('+' atom)* ';'
+    *                          ^
+    *  match() will see that ';' doesn't match ')' and report a
+    *  mismatched token error.  To recover, it sees that LA(1)==';'
+    *  is in the set of tokens that can follow the ')' token
+    *  reference in rule atom.  It can assume that you forgot the ')'.
     */
     protected Token recoverFromMismatchedToken( TokenStream input,
                                                 int ttype,
@@ -3870,12 +3839,13 @@ public class DRLParser {
     }
 
     private String safeStripDelimiters( String value,
-                                        String[] delimiters ) {
+                                        String left, String right ) {
         if ( value != null ) {
             value = value.trim();
-            if ( value.length() > 1 && value.startsWith( delimiters[0] ) && value.endsWith( delimiters[1] ) ) {
-                value = value.substring( 1,
-                                         value.length() - 1 );
+            if ( value.length() >= left.length() + right.length() &&
+                 value.startsWith( left ) && value.endsWith( right ) ) {
+                 value = value.substring( left.length(),
+                                          value.length() - right.length() );
             }
         }
         return value;
@@ -3884,14 +3854,12 @@ public class DRLParser {
     private String safeStripStringDelimiters( String value ) {
         if ( value != null ) {
             value = value.trim();
-            if ( value.length() > 1 &&
-                    ((value.startsWith( "\"" ) && value.endsWith( "\"" )) ||
-                            (value.startsWith( "'" ) && value.endsWith( "'" ))) ) {
+            if ( value.length() >= 2 && value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
                 value = value.substring( 1,
                                          value.length() - 1 );
             }
         }
         return value;
     }
-}
 
+}
