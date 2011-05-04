@@ -33,7 +33,6 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
-import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
