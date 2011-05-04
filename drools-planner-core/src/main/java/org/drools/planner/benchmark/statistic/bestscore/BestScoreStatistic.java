@@ -31,6 +31,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.core.Solver;
@@ -45,7 +46,7 @@ import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class BestScoreStatistic implements SolverStatistic {
+public class BestScoreStatistic extends AbstractSolverStatistic {
 
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName

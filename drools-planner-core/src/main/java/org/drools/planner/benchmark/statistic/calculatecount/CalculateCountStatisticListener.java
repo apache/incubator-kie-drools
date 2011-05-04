@@ -45,6 +45,10 @@ public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleL
         nextTimeMillisThreshold = timeMillisThresholdInterval;
     }
 
+    public List<CalculateCountStatisticPoint> getStatisticPointList() {
+        return statisticPointList;
+    }
+
     @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
@@ -59,10 +63,6 @@ public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleL
             lastCalculateCount = calculateCount;
             nextTimeMillisThreshold += timeMillisThresholdInterval;
         }
-    }
-
-    public List<CalculateCountStatisticPoint> getStatisticPointList() {
-        return statisticPointList;
     }
     
     // TODO registerForSolver

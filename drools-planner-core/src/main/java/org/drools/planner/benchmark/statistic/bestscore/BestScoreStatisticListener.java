@@ -26,12 +26,12 @@ public class BestScoreStatisticListener implements SolverEventListener {
 
     private List<BestScoreStatisticPoint> statisticPointList = new ArrayList<BestScoreStatisticPoint>();
 
-    public void bestSolutionChanged(BestSolutionChangedEvent event) {
-        statisticPointList.add(new BestScoreStatisticPoint(event));
-    }
-
     public List<BestScoreStatisticPoint> getStatisticPointList() {
         return statisticPointList;
+    }
+
+    public void bestSolutionChanged(BestSolutionChangedEvent event) {
+        statisticPointList.add(new BestScoreStatisticPoint(event));
     }
 
 }
