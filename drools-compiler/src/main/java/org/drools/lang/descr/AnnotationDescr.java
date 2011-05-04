@@ -29,8 +29,7 @@ public class AnnotationDescr extends BaseDescr {
     private final String        name;
     private Map<String, String> values;
 
-    // '' and 'a' are passed through as 
-    public static String unquote( String s ){
+    private static String unquote( String s ){
         if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ||
             s.startsWith( "'" ) && s.endsWith( "'" ) ) {
             return s.substring( 1, s.length() - 1 );
