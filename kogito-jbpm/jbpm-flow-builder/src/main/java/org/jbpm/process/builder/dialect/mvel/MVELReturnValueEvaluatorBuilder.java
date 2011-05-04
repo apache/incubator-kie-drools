@@ -99,7 +99,7 @@ public class MVELReturnValueEvaluatorBuilder
             data.addCompileable( constraintNode,
                                   expr );
             
-            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+            expr.compile( data );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,

@@ -11,6 +11,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.PackageBuilder;
 import org.drools.lang.descr.ActionDescr;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
@@ -58,7 +59,9 @@ public class MVELActionBuilderTest extends JbpmTestCase {
         List<String> list = new  ArrayList<String>();
         wm.setGlobal( "list", list );     
         
-        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( Thread.currentThread().getContextClassLoader() );
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage().getDialectRuntimeRegistry().getDialectData( "mvel");
+        
+        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( data );
         
         ProcessContext processContext = new ProcessContext( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
         ((Action) actionNode.getAction().getMetaData("Action")).execute( processContext );

@@ -11,6 +11,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.ActionDescr;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
@@ -61,8 +62,10 @@ public class MVELDecisionBuilderTest extends JbpmTestCase {
         List<String> list = new ArrayList<String>();
         wm.setGlobal( "list", list );        
         
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage().getDialectRuntimeRegistry().getDialectData( "mvel");
+        
         ProcessContext processContext = new ProcessContext( ((InternalWorkingMemory) wm).getKnowledgeRuntime() );
-        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( Thread.currentThread().getContextClassLoader() );
+        ((MVELAction) actionNode.getAction().getMetaData("Action")).compile( data );
         ((Action)actionNode.getAction().getMetaData("Action")).execute( processContext );
         
         assertEquals("hello world", list.get(0) );

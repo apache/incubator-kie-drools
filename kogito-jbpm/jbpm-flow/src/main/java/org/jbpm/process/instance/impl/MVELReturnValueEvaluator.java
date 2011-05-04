@@ -26,7 +26,6 @@ import java.util.List;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELDebugHandler;
-import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.InternalKnowledgeBase;
@@ -37,6 +36,7 @@ import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.debug.DebugTools;
+import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class MVELReturnValueEvaluator
@@ -71,8 +71,8 @@ public class MVELReturnValueEvaluator
         out.writeObject( unit );
     }
 
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData data) {
+        expr = unit.getCompiledExpression( data );
     }
 
     public String getDialect() {
@@ -88,7 +88,7 @@ public class MVELReturnValueEvaluator
             }
         }
 
-        DroolsMVELIndexedFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
+        VariableResolverFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
         
         // do we have any functions for this namespace?
         KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );

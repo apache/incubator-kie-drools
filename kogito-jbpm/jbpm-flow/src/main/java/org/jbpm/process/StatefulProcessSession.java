@@ -176,6 +176,9 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 	}
 	
 	public void dispose() {
+		if (timerService != null) {
+			timerService.shutdown();
+		}
 	}
 	
 	public void setId(int id) {

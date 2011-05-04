@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.base.mvel.MVELCompilationUnit.DroolsMVELIndexedFactory;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.definition.KnowledgePackage;
@@ -33,6 +32,7 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.runtime.process.ProcessContext;
 import org.drools.spi.GlobalResolver;
 import org.mvel2.MVEL;
+import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.SimpleValueResolver;
 
 public class MVELAction
@@ -66,8 +66,8 @@ public class MVELAction
         out.writeObject( unit );
     }
     
-    public void compile(ClassLoader classLoader) {
-        expr = unit.getCompiledExpression( classLoader );
+    public void compile(MVELDialectRuntimeData data) {
+        expr = unit.getCompiledExpression( data );
     } 
 
     public String getDialect() {
@@ -83,7 +83,7 @@ public class MVELAction
             }
         }
 
-        DroolsMVELIndexedFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
+        VariableResolverFactory factory = unit.getFactory( context, null, null, null, vars, null, (GlobalResolver) context.getKnowledgeRuntime().getGlobals() );
         
 //        KnowledgePackage pkg = context.getKnowledgeRuntime().getKnowledgeBase().getKnowledgePackage( "MAIN" );
 //        if ( pkg != null && pkg instanceof KnowledgePackageImp) {

@@ -127,7 +127,7 @@ public class MVELActionBuilder
             data.addCompileable( action,
                                   expr );  
             
-            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+            expr.compile( data );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           actionDescr,

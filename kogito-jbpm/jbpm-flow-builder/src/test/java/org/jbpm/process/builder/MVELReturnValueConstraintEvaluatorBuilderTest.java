@@ -12,6 +12,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.builder.PackageBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
@@ -70,7 +71,9 @@ public class MVELReturnValueConstraintEvaluatorBuilderTest extends JbpmTestCase 
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance( processInstance );
         
-        ( (MVELReturnValueEvaluator) node.getReturnValueEvaluator()).compile( Thread.currentThread().getContextClassLoader() );
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkgBuilder.getPackage().getDialectRuntimeRegistry().getDialectData( "mvel");        
+        
+        ( (MVELReturnValueEvaluator) node.getReturnValueEvaluator()).compile( data );
 
         assertTrue( node.evaluate( splitInstance,
                                    null,
