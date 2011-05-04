@@ -77,6 +77,10 @@ public class BestScoreStatistic implements SolverStatistic {
         solver.removeEventListener(bestScoreStatisticListener);
     }
 
+    // ************************************************************************
+    // Write methods
+    // ************************************************************************
+
     public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
         StringBuilder htmlFragment = new StringBuilder();
         htmlFragment.append(writeCsvStatistic(solverStatisticFilesDirectory, baseName));

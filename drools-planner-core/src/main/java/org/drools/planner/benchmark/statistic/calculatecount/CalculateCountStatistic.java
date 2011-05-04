@@ -35,7 +35,6 @@ import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.localsearch.LocalSearchSolver;
-import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -51,7 +50,6 @@ public class CalculateCountStatistic implements SolverStatistic {
     // key is the configName
     private Map<String, CalculateCountStatisticListener> statisticListenerMap
             = new HashMap<String, CalculateCountStatisticListener>();
-    private ScoreDefinition scoreDefinition = null;
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -62,20 +60,16 @@ public class CalculateCountStatistic implements SolverStatistic {
         CalculateCountStatisticListener statisticListener = new CalculateCountStatisticListener();
         ((LocalSearchSolver) solver).addLocalSearchSolverLifecycleListener(statisticListener);
         statisticListenerMap.put(configName, statisticListener);
-        if (scoreDefinition == null) {
-            scoreDefinition = solver.getScoreDefinition();
-        } else {
-            if (!scoreDefinition.getClass().equals(solver.getScoreDefinition().getClass())) {
-                throw new IllegalStateException("The scoreDefinition (" + solver.getScoreDefinition()
-                        + ") should be of the same class as the other scoreDefinition (" + scoreDefinition + ")");
-            }
-        }
     }
 
     public void removeListener(Solver solver, String configName) {
         CalculateCountStatisticListener statisticListener = statisticListenerMap.get(configName);
         ((LocalSearchSolver) solver).removeLocalSearchSolverLifecycleListener(statisticListener);
     }
+
+    // ************************************************************************
+    // Write methods
+    // ************************************************************************
 
     public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
         StringBuilder htmlFragment = new StringBuilder();
