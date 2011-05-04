@@ -1,5 +1,10 @@
 package org.drools.examples.sudoku
 
+import java.util.ArrayList;
+import java.util.List;
+
+global Boolean explain;
+
 rule "halt after setup"
 when
     $ctr: Counter( count == 0 )
@@ -21,9 +26,9 @@ when
     # count down
     $ctr: Counter( $count: count )
 then
-#   System.out.println( "cell[" + $rn + "," + $cn + "] = " + $v );
     # modify the Cell by setting its value
     modify( $c ){ setValue( $v ) }
+//  System.out.println( "set cell " + $c.toString() );
     modify( $cr ){ blockValue( $v ) }
     modify( $cc ){ blockValue( $v ) }
     modify( $cs ){ blockValue( $v ) }
@@ -43,7 +48,7 @@ when
     # for all Cells that are in cahoots with the updated cell
     $c: Cell( free contains $v ) from $exCells
 then
-#   System.out.println( "clear " + $v + " from cell[" + $c.getRowNo() + "," + $c.getColNo() + "]"  );
+//  System.out.println( "clear " + $v + " from cell " + $c.posAsString()  );
     # modify a related Cell by blocking the assigned value
     modify( $c ){ blockValue( $v ) }
 end
@@ -63,9 +68,10 @@ when
          and
          Cell( this == $c, exCells contains $x ) )
 then
-#   System.out.println( "done setting cell[" + $rn + "," + $cn + "]" );
+//  System.out.println( "done setting cell " + $c.toString() ); 
     # Discard the Setter fact.
     retract( $s );
+###    Sudoku.sudoku.consistencyCheck();
 end
 
 # Detect a set of candidate values with cardinality 1 for some Cell.
@@ -78,10 +84,36 @@ when
     # One element in the "free" set.
     $c: Cell( $rn: rowNo, $cn: colNo, freeCount == 1 )
 then
-#   System.out.println( "single" );
+    Integer i = $c.getFreeValue();
+    if (explain) System.out.println( "single " + i + " at " + $c.posAsString() );
     # Insert another Setter fact.
-    insert( new Setting( $rn, $cn, $c.getFreeValue() ) );
+    insert( new Setting( $rn, $cn, i ) );
 end
+
+# Detect a set of candidate values with a value that is the only one
+# in one of its groups. This is the value to be set.
+rule "hidden single"
+when
+    # There is currently no setting under way.
+    not Setting()
+    not Cell( freeCount == 1 )
+    
+    # Some integer.
+    $i: Integer()
+    
+    # The "free" set contains this number. 
+    $c: Cell( $rn: rowNo, $cn: colNo, freeCount > 1, free contains $i )
+         
+    # We have a cell group containing this cell $c
+    $cg: CellGroup( cells contains $c )
+    # but no other cell from that group contains $i
+    not ( Cell( this != $c, free contains $i ) from $cg.getCells() )
+then
+    if (explain) System.out.println( "hidden single " + $i + " at " + $c.posAsString() );
+    # Insert another Setter fact.
+    insert( new Setting( $rn, $cn, $i ) );
+end
+
 
 # A "naked pair" is two cells in some cell group with their sets of
 # permissible values being equal with cardinality 2. These two values
@@ -90,23 +122,24 @@ rule "naked pair"
 when
     # There is currently no setting under way.
     not Setting()
+    not Cell( freeCount == 1 )
 
     # One cell with two candidates.
-    $c1: Cell( freeCount == 2, $f1: free, $r1: cellRow, $b1: cellSqr )
+    $c1: Cell( freeCount == 2, $f1: free, $r1: cellRow, $rn1: rowNo, $cn1: colNo, $b1: cellSqr )
     
     # The containing cell group.
     $cg: CellGroup( freeCount > 2, cells contains $c1 )
     
     # Another cell with two candidates, not the one we already have.
-    $c2: Cell( this != $c1, free == $f1 ) from $cg.cells
+    $c2: Cell( this != $c1, free == $f1 /*** , rowNo >= $rn1, colNo >= $cn1 ***/ ) from $cg.cells
     
     # Get one of the "naked pair".
     Integer( $v: intValue ) from $c1.getFree()
     
     # Get some other cell with a candidate equal to one from the pair.
-    $c3: Cell(  this != $c1 && != $c2, free contains $v ) from $cg.cells
+    $c3: Cell( this != $c1 && != $c2, freeCount > 1, free contains $v ) from $cg.cells
 then
-#   System.out.println( "naked pair" );
+    if (explain) System.out.println( "remove " + $v + " from " + $c3.posAsString() + " due to naked pair at " + $c1.posAsString() + " and " + $c2.posAsString() );
     # Remove the value.
     modify( $c3 ){ blockValue( $v ) }
 end
@@ -120,6 +153,7 @@ rule "hidden pair in row"
 when
     # There is currently no setting under way.
     not Setting()
+    not Cell( freeCount == 1 )
     
     # Establish a pair of Integer facts
     $i1: Integer()
@@ -135,23 +169,24 @@ when
     # Assertain that no other cell in the group has one of these two values.
     not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellRow.getCells() ) 
 then
-#   System.out.println( "hidden pair in row" );
+    if( explain) System.out.println( "hidden pair in row at " + $c1.posAsString() + " and " + $c2.posAsString() );
     # Set the candidate lists of these two Cells to the "hidden pair".
     modify( $c1 ){ blockExcept( $i1, $i2 ) }
     modify( $c2 ){ blockExcept( $i1, $i2 ) }
 end
 
-/**/
 rule "hidden pair in column"
 when
     not Setting()
+    not Cell( freeCount == 1 )
+
     $i1: Integer()
     $i2: Integer( this > $i1 )
     $c1: Cell( $rn1: rowNo, $cn1: colNo, freeCount > 2 && < 9, free contains $i1 && contains $i2, $cellCol: cellCol )
     $c2: Cell( this != $c1, cellCol == $cellCol, freeCount > 2, free contains $i1 && contains $i2 )
     not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellCol.getCells() ) 
 then
-#   System.out.println( "hidden pair in column" );
+    if (explain) System.out.println( "hidden pair in column at " + $c1.posAsString() + " and " + $c2.posAsString() );
     modify( $c1 ){ blockExcept( $i1, $i2 ) }
     modify( $c2 ){ blockExcept( $i1, $i2 ) }
 end
@@ -159,6 +194,8 @@ end
 rule "hidden pair in square"
 when
     not Setting()
+    not Cell( freeCount == 1 )
+
     $i1: Integer()
     $i2: Integer( this > $i1 )
     $c1: Cell( $rn1: rowNo, $cn1: colNo, freeCount > 2 && < 9, free contains $i1 && contains $i2,
@@ -166,8 +203,122 @@ when
     $c2: Cell( this != $c1, cellSqr == $cellSqr, freeCount > 2, free contains $i1 && contains $i2 )
     not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellSqr.getCells() ) 
 then
-#   System.out.println( "hidden pair in column" );
+    if (explain) System.out.println( "hidden pair in square " + $c1.posAsString() + " and " + $c2.posAsString() );
     modify( $c1 ){ blockExcept( $i1, $i2 ) }
     modify( $c2 ){ blockExcept( $i1, $i2 ) }
 end
-/**/
+
+
+rule "X-wings in rows"
+when
+    not Setting()
+    not Cell( freeCount == 1 )
+
+    $i: Integer()
+    $ca1: Cell( freeCount > 1, free contains $i,
+                $ra: cellRow, $rano: rowNo,         $c1: cellCol,        $c1no: colNo )
+    $cb1: Cell( freeCount > 1, free contains $i,
+                $rb: cellRow, $rbno: rowNo > $rano,      cellCol == $c1 )
+    not( Cell( this != $ca1 && != $cb1, free contains $i ) from $c1.getCells() )
+
+    $ca2: Cell( freeCount > 1, free contains $i,
+                cellRow == $ra, $c2: cellCol,       $c2no: colNo > $c1no )
+    $cb2: Cell( freeCount > 1, free contains $i,
+                cellRow == $rb,      cellCol == $c2 )
+    not( Cell( this != $ca2 && != $cb2, free contains $i ) from $c2.getCells() )
+    
+    $cx: Cell( rowNo == $rano || == $rbno, colNo != $c1no && != $c2no,
+               freeCount > 1, free contains $i )
+then
+    if (explain) {
+        System.out.println( "X-wing with " + $i + " in rows " +
+            $ca1.posAsString() + " - " + $cb1.posAsString() +
+            $ca2.posAsString() + " - " + $cb2.posAsString() + ", remove from " + $cx.posAsString() );
+    }
+    modify( $cx ){ blockValue( $i ) }
+end
+
+rule "X-wings in columns"
+when
+    not Setting()
+    not Cell( freeCount == 1 )
+
+    $i: Integer()
+    $ca1: Cell( freeCount > 1, free contains $i,                
+                $c1: cellCol, $c1no: colNo,         $ra: cellRow,        $rano: rowNo )
+    $ca2: Cell( freeCount > 1, free contains $i,                
+                $c2: cellCol, $c2no: colNo > $c1no,      cellRow == $ra )
+    not( Cell( this != $ca1 && != $ca2, free contains $i ) from $ra.getCells() )
+
+    $cb1: Cell( freeCount > 1, free contains $i,
+                cellCol == $c1, $rb: cellRow,  $rbno: rowNo > $rano )                
+    $cb2: Cell( freeCount > 1, free contains $i,
+                cellCol == $c2,      cellRow == $rb ) 
+    not( Cell( this != $cb1 && != $cb2, free contains $i ) from $rb.getCells() )
+
+    $cx: Cell( colNo == $c1no || == $c2no, rowNo != $rano && != $rbno,
+               freeCount > 1, free contains $i )
+then
+    if (explain) {
+        System.out.println( "X-wing with " + $i + " in columns " +
+            $ca1.posAsString() + " - " + $ca2.posAsString() +
+            $cb1.posAsString() + " - " + $cb2.posAsString() + ", remove from " + $cx.posAsString()  );
+    }
+    modify( $cx ){ blockValue( $i ) }
+end
+
+rule "intersection removal column"
+when
+    not Setting()
+    not Cell( freeCount == 1 )
+
+    $i: Integer()
+    # occurs in a Cell
+    $c: Cell( free contains $i, $cs: cellSqr, $cc: cellCol )
+    # but not in another cell of the same square and a different column
+    not Cell( this != $c, free contains $i, cellSqr == $cs, cellCol != $cc )
+
+    # but there is a cell in the same column and another square containing this value
+    $cx: Cell( freeCount > 1, free contains $i, cellCol == $cc, cellSqr != $cs )
+then
+    # remove the value from that other cell
+    if (explain) {
+        System.out.println( "column elimination due to " + $c.posAsString() +
+                            ": remove " + $i + " from " + $cx.posAsString() );
+    }        
+    modify( $cx ){ blockValue( $i ) }
+end
+
+rule "intersection removal row"
+when
+    not Setting()
+    not Cell( freeCount == 1 )
+
+    $i: Integer()
+    # occurs in a Cell
+    $c: Cell( free contains $i, $cs: cellSqr, $cr: cellRow )
+    # but not in another cell of the same square and a different row
+    not Cell( this != $c, free contains $i, cellSqr == $cs, cellRow != $cr )
+
+    # but there is a cell in the same row and another square containing this value
+    $cx: Cell( freeCount > 1, free contains $i, cellRow == $cr, cellSqr != $cs )
+then
+    # remove the value from that other cell
+    if (explain) {
+        System.out.println( "row elimination due to " + $c.posAsString() +
+                            ": remove " + $i + " from " + $cx.posAsString() );
+    }        
+    modify( $cx ){ blockValue( $i ) }
+end
+
+# Y-wing
+# $c1: Cell( freeCount == 2 ) contains a, b
+# $c2: Cell( freeCount == 2 ) contains a, c
+# $c3: Cell( freeCount == 2 ) contains b, c
+# #g12: CellGroup() contains $c1, $c2
+# #g1e: CellGroup() contains $c1, $c3
+
+# $cx: Cell( freeCount > 1 ) contains c
+#  # #g12: CellGroup() contains $c1, $c2
+
+

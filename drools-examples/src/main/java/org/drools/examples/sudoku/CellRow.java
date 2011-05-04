@@ -25,8 +25,8 @@ public class CellRow extends CellFile {
      * 
      * @param number the row number.
      */
-    public CellRow(int number){
-        super( number );
+    public CellRow(int number) {
+        super(number);
     }
     
     /*
@@ -34,7 +34,7 @@ public class CellRow extends CellFile {
      * @see sudoku.CellFile#toString()
      */
     @Override
-    public String toString(){
+    public String toString() {
         return "Row " + getNumber() + ": " + super.toString();
     }
 }
