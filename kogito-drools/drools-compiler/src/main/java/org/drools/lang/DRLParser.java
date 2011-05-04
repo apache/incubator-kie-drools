@@ -36,7 +36,6 @@ import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AndDescr;
-import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
@@ -488,17 +487,29 @@ public class DRLParser {
     }
 
     /**
-     * field := label type (EQUALS_ASSIGN expression)? annotation* SEMICOLON?
+     * field := ID COLON type (EQUALS_ASSIGN expression)? annotation* SEMICOLON?
      */
     private void field( DeclareDescrBuilder declare ) {
         FieldDescrBuilder field = null;
         try {
-            String fname = label( DroolsEditorType.IDENTIFIER );
+            // ID
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
             if ( state.failed ) return;
-            
+
             field = helper.start( FieldDescrBuilder.class,
-                    fname,
-                    null );
+                                  id.getText(),
+                                  null );
+
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
+            if ( state.failed ) return;
 
             // type
             String type = qualifiedIdentifier();
@@ -947,7 +958,7 @@ public class DRLParser {
     }
 
     /**
-     * attributes := (ATTRIBUTES COLON)? attribute ( COMMA? attribute )*
+     * attributes := (ATTRIBUTES COMMA)? attribute ( COMMA? attribute )*
      * @param rule
      * @throws RecognitionException
      */
@@ -1427,7 +1438,8 @@ public class DRLParser {
                                       -1 );
                 if ( state.failed ) return null;
                 if ( state.backtracking == 0 ) {
-                    attribute.value( safeStripDelimiters( value, "(", ")" ) );
+                    attribute.value( safeStripDelimiters( value,
+                                                          new String[]{"(", ")"} ) );
                     attribute.type( AttributeDescr.Type.EXPRESSION );
                 }
             } else {
@@ -1471,7 +1483,7 @@ public class DRLParser {
     }
 
     /**
-     * lhs := WHEN COLON? lhsStatement
+     * lhs := WHEN COLON? lhsStatement*
      * @param rule
      * @throws RecognitionException
      */
@@ -2140,7 +2152,7 @@ public class DRLParser {
         String label = null;
         boolean isUnification = false;
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
-            label = label( DroolsEditorType.IDENTIFIER_PATTERN );
+            label = label();
             if ( state.failed ) return null;
         } else if (input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY && !helper.validateCEKeyword( 1 )) {
             label = unif( DroolsEditorType.IDENTIFIER_PATTERN );
@@ -2456,12 +2468,12 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    private String label( DroolsEditorType edType ) throws RecognitionException {
+    private String label() throws RecognitionException {
         Token label = match( input,
                              DRLLexer.ID,
                              null,
                              null,
-                             edType );
+                             DroolsEditorType.IDENTIFIER_PATTERN );
         if ( state.failed ) return null;
 
         match( input,
@@ -2565,7 +2577,7 @@ public class DRLParser {
     }
 
     /**
-     * constraint := label? conditionalExpression
+     * constraint := conditionalExpression
      * @param pattern
      * @throws RecognitionException
      */
@@ -2576,7 +2588,21 @@ public class DRLParser {
         String bind = null;
         boolean unification = false;
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
-            bind = label( DroolsEditorType.IDENTIFIER_VARIABLE );
+            // bind
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER_VARIABLE );
+            if ( state.failed ) return;
+
+            bind = id.getText();
+
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
         } else if( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY ) {
             bind = unif( DroolsEditorType.IDENTIFIER_VARIABLE );
@@ -2652,7 +2678,18 @@ public class DRLParser {
                                                            null,
                                                            null );
         try {
-            String bName = label( DroolsEditorType.IDENTIFIER_PATTERN );
+            Token type = match( input,
+                                DRLLexer.ID,
+                                null,
+                                null,
+                                DroolsEditorType.IDENTIFIER_PATTERN );
+            if ( state.failed ) return;
+
+            match( input,
+                   DRLLexer.COLON,
+                   null,
+                   null,
+                   DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
 
             Token subtype = match( input,
@@ -2663,7 +2700,7 @@ public class DRLParser {
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
-                behavior.type( bName,
+                behavior.type( type.getText(),
                                subtype.getText() );
             }
 
@@ -2679,7 +2716,6 @@ public class DRLParser {
         }
     }
 
-    
     /**
      * patternSource := FROM
      * ( accumulate
@@ -3312,13 +3348,8 @@ public class DRLParser {
             if ( state.failed ) return;
 
             if ( state.backtracking == 0 ) {
-                String actKey = key != null ? key : "value";
-                String actVal = annotation.getDescr().getValue( actKey );
-                if( actVal != null ){
-                    // TODO: error message?
-                    value = "\"" + AnnotationDescr.unquote( actVal ) + AnnotationDescr.unquote( value ) + "\"";
-                }
-                annotation.keyValue( actKey, value );
+                annotation.keyValue( key != null ? key : "value",
+                                     value );
             }
 
         } catch ( RecognitionException re ) {
@@ -3839,13 +3870,12 @@ public class DRLParser {
     }
 
     private String safeStripDelimiters( String value,
-                                        String left, String right ) {
+                                        String[] delimiters ) {
         if ( value != null ) {
             value = value.trim();
-            if ( value.length() >= left.length() + right.length() &&
-                 value.startsWith( left ) && value.endsWith( right ) ) {
-                value = value.substring( left.length() ),
-                                         value.length() - right.length() );
+            if ( value.length() > 1 && value.startsWith( delimiters[0] ) && value.endsWith( delimiters[1] ) ) {
+                value = value.substring( 1,
+                                         value.length() - 1 );
             }
         }
         return value;
@@ -3854,13 +3884,14 @@ public class DRLParser {
     private String safeStripStringDelimiters( String value ) {
         if ( value != null ) {
             value = value.trim();
-            if ( value.length() >= 2 && value.startsWith( "\"" ) && value.endsWith( "\"" ) ) {
+            if ( value.length() > 1 &&
+                    ((value.startsWith( "\"" ) && value.endsWith( "\"" )) ||
+                            (value.startsWith( "'" ) && value.endsWith( "'" ))) ) {
                 value = value.substring( 1,
                                          value.length() - 1 );
             }
         }
         return value;
     }
-
 }
 
