@@ -28,7 +28,7 @@ public abstract class CellGroup extends SetOfNine {
 
     public static Set<Integer> allNine = new CopyOnWriteArraySet<Integer>();
     static {
-        for( int i = 1; i <= 9; i++ ) allNine.add( i );
+        for (int i = 1; i <= 9; i++) allNine.add(i);
     }
 
     private List<Cell> cells = new ArrayList<Cell>();
@@ -36,7 +36,7 @@ public abstract class CellGroup extends SetOfNine {
     /**
      * Constructor.
      */
-    protected CellGroup(){
+    protected CellGroup() {
         super();
     }
 
@@ -44,8 +44,8 @@ public abstract class CellGroup extends SetOfNine {
      * Add another Cell object to the cells of this group.
      * @param cell a Cell object.
      */
-    public void addCell( Cell cell ){
-        cells.add( cell );
+    public void addCell(Cell cell) {
+        cells.add(cell);
     }
 
     /**

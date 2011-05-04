@@ -20,12 +20,12 @@ import javax.swing.event.EventListenerList;
 public abstract class AbstractSudokuGridModel {
    private EventListenerList listenerList = new EventListenerList();
 
-   public void addSudokuGridListener( SudokuGridListener l ){
-      listenerList.add( SudokuGridListener.class, l );
+   public void addSudokuGridListener(SudokuGridListener l){
+      listenerList.add(SudokuGridListener.class, l);
    }
    
-   public void removeSudokuGridListener( SudokuGridListener l ){
-      listenerList.remove( SudokuGridListener.class, l );
+   public void removeSudokuGridListener(SudokuGridListener l){
+      listenerList.remove(SudokuGridListener.class, l);
    }
 
    private void forwardEvent(SudokuGridEvent ev){
@@ -41,10 +41,10 @@ public abstract class AbstractSudokuGridModel {
    }
    
    protected void fireRestartEvent(SudokuGridEvent ev) {
-       forwardEvent( ev );
+       forwardEvent(ev);
    }
    
    protected void fireCellUpdatedEvent(SudokuGridEvent ev) {
-       forwardEvent( ev );
+       forwardEvent(ev);
    }
 }
