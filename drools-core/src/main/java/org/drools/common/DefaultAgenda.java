@@ -917,26 +917,26 @@ public class DefaultAgenda
                 } else {
                     throw new RuntimeException( e );
                 }
+            } finally {
+                // if the tuple contains expired events 
+                for ( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getLastHandle().isEvent() ) {
+                        EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
+                        // decrease the activation count for the event
+                        handle.decreaseActivationsCount();
+                        // handles "expire" only in stream mode.
+                        if ( handle.isExpired() ) {
+                            if ( handle.getActivationsCount() <= 0 ) {
+                                // and if no more activations, retract the handle
+                                handle.getEntryPoint().retract( handle );
+                            }
+                        }
+                    }
+                }
             }
             
             if( ruleFlowGroup != null ) {
                 ruleFlowGroup.deactivateIfEmpty();
-            }
-
-            // if the tuple contains expired events 
-            for ( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                if ( tuple.getLastHandle().isEvent() ) {
-                    EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
-                    // handles "expire" only in stream mode.
-                    if ( handle.isExpired() ) {
-                        // decrease the activation count for the event
-                        handle.decreaseActivationsCount();
-                        if ( handle.getActivationsCount() == 0 ) {
-                            // and if no more activations, retract the handle
-                            handle.getEntryPoint().retract( handle );
-                        }
-                    }
-                }
             }
 
             eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation,
