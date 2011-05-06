@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.util.Arrays;
 
 import org.drools.common.AgendaItem;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.LeftTupleList;
@@ -628,6 +629,22 @@ public class LeftTuple
                .append( this.sink.getClass().getSimpleName() )
                .append( "(" ).append( sink.getId() ).append( ")" );
         return  builder.toString();
+    }
+
+    public void increaseActivationCountForEvents() {
+        for ( LeftTuple entry = this; entry != null; entry = entry.getParent() ) {
+            if( entry.getLastHandle().isEvent() ) {
+                ((EventFactHandle)entry.getLastHandle()).increaseActivationsCount();
+            }
+        }
+    }
+    
+    public void decreaseActivationCountForEvents() {
+        for ( LeftTuple entry = this; entry != null; entry = entry.getParent() ) {
+            if( entry.getLastHandle().isEvent() ) {
+                ((EventFactHandle)entry.getLastHandle()).decreaseActivationsCount();
+            }
+        }
     }
     
 }

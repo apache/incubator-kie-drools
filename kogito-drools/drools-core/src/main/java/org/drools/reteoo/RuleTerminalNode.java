@@ -196,6 +196,7 @@ public class RuleTerminalNode extends BaseNode
             tuple.setObject( item );
 
             item.setActivated( true );
+            tuple.increaseActivationCountForEvents();
             ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                           workingMemory );
         } else {
@@ -226,6 +227,7 @@ public class RuleTerminalNode extends BaseNode
 
             if ( added ) {
                 item.setActivated( true );
+                tuple.increaseActivationCountForEvents();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
@@ -247,8 +249,6 @@ public class RuleTerminalNode extends BaseNode
         if ( activation.isActivated() ) {
             // on fact expiration, we don't remove the activation, but let it fire
             if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
-                EventFactHandle efh = (EventFactHandle) context.getFactHandleOrigin();
-                efh.increaseActivationsCount();
             } else {
                 activation.remove();
 
@@ -260,6 +260,7 @@ public class RuleTerminalNode extends BaseNode
                     final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) activation.getActivationNode().getParentContainer();
                     ruleFlowGroup.removeActivation( activation );
                 }
+                leftTuple.decreaseActivationCountForEvents();
 
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
                                                                                                 workingMemory,
@@ -329,6 +330,7 @@ public class RuleTerminalNode extends BaseNode
             }
             agenda.scheduleItem( (ScheduledAgendaItem) item,
                                  workingMemory );
+            leftTuple.increaseActivationCountForEvents();
             item.setActivated( true );
             //            workingMemory.removeLogicalDependencies( item,
             //                                                     context,
@@ -371,6 +373,7 @@ public class RuleTerminalNode extends BaseNode
             item.setActivated( added );
 
             if ( added ) {
+                leftTuple.increaseActivationCountForEvents();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
                                                                                               workingMemory );
             }
