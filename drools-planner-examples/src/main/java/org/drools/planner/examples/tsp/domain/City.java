@@ -23,30 +23,33 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("City")
 public class City extends AbstractPersistable implements Comparable<City> {
 
-    private double x;
-    private double y;
+    private double latitude;
+    private double longitude;
 
-    public double getX() {
-        return x;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
     }
 
-    public double getY() {
-        return y;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
-    public double getDistance(City city) {
-        // Pythagorean theorem
-        double xDifference = Math.abs(city.x - x);
-        double yDifference = Math.abs(city.y - y);
-        return Math.sqrt((xDifference * xDifference) + (yDifference * yDifference));
+    public int getDistance(City city) {
+        // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
+        // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
+        double latitudeDifference = Math.abs(city.latitude - latitude);
+        double longitudeDifference = Math.abs(city.longitude - longitude);
+        double distance = Math.sqrt(
+                (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
+        return (int) (distance + 0.5);
     }
 
     public int compareTo(City other) {
@@ -57,7 +60,7 @@ public class City extends AbstractPersistable implements Comparable<City> {
 
     @Override
     public String toString() {
-        return id + "(" + x + "," + y + ")";
+        return id + "(" + latitude + "," + longitude + ")";
     }
 
 }

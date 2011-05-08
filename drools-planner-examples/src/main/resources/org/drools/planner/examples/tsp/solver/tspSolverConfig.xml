@@ -3,7 +3,7 @@
     <!--<environmentMode>DEBUG</environmentMode>-->
     <scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
     <scoreDefinition>
-        <scoreDefinitionType>SIMPLE_DOUBLE</scoreDefinitionType>
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     </scoreDefinition>
     <startingSolutionInitializerClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspStartingSolutionInitializer</startingSolutionInitializerClass>
     <termination>

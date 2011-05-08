@@ -17,15 +17,15 @@
 package org.drools.planner.examples.tsp.solver;
     dialect "java"
 
-import org.drools.planner.core.score.calculator.SimpleDoubleScoreCalculator;
-import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
+import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
-global SimpleDoubleScoreCalculator scoreCalculator;
+global SimpleScoreCalculator scoreCalculator;
 
 // ############################################################################
 // Soft constraints
@@ -35,7 +35,7 @@ rule "distance"
     when
         $leftCityAssignment : CityAssignment($distanceToNextCityAssignment : distanceToNextCityAssignment)
     then
-        insertLogical(new DoubleConstraintOccurrence("distance", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new IntConstraintOccurrence("distance", ConstraintType.NEGATIVE_SOFT,
                 $distanceToNextCityAssignment,
                 $leftCityAssignment));
 end
@@ -47,9 +47,9 @@ end
 rule "softConstraintsBroken"
     when
         $softTotal : Number() from accumulate(
-            DoubleConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setScore(- $softTotal.doubleValue()); // TODO fixme should be double
+        scoreCalculator.setScore(- $softTotal.intValue());
 end

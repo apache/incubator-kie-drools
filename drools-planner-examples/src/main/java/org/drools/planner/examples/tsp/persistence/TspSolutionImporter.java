@@ -72,7 +72,11 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             travelingSalesmanTour.setName(readStringValue("NAME :"));
             readUntilConstantLine("TYPE : TSP");
             cityListSize = readIntegerValue("DIMENSION :");
-            readConstantLine("EDGE_WEIGHT_TYPE : EUC_2D");
+            String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
+            if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
+                // Only Euclidean distance is implemented in City.getDistance(City)
+                throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
+            }
         }
 
         private void readCityList() throws IOException {
@@ -83,8 +87,8 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
                 String[] lineTokens = splitBySpace(line, 3);
                 City city = new City();
                 city.setId(Long.parseLong(lineTokens[0]));
-                city.setX(Double.parseDouble(lineTokens[1]));
-                city.setY(Double.parseDouble(lineTokens[2]));
+                city.setLatitude(Double.parseDouble(lineTokens[1]));
+                city.setLongitude(Double.parseDouble(lineTokens[2]));
                 cityList.add(city);
             }
             travelingSalesmanTour.setCityList(cityList);

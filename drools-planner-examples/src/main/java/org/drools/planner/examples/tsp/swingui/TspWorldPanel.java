@@ -19,22 +19,12 @@ package org.drools.planner.examples.tsp.swingui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
-import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -51,61 +41,90 @@ public class TspWorldPanel extends JPanel {
 
     public void resetPanel() {
         TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
-        double srcMinimumX = Double.MAX_VALUE;
-        double srcMaximumX = -Double.MAX_VALUE;
-        double srcMinimumY = Double.MAX_VALUE;
-        double srcMaximumY = -Double.MAX_VALUE;
+        LatitudeLongitudeTranslator translator = new LatitudeLongitudeTranslator();
         for (City city : travelingSalesmanTour.getCityList()) {
-            double x = city.getX();
-            if (x < srcMinimumX) {
-                srcMinimumX = x;
-            }
-            if (x > srcMaximumX) {
-                srcMaximumX = x;
-            }
-            double y = city.getY();
-            if (y < srcMinimumY) {
-                srcMinimumY = y;
-            }
-            if (y > srcMaximumY) {
-                srcMaximumY = y;
-            }
+            translator.addCoordinates(city.getLatitude(), city.getLongitude());
         }
-        double srcWidth = srcMaximumX - srcMinimumX;
-        double srcHeight = srcMaximumY - srcMinimumY;
 
         Dimension size = getSize();
         double width = size.getWidth();
         double height = size.getHeight();
-        int canvasWidth = (int) Math.ceil(width) + 1;
-        int canvasHeight = (int) Math.ceil(height) + 1;
-        canvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics g = canvas.getGraphics();
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, canvasWidth, canvasHeight);
+        translator.prepareFor(width, height);
+
+        Graphics g = createCanvas(width, height);
         g.setColor(Color.RED);
         for (City city : travelingSalesmanTour.getCityList()) {
-            int x = translateCoordinate(srcMinimumX, srcWidth, width, city.getX());
-            int y = translateCoordinate(srcMinimumY, srcHeight, height, city.getY());
+            int x = translator.translateLongitude(city.getLongitude());
+            int y = translator.translateLatitude(city.getLatitude());
             g.fillRect(x - 1, y - 1, 3, 3);
         }
         g.setColor(Color.BLACK);
         if (travelingSalesmanTour.isInitialized()) {
             for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-                City city = cityAssignment.getCity();
-                int x1 = translateCoordinate(srcMinimumX, srcWidth, width, city.getX());
-                int y1 = translateCoordinate(srcMinimumY, srcHeight, height, city.getY());
-                City nextCity = cityAssignment.getNextCityAssignment().getCity();
-                int x2 = translateCoordinate(srcMinimumX, srcWidth, width, nextCity.getX());
-                int y2 = translateCoordinate(srcMinimumY, srcHeight, height, nextCity.getY());
+                City city1 = cityAssignment.getCity();
+                int x1 = translator.translateLongitude(city1.getLongitude());
+                int y1 = translator.translateLatitude(city1.getLatitude());
+                City city2 = cityAssignment.getNextCityAssignment().getCity();
+                int x2 = translator.translateLongitude(city2.getLongitude());
+                int y2 = translator.translateLatitude(city2.getLatitude());
                 g.drawLine(x1, y1, x2, y2);
             }
         }
         repaint();
     }
 
-    private int translateCoordinate(double srcMinimum, double srcLength, double length, double value) {
-        return (int) Math.floor((value - srcMinimum) * length / srcLength);
+    private class LatitudeLongitudeTranslator {
+
+        private double minimumLatitude = Double.MAX_VALUE;
+        private double maximumLatitude = -Double.MAX_VALUE;
+        private double minimumLongitude = Double.MAX_VALUE;
+        private double maximumLongitude = -Double.MAX_VALUE;
+        private double latitudeLength = 0.0;
+        private double longitudeLength = 0.0;
+
+        private double width = 0.0;
+        private double height = 0.0;
+
+        public void addCoordinates(double latitude, double longitude) {
+            if (latitude < minimumLatitude) {
+                minimumLatitude = latitude;
+            }
+            if (latitude > maximumLatitude) {
+                maximumLatitude = latitude;
+            }
+            if (longitude < minimumLongitude) {
+                minimumLongitude = longitude;
+            }
+            if (longitude > maximumLongitude) {
+                maximumLongitude = longitude;
+            }
+        }
+
+        public void prepareFor(double width, double height) {
+            this.width = width;
+            this.height = height;
+            latitudeLength = maximumLatitude - minimumLatitude;
+            longitudeLength = maximumLongitude - minimumLongitude;
+        }
+
+        public int translateLongitude(double value) {
+            return (int) Math.floor((value - minimumLongitude) * width / longitudeLength);
+        }
+
+        public int translateLatitude(double value) {
+            return (int) Math.floor((maximumLatitude - value) * height / latitudeLength);
+        }
+
+    }
+
+    private Graphics createCanvas(double width, double height) {
+        int canvasWidth = (int) Math.ceil(width) + 1;
+        int canvasHeight = (int) Math.ceil(height) + 1;
+        canvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics g = canvas.getGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, canvasWidth, canvasHeight);
+        return g;
     }
 
     @Override

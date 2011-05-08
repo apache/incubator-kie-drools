@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.score.DefaultSimpleDoubleScore;
+import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
 import org.drools.planner.core.solver.AbstractSolverScope;
@@ -59,7 +59,7 @@ public class TspStartingSolutionInitializer extends AbstractStartingSolutionInit
                 cityAssignment.setPreviousCityAssignment(cityAssignment);
                 cityAssignmentHandle = workingMemory.insert(cityAssignment);
             } else {
-                Score bestScore = DefaultSimpleDoubleScore.valueOf(-Double.MAX_VALUE);
+                Score bestScore = DefaultSimpleScore.valueOf(Integer.MIN_VALUE);
                 CityAssignment bestAfterCityAssignment = null;
                 FactHandle bestAfterCityAssignmentFactHandle = null;
                 CityAssignment bestBeforeCityAssignment = null;
