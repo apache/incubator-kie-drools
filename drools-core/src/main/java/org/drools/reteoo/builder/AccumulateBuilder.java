@@ -28,6 +28,7 @@ import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
+import org.drools.rule.GroupElement;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
 
@@ -49,7 +50,13 @@ public class AccumulateBuilder
         final List resultAlphaConstraints = context.getAlphaConstraints();
         final List resultBehaviors = context.getBehaviors();
 
-        final RuleConditionElement source = accumulate.getSource();
+        RuleConditionElement source = accumulate.getSource();
+        if( source instanceof GroupElement ) {
+            GroupElement ge = (GroupElement) source;
+            if( ge.isAnd() && ge.getChildren().size() == 1 ) {
+                source = (RuleConditionElement) ge.getChildren().get( 0 );
+            }
+        }
 
         // get builder for the pattern
         final ReteooComponentBuilder builder = utils.getBuilderFor( source );
