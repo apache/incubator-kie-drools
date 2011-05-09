@@ -735,7 +735,7 @@ end
 */
 rule "end_visit"
     when
-        $stage : ( Stage( value == Stage.VISITING_2J ) || Stage( value == Stage.VISITING_3J ) )
+        $stage : ( Stage( value == Stage.VISITING_2J ) or Stage( value == Stage.VISITING_3J ) )
         $junction : Junction( visited == "now" )
     then
         modify( $stage ) {setValue( Stage.MARKING )}
