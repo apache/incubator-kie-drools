@@ -504,10 +504,15 @@ public class DRLParser {
      */
     private void field( DeclareDescrBuilder declare ) {
         FieldDescrBuilder field = null;
+        String fname = null;
         try {
-            String fname = label( DroolsEditorType.IDENTIFIER );
+            fname = label( DroolsEditorType.IDENTIFIER );
             if ( state.failed ) return;
-            
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+
+        try {
             field = helper.start( FieldDescrBuilder.class,
                     fname,
                     null );
