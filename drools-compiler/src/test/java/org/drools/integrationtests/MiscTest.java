@@ -161,8 +161,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
-    // @FIXME MVEL does not yet support dynamic .* static method imports
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_ImportFunctions.drl" ) ) );
@@ -2826,7 +2824,7 @@ public class MiscTest {
             workingMemory.fireAllRules();
             fail( "Should throw an Exception from the Predicate" );
         } catch ( final Exception e ) {
-            assertTrue( e.getCause().getMessage().startsWith( "[Error: throwException( type1 ): this should throw an exception]" ) );
+            assertTrue( e.getCause().getMessage().contains( "this should throw an exception" ) );
         }
     }
 
@@ -6917,6 +6915,10 @@ public class MiscTest {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EvalWithLineBreaks.drl" ) ),
                       ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
 
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -7233,7 +7235,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
     public void testFireUntilHaltFailingAcrossEntryPoints() throws Exception {
         String rule1 = "package org.drools\n";
         rule1 += "global java.util.List list\n";
@@ -7490,8 +7491,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore("Temporarly ignored to get a blue build while edson might be fixing it")
-    // TODO etirelli unignore for release 5.2.0
     public void testMemberOfNotWorkingWithOr() throws Exception {
 
         String rule = "";
@@ -7534,8 +7533,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore
-    // this is an MVEL bug on operator precedence, waiting for MVEL fix
     public void testUnNamed() throws Exception {
 
         String rule = "";
@@ -7619,7 +7616,6 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore("Added this test 31-MAR-2011. Used to work in 5.2.0.M1 -Toni-")
     public void testGenericsInRHS() throws Exception {
 
         String rule = "";
@@ -8113,7 +8109,7 @@ public class MiscTest {
         str += "rule xxx \n";
         str += "when \n";
         str += "  $f1 : A() \n";
-        str += "    not A(this != $f1,  eval(field2 == $f1.field2)) \n";
+        str += "    not A(this != $f1,  eval(field2 == $f1.getField2())) \n";
         str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
         str += "then \n";
         str += "  list.add($f1); \n";
@@ -8180,7 +8176,7 @@ public class MiscTest {
         str += "rule xxx \n";
         str += "when \n";
         str += "  $f1 : A() \n";
-        str += "    exists A(this != $f1, eval(field2 == $f1.field2)) \n";
+        str += "    exists A(this != $f1, eval(field2 == $f1.getField2())) \n";
         str += "    eval( !$f1.getField1().equals(\"1\") ) \n";
         str += "then \n";
         str += "  list.add($f1); \n";

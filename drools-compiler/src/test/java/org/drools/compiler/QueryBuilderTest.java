@@ -12,6 +12,7 @@ import org.drools.StatefulSession;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.ExprConstraintDescr.Type;
 import org.drools.lang.descr.FieldConstraintDescr;
 import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -26,7 +27,6 @@ import org.junit.Test;
 public class QueryBuilderTest extends DroolsTestCase {
 
     @Test
-    @Ignore
     public void testRuleWithQuery() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
 
@@ -44,9 +44,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         queryDescr.setLhs( lhs );
         PatternDescr pattern = new PatternDescr( Person.class.getName() );
         lhs.addDescr( pattern );
-        pattern.addConstraint(  new ExprConstraintDescr("$name : name")  );
-        pattern.addConstraint( new ExprConstraintDescr("$age : age") );
-        pattern.addConstraint( new ExprConstraintDescr("$likes : likes") );
+        pattern.addBinding( new BindingDescr( "$name", "name" ) );
+        pattern.addBinding( new BindingDescr( "$age", "age" ) );
+        pattern.addBinding( new BindingDescr( "$likes", "likes" ) );
 
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -59,11 +59,22 @@ public class QueryBuilderTest extends DroolsTestCase {
                                               "type" ) );
 
         pattern = new PatternDescr( "query1" );
+        pattern.setQuery( true );
         lhs.addDescr( pattern );
-        pattern.addConstraint( new LiteralDescr( "bobba",
-                                                 LiteralDescr.TYPE_STRING ) );
-        pattern.addConstraint( new VariableDescr( "$age" ) );
-        pattern.addConstraint( new VariableDescr( "$type" ) );
+        ExprConstraintDescr expr = new ExprConstraintDescr("'bobba'");
+        expr.setPosition( 0 );
+        expr.setType( Type.POSITIONAL );
+        pattern.addConstraint(expr);
+        
+        expr = new ExprConstraintDescr("$age");
+        expr.setPosition( 1 );
+        expr.setType( Type.POSITIONAL );
+        pattern.addConstraint( expr );
+        
+        expr = new ExprConstraintDescr("$type");
+        expr.setPosition( 2 );
+        expr.setType( Type.POSITIONAL );        
+        pattern.addConstraint( expr );
         ruleDescr.setConsequence( "System.out.println(\"age: \" + $age);" );
 
         builder.addPackage( packageDescr );

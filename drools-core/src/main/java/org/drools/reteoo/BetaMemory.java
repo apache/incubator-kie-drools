@@ -60,8 +60,11 @@ public class BetaMemory
         createdHandles = (ObjectHashMap) in.readObject();
         context = (ContextEntry[]) in.readObject();
         behaviorContext = (Object) in.readObject();
+
         isLeftUnlinked = in.readBoolean();
         isRightUnlinked = in.readBoolean();
+
+        open = ( boolean ) in.readBoolean();
 
     }
 
@@ -73,6 +76,7 @@ public class BetaMemory
         out.writeObject( behaviorContext );
         out.writeBoolean( isLeftUnlinked );
         out.writeBoolean( isRightUnlinked );
+        out.writeBoolean(  open  );
     }
 
     public RightTupleMemory getRightTupleMemory() {

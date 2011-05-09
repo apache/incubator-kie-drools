@@ -69,11 +69,11 @@ public class MVELPredicateBuilder
                                                                         context.getDialect().getId() );
             predicate.setPredicateExpression( expr );
 
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( context.getDialect().getId() );
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.addCompileable( predicate,
                                   expr );
 
-            expr.compile( context.getPackageBuilder().getRootClassLoader() );
+            expr.compile( data );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           predicateDescr,

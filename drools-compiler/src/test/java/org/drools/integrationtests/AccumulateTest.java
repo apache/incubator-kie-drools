@@ -593,9 +593,9 @@ public class AccumulateTest {
 
         // 1 fire
         assertEquals( 1,
-                             results.size() );
+                      results.size() );
         assertEquals( 24,
-                             ((Number) results.get( results.size() - 1 )).intValue() );
+                      ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
@@ -605,9 +605,9 @@ public class AccumulateTest {
 
         // 2 fires
         assertEquals( 2,
-                             results.size() );
+                      results.size() );
         assertEquals( 31,
-                             ((Number) results.get( results.size() - 1 )).intValue() );
+                      ((Number) results.get( results.size() - 1 )).intValue() );
 
         // ---------------- 4th scenario
         wm.retract( cheeseHandles[3] );

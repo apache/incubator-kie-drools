@@ -8,6 +8,7 @@
 
       <programlisting><emphasis role="bold">Name:</emphasis> Pet Store 
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.petstore.PetStoreExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> PetStore.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrate use of Agenda Groups, Global Variables and integration with a GUI,

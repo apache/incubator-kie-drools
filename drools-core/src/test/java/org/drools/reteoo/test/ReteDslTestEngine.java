@@ -40,12 +40,16 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.antlr.runtime.tree.Tree;
 import org.drools.RuleBaseConfiguration;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
+import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
@@ -92,6 +96,8 @@ import org.drools.reteoo.test.parser.NodeTestDSLLexer;
 import org.drools.reteoo.test.parser.NodeTestDSLParser;
 import org.drools.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
 import org.drools.reteoo.test.parser.NodeTestDSLTree;
+import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -250,8 +256,17 @@ public class ReteDslTestEngine {
                                                    conf );
         BuildContext buildContext = new BuildContext( rbase,
                                                       rbase.getReteooBuilder().getIdGenerator() );
-        context.put( BUILD_CONTEXT,
-                     buildContext );
+
+        Rule rule = new Rule("rule1", "org.pkg1", null);
+        org.drools.rule.Package pkg = new org.drools.rule.Package( "org.pkg1" );
+        pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
+        pkg.addRule( rule );
+        
+        buildContext.setRule( rule );        
+        
+        rbase.addPackage( pkg );
+        
+        context.put( BUILD_CONTEXT, buildContext );
         context.put( "ClassFieldAccessorStore",
                      this.reteTesterHelper.getStore() );
 
@@ -373,16 +388,17 @@ public class ReteDslTestEngine {
                     List<InternalFactHandle> first = (List<InternalFactHandle>) expectedLeftTuples.get( 0 );
                     LeftTuple firstTuple = new LeftTuple( first.get( 0 ),
                                                           null,
-                                                          false );
+                                                          false);
                     for ( int i = 1; i < first.size(); i++ ) {
                         firstTuple = new LeftTuple( firstTuple,
+                                                    new RightTuple( first.get( i )),
                                                     null,
                                                     false );
                     }
 
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
 
-                    for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( firstTuple ); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
+                    for ( LeftTuple leftTuple = getFirst(memory.getLeftTupleMemory(), firstTuple); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
                         leftTuples.add( leftTuple );
                     }
                     
@@ -427,7 +443,7 @@ public class ReteDslTestEngine {
 
                     RightTuple first = new RightTuple( (InternalFactHandle) expectedFactHandles.get( 0 ) );
                     List<RightTuple> actualRightTuples = new ArrayList<RightTuple>();
-                    for ( RightTuple rightTuple = memory.getRightTupleMemory().getFirst( first ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                    for ( RightTuple rightTuple = getFirst(memory.getRightTupleMemory(), first); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                         actualRightTuples.add( rightTuple );
                     }
 
@@ -527,6 +543,29 @@ public class ReteDslTestEngine {
     }
 
     
+
+    private LeftTuple getFirst(LeftTupleMemory memory, LeftTuple leftTuple) {
+        Iterator it = memory.iterator();
+        for ( LeftTuple next = ( LeftTuple ) it.next(); next != null; next = ( LeftTuple ) it.next() ) {
+          if (next.equals( leftTuple ) ) {
+              return next.getMemory().getFirst();
+          }            
+        }
+        
+        return null;
+    }    
+    
+    private RightTuple  getFirst(RightTupleMemory memory, RightTuple rightTuple) {
+        Iterator it = memory.iterator();
+        for ( RightTuple next = (RightTuple) it.next( ); next != null; next = ( RightTuple ) it.next()) {
+            if (next.equals( rightTuple ) ) {
+                return next.getMemory().getFirst();
+            }
+        }
+        
+        return null;
+    }
+
 
     private void riaNode(DslStep step,
                          RightInputAdapterNode node,
@@ -862,7 +901,7 @@ public class ReteDslTestEngine {
                                                                                       PropagationContext.MODIFICATION,
                                                                                       null,
                                                                                       tuple,
-                                                                                      null );
+                                                                                      new DefaultFactHandle(1, "") );
                             ((LeftTupleSink) sink).modifyLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );

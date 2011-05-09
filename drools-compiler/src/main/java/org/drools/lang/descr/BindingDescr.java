@@ -22,6 +22,7 @@ public class BindingDescr extends BaseDescr {
     
     private String               variable;
     private String               expression;
+    private boolean              unification;
 
     public BindingDescr() {
         this( null,
@@ -29,9 +30,17 @@ public class BindingDescr extends BaseDescr {
     }
 
     public BindingDescr(final String variable,
-                     final String expression) {
+                        final String expression) {
         this.variable = variable;
         this.expression = expression;
+    }
+
+    public BindingDescr(final String variable,
+                        final String expression,
+                        final boolean isUnification ) {
+        this.variable = variable;
+        this.expression = expression;
+        this.unification = isUnification;
     }
 
     public void setVariable(final String variable) {
@@ -50,7 +59,16 @@ public class BindingDescr extends BaseDescr {
         return this.expression;
     }
 
-    public String toString() {
-        return "[Binding: " + this.variable + " : " + this.expression + "]";
+    public void setUnification( boolean isUnification ) {
+        this.unification = isUnification;
     }
+    
+    public boolean isUnification() {
+        return unification;
+    }
+    
+    public String toString() {
+        return "[Binding: " + this.variable + ( this.unification ? " := " : " : " ) + this.expression + "]";
+    }
+
 }

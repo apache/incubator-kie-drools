@@ -47,9 +47,8 @@ public class DroolsObjectIOTest {
     private static final String TEST_FILE   = "test.dat";
     private static final GroupElement   testGroupElement    = new GroupElement();
 
-    @Ignore
-    static class Test implements Serializable {
-        public Test() {
+    static class FooBar implements Serializable {
+        public FooBar() {
             
         }
         String  str = TEST_FILE;
@@ -63,8 +62,8 @@ public class DroolsObjectIOTest {
     public void testFileIO() throws Exception {
         File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
         ByteArrayOutputStream   bytes   = new ByteArrayOutputStream();
-        new ObjectOutputStream(bytes).writeObject(new Test());
-        Test    t   = (Test)new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray())).readObject();
+        new ObjectOutputStream(bytes).writeObject(new FooBar());
+        FooBar    t   = (FooBar)new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray())).readObject();
         String  str = TEST_FILE;
         file    = new File(file.getParent().replaceAll("%20", " "), str);
 

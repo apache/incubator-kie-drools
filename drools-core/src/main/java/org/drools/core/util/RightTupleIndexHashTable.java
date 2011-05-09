@@ -107,12 +107,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
     }
     
     public RightTuple getFirst(final RightTuple rightTuple) {
-        final RightTupleList bucket = get( rightTuple.getFactHandle().getObject() );
-        if ( bucket != null ) {
-            return bucket.getFirst( ( RightTuple ) null );
-        } else {
-            return null;
-        }
+        return rightTuple.getMemory().getFirst( );
     }
 
     public RightTuple getLast(LeftTuple leftTuple) {
@@ -188,7 +183,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                     
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
-                        rightTuple = (RightTuple) list.getFirst( (RightTuple) null );
+                        rightTuple = (RightTuple) list.getFirst( );
                         return rightTuple;
                     } else if ( this.row >= length ) {
                         // we've scanned the whole table and nothing is left, so return null
@@ -206,7 +201,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                     // try the next bucket if we have a shared array position
                     if ( list != null ) {
                         // if we have another bucket, assign the first RightTuple and return
-                        rightTuple = (RightTuple) list.getFirst( (RightTuple) null );
+                        rightTuple = (RightTuple) list.getFirst( );
                         return rightTuple;
                     }
                 }
@@ -244,7 +239,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                     
                     if ( this.list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
-                        this.rightTuple = (RightTuple) this.list.getFirst( (RightTuple) null );
+                        this.rightTuple = (RightTuple) this.list.getFirst();
                         return this.rightTuple;
                     } else if ( this.row >= this.length ) {
                         // we've scanned the whole table and nothing is left, so return null
@@ -262,7 +257,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
                     // try the next bucket if we have a shared array position
                     if ( this.list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        this.rightTuple = (RightTuple) this.list.getFirst( (RightTuple) null );
+                        this.rightTuple = (RightTuple) this.list.getFirst( );
                         return this.rightTuple;
                     }
                 }
@@ -301,7 +296,6 @@ public class RightTupleIndexHashTable extends AbstractHashTable
 
     public void add(final RightTuple rightTuple) {
         final RightTupleList entry = getOrCreate( rightTuple.getFactHandle().getObject() );
-        rightTuple.setMemory( entry );
         entry.add( rightTuple );
         this.factSize++;
     }
@@ -471,7 +465,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         for ( Entry entry : this.table ) {
             while ( entry != null ) {
                 RightTupleList bucket = (RightTupleList) entry;
-                for ( RightTuple rightTuple = bucket.getFirst( ( RightTuple ) null ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
+                for ( RightTuple rightTuple = bucket.getFirst( ); rightTuple != null; rightTuple = (RightTuple) rightTuple.getNext() ) {
                     builder.append( rightTuple );
                 }
                 entry = entry.getNext();

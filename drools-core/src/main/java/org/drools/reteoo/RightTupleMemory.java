@@ -22,9 +22,17 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
 public interface RightTupleMemory {
+    /**
+     * The FactHandle is always the context fact and is necessary when the object being modified is in the both left and right
+     * node memories. This is because the memory on the opposite side would not have yet memory.removeAdd the fact, so it
+     * could potentially be in the wrong bucket. So the bucket matches check always checks to ignore the first facthandle if it's
+     * the same as the context fact.
+     * 
+     * @param leftTuple
+     * @param factHandle
+     * @return
+     */
     public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle);
-    
-    public RightTuple getFirst(RightTuple rightTuple);
     
     public void removeAdd(RightTuple rightTuple);
 

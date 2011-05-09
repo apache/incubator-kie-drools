@@ -301,7 +301,6 @@ public class ConcurrentHashTable {
             try {
                 final RightTupleList entry = getOrCreate( hashCode,
                                                           object );
-                rightTuple.setMemory( entry );
                 entry.add( rightTuple );
                 this.tupleCount++;
             } finally {
@@ -334,7 +333,7 @@ public class ConcurrentHashTable {
                 e.remove( rightTuple );
                 tupleCount--;
 
-                if ( e.getFirst( ( RightTuple ) null ) == null ) {
+                if ( e.getFirst( ) == null ) {
                     // list is empty, so remove it
                     RightTupleList newFirst = (RightTupleList) e.getNext();
                     for ( RightTupleList p = first; p != e; p = (RightTupleList) p.getNext() ) {

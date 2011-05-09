@@ -492,10 +492,15 @@ public class DRLParser {
      */
     private void field( DeclareDescrBuilder declare ) {
         FieldDescrBuilder field = null;
+        String fname = null;
         try {
-            String fname = label( DroolsEditorType.IDENTIFIER );
+            fname = label( DroolsEditorType.IDENTIFIER );
             if ( state.failed ) return;
-            
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+
+        try {
             field = helper.start( FieldDescrBuilder.class,
                     fname,
                     null );
@@ -2138,9 +2143,14 @@ public class DRLParser {
         }
 
         String label = null;
+        boolean isUnification = false;
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
             label = label( DroolsEditorType.IDENTIFIER_PATTERN );
             if ( state.failed ) return null;
+        } else if (input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY && !helper.validateCEKeyword( 1 )) {
+            label = unif( DroolsEditorType.IDENTIFIER_PATTERN );
+            if ( state.failed ) return null;
+            isUnification = true;
         }
 
         if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
@@ -2158,7 +2168,8 @@ public class DRLParser {
                 }
 
                 lhsPattern( pattern,
-                            label );
+                            label,
+                            isUnification );
                 if ( state.failed ) return null;
 
                 if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) && ce instanceof CEDescrBuilder ) {
@@ -2195,7 +2206,8 @@ public class DRLParser {
                                                 null );
                         // new pattern, same binding
                         lhsPattern( pattern,
-                                    label );
+                                    label,
+                                    isUnification );
                         if ( state.failed ) return null;
 
                         helper.end( PatternDescrBuilder.class,
@@ -2223,7 +2235,8 @@ public class DRLParser {
         } else {
             try {
                 lhsPattern( pattern,
-                            label );
+                            label,
+                            isUnification );
                 if ( state.failed ) return null;
 
             } finally {
@@ -2384,10 +2397,12 @@ public class DRLParser {
      * 
      * @param pattern
      * @param label
+     * @param isUnification
      * @throws RecognitionException
      */
     private void lhsPattern( PatternDescrBuilder< ? > pattern,
-                             String label ) throws RecognitionException {
+                             String label,
+                             boolean isUnification ) throws RecognitionException {
         boolean query = false;
         if( input.LA(1) == DRLLexer.QUESTION ) {
             match( input,
@@ -2406,7 +2421,7 @@ public class DRLParser {
             pattern.type( type );
             pattern.isQuery( query );
             if ( label != null ) {
-                pattern.id( label );
+                pattern.id( label, isUnification );
             }
         }
 
@@ -2456,6 +2471,29 @@ public class DRLParser {
 
         match( input,
                DRLLexer.COLON,
+               null,
+               null,
+               DroolsEditorType.SYMBOL );
+        if ( state.failed ) return null;
+
+        return label.getText();
+    }
+
+    /**
+     * unif := ID UNIFY
+     * @return
+     * @throws RecognitionException 
+     */
+    private String unif( DroolsEditorType edType ) throws RecognitionException {
+        Token label = match( input,
+                             DRLLexer.ID,
+                             null,
+                             null,
+                             edType );
+        if ( state.failed ) return null;
+
+        match( input,
+               DRLLexer.UNIFY,
                null,
                null,
                DroolsEditorType.SYMBOL );
@@ -2541,9 +2579,14 @@ public class DRLParser {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
         }
         String bind = null;
+        boolean unification = false;
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
             bind = label( DroolsEditorType.IDENTIFIER_VARIABLE );
             if ( state.failed ) return;
+        } else if( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY ) {
+            bind = unif( DroolsEditorType.IDENTIFIER_VARIABLE );
+            if ( state.failed ) return;
+            unification = true;
         }
 
         int first = input.index();
@@ -2566,7 +2609,8 @@ public class DRLParser {
             } else {
                 // it is a bind
                 pattern.bind( bind,
-                              expr );
+                              expr,
+                              unification );
             }
         }
     }

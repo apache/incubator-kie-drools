@@ -138,7 +138,8 @@ public class QuadroupleNonIndexSkipBetaConstraints
         return this.constraint0.isAllowedCachedLeft( context[0],
                                                      handle ) && this.constraint1.isAllowedCachedLeft( context[1],
                                                                                                        handle ) && this.constraint2.isAllowedCachedLeft( context[2],
-                                                                                                                                                         handle )
+                                                                                                                                                         handle )  && this.constraint3.isAllowedCachedLeft( context[3],
+                                                                                                                                                                                                            handle )
                && this.constraint3.isAllowedCachedLeft( context[3],
                                                         handle );
     }

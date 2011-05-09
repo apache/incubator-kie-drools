@@ -249,6 +249,7 @@ public class JoinNode extends BetaNode {
                                                rightTuple.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
+        // We assume a bucket change if leftTuple == null        
         if ( childLeftTuple != null && leftMemory.isIndexed() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractRightTuple( rightTuple,
@@ -316,8 +317,7 @@ public class JoinNode extends BetaNode {
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
-        memory.getLeftTupleMemory().remove( leftTuple );
-        memory.getLeftTupleMemory().add( leftTuple );
+        memory.getLeftTupleMemory().removeAdd( leftTuple );
 
         this.constraints.updateFromTuple( memory.getContext(),
                                           workingMemory,
@@ -331,6 +331,7 @@ public class JoinNode extends BetaNode {
                                                       (InternalFactHandle) context.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
+        // if rightTuple is null, we assume there was a bucket change and that bucket is empty        
         if ( childLeftTuple != null && rightMemory.isIndexed() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory())) ) {
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractLeftTuple( leftTuple,

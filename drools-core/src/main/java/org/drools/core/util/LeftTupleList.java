@@ -56,11 +56,7 @@ public class LeftTupleList
         return this.first;
     }
     
-    public LeftTuple getFirst(LeftTuple leftTuple) {
-        return this.first;
-    }
-    
-    public LeftTuple getLast(RightTuple lastTuple) {
+    public LeftTuple getFirst() {
         return this.first;
     }
     
@@ -78,6 +74,7 @@ public class LeftTupleList
             this.first = leftTuple;
             this.last = leftTuple;;
         }
+        leftTuple.setMemory( this );
 
         this.size++;
     }

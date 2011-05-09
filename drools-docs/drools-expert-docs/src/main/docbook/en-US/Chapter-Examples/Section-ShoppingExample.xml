@@ -8,6 +8,7 @@
 
     <programlisting><emphasis role="bold">Name:</emphasis>Shopping Example
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.shopping.ShoppingExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> Shopping.drl
 <emphasis role="bold">Objective:</emphasis> demonstrate truth maintenance, accumulate

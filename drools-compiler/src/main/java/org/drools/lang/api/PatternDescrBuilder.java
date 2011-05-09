@@ -35,12 +35,12 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?>>
     extends
     DescrBuilder<PatternDescr> {
 
-    public PatternDescrBuilder<P> id( String id );
+    public PatternDescrBuilder<P> id( String id, boolean isUnification );
     public PatternDescrBuilder<P> type( String type );
     public PatternDescrBuilder<P> isQuery( boolean query );
     public PatternDescrBuilder<P> constraint( String constraint );
     public PatternDescrBuilder<P> constraint( String constraint, boolean positional );
-    public PatternDescrBuilder<P> bind( String var, String target );
+    public PatternDescrBuilder<P> bind( String var, String target, boolean isUnification );
     
     public SourceDescrBuilder<?> from();
     

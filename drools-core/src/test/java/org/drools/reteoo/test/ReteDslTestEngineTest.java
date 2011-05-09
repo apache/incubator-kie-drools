@@ -37,6 +37,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.LeftTupleList;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
@@ -366,7 +367,7 @@ public class ReteDslTestEngineTest {
         assertEquals( 2,
                       memory.getLeftTupleMemory().size() );
 
-        LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( (LeftTuple) null );
+        LeftTuple leftTuple = ((LeftTupleList)memory.getLeftTupleMemory()).getFirst( );
         assertEquals( tuple0,
                       leftTuple );
         assertEquals( tuple1,
