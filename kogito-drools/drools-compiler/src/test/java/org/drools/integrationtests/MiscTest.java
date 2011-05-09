@@ -604,16 +604,7 @@ public class MiscTest {
         str += "    System.out.println( drools.getKnowledgeRuntime() );\n";
         str += "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         kbase = SerializationHelper.serializeObject( kbase );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -1207,8 +1198,8 @@ public class MiscTest {
                                                                     ruleBase );
         session.fireAllRules();
         //System.out.println(((List) session.getGlobal("list")).get(0));
-        assertEquals(3,
-                     ((List) session.getGlobal("list")).size());
+        assertEquals( 3,
+                      ((List) session.getGlobal( "list" )).size() );
 
         nullPerson = new Person( null );
 
@@ -5247,16 +5238,7 @@ public class MiscTest {
         str += "then \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
@@ -5290,16 +5272,7 @@ public class MiscTest {
         str += "  update($fact); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
@@ -6915,7 +6888,7 @@ public class MiscTest {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EvalWithLineBreaks.drl" ) ),
                       ResourceType.DRL );
-        
+
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
@@ -7637,7 +7610,7 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
         assertNotNull( session );
     }
-    
+
     @Test
     public void testActivationListener() throws Exception {
 
@@ -7657,51 +7630,60 @@ public class MiscTest {
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         final List list = new ArrayList();
-        conf.addActivationListener( "blah", new ActivationListenerFactory() {
-            
-            public TerminalNode createActivationListener(int id,
-                                                         LeftTupleSource source,
-                                                         org.drools.rule.Rule rule,
-                                                         GroupElement subrule,
-                                                         BuildContext context,
-                                                         Object... args) {
-                return new RuleTerminalNode( id, source, rule, subrule, context ) {
-                    @Override
-                    public void assertLeftTuple(LeftTuple tuple,
-                                                PropagationContext context,
-                                                InternalWorkingMemory workingMemory) {
-                        list.add( "inserted" );
-                    }
-                    
-                    @Override
-                    public void modifyLeftTuple(LeftTuple leftTuple,
-                                                PropagationContext context,
-                                                InternalWorkingMemory workingMemory) {
-                        list.add( "updated" );
-                    }
-                    
-                    @Override
-                    public void retractLeftTuple(LeftTuple leftTuple,
-                                                 PropagationContext context,
-                                                 InternalWorkingMemory workingMemory) {
-                        list.add( "retracted" );
-                    }
-                };
-            }
-        });
-        final RuleBase ruleBase = getRuleBase(conf);
+        conf.addActivationListener( "blah",
+                                    new ActivationListenerFactory() {
+
+                                        public TerminalNode createActivationListener( int id,
+                                                                                      LeftTupleSource source,
+                                                                                      org.drools.rule.Rule rule,
+                                                                                      GroupElement subrule,
+                                                                                      BuildContext context,
+                                                                                      Object... args ) {
+                                            return new RuleTerminalNode( id,
+                                                                         source,
+                                                                         rule,
+                                                                         subrule,
+                                                                         context ) {
+                                                @Override
+                                                public void assertLeftTuple( LeftTuple tuple,
+                                                                             PropagationContext context,
+                                                                             InternalWorkingMemory workingMemory ) {
+                                                    list.add( "inserted" );
+                                                }
+
+                                                @Override
+                                                public void modifyLeftTuple( LeftTuple leftTuple,
+                                                                             PropagationContext context,
+                                                                             InternalWorkingMemory workingMemory ) {
+                                                    list.add( "updated" );
+                                                }
+
+                                                @Override
+                                                public void retractLeftTuple( LeftTuple leftTuple,
+                                                                              PropagationContext context,
+                                                                              InternalWorkingMemory workingMemory ) {
+                                                    list.add( "retracted" );
+                                                }
+                                            };
+                                        }
+                                    } );
+        final RuleBase ruleBase = getRuleBase( conf );
         ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
         FactHandle fh = session.insert( "xxx" );
-        session.update( fh, "xxx" );
+        session.update( fh,
+                        "xxx" );
         session.retract( fh );
-        
-        assertEquals( "inserted", list.get(0));
-        assertEquals( "updated", list.get(1));
-        assertEquals( "retracted", list.get(2));
-        
+
+        assertEquals( "inserted",
+                      list.get( 0 ) );
+        assertEquals( "updated",
+                      list.get( 1 ) );
+        assertEquals( "retracted",
+                      list.get( 2 ) );
+
         assertNotNull( session );
-    }    
+    }
 
     @Test
     public void testAccessingMapValues() throws Exception {
@@ -7974,13 +7956,13 @@ public class MiscTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
     }
-    
+
     @Test
     public void testLastMemoryEntryNotBug() {
         // JBRULES-2809
         // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
         // And it gets no opportunity to rematch with itself
-        
+
         String str = "";
         str += "package org.simple \n";
         str += "import " + A.class.getCanonicalName() + "\n";
@@ -7998,18 +7980,9 @@ public class MiscTest {
         str += "    not A( field1 == $s, this != null ) \n"; // this ensures an index bucket
         str += "then \n";
         str += "  list.add(\"fired x2\"); \n";
-        str += "end  \n";      
+        str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
@@ -8018,28 +7991,33 @@ public class MiscTest {
 
         ksession.insert( "x1" );
         ksession.insert( "x2" );
-        A a1 = new A("x1", null);        
-        A a2 = new A("x2", null );
-        
-        FactHandle fa1 = (FactHandle) ksession.insert( a1 );        
+        A a1 = new A( "x1",
+                      null );
+        A a2 = new A( "x2",
+                      null );
+
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
         FactHandle fa2 = (FactHandle) ksession.insert( a2 );
-        
+
         // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
-        ksession.update( fa1, a1 );
-        ksession.update( fa2, a2 );    
+        ksession.update( fa1,
+                         a1 );
+        ksession.update( fa2,
+                         a2 );
         ksession.fireAllRules();
-     
-        assertEquals( 0, list.size() ); 
-        
+
+        assertEquals( 0,
+                      list.size() );
+
         ksession.dispose();
-    }   
-    
+    }
+
     @Test
     public void testLastMemoryEntryExistsBug() {
         // JBRULES-2809
         // This occurs when a blocker is the last in the node's memory, or if there is only one fact in the node
         // And it gets no opportunity to rematch with itself
-        
+
         String str = "";
         str += "package org.simple \n";
         str += "import " + A.class.getCanonicalName() + "\n";
@@ -8057,43 +8035,38 @@ public class MiscTest {
         str += "    exists A( field1 == $s, this != null ) \n"; // this ensures an index bucket
         str += "then \n";
         str += "  list.add(\"fired x2\"); \n";
-        str += "end  \n";        
+        str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
 
-       
         ksession.insert( "x1" );
         ksession.insert( "x2" );
-        A a1 = new A("x1", null);        
-        A a2 = new A("x2", null );
-        
-        FactHandle fa1 = (FactHandle) ksession.insert( a1 );        
+        A a1 = new A( "x1",
+                      null );
+        A a2 = new A( "x2",
+                      null );
+
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
         FactHandle fa2 = (FactHandle) ksession.insert( a2 );
-        
+
         // make sure the 'exists' is obeyed when fact is cycled causing add/remove node memory
-        ksession.update( fa1, a1 );
-        ksession.update( fa2, a2 );    
+        ksession.update( fa1,
+                         a1 );
+        ksession.update( fa2,
+                         a2 );
         ksession.fireAllRules();
-     
-        assertEquals( 2, list.size() ); 
-        
+
+        assertEquals( 2,
+                      list.size() );
+
         ksession.dispose();
-    }  
-    
+    }
+
     @Test
     public void testNotIterativeModifyBug() {
         // JBRULES-2809
@@ -8101,7 +8074,7 @@ public class MiscTest {
         // However before this was done it would attempt to find the next tuple, starting from itself
         // This meant it would just re-add itself as the blocker, but then be moved to end of the memory
         // If this tuple was then removed or changed, the blocked was unable to check previous tuples.
-        
+
         String str = "";
         str += "package org.simple \n";
         str += "import " + A.class.getCanonicalName() + "\n";
@@ -8115,52 +8088,51 @@ public class MiscTest {
         str += "  list.add($f1); \n";
         str += "end  \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
 
-       
-        A a1 = new A("2", "2");
-        A a2 = new A("1", "2");
-        A a3 = new A("1", "2");
-        
+        A a1 = new A( "2",
+                      "2" );
+        A a2 = new A( "1",
+                      "2" );
+        A a3 = new A( "1",
+                      "2" );
+
         FactHandle fa1 = (FactHandle) ksession.insert( a1 );
         FactHandle fa2 = (FactHandle) ksession.insert( a2 );
         FactHandle fa3 = (FactHandle) ksession.insert( a3 );
         ksession.fireAllRules();
 
         // a1 is blocked by a2
-        assertEquals( 0, list.size() );
-        
+        assertEquals( 0,
+                      list.size() );
+
         // modify a2, so that a1 is now blocked by a3
-        a2.setField2( "1" );   // Do
-        ksession.update( fa2, a2 );
-        a2.setField2( "2" );   // Undo
-        ksession.update( fa2, a2 );            
+        a2.setField2( "1" ); // Do
+        ksession.update( fa2,
+                         a2 );
+        a2.setField2( "2" ); // Undo
+        ksession.update( fa2,
+                         a2 );
 
         // modify a3 to cycle, so that it goes on the memory end, but in a previous bug still blocked a1
-        ksession.update( fa3, a3 );         
-        
-        a3.setField2( "1" );   // Do
-        ksession.update( fa3, a3 );           
-        ksession.fireAllRules();        
-        assertEquals( 0, list.size() ); // this should still now blocked by a2, but bug from previous update hanging onto blocked
-        
+        ksession.update( fa3,
+                         a3 );
+
+        a3.setField2( "1" ); // Do
+        ksession.update( fa3,
+                         a3 );
+        ksession.fireAllRules();
+        assertEquals( 0,
+                      list.size() ); // this should still now blocked by a2, but bug from previous update hanging onto blocked
+
         ksession.dispose();
     }
-    
+
     @Test
     public void testExistsIterativeModifyBug() {
         // JBRULES-2809
@@ -8168,7 +8140,7 @@ public class MiscTest {
         // However before this was done it would attempt to find the next tuple, starting from itself
         // This meant it would just re-add itself as the blocker, but then be moved to end of the memory
         // If this tuple was then removed or changed, the blocked was unable to check previous tuples.
-        
+
         String str = "";
         str += "package org.simple \n";
         str += "import " + A.class.getCanonicalName() + "\n";
@@ -8182,6 +8154,143 @@ public class MiscTest {
         str += "  list.add($f1); \n";
         str += "end  \n";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+        A a1 = new A( "2",
+                      "2" );
+        A a2 = new A( "1",
+                      "2" );
+        A a3 = new A( "1",
+                      "2" );
+
+        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
+        FactHandle fa2 = (FactHandle) ksession.insert( a2 );
+        FactHandle fa3 = (FactHandle) ksession.insert( a3 );
+
+        // a2, a3 are blocked by a1        
+        // modify a1, so that a1,a3 are now blocked by a2
+        a1.setField2( "1" ); // Do
+        ksession.update( fa1,
+                         a1 );
+        a1.setField2( "2" ); // Undo
+        ksession.update( fa1,
+                         a1 );
+
+        // modify a2, so that a1,a2 are now blocked by a3        
+        a2.setField2( "1" ); // Do
+        ksession.update( fa2,
+                         a2 );
+        a2.setField2( "2" ); // Undo
+        ksession.update( fa2,
+                         a2 );
+
+        // modify a3 to cycle, so that it goes on the memory end, but in a previous bug still blocked a1
+        ksession.update( fa3,
+                         a3 );
+
+        a3.setField2( "1" ); // Do
+        ksession.update( fa3,
+                         a3 );
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      list.size() ); // a2 should still be blocked by a1, but bug from previous update hanging onto blocked
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testBindingsWithOr() throws InstantiationException,
+                                    IllegalAccessException {
+        // JBRULES-2917: matching of field==v1 || field==v2 breaks when variable binding is added
+
+        String str = "package org.drools\n" +
+                     "declare Assignment\n" +
+                     "    source : int\n" +
+                     "    target : int\n" +
+                     "end\n" +
+                     "rule ValueIsTheSame1\n" +
+                     "when\n" +
+                     "    Assignment( $t: target == 10 || target == source )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule ValueIsTheSame2\n" +
+                     "when\n" +
+                     "    Assignment( $t: target == source || target == 10 )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType asgType = kbase.getFactType( "org.drools",
+                                              "Assignment" );
+        Object asg = asgType.newInstance();
+        asgType.set( asg,
+                     "source",
+                     10 );
+        asgType.set( asg,
+                     "target",
+                     10 );
+
+        ksession.insert( asg );
+
+        int rules = ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      rules );
+    }
+
+    @Test
+    @Ignore("This test requires MVEL to support .class literals, what it doesn't today")
+    public void testMVELClassReferences() throws InstantiationException,
+                                    IllegalAccessException {
+        String str = "package org.drools\n" +
+                     "declare Assignment\n" +
+                     "    source : Class\n" +
+                     "    target : Class\n" +
+                     "end\n" +
+                     "rule ObjectIsAssignable1\n" +
+                     "when\n" +
+                     "    Assignment( $t: target == java.lang.Object.class || target == source )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule ObjectIsAssignable2\n" +
+                     "when\n" +
+                     "    Assignment( $t: target == source || target == java.lang.Object.class )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType asgType = kbase.getFactType( "org.drools",
+                                              "Assignment" );
+        Object asg = asgType.newInstance();
+        asgType.set( asg,
+                     "source",
+                     Object.class );
+        asgType.set( asg,
+                     "target",
+                     Object.class );
+
+        ksession.insert( asg );
+
+        int rules = ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 2,
+                      rules );
+    }
+    
+    private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                       ResourceType.DRL );
@@ -8192,79 +8301,38 @@ public class MiscTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
+    }
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        List list = new ArrayList();
-        ksession.setGlobal( "list",
-                            list );
-
-       
-        A a1 = new A("2", "2");
-        A a2 = new A("1", "2");
-        A a3 = new A("1", "2");
-        
-        FactHandle fa1 = (FactHandle) ksession.insert( a1 );
-        FactHandle fa2 = (FactHandle) ksession.insert( a2 );
-        FactHandle fa3 = (FactHandle) ksession.insert( a3 );
-
-        // a2, a3 are blocked by a1        
-        // modify a1, so that a1,a3 are now blocked by a2
-        a1.setField2( "1" );   // Do
-        ksession.update( fa1, a1 );
-        a1.setField2( "2" );   // Undo
-        ksession.update( fa1, a1 );  
-               
-        
-        // modify a2, so that a1,a2 are now blocked by a3        
-        a2.setField2( "1" );   // Do
-        ksession.update( fa2, a2 );
-        a2.setField2( "2" );   // Undo
-        ksession.update( fa2, a2 );            
-
-        // modify a3 to cycle, so that it goes on the memory end, but in a previous bug still blocked a1
-        ksession.update( fa3, a3 );         
-        
-        a3.setField2( "1" );   // Do
-        ksession.update( fa3, a3 );           
-        ksession.fireAllRules();        
-        assertEquals( 1, list.size() ); // a2 should still be blocked by a1, but bug from previous update hanging onto blocked
-        
-        ksession.dispose();
-    }    
-    
-    
-    
     public static class A {
         private String field1;
         private String field2;
-        
+
         public A(String field1,
                  String field2) {
             this.field1 = field1;
             this.field2 = field2;
         }
-        
+
         public String getField1() {
             return field1;
         }
-        
-        public void setField1(String field1) {
+
+        public void setField1( String field1 ) {
             this.field1 = field1;
         }
-        
+
         public String getField2() {
             return field2;
         }
-        
-        public void setField2(String field2) {
+
+        public void setField2( String field2 ) {
             this.field2 = field2;
         }
-        
+
         public String toString() {
             return "A) " + field1 + ":" + field2;
         }
     }
-    
-    
-    
+
 }
