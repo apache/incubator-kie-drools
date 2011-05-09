@@ -8,6 +8,7 @@
 
     <programlisting><emphasis role="bold">Name:</emphasis> Miss Manners
 <emphasis role="bold">Main class:</emphasis> org.drools.benchmark.manners.MannersBenchmark
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> manners.drl
 <emphasis role="bold">Objective:</emphasis> Advanced walkthrough on the Manners benchmark, covers Depth conflict resolution in depth.</programlisting>
