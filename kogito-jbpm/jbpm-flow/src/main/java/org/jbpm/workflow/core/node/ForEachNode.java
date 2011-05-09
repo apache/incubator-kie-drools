@@ -164,12 +164,16 @@ public class ForEachNode extends CompositeNode {
      
     public void setVariable(String variableName, DataType type) {
         this.variableName = variableName;
-        List<Variable> variables = new ArrayList<Variable>();
+        VariableScope variableScope = (VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE);
+        List<Variable> variables = variableScope.getVariables();
+        if (variables == null) {
+        	variables = new ArrayList<Variable>();
+        	variableScope.setVariables(variables);
+        }
         Variable variable = new Variable();
         variable.setName(variableName);
         variable.setType(type);
         variables.add(variable);
-    	((VariableScope) getCompositeNode().getDefaultContext(VariableScope.VARIABLE_SCOPE)).setVariables(variables);
     }
 
     public String getCollectionExpression() {
