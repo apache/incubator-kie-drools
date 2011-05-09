@@ -8,6 +8,7 @@
 
     <screen><emphasis role="bold">Name:</emphasis> Golfing
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.golfing.GolfingExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> golf.drl
 <emphasis role="bold">Objective:</emphasis> Configuration example that finds the solution from a large number of available cross products
@@ -144,6 +145,7 @@ Tom 3 red     </programlisting>
 
     <programlisting><emphasis role="bold">Name:</emphasis> TroubleTicket
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.TroubleTicketExample, org.drools.examples.TroubleTicketExampleWithDSL
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> java application
 <emphasis role="bold">Rules file:</emphasis> TroubleTicket.drl, TroubleTicketWithDSL.dslr
 <emphasis role="bold">Objective:</emphasis> Show temporal rules in action

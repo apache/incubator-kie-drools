@@ -8,6 +8,7 @@
 
   <screen><emphasis role="bold">Name:</emphasis> Hello World
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.helloworld.HelloWorldExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> HelloWorld.drl
 <emphasis role="bold">Objective:</emphasis> demonstrate basic rules in use</screen>
