@@ -8,6 +8,7 @@
 
     <programlisting><emphasis role="bold">Name:</emphasis> Honest Politician
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.honestpolitician.HonestPoliticianExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> HonestPoliticianExample.drl
 <emphasis role="bold">Objective:</emphasis> Illustrate the concept of "truth maintenance" based on the logical insertion of facts

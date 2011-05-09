@@ -8,7 +8,7 @@
 
   <programlisting><emphasis role="bold">Name:</emphasis> Number Guess
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.numberguess.NumberGuessExample
-<emphasis role="bold">Module:</emphasis> droolsjbpm-integration-examples
+<emphasis role="bold">Module:</emphasis> droolsjbpm-integration-examples (Note: this is in a different download, the droolsjbpm-integration download.)
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> NumberGuess.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrate use of Rule Flow to organise Rules

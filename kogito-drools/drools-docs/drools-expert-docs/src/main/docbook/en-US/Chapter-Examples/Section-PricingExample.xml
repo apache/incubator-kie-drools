@@ -18,6 +18,7 @@
 
     <programlisting><emphasis role="bold">Name:</emphasis> Example Policy Pricing
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.decisiontable.PricingRuleDTExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> ExamplePolicyPricing.xls
 <emphasis role="bold">Objective:</emphasis> demonstrate spreadsheet-based decision tables.</programlisting>

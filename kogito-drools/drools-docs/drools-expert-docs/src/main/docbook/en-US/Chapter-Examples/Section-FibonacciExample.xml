@@ -8,6 +8,7 @@
 
     <screen><emphasis role="bold">Name:</emphasis> Fibonacci 
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.fibonacci.FibonacciExample
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> Fibonacci.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates Recursion,

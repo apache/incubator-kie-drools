@@ -17,6 +17,7 @@
 
       <screen><emphasis role="bold">Name:</emphasis> State Example
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.state.StateExampleUsingSalience
+<emphasis role="bold">Module:</emphasis> drools-examples
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> StateExampleUsingSalience.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates basic rule use
