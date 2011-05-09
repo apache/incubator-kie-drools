@@ -210,7 +210,7 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public boolean isMultiPattern() {
-        return !(this.input instanceof PatternDescr);
+        return !isSinglePattern();
     }
 
     public boolean hasValidInput() {
