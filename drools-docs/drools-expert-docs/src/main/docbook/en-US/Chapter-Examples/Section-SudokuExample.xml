@@ -49,9 +49,9 @@
         </mediaobject>
       </screenshot></para>
 
-    <para>Click on the "Solve" button and the Drools-based engine will fill out the remaining values. The Console window
-    will display detailed information about the rules which are executing to solve the puzzle in a human readable
-    form.</para>
+    <para>Click on the <emphasis>Solve</emphasis> button and the Drools-based engine will fill out the remaining values.
+    The Console window will display detailed information about the rules which are executing to solve the puzzle in a
+    human readable form.</para>
 
     <para><screen>Rule #3 determined the value at (4,1) could not be 4 as this value already exists in the same column at (8,1)
 Rule #3 determined the value at (5,5) could not be 2 as this value already exists in the same row at (5,6)
@@ -65,8 +65,7 @@ Rule #1 cleared the other PossibleCellValues for (1,7) as a ResolvedCellValue of
 Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that can have this value</screen></para>
 
     <para>Once all of the activated rules for the solving logic have executed, the engine executes a second rule base to
-    check that the solution is complete and valid. In this case it is, and the "Solve" button is disabled and displays a
-    text like <code>"Solved (1052ms)"</code>.<screenshot>
+    check that the solution is complete and valid.<screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku2.png"></imagedata>
@@ -74,9 +73,9 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </mediaobject>
       </screenshot></para>
 
-    <para>The example comes with a number of grids which can be loaded and solved. Click on "File", then "Samples" and
-    "Medium" to load a more challenging grid. Note that the solve button is enabled when the new grid is loaded.
-    <screenshot>
+    <para>The example comes with a number of grids which can be loaded and solved. Click on menu
+    <emphasis>File</emphasis>, menu item <emphasis>Samples</emphasis>, menu item <emphasis>Medium</emphasis> to load a
+    more challenging grid.<screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku3.png"></imagedata>
@@ -84,7 +83,7 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </mediaobject>
       </screenshot></para>
 
-    <para>Click on the "Solve" button again to solve this new grid. <screenshot>
+    <para>Click on the <emphasis>Solve</emphasis> button again to solve this new grid. <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku4.png"></imagedata>
@@ -92,9 +91,9 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </mediaobject>
       </screenshot></para>
 
-    <para>Now, let us load a Sudoku grid that is deliberately invalid. Click on "File", "Samples" and "!DELIBERATELY
-    BROKEN!". Note that this grid starts with some issues, for example the value 5 appears twice in the first
-    row.<screenshot>
+    <para>Now, let us load a Sudoku grid that is deliberately invalid. Click on menu <emphasis>File</emphasis>, menu
+    item <emphasis>Samples</emphasis>, menu item <emphasis>!DELIBERATELY BROKEN!</emphasis>. Note that this grid starts
+    with some issues, for example the value 5 appears twice in the first row.<screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku5.png"></imagedata>
@@ -102,8 +101,8 @@ Rule #6 determined (1,1) is 8 as this is the only possible cell in the row that 
         </mediaobject>
       </screenshot></para>
 
-    <para>Nevertheless, click on the "Solve" button to apply the solving rules to this invalid grid. Note that the
-    "Solve" button is relabelled to indicate that the resulting solution is invalid. <screenshot>
+    <para>Nevertheless, click on the <emphasis>Solve</emphasis> button to apply the solving rules to this invalid
+    grid.<screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku6.png"></imagedata>
@@ -131,8 +130,9 @@ There are two cells on the same column with the same value at (7,3) and (6,3)
 There are two cells on the same column with the same value at (6,3) and (7,3)</programlisting>
 
     <para>We will look at the solving rule set later in this section, but for the moment we should note that some
-    theoretically solvable solutions can not be solved by the engine as it stands. Click on "File", "Samples" and then
-    "Hard 3" to load a sparsely populated grid. <screenshot>
+    theoretically solvable solutions can not be solved by the engine as it stands. Click on menu
+    <emphasis>File</emphasis>, menu item <emphasis>Samples</emphasis>, menu item <literal>Hard 3</literal> to load a
+    sparsely populated grid. <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku7.png"></imagedata>
@@ -140,8 +140,9 @@ There are two cells on the same column with the same value at (6,3) and (7,3)</p
         </mediaobject>
       </screenshot></para>
 
-    <para>Now click on the "Solve" button and note that the current rules are unable to complete the grid, even though
-    (if you are a Sudoku aficionado) you may be able to see a way forward with the solution. <screenshot>
+    <para>Now click on the <emphasis>Solve</emphasis> button and note that the current rules are unable to complete the
+    grid, even though (if you are a Sudoku aficionado) you may be able to see a way forward with the solution.
+    <screenshot>
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku8.png"></imagedata>
