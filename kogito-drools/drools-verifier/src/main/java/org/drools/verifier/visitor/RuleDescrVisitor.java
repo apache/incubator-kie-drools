@@ -28,14 +28,12 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.verifier.components.Consequence;
 import org.drools.verifier.components.OperatorDescrType;
-import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.RuleEval;
 import org.drools.verifier.components.RuleOperatorDescr;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.TextConsequence;
-import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.data.VerifierData;
@@ -83,7 +81,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
 
         solvers.endRuleSolver();
 
-        formPossibilities();
+        addSubItems();
     }
 
     @Override
@@ -211,19 +209,12 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
                        orderNumber.next() );
     }
 
-    private void formPossibilities() {
-
+    private void addSubItems() {
         for ( SubPattern subPattern : solvers.getPatternPossibilities() ) {
-            Pattern pattern = data.getVerifierObject( VerifierComponentType.PATTERN,
-                                                      subPattern.getPatternPath() );
-
             data.add( subPattern );
         }
 
         for ( SubRule subRule : solvers.getRulePossibilities() ) {
-            VerifierRule rule = data.getVerifierObject( VerifierComponentType.RULE,
-                                                        subRule.getRulePath() );
-
             data.add( subRule );
         }
     }
