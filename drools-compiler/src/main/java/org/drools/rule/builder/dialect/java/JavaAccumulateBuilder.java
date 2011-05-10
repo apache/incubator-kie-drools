@@ -34,6 +34,7 @@ import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Declaration;
@@ -73,9 +74,14 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
         }
 
         // build source
-        final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( accumDescr.getInput().getClass() );
+        BaseDescr input = accumDescr.getInput();
+        if( input instanceof AndDescr && ((AndDescr) input).getDescrs().size() == 1 ) {
+            input = ((AndDescr) input).getDescrs().get( 0 );
+        }
+        
+        final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( input.getClass() );
         final RuleConditionElement source = builder.build( context,
-                                                           accumDescr.getInput() );
+                                                           input );
         if ( source == null ) {
             return null;
         }
