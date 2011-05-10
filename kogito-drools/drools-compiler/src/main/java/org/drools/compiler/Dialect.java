@@ -102,5 +102,7 @@ public interface Dialect {
 
     void preCompileAddFunction(FunctionDescr functionDescr,
                                TypeResolver typeResolver);
+    
+    PackageRegistry getPackageRegistry();
 
 }

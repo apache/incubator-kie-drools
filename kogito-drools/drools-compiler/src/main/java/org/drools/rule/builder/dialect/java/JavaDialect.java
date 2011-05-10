@@ -659,5 +659,9 @@ public class JavaDialect
     public String getId() {
         return ID;
     }
+    
+    public PackageRegistry getPackageRegistry() {
+        return this.packageRegistry;
+    }
 
 }
