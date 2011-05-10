@@ -100,7 +100,7 @@
 
     <para>Drools Planner is production ready. The API is almost stable but backward incompatible changes can
     occur. With the recipe called
-    <link xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/docs/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
+    <link xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
     you can easily upgrade and deal with any backwards incompatible changes between versions.
     This recipe is included in every release.</para>
 
