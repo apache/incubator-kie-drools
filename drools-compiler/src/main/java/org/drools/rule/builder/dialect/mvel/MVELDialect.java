@@ -697,4 +697,8 @@ public class MVELDialect
         return this.id;
     }
 
+    public PackageRegistry getPackageRegistry() {
+        return this.packageRegistry;
+    }
+
 }
