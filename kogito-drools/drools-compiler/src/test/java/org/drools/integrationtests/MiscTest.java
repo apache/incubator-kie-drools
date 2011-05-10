@@ -8290,6 +8290,60 @@ public class MiscTest {
                       rules );
     }
     
+    @Test
+    public void testNotMatchesSucceeds() throws InstantiationException,
+                                    IllegalAccessException {
+        // JBRULES-2914: Rule misfires due to "not matches" not working
+
+        String str = "package org.drools\n" +
+                     "rule NotMatches\n" +
+                     "when\n" +
+                     "    Person( name == null || (name != null && name not matches \"-.{2}x.*\" ) )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("-..x..xrwx" );
+
+        ksession.insert( p );
+
+        int rules = ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 0,
+                      rules );
+    }
+
+    @Test
+    public void testNotMatchesFails() throws InstantiationException,
+                                    IllegalAccessException {
+        // JBRULES-2914: Rule misfires due to "not matches" not working
+
+        String str = "package org.drools\n" +
+                     "rule NotMatches\n" +
+                     "when\n" +
+                     "    Person( name == null || (name != null && name not matches \"-.{2}x.*\" ) )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p = new Person("d..x..xrwx" );
+
+        ksession.insert( p );
+
+        int rules = ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 1,
+                      rules );
+    }
+
     private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
