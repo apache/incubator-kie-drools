@@ -35,10 +35,10 @@ import static org.junit.Assert.*;
  * in graphs which show the execution time over builds.
  * <p/>
  * Recommended courtesy notes: Always use a timeout value on @Test.
- * The timeout should be the double of the timeout on a normal 3 year old desktop computer,
+ * The timeout should be the triple of the timeout on a normal 3 year old desktop computer,
  * because some of the hudson machines are old.
  * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
- * then specify a timeout of 2 minutes.
+ * then specify a timeout of 3 minutes.
  */
 public abstract class SolverPerformanceTest extends LoggingTest {
 

@@ -41,13 +41,13 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest {
     // Tests
     // ************************************************************************
 
-    @Test(timeout = 60000)
+    @Test(timeout = 180000)
     public void solveComp01_initialized() {
         File unsolvedDataFile = new File("data/travelingtournament/smart/unsolved/1-nl10.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-75968soft");
     }
 
-    @Test(timeout = 60000)
+    @Test(timeout = 180000)
     public void solveTestdata01_initializedDebug() {
         File unsolvedDataFile = new File("data/travelingtournament/smart/unsolved/1-nl10.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-77619soft", EnvironmentMode.DEBUG);
