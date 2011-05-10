@@ -53,43 +53,30 @@
   </scm>
 
   <repositories>
+    <!-- Conventions are described in http://community.jboss.org/wiki/MavenGettingStarted-Developers -->
     <repository>
       <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
         <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
     <repository>
-      <id>jboss-public-repository-group-old</id>
-      <name>JBoss Public Maven Repository Group (Old)</name>
-      <url>http://repository.jboss.org/maven2/</url>
-      <layout>default</layout>
+      <id>jboss-deprecated</id>
+      <name>JBoss Deprecated</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
         <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-snapshot-repository-group</id>
-      <name>JBoss SNAPSHOT Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </repository>
     <!-- used in jbpm-workitems for commons-finder -->
@@ -99,20 +86,16 @@
       <url>http://people.apache.org/repo/m2-snapshot-repository/</url>
     </repository>
   </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <id>jboss-public-repository-group</id>
-      <name>JBoss Public Maven Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
       <releases>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </releases>
       <snapshots>
         <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
