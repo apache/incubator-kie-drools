@@ -53,7 +53,7 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
         }
 
         public void close() {
-            logger.writeToDisk();
+            logger.stop();
         }
 
     }
@@ -68,7 +68,6 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
 
         public void close() {
             logger.stop();
-            logger.writeToDisk();
         }
 
     }
