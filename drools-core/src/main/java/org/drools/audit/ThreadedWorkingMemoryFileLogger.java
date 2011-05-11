@@ -43,7 +43,7 @@ public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
     
     public void stop() {
         writer.interrupt();
-        writeToDisk();
+        super.stop();
     }
     
     public synchronized void logEventCreated(final LogEvent logEvent) {
