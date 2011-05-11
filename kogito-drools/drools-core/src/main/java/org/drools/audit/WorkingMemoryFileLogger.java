@@ -52,6 +52,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
     private int        nbOfFile          = 0;
     private boolean    split             = true;
     private boolean    initialized       = false;
+    protected boolean terminate = false;
 
     public WorkingMemoryFileLogger() {
     }
@@ -77,6 +78,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         nbOfFile            = in.readInt();
         split               = in.readBoolean();
         initialized         = in.readBoolean();
+        terminate = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -87,6 +89,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         out.writeInt(nbOfFile);
         out.writeBoolean(split);
         out.writeBoolean(initialized);
+        out.writeBoolean( terminate );
     }
 
     /**
@@ -125,16 +128,19 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
                 fileWriter.write(xstream.toXML(event) + "\n");
             }
             if (split) {
+                fileWriter.write("</object-stream>");
                 this.nbOfFile++;
                 initialized = false;
             }
-            fileWriter.write("</object-stream>");
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             t.printStackTrace( System.err );
         } finally {
             if( fileWriter != null ) { try { fileWriter.close(); } catch(Exception e) {} }
+        }
+        if(terminate) {
+            terminateLog();
         }
     }
     
@@ -146,6 +152,19 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             initialized = true;
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
+        } catch ( final Throwable t ) {
+            t.printStackTrace( System.err );
+        }
+    }
+    
+    private void terminateLog() {
+        try {
+            FileWriter writer = new FileWriter(this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"), true);
+            writer.append("</object-stream>\n");
+            writer.close();
+            terminate = false;
+        } catch ( final FileNotFoundException exc ) {
+            throw new RuntimeException( "Could not terminate the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
             t.printStackTrace( System.err );
         }
@@ -185,6 +204,11 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
     
     public void setSplit(boolean split) {
         this.split = split;
+    }
+    
+    public void stop() {
+        terminate=true;
+        writeToDisk();
     }
 
 }
