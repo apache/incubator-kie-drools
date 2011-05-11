@@ -43,13 +43,14 @@ public class HelloWorldExample {
                 .newKnowledgeBuilder();
 
         // this will parse and compile in one step
-        kbuilder.add(ResourceFactory.newClassPathResource("HelloWorld.drl",
-                HelloWorldExample.class), ResourceType.DRL);
+        kbuilder.add( ResourceFactory.newClassPathResource( "HelloWorld.drl",
+                                                            HelloWorldExample.class ),
+                      ResourceType.DRL );
 
         // Check the builder for errors
-        if (kbuilder.hasErrors()) {
-            System.out.println(kbuilder.getErrors().toString());
-            throw new RuntimeException("Unable to compile \"HelloWorld.drl\".");
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors().toString() );
+            throw new RuntimeException( "Unable to compile \"HelloWorld.drl\"." );
         }
 
         // get the compiled packages (which are serializable)
@@ -58,38 +59,43 @@ public class HelloWorldExample {
 
         // add the packages to a knowledgebase (deploy the knowledge packages).
         final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(pkgs);
+        kbase.addKnowledgePackages( pkgs );
 
         final StatefulKnowledgeSession ksession = kbase
                 .newStatefulKnowledgeSession();
-        ksession.setGlobal("list", new ArrayList<Object>());
+        ksession.setGlobal( "list",
+                            new ArrayList<Object>() );
 
-        ksession.addEventListener(new DebugAgendaEventListener());
-        ksession.addEventListener(new DebugWorkingMemoryEventListener());
+        ksession.addEventListener( new DebugAgendaEventListener() );
+        ksession.addEventListener( new DebugWorkingMemoryEventListener() );
 
         // setup the audit logging
-//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
-//                .newFileLogger(ksession, "log/helloworld.log");
+        // Remove comment to use FileLogger
+        // KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "./helloworld" );
+        
+        // Remove comment to use ThreadedFileLogger so audit view reflects events whilst debugging
+        // KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger( ksession, "./helloworld", 1000 );
 
         final Message message = new Message();
-        message.setMessage("Hello World");
-        message.setStatus(Message.HELLO);
-        ksession.insert(message);
+        message.setMessage( "Hello World" );
+        message.setStatus( Message.HELLO );
+        ksession.insert( message );
 
         ksession.fireAllRules();
 
-//        logger.close();
+        // Remove comment if using logging
+        // logger.close();
 
         ksession.dispose();
     }
 
     public static class Message {
-        public static final int HELLO = 0;
+        public static final int HELLO   = 0;
         public static final int GOODBYE = 1;
 
-        private String message;
+        private String          message;
 
-        private int status;
+        private int             status;
 
         public Message() {
 
@@ -115,9 +121,10 @@ public class HelloWorldExample {
             return message;
         }
 
-        public boolean isSomething(String msg, List<Object> list) {
-            list.add(this);
-            return this.message.equals(msg);
+        public boolean isSomething(String msg,
+                                   List<Object> list) {
+            list.add( this );
+            return this.message.equals( msg );
         }
     }
 
