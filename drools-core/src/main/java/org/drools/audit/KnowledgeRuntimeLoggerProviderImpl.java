@@ -20,31 +20,38 @@ import org.drools.event.KnowledgeRuntimeEventManager;
 import org.drools.logger.KnowledgeRuntimeLogger;
 import org.drools.logger.KnowledgeRuntimeLoggerFactoryService;
 
-public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLoggerFactoryService {
+public class KnowledgeRuntimeLoggerProviderImpl
+    implements
+    KnowledgeRuntimeLoggerFactoryService {
 
-    public KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session, String fileName) {
-        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger(session);
-        if (fileName != null) {
-            logger.setFileName(fileName);
+    public KnowledgeRuntimeLogger newFileLogger(KnowledgeRuntimeEventManager session,
+                                                String fileName) {
+        WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
+        if ( fileName != null ) {
+            logger.setFileName( fileName );
         }
-        return new KnowledgeRuntimeFileLoggerWrapper(logger);
+        return new KnowledgeRuntimeFileLoggerWrapper( logger );
     }
 
-    public KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session, String fileName, int interval) {
-        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger(session);
-        if (fileName != null) {
-            logger.setFileName(fileName);
+    public KnowledgeRuntimeLogger newThreadedFileLogger(KnowledgeRuntimeEventManager session,
+                                                        String fileName,
+                                                        int interval) {
+        ThreadedWorkingMemoryFileLogger logger = new ThreadedWorkingMemoryFileLogger( session );
+        if ( fileName != null ) {
+            logger.setFileName( fileName );
         }
-        logger.start(interval);
-        return new KnowledgeRuntimeThreadedFileLoggerWrapper(logger);
+        logger.start( interval );
+        return new KnowledgeRuntimeThreadedFileLoggerWrapper( logger );
     }
 
     public KnowledgeRuntimeLogger newConsoleLogger(KnowledgeRuntimeEventManager session) {
-        WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger(session);
-        return new KnowledgeRuntimeConsoleLoggerWrapper(logger);
+        WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( session );
+        return new KnowledgeRuntimeConsoleLoggerWrapper( logger );
     }
 
-    private class KnowledgeRuntimeFileLoggerWrapper implements KnowledgeRuntimeLogger {
+    private class KnowledgeRuntimeFileLoggerWrapper
+        implements
+        KnowledgeRuntimeLogger {
 
         private WorkingMemoryFileLogger logger;
 
@@ -58,7 +65,9 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
 
     }
 
-    private class KnowledgeRuntimeThreadedFileLoggerWrapper implements KnowledgeRuntimeLogger {
+    private class KnowledgeRuntimeThreadedFileLoggerWrapper
+        implements
+        KnowledgeRuntimeLogger {
 
         private ThreadedWorkingMemoryFileLogger logger;
 
@@ -72,7 +81,9 @@ public class KnowledgeRuntimeLoggerProviderImpl implements KnowledgeRuntimeLogge
 
     }
 
-    private class KnowledgeRuntimeConsoleLoggerWrapper implements KnowledgeRuntimeLogger {
+    private class KnowledgeRuntimeConsoleLoggerWrapper
+        implements
+        KnowledgeRuntimeLogger {
 
         // private WorkingMemoryConsoleLogger logger;
 
