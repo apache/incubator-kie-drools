@@ -46,7 +46,7 @@
     war into your application server deploy folder.  This version that should deploy without any changes
     on JBoss AS 5.1.0.  Note: If you want to deploy on other (versions of an) application server, you might
     have to adjust the dependencies inside the war based on the default libraries provided by your
-    application server.  The latest version of the designer can be found <ulink url="http://people.redhat.com/tsurdilo/oryx/1.0.0.049-SNAPSHOT/">here</ulink>.</para>
+    application server.  The latest version of the designer can be found <ulink url="http://people.redhat.com/tsurdilo/oryx/1.0.0.051/">here</ulink>.</para>
     
     <para>To open up the designer, open up Guvnor (e.g. <ulink url="http://localhost:8080/drools-guvnor">
     http://localhost:8080/drools-guvnor</ulink>) and either open up an existing BPMN2 process or create
@@ -56,9 +56,9 @@
     of these panels is not visible, click the arrow on the side of the editor to make them move forward).</para>
     
     <para>The designer can also be opened stand-alone by using the following link:
-    <ulink url="http://localhost:8080/designer/editor?profile=drools&amp;uuid=123456">http://localhost:8080/designer/editor?profile=drools&amp;uuid=123456</ulink>
-    (where 123456 should be replaced by the id of the process on guvnor).  You can also open up the editor without uuid reference but in that
-    case you won't be able to load or save processes.</para>
+    <ulink url="http://localhost:8080/designer/editor?profile=jbpm&amp;uuid=123456">http://localhost:8080/designer/editor?profile=jbpm&amp;uuid=123456</ulink>
+    (where 123456 should be replaced by the id of the process on guvnor).  Note that running designer in this way allows you to only view existing processes,
+    and not save any edits nor create new ones. Information on how to integrate designer into your own applications can be found here: http://blog.athico.com/2011/04/using-oryx-designer-and-guvnor-in-your.html.</para>
     
   </section>
   
