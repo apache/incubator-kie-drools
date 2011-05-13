@@ -27,6 +27,7 @@ import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.DisconnectedFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -96,7 +97,9 @@ public class InsertObjectCommand
                                                          factHandle );
         }
         if ( disconnected ){
-            ((DefaultFactHandle)factHandle).disconnect();
+            DefaultFactHandle disconnectedHandle = ((DefaultFactHandle)factHandle).clone();
+            disconnectedHandle.disconnect();
+            return disconnectedHandle;
         }
         return factHandle;
     }
