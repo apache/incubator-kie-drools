@@ -7,9 +7,7 @@
   <title>Installation and Setup (Core and IDE)</title>
 
   <xi:include href="Section-Install.xml" />
-  <xi:include href="Section-Setup.xml" />
-  <xi:include href="Section-Checkout.xml" />
-  <xi:include href="Section-Maven_build.xml" />
+  <xi:include href="Section-Building_from_source.xml" />
   <xi:include href="Section-Eclipse.xml" />
 
 </chapter> 
