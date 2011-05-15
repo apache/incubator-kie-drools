@@ -1,0 +1,38 @@
+package org.drools.examples.sudoku
+
+agenda-group "validate"
+
+rule "terminate group"
+salience -100
+when
+then
+    System.out.println( "Validation complete." );
+    drools.halt();
+end
+
+rule "duplicate in cell row"
+when
+    $c: Cell( $v: value != null ) 
+    $cr: CellRow( cells contains $c )
+    exists Cell( this != $c, value == $v, cellRow == $cr ) 
+then
+    System.out.println( "cell " + $c.toString() + " has a duplicate in row " + $cr.getNumber() );
+end
+
+rule "duplicate in cell col"
+when
+    $c: Cell( $v: value != null ) 
+    $cc: CellCol( cells contains $c )
+    exists Cell( this != $c, value == $v, cellCol == $cc ) 
+then
+    System.out.println( "cell " + $c.toString() + " has a duplicate in col " + $cc.getNumber() );
+end
+
+rule "duplicate in cell sqr"
+when
+    $c: Cell( $v: value != null ) 
+    $cs: CellSqr( cells contains $c )
+    exists Cell( this != $c, value == $v, cellSqr == $cs ) 
+then
+    System.out.println( "cell " + $c.toString() + " has duplicate in its square of nine." );
+end

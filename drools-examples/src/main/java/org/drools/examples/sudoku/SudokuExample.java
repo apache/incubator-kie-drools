@@ -16,6 +16,7 @@
 package org.drools.examples.sudoku;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -80,9 +81,9 @@ public class SudokuExample implements ActionListener {
         try {
             @SuppressWarnings("unused")
             SudokuExample main = new SudokuExample();
-	} catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-	}
+        }
     }
 
     public SudokuExample() throws Exception {
@@ -101,23 +102,34 @@ public class SudokuExample implements ActionListener {
         mainFrame.setJMenuBar(menuBar);
         sudokuGridView = new SudokuGridView();
 
-        KnowledgeBase kBase = DroolsUtil.readKnowledgeBase("/org/drools/examples/sudoku/sudoku.drl");
+        KnowledgeBase kBase = DroolsUtil.readKnowledgeBase("/org/drools/examples/sudoku/sudoku.drl",
+        "/org/drools/examples/sudoku/validate.drl");
         sudoku = new Sudoku( kBase );
 
         mainFrame.setLayout(borderLayout);
         mainFrame.add(BorderLayout.CENTER, sudokuGridView);
+
         buttonPanel.add(solveButton);
         solveButton.addActionListener(this);
         buttonPanel.add(stepButton);
-        stepButton.addActionListener(this);
+        stepButton.addActionListener(this);  
         buttonPanel.add(dumpButton);
+        buttonsActive( false );
         dumpButton.addActionListener(this);
         mainFrame.add(BorderLayout.SOUTH, buttonPanel);
         mainFrame.setSize(400,400);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setResizable( false );       
         mainFrame.setVisible(true);
         sudokuGridView.setModel(sudoku);
     }
+
+    private void buttonsActive(boolean active) {
+        solveButton.setEnabled(active);
+        stepButton.setEnabled(active);
+        dumpButton.setEnabled(active);
+    }
+
 
     private void runFile(String path){
         Integer[][] values = new Integer[9][];
@@ -128,7 +140,7 @@ public class SudokuExample implements ActionListener {
             for( int iRow = 0; iRow < 9;  iRow++ ){
                 values[iRow] = new Integer[9];
                 for( int iCol = 0; iCol < 9; iCol++ ){
-                    if( line != null && line.length() >= 9 ){
+                    if( line != null && line.length() > iCol ){
                         char c = line.charAt( iCol );
                         if( '1' <= c && c <= '9' ){
                             values[iRow][iCol] = Integer.valueOf( c - '0' );
@@ -138,23 +150,34 @@ public class SudokuExample implements ActionListener {
                 line = rdr.readLine();
             }
             sudoku.setCellValues( values );
+            sudoku.validate();
         } catch ( FileNotFoundException e ) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
     public void actionPerformed(ActionEvent ev){
         if (ev.getSource().equals(solveButton) ) {
             sudoku.solve();
-            
+            buttonsActive(false);
+            if (!sudoku.isSolved()) {
+                sudoku.dumpGrid();
+                System.out.println( "Sorry - can't solve this grid." );
+            }
+
         } else if (ev.getSource().equals(stepButton)) {
             sudoku.step();
-           
+            if (sudoku.isSolved() || sudoku.isUnsolvable()) buttonsActive(false);
+            if (sudoku.isUnsolvable()) {
+                sudoku.dumpGrid();
+                System.out.println( "Sorry - can't solve this grid." );
+            }
+
         } else if (ev.getSource().equals(dumpButton)) {
             sudoku.dumpGrid();
-           
+
         } else if (ev.getSource().equals(openMenuItem)) {
             if( fileChooser == null ){
                 fileChooser = new JFileChooser();
@@ -165,17 +188,21 @@ public class SudokuExample implements ActionListener {
                     String path = fileChooser.getSelectedFile().getCanonicalPath();
                     System.out.println(path);
                     runFile(path);
+                    buttonsActive(true);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            
+
         } else if (ev.getSource().equals(exitMenuItem)) {
             System.exit(0);
-            
+
         } else if (ev.getSource() instanceof JMenuItem) {
             JMenuItem menuItem = (JMenuItem) ev.getSource();
             sudoku.setCellValues(SudokuGridSamples.getInstance().getSample(menuItem.getText()));
+            sudoku.validate();
+            buttonsActive(true);
+
         } else {
             //
         }
