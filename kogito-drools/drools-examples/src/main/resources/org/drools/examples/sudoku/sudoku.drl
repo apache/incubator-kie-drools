@@ -1,14 +1,20 @@
 package org.drools.examples.sudoku
 
-import java.util.ArrayList;
-import java.util.List;
-
 global Boolean explain;
 
 rule "halt after setup"
 when
     $ctr: Counter( count == 0 )
 then
+    drools.halt();
+end
+
+rule "emergency halt"
+salience -100
+when
+    $s: Stepping()
+then
+    modify( $s ){ setEmergency( true ) } 
     drools.halt();
 end
 

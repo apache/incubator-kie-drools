@@ -47,6 +47,9 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
     private SudokuWorkingMemoryListener workingMemoryListener = new SudokuWorkingMemoryListener();
     private Counter counter;
     private Boolean explain = false;
+    private FactHandle steppingFactHandle;
+    private Stepping stepping;
+    private boolean unsolvable = false;
     
     /**
      * Constructor.
@@ -185,6 +188,11 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         if (this.isSolved()) return;
         explain = false;
         session.setGlobal("explain", explain);
+        if( steppingFactHandle != null ){
+            session.retract( steppingFactHandle );
+            steppingFactHandle = null;
+            stepping = null;
+        }
         this.session.fireAllRules();
 //        dumpGrid();
     }
@@ -199,17 +207,27 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         session.setGlobal("explain", explain);
         this.counter.setCount(1);
         session.update(session.getFactHandle(this.counter), this.counter);
+        if( steppingFactHandle == null ){
+            steppingFactHandle = session.insert( stepping = new Stepping() );
+        }
         this.session.fireUntilHalt();
+        if( stepping.isEmergency() ){
+            this.unsolvable = true;
+        }
 //        dumpGrid();
     }
 
-    private boolean isSolved() {
+    public boolean isSolved() {
         for (int iRow = 0; iRow < 9; iRow++) {
             for (int iCol = 0; iCol < 9; iCol++) {
                 if (cells[iRow][iCol].getValue() == null) return false;
             }
         }
         return true;
+    }
+    
+    public boolean isUnsolvable(){
+        return unsolvable;
     }
     
     private void create() {
@@ -319,5 +337,10 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
                 }
             }
         }
-    }    
+    }
+    
+    public void validate(){
+        session.getAgenda().getAgendaGroup( "validate" ).setFocus();
+        session.fireUntilHalt();
+    }
 }
