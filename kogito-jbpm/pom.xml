@@ -1,63 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>droolsjbpm-parent</artifactId>
+    <version>5.3.0-SNAPSHOT</version>
+  </parent>
+
   <groupId>org.jbpm</groupId>
   <artifactId>jbpm</artifactId>
   <packaging>pom</packaging>
-  <name>jBPM</name>
+  <!-- jBPM has it's own lifecycle and it's own version -->
   <version>5.2.0-SNAPSHOT</version>
+
+  <name>jBPM</name>
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
+
   <properties>
     <drools.version>5.3.0-SNAPSHOT</drools.version>
     <drools.osgi.version>5.3.0.SNAPSHOT</drools.osgi.version>
     <jbpm.osgi.version>5.2.0.SNAPSHOT</jbpm.osgi.version>
   </properties>
-  <prerequisites>
-    <maven>3.0.3</maven>
-  </prerequisites>
-  <issueManagement>
-    <system>jira</system>
-    <url>https://jira.jboss.org/browse/JBPM</url>
-  </issueManagement>
-  <developers>
-    <developer>
-      <name>Kris Verlaenen</name>
-      <id>krisv</id>
-      <email>kris.verlaenen@gmail.com</email>
-      <organization>JBoss Inc.</organization>
-      <roles>
-        <role>Project Lead</role>
-      </roles>
-      <timezone>+1</timezone>
-    </developer>
-  </developers>
-  <organization>
-    <name>JBoss Inc.</name>
-    <url>http://www.jboss.org/</url>
-  </organization>
-  <licenses>
-    <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <url>https://github.com/krisv/jbpm</url>
-    <connection>https://github.com/krisv/jbpm</connection>
-    <developerConnection>https://github.com/krisv/jbpm</developerConnection>
-  </scm>
 
   <repositories>
-    <!-- Conventions are described in http://community.jboss.org/wiki/MavenGettingStarted-Developers -->
+    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Repository Group</name>
       <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
@@ -67,112 +41,39 @@
         <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
-    <repository>
-      <id>jboss-deprecated</id>
-      <name>JBoss Deprecated</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/deprecated/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <!-- used in jbpm-workitems for commons-finder -->
-    <repository>
-      <id>apache-incubating</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://people.apache.org/repo/m2-snapshot-repository/</url>
-    </repository>
   </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
+
+  <scm>
+    <connection>scm:git:git@github.com:droolsjbpm/jbpm.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/jbpm.git</developerConnection>
+    <url>https://github.com/droolsjbpm/jbpm</url>
+  </scm>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.jboss.org/browse/JBPM</url>
+  </issueManagement>
 
   <modules>
     <module>jbpm-flow</module>
     <module>jbpm-flow-builder</module>
     <module>jbpm-persistence-jpa</module>
-    <module>jbpm-bpmn2</module>	
-    <module>jbpm-bam</module>	
+    <module>jbpm-bpmn2</module>
+    <module>jbpm-bam</module>
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
     <module>jbpm-gwt</module>
   </modules>
-  
+
   <build>
     <testResources>
       <testResource>
+        <!-- TODO this overwrite is not normal -->
         <directory>src/test/java</directory>
       </testResource>
       <testResource>
         <directory>src/test/resources</directory>
       </testResource>
     </testResources>
-    <pluginManagement>
-      <plugins>				  
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.3.1</version>
-          <configuration>
-            <source>1.5</source>
-            <target>1.5</target>
-            <fork>true</fork>
-            <meminitial>128m</meminitial>
-            <maxmem>512m</maxmem>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.5</version>
-          <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-            <excludes>
-              <exclude>**/*AbstractTest.java</exclude>
-            </excludes>
-            <argLine>-Xmx1024m</argLine>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>maven-bundle-plugin</artifactId>
-          <version>2.1.0</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.1</version>
-          <executions>
-            <execution>
-              <goals>
-                <goal>test-jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>				  
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>
@@ -188,16 +89,9 @@
         <module>jbpm-distribution</module>
       </modules>
     </profile>
-  </profiles> 
+  </profiles>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-   
+  <!-- TODO define all dependency versions in droolsjbpm-parent - bring them inline -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -415,18 +309,5 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <distributionManagement>
-    <repository>
-      <id>jboss-releases-repository</id>
-      <name>JBoss Releases Repository</name>
-      <url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshot Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
 
 </project>
