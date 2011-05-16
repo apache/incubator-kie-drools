@@ -34,8 +34,20 @@ public interface MarshallerProvider extends Service {
 
     ObjectMarshallingStrategy newSerializeMarshallingStrategy(ObjectMarshallingStrategyAcceptor acceptor);
 
+    /**
+     * The marshalling strategies for this method are undefined and thus they are derived from the ksession's or environment
+     * provided
+     * @param kbase
+     * @return
+     */
     Marshaller newMarshaller(KnowledgeBase kbase);
 
+    /**
+     * This will override the strategies specified in the ksession or environment.
+     * @param kbase
+     * @param strategies
+     * @return
+     */
     Marshaller newMarshaller(KnowledgeBase kbase,
                              ObjectMarshallingStrategy[] strategies);
 }
