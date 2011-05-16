@@ -27,6 +27,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
@@ -85,7 +86,11 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.entryPoints = new HashMap<String, EntryPoint>();
         this.propagationContexts = new HashMap<Long, PropagationContext>();
         if(resolverStrategyFactory == null){
-            this.resolverStrategyFactory = new ObjectMarshallingStrategyStore((ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+            ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+            if ( strats == null ) {
+                strats = new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() } ;
+            }
+            this.resolverStrategyFactory = new ObjectMarshallingStrategyStore(strats);
         }
         else{
             this.resolverStrategyFactory = resolverStrategyFactory;

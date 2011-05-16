@@ -34,7 +34,9 @@ public class MarshallingConfigurationImpl
     public MarshallingConfigurationImpl(ObjectMarshallingStrategy[] strategies,
                                         boolean marshallProcessInstances,
                                         boolean marshallWorkItems) {
-        this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore( strategies );
+        if ( strategies != null ) {
+            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore( strategies );
+        }
         this.marshallProcessInstances = marshallProcessInstances;
         this.marshallWorkItems = marshallWorkItems;
     }
