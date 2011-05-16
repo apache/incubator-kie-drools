@@ -131,7 +131,8 @@ public class DefaultMarshaller
                                                                      RuleBaseNodes.getNodeMap( (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase() ),
                                                                      this.strategyStore,
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
-                                                                     this.marshallingConfig.isMarshallWorkItems(), ksession.getEnvironment());
+                                                                     this.marshallingConfig.isMarshallWorkItems(), 
+                                                                     ksession.getEnvironment());
         OutputMarshaller.writeSession( context );
         context.close();
     }
