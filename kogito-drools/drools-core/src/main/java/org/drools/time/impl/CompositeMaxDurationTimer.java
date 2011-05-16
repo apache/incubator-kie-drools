@@ -53,10 +53,16 @@ public class CompositeMaxDurationTimer
         this.timer = timer;
     }
 
-    public Trigger createTrigger( long timestamp,
+    public Trigger createTrigger( long timestamp, // current time
                                   String[] calendarNames,
                                   Calendars calendars ) {
-        return new CompositeMaxDurationTrigger( new Date( getMaxDuration() + timestamp ),
+        if ( this.durations == null ) {
+            throw new IllegalStateException( "CompositeMaxDurationTimer cannot have no durations" );
+        }
+        
+        Date maxDurationDate = new Date( getMaxDuration() + timestamp );
+        
+        return new CompositeMaxDurationTrigger( maxDurationDate,
                                                 timer != null ? timer.createTrigger( timestamp,
                                                                                      calendarNames,
                                                                                      calendars ) : null,

@@ -140,6 +140,9 @@ public class IntervalTrigger
     }
 
     public Date nextFireTime() {
+        if ( this.nextFireTime == null ) {
+            return null;
+        }
         Date date = this.nextFireTime;
         // FIXME: this is not safe for serialization
         this.nextFireTime = getTimeAfter();

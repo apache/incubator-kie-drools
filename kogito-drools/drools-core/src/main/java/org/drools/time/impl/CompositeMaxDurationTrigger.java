@@ -24,32 +24,43 @@ import org.drools.time.Trigger;
 public class CompositeMaxDurationTrigger
     implements
     Trigger {
-    private Trigger            trigger;
-    private Date               timestamp;
+    private Trigger            timerTrigger;
+    private Date               maxDurationTimestamp;
+    private Date               timerCurrentDate;
 
-    public CompositeMaxDurationTrigger(Date timestamp, // this is the first duration that takes priority
-                                       Trigger trigger,
+    public CompositeMaxDurationTrigger(Date maxDurationTimestamp, // this max duration of when rules are allowed to fire (cep rules like 'not')
+                                       Trigger timerTrigger, // trigger of when a rule should try to fire, should not execute before maxDurationTimestamp
                                        String[] calendarNames,
                                        Calendars calendars) {
-        this.timestamp = timestamp;
-        this.trigger = trigger;
-    }
-
-    public Date hasNextFireTime() {
-        if ( this.timestamp != null ) {
-            return this.timestamp;
-        } else {
-            return this.trigger != null ? this.trigger.hasNextFireTime() : null;
+        this.maxDurationTimestamp = maxDurationTimestamp;
+        this.timerTrigger = timerTrigger;
+        
+        if ( this.timerTrigger != null ) {
+            // if there is a timerTrigger, make sure it's scheduler AFTER the current max duration.
+            while ( this.timerTrigger.hasNextFireTime() != null && this.timerTrigger.hasNextFireTime().getTime() <= this.maxDurationTimestamp.getTime() ) {
+                this.timerTrigger.nextFireTime(); 
+            }
         }
     }
 
-    public Date nextFireTime() {
-        if ( this.timestamp != null ) {
-            Date next = this.timestamp;
-            this.timestamp = null;
-            return next;
+    public Date hasNextFireTime() {
+        if (  this.maxDurationTimestamp != null ) {
+            return this.maxDurationTimestamp;
+        } else if ( this.timerTrigger != null ){
+            return this.timerTrigger.hasNextFireTime();
         } else {
-            return this.trigger != null ? trigger.nextFireTime() : null;
+            return null;
+        }
+    }
+
+    public Date nextFireTime() { 
+        if (  this.maxDurationTimestamp != null ) {
+            this.maxDurationTimestamp = null;
+        }
+        if ( this.timerTrigger != null ) {
+            return this.timerTrigger.nextFireTime();
+        } else {
+            return null;
         }
     }
 
