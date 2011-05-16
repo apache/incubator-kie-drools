@@ -75,6 +75,10 @@ public class MockObjectSource extends ObjectSource {
     public void addFact(final InternalFactHandle handle) {
         this.facts.add( handle );
     }
+    
+    public void removeFact(final InternalFactHandle handle) {
+        this.facts.remove( handle );
+    }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
