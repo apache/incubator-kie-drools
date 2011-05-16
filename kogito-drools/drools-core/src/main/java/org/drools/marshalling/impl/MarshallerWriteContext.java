@@ -26,6 +26,7 @@ import java.util.Map;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.runtime.Environment;
@@ -77,7 +78,11 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.wm = wm;
         this.sinks = sinks;
         if(resolverStrategyFactory == null){
-            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore((ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
+            ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[])env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);
+            if ( strats == null ) {
+                strats = new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() } ;
+            }
+            this.objectMarshallingStrategyStore = new ObjectMarshallingStrategyStore(strats);
         }
         else{
             this.objectMarshallingStrategyStore = resolverStrategyFactory;
