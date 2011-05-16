@@ -1,54 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>jbpm</artifactId>
     <groupId>org.jbpm</groupId>
+    <artifactId>jbpm</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>jbpm-bpmn2</artifactId>
-  <packaging>jar</packaging>
+
   <name>jBPM :: BPMN2</name>
 
-   <build>
-      <plugins>
-         <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <configuration>
-               <archive>
-                  <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-               </archive>
-            </configuration>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>maven-bundle-plugin</artifactId>
-            <extensions>true</extensions>
-            <executions>
-               <execution>
-                  <id>manifest</id>
-                  <phase>process-classes</phase>
-                  <goals>
-                     <goal>manifest</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <manifestLocation>META-INF</manifestLocation>
-               <instructions>
-                  <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
-                  <_removeheaders>Ignore-Package</_removeheaders> 
-                  <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
-                  <Import-Package>!org.jbpm.*, !org.drools.*, *</Import-Package>
-                  <Export-Package> org.jbpm.*</Export-Package>
-                  <DynamicImport-Package>*</DynamicImport-Package>
-                  <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
-               </instructions>
-            </configuration>
-         </plugin>
-      </plugins>
-   </build>    
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <manifestLocation>META-INF</manifestLocation>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.bpmn2;singleton:=true</Bundle-SymbolicName>
+            <_removeheaders>Ignore-Package</_removeheaders>
+            <Require-Bundle>org.jbpm.flow.builder;bundle-version="${jbpm.osgi.version}"</Require-Bundle>
+            <Import-Package>!org.jbpm.*, !org.drools.*, *</Import-Package>
+            <Export-Package>org.jbpm.*</Export-Package>
+            <DynamicImport-Package>*</DynamicImport-Package>
+            <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
     <dependency>
