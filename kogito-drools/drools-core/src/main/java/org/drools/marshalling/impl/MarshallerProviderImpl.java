@@ -47,7 +47,7 @@ public class MarshallerProviderImpl implements MarshallerProvider {
     }
     
     public Marshaller newMarshaller(KnowledgeBase kbase) {
-        return newMarshaller(kbase, new ObjectMarshallingStrategy[] { newSerializeMarshallingStrategy() } );
+        return newMarshaller(kbase, null );
     }
     
     public Marshaller newMarshaller(KnowledgeBase kbase, ObjectMarshallingStrategy[] strategies) {
