@@ -813,7 +813,7 @@ public class StandaloneBPMNProcessTest extends TestCase {
 		((PackageBuilderConfiguration) conf).addSemanticModule(new BPMNDISemanticModule());
 //		ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
 		XmlProcessReader processReader = new XmlProcessReader(
-	        ((PackageBuilderConfiguration) conf).getSemanticModules());
+	        ((PackageBuilderConfiguration) conf).getSemanticModules(), getClass().getClassLoader());
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 		List<Process> processes = processReader.read(SimpleBPMNProcessTest.class.getResourceAsStream("/" + process));
         for (Process p : processes) {

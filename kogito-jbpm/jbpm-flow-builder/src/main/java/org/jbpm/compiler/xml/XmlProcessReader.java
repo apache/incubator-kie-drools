@@ -18,11 +18,11 @@ public class XmlProcessReader {
 
     private List<Process>        processes;
 
-    public XmlProcessReader(final SemanticModules modules) {
-        this( modules, null );
+    public XmlProcessReader(final SemanticModules modules, ClassLoader classLoader) {
+        this( modules, classLoader, null );
     }
 
-    public XmlProcessReader(final SemanticModules modules, final SAXParser parser) {
+    public XmlProcessReader(final SemanticModules modules, ClassLoader classLoader, final SAXParser parser) {
         if ( parser == null ) {
             this.parser = new ExtensibleXmlParser();
         } else {
@@ -30,6 +30,7 @@ public class XmlProcessReader {
         }      
         this.parser.setSemanticModules( modules );
         this.parser.setData( new ProcessBuildData() );
+        this.parser.setClassLoader( classLoader );
     }
 
     /**

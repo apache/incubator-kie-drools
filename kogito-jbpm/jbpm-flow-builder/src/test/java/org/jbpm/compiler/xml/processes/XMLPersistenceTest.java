@@ -116,7 +116,7 @@ public class XMLPersistenceTest extends JbpmTestCase {
         
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
-        XmlProcessReader reader = new XmlProcessReader(modules);
+        XmlProcessReader reader = new XmlProcessReader(modules, getClass().getClassLoader());
         List<Process> processes = reader.read(new StringReader(xml));
         assertNotNull(processes);
         process = (RuleFlowProcess) processes.get(0);
@@ -546,7 +546,7 @@ public class XMLPersistenceTest extends JbpmTestCase {
         
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
-        XmlProcessReader reader = new XmlProcessReader(modules);
+        XmlProcessReader reader = new XmlProcessReader(modules, getClass().getClassLoader());
         List<Process> processes = reader.read(new StringReader(xml));
         assertNotNull(processes);
         process = (RuleFlowProcess) processes.get(0);

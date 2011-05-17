@@ -14,7 +14,7 @@ public class TestXml extends JbpmTestCase {
     public void testSimpleXml() throws Exception {
         SemanticModules modules = new SemanticModules();
         modules.addSemanticModule(new ProcessSemanticModule());
-        XmlProcessReader reader = new XmlProcessReader(modules);
+        XmlProcessReader reader = new XmlProcessReader(modules, getClass().getClassLoader());
         reader.read(new InputStreamReader(TestXml.class.getResourceAsStream("XmlTest.xml")));
         List<Process> processes = reader.getProcess();
         assertNotNull(processes);
@@ -24,7 +24,7 @@ public class TestXml extends JbpmTestCase {
 
         String output = XmlRuleFlowProcessDumper.INSTANCE.dump(process);
         System.out.println(output);
-        reader = new XmlProcessReader(new SemanticModules());
+        reader = new XmlProcessReader(new SemanticModules(), getClass().getClassLoader());
         reader.read(new StringReader(output));
     }
 }

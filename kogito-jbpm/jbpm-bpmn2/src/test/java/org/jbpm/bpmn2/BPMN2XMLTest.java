@@ -48,7 +48,7 @@ public class BPMN2XMLTest extends XMLTestCase {
 		SemanticModules modules = new SemanticModules();
 		modules.addSemanticModule(new BPMNSemanticModule());
 		modules.addSemanticModule(new BPMNDISemanticModule());
-        XmlProcessReader processReader = new XmlProcessReader(modules);
+        XmlProcessReader processReader = new XmlProcessReader(modules, getClass().getClassLoader());
         for (String processName: processes) {
 			String original = slurp(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
 			List<Process> processes = processReader.read(BPMN2XMLTest.class.getResourceAsStream("/" + processName));
