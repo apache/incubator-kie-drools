@@ -37,11 +37,8 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.junit.Ignore;
+import org.junit.Test;
 
-/**
- * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 3, 2008 Time: 11:19:44 AM To change this template use File |
- * Settings | File Templates.
- */
 public class DroolsObjectIOTest {
 
     private static final String TEST_FILE   = "test.dat";
@@ -58,7 +55,7 @@ public class DroolsObjectIOTest {
         
     }
 
-    @org.junit.Test
+    @Test
     public void testFileIO() throws Exception {
         File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
         ByteArrayOutputStream   bytes   = new ByteArrayOutputStream();
@@ -112,7 +109,7 @@ public class DroolsObjectIOTest {
         }
     }
 
-    @org.junit.Test
+    @Test
     public void testObject() throws Exception {
         SerializableObject    obj = new ExternalizableObject();
 
@@ -154,7 +151,7 @@ public class DroolsObjectIOTest {
         return bytes.toByteArray();
     }
 
-    @org.junit.Test
+    @Test
     public void testStreaming() throws Exception {
         Package pkg = new Package("test");
 
