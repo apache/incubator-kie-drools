@@ -1,0 +1,18 @@
+package org.drools;
+
+import org.drools.StockTick;
+
+global java.util.List results;
+
+declare StockTick 
+    @role( event )
+    @expires( 10s )
+end
+
+rule "TestEventReceived"
+no-loop
+when
+	$st1 : StockTick( company == "ACME" ) over window:time( 10s ) from entry-point "Event Stream"
+then
+	results.add( $st1 );
+end
