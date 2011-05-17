@@ -37,7 +37,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>src/main/assembly/docs</directory>
+      <directory>src/main/assembly/filtered-resources</directory>
       <filtered>true</filtered>
       <outputDirectory/>
     </fileSet>

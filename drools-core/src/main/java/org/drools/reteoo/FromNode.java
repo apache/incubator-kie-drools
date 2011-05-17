@@ -193,8 +193,7 @@ public class FromNode extends LeftTupleSource
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
-        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
-        memory.betaMemory.getLeftTupleMemory().add( leftTuple );
+        memory.betaMemory.getLeftTupleMemory().removeAdd( leftTuple );
 
         final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
         final Map<Object, RightTuple> newMatches = new LinkedHashMap<Object, RightTuple>();

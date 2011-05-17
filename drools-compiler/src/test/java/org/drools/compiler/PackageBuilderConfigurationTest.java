@@ -440,6 +440,12 @@ public class PackageBuilderConfigurationTest {
             // TODO Auto-generated method stub
             return null;
         }
+        
+        public PackageRegistry getPackageRegistry() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 
     public static class MockEvalBuilder

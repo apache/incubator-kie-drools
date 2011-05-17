@@ -21,15 +21,15 @@ import org.drools.audit.event.LogEvent;
 import org.drools.event.KnowledgeRuntimeEventManager;
 
 public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
-    
-    private int interval = 1000;
+
+    private int    interval = 1000;
     private Writer writer;
-    
+
     public ThreadedWorkingMemoryFileLogger(WorkingMemory workingMemory) {
-        super(workingMemory);
-        setSplit(false);
+        super( workingMemory );
+        setSplit( false );
     }
-    
+
     public ThreadedWorkingMemoryFileLogger(KnowledgeRuntimeEventManager session) {
         super( session );
         setSplit( false );
@@ -38,34 +38,38 @@ public class ThreadedWorkingMemoryFileLogger extends WorkingMemoryFileLogger {
     public void start(int interval) {
         this.interval = interval;
         writer = new Writer();
-        new Thread(writer).start();
+        new Thread( writer ).start();
     }
-    
+
     public void stop() {
         writer.interrupt();
-        writeToDisk();
+        super.stop();
     }
-    
+
     public synchronized void logEventCreated(final LogEvent logEvent) {
-        super.logEventCreated(logEvent);
+        super.logEventCreated( logEvent );
     }
-    
+
     public synchronized void writeToDisk() {
         super.writeToDisk();
     }
-    
-    private class Writer implements Runnable {
+
+    private class Writer
+        implements
+        Runnable {
         private boolean interrupt = false;
+
         public void run() {
-            while (!interrupt) {
+            while ( !interrupt ) {
                 try {
-                    Thread.sleep(interval);
-                } catch (Throwable t) {
+                    Thread.sleep( interval );
+                } catch ( Throwable t ) {
                     // do nothing
                 }
                 writeToDisk();
             }
         }
+
         public void interrupt() {
             this.interrupt = true;
         }

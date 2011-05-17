@@ -1250,6 +1250,9 @@ public abstract class AbstractWorkingMemory
         if ( processRuntime != null ) {
             this.processRuntime.dispose();
         }
+        if ( timerService != null ) {
+        	this.timerService.shutdown();
+        }
     }
 
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
@@ -1399,8 +1402,7 @@ public abstract class AbstractWorkingMemory
 
     public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {
         if ( this.marshallingStore == null ) {
-            this.marshallingStore = new ObjectMarshallingStrategyStore(
-                                                                        (ObjectMarshallingStrategy[]) this.environment.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES ) );
+            this.marshallingStore = new ObjectMarshallingStrategyStore( (ObjectMarshallingStrategy[]) this.environment.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES ) );
         }
         return this.marshallingStore;
     }

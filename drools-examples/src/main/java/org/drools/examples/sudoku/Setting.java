@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ public class Setting {
      * @param col the column number of the Cell to set
      * @param value the value to set
      */
-    public Setting( int row, int col, Integer value ){
+    public Setting (int row, int col, Integer value) {
         this.rowNo = row;
         this.colNo = col;
         this.value = value;

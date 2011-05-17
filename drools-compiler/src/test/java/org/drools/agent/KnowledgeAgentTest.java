@@ -298,7 +298,7 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
-    @Test @Ignore
+    @Test 
     public void testDeletePackageUrl() throws Exception {
         String rule1 = this.createDefaultRule( "rule1",
                                                "org.drools.test1" );

@@ -15,17 +15,15 @@
  */
 package org.drools.examples.sudoku.swing;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class SudokuGridSamples
-{
-   private Map<String, Integer[][]> samples = new HashMap<String, Integer[][]>();
+public class SudokuGridSamples {
+   private Map<String, Integer[][]> samples = new LinkedHashMap<String, Integer[][]>();
    private static SudokuGridSamples INSTANCE;
    
-   private SudokuGridSamples()
-   {
+   private SudokuGridSamples() {
       samples.put
       (
         "Simple",
@@ -114,7 +112,7 @@ public class SudokuGridSamples
                {null,null,null,3,null,5,null,null,null},
                {null,6,null,null,null,1,null,5,8},
                {7,3,null,9,null,null,null,null,null}}
-      );
+      );    
       
       samples.put
       (
@@ -131,23 +129,18 @@ public class SudokuGridSamples
                {7,3,null,9,null,null,null,null,null}}
       );   }
    
-   public static SudokuGridSamples getInstance()
-   {
-      if (INSTANCE == null)
-      {
+   public static SudokuGridSamples getInstance(){
+      if (INSTANCE == null){
          INSTANCE = new SudokuGridSamples();
       }
-      
       return INSTANCE;
    }
    
-   public Set<String> getSampleNames()
-   {
+   public Set<String> getSampleNames(){
       return samples.keySet();
    }
    
-   public Integer[][] getSample(String name)
-   {
+   public Integer[][] getSample(String name){
       return samples.get(name);
    }
 }

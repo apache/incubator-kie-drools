@@ -9,6 +9,7 @@
     <programlisting><emphasis role="bold">Name:</emphasis> Conway's Game Of Life
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.conway.ConwayAgendaGroupRun
             org.drools.examples.conway.ConwayRuleFlowGroupRun
+<emphasis role="bold">Module:</emphasis> droolsjbpm-integration-examples (Note: this is in a different download, the droolsjbpm-integration download.)
 <emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> conway-ruleflow.drl conway-agendagroup.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>

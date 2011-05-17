@@ -248,6 +248,9 @@ public class CronTrigger
     }
 
     public Date nextFireTime() {
+        if ( this.nextFireTime == null ) {
+            return null;
+        }        
         Date date = this.nextFireTime;
         this.nextFireTime = getTimeAfter( this.nextFireTime );
         updateToNextIncludeDate();

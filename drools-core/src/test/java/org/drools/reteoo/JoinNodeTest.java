@@ -32,6 +32,7 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.PropagationContextImpl;
+import org.drools.core.util.LeftTupleList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
@@ -184,8 +185,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.node.assertLeftTuple(tuple1, this.context, this.workingMemory);
         assertEquals(2, this.memory.getLeftTupleMemory().size());
 
-        LeftTuple leftTuple = this.memory.getLeftTupleMemory().getFirst(
-                (LeftTuple) null);
+        LeftTuple leftTuple = ((LeftTupleList)this.memory.getLeftTupleMemory()).getFirst();
 
         assertEquals(tuple0, leftTuple);
         assertEquals(tuple1, leftTuple.getNext());

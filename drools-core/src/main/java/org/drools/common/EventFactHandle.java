@@ -67,7 +67,8 @@ public class EventFactHandle extends DefaultFactHandle {
      */
     public String toExternalForm() {
         //return "[event fid:" + getId() + ":" + getRecency() + ":" + getObject() + "]";
-        return "1:" + this.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency();
+        //return "1:" + this.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency();
+        return  "1:" + super.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ((super.getEntryPoint() != null) ? super.getEntryPoint().getEntryPointId() : "null" );
     }
 
     /**

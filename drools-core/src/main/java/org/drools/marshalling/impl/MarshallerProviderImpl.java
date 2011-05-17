@@ -47,13 +47,10 @@ public class MarshallerProviderImpl implements MarshallerProvider {
     }
     
     public Marshaller newMarshaller(KnowledgeBase kbase) {
-        return newMarshaller(kbase, new ObjectMarshallingStrategy[] { newSerializeMarshallingStrategy() } );
+        return newMarshaller(kbase, null );
     }
     
     public Marshaller newMarshaller(KnowledgeBase kbase, ObjectMarshallingStrategy[] strategies) {
-        if ( strategies == null ) {
-            throw new IllegalArgumentException( "Strategies should not be null" );
-        }
         return new DefaultMarshaller( kbase , new MarshallingConfigurationImpl( strategies, true, true ) );
     }
     

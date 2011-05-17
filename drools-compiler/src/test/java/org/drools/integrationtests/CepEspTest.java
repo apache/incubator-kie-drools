@@ -1,11 +1,18 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,12 +25,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
@@ -55,7 +56,6 @@ import org.drools.conf.AssertBehaviorOption;
 import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
-import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
@@ -73,9 +73,11 @@ import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
+import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 public class CepEspTest {
@@ -85,23 +87,23 @@ public class CepEspTest {
                                             null );
     }
 
-    protected RuleBase getRuleBase(final RuleBaseConfiguration config) throws Exception {
+    protected RuleBase getRuleBase( final RuleBaseConfiguration config ) throws Exception {
 
         return RuleBaseFactory.newRuleBase( RuleBase.RETEOO,
                                             config );
     }
 
-    private RuleBase loadRuleBase(final Reader reader) throws IOException,
-                                                      DroolsParserException,
-                                                      Exception {
+    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
+                                                        DroolsParserException,
+                                                        Exception {
         return loadRuleBase( reader,
                              null );
     }
 
-    private RuleBase loadRuleBase(final Reader reader,
-                                  final RuleBaseConfiguration conf) throws IOException,
-                                                                   DroolsParserException,
-                                                                   Exception {
+    private RuleBase loadRuleBase( final Reader reader,
+                                   final RuleBaseConfiguration conf ) throws IOException,
+                                                                     DroolsParserException,
+                                                                     Exception {
         final PackageBuilder builder = new PackageBuilder();
         final DrlParser parser = new DrlParser();
         final PackageDescr packageDescr = parser.parse( reader );
@@ -121,9 +123,9 @@ public class CepEspTest {
         return ruleBase;
     }
 
-    private KnowledgeBase loadKnowledgeBase(final Reader reader,
-                                            final KnowledgeBaseConfiguration conf) throws IOException,
-                                                                                  ClassNotFoundException {
+    private KnowledgeBase loadKnowledgeBase( final Reader reader,
+                                             final KnowledgeBaseConfiguration conf ) throws IOException,
+                                                                                    ClassNotFoundException {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( reader ),
                       ResourceType.DRL );
@@ -137,10 +139,10 @@ public class CepEspTest {
         return kbase;
     }
 
-    private KnowledgeBase loadKnowledgeBase(final String resource,
-                                            final KnowledgeBaseConfiguration conf,
-                                            final boolean serialize) throws IOException,
-                                                                    ClassNotFoundException {
+    private KnowledgeBase loadKnowledgeBase( final String resource,
+                                             final KnowledgeBaseConfiguration conf,
+                                             final boolean serialize ) throws IOException,
+                                                                      ClassNotFoundException {
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( resource,
                                                             CepEspTest.class ),
@@ -164,9 +166,10 @@ public class CepEspTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_CEP_SimpleEventAssertion.drl" ) ),
                       ResourceType.DRL );
-        
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-        
+
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -1461,7 +1464,7 @@ public class CepEspTest {
         StatefulSession wm = ruleBase.newStatefulSession( conf,
                                                           null );
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( wm );
-        File testTmpDir = new File("target/test-tmp/");
+        File testTmpDir = new File( "target/test-tmp/" );
         testTmpDir.mkdirs();
         logger.setFileName( "target/test-tmp/testIdleTimeAndTimeToNextJob-audit" );
 
@@ -1582,7 +1585,7 @@ public class CepEspTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
                                                                                null );
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( ksession );
-        File testTmpDir = new File("target/test-tmp/");
+        File testTmpDir = new File( "target/test-tmp/" );
         testTmpDir.mkdirs();
         logger.setFileName( "target/test-tmp/testCollectWithWindows-audit" );
 
@@ -1705,7 +1708,8 @@ public class CepEspTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
                       ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
 
@@ -1942,6 +1946,66 @@ public class CepEspTest {
         assertTrue( handle2.isEvent() );
         assertTrue( handle3.isEvent() );
         assertTrue( handle4.isEvent() );
+    }
+
+    @Test
+    public void testTemporalOperators() throws Exception {
+        // read in the source
+        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
+        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators.drl",
+                                                 kbconf,
+                                                 true );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new StockTick( 1,
+                                        "A",
+                                        10,
+                                        1000 ) );
+    }
+
+    @Test
+    public void testTemporalOperators2() throws Exception {
+        // read in the source
+        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
+        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators2.drl",
+                                                 kbconf,
+                                                 true );
+
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
+
+        clock.advanceTime( 1000,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 1,
+                                  "A",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 2,
+                                  "B",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 3,
+                                  "B",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        int rules = ksession.fireAllRules();
+        assertEquals( 2,
+                      rules );
     }
 
 }

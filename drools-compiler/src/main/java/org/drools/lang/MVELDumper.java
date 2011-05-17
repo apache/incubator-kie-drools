@@ -1,8 +1,4 @@
-package org.drools.lang;
-
-/*
- * Author Jayaram C S
- * 
+/* 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,10 +11,13 @@ package org.drools.lang;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.lang;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.base.evaluators.Operator;
 import org.drools.compiler.DrlExprParser;
@@ -31,6 +30,8 @@ import org.drools.lang.descr.OperatorDescr;
 import org.drools.lang.descr.RelationalExprDescr;
 
 public class MVELDumper extends ReflectiveVisitor {
+    
+    private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(", Pattern.MULTILINE );
 
     private static final String[] standard;
     static {
@@ -95,7 +96,8 @@ public class MVELDumper extends ReflectiveVisitor {
         } else if ( base instanceof AtomicExprDescr ) {
             AtomicExprDescr atom = (AtomicExprDescr) base;
             String expr = atom.getExpression().trim();
-            if ( expr.matches( "eval\\s*\\(.*\\)\\s*" ) ) {
+            Matcher m = evalRegexp.matcher( atom.getExpression() );                
+            if (m.find()) {  
                 // stripping "eval" as it is no longer necessary
                 expr = expr.substring( expr.indexOf( '(' ) + 1,
                                        expr.lastIndexOf( ')' ) );

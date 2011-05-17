@@ -25,6 +25,7 @@ public class PatternDescr extends BaseDescr
     private static final long       serialVersionUID     = 510l;
     private String                  objectType;
     private String                  identifier;
+    private boolean                 unification;
     private ConditionalElementDescr constraint           = new AndDescr();
     private List<BindingDescr>      bindings;
     private int                     leftParentCharacter  = -1;
@@ -177,10 +178,25 @@ public class PatternDescr extends BaseDescr
         this.behaviors.add( behavior );
     }
 
+    /**
+     * @return the unification
+     */
+    public boolean isUnification() {
+        return unification;
+    }
+
+    /**
+     * @param unification the unification to set
+     */
+    public void setUnification( boolean unification ) {
+        this.unification = unification;
+    }
+
     public Object clone() {
         PatternDescr clone = new PatternDescr( this.objectType,
                                                this.identifier );
         clone.setQuery( this.query );
+        clone.setUnification( unification );
         clone.setLeftParentCharacter( this.leftParentCharacter );
         clone.setRightParentCharacter( this.rightParentCharacter );
         clone.setSource( this.source );
@@ -206,5 +222,6 @@ public class PatternDescr extends BaseDescr
         }
         return clone;
     }
+
 
 }

@@ -50,6 +50,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
+import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
@@ -309,7 +310,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
     
                 // now unmarshall that byte[]
                 ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
-                Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ) );
+                Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ),  new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() }   );
                 StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
                                                                            SessionConfiguration.getDefaultInstance(),
                                                                            EnvironmentFactory.newEnvironment() );

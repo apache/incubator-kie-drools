@@ -243,13 +243,13 @@ public class LeftTupleIndexHashTableIteratorTest {
 
         // set return values for methods
         when( entries[0].getNext() ).thenReturn( null );
-        when( ((LeftTupleList) entries[0]).getFirst( any( LeftTuple.class ) ) ).thenReturn( tuples[0] );
+        when( ((LeftTupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
         
         when( entries[5].getNext() ).thenReturn( null );
-        when( ((LeftTupleList) entries[5]).getFirst( any( LeftTuple.class ) ) ).thenReturn( tuples[1] );
+        when( ((LeftTupleList) entries[5]).getFirst( ) ).thenReturn( tuples[1] );
 
         when( entries[9].getNext() ).thenReturn( null );
-        when( ((LeftTupleList) entries[9]).getFirst( any( LeftTuple.class ) ) ).thenReturn( tuples[2] );
+        when( ((LeftTupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
 
         // create the mock table for the iterator
         AbstractHashTable table = mock( AbstractHashTable.class );

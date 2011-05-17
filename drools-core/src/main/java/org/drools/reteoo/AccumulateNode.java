@@ -320,8 +320,7 @@ public class AccumulateNode extends BetaNode {
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
-        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
-        memory.betaMemory.getLeftTupleMemory().add( leftTuple );
+        memory.betaMemory.getLeftTupleMemory().removeAdd( leftTuple );
 
         this.constraints.updateFromTuple( memory.betaMemory.getContext(),
                                           workingMemory,
@@ -336,7 +335,8 @@ public class AccumulateNode extends BetaNode {
                                                       (InternalFactHandle) context.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-        if ( childLeftTuple != null && rightMemory.isIndexed() && rightTuple != rightMemory.getFirst( childLeftTuple.getRightParent() ) ) {
+        // if rightTuple is null, we assume there was a bucket change and that bucket is empty
+        if ( childLeftTuple != null && rightMemory.isIndexed() && (rightTuple == null || (rightTuple.getMemory() !=  childLeftTuple.getRightParent().getMemory())) ) {
             // our index has changed, so delete all the previous matchings
             removePreviousMatchesForLeftTuple( leftTuple,
                                                workingMemory,
@@ -463,7 +463,8 @@ public class AccumulateNode extends BetaNode {
                                                rightTuple.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
-        if ( childLeftTuple != null && leftMemory.isIndexed() && leftTuple != leftMemory.getFirst( childLeftTuple.getLeftParent() ) ) {
+        // We assume a bucket change if leftTuple == null
+        if ( childLeftTuple != null && leftMemory.isIndexed() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
             // our index has changed, so delete all the previous matches
             removePreviousMatchesForRightTuple( rightTuple,
                                                 context,

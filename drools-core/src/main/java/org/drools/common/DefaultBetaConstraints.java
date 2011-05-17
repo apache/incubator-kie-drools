@@ -169,7 +169,7 @@ public class DefaultBetaConstraints
     public static boolean isIndexable(final BetaNodeFieldConstraint constraint) {
         if ( constraint instanceof VariableConstraint ) {
             final VariableConstraint variableConstraint = (VariableConstraint) constraint;
-            if( variableConstraint.getRestriction() instanceof VariableRestriction ){
+            if( variableConstraint.getRestriction() instanceof VariableRestriction ||variableConstraint.getRestriction() instanceof UnificationRestriction ){
                 return (variableConstraint.getEvaluator().getOperator() == Operator.EQUAL);
              }
         }

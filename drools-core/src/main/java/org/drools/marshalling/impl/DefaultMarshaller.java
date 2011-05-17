@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2010, 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class DefaultMarshaller
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                        RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
-                                                                       null,
+                                                                       this.strategyStore,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
                                                                        this.marshallingConfig.isMarshallWorkItems() ,
                                                                        environment);
@@ -105,11 +105,11 @@ public class DefaultMarshaller
 
     public void unmarshall(final InputStream stream,
                            final StatefulKnowledgeSession ksession) throws IOException,
-                                                                  ClassNotFoundException {
+                                                                  ClassNotFoundException {    
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
                                                                        RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
-                                                                       null,
+                                                                       this.strategyStore,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
                                                                        marshallingConfig.isMarshallWorkItems() , 
                                                                        ksession.getEnvironment());
@@ -124,14 +124,15 @@ public class DefaultMarshaller
      * @see org.drools.marshalling.Marshaller#write(java.io.OutputStream, org.drools.common.InternalRuleBase, org.drools.StatefulSession)
      */
     public void marshall(final OutputStream stream,
-                         final StatefulKnowledgeSession session) throws IOException {
+                         final StatefulKnowledgeSession ksession) throws IOException {
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
                                                                      (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
-                                                                     (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) session).session,
+                                                                     (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session,
                                                                      RuleBaseNodes.getNodeMap( (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase() ),
-                                                                     ((StatefulKnowledgeSessionImpl)session).session.getObjectMarshallingStrategyStore(),
+                                                                     this.strategyStore,
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
-                                                                     this.marshallingConfig.isMarshallWorkItems(), session.getEnvironment());
+                                                                     this.marshallingConfig.isMarshallWorkItems(), 
+                                                                     ksession.getEnvironment());
         OutputMarshaller.writeSession( context );
         context.close();
     }
