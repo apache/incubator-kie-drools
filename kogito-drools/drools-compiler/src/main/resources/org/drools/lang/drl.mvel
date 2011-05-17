@@ -50,7 +50,7 @@ then
 @comment{***************************************************************
                        ANNOTATIONS TEMPLATE
 ************************************************************************ }
-@declare{"annotation"}@@@{ann.name}@if{!ann.values.empty}( @foreach{entry:ann.values.entrySet()}@{entry.key}=@{entry.value}@end{", "} )@end{}@end{}
+@declare{"annotation"}@@@{ann.name}@code{count=ann.values.size()}@if{count>0}( @foreach{entry:ann.values.entrySet()}@if{count>1 || !entry.key.equals("value")}@{entry.key}=@end{}@{entry.value}@end{", "} )@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT TEMPLATE

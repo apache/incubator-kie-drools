@@ -1,0 +1,17 @@
+package foo
+
+declare SomeEvent
+    @role( event )
+    @author( name = "Bob" )
+    @copyright( year = "2011", license="ASL" )
+end
+
+rule "simple_rule"
+    @role( event )
+    @author( name = "Bob" )
+    @copyright( year = "2011", license="ASL" )
+when
+    Foo( )
+then
+    System.out.println( "bar" );
+end
