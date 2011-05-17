@@ -18,10 +18,19 @@ package org.drools.lang.api;
 
 import org.drools.lang.descr.ImportDescr;
 
+/**
+ * An interface for the import builder
+ */
 public interface ImportDescrBuilder
     extends
     DescrBuilder<ImportDescr> {
 
-    public ImportDescrBuilder target( String target );
+    /**
+     * Sets the import target
+     * 
+     * @param target the class or package being imported
+     * @return the package descr builder
+     */
+    public PackageDescrBuilder target( String target );
 
 }
