@@ -501,6 +501,48 @@ public class CepEspTest {
         assertEquals( parser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
     }
+    
+    @Test
+    public void testEventExpiration4() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration4.drl" ) );
+        final KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase(reader, conf);
+        
+        final KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get("pseudo") );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(sconf, null);
+        
+        WorkingMemoryEntryPoint eventStream = ksession.getWorkingMemoryEntryPoint( "Event Stream" );
+        
+        SessionPseudoClock clock = ksession.getSessionClock();
+        
+        final List results = new ArrayList();
+        ksession.setGlobal( "results",
+                      results );
+
+        EventFactHandle handle1 = (EventFactHandle) eventStream.insert( new StockTick( 1,
+                "ACME",
+                50,
+                System.currentTimeMillis(),
+                3 ) );
+
+        ksession.fireAllRules();
+        
+        clock.advanceTime( 11,
+                TimeUnit.SECONDS );
+        /** clock.advance() will put the event expiration in the queue to be executed, 
+            but it has to wait for a "thread" to do that
+            so we fire rules again here to get that
+            alternative could run fireUntilHalt() **/
+        ksession.fireAllRules();
+        
+        assertTrue(results.size() == 1);
+        assertTrue( handle1.isExpired() );
+        assertFalse(ksession.getFactHandles().contains(handle1));
+    }
 
     @Test
     public void testTimeRelationalOperators() throws Exception {
