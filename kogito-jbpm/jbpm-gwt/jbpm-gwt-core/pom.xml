@@ -12,7 +12,7 @@
 
 	<artifactId>jbpm-gwt-core</artifactId>
 
-	<name>jBPM :: GWT Console</name>
+	<name>jBPM GWT core</name>
 
 	<dependencies>
 		<dependency>

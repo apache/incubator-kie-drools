@@ -13,10 +13,10 @@
   <artifactId>jbpm-gwt</artifactId>
   <packaging>pom</packaging>
 
-  <name>jBPM :: GWT</name>
+  <name>jBPM GWT multiproject</name>
   
   <modules>
-    <module>jbpm-gwt-console</module>
+    <module>jbpm-gwt-core</module>
     <module>jbpm-gwt-form</module>
     <module>jbpm-gwt-graph</module>
     <module>jbpm-gwt-war</module>
