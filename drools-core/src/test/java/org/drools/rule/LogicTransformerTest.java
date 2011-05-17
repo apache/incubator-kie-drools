@@ -17,6 +17,7 @@
 package org.drools.rule;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -595,11 +596,11 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        writeTree( result,
-                   "correct_processTree1.dat" );
+        final File testFile = new File("target/test/LogicTransformerTest_correct_processTree1.dat");
+        testFile.getParentFile().mkdirs();
+        DroolsStreamUtils.streamOut(new FileOutputStream(testFile), result);
         final GroupElement[] correctResultRoot =
-                (GroupElement[]) DroolsStreamUtils.streamIn(
-                        this.getClass().getResourceAsStream( "correct_processTree1.dat" ));
+                (GroupElement[]) DroolsStreamUtils.streamIn(new FileInputStream(testFile));
 
         // Make sure they are equal
         for ( int j = 0; j < correctResultRoot.length; j++ ) {
@@ -773,32 +774,21 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         // Uncomment this when you need to output a new known correct tree
         // result
-        writeTree( ands,
-                   "correct_transform1.dat" );
+        final File testFile = new File("target/test/LogicTransformerTest_correct_transform1.dat");
+        testFile.getParentFile().mkdirs();
+        DroolsStreamUtils.streamOut(new FileOutputStream(testFile), ands);
 
         // Now check the main tree
 
         // Get known correct tree
         // The binary stream was created from a handchecked correct output
         final GroupElement[] correctResultAnds =
-                (GroupElement[]) DroolsStreamUtils.streamIn(
-                        this.getClass().getResourceAsStream( "correct_transform1.dat" ));
+                (GroupElement[]) DroolsStreamUtils.streamIn( new FileInputStream(testFile));
 
         for ( int j = 0; j < ands.length; j++ ) {
             assertEquals( correctResultAnds[j],
                           ands[j] );
         }
-    }
-
-    private void writeTree(final Object object,
-                           final String fileName) throws IOException {
-        final String className = this.getClass().getName();
-
-        File file = new File( this.getClass().getResource( className.substring( className.lastIndexOf( '.' ) + 1 ) + ".class" ).getFile() );
-
-        file = new File( file.getParent().replaceAll("%20", " "), fileName );
-
-        DroolsStreamUtils.streamOut(new FileOutputStream( file ), object);
     }
 
 }

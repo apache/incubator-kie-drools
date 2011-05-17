@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,14 +58,13 @@ public class DroolsObjectIOTest {
         ByteArrayInputStream byteArrayIn = new ByteArrayInputStream(byteArrayOut.toByteArray());
         FooBar fooBar2 = (FooBar) new ObjectInputStream(byteArrayIn).readObject();
 
-        final String TEST_FILE = "test.dat";
-        File file = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
-        File parentFile = new File(file.getParent().replaceAll("%20", " "), TEST_FILE);
+        final File testFile = new File("target/test/DroolsObjectIOTest_testFileIO.dat");
+        testFile.getParentFile().mkdirs();
         GroupElement testGroupElement = new GroupElement();
-        DroolsStreamUtils.streamOut(new FileOutputStream(parentFile), testGroupElement);
+        DroolsStreamUtils.streamOut(new FileOutputStream(testFile), testGroupElement);
 
-        InputStream fis = getClass().getResourceAsStream(TEST_FILE);
-        GroupElement streamedGroupElement = (GroupElement) DroolsStreamUtils.streamIn(fis);
+        InputStream fis = new FileInputStream(testFile);
+        GroupElement streamedGroupElement = (GroupElement) DroolsStreamUtils.streamIn(new FileInputStream(testFile));
 
         assertEquals(streamedGroupElement, testGroupElement);
     }
