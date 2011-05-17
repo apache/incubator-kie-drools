@@ -354,14 +354,6 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
       </tbody>
       <tbody>
         <row>
-          <entry>cancelEventDefinition</entry>
-          <entry></entry>
-          <entry></entry>
-          <entry></entry>
-        </row>
-      </tbody>
-      <tbody>
-        <row>
           <entry>compensateEventDefinition</entry>
           <entry>activityRef</entry>
           <entry>documentation extensionElements</entry>
