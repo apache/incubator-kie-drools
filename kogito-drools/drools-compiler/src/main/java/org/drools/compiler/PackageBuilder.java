@@ -323,6 +323,7 @@ public class PackageBuilder {
                                                         IOException {
         this.resource = new ReaderResource( reader );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
+        xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
         try {
             xmlReader.read( reader );
@@ -340,7 +341,8 @@ public class PackageBuilder {
         this.resource = resource;
 
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
-
+        xmlReader.getParser().setClassLoader( this.rootClassLoader );
+        
         try {
             xmlReader.read( resource.getReader() );
         } catch ( final SAXException e ) {

@@ -22,6 +22,7 @@ public class DumperTestHelper {
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         
         XmlPackageReader xmlPackageReader = new XmlPackageReader( conf.getSemanticModules() );
+        xmlPackageReader.getParser().setClassLoader( DumperTestHelper.class.getClassLoader() );
         xmlPackageReader.read( new InputStreamReader( DumperTestHelper.class.getResourceAsStream( filename ) ) );
         final PackageDescr pkgOriginal = xmlPackageReader.getPackageDescr();
 

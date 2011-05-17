@@ -565,7 +565,9 @@ public class XmlPackageReaderTest {
 
     private XmlPackageReader getXmReader() {
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
+        XmlPackageReader xmlReader = new XmlPackageReader( conf.getSemanticModules() );
+        xmlReader.getParser().setClassLoader( XmlPackageReaderTest.class.getClassLoader() );
 
-        return new XmlPackageReader( conf.getSemanticModules() );
+        return xmlReader;
     }
 }

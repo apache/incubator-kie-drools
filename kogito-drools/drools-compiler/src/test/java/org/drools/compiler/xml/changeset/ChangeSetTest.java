@@ -50,6 +50,7 @@ public class ChangeSetTest {
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         XmlChangeSetReader xmlReader = new XmlChangeSetReader( conf.getSemanticModules() );
+        xmlReader.setClassLoader( ChangeSetTest.class.getClassLoader(), ChangeSetTest.class );
 
         String str = "";
         str += "<change-set ";
@@ -114,6 +115,7 @@ public class ChangeSetTest {
 
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration();
         XmlChangeSetReader xmlReader = new XmlChangeSetReader( conf.getSemanticModules() );
+        xmlReader.setClassLoader( ChangeSetTest.class.getClassLoader(), ChangeSetTest.class );
 
         String str = "";
         str += "<change-set ";
