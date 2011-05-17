@@ -41,35 +41,55 @@ import org.junit.Test;
 
 public class DroolsObjectIOTest {
 
-    private static final String TEST_FILE   = "test.dat";
-    private static final GroupElement   testGroupElement    = new GroupElement();
+    private static class FooBar implements Serializable {
 
-    static class FooBar implements Serializable {
+        private String value = "hello";
+
         public FooBar() {
-            
         }
-        String  str = TEST_FILE;
-    }
-    
-    public DroolsObjectIOTest() {
-        
     }
 
     @Test
     public void testFileIO() throws Exception {
-        File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
-        ByteArrayOutputStream   bytes   = new ByteArrayOutputStream();
-        new ObjectOutputStream(bytes).writeObject(new FooBar());
-        FooBar    t   = (FooBar)new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray())).readObject();
-        String  str = TEST_FILE;
-        file    = new File(file.getParent().replaceAll("%20", " "), str);
+        FooBar fooBar1 = new FooBar();
+        ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+        new ObjectOutputStream(byteArrayOut).writeObject(fooBar1);
+        ByteArrayInputStream byteArrayIn = new ByteArrayInputStream(byteArrayOut.toByteArray());
+        FooBar fooBar2 = (FooBar) new ObjectInputStream(byteArrayIn).readObject();
 
-        DroolsStreamUtils.streamOut(new FileOutputStream(file), testGroupElement);
+        final String TEST_FILE = "test.dat";
+        File file = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
+        File parentFile = new File(file.getParent().replaceAll("%20", " "), TEST_FILE);
+        GroupElement testGroupElement = new GroupElement();
+        DroolsStreamUtils.streamOut(new FileOutputStream(parentFile), testGroupElement);
 
-        InputStream         fis = getClass().getResourceAsStream(TEST_FILE);
+        InputStream fis = getClass().getResourceAsStream(TEST_FILE);
+        GroupElement streamedGroupElement = (GroupElement) DroolsStreamUtils.streamIn(fis);
 
-        GroupElement    that    = (GroupElement)DroolsStreamUtils.streamIn(fis);
-        assertEquals(that, testGroupElement);
+        assertEquals(streamedGroupElement, testGroupElement);
+    }
+
+    public static class SerializableObject implements Serializable {
+        protected int value = 123;
+        protected String name;
+
+        public SerializableObject() {
+            this("SerializableObject");
+        }
+        public SerializableObject(String name) {
+            this.name   = name;
+        }
+
+        // TODO bug: breaks equals - hashcode contract
+        public boolean equals(Object obj) {
+            if (obj instanceof SerializableObject) {
+                return value == ((SerializableObject)obj).value;
+            }
+            return false;
+        }
+        public String toString() {
+            return new StringBuilder(name).append('|').append(value).toString();
+        }
     }
 
     public static class ExternalizableObject extends SerializableObject implements Externalizable {
@@ -84,28 +104,6 @@ public class DroolsObjectIOTest {
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeInt(value);
             out.writeObject(name);
-        }
-    }
-
-    public static class SerializableObject implements Serializable {
-        protected int value = 123;
-        protected String    name;
-
-        public SerializableObject() {
-            this("SerializableObject");
-        }
-        public SerializableObject(String name) {
-            this.name   = name;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj instanceof SerializableObject) {
-                return value == ((SerializableObject)obj).value;
-            }
-            return false;
-        }
-        public String toString() {
-            return new StringBuilder(name).append('|').append(value).toString();
         }
     }
 
