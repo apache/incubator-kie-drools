@@ -19,12 +19,6 @@
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
 
-  <properties>
-    <drools.version>5.3.0-SNAPSHOT</drools.version>
-    <drools.osgi.version>5.3.0.SNAPSHOT</drools.osgi.version>
-    <jbpm.osgi.version>5.2.0.SNAPSHOT</jbpm.osgi.version>
-  </properties>
-
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
@@ -57,8 +51,8 @@
     <module>jbpm-flow</module>
     <module>jbpm-flow-builder</module>
     <module>jbpm-persistence-jpa</module>
-    <module>jbpm-bpmn2</module>
     <module>jbpm-bam</module>
+    <module>jbpm-bpmn2</module>
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
     <module>jbpm-gwt</module>
@@ -94,93 +88,6 @@
   <!-- TODO define all dependency versions in droolsjbpm-parent - bring them inline -->
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-flow</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-flow-builder</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-persistence-jpa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-bpmn2</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-human-task</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-bam</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-workitems</artifactId>
-        <version>${project.version}</version>
-      </dependency>		 
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-gwt-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-gwt-graph</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-gwt-form</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jbpm</groupId>
-        <artifactId>jbpm-docs</artifactId>
-        <type>jdocbook</type>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>knowledge-api</artifactId>
-        <version>${drools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-core</artifactId>
-        <version>${drools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-compiler</artifactId>
-        <version>${drools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-persistence-jpa</artifactId>
-        <version>${drools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-persistence-jpa</artifactId>
-        <type>test-jar</type>
-        <version>${drools.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mvel</groupId>
-        <artifactId>mvel2</artifactId>
-        <version>2.1-SNAPSHOT</version>
-      </dependency>
       <dependency>
         <groupId>org.eclipse.jdt.core.compiler</groupId>
         <artifactId>ecj</artifactId>
