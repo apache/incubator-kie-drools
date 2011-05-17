@@ -16,11 +16,11 @@
   <name>jBPM :: GWT</name>
   
   <modules>
-      <module>jbpm-gwt-console</module>
-      <module>jbpm-gwt-form</module>
-      <module>jbpm-gwt-graph</module>
-      <module>jbpm-gwt-war</module>
-      <module>jbpm-gwt-server-war</module>
+    <module>jbpm-gwt-console</module>
+    <module>jbpm-gwt-form</module>
+    <module>jbpm-gwt-graph</module>
+    <module>jbpm-gwt-war</module>
+    <module>jbpm-gwt-server-war</module>
   </modules>
 
 </project>
