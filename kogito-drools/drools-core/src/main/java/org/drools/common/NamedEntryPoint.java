@@ -476,6 +476,9 @@ public class NamedEntryPoint
                         final boolean updateEqualsMap,
                         final Rule rule,
                         final Activation activation) throws FactException {
+        if ( factHandle == null ) {
+            throw new IllegalArgumentException( "FactHandle cannot be null " );
+        }
         try {
             this.ruleBase.readLock();
             this.lock.lock();
