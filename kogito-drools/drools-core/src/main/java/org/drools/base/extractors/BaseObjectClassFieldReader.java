@@ -133,6 +133,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).intValue();
         } else if ( value instanceof Date ) {
             return (int) ((Date) value).getTime();
+        } else if( value instanceof Character ) {
+            return ((Character) value).charValue();
         }
         throw new RuntimeDroolsException( "Conversion to int not supported from " + value.getClass().getName() );
     }
@@ -148,6 +150,8 @@ public abstract class BaseObjectClassFieldReader extends BaseClassFieldReader {
             return ((Number) value).longValue();
         } else if ( value instanceof Date ) {
             return ((Date) value).getTime();
+        } else if( value instanceof Character ) {
+            return ((Character) value).charValue();
         }
         throw new RuntimeDroolsException( "Conversion to long not supported from " + value.getClass().getName() );
     }

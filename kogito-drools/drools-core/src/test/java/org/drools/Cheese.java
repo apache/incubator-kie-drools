@@ -33,6 +33,8 @@ public class Cheese
     private String       type;
     
     private char         charType;
+    
+    private Character    charObjectType;
 
     private int          price;
 
@@ -131,4 +133,14 @@ public class Cheese
     public void setCharType(char charType) {
         this.charType = charType;
     }
+
+    public Character getCharObjectType() {
+        return charObjectType;
+    }
+
+    public void setCharObjectType(Character charObjectType) {
+        this.charObjectType = charObjectType;
+    }
+    
+    
 }
