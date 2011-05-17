@@ -7,13 +7,16 @@ public class ImportDescrBuilderImpl extends BaseDescrBuilderImpl<ImportDescr>
     implements
     ImportDescrBuilder {
 
-    protected ImportDescrBuilderImpl(boolean function) {
+    private PackageDescrBuilder parent;
+
+    protected ImportDescrBuilderImpl(PackageDescrBuilder parent, boolean function) {
         super( function ? new FunctionImportDescr() : new ImportDescr() );
+        this.parent = parent;
     }
 
-    public ImportDescrBuilder target( String target ) {
+    public PackageDescrBuilder target( String target ) {
         descr.setTarget( target );
-        return this;
+        return parent;
     }
 
 }

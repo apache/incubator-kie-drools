@@ -34,13 +34,13 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescr>
     }
 
     public ImportDescrBuilder newImport() {
-        ImportDescrBuilder impl = new ImportDescrBuilderImpl( false );
+        ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, false );
         descr.addImport( impl.getDescr() );
         return impl;
     }
 
     public ImportDescrBuilder newFunctionImport() {
-        ImportDescrBuilder impl = new ImportDescrBuilderImpl( true );
+        ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, true );
         descr.addFunctionImport( (FunctionImportDescr) impl.getDescr() );
         return impl;
     }
