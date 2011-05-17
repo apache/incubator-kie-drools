@@ -294,6 +294,10 @@ public class PackageBuilder {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
+        if ( pkg == null ) {
+            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
+        }
+        
         if ( !parser.hasErrors() ) {
             addPackage( pkg );
         }
@@ -306,6 +310,9 @@ public class PackageBuilder {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( resource.getInputStream() );
         this.results.addAll( parser.getErrors() );
+        if ( pkg == null ) {
+            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
+        }        
         if ( !parser.hasErrors() ) {
             addPackage( pkg );
         }
