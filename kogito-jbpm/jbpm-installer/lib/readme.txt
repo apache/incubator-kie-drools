@@ -8,12 +8,13 @@ Birt runtime engine:
   birt-runtime-2_3_2_2.zip
 
 Eclipse: 
-  eclipse-java-helios-linux-gtk.tar.gz (linux)
-  eclipse-java-helios-win32.zip (windows)
-  eclipse-java-helios-macosx-carbon.tar.gz (mac)
+  eclipse-java-helios-SR2-linux-gtk.tar.gz (linux)
+  eclipse-java-helios-SR2-linux-gtk-x86_64.tar.gz (linux 64-bit)
+  eclipse-java-helios-SR2-win32.zip (windows)
+  eclipse-java-helios-SR2-macosx-cacoa.tar.gz (mac)
 
 Eclipse GEF:
-  GEF-SDK-3.6.1.zip
+  GEF-SDK-3.6.2.zip
 
 jBPM:
   jbpm-#{jbpm.version}-bin.zip
@@ -21,8 +22,8 @@ jBPM:
   jbpm-#{jbpm.version}-gwt-console.zip
 
 Drools:
-  drools-#{drools.version}-guvnor.war
-  drools-#{drools.version}-eclipse-all.zip
+  guvnor-distribution-wars-${drools.guvnor.version}-jboss-as-5.1.war
+  org.drools.updatesite-${drools.eclipse.version}-assembly.zip
 
 Designer:
   designer-#{designer.version}.war

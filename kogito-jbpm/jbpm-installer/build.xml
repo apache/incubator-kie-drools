@@ -76,7 +76,7 @@
   <condition property="download.type" value="win32">
     <os family="windows" />
   </condition>	
-  <condition property="download.type" value="macosx-carbon">
+  <condition property="download.type" value="macosx-cocoa">
     <and>
       <os family="mac" />
       <os family="unix" />
@@ -127,29 +127,29 @@
     <echo message="Checking Eclipse download ..." />
     <condition property="eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/eclipse-java-helios-${download.type}.${download.extension}" />
+        <available file="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.${download.extension}" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse" depends="download.eclipse.check" if="eclipse.not.available">
     <echo message="Getting Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/technology/epp/downloads/release/helios/R/eclipse-java-helios-${download.type}.${download.extension}"
-         dest="${install.home}/lib/eclipse-java-helios-${download.type}.${download.extension}"  />
+    <get src="http://download.eclipse.org/technology/epp/downloads/release/helios/SR2/eclipse-java-helios-SR2-${download.type}.${download.extension}"
+         dest="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.${download.extension}"  />
   </target>
   <target name="download.eclipse.gef.check">
     <echo message="Checking Eclipse GEF download ..." />
     <condition property="eclipse.gef.not.available">
       <not>
-        <available file="${install.home}/lib/GEF-SDK-3.6.1.zip" />
+        <available file="${install.home}/lib/GEF-SDK-3.6.2.zip" />
       </not>
     </condition>
   </target>
   <target name="download.eclipse.gef" depends="download.eclipse.gef.check" if="eclipse.gef.not.available">
     <echo message="Getting Eclipse GEF ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.6.1/R201009132020/GEF-SDK-3.6.1.zip"
-         dest="${install.home}/lib/GEF-SDK-3.6.1.zip"  />
+    <get src="http://download.eclipse.org/tools/gef/downloads/drops/3.6.2/R201102251600/GEF-SDK-3.6.2.zip"
+         dest="${install.home}/lib/GEF-SDK-3.6.2.zip"  />
   </target>
 
   <!-- Download jBPM binaries -->
@@ -172,14 +172,14 @@
     <echo message="Checking Drools Guvnor download ..." />
     <condition property="drools.guvnor.not.available">
       <not>
-        <available file="${install.home}/lib/drools-${drools.guvnor.version}-guvnor.war" />
+        <available file="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}-jboss-as-5.1.war" />
       </not>
     </condition>
   </target>  
   <target name="download.drools.guvnor" depends="download.drools.guvnor.check" if="drools.guvnor.not.available">
     <echo message="Getting Drools Guvnor ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.guvnor.url}" dest="${install.home}/lib/drools-${drools.guvnor.version}-guvnor.war"  />
+    <get src="${drools.guvnor.url}" dest="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}-jboss-as-5.1.war"  />
   </target>
 
   <!-- Download Designer -->
@@ -217,14 +217,14 @@
     <echo message="Checking Drools Eclipse download ..." />
     <condition property="drools.eclipse.not.available">
       <not>
-        <available file="${install.home}/lib/drools-${drools.eclipse.version}-eclipse-all.zip" />
+        <available file="${install.home}/lib/org.drools.updatesite-${drools.eclipse.version}-assembly.zip" />
       </not>
     </condition>
   </target>
   <target name="download.drools.eclipse" depends="download.drools.eclipse.check" if="drools.eclipse.not.available">
     <echo message="Getting Drools Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="${drools.eclipse.url}" dest="${install.home}/lib/drools-${drools.eclipse.version}-eclipse-all.zip"  />
+    <get src="${drools.eclipse.url}" dest="${install.home}/lib/org.drools.updatesite-${drools.eclipse.version}-assembly.zip"  />
   </target>
 
   <!-- Download jBPM gwt-console -->
@@ -265,7 +265,7 @@
   
   <target name="install.guvnor.into.jboss.5" depends="check.jboss.version" if="jboss.version.is.5">
     <mkdir dir="${install.home}/target/drools-guvnor"/>
-    <unzip src="${install.home}/lib/drools-${drools.guvnor.version}-guvnor.war" dest="${install.home}/target/drools-guvnor" />
+    <unzip src="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}-jboss-as-5.1.war" dest="${install.home}/target/drools-guvnor" />
     <delete>
       <fileset dir="${install.home}/target/drools-guvnor/WEB-INF/lib" includes="xml-apis-*.jar"/>
     </delete>
@@ -278,7 +278,7 @@
   </target>  	
 
   <target name="install.guvnor.into.jboss.other" depends="check.jboss.version" unless="jboss.version.is.5">
-    <copy file="${install.home}/lib/drools-${drools.guvnor.version}-guvnor.war"
+    <copy file="${install.home}/lib/guvnor-distribution-wars-${drools.guvnor.version}-jboss-as-5.1.war"
           tofile="${jboss.server.deploy.dir}/drools-guvnor.war"
           overwrite="true" />
   </target> 
@@ -363,17 +363,17 @@
     <antcall target="unzipEclipse" />	
     <antcall target="untarEclipse" />
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/GEF-SDK-3.6.1.zip" />				         
+           src="${install.home}/lib/GEF-SDK-3.6.2.zip" />				         
   </target>
   
   <target name="unzipEclipse" if="expandTypeZip">
     <unzip dest="${install.home}" overwrite="true" 
-           src="${install.home}/lib/eclipse-java-helios-${download.type}.zip" />  
+           src="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.zip" />  
   </target>
 
   <target name="untarEclipse" if="expandTypeTarGz">
-    <gunzip src="${install.home}/lib/eclipse-java-helios-${download.type}.tar.gz"/>
-    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-helios-${download.type}.tar" />
+    <gunzip src="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.tar.gz"/>
+    <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-helios-SR2-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
     <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
@@ -395,7 +395,7 @@
   <target name="install.drools-eclipse.into.eclipse" depends="download.drools.eclipse">
     <!-- install plugins -->
   	<mkdir dir="${eclipse.home}/drools-update-site"/>
-    <unzip src="${install.home}/lib/drools-${drools.eclipse.version}-eclipse-all.zip" dest="${eclipse.home}/drools-update-site" />
+    <unzip src="${install.home}/lib/org.drools.updatesite-${drools.eclipse.version}-assembly.zip" dest="${eclipse.home}/drools-update-site" />
     <copy todir="${eclipse.home}/features" overwrite="true">
       <fileset dir="${eclipse.home}/drools-update-site/features"/>
     </copy>
