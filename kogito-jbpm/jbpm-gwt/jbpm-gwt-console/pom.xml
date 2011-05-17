@@ -13,7 +13,7 @@
   <artifactId>jbpm-gwt-console</artifactId>
   <packaging>war</packaging>
 
-  <name>jBPM GWT Console</name>
+  <name>jBPM GWT Console WAR</name>
 
   <dependencies>
     <dependency>

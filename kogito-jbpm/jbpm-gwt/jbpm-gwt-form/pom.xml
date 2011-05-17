@@ -12,7 +12,7 @@
 
   <artifactId>jbpm-gwt-form</artifactId>
 
-  <name>jBPM :: GWT Console Forms</name>
+  <name>jBPM GWT Console Forms</name>
 
   <dependencies>
     <dependency>

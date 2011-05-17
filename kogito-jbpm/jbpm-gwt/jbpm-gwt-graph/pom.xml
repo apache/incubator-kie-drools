@@ -12,7 +12,7 @@
 
   <artifactId>jbpm-gwt-graph</artifactId>
 
-  <name>jBPM :: GWT Console Graph Viewer</name>
+  <name>jBPM GWT Console Graph Viewer</name>
 
   <dependencies>
     <dependency>
