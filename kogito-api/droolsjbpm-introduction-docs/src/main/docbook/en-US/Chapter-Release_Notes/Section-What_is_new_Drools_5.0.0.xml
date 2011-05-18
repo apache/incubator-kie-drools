@@ -1355,7 +1355,7 @@ StatefulSession session = ruleBase.newStatefulSession( conf );
       <title>Support to event expiration policy</title>
 
       <para>added the ability to define a per-type event expiration policy. In
-      the example bellow, the StockTick events will expire 10 minutes after
+      the example below, the StockTick events will expire 10 minutes after
       they enter the system:</para>
 
       <para><code> declare StockTick @role( event ) @expires( 10m ) end
