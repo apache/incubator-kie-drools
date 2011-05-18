@@ -8344,6 +8344,33 @@ public class MiscTest {
                       rules );
     }
 
+    @Test
+    public void testNotEqualsOperator() {
+        // JBRULES-3003: restriction evaluation returns 'false' for "trueField != falseField"
+
+        String str = "package org.drools\n" +
+                     "rule NotEquals\n" +
+                     "when\n" +
+                     "    Primitives( booleanPrimitive != booleanWrapper )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        Primitives p = new Primitives();
+        p.setBooleanPrimitive( true );
+        p.setBooleanWrapper( Boolean.FALSE );
+
+        ksession.insert( p );
+
+        int rules = ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 1,
+                      rules );
+    }
+
     private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),

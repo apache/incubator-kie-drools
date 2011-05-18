@@ -648,7 +648,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                 return true;
             }
 
-            return extractor1.getBooleanValue( workingMemory, object1 ) != extractor1.getBooleanValue( workingMemory, object2 );
+            return extractor1.getBooleanValue( workingMemory, object1 ) != extractor2.getBooleanValue( workingMemory, object2 );
         }
 
         public String toString() {
