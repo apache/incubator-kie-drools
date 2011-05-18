@@ -10,12 +10,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OptionalDataException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -28,10 +31,12 @@ import static org.junit.Assert.*;
 import org.drools.Address;
 import org.drools.Cell;
 import org.drools.Cheese;
+import org.drools.ClockType;
 import org.drools.FactA;
 import org.drools.FactB;
 import org.drools.FactC;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Message;
 import org.drools.Person;
@@ -39,6 +44,7 @@ import org.drools.Primitives;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
@@ -52,8 +58,11 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.KeyStoreHelper;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
@@ -65,16 +74,24 @@ import org.drools.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.marshalling.impl.RuleBaseNodes;
+import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.spi.Consequence;
 import org.drools.spi.GlobalResolver;
+import org.drools.spi.KnowledgeHelper;
+import org.drools.time.impl.DurationTimer;
+import org.drools.time.impl.PseudoClockScheduler;
 
 public class MarshallingTest {
 
@@ -2666,6 +2683,165 @@ public class MarshallingTest {
         assertNotNull( ksession );
         ksession.dispose();
     }
+    
+    public static class A
+        implements
+        Serializable {
+    }
+
+    public static class B
+        implements
+        Serializable {
+    }
+
+    public static class C
+        implements
+        Serializable {
+    }
+    
+    @Test
+    public void testMarshallWithNot() throws Exception {
+        String str = 
+            "import " + getClass().getCanonicalName() + ".*\n" +
+                "rule one\n" + 
+                "when\n" + 
+                "   A()\n" + 
+                "   not(B())\n" + 
+                "then\n" + 
+                "System.out.println(\"a\");\n" + 
+                "end\n" + 
+                "\n" + 
+                "rule two\n" + 
+                "when\n" + 
+                "   A()\n" + 
+                "then\n" + 
+                "System.out.println(\"b\");\n" + 
+                "end\n"; 
+            
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+                .newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newReaderResource(new StringReader(str)),
+                ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            throw new RuntimeException(kbuilder.getErrors().toString());
+        }
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory
+                .newKnowledgeBaseConfiguration();
+        config.setOption(EventProcessingOption.STREAM);
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(config);
+        knowledgeBase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        ksession.insert(new A());
+        MarshallerFactory.newMarshaller(knowledgeBase).marshall(new ByteArrayOutputStream(), ksession);
+    }    
+
+    @Test
+    @Ignore
+    public void testMarshallEvents() throws Exception {
+        String str =
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                        "declare A\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "declare B\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "rule one\n" +
+                        "when\n" +
+                        "   $a : A()\n" +
+                        "   B(this after $a)\n" +
+                        "then\n" +
+                        "insert(new C());" +
+                        "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        ksession.insert( new A() );
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        MarshallerFactory.newMarshaller( knowledgeBase ).marshall( out,
+                                                                   ksession );
+
+        ksession = MarshallerFactory.newMarshaller( knowledgeBase ).unmarshall( new ByteArrayInputStream( out.toByteArray() ) );
+        ksession.insert( new B() );
+        ksession.fireAllRules();
+        assertEquals( 3,
+                      ksession.getObjects().size() );
+    }
+    
+    @Test @Ignore
+    public void testScheduledActivation() {
+        KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgePackageImp impl = new KnowledgePackageImp();
+        impl.pkg = new org.drools.rule.Package("test");
+
+        BuildContext buildContext = new BuildContext((InternalRuleBase) knowledgeBase.getRuleBase(), ((ReteooRuleBase) knowledgeBase.getRuleBase())
+                .getReteooBuilder().getIdGenerator());
+        //simple rule that fires after 10 seconds
+        final Rule rule = new Rule("test-rule");
+        new RuleTerminalNode(1,new MockTupleSource(2), rule, rule.getLhs(), buildContext);
+        
+        final List<String> fired = new ArrayList<String>();
+        
+        rule.setConsequence( new Consequence() {
+            public void evaluate(KnowledgeHelper knowledgeHelper,
+                                 WorkingMemory workingMemory) throws Exception {
+                fired.add("a");
+            }
+
+            public String getName() {
+                return "default";
+            }
+        } );
+                
+        rule.setTimer( new DurationTimer( 10000 ) );
+        rule.setPackage("test");
+        impl.pkg.addRule(rule);
+        
+        knowledgeBase.addKnowledgePackages(Collections.singleton((KnowledgePackage) impl));
+        SessionConfiguration config = new SessionConfiguration();
+        config.setClockType(ClockType.PSEUDO_CLOCK);
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(config, KnowledgeBaseFactory.newEnvironment());
+        PseudoClockScheduler scheduler = ksession.getSessionClock();
+        Marshaller marshaller = MarshallerFactory.newMarshaller(knowledgeBase);
+        
+
+
+        ksession.insert("cheese");
+        assertTrue(fired.isEmpty());
+        //marshall, then unmarshall session
+        readWrite(knowledgeBase, ksession, config);
+        //the activations should fire after 10 seconds
+        assertTrue(fired.isEmpty());
+        scheduler.advanceTime(12, TimeUnit.SECONDS);
+        assertFalse(fired.isEmpty());
+
+    }
+    
+    private void readWrite(KnowledgeBase knowledgeBase, StatefulKnowledgeSession ksession, KnowledgeSessionConfiguration config) {
+        try {
+            Marshaller marshaller = MarshallerFactory.newMarshaller(knowledgeBase);
+            ByteArrayOutputStream o = new ByteArrayOutputStream();
+            marshaller.marshall(o, ksession);
+            ksession = marshaller.unmarshall(new ByteArrayInputStream(o.toByteArray()), config, KnowledgeBaseFactory.newEnvironment());
+            ksession.fireAllRules();
+            //scheduler = ksession.getSessionClock();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+         
 
     private Marshaller createSerializableMarshaller(KnowledgeBase knowledgeBase) {
         ObjectMarshallingStrategyAcceptor acceptor = MarshallerFactory.newClassFilterAcceptor( new String[]{ "*.*" } );
