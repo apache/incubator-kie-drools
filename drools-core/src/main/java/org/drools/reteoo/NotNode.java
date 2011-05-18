@@ -83,7 +83,7 @@ public class NotNode extends BetaNode {
         FastIterator it = getRightIterator( rightMemory );
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+            if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        rightTuple.getFactHandle() ) ) {
                 leftTuple.setBlocker( rightTuple );
 
