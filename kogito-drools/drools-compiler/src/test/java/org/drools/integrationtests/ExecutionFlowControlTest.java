@@ -46,7 +46,6 @@ import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.integrationtests.BrokenTest.Holder;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -731,6 +730,27 @@ public class ExecutionFlowControlTest {
                       list.get( 1 ) );
 
     }
+    
+    public static class Holder {
+        private Integer val;
+        private String outcome;
+        public Holder(Integer val) {
+            this.val = val;
+        }
+        public void setValue(Integer val) {
+            this.val = val;
+        }
+        public Integer getValue() {
+            return val;
+        }
+        public void setOutcome(String outcome) {
+            this.outcome = outcome;
+        }
+        
+        public String getOutcome() {
+            return outcome;
+        }
+    }    
     
     @Test // JBRULES-2398
     public void testActivationGroupWithTroubledSyntax() {
