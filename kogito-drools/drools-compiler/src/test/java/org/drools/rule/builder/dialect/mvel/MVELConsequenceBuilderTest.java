@@ -304,7 +304,7 @@ public class MVELConsequenceBuilderTest {
     }
 
     @Test
-    public void testX() {
+    public void testDebugSymbolCount() {
         String expr = "System.out.println( \"a1\" );\n" + "System.out.println( \"a2\" );\n" + "System.out.println( \"a3\" );\n" + "System.out.println( \"a4\" );\n";
 
         ExpressionCompiler compiler = new ExpressionCompiler( expr );
@@ -361,6 +361,10 @@ public class MVELConsequenceBuilderTest {
         rule.addPattern( new Pattern( 0,
                                       new ClassObjectType( Cheese.class ),
                                       "$cheese" ) );
+        
+        rule.addPattern( new Pattern( 0,
+                                      new ClassObjectType( Map.class ),
+                                      "$map" ) );        
 
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         DialectCompiletimeRegistry reg = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
@@ -385,7 +389,10 @@ public class MVELConsequenceBuilderTest {
 
     @Test
     public void testDefaultConsequenceCompilation() {
-        String consequence = " System.out.println(\"this is a test\");\n ";
+        String consequence = " System.out.println(\"this is a test:\" + $cheese);\n " +
+        		"c1 = new Cheese().{ type = $cheese.type };" +
+        		"c2 = new Cheese().{ type = $map[$cheese.type] };" +
+        		"c3 = new Cheese().{ type = $map['key'] };";
         setupTest( consequence, new HashMap<String, Object>() );
         assertNotNull( context.getRule().getConsequence() );
         assertTrue( context.getRule().getNamedConsequences().isEmpty() );
@@ -394,10 +401,10 @@ public class MVELConsequenceBuilderTest {
     
     @Test
     public void testDefaultConsequenceWithSingleNamedConsequenceCompilation() {
-        String defaultCon = " System.out.println(\"this is a test\");\n ";
+        String defaultCon = " System.out.println(\"this is a test\" + $cheese);\n ";
         
         Map<String, Object> namedConsequences = new HashMap<String, Object>();
-        String name1 =  " System.out.println(\"this is a test name1\");\n ";
+        String name1 =  " System.out.println(\"this is a test name1\" + $cheese);\n ";
         namedConsequences.put( "name1", name1 );
         
         setupTest( defaultCon, namedConsequences);
@@ -412,12 +419,12 @@ public class MVELConsequenceBuilderTest {
     
     @Test
     public void testDefaultConsequenceWithMultipleNamedConsequenceCompilation() {
-        String defaultCon = " System.out.println(\"this is a test\");\n ";
+        String defaultCon = " System.out.println(\"this is a test\" + $cheese);\n ";
         
         Map<String, Object> namedConsequences = new HashMap<String, Object>();
-        String name1 =  " System.out.println(\"this is a test name1\");\n ";
+        String name1 =  " System.out.println(\"this is a test name1\" + $cheese);\n ";
         namedConsequences.put( "name1", name1 );
-        String name2 =  " System.out.println(\"this is a test name2\");\n ";
+        String name2 =  " System.out.println(\"this is a test name2\" + $cheese);\n ";
         namedConsequences.put( "name2", name2 );
         
         setupTest( defaultCon, namedConsequences);
