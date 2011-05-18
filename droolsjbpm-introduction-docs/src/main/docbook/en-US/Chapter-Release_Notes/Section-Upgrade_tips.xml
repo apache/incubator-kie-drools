@@ -52,7 +52,7 @@
       <para>Drools 4.0.x now supports pluggable dialects and has built-in
       support for Java and MVEL scripting language. In order to avoid keyword
       conflicts, the working memory actions were renamed as showed
-      bellow:</para>
+      below:</para>
 
       <para></para>
 
@@ -94,7 +94,7 @@
     <title>Rule Language Changes</title>
 
     <para>The DRL Rule Language also has some backward incompatible changes as
-    detailed bellow.</para>
+    detailed below.</para>
 
     <section>
       <title>Working Memory Actions</title>
