@@ -115,7 +115,7 @@ public class AccumulateNode extends BetaNode {
      *
      *  The initialization, accumulation and return codes, in JBRules, are assembled
      *  into a generated method code and called once for the whole match, as you can see
-     *  bellow:
+     *  below:
      *
      *   Object result = this.accumulator.accumulate( ... );
      */

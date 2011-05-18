@@ -1820,7 +1820,7 @@ public class DRLParser {
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {
             result = lhsAcc( ce );
         } else if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
-            // the order here is very important: this if branch must come before the lhsPatternBind bellow
+            // the order here is very important: this if branch must come before the lhsPatternBind below
             result = lhsParen( ce,
                                allowOr );
         } else if ( input.LA( 1 ) == DRLLexer.ID || input.LA( 1 ) == DRLLexer.QUESTION ) {

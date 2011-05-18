@@ -9,7 +9,7 @@ rule "test local variable in mvel consequence - same type"
     then
         Cheese c = new Cheese( $likes );
         results.add( c );
-        // bellow should raise a duplicate local variable declaration
+        // below should raise a duplicate local variable declaration
         Cheese c = new Cheese( "stilton" );
 end
 
@@ -21,6 +21,6 @@ rule "test local variable in mvel consequence - different type"
     then
         Cheese c = new Cheese( $likes );
         results.add( c );
-        // bellow should raise a duplicate local variable declaration
+        // below should raise a duplicate local variable declaration
         String c = new String( "stilton" );
 end
