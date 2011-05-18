@@ -105,7 +105,7 @@ public class EventMarshallFailTest {
                       ksession.getObjects().size() );
     }
     
-    @Test
+    @Test @Ignore
     public void testScheduledActivation() {
         KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImp impl = new KnowledgePackageImp();
