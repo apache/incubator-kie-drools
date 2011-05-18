@@ -391,6 +391,26 @@ public class KnowledgeBaseEventSupportTest {
 
         }
 
+		public void afterProcessAdded(AfterProcessAddedEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void afterProcessRemoved(AfterProcessRemovedEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void beforeProcessAdded(BeforeProcessAddedEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void beforeProcessRemoved(BeforeProcessRemovedEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
 }

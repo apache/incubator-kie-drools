@@ -32,8 +32,6 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
-import org.drools.command.CommandService;
-import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.common.InternalRuleBase;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
@@ -45,6 +43,8 @@ import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.AfterFunctionRemovedEvent;
 import org.drools.event.AfterPackageAddedEvent;
 import org.drools.event.AfterPackageRemovedEvent;
+import org.drools.event.AfterProcessAddedEvent;
+import org.drools.event.AfterProcessRemovedEvent;
 import org.drools.event.AfterRuleAddedEvent;
 import org.drools.event.AfterRuleBaseLockedEvent;
 import org.drools.event.AfterRuleBaseUnlockedEvent;
@@ -52,6 +52,8 @@ import org.drools.event.AfterRuleRemovedEvent;
 import org.drools.event.BeforeFunctionRemovedEvent;
 import org.drools.event.BeforePackageAddedEvent;
 import org.drools.event.BeforePackageRemovedEvent;
+import org.drools.event.BeforeProcessAddedEvent;
+import org.drools.event.BeforeProcessRemovedEvent;
 import org.drools.event.BeforeRuleAddedEvent;
 import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
@@ -62,6 +64,8 @@ import org.drools.event.knowlegebase.impl.AfterKnowledgeBaseLockedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgeBaseUnlockedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgePackageAddedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterKnowledgePackageRemovedEventImpl;
+import org.drools.event.knowlegebase.impl.AfterProcessAddedEventImpl;
+import org.drools.event.knowlegebase.impl.AfterProcessRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterRuleAddedEventImpl;
 import org.drools.event.knowlegebase.impl.AfterRuleRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeFunctionRemovedEventImpl;
@@ -69,6 +73,8 @@ import org.drools.event.knowlegebase.impl.BeforeKnowledgeBaseLockedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeKnowledgeBaseUnlockedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeKnowledgePackageAddedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeKnowledgePackageRemovedEventImpl;
+import org.drools.event.knowlegebase.impl.BeforeProcessAddedEventImpl;
+import org.drools.event.knowlegebase.impl.BeforeProcessRemovedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeRuleAddedEventImpl;
 import org.drools.event.knowlegebase.impl.BeforeRuleRemovedEventImpl;
 import org.drools.reteoo.ReteooRuleBase;
@@ -337,6 +343,26 @@ public class KnowledgeBaseImpl
             this.listener.beforeRuleRemoved( new BeforeRuleRemovedEventImpl( this.kbase,
                                                                              new RuleImpl( event.getRule() ) ) );
         }
+
+		public void beforeProcessAdded(BeforeProcessAddedEvent event) {
+			this.listener.beforeProcessAdded(new BeforeProcessAddedEventImpl( this.kbase,
+                                                                              event.getProcess() ));
+		}
+
+		public void afterProcessAdded(AfterProcessAddedEvent event) {
+			this.listener.afterProcessAdded(new AfterProcessAddedEventImpl( this.kbase,
+                                                                            event.getProcess() ));
+		}
+
+		public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
+			this.listener.beforeProcessRemoved(new BeforeProcessRemovedEventImpl( this.kbase,
+                                                                                  event.getProcess() ));
+		}
+
+		public void afterProcessRemoved(AfterProcessRemovedEvent event) {
+			this.listener.afterProcessRemoved(new AfterProcessRemovedEventImpl( this.kbase,
+                                                                                event.getProcess() ));
+		}
     }
 
 }
