@@ -60,7 +60,6 @@ import org.drools.io.ResourcedObject;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.ResourceChangeNotifierImpl;
 import org.drools.io.internal.InternalResource;
-import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.Package;
 import org.drools.rule.Query;
@@ -69,6 +68,7 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.util.CompositeClassLoader;
 import org.drools.xml.ChangeSetSemanticModule;
 import org.drools.xml.SemanticModules;
 import org.drools.xml.XmlChangeSetReader;
@@ -836,9 +836,9 @@ public class KnowledgeAgentImpl
 
             for ( Map.Entry<Resource, Set<KnowledgeDefinition>> entry : changeSetState.modifiedResourceMappings.entrySet() ) {
 
-                KnowledgePackageImp kpkg = createPackageFromResource( entry.getKey() );
+                KnowledgePackageImp newPackage = createPackageFromResource( entry.getKey() );
 
-                if ( kpkg == null ) {
+                if ( newPackage == null ) {
                     this.listener.warning( "KnowledgeAgent: The resource didn't create any package: " + entry.getKey()+". Removing any existing knowledge definition of "+entry.getKey() );
                     
                     for ( KnowledgeDefinition kd : entry.getValue() ) {
@@ -848,6 +848,15 @@ public class KnowledgeAgentImpl
                     continue;
                 }
 
+                KnowledgePackageImp oldPackage = (KnowledgePackageImp) this.kbase.getKnowledgePackage( newPackage.getName() );
+                AbstractRuleBase abstractRuleBase = (AbstractRuleBase)((KnowledgeBaseImpl)this.kbase).ruleBase;
+                CompositeClassLoader rootClassLoader = abstractRuleBase.getRootClassLoader(); 
+                
+                newPackage.pkg.getDialectRuntimeRegistry().onAdd( rootClassLoader );
+                newPackage.pkg.getDialectRuntimeRegistry().onBeforeExecute();
+                newPackage.pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( abstractRuleBase.getClassFieldAccessorCache());
+                newPackage.pkg.getClassFieldAccessorStore().wire();
+                
                 this.listener.debug( "KnowledgeAgent: Diffing: " + entry.getKey() );
 
                 ResourceDiffProducer rdp = new BinaryResourceDiffProducerImpl();
@@ -856,8 +865,8 @@ public class KnowledgeAgentImpl
                 //That's why we are serching the current package as
                 //this.kbase.getKnowledgePackage(kpkg.getName())
                 ResourceDiffResult diff = rdp.diff( entry.getValue(),
-                                                    kpkg,
-                                                    (KnowledgePackageImp) this.kbase.getKnowledgePackage( kpkg.getName() ) );
+                                                    newPackage,
+                                                    oldPackage );
 
                 for ( KnowledgeDefinition kd : diff.getRemovedDefinitions() ) {
                     this.listener.debug( "KnowledgeAgent: Removing: " + kd );
