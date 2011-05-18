@@ -26,10 +26,14 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.FactHandle;
-import org.drools.WorkingMemory;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.event.rule.ObjectInsertedEvent;
+import org.drools.event.rule.ObjectRetractedEvent;
+import org.drools.event.rule.ObjectUpdatedEvent;
+import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 public class WorkingMemoryEventSupportTest {
     @Test
@@ -39,12 +43,11 @@ public class WorkingMemoryEventSupportTest {
 
     @Test
     public void testWorkingMemoryEventListener() {
-        final RuleBase rb = RuleBaseFactory.newRuleBase();
-        final WorkingMemory wm = rb.newStatefulSession();
+        final KnowledgeBase rb = KnowledgeBaseFactory.newKnowledgeBase();
+        final StatefulKnowledgeSession wm = rb.newStatefulKnowledgeSession();
 
         final List wmList = new ArrayList();
         final WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
-
             public void objectInserted(ObjectInsertedEvent event) {
                 wmList.add( event );
             }
@@ -73,10 +76,12 @@ public class WorkingMemoryEventSupportTest {
                     oae.getFactHandle() );
 
         wm.update( stiltonHandle,
-                   stilton );
+                   cheddar );
         final ObjectUpdatedEvent ome = (ObjectUpdatedEvent) wmList.get( 1 );
         assertSame( stiltonHandle,
                     ome.getFactHandle() );
+        assertEquals( cheddar, ome.getObject() );
+        assertEquals( stilton, ome.getOldObject()  );
 
         wm.retract( stiltonHandle );
         final ObjectRetractedEvent ore = (ObjectRetractedEvent) wmList.get( 2 );
