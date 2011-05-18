@@ -124,7 +124,7 @@ end</programlisting>
       </example>
     <para>This behaviour allows the engine to keep consistency when
     dealing with negative patterns and temporal constraints at the same time.
-    The above would be the same as writing the rule as bellow, but does not
+    The above would be the same as writing the rule as below, but does not
     burden the user to calculate and explicitly write the appropriate duration
     parameter:</para>
     <example>

@@ -22,7 +22,7 @@
     </listitem>
   </itemizedlist>
 
-  <para>For instance, the example bellow is declaring that the fact type
+  <para>For instance, the example below is declaring that the fact type
   StockTick in a stock broker application shall be handled as an event.</para>
 
   <example>
