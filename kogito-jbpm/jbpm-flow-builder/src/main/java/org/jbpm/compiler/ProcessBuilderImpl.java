@@ -146,7 +146,7 @@ public class ProcessBuilderImpl implements ProcessBuilder {
 	            if (p != null) {
 	            
 		            ProcessDescr processDescr = new ProcessDescr();
-		            processDescr.setName(process.getPackageName());
+		            processDescr.setName(process.getPackageName() + "." + process.getName());
 		            processDescr.setResource( resource );
 		            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();           
 		            Dialect dialect = dialectRegistry.getDialect( "java" );
