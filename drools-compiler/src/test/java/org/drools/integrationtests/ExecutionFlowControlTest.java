@@ -5,7 +5,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +31,8 @@ import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultAgenda;
@@ -36,10 +41,12 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.KnowledgePackage;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.integrationtests.BrokenTest.Holder;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
@@ -724,6 +731,88 @@ public class ExecutionFlowControlTest {
                       list.get( 1 ) );
 
     }
+    
+    @Test // JBRULES-2398
+    public void testActivationGroupWithTroubledSyntax() {
+        String str = "package BROKEN_TEST;\n" + 
+                "import " + Holder.class.getCanonicalName() + ";\n" + 
+                "rule \"_12\"\n" + 
+                "    \n" + 
+                "    salience 3\n" + 
+                "    activation-group \"BROKEN\"\n" + 
+                "    when\n" + 
+                "        $a : Holder(value in (0))\n" + 
+                "    then\n" + 
+                "        System.out.println(\"setting 0\");\n" + 
+                "        $a.setOutcome(\"setting 0\");\n" + 
+                "end\n" + 
+                "\n" + 
+                "rule \"_13\"\n" + 
+                "    \n" + 
+                "    salience 2\n" + 
+                "    activation-group \"BROKEN\"\n" + 
+                "    when\n" + 
+                "        $a : Holder(value in (1))\n" + 
+                "    then\n" + 
+                "        System.out.println(\"setting 1\");\n" + 
+                "        $a.setOutcome(\"setting 1\");\n" + 
+                "end\n" + 
+                "\n" + 
+                "rule \"_22\"\n" + 
+                "    \n" + 
+                "    salience 1\n" + 
+                "    activation-group \"BROKEN\"\n" + 
+                "    when\n" + 
+                "        $a : Holder(value == null)\n" + 
+                "    then\n" + 
+                "        System.out.println(\"setting null\");\n" + 
+                "        $a.setOutcome(\"setting null\");\n" + 
+                "end\n" + 
+                "\n" + 
+                "";
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kBuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+        if (kBuilder.hasErrors()) {
+            System.err.println("Errors");
+            KnowledgeBuilderErrors errors = kBuilder.getErrors();
+            for (KnowledgeBuilderError kbe : errors) {
+                System.err.println(kbe.getMessage());
+                for (int errLine : kbe.getErrorLines()) {
+                    System.err.println(errLine);
+                }
+            }
+            System.exit(1);
+        }
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        Collection<KnowledgePackage> knowledgePackages = kBuilder.getKnowledgePackages();
+        kBase.addKnowledgePackages(knowledgePackages);
+        
+        StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
+
+        Holder inrec = new Holder(1);
+        System.out.println("Holds: " + inrec.getValue());
+        session.insert(inrec);
+        session.fireAllRules();
+        Assert.assertEquals(1, session.getFactHandles().size());
+        Assert.assertEquals("setting 1", inrec.getOutcome());
+
+        session = kBase.newStatefulKnowledgeSession();
+        inrec = new Holder(null);
+        System.out.println("Holds: " + inrec.getValue());
+        session.insert(inrec);
+        session.fireAllRules();
+        Assert.assertEquals(1, session.getFactHandles().size());
+        Assert.assertEquals("setting null", inrec.getOutcome());
+
+        session = kBase.newStatefulKnowledgeSession();
+        inrec = new Holder(0);
+        System.out.println("Holds: " + inrec.getValue());
+        session.insert(inrec);
+        session.fireAllRules(); // appropriate rule is not fired!
+        Assert.assertEquals(1, session.getFactHandles().size());
+        Assert.assertEquals("setting 0", inrec.getOutcome()); 
+    }
+    
 
     @Test
     public void testInsertRetractNoloop() throws Exception {
