@@ -217,7 +217,7 @@ public class PatternBuilder
                     return null;
                 }
                 String left = parser.getLeftMostExpr();
-                // BELLOW is a hack.. need to implement it properly
+                // HACK below. need to implement it properly
                 if ( expression.equals( left ) ) {
                     // it is just a bind, so build it
                     buildRuleBindings( context,

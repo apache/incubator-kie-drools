@@ -91,7 +91,7 @@ public abstract class BaseNode
     public abstract void attach(InternalWorkingMemory[] workingMemories);
 
     /**
-     * A method that is called for all nodes whose network bellow them 
+     * A method that is called for all nodes whose network below them
      * changed, after the change is complete, providing them with an oportunity
      * for state update
      */

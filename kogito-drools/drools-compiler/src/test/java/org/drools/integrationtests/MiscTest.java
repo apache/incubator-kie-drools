@@ -7844,7 +7844,7 @@ public class MiscTest {
         drl += "when\n";
         drl += "    $person:Person( name == 'mark' )\n";
         drl += "then\n";
-        drl += "    // bellow constructor for Person does not exist\n";
+        drl += "    // below constructor for Person does not exist\n";
         drl += "    Person p = new Person( 'bob', 30, 555 )\n";
         drl += "    ksession.update(ksession.getFactHandle($person), new Person('bob', 30, 999, 453, 534, 534, 32))\n";
         drl += "end\n";

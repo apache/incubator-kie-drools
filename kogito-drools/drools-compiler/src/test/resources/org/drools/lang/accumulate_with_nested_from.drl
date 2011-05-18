@@ -1,6 +1,6 @@
 rule "AccumulateParserTest"
 when
-     #bellow statement makes no sense, but is useful to test parsing recursiveness
+     #below statement makes no sense, but is useful to test parsing recursiveness
      $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),
                                                 max( $age ) );
 then

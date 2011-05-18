@@ -764,8 +764,8 @@ public class TestDRL {
 //
 //    @Test
 //    public void testCompilation_unit73() throws Exception {
-//        // test input: "rule \"CollectParserTest\"\nwhen\n     #bellow statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\nthen\nend\n\n\t"
-//        Object retval = execParser("compilation_unit", "rule \"CollectParserTest\"\nwhen\n     #bellow statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\nthen\nend\n\n\t", false);
+//        // test input: "rule \"CollectParserTest\"\nwhen\n     #below statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\nthen\nend\n\n\t"
+//        Object retval = execParser("compilation_unit", "rule \"CollectParserTest\"\nwhen\n     #below statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\nthen\nend\n\n\t", false);
 //        Object actual = examineParserExecResult(10, retval);
 //        Object expecting = "(VT_COMPILATION_UNIT (rule \"CollectParserTest\" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (collect (from (VT_PATTERN (VT_FACT_BINDING $p (VT_FACT (VT_PATTERN_TYPE Person) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ())))))))) then\nend))";
 //
@@ -774,8 +774,8 @@ public class TestDRL {
 //
 //    @Test
 //    public void testCompilation_unit74() throws Exception {
-//        // test input: "rule \"AccumulateParserTest\"\nwhen\n     #bellow statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),\n                                                max( $age ) );\nthen\nend\n\n\t"
-//        Object retval = execParser("compilation_unit", "rule \"AccumulateParserTest\"\nwhen\n     #bellow statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),\n                                                max( $age ) );\nthen\nend\n\n\t", false);
+//        // test input: "rule \"AccumulateParserTest\"\nwhen\n     #below statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),\n                                                max( $age ) );\nthen\nend\n\n\t"
+//        Object retval = execParser("compilation_unit", "rule \"AccumulateParserTest\"\nwhen\n     #below statement makes no sense, but is useful to test parsing recursiveness\n     $personList : ArrayList() from accumulate( Person( $age : age > 21 || < 10 ) from collect( People() from $town.getPeople() ),\n                                                max( $age ) );\nthen\nend\n\n\t", false);
 //        Object actual = examineParserExecResult(10, retval);
 //        Object expecting = "(VT_COMPILATION_UNIT (rule \"AccumulateParserTest\" when (VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (accumulate (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE Person) (VT_BIND_FIELD $age (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (|| (> 21) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ()))))) (VT_ACCUMULATE_ID_CLAUSE max ( $age ))))) then\nend))";
 //
@@ -1574,8 +1574,8 @@ public class TestDRL {
 //
 //    @Test
 //    public void testNormal_lhs_block66() throws Exception {
-//        // test input: "\t     #bellow statement makes no sense, but is useful to test parsing recursiveness\n\t     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\n\t\t"
-//        Object retval = execParser("normal_lhs_block", "\t     #bellow statement makes no sense, but is useful to test parsing recursiveness\n\t     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\n\t\t", false);
+//        // test input: "\t     #below statement makes no sense, but is useful to test parsing recursiveness\n\t     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\n\t\t"
+//        Object retval = execParser("normal_lhs_block", "\t     #below statement makes no sense, but is useful to test parsing recursiveness\n\t     $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );\n\t\t", false);
 //        Object actual = examineParserExecResult(10, retval);
 //        Object expecting = "(VT_AND_IMPLICIT (from (VT_PATTERN (VT_FACT_BINDING $personList (VT_FACT (VT_PATTERN_TYPE ArrayList)))) (collect (from (VT_PATTERN (VT_FACT_BINDING $p (VT_FACT (VT_PATTERN_TYPE Person) (|| (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (> 21)) (VT_FIELD (VT_ACCESSOR_PATH (VT_ACCESSOR_ELEMENT age)) (< 10)))))) (collect (from (VT_PATTERN (VT_FACT (VT_PATTERN_TYPE People))) (VT_FROM_SOURCE $town (. getPeople ()))))))))";
 //
