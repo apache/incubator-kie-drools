@@ -1012,6 +1012,21 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertEquals(1, list.size());
     }
     
+    public void testSignalStartDynamic() throws Exception {
+    	KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        KnowledgeBase kbase2 = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
+        kbase.addKnowledgePackages(kbase2.getKnowledgePackages());
+		final List<Long> list = new ArrayList<Long>();
+		ksession.addEventListener(new DefaultProcessEventListener() {
+			public void afterProcessStarted(ProcessStartedEvent event) {
+				list.add(event.getProcessInstance().getId());
+			}
+		});
+        ksession.signalEvent("MyStartSignal", "NewValue");
+		assertEquals(1, list.size());
+    }
+    
     public void testSignalEnd() throws Exception {
         KnowledgeBase kbase = createKnowledgeBase("BPMN2-SignalEndEvent.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
