@@ -76,10 +76,16 @@ public class RuleFlowNodeLogEvent extends RuleFlowLogEvent {
         String msg = null;
         switch ( this.getType() ) {
             case BEFORE_RULEFLOW_NODE_TRIGGERED :
-                msg = "BEFORE RULEFLOW NODE TRIGGERED";
+                msg = "BEFORE PROCESS NODE TRIGGERED";
                 break;
             case AFTER_RULEFLOW_NODE_TRIGGERED :
-                msg = "AFTER RULEFLOW NODE TRIGGERED";
+                msg = "AFTER PROCESS NODE TRIGGERED";
+                break;
+            case BEFORE_RULEFLOW_NODE_EXITED :
+                msg = "BEFORE PROCESS NODE EXITED";
+                break;
+            case AFTER_RULEFLOW_NODE_EXITED :
+                msg = "AFTER PROCESS NODE TRIGGERED";
                 break;
             default:
                 return super.toString();
