@@ -297,11 +297,24 @@ public class EvaluatorFactoryTest {
         col.add( new Boolean( true ) );
 
         //Test data: Obj1, Operand, Obj2
-        final Object[][] data = {{new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE}, {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE}, {new Boolean( true ), "==", new Boolean( false ), Boolean.FALSE},
-                {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE}, {new Boolean( true ), "==", null, Boolean.FALSE}, {null, "==", null, Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, {null, "!=", new Boolean( true ), Boolean.TRUE},
-                {null, "==", new Boolean( true ), Boolean.FALSE}, {new Boolean( true ), "memberOf", col, Boolean.TRUE}, {new Boolean( false ), "memberOf", col, Boolean.FALSE}, {null, "memberOf", col, Boolean.FALSE},
-                {new Boolean( true ), "memberOf", null, Boolean.FALSE}, {new Boolean( true ), "not memberOf", col, Boolean.FALSE}, {new Boolean( false ), "not memberOf", col, Boolean.TRUE}, {null, "not memberOf", col, Boolean.TRUE},
-                {new Boolean( true ), "not memberOf", null, Boolean.FALSE}};
+        final Object[][] data = {
+                                 {new Boolean( true ), "==", new Boolean( true ), Boolean.TRUE}, 
+                                 {new Boolean( false ), "!=", new Boolean( true ), Boolean.TRUE}, 
+                                 {new Boolean( true ), "==", new Boolean( false ), Boolean.FALSE},
+                                 {new Boolean( true ), "!=", new Boolean( false ), Boolean.TRUE}, 
+                                 {new Boolean( true ), "==", null, Boolean.FALSE}, 
+                                 {null, "==", null, Boolean.TRUE}, 
+                                 {null, "!=", null, Boolean.FALSE}, 
+                                 {null, "!=", new Boolean( true ), Boolean.TRUE},
+                                 {null, "==", new Boolean( true ), Boolean.FALSE}, 
+                                 {new Boolean( true ), "memberOf", col, Boolean.TRUE}, 
+                                 {new Boolean( false ), "memberOf", col, Boolean.FALSE}, 
+                                 {null, "memberOf", col, Boolean.FALSE},
+                                 {new Boolean( true ), "memberOf", null, Boolean.FALSE}, 
+                                 {new Boolean( true ), "not memberOf", col, Boolean.FALSE}, 
+                                 {new Boolean( false ), "not memberOf", col, Boolean.TRUE}, 
+                                 {null, "not memberOf", col, Boolean.TRUE},
+                                 {new Boolean( true ), "not memberOf", null, Boolean.FALSE}};
 
         runEvaluatorTest( data,
                           ValueType.PBOOLEAN_TYPE );
