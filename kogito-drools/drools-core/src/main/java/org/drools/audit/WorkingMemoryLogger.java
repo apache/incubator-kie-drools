@@ -48,6 +48,8 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.AfterFunctionRemovedEvent;
 import org.drools.event.AfterPackageAddedEvent;
 import org.drools.event.AfterPackageRemovedEvent;
+import org.drools.event.AfterProcessAddedEvent;
+import org.drools.event.AfterProcessRemovedEvent;
 import org.drools.event.AfterRuleAddedEvent;
 import org.drools.event.AfterRuleBaseLockedEvent;
 import org.drools.event.AfterRuleBaseUnlockedEvent;
@@ -59,6 +61,8 @@ import org.drools.event.BeforeActivationFiredEvent;
 import org.drools.event.BeforeFunctionRemovedEvent;
 import org.drools.event.BeforePackageAddedEvent;
 import org.drools.event.BeforePackageRemovedEvent;
+import org.drools.event.BeforeProcessAddedEvent;
+import org.drools.event.BeforeProcessRemovedEvent;
 import org.drools.event.BeforeRuleAddedEvent;
 import org.drools.event.BeforeRuleBaseLockedEvent;
 import org.drools.event.BeforeRuleBaseUnlockedEvent;
@@ -615,4 +619,24 @@ public abstract class WorkingMemoryLogger
         // TODO Auto-generated method stub
         
     }
+
+	public void beforeProcessAdded(BeforeProcessAddedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void afterProcessAdded(AfterProcessAddedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void afterProcessRemoved(AfterProcessRemovedEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
 }

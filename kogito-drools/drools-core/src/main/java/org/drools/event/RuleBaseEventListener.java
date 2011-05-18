@@ -103,6 +103,30 @@ public interface RuleBaseEventListener
     void afterRuleRemoved(AfterRuleRemovedEvent event);
 
     /**
+     * Method called before a new process is added to the rule base
+     * @param event
+     */
+    void beforeProcessAdded(BeforeProcessAddedEvent event);
+
+    /**
+     * Method called after a new process is added to the rule base
+     * @param event
+     */
+    void afterProcessAdded(AfterProcessAddedEvent event);
+
+    /**
+     * Method called before a process is removed from the rule base
+     * @param event
+     */
+    void beforeProcessRemoved(BeforeProcessRemovedEvent event);
+
+    /**
+     * Method called after a process is removed from the rule base
+     * @param event
+     */
+    void afterProcessRemoved(AfterProcessRemovedEvent event);
+
+    /**
      * Method called before a function is removed from the rule base
      * @param event
      */

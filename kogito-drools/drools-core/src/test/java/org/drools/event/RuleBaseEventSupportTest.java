@@ -384,6 +384,26 @@ public class RuleBaseEventSupportTest {
 
         }
 
+		public void beforeProcessAdded(BeforeProcessAddedEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void afterProcessAdded(AfterProcessAddedEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void afterProcessRemoved(AfterProcessRemovedEvent event) {
+			// TODO Auto-generated method stub
+			
+		}
+
     }
 
 }

@@ -17,6 +17,7 @@
 package org.drools.event;
 
 import org.drools.RuleBase;
+import org.drools.definition.process.Process;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 
@@ -204,4 +205,53 @@ public class RuleBaseEventSupport extends AbstractEventSupport<RuleBaseEventList
             } while (iter.hasNext());
         }
     }
+    
+    public void fireBeforeProcessAdded(final Process process) {
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final BeforeProcessAddedEvent event = new BeforeProcessAddedEvent(process);
+
+            do {
+                iter.next().beforeProcessAdded(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterProcessAdded(final Process process) {
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final AfterProcessAddedEvent event = new AfterProcessAddedEvent(process);
+
+            do {
+                iter.next().afterProcessAdded(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireBeforeProcessRemoved(final Process process) {
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final BeforeProcessRemovedEvent event = new BeforeProcessRemovedEvent(process);
+
+            do {
+                iter.next().beforeProcessRemoved(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterProcessRemoved(final Process process) {
+        final Iterator<RuleBaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final AfterProcessRemovedEvent event = new AfterProcessRemovedEvent(process);
+
+            do {
+                iter.next().afterProcessRemoved(event);
+            } while (iter.hasNext());
+        }
+    }
+
 }

@@ -82,7 +82,7 @@ abstract public class AbstractRuleBase
 
     protected Map<String, Package>                        pkgs;
 
-    private Map                                           processes;
+    private Map<String, Process>                          processes;
 
     private Map                                           agendaGroupRuleTotals;
 
@@ -908,6 +908,7 @@ abstract public class AbstractRuleBase
     
     public void addProcess(final Process process) {
         // XXX: could use a synchronized(processes) here.
+    	this.eventSupport.fireBeforeProcessAdded( process );
         lock();
         try {
             this.processes.put( process.getId(),
@@ -915,16 +916,22 @@ abstract public class AbstractRuleBase
         } finally {
             unlock();
         }
-
+    	this.eventSupport.fireAfterProcessAdded( process );
     }
 
     public void removeProcess(final String id) {
-        lock();
+    	Process process = this.processes.get(id);
+    	if (process == null) {
+    		throw new IllegalArgumentException( "Process '" + id + "' does not exist for this Rule Base." );
+    	}
+    	this.eventSupport.fireBeforeProcessRemoved( process );
+    	lock();
         try {
             this.processes.remove( id );
         } finally {
             unlock();
         }
+    	this.eventSupport.fireAfterProcessRemoved( process );
     }
 
     public Process getProcess(final String id) {
