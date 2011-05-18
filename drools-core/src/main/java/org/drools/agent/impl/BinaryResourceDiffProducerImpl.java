@@ -27,6 +27,7 @@ import org.drools.core.util.ReflectiveVisitor;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.agent.ResourceDiffProducer;
+import org.drools.definition.process.WorkflowProcess;
 import org.drools.rule.Function;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
@@ -168,7 +169,9 @@ public class BinaryResourceDiffProducerImpl extends ReflectiveVisitor implements
         listener.debug("BinaryResourceDiffProducerImpl: Couldn't handle "+oldDefinition+". We must leave it in the new Package.");
     }
 
-
+    public void visitWorkflowProcess(final WorkflowProcess oldDefinition){
+        listener.debug("BinaryResourceDiffProducerImpl: Couldn't handle "+oldDefinition+". We must leave it in the new Package.");
+    }
 
     private boolean compareRules(Rule r1, Rule r2){
         listener.debug("BinaryResourceDiffProducerImpl: Comparing "+r1+" against "+r2);
