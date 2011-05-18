@@ -1,6 +1,6 @@
 rule "CollectParserTest"
 when
-     #bellow statement makes no sense, but is useful to test parsing recursiveness
+     #below statement makes no sense, but is useful to test parsing recursiveness
      $personList : ArrayList() from collect( $p : Person( age > 21 || age < 10 ) from collect( People() from $town.getPeople() ) );
 then
 end
