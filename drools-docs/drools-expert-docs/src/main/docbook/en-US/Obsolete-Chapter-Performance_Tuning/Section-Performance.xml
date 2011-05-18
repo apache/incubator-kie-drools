@@ -35,7 +35,7 @@
     tries to match every tuple in the left memory according to the constraints
     defined for the given BetaNode. Those elements that match are propagated
     down through the network. The symmetrical behavior happens for when a
-    tuple arrives at the left input of the node. See diagram bellow: </para>
+    tuple arrives at the left input of the node. See diagram below: </para>
 
     <figure>
       <title>Beta Node</title>
@@ -156,7 +156,7 @@ Manners 64 with BetaNode indexes: 10078 millisec to run on average</programlisti
       write your rules in a way that the most restrictive constraints are
       declared before the less restrictive ones in your rule. For example, if
       you have a rule with a column like this: <programlisting>Employee (department == $aDepartment, name == $aName)
-</programlisting> Rewriting it as shown bellow will probably give you a better
+</programlisting> Rewriting it as shown below will probably give you a better
       performance, as “name” is probably a more restrictive constraint than
       “department”: <programlisting>Employee (name == $aName, department == $aDepartment)
 </programlisting> (Unless you work in an organization where there are more

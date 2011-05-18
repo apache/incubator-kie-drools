@@ -65,7 +65,7 @@ end
 
   <para>Inserting events into an entry point is equally simple. Instead of
   inserting events directly into the working memory, insert them into the
-  entry point as shown in the example bellow:</para>
+  entry point as shown in the example below:</para>
 
   <example>
       <title>Inserting facts into an entry point</title>
