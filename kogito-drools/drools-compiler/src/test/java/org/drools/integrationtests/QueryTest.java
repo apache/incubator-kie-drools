@@ -16,8 +16,10 @@ import static org.junit.Assert.*;
 
 import org.drools.Address;
 import org.drools.Cheese;
+import org.drools.DomainObject;
 import org.drools.FactHandle;
 import org.drools.InsertedObject;
+import org.drools.Interval;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
@@ -154,9 +156,9 @@ public class QueryTest {
 
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
         kbase.addKnowledgePackages( kbase.getKnowledgePackages() );
-        
-        if(kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
         }
         kbase = SerializationHelper.serializeObject( kbase );
 
@@ -174,11 +176,10 @@ public class QueryTest {
     public void testQueryWithParams() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_QueryWithParams.drl" ) ) );
-        if ( builder.hasErrors()) {
+        if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
         }
-        
-        
+
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
@@ -744,7 +745,7 @@ public class QueryTest {
                       names.size() );
         assertTrue( names.contains( "darth" ) );
     }
-    
+
     @Test
     public void testQueriesWithVariableUnificationOnNestedFields() throws Exception {
         String str = "";
@@ -753,7 +754,7 @@ public class QueryTest {
         str += "query peeps( String $name, String $likes, String $street) \n";
         str += "    $p : Person( $name : name, $likes : likes, $street : address.street ) \n";
         str += "end\n";
-        
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                           ResourceType.DRL );
@@ -771,12 +772,12 @@ public class QueryTest {
         Person p1 = new Person( "darth",
                                 "stilton",
                                 100 );
-        p1.setAddress( new Address("s1") );
-        
+        p1.setAddress( new Address( "s1" ) );
+
         Person p2 = new Person( "yoda",
                                 "stilton",
                                 300 );
-        p2.setAddress( new Address("s2") );
+        p2.setAddress( new Address( "s2" ) );
 
         ksession.insert( p1 );
         ksession.insert( p2 );
@@ -791,11 +792,9 @@ public class QueryTest {
         }
         assertTrue( names.contains( "yoda" ) );
         assertTrue( names.contains( "darth" ) );
-        
-        
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{ Variable.variable, Variable.variable, "s1"} );
+                                            new Object[]{Variable.variable, Variable.variable, "s1"} );
         assertEquals( 1,
                       results.size() );
         names = new ArrayList();
@@ -804,7 +803,7 @@ public class QueryTest {
         }
         assertTrue( names.contains( "darth" ) );
     }
-    
+
     @Test
     public void testOpenQuery() throws Exception {
         String str = "";
@@ -854,7 +853,7 @@ public class QueryTest {
         final List<Object[]> added = new ArrayList<Object[]>();
 
         ViewChangedEventListener listener = new ViewChangedEventListener() {
-            public void rowUpdated(Row row) {
+            public void rowUpdated( Row row ) {
                 Object[] array = new Object[6];
                 array[0] = row.get( "stilton" );
                 array[1] = row.get( "cheddar" );
@@ -865,7 +864,7 @@ public class QueryTest {
                 updated.add( array );
             }
 
-            public void rowRemoved(Row row) {
+            public void rowRemoved( Row row ) {
                 Object[] array = new Object[6];
                 array[0] = row.get( "stilton" );
                 array[1] = row.get( "cheddar" );
@@ -876,7 +875,7 @@ public class QueryTest {
                 removed.add( array );
             }
 
-            public void rowAdded(Row row) {
+            public void rowAdded( Row row ) {
                 Object[] array = new Object[6];
                 array[0] = row.get( "stilton" );
                 array[1] = row.get( "cheddar" );
@@ -1017,7 +1016,7 @@ public class QueryTest {
         runQueryListenerTest( QueryListenerOption.LIGHTWEIGHT );
     }
 
-    public void runQueryListenerTest(QueryListenerOption option) {
+    public void runQueryListenerTest( QueryListenerOption option ) {
         String str = "";
         str += "package org.drools\n";
         str += "query cheeses(String $type) \n";
@@ -1059,6 +1058,53 @@ public class QueryTest {
                           cheeses.size() );
         }
 
+    }
+
+    @Test
+    public void testQueryWithEval() {
+        // [Regression in 5.2.0.M2]: NPE during rule evaluation on MVELPredicateExpression.evaluate(MVELPredicateExpression.java:82)
+
+        String str = "package org.drools\n" +
+                     "query queryWithEval \n" +
+                     "    $do: DomainObject()\n" +
+                     "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        DomainObject do1 = new DomainObject();
+        do1.setId( 1 );
+        do1.setInterval( new Interval( 10,
+                                       5 ) );
+        DomainObject do2 = new DomainObject();
+        do2.setId( 1 );
+        do2.setInterval( new Interval( 20,
+                                       5 ) );
+        ksession.insert( do1 );
+        ksession.insert( do2 );
+
+        org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "queryWithEval" );
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( do2,
+                      results.iterator().next().get( "$do" ) );
+
+        ksession.dispose();
+    }
+
+    private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
     }
 
 }
