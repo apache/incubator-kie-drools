@@ -33,7 +33,7 @@
 
     <itemizedlist>
       <listitem>
-        <para>If two values are defined (like in the example bellow), the
+        <para>If two values are defined (like in the example below), the
         interval starts on the first value and finishes on the second. </para>
       </listitem>
 
@@ -90,7 +90,7 @@ $eventA : EventA( this after[ -2m, -3m30s ] $eventB ) </programlisting>
 
     <itemizedlist>
       <listitem>
-        <para>If two values are defined (like in the example bellow), the
+        <para>If two values are defined (like in the example below), the
         interval starts on the first value and finishes on the second. </para>
       </listitem>
 
