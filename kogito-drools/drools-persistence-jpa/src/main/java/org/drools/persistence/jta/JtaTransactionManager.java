@@ -176,9 +176,14 @@ public class JtaTransactionManager
     }
     
     public void rollback() {
+    	boolean wasLocal = localTransaction;
         localTransaction = false;
         try {
-            this.ut.rollback();
+        	if (wasLocal) {
+        		this.ut.rollback();
+        	} else {
+        		this.ut.setRollbackOnly();
+        	}
         } catch ( Exception e ) {
             logger.warn( "Unable to rollback transaction", e);
             throw new RuntimeException( "Unable to rollback transaction",
