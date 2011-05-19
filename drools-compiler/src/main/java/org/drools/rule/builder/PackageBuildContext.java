@@ -104,6 +104,8 @@ public class PackageBuildContext {
                                                   parentDescr,
                                                   component,
                                                   "Unable to load Dialect '" + component.getDialect() + "'" ) );
+            // dialect is null, but fall back to default dialect so we can attempt to compile rest of rule.
+            this.dialect = defaultDialect;
         }
     }
 

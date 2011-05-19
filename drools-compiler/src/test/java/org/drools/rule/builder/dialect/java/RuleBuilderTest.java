@@ -277,6 +277,28 @@ public class RuleBuilderTest {
     }
 
     @Test
+    public void testInvalidDialect() throws Exception {
+        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
+        ruleDescr.addAttribute( new AttributeDescr( "dialect", "mvl" ) );
+        ruleDescr.setConsequence( "" );
+        pkgDescr.addRule( ruleDescr );
+
+        final PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( pkgDescr );
+
+        assertTrue( pkgBuilder.getErrors().toString(),
+                           pkgBuilder.getErrors().isEmpty() );
+//
+//        final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
+//        final GroupElement and = rule.getLhs();
+//        final Pattern pat = (Pattern) and.getChildren().get( 0 );
+//        final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+//        assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
+//                    fc.getField().getValue() instanceof BigDecimal );
+    }    
+    
+    @Test
     public void testBuildBigIntegerLiteralConstraint() throws Exception {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
