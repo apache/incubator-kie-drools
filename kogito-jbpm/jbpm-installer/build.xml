@@ -430,14 +430,20 @@
   <target name="start.jboss">
     <property name="jboss.full.path.win" location="${jboss.home}/bin/run.bat" />
     <exec executable="${jboss.full.path.win}" spawn="yes"
-          os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
+          osfamily="windows">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/run.sh" />
-    <exec executable="${jboss.full.path.linux}" spawn="yes" os="Linux,Mac OS X">
+    <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
+      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
+      <arg value="-b" />
+      <arg value="${jboss.bind.address}" />
+      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
+    </exec>
+    <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="mac">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
@@ -452,12 +458,17 @@
   <!-- Stop JBoss AS -->
   <target name="stop.jboss">
     <exec executable="${jboss.home}/bin/shutdown.bat"
-          os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
+          osfamily="windows">
       <arg value="-s" />
       <arg value="jnp://${jboss.bind.address}:1099" />
       <arg value="-S" />
     </exec>
-    <exec executable="${jboss.home}/bin/shutdown.sh" os="Linux,Mac OS X">
+    <exec executable="${jboss.home}/bin/shutdown.sh" osfamily="unix">
+      <arg value="-s" />
+      <arg value="jnp://${jboss.bind.address}:1099" />
+      <arg value="-S" />
+    </exec>
+    <exec executable="${jboss.home}/bin/shutdown.sh" osfamily="mac">
       <arg value="-s" />
       <arg value="jnp://${jboss.bind.address}:1099" />
       <arg value="-S" />
@@ -468,21 +479,21 @@
   <target name="start.eclipse">
     <exec executable="${eclipse.home}/eclipse.exe"
           spawn="yes"
-          os="Windows 7,Windows Vista,Windows XP,Windows 2000,Windows 2003">
+          osfamily="windows">
       <arg value="-data" />
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
     </exec>
-    <exec executable="${eclipse.home}/eclipse" spawn="yes" os="Linux">
+    <exec executable="${eclipse.home}/eclipse" spawn="yes" osfamily="unix">
       <arg value="-data" />
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
     </exec>
   	<chmod perm="a+x" file="./generate.mac.eclipse.preferences.sh" />
-    <exec executable="./generate.mac.eclipse.preferences.sh" os="Mac OS X"/>
-    <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" spawn="yes" os="Mac OS X">
+    <exec executable="./generate.mac.eclipse.preferences.sh" osfamily="mac"/>
+    <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" spawn="yes" osfamily="mac">
       <arg value="-data" />
       <arg value="../../../../${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
