@@ -8311,6 +8311,44 @@ public class MiscTest {
                       rules );
     }
 
+    @Test
+    public void testNotContainsOperator() {
+        // JBRULES-2404: "not contains" operator doesn't work on nested fields
+
+        String str = "package org.drools\n" +
+                     "rule NotContains\n" +
+                     "when\n" +
+                     "    $oi : OrderItem( )\n" +
+                     "    $o  : Order( items.values() not contains $oi )" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        Order order1 = new Order(1, "XYZ" );
+        Order order2 = new Order(2, "ABC" );
+        OrderItem item11 = new OrderItem( order1, 1 );
+        order1.addItem( item11 );
+        OrderItem item21 = new OrderItem( order2, 1 );
+        order2.addItem( item21 );
+
+        ksession.insert( order1 );
+        ksession.insert( item11 );
+
+        // should not fire, as item11 is contained in order1.items
+        int rules = ksession.fireAllRules();
+        assertEquals( 0,
+                      rules );
+        
+        // should fire as item21 is not contained in order1.items
+        ksession.insert( item21 );
+        rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+        
+    }
+
     @Test @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
