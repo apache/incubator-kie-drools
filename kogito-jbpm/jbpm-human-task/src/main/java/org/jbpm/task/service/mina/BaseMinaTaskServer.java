@@ -36,12 +36,22 @@ public class BaseMinaTaskServer extends TaskServer {
     IoAcceptor        acceptor;
 
     volatile boolean  running;
+    
+    //the local interface to be used. Default is loopback. To bind all
+    // interfaces, use 0.0.0.0
+    String localInterface;
 
     public BaseMinaTaskServer(IoHandlerAdapter handler,
                           int port) {
-        this.handler = handler;
-        this.port = port;
+        this(handler, port, "127.0.0.1");
     }
+    
+	public BaseMinaTaskServer(IoHandlerAdapter handler, int port,
+	        String localInterface) {
+		this.handler = handler;
+		this.port = port;
+		this.localInterface = localInterface;
+	}
 
     public void run() {
         try {
@@ -67,7 +77,7 @@ public class BaseMinaTaskServer extends TaskServer {
         acceptor.setHandler( handler );
         acceptor.getSessionConfig().setReadBufferSize( 2048 );
         acceptor.getSessionConfig().setIdleTime( IdleStatus.BOTH_IDLE, 10 );
-        acceptor.bind( new InetSocketAddress( "127.0.0.1", port ) );
+        acceptor.bind( new InetSocketAddress( localInterface, port ) );
         running = true;
     }
     
@@ -83,4 +93,5 @@ public class BaseMinaTaskServer extends TaskServer {
     public boolean isRunning() {
 		return running;
 	}
+    
 }

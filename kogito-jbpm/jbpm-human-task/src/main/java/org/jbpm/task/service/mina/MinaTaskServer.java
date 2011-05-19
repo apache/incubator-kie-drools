@@ -28,6 +28,11 @@ public class MinaTaskServer extends BaseMinaTaskServer {
     
     public MinaTaskServer(TaskService service, int port) {
         super( new MinaTaskServerHandler( service, SystemEventListenerFactory.getSystemEventListener() ),
-               port );
+               port, "127.0.0.1" );
+    }
+
+    public MinaTaskServer(TaskService service, int port, String localInterface) {
+        super( new MinaTaskServerHandler( service, SystemEventListenerFactory.getSystemEventListener() ),
+               port, localInterface );
     }
 }
