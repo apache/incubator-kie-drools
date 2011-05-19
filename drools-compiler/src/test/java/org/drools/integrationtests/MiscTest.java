@@ -171,15 +171,15 @@ public class MiscTest {
 
         list = (List) session.getGlobal( "list" );
 
-        assertEquals(4,
-                fired);
+        assertEquals( 4,
+                      fired );
         assertEquals( 4,
                       list.size() );
 
         assertEquals( "rule1",
                       list.get( 0 ) );
-        assertEquals("rule2",
-                list.get(1));
+        assertEquals( "rule2",
+                      list.get( 1 ) );
         assertEquals( "rule3",
                       list.get( 2 ) );
         assertEquals( "rule4",
@@ -265,7 +265,7 @@ public class MiscTest {
     @Test
     public void testEnabledExpression() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("test_enabledExpression.drl")));
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_enabledExpression.drl" ) ) );
         final Package pkg = builder.getPackage();
 
         if ( builder.hasErrors() ) {
@@ -280,7 +280,7 @@ public class MiscTest {
         session.setGlobal( "results",
                            results );
 
-        session.insert(new Person("Michael"));
+        session.insert( new Person( "Michael" ) );
 
         //        session = SerializationHelper.getSerialisedStatefulSession( session,
         //                                                                    ruleBase );
@@ -289,22 +289,22 @@ public class MiscTest {
         session.fireAllRules();
         assertEquals( 3,
                       results.size() );
-        assertTrue(results.contains("1"));
-        assertTrue(results.contains("2"));
-        assertTrue(results.contains("3"));
+        assertTrue( results.contains( "1" ) );
+        assertTrue( results.contains( "2" ) );
+        assertTrue( results.contains( "3" ) );
 
     }
 
     @Test
     public void testGetStatefulKnowledgeSessions() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("empty.drl",
-                getClass()),
-                ResourceType.DRL);
+        kbuilder.add( ResourceFactory.newClassPathResource( "empty.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatefulKnowledgeSession ksession_1 = kbase.newStatefulKnowledgeSession();
         String expected_1 = "expected_1";
         String expected_2 = "expected_2";
@@ -312,7 +312,7 @@ public class MiscTest {
         org.drools.runtime.rule.FactHandle handle_2 = ksession_1.insert( expected_2 );
         ksession_1.fireAllRules();
         Collection<StatefulKnowledgeSession> coll_1 = kbase.getStatefulKnowledgeSessions();
-        assertTrue(coll_1.size() == 1);
+        assertTrue( coll_1.size() == 1 );
 
         StatefulKnowledgeSession ksession_2 = coll_1.iterator().next();
         Object actual_1 = ksession_2.getObject( handle_1 );
@@ -347,10 +347,10 @@ public class MiscTest {
                            result );
 
         final Primitives p1 = new Primitives();
-        p1.setPrimitiveIntArray(new int[]{1, 2, 3});
-        p1.setArrayAttribute(new String[]{"a", "b"});
+        p1.setPrimitiveIntArray( new int[]{1, 2, 3} );
+        p1.setArrayAttribute( new String[]{"a", "b"} );
 
-        session.insert(p1);
+        session.insert( p1 );
 
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
@@ -437,8 +437,8 @@ public class MiscTest {
 
         assertEquals( 1,
                       results.size() );
-        assertEquals(cheesery,
-                results.get(0));
+        assertEquals( cheesery,
+                      results.get( 0 ) );
     }
 
     @Test
@@ -515,7 +515,7 @@ public class MiscTest {
         if ( kbuilder.hasErrors() ) {
             System.err.println( kbuilder.getErrors() );
         }
-        assertTrue(kbuilder.hasErrors());
+        assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
@@ -554,10 +554,10 @@ public class MiscTest {
 
         ksession.fireAllRules();
 
-        assertEquals(1,
-                list.size());
-        assertEquals(10,
-                list.get(0));
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( 10,
+                      list.get( 0 ) );
     }
 
     @Test
@@ -599,8 +599,8 @@ public class MiscTest {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()),
-                ResourceType.DRL);
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
             System.err.println( kbuilder.getErrors() );
@@ -639,41 +639,41 @@ public class MiscTest {
 
         map.put( "list",
                  list );
-        map.put("string",
-                string);
+        map.put( "string",
+                 string );
 
-        workingMemory.setGlobalResolver(new GlobalResolver() {
-            public void readExternal(ObjectInput in) throws IOException,
-                    ClassNotFoundException {
+        workingMemory.setGlobalResolver( new GlobalResolver() {
+            public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
             }
 
-            public void writeExternal(ObjectOutput out) throws IOException {
+            public void writeExternal( ObjectOutput out ) throws IOException {
             }
 
-            public Object resolveGlobal(String identifier) {
-                return map.get(identifier);
+            public Object resolveGlobal( String identifier ) {
+                return map.get( identifier );
             }
 
-            public void setGlobal(String identifier,
-                    Object value) {
-                map.put(identifier,
-                        value);
+            public void setGlobal( String identifier,
+                                   Object value ) {
+                map.put( identifier,
+                         value );
             }
 
-            public Object get(String identifier) {
-                return resolveGlobal(identifier);
+            public Object get( String identifier ) {
+                return resolveGlobal( identifier );
             }
 
-            public void set(String identifier,
-                    Object value) {
-                setGlobal(identifier,
-                        value);
+            public void set( String identifier,
+                             Object value ) {
+                setGlobal( identifier,
+                           value );
             }
 
-            public void setDelegate(Globals delegate) {
+            public void setDelegate( Globals delegate ) {
             }
 
-        });
+        } );
 
         workingMemory.fireAllRules();
 
@@ -1104,11 +1104,11 @@ public class MiscTest {
         rule += "end\n";
 
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new StringReader(rule));
+        builder.addPackageFromDrl( new StringReader( rule ) );
         final Package pkg = builder.getPackage();
 
         final RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage(pkg);
+        ruleBase.addPackage( pkg );
         StatefulSession session = ruleBase.newStatefulSession();
 
         List list = new ArrayList();
@@ -1201,8 +1201,8 @@ public class MiscTest {
                                                                               true );
         ksession.fireAllRules();
 
-        assertEquals(1,
-                ((List) ksession.getGlobal("list")).size());
+        assertEquals( 1,
+                      ((List) ksession.getGlobal( "list" )).size() );
         assertEquals( "X",
                       ((List) ksession.getGlobal( "list" )).get( 0 ) );
 
