@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>knowledge-api</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -69,7 +69,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-jsr94</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -89,7 +89,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-clips</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -99,7 +99,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -109,7 +109,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-persistence-jpa</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -119,7 +119,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-templates</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
@@ -129,7 +129,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-decisiontables</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
 
@@ -141,7 +141,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-examples</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>sources</classifier>
     </dependency>
 
@@ -149,7 +149,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>knowledge-api</artifactId>
-      <version>${project.version}</version>
+      <version>${drools.version}</version>
       <classifier>javadoc</classifier>
     </dependency>
     <dependency>
