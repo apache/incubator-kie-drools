@@ -8346,9 +8346,43 @@ public class MiscTest {
         rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
-        
     }
 
+    @Test
+    public void testOrWithFrom() {
+        // JBRULES-2274: Rule does not fire as expected using deep object model and nested 'or' clause
+
+        String str = "package org.drools\n" +
+                     "rule NotContains\n" +
+                     "when\n" +
+                     "    $oi1 : OrderItem( )\n" +
+                     "    $o1  : Order(number == 1) from $oi1.order; \n" +
+                     "    ( eval(true) or eval(true) )\n" +
+                     "    $oi2 : OrderItem( )\n" +
+                     "    $o2  : Order(number == 2) from $oi2.order; \n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        Order order1 = new Order(1, "XYZ" );
+        Order order2 = new Order(2, "ABC" );
+        OrderItem item11 = new OrderItem( order1, 1 );
+        order1.addItem( item11 );
+        OrderItem item21 = new OrderItem( order2, 1 );
+        order2.addItem( item21 );
+
+        ksession.insert( order1 );
+        ksession.insert( order2 );
+        ksession.insert( item11 );
+        ksession.insert( item21 );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 2,
+                      rules );
+    }
+    
     @Test @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
