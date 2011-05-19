@@ -8311,6 +8311,47 @@ public class MiscTest {
                       rules );
     }
 
+    @Test @Ignore("TODO unignore when fixing JBRULES-2749")
+    public void testPackageNameOfTheBeast() throws Exception {
+        // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
+
+        String ruleFileContent1 = "package org.drools.integrationtests;\n" +
+                "function void myFunction() {\n" +
+                "}\n" +
+                "declare MyDeclaredType\n" +
+                "  someProperty: boolean\n" +
+                "end";
+        String ruleFileContent2 = "package de.something;\n" + // FAILS
+//        String ruleFileContent2 = "package de.somethinga;\n" + // PASSES
+//        String ruleFileContent2 = "package de.somethingb;\n" + // PASSES
+//        String ruleFileContent2 = "package de.somethingc;\n" + // PASSES
+//        String ruleFileContent2 = "package de.somethingd;\n" + // PASSES
+//        String ruleFileContent2 = "package de.somethinge;\n" + // FAILS
+//        String ruleFileContent2 = "package de.somethingf;\n" + // FAILS
+//        String ruleFileContent2 = "package de.somethingg;\n" + // FAILS
+                "import org.drools.integrationtests.*;\n" +
+                "rule \"CheckMyDeclaredType\"\n" +
+                "  when\n" +
+                "    MyDeclaredType()\n" +
+                "  then\n" +
+                "    insertLogical(\"THIS-IS-MY-MARKER-STRING\");\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( ruleFileContent1, ruleFileContent2 );
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+
+        final FactType myDeclaredFactType = kbase.getFactType( "org.drools.integrationtests", "MyDeclaredType");
+        Object myDeclaredFactInstance = myDeclaredFactType.newInstance();
+        knowledgeSession.insert(myDeclaredFactInstance);
+
+        int rulesFired = knowledgeSession.fireAllRules();
+
+        assertEquals( 1, rulesFired );
+
+        knowledgeSession.dispose();
+    }
+
+
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
