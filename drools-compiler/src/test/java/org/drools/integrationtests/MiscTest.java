@@ -145,21 +145,6 @@ public class MiscTest {
                                             config );
     }
 
-    private KnowledgeBase loadKnowledgeBase( String fileName ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( fileName,
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        assertFalse( kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        return kbase;
-    }
-
     @Test
     public void testImportFunctions() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -275,23 +260,6 @@ public class MiscTest {
         assertEquals( "bar2",
                       (results.get( 1 )) );
 
-    }
-
-    private Package loadPackage( final String fileName ) throws DroolsParserException,
-                                                        IOException {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( fileName ) ) );
-
-        if ( builder.hasErrors() ) {
-            for ( DroolsError error : builder.getErrors().getErrors() ) {
-                System.err.println( error );
-            }
-        }
-        assertFalse( builder.getErrors().toString(),
-                     builder.hasErrors() );
-
-        final Package pkg = builder.getPackage();
-        return pkg;
     }
 
     @Test
@@ -1268,34 +1236,6 @@ public class MiscTest {
 
         assertEquals( 5,
                       ((List) session.getGlobal( "list" )).get( 0 ) );
-    }
-
-    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
-                                                        DroolsParserException,
-                                                        Exception {
-        final DrlParser parser = new DrlParser();
-        final PackageDescr packageDescr = parser.parse( reader );
-        if ( parser.hasErrors() ) {
-            System.err.println( parser.getErrors() );
-            fail( "Error messages in parser, need to sort this our (or else collect error messages)" );
-        }
-        // pre build the package
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage( packageDescr );
-
-        if ( builder.hasErrors() ) {
-            System.err.println( builder.getErrors() );
-        }
-
-        Package pkg = builder.getPackage();
-        pkg = SerializationHelper.serializeObject( pkg );
-
-        // add the package to a rulebase
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        // load up the rulebase
-        return ruleBase;
     }
 
     @Test
@@ -8371,10 +8311,12 @@ public class MiscTest {
                       rules );
     }
 
-    private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
+    private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        for ( String drlContentString : drlContentStrings ) {
+            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
+                          ResourceType.DRL );
+        }
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -8383,6 +8325,63 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
+    }
+
+    private KnowledgeBase loadKnowledgeBase( String... classPathResources ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        for (String classPathResource : classPathResources) {
+            kbuilder.add( ResourceFactory.newClassPathResource( classPathResource,
+                                                                getClass() ),
+                          ResourceType.DRL );
+        }
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
+    }
+
+    private Package loadPackage( final String classPathResource ) throws DroolsParserException,
+                                                        IOException {
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream(classPathResource)));
+
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+
+        final Package pkg = builder.getPackage();
+        return pkg;
+    }
+
+    private RuleBase loadRuleBase( final Reader reader ) throws IOException,
+                                                        DroolsParserException,
+                                                        Exception {
+        final DrlParser parser = new DrlParser();
+        final PackageDescr packageDescr = parser.parse( reader );
+        if ( parser.hasErrors() ) {
+            fail( "Error messages in parser, need to sort this our (or else collect error messages):\n"
+                    + parser.getErrors() );
+        }
+        // pre build the package
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackage(packageDescr);
+
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+
+        Package pkg = builder.getPackage();
+        pkg = SerializationHelper.serializeObject( pkg );
+
+        // add the package to a rulebase
+        RuleBase ruleBase = getRuleBase();
+        ruleBase.addPackage( pkg );
+        ruleBase = SerializationHelper.serializeObject( ruleBase );
+        // load up the rulebase
+        return ruleBase;
     }
 
     public static class A {
