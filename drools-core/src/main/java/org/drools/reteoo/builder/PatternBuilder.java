@@ -389,6 +389,6 @@ public class PatternBuilder
      */
     public boolean requiresLeftActivation(final BuildUtils utils,
                                           final RuleConditionElement rce) {
-        return ((Pattern) rce).getSource() != null;
+        return ((Pattern) rce).getSource() != null || ! ((Pattern) rce).getBehaviors().isEmpty() ;
     }
 }

@@ -501,47 +501,49 @@ public class CepEspTest {
         assertEquals( parser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
     }
-    
+
     @Test
     public void testEventExpiration4() throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration4.drl" ) );
         final KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
-        final KnowledgeBase kbase = loadKnowledgeBase(reader, conf);
-        
+        final KnowledgeBase kbase = loadKnowledgeBase( reader,
+                                                       conf );
+
         final KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sconf.setOption( ClockTypeOption.get("pseudo") );
-        
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(sconf, null);
-        
+        sconf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+
         WorkingMemoryEntryPoint eventStream = ksession.getWorkingMemoryEntryPoint( "Event Stream" );
-        
+
         SessionPseudoClock clock = ksession.getSessionClock();
-        
+
         final List results = new ArrayList();
         ksession.setGlobal( "results",
-                      results );
+                            results );
 
         EventFactHandle handle1 = (EventFactHandle) eventStream.insert( new StockTick( 1,
-                "ACME",
-                50,
-                System.currentTimeMillis(),
-                3 ) );
+                                                                                       "ACME",
+                                                                                       50,
+                                                                                       System.currentTimeMillis(),
+                                                                                       3 ) );
 
         ksession.fireAllRules();
-        
+
         clock.advanceTime( 11,
-                TimeUnit.SECONDS );
+                           TimeUnit.SECONDS );
         /** clock.advance() will put the event expiration in the queue to be executed, 
             but it has to wait for a "thread" to do that
             so we fire rules again here to get that
             alternative could run fireUntilHalt() **/
         ksession.fireAllRules();
-        
-        assertTrue(results.size() == 1);
+
+        assertTrue( results.size() == 1 );
         assertTrue( handle1.isExpired() );
-        assertFalse(ksession.getFactHandles().contains(handle1));
+        assertFalse( ksession.getFactHandles().contains( handle1 ) );
     }
 
     @Test
@@ -2048,6 +2050,107 @@ public class CepEspTest {
         int rules = ksession.fireAllRules();
         assertEquals( 2,
                       rules );
+    }
+
+    @Test
+    public void testMultipleSlidingWindows() throws IOException,
+                                            ClassNotFoundException {
+        String str = "declare A\n" +
+                     "    @role( event )\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "declare B\n" +
+                     "    @role( event )\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "rule launch\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( new A( 1 ) );\n" +
+                     "    insert( new A( 2 ) );\n" +
+                     "    insert( new B( 1 ) );\n" +
+                     "    insert( new A( 3 ) );\n" +
+                     "    insert( new B( 2 ) );\n" +
+                     "end\n" +
+                     "rule \"ab\"\n" +
+                     "when\n" +
+                     "    A( $a : id ) over window:length( 1 )\n" +
+                     "    B( $b : id ) over window:length( 1 )\n" +
+                     "then\n" +
+                     "    //System.out.println(\"AB: ( \"+$a+\", \"+$b+\" )\");\n" +
+                     "end\n" +
+                     "rule \"ba\"\n" +
+                     "when\n" +
+                     "    B( $b : id ) over window:length( 1 )\n" +
+                     "    A( $a : id ) over window:length( 1 )\n" +
+                     "then\n" +
+                     "    //System.out.println(\"BA: ( \"+$b+\", \"+$a+\" )\");\n" +
+                     "end";
+
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
+                                                 config );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        ksession.fireAllRules();
+
+        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 7 ) ).afterActivationFired( captor.capture() );
+
+        List<AfterActivationFiredEvent> values = captor.getAllValues();
+        // first rule
+        Activation act = values.get( 0 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "launch" ) );
+        
+        // second rule
+        act = values.get( 1 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ba" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 2 ) );
+        
+        // third rule
+        act = values.get( 2 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ab" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 2 ) );
+        
+        // fourth rule
+        act = values.get( 3 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ba" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+        // fifth rule
+        act = values.get( 4 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ab" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+        // sixth rule
+        act = values.get( 5 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ba" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 2 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+        // seventh rule
+        act = values.get( 6 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ab" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 2 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+
     }
 
 }
