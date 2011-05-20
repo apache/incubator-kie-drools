@@ -28,23 +28,6 @@ public class AbstractJavaRuleBuilder {
     protected static final TemplateRegistry RULE_REGISTRY    = new SimpleTemplateRegistry();
     protected static final TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
 
-    static {
-        OptimizerFactory.setDefaultOptimizer( "reflective" );
-
-
-
-        /**
-         * Process these templates
-         */
-        TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
-                                 null,
-                                 RULE_REGISTRY );
-        TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
-                                 null,
-                                 INVOKER_REGISTRY );
-
-    }
-
     public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
         if ( !RULE_REGISTRY.contains( "rules" ) ) {
             ParserConfiguration pconf = new ParserConfiguration();
@@ -54,6 +37,9 @@ public class AbstractJavaRuleBuilder {
             RULE_REGISTRY.addNamedTemplate( "rules",
                                             TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
                                                                               pctx ) );
+            TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
+                                     null,
+                                     RULE_REGISTRY );            
         }
         
         return RULE_REGISTRY;
@@ -68,6 +54,9 @@ public class AbstractJavaRuleBuilder {
             INVOKER_REGISTRY.addNamedTemplate( "invokers",
                                                TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
                                                                                  pctx ) );
+            TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
+                                     null,
+                                     INVOKER_REGISTRY );            
         }        
         return INVOKER_REGISTRY;
     }
@@ -157,18 +146,16 @@ public class AbstractJavaRuleBuilder {
         context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
                                                            null,
                                                            new MapVariableResolverFactory( vars ),
-                                                           registry )
-                    );
+                                                           registry ) );
 
         registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
         context.getInvokers().put( invokerClassName,
-                                       TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
-                                                                null,
-                                                                new MapVariableResolverFactory( vars ),
-                                                                registry )
-                    );
+                                   TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
+                                                            null,
+                                                            new MapVariableResolverFactory( vars ),
+                                                            registry ) );
 
         context.getInvokerLookups().put( invokerClassName,
                                              invokerLookup );
