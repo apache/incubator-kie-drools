@@ -17,7 +17,14 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -40,17 +47,59 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
-
-import org.drools.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
+import org.drools.ActivationListenerFactory;
+import org.drools.Address;
+import org.drools.Attribute;
+import org.drools.Cat;
+import org.drools.Cell;
+import org.drools.Cheese;
+import org.drools.CheeseEqual;
+import org.drools.Cheesery;
 import org.drools.Cheesery.Maturity;
+import org.drools.Child;
+import org.drools.ClassObjectFilter;
+import org.drools.DomainObjectHolder;
+import org.drools.FactA;
+import org.drools.FactB;
+import org.drools.FactC;
+import org.drools.FactHandle;
+import org.drools.FirstClass;
+import org.drools.FromTestClass;
+import org.drools.Guess;
+import org.drools.IndexedNumber;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.Message;
+import org.drools.MockPersistentSet;
+import org.drools.Move;
+import org.drools.ObjectWithSet;
+import org.drools.Order;
+import org.drools.OrderItem;
+import org.drools.OuterClass;
+import org.drools.Person;
+import org.drools.PersonFinal;
+import org.drools.PersonInterface;
+import org.drools.PersonWithEquals;
+import org.drools.Pet;
+import org.drools.PolymorphicFact;
+import org.drools.Primitives;
+import org.drools.RandomNumber;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.SecondClass;
+import org.drools.Sensor;
+import org.drools.SpecialString;
+import org.drools.State;
+import org.drools.StatefulSession;
+import org.drools.StatelessSession;
+import org.drools.StockTick;
+import org.drools.TestParam;
+import org.drools.Win;
+import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -67,9 +116,9 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.ParserError;
-import org.drools.compiler.PackageBuilder.PackageMergeException;
 import org.drools.compiler.xml.XmlDumper;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
@@ -88,8 +137,6 @@ import org.drools.event.ObjectUpdatedEvent;
 import org.drools.event.RuleFlowGroupActivatedEvent;
 import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
-import org.drools.facttemplates.Fact;
-import org.drools.facttemplates.FactTemplate;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
@@ -118,12 +165,10 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mvel2.MVEL;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
-import org.mvel2.optimizers.OptimizerFactory;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -398,6 +443,48 @@ public class MiscTest {
         ksession.fireAllRules();
         assertEquals( 42,
                       c.getPrice() );
+    }
+
+    @Test
+    public void testMVELSoundexNoCharParam() throws Exception {
+
+        // read in the source
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "MVEL_soundexNPE2500.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
+                                                                                      true );
+
+        Cheese foobarCheese = new Cheese( "foobar",
+                                          2 );
+        Cheese nullCheese = new Cheese( null,
+                                        2 );
+        Cheese starCheese = new Cheese( "*",
+                                        2 );
+
+        ksession.insert( foobarCheese );
+        ksession.insert( nullCheese );
+        ksession.insert( starCheese );
+        ksession.fireAllRules();
+        assertEquals( 42,
+                              foobarCheese.getPrice() );
+        assertEquals( 2,
+                      nullCheese.getPrice() );
+        assertEquals( 2,
+                      starCheese.getPrice() );
     }
 
     @Test
@@ -8190,7 +8277,7 @@ public class MiscTest {
     @Test
     @Ignore("This test requires MVEL to support .class literals, what it doesn't today")
     public void testMVELClassReferences() throws InstantiationException,
-                                    IllegalAccessException {
+                                         IllegalAccessException {
         String str = "package org.drools\n" +
                      "declare Assignment\n" +
                      "    source : Class\n" +
@@ -8229,10 +8316,10 @@ public class MiscTest {
         assertEquals( 2,
                       rules );
     }
-    
+
     @Test
     public void testNotMatchesSucceeds() throws InstantiationException,
-                                    IllegalAccessException {
+                                        IllegalAccessException {
         // JBRULES-2914: Rule misfires due to "not matches" not working
 
         String str = "package org.drools\n" +
@@ -8246,7 +8333,7 @@ public class MiscTest {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Person p = new Person("-..x..xrwx" );
+        Person p = new Person( "-..x..xrwx" );
 
         ksession.insert( p );
 
@@ -8259,7 +8346,7 @@ public class MiscTest {
 
     @Test
     public void testNotMatchesFails() throws InstantiationException,
-                                    IllegalAccessException {
+                                     IllegalAccessException {
         // JBRULES-2914: Rule misfires due to "not matches" not working
 
         String str = "package org.drools\n" +
@@ -8273,7 +8360,7 @@ public class MiscTest {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Person p = new Person("d..x..xrwx" );
+        Person p = new Person( "d..x..xrwx" );
 
         ksession.insert( p );
 
@@ -8297,7 +8384,7 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         Primitives p = new Primitives();
         p.setBooleanPrimitive( true );
         p.setBooleanWrapper( Boolean.FALSE );
@@ -8325,12 +8412,16 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
-        Order order1 = new Order(1, "XYZ" );
-        Order order2 = new Order(2, "ABC" );
-        OrderItem item11 = new OrderItem( order1, 1 );
+
+        Order order1 = new Order( 1,
+                                  "XYZ" );
+        Order order2 = new Order( 2,
+                                  "ABC" );
+        OrderItem item11 = new OrderItem( order1,
+                                          1 );
         order1.addItem( item11 );
-        OrderItem item21 = new OrderItem( order2, 1 );
+        OrderItem item21 = new OrderItem( order2,
+                                          1 );
         order2.addItem( item21 );
 
         ksession.insert( order1 );
@@ -8340,7 +8431,7 @@ public class MiscTest {
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         // should fire as item21 is not contained in order1.items
         ksession.insert( item21 );
         rules = ksession.fireAllRules();
@@ -8365,12 +8456,16 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
-        Order order1 = new Order(1, "XYZ" );
-        Order order2 = new Order(2, "ABC" );
-        OrderItem item11 = new OrderItem( order1, 1 );
+
+        Order order1 = new Order( 1,
+                                  "XYZ" );
+        Order order2 = new Order( 2,
+                                  "ABC" );
+        OrderItem item11 = new OrderItem( order1,
+                                          1 );
         order1.addItem( item11 );
-        OrderItem item21 = new OrderItem( order2, 1 );
+        OrderItem item21 = new OrderItem( order2,
+                                          1 );
         order2.addItem( item21 );
 
         ksession.insert( order1 );
@@ -8382,7 +8477,7 @@ public class MiscTest {
         assertEquals( 2,
                       rules );
     }
-    
+
     @Test
     public void testSoundsLike() {
         // JBRULES-2991: Operator soundslike is broken
@@ -8396,55 +8491,58 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
-        ksession.insert( new Person("Bob") );
-        ksession.insert( new Person("Mark") );
+
+        ksession.insert( new Person( "Bob" ) );
+        ksession.insert( new Person( "Mark" ) );
 
         int rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
     }
-    
-    @Test @Ignore("TODO unignore when fixing JBRULES-2749")
+
+    @Test
+    @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
 
         String ruleFileContent1 = "package org.drools.integrationtests;\n" +
-                "function void myFunction() {\n" +
-                "}\n" +
-                "declare MyDeclaredType\n" +
-                "  someProperty: boolean\n" +
-                "end";
+                                  "function void myFunction() {\n" +
+                                  "}\n" +
+                                  "declare MyDeclaredType\n" +
+                                  "  someProperty: boolean\n" +
+                                  "end";
         String ruleFileContent2 = "package de.something;\n" + // FAILS
-//        String ruleFileContent2 = "package de.somethinga;\n" + // PASSES
-//        String ruleFileContent2 = "package de.somethingb;\n" + // PASSES
-//        String ruleFileContent2 = "package de.somethingc;\n" + // PASSES
-//        String ruleFileContent2 = "package de.somethingd;\n" + // PASSES
-//        String ruleFileContent2 = "package de.somethinge;\n" + // FAILS
-//        String ruleFileContent2 = "package de.somethingf;\n" + // FAILS
-//        String ruleFileContent2 = "package de.somethingg;\n" + // FAILS
-                "import org.drools.integrationtests.*;\n" +
-                "rule \"CheckMyDeclaredType\"\n" +
-                "  when\n" +
-                "    MyDeclaredType()\n" +
-                "  then\n" +
-                "    insertLogical(\"THIS-IS-MY-MARKER-STRING\");\n" +
-                "end";
+                                  //        String ruleFileContent2 = "package de.somethinga;\n" + // PASSES
+                                  //        String ruleFileContent2 = "package de.somethingb;\n" + // PASSES
+                                  //        String ruleFileContent2 = "package de.somethingc;\n" + // PASSES
+                                  //        String ruleFileContent2 = "package de.somethingd;\n" + // PASSES
+                                  //        String ruleFileContent2 = "package de.somethinge;\n" + // FAILS
+                                  //        String ruleFileContent2 = "package de.somethingf;\n" + // FAILS
+                                  //        String ruleFileContent2 = "package de.somethingg;\n" + // FAILS
+                                  "import org.drools.integrationtests.*;\n" +
+                                  "rule \"CheckMyDeclaredType\"\n" +
+                                  "  when\n" +
+                                  "    MyDeclaredType()\n" +
+                                  "  then\n" +
+                                  "    insertLogical(\"THIS-IS-MY-MARKER-STRING\");\n" +
+                                  "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( ruleFileContent1, ruleFileContent2 );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( ruleFileContent1,
+                                                           ruleFileContent2 );
         StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
 
-        final FactType myDeclaredFactType = kbase.getFactType( "org.drools.integrationtests", "MyDeclaredType");
+        final FactType myDeclaredFactType = kbase.getFactType( "org.drools.integrationtests",
+                                                               "MyDeclaredType" );
         Object myDeclaredFactInstance = myDeclaredFactType.newInstance();
-        knowledgeSession.insert(myDeclaredFactInstance);
+        knowledgeSession.insert( myDeclaredFactInstance );
 
         int rulesFired = knowledgeSession.fireAllRules();
 
-        assertEquals( 1, rulesFired );
+        assertEquals( 1,
+                      rulesFired );
 
         knowledgeSession.dispose();
     }
-
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -8464,7 +8562,7 @@ public class MiscTest {
 
     private KnowledgeBase loadKnowledgeBase( String... classPathResources ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        for (String classPathResource : classPathResources) {
+        for ( String classPathResource : classPathResources ) {
             kbuilder.add( ResourceFactory.newClassPathResource( classPathResource,
                                                                 getClass() ),
                           ResourceType.DRL );
@@ -8479,9 +8577,9 @@ public class MiscTest {
     }
 
     private Package loadPackage( final String classPathResource ) throws DroolsParserException,
-                                                        IOException {
+                                                                 IOException {
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream(classPathResource)));
+        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( classPathResource ) ) );
 
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
@@ -8502,7 +8600,7 @@ public class MiscTest {
         }
         // pre build the package
         final PackageBuilder builder = new PackageBuilder();
-        builder.addPackage(packageDescr);
+        builder.addPackage( packageDescr );
 
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
