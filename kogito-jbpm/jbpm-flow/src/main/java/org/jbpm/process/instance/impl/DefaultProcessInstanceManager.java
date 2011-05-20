@@ -18,19 +18,20 @@ package org.jbpm.process.instance.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
 
 public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
-    private Map<Long, ProcessInstance> processInstances = new HashMap<Long, ProcessInstance>();
-    private int processCounter = 0;
+    private Map<Long, ProcessInstance> processInstances = new ConcurrentHashMap<Long, ProcessInstance>();
+    private AtomicLong processCounter = new AtomicLong(0);
 
     public void addProcessInstance(ProcessInstance processInstance) {
-        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(++processCounter);
+        ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(processCounter.incrementAndGet());
         internalAddProcessInstance(processInstance);
     }
     
