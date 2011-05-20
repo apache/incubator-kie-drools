@@ -454,7 +454,7 @@ public class DRLParser {
                        null,
                        DroolsEditorType.KEYWORD );
                 if (! state.failed ) {
-                    String superType = type();
+                    String superType = qualifiedIdentifier();
                     declare.superType(superType);
                 }
 
