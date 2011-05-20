@@ -13,6 +13,7 @@
   <artifactId>jbpm-bpmn2</artifactId>
 
   <name>jBPM :: BPMN2</name>
+  <description>jBPM BPMN2</description>
 
   <build>
     <plugins>

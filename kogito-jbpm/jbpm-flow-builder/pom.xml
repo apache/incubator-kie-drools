@@ -13,6 +13,7 @@
   <artifactId>jbpm-flow-builder</artifactId>
 
   <name>jBPM :: Flow Builder</name>
+  <description>jBPM Flow Builder</description>
 
   <build>
     <plugins>

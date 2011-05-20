@@ -13,6 +13,7 @@
   <artifactId>jbpm-persistence-jpa</artifactId>
 
   <name>jBPM :: JPA Persistence</name>
+  <description>jBPM JPA Persistence</description>
 
   <build>
     <plugins>
