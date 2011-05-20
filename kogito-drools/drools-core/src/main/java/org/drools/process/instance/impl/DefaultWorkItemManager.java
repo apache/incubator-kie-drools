@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
@@ -37,7 +38,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private static final long serialVersionUID = 510l;
 
-    private long workItemCounter;
+    private AtomicLong workItemCounter = new AtomicLong(0);
     private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
     private InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
@@ -48,21 +49,21 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        workItemCounter = in.readLong();
+        workItemCounter.set(in.readLong());
         workItems = (Map<Long, WorkItem>) in.readObject();
         kruntime = (InternalKnowledgeRuntime) in.readObject();
         workItemHandlers = (Map<String, WorkItemHandler>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeLong(workItemCounter);
+        out.writeLong(workItemCounter.get());
         out.writeObject(workItems);
         out.writeObject(kruntime);
         out.writeObject(workItemHandlers);
     }
 
     public void internalExecuteWorkItem(WorkItem workItem) {
-        ((WorkItemImpl) workItem).setId(++workItemCounter);
+        ((WorkItemImpl) workItem).setId(workItemCounter.incrementAndGet());
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
@@ -74,8 +75,8 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     public void internalAddWorkItem(WorkItem workItem) {
         workItems.put(new Long(workItem.getId()), workItem);
         // fix to reset workItemCounter after deserialization
-        if (workItem.getId() > workItemCounter) {
-            workItemCounter = workItem.getId();
+        if (workItem.getId() > workItemCounter.get()) {
+            workItemCounter.set(workItem.getId());
         }
     }
 
