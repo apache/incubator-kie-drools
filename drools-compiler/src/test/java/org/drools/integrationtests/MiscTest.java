@@ -8383,6 +8383,28 @@ public class MiscTest {
                       rules );
     }
     
+    @Test
+    public void testSoundsLike() {
+        // JBRULES-2991: Operator soundslike is broken
+
+        String str = "package org.drools\n" +
+                     "rule SoundsLike\n" +
+                     "when\n" +
+                     "    Person( name soundslike \"Bob\" )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( new Person("Bob") );
+        ksession.insert( new Person("Mark") );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+    
     @Test @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
