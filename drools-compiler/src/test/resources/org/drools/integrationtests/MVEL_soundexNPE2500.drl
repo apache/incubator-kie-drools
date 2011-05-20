@@ -1,0 +1,13 @@
+package MVELTest
+
+dialect "mvel"
+
+import org.drools.Cheese
+
+
+rule "Hello World"
+	when
+		c : Cheese( type soundslike "foobar", type soundslike "foo bar" )
+	then
+		c.setPrice(42);
+end
