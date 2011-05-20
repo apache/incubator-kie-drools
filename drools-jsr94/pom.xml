@@ -12,6 +12,7 @@
   <artifactId>drools-jsr94</artifactId>
 
   <name>Drools :: JSR-94 API Module</name>
+  <description>Implements the JSR-94 API with Drools.</description>
   
   <build>
     <plugins>

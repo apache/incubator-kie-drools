@@ -12,6 +12,7 @@
   <artifactId>drools-persistence-jpa</artifactId>
 
   <name>Drools :: Persistence :: JPA</name>
+  <description>JPA implementation for Drools</description>
 
   <build>
     <plugins>
