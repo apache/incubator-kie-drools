@@ -94,8 +94,6 @@ public final class QueryTerminalNode extends BaseNode
         rule = (Rule) in.readObject();
         subrule = (GroupElement) in.readObject();
         tupleSource = (LeftTupleSource) in.readObject();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -103,8 +101,6 @@ public final class QueryTerminalNode extends BaseNode
         out.writeObject( rule );
         out.writeObject( subrule );
         out.writeObject( tupleSource );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
     }
 
     /**

@@ -62,12 +62,37 @@ public class LeftTupleSinkNodeList
         firstNode = (LeftTupleSinkNode) in.readObject();
         lastNode = (LeftTupleSinkNode) in.readObject();
         size = in.readInt();
+        if ( firstNode == lastNode ) {
+            // no other nodes
+            return;
+        }
+        
+        LeftTupleSinkNode current = firstNode;
+        LeftTupleSinkNode previous = null;
+
+        while ( current != lastNode) {
+            LeftTupleSinkNode next = (LeftTupleSinkNode) in.readObject();
+            current.setPreviousLeftTupleSinkNode(previous);
+            current.setNextLeftTupleSinkNode(next);
+            previous = current;
+            current = next;
+        }     
+        
+        // current equals last Node, so set previous (this avoids the null writting in stream
+        current.setPreviousLeftTupleSinkNode( previous );        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( firstNode );
         out.writeObject( lastNode );
         out.writeInt( size );
+        if ( firstNode == lastNode ) {
+            // no other nodes
+            return;
+        }        
+        for (LeftTupleSinkNode node = firstNode; node != null; node = node.getNextLeftTupleSinkNode()) {
+            out.writeObject(node.getNextLeftTupleSinkNode());
+        }        
     }
 
     /**

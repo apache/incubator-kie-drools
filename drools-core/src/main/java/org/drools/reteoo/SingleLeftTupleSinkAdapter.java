@@ -44,14 +44,9 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                               final RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled) {
         LeftTuple child = new LeftTuple( leftTuple,
-                                         rightTuple,
-                                         null,
-                                         null,
+                                         rightTuple.getFactHandle(),
                                          this.sink,
-                                         leftTupleMemoryEnabled );
-        
-        child.setLeftParentNext( leftTuple.firstChild );
-        leftTuple.firstChild = child;
+                                         leftTupleMemoryEnabled );    
     }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,

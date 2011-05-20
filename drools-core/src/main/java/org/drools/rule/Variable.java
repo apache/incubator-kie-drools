@@ -16,18 +16,40 @@
 
 package org.drools.rule;
 
-public class Variable {
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
+public class Variable implements Externalizable {
     public static final Variable variable = new Variable(null, -1);
     
     private Object[] values;
     
     private int index;
-    private boolean set;    
+    private boolean set;  
+    
+    public Variable() {
+        // for serialization
+    }
 
     public Variable(Object[] values, 
                     int position) {
         this.values = values;
         this.index = position;
+    }
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( values );
+        out.writeInt(  index );
+        out.writeBoolean( set );
+    }
+    
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.values = ( Object[] ) in.readObject();
+        this.index = in.readInt();
+        this.set = in.readBoolean();
     }
 
     public Object getValue() {

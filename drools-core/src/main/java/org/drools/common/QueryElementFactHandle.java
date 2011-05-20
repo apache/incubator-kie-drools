@@ -31,15 +31,19 @@ public class QueryElementFactHandle
     implements
     InternalFactHandle {
     private Object object;
+    private int id;
+    private long recency;
 
     protected QueryElementFactHandle() {}
 
-    public QueryElementFactHandle(Object object) {
+    public QueryElementFactHandle(Object object, int id, long recency) {
         this.object = object;
+        this.id = id;
+        this.recency = recency;
     }
 
     public int getId() {
-        return -1;
+        return this.id;
     }
 
     public int getIdentityHashCode() {
@@ -51,7 +55,7 @@ public class QueryElementFactHandle
     }
 
     public long getRecency() {
-        return 0;
+        return this.recency;
     }
 
     public LeftTuple getLastLeftTuple() {

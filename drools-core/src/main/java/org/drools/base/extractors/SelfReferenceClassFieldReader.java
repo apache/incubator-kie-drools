@@ -16,15 +16,24 @@
 
 package org.drools.base.extractors;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 
 /**
  * A special field extractor for the self reference "this".
  */
-public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
+public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader implements Externalizable  {
 
     private static final long serialVersionUID = 510l;
+    
+    public SelfReferenceClassFieldReader() {
+        
+    }
 
     public SelfReferenceClassFieldReader(final Class<?> clazz,
                                          final String fieldName) {
@@ -34,7 +43,6 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        //return (object instanceof ShadowProxy) ? ((ShadowProxy) object).getShadowedObject() : object;
         return object;
     }
     
@@ -45,5 +53,16 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader {
     @Override
     public boolean isSelfReference() {
         return true;
+    }
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject( getExtractToClass() );
+        out.writeObject( getValueType() );
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        setIndex( -1 );
+        setFieldType( (Class< ? >) in.readObject() );
+        setValueType( (ValueType) in.readObject() );
     }
 }

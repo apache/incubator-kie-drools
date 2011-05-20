@@ -53,14 +53,9 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         // for QueryElementNode. This is important for Accumulate now where it must propate to the right before the left input
         for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {
             LeftTuple child = new LeftTuple( leftTuple,
-                                             rightTuple,
-                                             null,
-                                             null,
+                                             rightTuple.getFactHandle(),
                                              sink,
                                              leftTupleMemoryEnabled );
-            
-            child.setLeftParentNext( leftTuple.firstChild );
-            leftTuple.firstChild = child;
         }
     }
 
