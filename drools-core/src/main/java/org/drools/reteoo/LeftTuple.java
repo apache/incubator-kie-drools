@@ -114,6 +114,28 @@ public class LeftTuple
         
         this.sink = sink;
     }
+    
+    public LeftTuple(final LeftTuple leftTuple,
+                     InternalFactHandle handle,                     
+                     LeftTupleSink sink,
+                     boolean leftTupleMemoryEnabled) {
+        this.index = leftTuple.index + 1;
+        this.parent = leftTuple;
+        this.handle = handle;
+
+        if ( leftTupleMemoryEnabled ) {
+            this.leftParent = leftTuple;
+            if ( leftTuple.lastChild != null ) {
+                this.leftParentPrevious = leftTuple.lastChild;
+                this.leftParentPrevious.leftParentNext = this;
+            } else {
+                leftTuple.firstChild = this;
+            }
+            leftTuple.lastChild = this;
+        }
+        
+        this.sink = sink;
+    }    
 
     public LeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,

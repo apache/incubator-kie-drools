@@ -102,8 +102,6 @@ public class EvalConditionNode extends LeftTupleSource
         condition = (EvalCondition) in.readObject();
         tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -111,8 +109,6 @@ public class EvalConditionNode extends LeftTupleSource
         out.writeObject( condition );
         out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
     }
 
     /**

@@ -47,7 +47,7 @@ public class QueryElementBuilder
                                                                     new QueryElementNode( context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           qe,
-                                                                                          false,
+                                                                                          true,
                                                                                           context ) ) );
         context.popRuleComponent();
         context.incrementCurrentPatternOffset();

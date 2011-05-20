@@ -284,14 +284,6 @@ public class ClassFieldAccessorStore
                         lookupEntry = (FieldLookupEntry) entry.getValue();
                         this.lookup.put( entry.getKey(),
                                          lookupEntry );
-                        // wire up ClassFieldReaders
-                        if ( lookupEntry.getClassFieldReader() != null ) {
-                            wire( lookupEntry.getClassFieldReader() );
-                        }
-
-                        if ( lookupEntry.getClassFieldWriter() != null ) {
-                            wire( lookupEntry.getClassFieldWriter() );
-                        }
                     } else {
                         // iterate through new targets adding them and wiring them up
                         // to the existing ClassFieldReader, no need to wire generated accessor
@@ -304,13 +296,14 @@ public class ClassFieldAccessorStore
                             }
                             lookupEntry.addAccessorTarget( target );
                         }
-                        if (lookupEntry.getClassFieldReader() != null) {
-                            wire(((FieldLookupEntry)entry.getValue()).getClassFieldReader());
-                        }
-                        if (lookupEntry.getClassFieldWriter() != null) {
-                            wire(((FieldLookupEntry)entry.getValue()).getClassFieldWriter());
-                        }
                     }
+                    // wire up ClassFieldReaders                    
+                    if (lookupEntry.getClassFieldReader() != null) {
+                        wire(((FieldLookupEntry)entry.getValue()).getClassFieldReader());
+                    }
+                    if (lookupEntry.getClassFieldWriter() != null) {
+                        wire(((FieldLookupEntry)entry.getValue()).getClassFieldWriter());
+                    }                    
                     break;
                 }
 

@@ -84,8 +84,6 @@ public class FromNode extends LeftTupleSource
         tupleSource = (LeftTupleSource) in.readObject();
         alphaConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
         betaConstraints = (BetaConstraints) in.readObject();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
     }
 
@@ -95,8 +93,6 @@ public class FromNode extends LeftTupleSource
         out.writeObject( tupleSource );
         out.writeObject( alphaConstraints );
         out.writeObject( betaConstraints );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
         out.writeBoolean( tupleMemoryEnabled );
     }
 

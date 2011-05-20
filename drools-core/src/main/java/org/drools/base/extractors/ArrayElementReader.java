@@ -76,6 +76,10 @@ public class ArrayElementReader
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.arrayReadAccessor = readAccessor;
     }
+    
+    public InternalReadAccessor getReadAccessor() {
+        return this.arrayReadAccessor;
+    }
 
     public String getExtractToClassName() {
         return ClassUtils.canonicalName( type );

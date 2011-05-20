@@ -32,8 +32,7 @@ import org.drools.spi.Restriction;
 
 public class LiteralRestriction
     implements
-    Restriction,
-    AcceptsReadAccessor,    
+    Restriction,    
     Externalizable {
 
     private static final long          serialVersionUID     = 510l;
@@ -73,10 +72,6 @@ public class LiteralRestriction
         out.writeObject( readAccessor );
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
-        this.readAccessor = readAccessor;
-    }
-    
     public Evaluator getEvaluator() {
         return this.evaluator;
     }
