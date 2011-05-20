@@ -73,8 +73,10 @@ public class Collect extends ConditionalElement
 
         Collect collect = new Collect( (Pattern) this.sourcePattern.clone(),
                                        clonedResultPattern );
+        collect.getResultPattern().setSource( collect );
+        
         if ( source == this ) {
-            collect.getResultPattern().setSource( collect );
+            this.resultPattern.setSource( this );
         }
         return collect;
     }
