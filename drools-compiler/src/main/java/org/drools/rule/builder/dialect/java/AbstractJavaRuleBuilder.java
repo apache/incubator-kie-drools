@@ -12,6 +12,8 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
@@ -29,12 +31,7 @@ public class AbstractJavaRuleBuilder {
     static {
         OptimizerFactory.setDefaultOptimizer( "reflective" );
 
-        RULE_REGISTRY.addNamedTemplate( "rules",
-                                        TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
-                                                                          (Map<String, Class< ? extends Node>>) null ) );
-        INVOKER_REGISTRY.addNamedTemplate( "invokers",
-                                           TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
-                                                                             (Map<String, Class< ? extends Node>>) null ) );
+
 
         /**
          * Process these templates
@@ -48,11 +45,30 @@ public class AbstractJavaRuleBuilder {
 
     }
 
-    public static TemplateRegistry getRuleTemplateRegistry() {
+    public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
+        if ( !RULE_REGISTRY.contains( "rules" ) ) {
+            ParserConfiguration pconf = new ParserConfiguration();
+            pconf.setClassLoader( cl );
+            
+            ParserContext pctx = new ParserContext(pconf);
+            RULE_REGISTRY.addNamedTemplate( "rules",
+                                            TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
+                                                                              pctx ) );
+        }
+        
         return RULE_REGISTRY;
     }
 
-    public static TemplateRegistry getInvokerTemplateRegistry() {
+    public static synchronized TemplateRegistry getInvokerTemplateRegistry(ClassLoader cl) {
+        if ( !INVOKER_REGISTRY.contains( "invokers" ) ) {
+            ParserConfiguration pconf = new ParserConfiguration();
+            pconf.setClassLoader( cl );
+            
+            ParserContext pctx = new ParserContext(pconf);            
+            INVOKER_REGISTRY.addNamedTemplate( "invokers",
+                                               TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
+                                                                                 pctx ) );
+        }        
         return INVOKER_REGISTRY;
     }
 
@@ -135,8 +151,8 @@ public class AbstractJavaRuleBuilder {
                                         final Map vars,
                                         final Object invokerLookup,
                                         final BaseDescr descrLookup) {
-        AbstractParser.setLanguageLevel( 5 );
-        TemplateRegistry registry = getRuleTemplateRegistry();
+        
+        TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
 
         context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
                                                            null,
@@ -144,7 +160,7 @@ public class AbstractJavaRuleBuilder {
                                                            registry )
                     );
 
-        registry = getInvokerTemplateRegistry();
+        registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
         context.getInvokers().put( invokerClassName,
