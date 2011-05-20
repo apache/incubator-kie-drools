@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -371,6 +372,82 @@ public abstract class WSHumanTaskHandlerBaseTest extends BaseTest {
 		Object data = in.readObject();
 		in.close();
 		assertEquals("This is the content", data);
+
+		System.out.println("Starting task " + task.getId());
+		BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		getClient().start(task.getId(), "Darth Vader", operationResponseHandler);
+		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+		System.out.println("Started task " + task.getId());
+
+		System.out.println("Completing task " + task.getId());
+		operationResponseHandler = new BlockingTaskOperationResponseHandler();
+		ContentData result = new ContentData();
+		result.setAccessType(AccessType.Inline);
+		result.setType("java.lang.String");
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream out = new ObjectOutputStream(bos);
+		out.writeObject("This is the result");
+		out.close();
+		result.setContent(bos.toByteArray());
+		getClient().complete(task.getId(), "Darth Vader", result, operationResponseHandler);
+		operationResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+		System.out.println("Completed task " + task.getId());
+
+		assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+		Map<String, Object> results = manager.getResults();
+		assertNotNull(results);
+		assertEquals("Darth Vader", results.get("ActorId"));
+		assertEquals("This is the result", results.get("Result"));
+	}
+
+        public void testTaskDataAutomaticMapping() throws Exception {
+		TestWorkItemManager manager = new TestWorkItemManager();
+		WorkItemImpl workItem = new WorkItemImpl();
+		workItem.setName("Human Task");
+		workItem.setParameter("TaskName", "TaskName");
+		workItem.setParameter("Comment", "Comment");
+		workItem.setParameter("Priority", "10");
+		workItem.setParameter("ActorId", "Darth Vader");
+                MyObject myObject = new MyObject("MyObjectValue");
+		workItem.setParameter("MyObject", myObject);
+                Map<String, Object> mapParameter = new HashMap<String, Object>();
+                mapParameter.put("MyObjectInsideTheMap", myObject);
+                workItem.setParameter("MyMap", mapParameter);
+                workItem.setParameter("MyObject", myObject);
+                
+		getHandler().executeWorkItem(workItem, manager);
+
+		Thread.sleep(500);
+
+		BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+		getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK", responseHandler);
+		List<TaskSummary> tasks = responseHandler.getResults();
+		assertEquals(1, tasks.size());
+		TaskSummary taskSummary = tasks.get(0);
+		assertEquals("TaskName", taskSummary.getName());
+		assertEquals(10, taskSummary.getPriority());
+		assertEquals("Comment", taskSummary.getDescription());
+		assertEquals(Status.Reserved, taskSummary.getStatus());
+		assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
+                
+                
+
+		BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();
+		getClient().getTask(taskSummary.getId(), getTaskResponseHandler);
+		Task task = getTaskResponseHandler.getTask();
+		assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+		long contentId = task.getTaskData().getDocumentContentId();
+		assertTrue(contentId != -1);
+		BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();
+		getClient().getContent(contentId, getContentResponseHandler);
+		ByteArrayInputStream bis = new ByteArrayInputStream(getContentResponseHandler.getContent().getContent());
+		ObjectInputStream in = new ObjectInputStream(bis);
+		Map<String, Object> data = (Map<String, Object>) in.readObject();
+		in.close();
+                //Checking that the input parameters are being copied automatically if the Content Element doesn't exist
+		assertEquals("MyObjectValue", ((MyObject)data.get("MyObject")).getValue());
+                assertEquals("10", data.get("Priority"));
+                assertEquals("MyObjectValue", ((MyObject)((Map<String, Object>)data.get("MyMap")).get("MyObjectInsideTheMap")).getValue());
 
 		System.out.println("Starting task " + task.getId());
 		BlockingTaskOperationResponseHandler operationResponseHandler = new BlockingTaskOperationResponseHandler();
