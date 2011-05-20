@@ -946,8 +946,13 @@ public class PackageBuilder {
 
         for ( final GlobalDescr global : packageDescr.getGlobals() ) {
             final String identifier = global.getIdentifier();
-            final String className = global.getType();
+            String className = global.getType();
 
+            // JBRULES-3039: can't handle type name with generic params
+            while( className.indexOf('<') >= 0){
+                className = className.replaceAll("<[^<>]+?>", "");
+            }
+            
             Class< ? > clazz;
             try {
                 clazz = pkgRegistry.getTypeResolver().resolveType( className );

@@ -454,12 +454,11 @@ public class DRLParser {
                        null,
                        DroolsEditorType.KEYWORD );
                 if (! state.failed ) {
+                    // Going for type includes generics, which is a no-no (JIRA-3040)
                     String superType = qualifiedIdentifier();
                     declare.superType(superType);
                 }
-
             }
-
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
                 // metadata*
@@ -3483,6 +3482,7 @@ public class DRLParser {
             last = input.LT( -1 ).getTokenIndex();
             type = input.toString( first,
                                    last );
+            type = type.replace(" ", "");
         } catch ( RecognitionException re ) {
             reportError( re );
         }
@@ -3634,6 +3634,7 @@ public class DRLParser {
             }
             qi = input.toString( first,
                                  last );
+            qi = qi.replace(" ", "");
         } catch ( RecognitionException re ) {
             reportError( re );
         }
