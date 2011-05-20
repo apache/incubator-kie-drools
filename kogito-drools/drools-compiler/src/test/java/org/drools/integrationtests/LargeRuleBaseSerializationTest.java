@@ -127,7 +127,7 @@ public class LargeRuleBaseSerializationTest {
     }
     
     @Test
-    public void test1() throws Exception {
+    public void testLargeRuleBaseSerialisation() throws Exception {
         StringBuilder buf = new StringBuilder(80000);
 
         buf.append("package mypackage\n");

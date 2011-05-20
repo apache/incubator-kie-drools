@@ -72,7 +72,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         final QueryElementNode node = new QueryElementNode( 18,
                                                             source,
                                                             null,
-                                                            false,
+                                                            true,
                                                             buildContext );
 
         assertEquals( 18,
@@ -104,7 +104,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         final QueryElementNode node = new QueryElementNode( 18,
                                                             source,
                                                             qe,
-                                                            false,
+                                                            true,
                                                             buildContext );
       
         MockLeftTupleSink sink = new MockLeftTupleSink(12);
@@ -122,7 +122,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         
         assertEquals(3, sink.getAsserted().size() );
         
-        LeftTuple leftTuple = (LeftTuple)((Object[])sink.getAsserted().get( 0 ))[0];
+        LeftTuple leftTuple = (LeftTuple)((Object[])sink.getAsserted().get( 2 ))[0];
         assertEquals(2, leftTuple.size());
         assertEquals("string", leftTuple.getParent().getLastHandle().getObject() );
         Object[] variables = (Object[]) leftTuple.getLastHandle().getObject();
@@ -138,7 +138,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         assertEquals( "string_2_1", variables[1] );
         assertEquals( "string_5_1", variables[2] );
         
-        leftTuple = (LeftTuple)((Object[])sink.getAsserted().get( 2 ))[0];
+        leftTuple = (LeftTuple)((Object[])sink.getAsserted().get( 0 ))[0];
         assertEquals(2, leftTuple.size());
         assertEquals("string", leftTuple.getParent().getLastHandle().getObject() );
         variables = (Object[]) leftTuple.getLastHandle().getObject();

@@ -52,8 +52,6 @@ public class DrlDumper  {
     }
 
     public String dump( final PackageDescr pkg ) {
-        AbstractParser.setLanguageLevel( 5 );
-
         Map<String, Object> context = new HashMap<String, Object>();
         context.put( "pkg",
                      pkg );
