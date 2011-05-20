@@ -40,6 +40,7 @@ import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
+import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
@@ -381,6 +382,7 @@ public class InputMarshaller {
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
+        int type = context.stream.readInt();
         int id = context.stream.readInt();
         long recency = context.stream.readLong();
 
@@ -395,11 +397,25 @@ public class InputMarshaller {
                 entryPoint = context.wm.getEntryPoints().get(entryPointId);
             }
         }
-
-        InternalFactHandle handle = new DefaultFactHandle( id,
-                                                           object,
-                                                           recency,
-                                                           entryPoint );
+        InternalFactHandle handle = null;
+        switch( type ) {
+            case 0: {
+                handle = new DefaultFactHandle( id,
+                                                object,
+                                                recency,
+                                                entryPoint );
+                break;
+            }
+            case 1: {
+                handle = new QueryElementFactHandle( object, 
+                                                     id, 
+                                                     recency );                
+                break;
+            }
+            default: {
+                throw new IllegalStateException( "Unable to marshal FactHandle, as type does not exist:" + type);
+            }
+        }
 
         return handle;
     }
@@ -654,6 +670,22 @@ public class InputMarshaller {
 //                context.out.println( "FromNode   ---   END" );
                 break;
             }
+            case NodeTypeEnums.UnificationNode : {
+                while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
+                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                    // we de-serialize the generated fact handle ID
+                    InternalFactHandle handle = readFactHandle( context );
+                    context.handles.put( handle.getId(),
+                                         handle );                    
+                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
+                                                              handle,
+                                                              childSink,
+                                                              true );
+                    readLeftTuple( childLeftTuple,
+                                   context );
+                }
+                break;
+            }            
             case NodeTypeEnums.RuleTerminalNode : {
                 int pos = context.terminalTupleMap.size();
                 context.terminalTupleMap.put( pos,

@@ -20,6 +20,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.junit.Test;
 
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.drools.rule.Variable.variable;
 
 
@@ -85,7 +86,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -108,12 +109,27 @@ public class BackwardChainingTest {
                                 300 );
 
         ksession.insert( p1 );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.insert( p2 );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.insert( p3 );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.insert( p4 );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.insert( p5 );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );   
         
         ksession.insert( "go1" );
+        
+        // Make sure we can serialise query state
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );        
+        
         ksession.fireAllRules();
         assertEquals( 5, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -124,6 +140,8 @@ public class BackwardChainingTest {
         
         list.clear();        
         ksession.insert( "go2" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 3, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -132,6 +150,8 @@ public class BackwardChainingTest {
         
         list.clear();
         ksession.insert( "go3" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();   
         assertEquals( 2, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -139,6 +159,8 @@ public class BackwardChainingTest {
         
         list.clear();        
         ksession.insert( "go4" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();           
         assertEquals( 1, list.size());
         assertTrue( list.contains( "darth : 200" ));        
@@ -204,7 +226,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -233,6 +255,8 @@ public class BackwardChainingTest {
         ksession.insert( p5 );
         
         ksession.insert( "go1" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 5, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -243,6 +267,8 @@ public class BackwardChainingTest {
         
         list.clear();        
         ksession.insert( "go2" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 3, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -251,6 +277,8 @@ public class BackwardChainingTest {
         
         list.clear();
         ksession.insert( "go3" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();   
         assertEquals( 2, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -258,6 +286,8 @@ public class BackwardChainingTest {
         
         list.clear();        
         ksession.insert( "go4" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();           
         assertEquals( 1, list.size());
         assertTrue( list.contains( "darth : 200" ));        
@@ -325,7 +355,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -354,6 +384,8 @@ public class BackwardChainingTest {
         ksession.insert( p5 );
         
         ksession.insert( "go1" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 5, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -364,6 +396,8 @@ public class BackwardChainingTest {
         
         list.clear();        
         ksession.insert( "go2" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 3, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -372,6 +406,8 @@ public class BackwardChainingTest {
         
         list.clear();
         ksession.insert( "go3" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();   
         assertEquals( 2, list.size());
         assertTrue( list.contains( "darth : 100" ));
@@ -379,6 +415,8 @@ public class BackwardChainingTest {
         
         list.clear();        
         ksession.insert( "go4" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();           
         assertEquals( 1, list.size());
         assertTrue( list.contains( "darth : 200" ));        
@@ -415,7 +453,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -444,17 +482,19 @@ public class BackwardChainingTest {
         ksession.insert( p5 );
         
         ksession.insert( "go1" );
+//        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+//                                                          true );           
         ksession.fireAllRules();
         assertEquals( 10, list.size());
-        assertSame( p1, list.get( list.indexOf( "darth : 100" ) - 1) );
+        assertEquals( p1, list.get( list.indexOf( "darth : 100" ) - 1) );
         assertTrue( list.contains( "darth : 100" ));
-        assertSame( p2, list.get( list.indexOf( "darth : 200" ) - 1) );
+        assertEquals( p2, list.get( list.indexOf( "darth : 200" ) - 1) );
         assertTrue( list.contains( "darth : 200" ));
-        assertSame( p3, list.get( list.indexOf( "yoda : 300" ) - 1) );
+        assertEquals( p3, list.get( list.indexOf( "yoda : 300" ) - 1) );
         assertTrue( list.contains( "yoda : 300" ));
-        assertSame( p4, list.get( list.indexOf( "luke : 300" ) - 1) );        
+        assertEquals( p4, list.get( list.indexOf( "luke : 300" ) - 1) );        
         assertTrue( list.contains( "luke : 300" ));
-        assertSame( p5, list.get( list.indexOf( "bobba : 300" ) - 1) );
+        assertEquals( p5, list.get( list.indexOf( "bobba : 300" ) - 1) );
         assertTrue( list.contains( "bobba : 300" ));
  
     }         
@@ -489,7 +529,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -509,6 +549,8 @@ public class BackwardChainingTest {
         ksession.insert( p2 );
 
         ksession.insert( "go1" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 2, list.size());
         assertTrue( list.contains( "darth : stilton : s1" ));
@@ -545,7 +587,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -565,12 +607,16 @@ public class BackwardChainingTest {
         ksession.insert( p2 );
 
         ksession.insert( "s1" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertTrue( list.contains( "darth : stilton : s1" ));
         
         list.clear();
         ksession.insert( "s2" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertTrue( list.contains( "yoda : stilton : s2" ));        
@@ -606,7 +652,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -621,12 +667,18 @@ public class BackwardChainingTest {
                                 100 );        
         
         ksession.insert( "darth" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertEquals( p1, list.get(0));     
         
         list.clear();
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.insert( "yoda" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertEquals( p2, list.get(0));          
@@ -670,7 +722,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -685,8 +737,12 @@ public class BackwardChainingTest {
                                 100 );        
         
         ksession.insert( "darth" );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();        
         ksession.insert( "yoda" ); // darth exists, so yoda won't get created 
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );           
         ksession.fireAllRules();
         assertEquals( 1, list.size());
         assertEquals( p1, list.get(0));          
@@ -767,7 +823,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -797,7 +853,7 @@ public class BackwardChainingTest {
     }      
     
     @Test
-    public void testGeneology() {
+    public void testGeneology() throws Exception {
         // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
             
         String str = "" +
@@ -880,7 +936,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
     
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
@@ -1005,7 +1061,7 @@ public class BackwardChainingTest {
     }
     
     @Test
-    public void testNaniSearch() {
+    public void testNaniSearch() throws Exception {
         // http://www.amzi.com/AdventureInProlog/advtop.php
             
         String str = "" +
@@ -1153,7 +1209,7 @@ public class BackwardChainingTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     
-        //kbase = SerializationHelper.serializeObject( kbase );
+        kbase = SerializationHelper.serializeObject( kbase );
     
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();

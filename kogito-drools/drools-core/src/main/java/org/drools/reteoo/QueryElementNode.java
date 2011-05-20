@@ -16,6 +16,9 @@
 
 package org.drools.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +34,7 @@ import org.drools.common.QueryElementFactHandle;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.EvalCondition;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.rule.Variable;
@@ -51,6 +55,10 @@ public class QueryElementNode extends LeftTupleSource
 
     private boolean           tupleMemoryEnabled;
 
+    public QueryElementNode() {
+        // for serialization
+    }
+    
     public QueryElementNode(final int id,
                             final LeftTupleSource tupleSource,
                             final QueryElement queryElement,
@@ -63,6 +71,20 @@ public class QueryElementNode extends LeftTupleSource
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }
+    
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        super.readExternal( in );
+        queryElement = (QueryElement) in.readObject();
+        tupleSource = (LeftTupleSource) in.readObject();
+        tupleMemoryEnabled = in.readBoolean();
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( queryElement );
+        out.writeObject( tupleSource );
+        out.writeBoolean( tupleMemoryEnabled );
+    }    
 
     public void updateSink(LeftTupleSink sink,
                            PropagationContext context,
@@ -205,7 +227,6 @@ public class QueryElementNode extends LeftTupleSource
         workingMemory.getFactHandleFactory().destroyFactHandle( handle );
 
         LeftTuple childLeftTuple = leftTuple.firstChild;
-        LeftTuple temp = null;
         while ( childLeftTuple != null ) {
             int varsLength = this.queryElement.getVariableIndexes().length;
             if ( srcVarIndexes != null ) {
@@ -217,13 +238,11 @@ public class QueryElementNode extends LeftTupleSource
                 }
             }
 
-            temp = childLeftTuple;
             this.sink.doPropagateAssertLeftTuple( context,
                                                   workingMemory,
                                                   childLeftTuple,
                                                   childLeftTuple.getLeftTupleSink() );
             if ( srcVarIndexes != null ) {
-                QueryElementFactHandle qeh = (QueryElementFactHandle) childLeftTuple.getLastHandle();
                 for ( int i = 0; i < trgVars.size(); i++ ) {
                     Variable v = trgVars.get( i );
                     v.unSet();
@@ -231,8 +250,6 @@ public class QueryElementNode extends LeftTupleSource
             }
 
             childLeftTuple = childLeftTuple.getLeftParentNext();
-            temp.setLeftParentNext( null );
-
         }
     }
 
@@ -274,7 +291,9 @@ public class QueryElementNode extends LeftTupleSource
                 objects[i] = vars[this.variables[i]].getValue();
             }
 
-            QueryElementFactHandle handle = new QueryElementFactHandle( objects );
+            QueryElementFactHandle handle = new QueryElementFactHandle( objects, 
+                                                                        workingMemory.getFactHandleFactory().getAtomicId().incrementAndGet(), 
+                                                                        workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet());
             RightTuple rightTuple = new RightTuple( handle );
 
             this.sink.createChildLeftTuplesforQuery( this.leftTuple,

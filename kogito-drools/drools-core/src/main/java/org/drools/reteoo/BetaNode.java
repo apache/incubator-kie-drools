@@ -140,10 +140,6 @@ public abstract class BetaNode extends LeftTupleSource
         behavior = (BehaviorManager) in.readObject();
         leftInput = (LeftTupleSource) in.readObject();
         rightInput = (ObjectSource) in.readObject();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        previousObjectSinkNode = (ObjectSinkNode) in.readObject();
-        nextObjectSinkNode = (ObjectSinkNode) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
@@ -165,10 +161,6 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( behavior );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
-        out.writeObject( previousObjectSinkNode );
-        out.writeObject( nextObjectSinkNode );
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );

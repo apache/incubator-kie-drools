@@ -212,49 +212,67 @@ public class Person
         return "[Person name='" + this.name + " age='" + this.age + "' likes='" + likes + "']";
     }
 
-    /**
-     * @inheritDoc
-     */
+    @Override
     public int hashCode() {
-        final int PRIME = 31;
+        final int prime = 31;
         int result = 1;
-        result = PRIME * result + this.age;
-        result = PRIME * result + (this.alive ? 1231 : 1237);
-        result = PRIME * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = PRIME * result + this.sex;
+        result = prime * result + ((address == null) ? 0 : address.hashCode());
+        result = prime * result + ((addresses == null) ? 0 : addresses.hashCode());
+        result = prime * result + age;
+        result = prime * result + (alive ? 1231 : 1237);
+        result = prime * result + ((bigDecimal == null) ? 0 : bigDecimal.hashCode());
+        result = prime * result + ((bigInteger == null) ? 0 : bigInteger.hashCode());
+        result = prime * result + ((cheese == null) ? 0 : cheese.hashCode());
+        result = prime * result + ((hair == null) ? 0 : hair.hashCode());
+        result = prime * result + (happy ? 1231 : 1237);
+        result = prime * result + ((likes == null) ? 0 : likes.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((object == null) ? 0 : object.hashCode());
+        result = prime * result + ((pet == null) ? 0 : pet.hashCode());
+        result = prime * result + sex;
         return result;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Person other = (Person) obj;
-        if (this.age != other.age) {
-            return false;
-        }
-        if (this.alive != other.alive) {
-            return false;
-        }
-        if (this.name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!this.name.equals(other.name)) {
-            return false;
-        }
-        if (this.sex != other.sex) {
-            return false;
-        }
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        Person other = (Person) obj;
+        if ( address == null ) {
+            if ( other.address != null ) return false;
+        } else if ( !address.equals( other.address ) ) return false;
+        if ( addresses == null ) {
+            if ( other.addresses != null ) return false;
+        } else if ( !addresses.equals( other.addresses ) ) return false;
+        if ( age != other.age ) return false;
+        if ( alive != other.alive ) return false;
+        if ( bigDecimal == null ) {
+            if ( other.bigDecimal != null ) return false;
+        } else if ( !bigDecimal.equals( other.bigDecimal ) ) return false;
+        if ( bigInteger == null ) {
+            if ( other.bigInteger != null ) return false;
+        } else if ( !bigInteger.equals( other.bigInteger ) ) return false;
+        if ( cheese == null ) {
+            if ( other.cheese != null ) return false;
+        } else if ( !cheese.equals( other.cheese ) ) return false;
+        if ( hair == null ) {
+            if ( other.hair != null ) return false;
+        } else if ( !hair.equals( other.hair ) ) return false;
+        if ( happy != other.happy ) return false;
+        if ( likes == null ) {
+            if ( other.likes != null ) return false;
+        } else if ( !likes.equals( other.likes ) ) return false;
+        if ( name == null ) {
+            if ( other.name != null ) return false;
+        } else if ( !name.equals( other.name ) ) return false;
+        if ( object == null ) {
+            if ( other.object != null ) return false;
+        } else if ( !object.equals( other.object ) ) return false;
+        if ( pet == null ) {
+            if ( other.pet != null ) return false;
+        } else if ( !pet.equals( other.pet ) ) return false;
+        if ( sex != other.sex ) return false;
         return true;
     }
 

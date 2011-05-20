@@ -113,7 +113,7 @@ public class QueryElementBuilder
                     // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
                     ArrayElementReader reader = new ArrayElementReader( arrayReader,
                                                                         varIndexes.size(),
-                                                                        params[arg.getPosition()].getExtractor().getExtractToClass() );
+                                                                        params[arg.getPosition()].getExtractor().getExtractToClass() );                    
 
                     declr.setReadAccessor( reader );
 
@@ -134,9 +134,6 @@ public class QueryElementBuilder
                     return null;
                 } 
               
-//              if ( !isAtomic( result ) ) {
-//
-//              }
               MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
               expr = new MVELDumper().dump( result,
                                             mvelCtx );
@@ -185,10 +182,7 @@ public class QueryElementBuilder
                         }
                         return null;
                     } 
-                    
-//                    if ( !isAtomic( result ) ) {
-//
-//                    }
+
                     MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
                     String expr = new MVELDumper().dump( result,
                                                          mvelCtx );

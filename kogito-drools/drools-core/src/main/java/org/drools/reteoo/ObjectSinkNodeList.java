@@ -63,12 +63,37 @@ public class ObjectSinkNodeList
         firstNode = (ObjectSinkNode) in.readObject();
         lastNode = (ObjectSinkNode) in.readObject();
         size = in.readInt();
+        if ( firstNode == lastNode ) {
+            // no other nodes
+            return;
+        }
+        
+        ObjectSinkNode current = firstNode;
+        ObjectSinkNode previous = null;
+
+        while ( current != lastNode) {
+            ObjectSinkNode next = (ObjectSinkNode) in.readObject();
+            current.setPreviousObjectSinkNode(previous);
+            current.setNextObjectSinkNode(next);
+            previous = current;
+            current = next;
+        }     
+        
+        // current equals last Node, so set previous (this avoids the null writting in stream
+        current.setPreviousObjectSinkNode( previous );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( firstNode );
         out.writeObject( lastNode );
         out.writeInt( size );
+        if ( firstNode == lastNode ) {
+            // no other nodes
+            return;
+        }        
+        for (ObjectSinkNode node = firstNode; node != null; node = node.getNextObjectSinkNode()) {
+            out.writeObject(node.getNextObjectSinkNode());
+        }        
     }
 
     /**

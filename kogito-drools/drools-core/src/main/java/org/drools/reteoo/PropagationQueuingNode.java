@@ -81,15 +81,11 @@ public class PropagationQueuingNode extends ObjectSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        previousObjectSinkNode = (ObjectSinkNode) in.readObject();
-        nextObjectSinkNode = (ObjectSinkNode) in.readObject();
         action = (PropagateAction) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( previousObjectSinkNode );
-        out.writeObject( nextObjectSinkNode );
         out.writeObject( action );
     }
 

@@ -16,6 +16,9 @@
 
 package org.drools.base;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -73,24 +76,14 @@ abstract public class BaseClassFieldReader
         } catch ( final Exception e ) {
             throw new RuntimeDroolsException( e );
         }
-    }
-
-    //    public void readExternal(ObjectInput in) throws IOException,
-    //                                            ClassNotFoundException {
-    //        index = in.readInt();
-    //        fieldType = (Class) in.readObject();
-    //        valueType = (ValueType) in.readObject();
-    //        if ( valueType != null ) valueType = ValueType.determineValueType( valueType.getClassType() );
-    //    }
-    //
-    //    public void writeExternal(ObjectOutput out) throws IOException {
-    //        out.writeInt( index );
-    //        out.writeObject( fieldType );
-    //        out.writeObject( valueType );
-    //    }
+    }    
 
     public int getIndex() {
         return this.index;
+    }
+    
+    public void setIndex(int i) {
+        this.index = i;
     }
 
     public Class< ? > getExtractToClass() {

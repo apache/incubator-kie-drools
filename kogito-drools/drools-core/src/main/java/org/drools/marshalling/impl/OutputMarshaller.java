@@ -284,7 +284,9 @@ public class OutputMarshaller {
     private static void writeFactHandle(MarshallerWriteContext context,
                                         ObjectOutputStream stream,
                                         ObjectMarshallingStrategyStore objectMarshallingStrategyStore,
+                                        int type,
                                         InternalFactHandle handle) throws IOException {
+        stream.writeInt( type );
         stream.writeInt( handle.getId() );
         stream.writeLong( handle.getRecency() );
 
@@ -312,7 +314,14 @@ public class OutputMarshaller {
             }
         }else{
             stream.writeBoolean(false);
-        }
+        }        
+    }
+
+    private static void writeFactHandle(MarshallerWriteContext context,
+                                        ObjectOutputStream stream,
+                                        ObjectMarshallingStrategyStore objectMarshallingStrategyStore,
+                                        InternalFactHandle handle) throws IOException {
+        writeFactHandle( context, stream, objectMarshallingStrategyStore, 0, handle );
 
     }
 
@@ -594,6 +603,24 @@ public class OutputMarshaller {
               //context.out.println( "---- FromNode   ---   END" );
               break;
           }
+            case NodeTypeEnums.UnificationNode : {
+                //context.out.println( ".... UnificationNode" );
+                for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                    writeFactHandle( context,
+                                     stream,
+                                     context.objectMarshallingStrategyStore,
+                                     1,
+                                     childLeftTuple.getLastHandle() );                    
+                    writeLeftTuple( childLeftTuple,
+                                    context,
+                                    recurse );
+                }
+                stream.writeShort( PersisterEnums.END );
+                //context.out.println( "---- EvalConditionNode   ---   END" );
+                break;
+            }            
             case NodeTypeEnums.RuleTerminalNode : {
                 //context.out.println( "RuleTerminalNode" );
                 int pos = context.terminalTupleMap.size();

@@ -16,6 +16,9 @@
 
 package org.drools.spi;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.drools.FactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -57,6 +60,10 @@ public interface FactHandleFactory {
     public int getId();
 
     public long getRecency();
+    
+    public AtomicInteger getAtomicId();
+    
+    public AtomicLong getAtomicRecency();      
     
     public void clear(int id, long counter);
 }

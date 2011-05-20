@@ -74,16 +74,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                             ClassNotFoundException {
         super.readExternal( in );
         objectSource = (ObjectSource) in.readObject();
-        previousRightTupleSinkNode = (ObjectSinkNode) in.readObject();
-        nextRightTupleSinkNode = (ObjectSinkNode) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( objectSource );
-        out.writeObject( previousRightTupleSinkNode );
-        out.writeObject( nextRightTupleSinkNode );
         out.writeBoolean( leftTupleMemoryEnabled );
     }
 

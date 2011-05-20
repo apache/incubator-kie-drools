@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import java.io.Reader;
 import java.io.StringReader;
 
 import org.junit.After;
@@ -124,5 +125,106 @@ public class LargeRuleBaseSerializationTest {
         ruleBase.addPackage(pkg);
         return ruleBase;
     }
+    
+    @Test
+    public void test1() throws Exception {
+        StringBuilder buf = new StringBuilder(80000);
+
+        buf.append("package mypackage\n");
+        buf.append("import " + LargeRuleBaseSerializationTest.class.getCanonicalName() + ".Parent\n");
+        buf.append("import " + LargeRuleBaseSerializationTest.class.getCanonicalName() + ".Child\n");
+        buf.append("import " + LargeRuleBaseSerializationTest.class.getCanonicalName() + ".Item\n");
+
+        for (int i = 0; i < 3000; i++)
+        {
+            buf.append("rule 'Rule " + i + "'\n");
+            buf.append(" when\n");
+            buf.append(" $g:Parent()\n");
+            buf.append(" $c:Child(parent==$g,code=='" + i + "')\n");
+            buf.append(" Item(parentObject==$c,name=='xxx1', value == '1')\n");
+            buf.append(" Item(parentObject==$c,name=='xxx2',value == '1')\n");
+            buf.append(" Item(parentObject==$g,name=='xxx3',value == '200')\n");
+            buf.append(" then\n");
+            buf.append(" System.out.println('2');\n");
+            buf.append("end\n");
+        }        
+        Reader source = new StringReader(buf.toString());
+
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(source);
+        Package pkg = builder.getPackage();
+
+        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
+
+        SerializationHelper.serializeObject( ruleBase );
+    }
+    
+    public static class Parent
+    {}
+
+    public static class Child
+    {
+        Parent parent;
+        String code;
+
+        public Parent getParent()
+        {
+            return parent;
+        }
+
+        public void setParent(Parent parent)
+        {
+            this.parent = parent;
+        }
+
+        public String getCode()
+        {
+            return code;
+        }
+
+        public void setCode(String code)
+        {
+            this.code = code;
+        }
+
+    }
+
+    public static class Item
+    {
+        Object parentObject;
+        String name;
+        String value;
+
+        public Object getParentObject()
+        {
+            return parentObject;
+        }
+
+        public void setParentObject(Object parentObject)
+        {
+            this.parentObject = parentObject;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public void setName(String name)
+        {
+            this.name = name;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+
+        public void setValue(String value)
+        {
+            this.value = value;
+        }
+    }    
 
 }

@@ -150,7 +150,7 @@ public class MarshallingTest {
 
         session.fireAllRules();
 
-        final List list = (List) session.getGlobal( "list" );
+        List list = (List) session.getGlobal( "list" );
 
         assertEquals( 3,
                       list.size() );
@@ -158,10 +158,12 @@ public class MarshallingTest {
         assertEquals( new Integer( 4 ),
                       list.get( 0 ) );
 
+        list = IteratorToList.convert( session.iterateObjects() );
         assertEquals( 2,
-                      IteratorToList.convert( session.iterateObjects() ).size() );
-        assertTrue( IteratorToList.convert( session.iterateObjects() ).contains( bob ) );
-        assertTrue( IteratorToList.convert( session.iterateObjects() ).contains( new Person( "help" ) ) );
+                      list.size() );
+        
+        assertTrue(  list.contains( bob ) );
+        assertTrue( list.contains( new Person( "help" ) ) );
     }
 
     @Test
