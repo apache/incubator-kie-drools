@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.calculatecount;
+package org.drools.planner.benchmark.statistic.memoryuse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatisticPoint;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListenerAdapter;
 
-public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleListenerAdapter {
+public class MemoryUseStatisticListener extends LocalSearchSolverLifecycleListenerAdapter {
 
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
 
     private long lastTimeMillisSpend = 0L;
-    private long lastCalculateCount = 0L;
 
-    private List<CalculateCountStatisticPoint> statisticPointList = new ArrayList<CalculateCountStatisticPoint>();
+    private List<MemoryUseStatisticPoint> statisticPointList = new ArrayList<MemoryUseStatisticPoint>();
 
-    public CalculateCountStatisticListener() {
+    public MemoryUseStatisticListener() {
         this(1000L);
     }
 
-    public CalculateCountStatisticListener(long timeMillisThresholdInterval) {
+    public MemoryUseStatisticListener(long timeMillisThresholdInterval) {
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
@@ -45,7 +45,7 @@ public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleL
         nextTimeMillisThreshold = timeMillisThresholdInterval;
     }
 
-    public List<CalculateCountStatisticPoint> getStatisticPointList() {
+    public List<MemoryUseStatisticPoint> getStatisticPointList() {
         return statisticPointList;
     }
 
@@ -53,13 +53,10 @@ public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleL
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
-            long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;
-
-            long calculateCount = localSearchStepScope.getLocalSearchSolverScope().getCalculateCount();
-            long calculateCountInterval = calculateCount - lastCalculateCount;
-            long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpendInterval;
-            statisticPointList.add(new CalculateCountStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));
-            lastCalculateCount = calculateCount;
+            
+            Runtime runtime = Runtime.getRuntime();
+            statisticPointList.add(new MemoryUseStatisticPoint(timeMillisSpend,
+                    new MemoryUseMeasurement(runtime.freeMemory(), runtime.totalMemory())));
 
             lastTimeMillisSpend = timeMillisSpend;
             nextTimeMillisThreshold += timeMillisThresholdInterval;

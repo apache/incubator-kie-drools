@@ -88,7 +88,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         return htmlFragment;
     }
 
-    private List<BestScoreScvLine> extractBestScoreScvLineList() {
+    private List<BestScoreScvLine> extractCsvLineList() {
         Map<Long, BestScoreScvLine> timeToBestScoresLineMap = new HashMap<Long, BestScoreScvLine>();
         for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
@@ -104,10 +104,9 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
                 line.getConfigNameToScoreMap().put(configName, statisticPoint.getScore());
             }
         }
-        List<BestScoreScvLine> bestScoreScvLineList
-                = new ArrayList<BestScoreScvLine>(timeToBestScoresLineMap.values());
-        Collections.sort(bestScoreScvLineList);
-        return bestScoreScvLineList;
+        List<BestScoreScvLine> csvLineList = new ArrayList<BestScoreScvLine>(timeToBestScoresLineMap.values());
+        Collections.sort(csvLineList);
+        return csvLineList;
     }
 
     protected class BestScoreScvLine implements Comparable<BestScoreScvLine> {
@@ -135,7 +134,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     }
 
     private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
-        List<BestScoreScvLine> bestScoreScvLineList = extractBestScoreScvLineList();
+        List<BestScoreScvLine> scvLineList = extractCsvLineList();
         File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "BestScoreStatistic.csv");
         Writer writer = null;
         try {
@@ -145,7 +144,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
                 writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append("\"");
             }
             writer.append("\n");
-            for (BestScoreScvLine line : bestScoreScvLineList) {
+            for (BestScoreScvLine line : scvLineList) {
                 writer.write(Long.toString(line.getTimeMillisSpend()));
                 for (String configName : configNameList) {
                     writer.append(",");

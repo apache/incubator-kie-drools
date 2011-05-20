@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.benchmark.statistic.calculatecount;
+package org.drools.planner.benchmark.statistic.memoryuse;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -44,12 +44,12 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class CalculateCountStatistic extends AbstractSolverStatistic {
+public class MemoryUseStatistic extends AbstractSolverStatistic {
 
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
-    private Map<String, CalculateCountStatisticListener> statisticListenerMap
-            = new HashMap<String, CalculateCountStatisticListener>();
+    private Map<String, MemoryUseStatisticListener> statisticListenerMap
+            = new HashMap<String, MemoryUseStatisticListener>();
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -57,13 +57,13 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
                     + ") twice.");
         }
         configNameList.add(configName);
-        CalculateCountStatisticListener statisticListener = new CalculateCountStatisticListener();
+        MemoryUseStatisticListener statisticListener = new MemoryUseStatisticListener();
         ((LocalSearchSolver) solver).addLocalSearchSolverLifecycleListener(statisticListener);
         statisticListenerMap.put(configName, statisticListener);
     }
 
     public void removeListener(Solver solver, String configName) {
-        CalculateCountStatisticListener statisticListener = statisticListenerMap.get(configName);
+        MemoryUseStatisticListener statisticListener = statisticListenerMap.get(configName);
         ((LocalSearchSolver) solver).removeLocalSearchSolverLifecycleListener(statisticListener);
     }
 
@@ -78,68 +78,72 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         return htmlFragment;
     }
 
-    private List<CalculateCountScvLine> extractCsvLineList() {
-        Map<Long, CalculateCountScvLine> timeToBestScoresLineMap = new HashMap<Long, CalculateCountScvLine>();
-        for (Map.Entry<String, CalculateCountStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
+    private List<MemoryUseScvLine> extractCsvLineList() {
+        Map<Long, MemoryUseScvLine> timeToBestScoresLineMap = new HashMap<Long, MemoryUseScvLine>();
+        for (Map.Entry<String, MemoryUseStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            List<CalculateCountStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
-            for (CalculateCountStatisticPoint statisticPoint : statisticPointList) {
+            List<MemoryUseStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
+            for (MemoryUseStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
-                CalculateCountScvLine line = timeToBestScoresLineMap.get(timeMillisSpend);
+                MemoryUseScvLine line = timeToBestScoresLineMap.get(timeMillisSpend);
                 if (line == null) {
-                    line = new CalculateCountScvLine(timeMillisSpend);
+                    line = new MemoryUseScvLine(timeMillisSpend);
                     timeToBestScoresLineMap.put(timeMillisSpend, line);
                 }
-                line.getConfigNameToCalculateCountPerSecondMap().put(configName, statisticPoint.getCalculateCountPerSecond());
+                line.getConfigNameToMemoryUseMeasurementMap().put(configName, statisticPoint.getMemoryUseMeasurement());
             }
         }
-        List<CalculateCountScvLine> csvLineList = new ArrayList<CalculateCountScvLine>(timeToBestScoresLineMap.values());
+        List<MemoryUseScvLine> csvLineList = new ArrayList<MemoryUseScvLine>(timeToBestScoresLineMap.values());
         Collections.sort(csvLineList);
         return csvLineList;
     }
 
-    protected class CalculateCountScvLine implements Comparable<CalculateCountScvLine> {
+    protected class MemoryUseScvLine implements Comparable<MemoryUseScvLine> {
 
         private long timeMillisSpend;
-        private Map<String, Long> configNameToCalculateCountPerSecondMap;
+        private Map<String, MemoryUseMeasurement> configNameToMemoryUseMeasurementMap;
 
-        public CalculateCountScvLine(long timeMillisSpend) {
+        public MemoryUseScvLine(long timeMillisSpend) {
             this.timeMillisSpend = timeMillisSpend;
-            configNameToCalculateCountPerSecondMap = new HashMap<String, Long>();
+            configNameToMemoryUseMeasurementMap = new HashMap<String, MemoryUseMeasurement>();
         }
 
         public long getTimeMillisSpend() {
             return timeMillisSpend;
         }
 
-        public Map<String, Long> getConfigNameToCalculateCountPerSecondMap() {
-            return configNameToCalculateCountPerSecondMap;
+        public Map<String, MemoryUseMeasurement> getConfigNameToMemoryUseMeasurementMap() {
+            return configNameToMemoryUseMeasurementMap;
         }
 
-        public int compareTo(CalculateCountScvLine other) {
+        public int compareTo(MemoryUseScvLine other) {
             return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 
     }
 
     private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
-        List<CalculateCountScvLine> csvLineList = extractCsvLineList();
-        File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "CalculateCountStatistic.csv");
+        List<MemoryUseScvLine> csvLineList = extractCsvLineList();
+        File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "MemoryUseStatistic.csv");
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "utf-8");
             writer.append("\"TimeMillisSpend\"");
             for (String configName : configNameList) {
-                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append("\"");
+                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append(" free\"");
+                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append(" total\"");
             }
             writer.append("\n");
-            for (CalculateCountScvLine line : csvLineList) {
+            for (MemoryUseScvLine line : csvLineList) {
                 writer.write(Long.toString(line.getTimeMillisSpend()));
                 for (String configName : configNameList) {
                     writer.append(",");
-                    Long calculateCountPerSecond = line.getConfigNameToCalculateCountPerSecondMap().get(configName);
-                    if (calculateCountPerSecond != null) {
-                        writer.append(calculateCountPerSecond.toString());
+                    MemoryUseMeasurement memoryUseMeasurement = line.getConfigNameToMemoryUseMeasurementMap()
+                            .get(configName);
+                    if (memoryUseMeasurement != null) {
+                        writer.append(Long.toString(memoryUseMeasurement.getFreeMemory()));
+                        writer.append(",");
+                        writer.append(Long.toString(memoryUseMeasurement.getTotalMemory()));
                     }
                 }
                 writer.append("\n");
@@ -154,28 +158,31 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
 
     private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
-        for (Map.Entry<String, CalculateCountStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
+        for (Map.Entry<String, MemoryUseStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            XYSeries configSeries = new XYSeries(configName);
-            List<CalculateCountStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
-            for (CalculateCountStatisticPoint statisticPoint : statisticPointList) {
+            XYSeries configFreeSeries = new XYSeries(configName + " free");
+            XYSeries configTotalSeries = new XYSeries(configName + " total");
+            List<MemoryUseStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
+            for (MemoryUseStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
-                long calculateCountPerSecond = statisticPoint.getCalculateCountPerSecond();
-                configSeries.add(timeMillisSpend, calculateCountPerSecond);
+                MemoryUseMeasurement memoryUseMeasurement = statisticPoint.getMemoryUseMeasurement();
+                configFreeSeries.add(timeMillisSpend, memoryUseMeasurement.getFreeMemory());
+                configTotalSeries.add(timeMillisSpend, memoryUseMeasurement.getTotalMemory());
             }
-            seriesCollection.addSeries(configSeries);
+            seriesCollection.addSeries(configFreeSeries);
+            seriesCollection.addSeries(configTotalSeries);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
-        NumberAxis yAxis = new NumberAxis("Calculate count per second");
+        NumberAxis yAxis = new NumberAxis("Memory");
         yAxis.setAutoRangeIncludesZero(false);
         XYItemRenderer renderer = new XYLineAndShapeRenderer();
         XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart(baseName + " calculate count statistic",
+        JFreeChart chart = new JFreeChart(baseName + " memory use statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "CalculateCountStatistic.png");
+        File graphStatisticFile = new File(solverStatisticFilesDirectory, baseName + "MemoryUseStatistic.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(graphStatisticFile);

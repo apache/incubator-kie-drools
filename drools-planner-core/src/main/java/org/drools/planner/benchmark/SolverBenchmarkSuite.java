@@ -51,6 +51,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
+import org.drools.planner.benchmark.statistic.memoryuse.MemoryUseStatistic;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -421,7 +422,8 @@ public class SolverBenchmarkSuite {
 
     public static enum SolverStatisticType {
         BEST_SOLUTION_CHANGED,
-        CALCULATE_COUNT_PER_SECOND;
+        CALCULATE_COUNT_PER_SECOND,
+        MEMORY_USE;
 
         public SolverStatistic create() {
             switch (this) {
@@ -429,6 +431,8 @@ public class SolverBenchmarkSuite {
                     return new BestScoreStatistic();
                 case CALCULATE_COUNT_PER_SECOND:
                     return new CalculateCountStatistic();
+                case MEMORY_USE:
+                    return new MemoryUseStatistic();
                 default:
                     throw new IllegalStateException("The solverStatisticType (" + this + ") is not implemented");
             }
