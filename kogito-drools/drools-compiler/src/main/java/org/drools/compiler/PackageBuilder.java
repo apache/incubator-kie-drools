@@ -1103,17 +1103,22 @@ public class PackageBuilder {
                         resolveSuperType( declaredSuperType,
                                           packageDescr,
                                           this.pkgRegistryMap.get( typeDescr.getNamespace() ) );
-
             }
 
             // sets supertype name and supertype package
             separator = declaredSuperType.lastIndexOf( "." );
-            typeDescr.setSuperTypeName( declaredSuperType.substring( separator + 1 ) );
-            typeDescr.setSuperTypeNamespace( declaredSuperType.substring( 0,
-                                                                          separator ) );
-
+            if( separator < 0 ){
+                this.results.add( new TypeDeclarationError(
+                        "Cannot resolve supertype '" + typeDescr.getSuperTypeName() + "'",
+                        typeDescr.getLine()) );
+                typeDescr.setSuperTypeName( null );
+                typeDescr.setSuperTypeNamespace( null );
+            } else {
+                typeDescr.setSuperTypeName( declaredSuperType.substring( separator + 1 ) );
+                typeDescr.setSuperTypeNamespace( declaredSuperType.substring( 0,
+                                                                              separator ) );
+            }
         }
-
     }
 
     /**
@@ -1135,12 +1140,15 @@ public class PackageBuilder {
      * @param typeDescr
      *            The base class descriptor, to be completed with the inherited
      *            fields descriptors
+     * @return true if all went well
      */
-    private void mergeInheritedFields(TypeDeclarationDescr typeDescr) {
-        if ( typeDescr.getSuperTypeName() == null ) return;
+    private boolean mergeInheritedFields(TypeDeclarationDescr typeDescr) {
+        if ( typeDescr.getSuperTypeName() == null ) return false;
 
         String simpleSuperTypeName = typeDescr.getSuperTypeName();
         String superTypePackageName = typeDescr.getSuperTypeNamespace();
+        String fullSuper = superTypePackageName + "." + simpleSuperTypeName;
+
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
 
         boolean isSuperClassDeclared = true; //in the same package, or in a previous one
@@ -1148,7 +1156,17 @@ public class PackageBuilder {
 
         PackageRegistry registry = this.pkgRegistryMap.get( superTypePackageName );
         Package pack = null;
-        if ( registry != null ) pack = registry.getPackage();
+        if ( registry != null ){
+            pack = registry.getPackage();
+        } else {
+            // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
+            // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
+            this.results.add(new TypeDeclarationError("Cannot extend supertype '" + fullSuper + "' (not a declared type)",
+                    typeDescr.getLine()));
+            typeDescr.setSuperTypeName(null);
+            typeDescr.setSuperTypeNamespace(null);
+            return false;
+        }
 
         // if a class is declared in DRL, its package can't be null? The default package is replaced by "defaultpkg"
         if ( pack != null ) {
@@ -1177,7 +1195,6 @@ public class PackageBuilder {
 
         // look for the class externally
         if ( !isSuperClassDeclared || isSuperClassTagged ) {
-            String fullSuper = superTypePackageName + "." + simpleSuperTypeName;
             try {
                 ClassFieldInspector inspector = new ClassFieldInspector( registry.getTypeResolver().resolveType( fullSuper ) );
                 for ( String name : inspector.getGetterMethods().keySet() ) {
@@ -1193,7 +1210,7 @@ public class PackageBuilder {
                 }
 
             } catch ( ClassNotFoundException cnfe ) {
-                throw new RuntimeDroolsException( "unable to resolve Type Declaration superclass '" + fullSuper + "'" );
+                throw new RuntimeDroolsException( "Unable to resolve Type Declaration superclass '" + fullSuper + "'" );
             } catch ( IOException e ) {
 
             }
@@ -1203,6 +1220,7 @@ public class PackageBuilder {
         fieldMap.putAll( typeDescr.getFields() );
         typeDescr.setFields( fieldMap );
 
+        return true;
     }
 
     /**
@@ -1273,17 +1291,20 @@ public class PackageBuilder {
             //descriptor needs fields inherited from superclass
             if ( typeDescr.getSuperTypeName() != null ) {
                 //descriptor needs fields inherited from superclass
-                mergeInheritedFields( typeDescr );
-                //descriptor also needs metadata from superclass
-                Iterator<TypeDeclarationDescr> iter = sortedTypeDescriptors.iterator();
-                while ( iter.hasNext() ) {
-                    // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
-                    TypeDeclarationDescr descr = iter.next();
-                    if ( (typeDescr.getSuperTypeName().equals( descr.getTypeName() ) && typeDescr.getSuperTypeNamespace().equals( descr.getNamespace() )) ) {
-                        typeDescr.getAnnotations().putAll( descr.getAnnotations() );
-                        break;
-                    } else if ( (typeDescr.getTypeName().equals( descr.getTypeName() ) && typeDescr.getNamespace().equals( descr.getNamespace() )) ) {
-                        break;
+                if ( mergeInheritedFields(typeDescr) ) {
+                    //descriptor also needs metadata from superclass
+                    Iterator<TypeDeclarationDescr> iter = sortedTypeDescriptors.iterator();
+                    while ( iter.hasNext() ) {
+                        // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
+                        TypeDeclarationDescr descr = iter.next();
+                        if ( (typeDescr.getSuperTypeName().equals( descr.getTypeName() ) &&
+                              typeDescr.getSuperTypeNamespace().equals( descr.getNamespace() )) ) {
+                            typeDescr.getAnnotations().putAll( descr.getAnnotations() );
+                            break;
+                        } else if ( (typeDescr.getTypeName().equals( descr.getTypeName() ) &&
+                                     typeDescr.getNamespace().equals( descr.getNamespace() )) ) {
+                            break;
+                        }
                     }
                 }
             }
@@ -1351,9 +1372,9 @@ public class PackageBuilder {
                         }
                     }
                 } catch ( final ClassNotFoundException e ) {
-
-                    this.results.add( new TypeDeclarationError( "Class not found TypeDeclaration'" + className + "' for type '" + type.getTypeName() + "'",
-                                                                typeDescr.getLine() ) );
+                    this.results.add( new TypeDeclarationError( "Class '" + className +
+                            "' not found for type declaration of '" + type.getTypeName() + "'",
+                            typeDescr.getLine() ) );
                     continue;
                 }
             }
