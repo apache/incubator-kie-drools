@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import junit.framework.TestCase;
+
 import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -13,9 +15,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
-import org.jbpm.JbpmTestCase;
 
-public class ProcessMultiThreadTest extends JbpmTestCase {
+public class ProcessMultiThreadTest extends TestCase {
 
     public void testMultiThreadProcessInstanceWorkItem() {
     	final ConcurrentHashMap<Long, Long> workItems = new ConcurrentHashMap<Long, Long>();
