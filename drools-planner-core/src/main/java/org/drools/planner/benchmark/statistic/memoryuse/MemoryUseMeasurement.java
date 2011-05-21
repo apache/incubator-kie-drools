@@ -18,19 +18,24 @@ package org.drools.planner.benchmark.statistic.memoryuse;
 
 public class MemoryUseMeasurement {
 
-    private final long freeMemory;
-    private final long totalMemory;
-
-    public MemoryUseMeasurement(long freeMemory, long totalMemory) {
-        this.freeMemory = freeMemory;
-        this.totalMemory = totalMemory;
+    public static MemoryUseMeasurement create() {
+        Runtime runtime = Runtime.getRuntime();
+        return new MemoryUseMeasurement(runtime.totalMemory() - runtime.freeMemory(), runtime.maxMemory());
     }
 
-    public long getFreeMemory() {
-        return freeMemory;
+    private final long usedMemory;
+    private final long maxMemory;
+
+    public MemoryUseMeasurement(long usedMemory, long maxMemory) {
+        this.usedMemory = usedMemory;
+        this.maxMemory = maxMemory;
     }
 
-    public long getTotalMemory() {
-        return totalMemory;
+    public long getUsedMemory() {
+        return usedMemory;
+    }
+
+    public long getMaxMemory() {
+        return maxMemory;
     }
 }

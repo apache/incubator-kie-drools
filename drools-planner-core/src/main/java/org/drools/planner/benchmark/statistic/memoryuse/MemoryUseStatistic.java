@@ -130,8 +130,8 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
             writer = new OutputStreamWriter(new FileOutputStream(csvStatisticFile), "utf-8");
             writer.append("\"TimeMillisSpend\"");
             for (String configName : configNameList) {
-                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append(" free\"");
-                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append(" total\"");
+                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append(" used\"");
+                writer.append(",\"").append(configName.replaceAll("\\\"", "\\\"")).append(" max\"");
             }
             writer.append("\n");
             for (MemoryUseScvLine line : csvLineList) {
@@ -141,9 +141,9 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
                     MemoryUseMeasurement memoryUseMeasurement = line.getConfigNameToMemoryUseMeasurementMap()
                             .get(configName);
                     if (memoryUseMeasurement != null) {
-                        writer.append(Long.toString(memoryUseMeasurement.getFreeMemory()));
+                        writer.append(Long.toString(memoryUseMeasurement.getUsedMemory()));
                         writer.append(",");
-                        writer.append(Long.toString(memoryUseMeasurement.getTotalMemory()));
+                        writer.append(Long.toString(memoryUseMeasurement.getMaxMemory()));
                     }
                 }
                 writer.append("\n");
@@ -160,17 +160,17 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, MemoryUseStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            XYSeries configFreeSeries = new XYSeries(configName + " free");
-            XYSeries configTotalSeries = new XYSeries(configName + " total");
+            XYSeries configUsedSeries = new XYSeries(configName + " used");
+            XYSeries configMaxSeries = new XYSeries(configName + " max");
             List<MemoryUseStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
             for (MemoryUseStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
                 MemoryUseMeasurement memoryUseMeasurement = statisticPoint.getMemoryUseMeasurement();
-                configFreeSeries.add(timeMillisSpend, memoryUseMeasurement.getFreeMemory());
-                configTotalSeries.add(timeMillisSpend, memoryUseMeasurement.getTotalMemory());
+                configUsedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
+                configMaxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
             }
-            seriesCollection.addSeries(configFreeSeries);
-            seriesCollection.addSeries(configTotalSeries);
+            seriesCollection.addSeries(configUsedSeries);
+            seriesCollection.addSeries(configMaxSeries);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());

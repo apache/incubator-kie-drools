@@ -28,8 +28,6 @@ public class MemoryUseStatisticListener extends LocalSearchSolverLifecycleListen
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
 
-    private long lastTimeMillisSpend = 0L;
-
     private List<MemoryUseStatisticPoint> statisticPointList = new ArrayList<MemoryUseStatisticPoint>();
 
     public MemoryUseStatisticListener() {
@@ -53,12 +51,9 @@ public class MemoryUseStatisticListener extends LocalSearchSolverLifecycleListen
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
-            
-            Runtime runtime = Runtime.getRuntime();
-            statisticPointList.add(new MemoryUseStatisticPoint(timeMillisSpend,
-                    new MemoryUseMeasurement(runtime.freeMemory(), runtime.totalMemory())));
 
-            lastTimeMillisSpend = timeMillisSpend;
+            statisticPointList.add(new MemoryUseStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
+
             nextTimeMillisThreshold += timeMillisThresholdInterval;
             if (nextTimeMillisThreshold < timeMillisSpend) {
                 nextTimeMillisThreshold = timeMillisSpend;
