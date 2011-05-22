@@ -100,18 +100,29 @@
     <literal>inheritedSolverBenchmark</literal> entity, but they can still be overwritten per
     <literal>solverBenchmark</literal> entity.</para>
 
-    <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory).
-    A summary statistic and the best solution of each solver run will be written in that directory.</para>
+    <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). A summary
+    statistic and the best solution of each solver run will be written in that directory. Here is an example of a
+    summary statistic:</para>
+
+    <figure>
+      <title>Summary statistic</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 
   <section>
     <title>Statistics (graph and CSV)</title>
 
-    <para>The benchmarker supports outputting statistics as graphs and CSV (comma separated values) files
-    to the <literal>benchmarkDirectory</literal>.</para>
+    <para>The benchmarker supports outputting statistics as graphs and CSV (comma separated values) files to the
+    <literal>benchmarkDirectory</literal>.</para>
 
-    <para>To configure graph and CSV output of a statistic, just add a
-    <literal>solverStatisticType</literal> line:</para>
+    <para>To configure graph and CSV output of a statistic, just add a <literal>solverStatisticType</literal>
+    line:</para>
 
     <programlisting language="xml">&lt;solverBenchmarkSuite&gt;
     &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
@@ -119,14 +130,14 @@
     ...
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
-    <para>Multiple <literal>solverStatisticType</literal> entries are allowed. The following types are are supported:
-    </para>
+    <para>Multiple <literal>solverStatisticType</literal> entries are allowed. Some statistic types might influence
+    performance noticeably. The following types are are supported:</para>
 
     <section>
       <title>Best score over time statistic (graph and CSV)</title>
 
-      <para>To see how the best score evolves over time, use <literal>BEST_SOLUTION_CHANGED</literal>
-      as <literal>solverStatisticType</literal>.</para>
+      <para>To see how the best score evolves over time, add <literal>BEST_SOLUTION_CHANGED</literal> as <literal>a
+      solverStatisticType</literal>.</para>
 
       <figure>
         <title>Best score over time statistic</title>
@@ -137,25 +148,55 @@
           </imageobject>
         </mediaobject>
       </figure>
+
+      <note>
+        <para>Don't be fooled by the simulated annealing line in this graph. If you give simulated annealing only 5
+        minutes, it might still be better than 5 minutes of tabu search. That's because this simulated annealing
+        implementation automatically determines it's velocity based on the amount of time that can be spend. On the
+        other hand, for the tabu search, what you see is what you'd get.</para>
+      </note>
     </section>
 
     <section>
       <title>Calculate count per second statistic (graph and CSV)</title>
 
-      <para>To see how fast the scores are calculated, use <literal>CALCULATE_COUNT_PER_SECOND</literal>
-      as <literal>solverStatisticType</literal>.</para>
+      <para>To see how fast the scores are calculated, add <literal>CALCULATE_COUNT_PER_SECOND</literal> as a
+      <literal>solverStatisticType</literal>.</para>
 
       <figure>
-        <title>Best score over time statistic</title>
+        <title>Calculate count per second statistic</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png" format="PNG"></imagedata>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <note>
+        <para>The initial high calculate count is typical during solution initialization. In this example, it's far
+        easier to calculate the score of a solution if only a handful exams have been added, in contrast to all of them.
+        After those few seconds of initialization, the calculate count is relatively stable, apart from an occasional
+        stop-the-world garbage collector disruption.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Memory use statistic (graph and CSV)</title>
+
+      <para>To see how much memory is used, add <literal>MEMORY_USE</literal> as <literal>a
+      solverStatisticType</literal>.</para>
+
+      <figure>
+        <title>Memory use statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
-
   </section>
-
 </chapter>
