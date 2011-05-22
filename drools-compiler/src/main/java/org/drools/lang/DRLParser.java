@@ -1859,58 +1859,59 @@ public class DRLParser {
         if ( state.backtracking == 0 ) {
             exists = ce.exists();
             helper.start( CEDescrBuilder.class,
-                          null,
-                          exists );
+                    null,
+                    exists );
         }
+        try {
+            match( input,
+                    DRLLexer.ID,
+                    DroolsSoftKeywords.EXISTS,
+                    null,
+                    DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
 
-        match( input,
-               DRLLexer.ID,
-               DroolsSoftKeywords.EXISTS,
-               null,
-               DroolsEditorType.KEYWORD );
-        if ( state.failed ) return null;
+            if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+                helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
+            }
+            if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+                boolean prefixed = helper.validateLT( 2,
+                        DroolsSoftKeywords.AND ) || helper.validateLT( 2,
+                                DroolsSoftKeywords.OR );
 
-        if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
-            helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_EXISTS );
-        }
-        if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
-            boolean prefixed = helper.validateLT( 2,
-                                                  DroolsSoftKeywords.AND ) || helper.validateLT( 2,
-                                                                                                 DroolsSoftKeywords.OR );
+                if ( !prefixed ) {
+                    match( input,
+                            DRLLexer.LEFT_PAREN,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                }
 
-            if ( !prefixed ) {
-                match( input,
-                        DRLLexer.LEFT_PAREN,
-                        null,
-                        null,
-                        DroolsEditorType.SYMBOL );
+                lhsOr( exists,
+                        allowOr );
+                if ( state.failed ) return null;
+
+                if ( !prefixed ) {
+                    match( input,
+                            DRLLexer.RIGHT_PAREN,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                }
+            } else {
+
+                lhsPatternBind( exists,
+                        true );
                 if ( state.failed ) return null;
             }
 
-            lhsOr( exists,
-                   allowOr );
-            if ( state.failed ) return null;
-
-            if ( !prefixed ) {
-                match( input,
-                       DRLLexer.RIGHT_PAREN,
-                       null,
-                       null,
-                       DroolsEditorType.SYMBOL );
-                if ( state.failed ) return null;
-            }
-        } else {
-
-            lhsPatternBind( exists,
-                            true );
-            if ( state.failed ) return null;
-        }
-
-        if ( state.backtracking == 0 ) {
-            helper.end( CEDescrBuilder.class,
+        } finally {
+            if ( state.backtracking == 0 ) {
+                helper.end( CEDescrBuilder.class,
                         exists );
+            }
         }
-
         return exists != null ? exists.getDescr() : null;
     }
 
@@ -1932,60 +1933,62 @@ public class DRLParser {
         if ( state.backtracking == 0 ) {
             not = ce.not();
             helper.start( CEDescrBuilder.class,
-                          null,
-                          not );
+                    null,
+                    not );
         }
 
-        match( input,
-               DRLLexer.ID,
-               DroolsSoftKeywords.NOT,
-               null,
-               DroolsEditorType.KEYWORD );
-        if ( state.failed ) return null;
-
-        if ( state.backtracking == 0 ) {
-            helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
-        }
-        if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
-            boolean prefixed = helper.validateLT( 2,
-                                                  DroolsSoftKeywords.AND ) || helper.validateLT( 2,
-                                                                                                 DroolsSoftKeywords.OR );
-
-            if ( !prefixed ) {
-                match( input,
-                        DRLLexer.LEFT_PAREN,
-                        null,
-                        null,
-                        DroolsEditorType.SYMBOL );
-                if ( state.failed ) return null;
-            }
-            if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
-                helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
-            }
-
-            lhsOr( not,
-                   allowOr );
+        try {
+            match( input,
+                    DRLLexer.ID,
+                    DroolsSoftKeywords.NOT,
+                    null,
+                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
 
-            if ( !prefixed ) {
-                match( input,
-                       DRLLexer.RIGHT_PAREN,
-                       null,
-                       null,
-                       DroolsEditorType.SYMBOL );
+            if ( state.backtracking == 0 ) {
+                helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_NOT );
+            }
+            if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
+                boolean prefixed = helper.validateLT( 2,
+                        DroolsSoftKeywords.AND ) || helper.validateLT( 2,
+                                DroolsSoftKeywords.OR );
+
+                if ( !prefixed ) {
+                    match( input,
+                            DRLLexer.LEFT_PAREN,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                }
+                if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
+                    helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+                }
+
+                lhsOr( not,
+                        allowOr );
+                if ( state.failed ) return null;
+
+                if ( !prefixed ) {
+                    match( input,
+                            DRLLexer.RIGHT_PAREN,
+                            null,
+                            null,
+                            DroolsEditorType.SYMBOL );
+                    if ( state.failed ) return null;
+                }
+            } else if ( input.LA( 1 ) != DRLLexer.EOF ) {
+                lhsPatternBind( not,
+                        true );
                 if ( state.failed ) return null;
             }
-        } else if ( input.LA( 1 ) != DRLLexer.EOF ) {
-            lhsPatternBind( not,
-                            true );
-            if ( state.failed ) return null;
-        }
 
-        if ( state.backtracking == 0 ) {
-            helper.end( CEDescrBuilder.class,
+        } finally {
+            if ( state.backtracking == 0 ) {
+                helper.end( CEDescrBuilder.class,
                         not );
+            }
         }
-
         return not != null ? not.getDescr() : null;
     }
 
