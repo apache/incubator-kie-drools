@@ -40,6 +40,7 @@ import org.jbpm.workflow.core.impl.ConnectionImpl;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.CompositeNode.NodeAndType;
 import org.jbpm.workflow.core.node.DynamicNode;
@@ -54,6 +55,7 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.mvel2.ErrorDetail;
@@ -432,8 +434,17 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         "Timer node '" + node.getName() + "' [" + node.getId() + "] has no timer specified."));
                 } else {
                 	validateTimer(timerNode.getTimer(), node, process, errors);
-                }
-            } else {
+                } 
+            } else if (node instanceof CatchLinkNode) {
+                    // catchlink validation here, there also are validations in
+                    // ProcessHandler regarding connection issues
+            }
+
+            else if (node instanceof ThrowLinkNode) {
+                    // throw validation here, there also are validations in
+                    // ProcessHandler regarding connection issues
+            }
+             else {
             	errors.add(new ProcessValidationErrorImpl(process,
                     "Unknown node type '" + node.getClass().getName() + "'"));
             }

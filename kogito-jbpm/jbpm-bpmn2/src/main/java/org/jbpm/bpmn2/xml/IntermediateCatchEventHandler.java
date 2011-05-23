@@ -21,33 +21,40 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.xml.ExtensibleXmlParser;
+import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.node.CatchLinkNode;
+import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class IntermediateCatchEventHandler extends AbstractNodeHandler {
-    
+
+    public static final String LINK_NAME = "LinkName";
+
     protected Node createNode(Attributes attrs) {
         return new EventNode();
     }
-    
+
     @SuppressWarnings("unchecked")
-	public Class generateNodeFor() {
+    public Class generateNodeFor() {
         return EventNode.class;
     }
 
     public Object end(final String uri, final String localName,
-                      final ExtensibleXmlParser parser) throws SAXException {
+            final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
         Node node = (Node) parser.getCurrent();
         // determine type of event definition, so the correct type of node
@@ -68,7 +75,8 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 TimerNode timerNode = new TimerNode();
                 timerNode.setId(node.getId());
                 timerNode.setName(node.getName());
-                timerNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
+                timerNode.setMetaData("UniqueId",
+                        node.getMetaData().get("UniqueId"));
                 node = timerNode;
                 handleTimerNode(node, element, uri, localName, parser);
                 break;
@@ -77,9 +85,16 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 StateNode stateNode = new StateNode();
                 stateNode.setId(node.getId());
                 stateNode.setName(node.getName());
-                stateNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
+                stateNode.setMetaData("UniqueId",
+                        node.getMetaData().get("UniqueId"));
                 node = stateNode;
                 handleStateNode(node, element, uri, localName, parser);
+                break;
+            } else if ("linkEventDefinition".equals(nodeName)) {
+                CatchLinkNode linkNode = new CatchLinkNode();
+                linkNode.setId(node.getId());
+                node = linkNode;
+                handleLinkNode(element, node, xmlNode, parser);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -88,9 +103,65 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
         nodeContainer.addNode(node);
         return node;
     }
-    
-    protected void handleSignalNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+
+    protected void handleLinkNode(Element element, Node node,
+            org.w3c.dom.Node xmlLinkNode, ExtensibleXmlParser parser) {
+        NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+
+        node.setName(element.getAttribute("name"));
+
+        NamedNodeMap linkAttr = xmlLinkNode.getAttributes();
+        String name = linkAttr.getNamedItem("name").getNodeValue();
+        String id = element.getAttribute("id");
+
+        node.setMetaData("UniqueId", id);
+        node.setMetaData(LINK_NAME, name);
+
+        org.w3c.dom.Node xmlNode = xmlLinkNode.getFirstChild();
+
+        IntermediateLink aLink = new IntermediateLink();
+        aLink.setName(name);
+        aLink.setUniqueId(id);
+
+        while (null != xmlNode) {
+            String nodeName = xmlNode.getNodeName();
+            if ("target".equals(nodeName)) {
+                String target = xmlNode.getTextContent();
+                node.setMetaData("target", target);
+                aLink.setTarget(target);
+            }
+            if ("source".equals(nodeName)) {
+                String source = xmlNode.getTextContent();
+                node.setMetaData("source", source);
+                aLink.addSource(source);
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+
+        if (nodeContainer instanceof RuleFlowProcess) {
+            RuleFlowProcess process = (RuleFlowProcess) nodeContainer;
+            List<IntermediateLink> links = (List<IntermediateLink>) process
+                    .getMetaData().get(ProcessHandler.LINKS);
+            if (null == links) {
+                links = new ArrayList<IntermediateLink>();
+            }
+            links.add(aLink);
+            process.setMetaData(ProcessHandler.LINKS, links);
+        } else if (nodeContainer instanceof CompositeNode) {
+            CompositeNode subprocess = (CompositeNode) nodeContainer;
+            List<IntermediateLink> links = (List<IntermediateLink>) subprocess
+                    .getMetaData().get(ProcessHandler.LINKS);
+            if (null == links) {
+                links = new ArrayList<IntermediateLink>();
+            }
+            links.add(aLink);
+            subprocess.setMetaData(ProcessHandler.LINKS, links);
+        }
+    }
+
+    protected void handleSignalNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -112,10 +183,11 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             xmlNode = xmlNode.getNextSibling();
         }
     }
-    
+
     @SuppressWarnings("unchecked")
-    protected void handleMessageNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+    protected void handleMessageNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         EventNode eventNode = (EventNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -124,15 +196,17 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, eventNode);
             } else if ("messageEventDefinition".equals(nodeName)) {
-                String messageRef = ((Element) xmlNode).getAttribute("messageRef");
-                Map<String, Message> messages = (Map<String, Message>)
-                    ((ProcessBuildData) parser.getData()).getMetaData("Messages");
+                String messageRef = ((Element) xmlNode)
+                        .getAttribute("messageRef");
+                Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
+                        .getData()).getMetaData("Messages");
                 if (messages == null) {
                     throw new IllegalArgumentException("No messages found");
                 }
                 Message message = messages.get(messageRef);
                 if (message == null) {
-                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                    throw new IllegalArgumentException(
+                            "Could not find message " + messageRef);
                 }
                 eventNode.setMetaData("MessageType", message.getType());
                 List<EventFilter> eventFilters = new ArrayList<EventFilter>();
@@ -144,9 +218,10 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             xmlNode = xmlNode.getNextSibling();
         }
     }
-    
-    protected void handleTimerNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+
+    protected void handleTimerNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         TimerNode timerNode = (TimerNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -179,9 +254,10 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             xmlNode = xmlNode.getNextSibling();
         }
     }
-    
-    protected void handleStateNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+
+    protected void handleStateNode(final Node node, final Element element,
+            final String uri, final String localName,
+            final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StateNode stateNode = (StateNode) node;
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -192,7 +268,8 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
                 while (subNode != null) {
                     String subnodeName = subNode.getNodeName();
                     if ("condition".equals(subnodeName)) {
-                        stateNode.setMetaData("Condition", xmlNode.getTextContent());
+                        stateNode.setMetaData("Condition",
+                                xmlNode.getTextContent());
                         break;
                     }
                     subNode = subNode.getNextSibling();
@@ -201,18 +278,20 @@ public class IntermediateCatchEventHandler extends AbstractNodeHandler {
             xmlNode = xmlNode.getNextSibling();
         }
     }
-    
-    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, EventNode eventNode) {
-		// sourceRef
-		org.w3c.dom.Node subNode = xmlNode.getFirstChild();
-		// targetRef
-		subNode = subNode.getNextSibling();
-		String to = subNode.getTextContent();
-		eventNode.setVariableName(to);
+
+    protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode,
+            EventNode eventNode) {
+        // sourceRef
+        org.w3c.dom.Node subNode = xmlNode.getFirstChild();
+        // targetRef
+        subNode = subNode.getNextSibling();
+        String to = subNode.getTextContent();
+        eventNode.setVariableName(to);
     }
 
-	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
-	    throw new IllegalArgumentException("Writing out should be handled by specific handlers");
+    public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
+        throw new IllegalArgumentException(
+                "Writing out should be handled by specific handlers");
     }
 
 }

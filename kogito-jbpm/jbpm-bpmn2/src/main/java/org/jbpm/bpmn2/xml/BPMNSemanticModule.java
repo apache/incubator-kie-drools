@@ -18,12 +18,14 @@ package org.jbpm.bpmn2.xml;
 
 import org.drools.xml.DefaultSemanticModule;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.Join;
+import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.TimerNode;
@@ -61,8 +63,8 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         addHandler("callActivity", new CallActivityHandler());
         addHandler("subProcess", new SubProcessHandler());
         addHandler("adHocSubProcess", new AdHocSubProcessHandler());
-        addHandler("intermediateCatchEvent", new IntermediateCatchEventHandler());
         addHandler("intermediateThrowEvent", new IntermediateThrowEventHandler());
+        addHandler("intermediateCatchEvent", new IntermediateCatchEventHandler());
         addHandler("boundaryEvent", new BoundaryEventHandler());
         addHandler("dataObject", new DataObjectHandler());
         addHandler("transaction", new TransactionHandler());
@@ -90,6 +92,9 @@ public class BPMNSemanticModule extends DefaultSemanticModule {
         handlersByClass.put(StateNode.class, new StateNodeHandler());
         handlersByClass.put(CompositeContextNode.class, new CompositeContextNodeHandler());
         handlersByClass.put(ForEachNode.class, new ForEachNodeHandler());
+        handlersByClass.put(ThrowLinkNode.class, new ThrowLinkNodeHandler());
+        handlersByClass.put(CatchLinkNode.class, new CatchLinkNodeHandler());
+
 	}
 
 }

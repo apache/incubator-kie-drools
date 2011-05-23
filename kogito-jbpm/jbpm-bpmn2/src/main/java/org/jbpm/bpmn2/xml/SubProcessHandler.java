@@ -22,10 +22,10 @@ import java.util.Map;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.xml.ExtensibleXmlParser;
+import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;
-import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -95,6 +95,11 @@ public class SubProcessHandler extends AbstractNodeHandler {
     	List<SequenceFlow> connections = (List<SequenceFlow>)
 			compositeNode.getMetaData(ProcessHandler.CONNECTIONS);
     	ProcessHandler.linkConnections(compositeNode, connections);
+    	
+    	List<IntermediateLink> throwLinks = (List<IntermediateLink>) compositeNode
+		.getMetaData(ProcessHandler.LINKS);
+    	ProcessHandler.linkIntermediateLinks(compositeNode, throwLinks);	
+    	
     	ProcessHandler.linkBoundaryEvents(compositeNode);
     }
     

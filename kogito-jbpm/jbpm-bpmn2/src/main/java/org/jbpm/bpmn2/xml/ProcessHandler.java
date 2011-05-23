@@ -32,6 +32,7 @@ import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Interface;
+import org.jbpm.bpmn2.core.IntermediateLink;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.Message;
@@ -61,6 +62,7 @@ import org.xml.sax.SAXException;
 public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	
 	public static final String CONNECTIONS = "BPMN.Connections";
+    public static final String LINKS = "BPMN.ThrowLinks";
 
 	@SuppressWarnings("unchecked")
 	public ProcessHandler() {
@@ -123,10 +125,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	public Object end(final String uri, final String localName,
 			          final ExtensibleXmlParser parser) throws SAXException {
 		parser.endElementBuilder();
+		
 		RuleFlowProcess process = (RuleFlowProcess) parser.getCurrent();
-		List<SequenceFlow> connections = (List<SequenceFlow>)
-			process.getMetaData(CONNECTIONS);
-		linkConnections(process, connections);
+		 List<IntermediateLink> throwLinks = (List<IntermediateLink>) process
+         .getMetaData(LINKS);
+        linkIntermediateLinks(process, throwLinks);
+
+ 		List<SequenceFlow> connections = (List<SequenceFlow>) process.getMetaData(CONNECTIONS);
+ 		linkConnections(process, connections);
 		linkBoundaryEvents(process);
         List<Lane> lanes = (List<Lane>)
             process.getMetaData(LaneHandler.LANES);
@@ -134,6 +140,98 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         postProcessNodes(process);
 		return process;
 	}
+	
+	 public static void linkIntermediateLinks(NodeContainer process,
+	            List<IntermediateLink> links) {
+
+	        if (null != links) {
+
+	            // Search throw links
+	            ArrayList<IntermediateLink> throwLinks = new ArrayList<IntermediateLink>();
+	            for (IntermediateLink aLinks : links) {
+	                if (aLinks.isThrowLink()) {
+	                    throwLinks.add(aLinks);
+	                }
+	            }
+
+	            // Look for catch links for a throw link
+	            for (IntermediateLink throwLink : throwLinks) {
+
+	                ArrayList<IntermediateLink> linksWithSharedNames = new ArrayList<IntermediateLink>();
+	                for (IntermediateLink aLink : links) {
+	                    if (throwLink.getName().equals(aLink.getName())) {
+	                        linksWithSharedNames.add(aLink);
+	                    }
+	                }
+
+	                if (linksWithSharedNames.size() < 2) {
+	                    throw new IllegalArgumentException(
+	                            "There should be at least 2 link events to make a connection");
+	                }
+
+	                linksWithSharedNames.remove(throwLink);
+
+	                // Make the connections
+	                Node t = findNodeByIdOrUniqueIdInMetadata(process,
+	                        throwLink.getUniqueId());
+
+	                // connect throw to catch
+	                for (IntermediateLink catchLink : linksWithSharedNames) {
+
+	                    Node c = findNodeByIdOrUniqueIdInMetadata(process,
+	                            catchLink.getUniqueId());
+	                    if (t != null && c != null) {
+	                        Connection result = new ConnectionImpl(t,
+	                                NodeImpl.CONNECTION_DEFAULT_TYPE, c,
+	                                NodeImpl.CONNECTION_DEFAULT_TYPE);
+	                        result.setMetaData("linkNodeHidden", "yes");
+	                    }
+	                }
+
+	                // Remove processed links
+	                links.remove(throwLink);
+	                links.removeAll(linksWithSharedNames);
+	            }
+
+	            if (links.size() > 0) {
+	                throw new IllegalArgumentException(links.size()
+	                        + " links were not processed");
+	            }
+
+	        }
+	    }
+	 
+	 
+	  private static Node findNodeByIdOrUniqueIdInMetadata(
+	            NodeContainer nodeContainer, String targetRef) {
+
+	        try {
+	            // remove starting _
+	            String targetId = targetRef.substring(1);
+	            // remove ids of parent nodes
+	            targetId = targetId.substring(targetId.lastIndexOf("-") + 1);
+	            return nodeContainer.getNode(new Integer(targetId));
+	        } catch (NumberFormatException e) {
+	            // try looking for a node with same "UniqueId" (in metadata)
+	            Node targetNode = null;
+	            for (Node node : nodeContainer.getNodes()) {
+	                if (targetRef.equals(node.getMetaData().get("UniqueId"))) {
+	                    targetNode = node;
+	                    break;
+	                }
+	            }
+
+	            if (targetNode != null) {
+	                return targetNode;
+	            } else {
+	                throw new IllegalArgumentException(
+	                        "Could not find target node for connection:"
+	                                + targetRef);
+	            }
+	        }
+
+	    }
+
 
 	public Class<?> generateNodeFor() {
 		return org.drools.definition.process.Process.class;
