@@ -344,7 +344,19 @@
       </listitem>
     </orderedlist>
 
-    <para>If we turn on INFO logging, this is reflected into the logging:</para>
+    <para>If we turn on <literal>INFO</literal> logging for the category <literal>org.drools.planner</literal>:</para>
+
+    <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+
+    &lt;category name="org.drools.planner"&gt;
+        &lt;priority value="info" /&gt;
+    &lt;/category&gt;
+
+    ...
+
+&lt;/log4j:configuration&gt;</programlisting>
+
+    <para>Then those steps are reflected into the logging:</para>
 
     <programlisting>INFO  Solving with random seed (0).
 INFO  Starting with time spend (0), score (-6), new best score (-6).
@@ -419,10 +431,10 @@ INFO  Solved at step index (2) with time spend (10) for best score (0) with aver
     <para>In the above example the selector generated the moves shown with the blue lines, the acceptor accepted all of
     them and the forager picked the move <emphasis>B0 to B3</emphasis>.</para>
 
-    <para>If we turn on DEBUG logging, we can see the decision making in the log:</para>
+    <para>If we turn on <literal>DEBUG</literal> logging for the category <literal>org.drools.planner</literal>, we can
+    see the decision making in the log:</para>
 
-    <programlisting>
-INFO  Solving with random seed (0).
+    <programlisting>INFO  Solving with random seed (0).
 INFO  Starting with time spend (0), score (-6), new best score (-6).
 DEBUG     Ignoring not doable move ([Queen-0] 0 @ 0 =&gt; 0).
 DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-0] 0 @ 0 =&gt; 1).
@@ -436,7 +448,6 @@ DEBUG     Move score (-3), accept chance (1.0) for move ([Queen-2] 2 @ 0 =&gt; 3
 DEBUG     Move score (-4), accept chance (1.0) for move ([Queen-3] 3 @ 0 =&gt; 3).
 INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted move size (12) for picked step ([Queen-1] 1 @ 0 =&gt; 3).
 ...</programlisting>
-
 
     <section>
       <title>Selector</title>
