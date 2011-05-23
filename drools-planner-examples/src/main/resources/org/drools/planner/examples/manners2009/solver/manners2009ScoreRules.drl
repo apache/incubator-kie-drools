@@ -60,9 +60,9 @@ rule "twoSameJobTypePerTable"
                 $jobType, $table));
 end
 
-// This is to avoid score traps. The score function should for example give an insentive
+// This is to avoid score traps. The score function should for example give an incentive
 // to put it 1 doctor at a table without doctors even though 2 doctors are needed.
-// This extra rule can be avoided by weighting the broken constrainst of the other rule
+// This extra rule can be avoided by weighting the broken constraint of the other rule
 rule "atLeastOneJobTypePerTableScoreGuider"
     when
         $table : Table()
