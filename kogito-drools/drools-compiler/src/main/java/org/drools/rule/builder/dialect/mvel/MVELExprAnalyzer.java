@@ -101,7 +101,7 @@ public class MVELExprAnalyzer {
 
             try {
                 returnType = MVEL.analyze( expr,
-                                            parserContext1 );
+                                           parserContext1 );
             } catch ( Exception e ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               null,
@@ -136,92 +136,80 @@ public class MVELExprAnalyzer {
             parserContext2.setStrongTyping( true );
             parserContext2.setInterceptors( dialect.getInterceptors() );
 
-            boolean typesafe = context.isTypesafe();
-            if ( typesafe ) {
-                for ( String str : requiredInputs ) {
-                    Class< ? > cls = null;
-                    if ( !typesafe ) {
-                        break;
-                    }
-                    cls = availableIdentifiers.getDeclrClasses().get( str );
-                    if ( cls != null ) {
-                        TypeDeclaration type = context.getPackageBuilder().getTypeDeclaration( cls );
-                        typesafe = (type != null) ? type.isTypesafe() : true;
+            for ( String str : requiredInputs ) {
+                Class< ? > cls = null;
+                cls = availableIdentifiers.getDeclrClasses().get( str );
+                if ( cls != null ) {
+                    parserContext2.addInput( str,
+                                             cls );
+                    continue;
+                }
+
+                if ( cls == null ) {
+                    cls = availableIdentifiers.getGlobals().get( str );
+                    if ( cls != null ) {                        
                         parserContext2.addInput( str,
                                                  cls );
                         continue;
                     }
-    
-                    if ( cls == null ) {
-                        cls = availableIdentifiers.getGlobals().get( str );
-                        if ( cls != null ) {
-                            TypeDeclaration type = context.getPackageBuilder().getTypeDeclaration( cls );
-//                            if ( type == null ) {
-//                                Declaration d = null;
-//                                //d.getPattern().getObjectType()
-//                            }
-                            typesafe = (type != null) ? type.isTypesafe() : true;                        
-                            parserContext2.addInput( str,
-                                                     cls );
-                            continue;
-                        }
-                    }
-    
-                    if ( cls == null ) {
-                        cls = availableIdentifiers.getOperators().keySet().contains( str ) ? EvaluatorWrapper.class : null;
-                        if ( cls != null ) {
-                            TypeDeclaration type = context.getPackageBuilder().getTypeDeclaration( cls );
-                            typesafe = (type != null) ? type.isTypesafe() : true;                        
-                            parserContext2.addInput( str,
-                                                     cls );
-                            continue;
-                        }
-                    }
-    
-                    if ( cls == null ) {
-                        if ( str.equals( contextIndeifier ) ) {
-                            parserContext2.addInput( contextIndeifier,
-                                                     kcontextClass );
-                        } else if ( str.equals( "kcontext" ) ) {
-                            parserContext2.addInput( "kcontext",
-                                                     kcontextClass );
-                        }
-                        if ( str.equals( "rule" ) ) {
-                            parserContext2.addInput( "rule",
-                                                     Rule.class );
-                        }
-                    }
-                    
-                    if ( cls == null && localTypes != null ) {
-                        cls = localTypes.get( str );
-                        if ( cls != null ) {
-                            TypeDeclaration type = context.getPackageBuilder().getTypeDeclaration( cls );
-                            typesafe = (type != null) ? type.isTypesafe() : true;  
-                            parserContext2.addInput( str,
-                                                     cls );
-                            continue;
-                        }
+                }
+
+                if ( cls == null ) {
+                    cls = availableIdentifiers.getOperators().keySet().contains( str ) ? EvaluatorWrapper.class : null;
+                    if ( cls != null ) {                        
+                        parserContext2.addInput( str,
+                                                 cls );
+                        continue;
                     }
                 }
+
+                if ( cls == null ) {
+                    if ( str.equals( contextIndeifier ) ) {
+                        parserContext2.addInput( contextIndeifier,
+                                                 kcontextClass );
+                    } else if ( str.equals( "kcontext" ) ) {
+                        parserContext2.addInput( "kcontext",
+                                                 kcontextClass );
+                    }
+                    if ( str.equals( "rule" ) ) {
+                        parserContext2.addInput( "rule",
+                                                 Rule.class );
+                    }
+                }
+                
+                if ( cls == null && localTypes != null ) {
+                    cls = localTypes.get( str );
+                    if ( cls != null ) {  
+                        parserContext2.addInput( str,
+                                                 cls );
+                        continue;
+                    }
+                }
+            }   
+            
+            if ( availableIdentifiers.getThisClass() != null ) {
+                parserContext2.addInput( "this",
+                                         availableIdentifiers.getThisClass() );
             }
 
-            if ( typesafe ) {    
-                if ( availableIdentifiers.getThisClass() != null ) {
-                    parserContext2.addInput( "this",
-                                             availableIdentifiers.getThisClass() );
-                }
-    
-                try {
-                    returnType = MVEL.analyze( expr,
-                                               parserContext2 );
-                } catch ( Exception e ) {
+            boolean typesafe = context.isTypesafe();
+            
+            try {
+                returnType = MVEL.analyze( expr,
+                                           parserContext2 );
+                typesafe = true;
+            } catch ( Exception e ) {
+                // is this an error, or can we fall back to non-typesafe mode?
+                if ( typesafe ) {
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                   null,
                                                                   null,
                                                                   "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
-                    return null;
+                    return null;                    
                 }
-    
+            }
+
+            if ( typesafe ) {
                 requiredInputs = new HashSet<String>();
                 requiredInputs.addAll( parserContext2.getInputs().keySet() );
                 requiredInputs.addAll( variables.keySet() );
@@ -231,7 +219,7 @@ public class MVELExprAnalyzer {
                         // we have to do this due to mvel regressions on detecting true local vars
                         variables.remove( str );
                     }                
-                }
+                }    
             }
 
             result = analyze( requiredInputs,

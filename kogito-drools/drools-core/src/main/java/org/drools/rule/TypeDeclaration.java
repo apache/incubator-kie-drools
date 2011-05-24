@@ -40,6 +40,10 @@ public class TypeDeclaration
     implements
     KnowledgeDefinition,
     Externalizable {
+    
+    public static final int ROLE_BIT                    = 1;
+    public static final int TYPESAFE_BIT                = 2;
+    public static final int FORMAT_BIT                  = 4;
 
     public static final String ATTR_CLASS               = "class";
     public static final String ATTR_TEMPLATE            = "template";
@@ -51,6 +55,8 @@ public class TypeDeclaration
     public static final String ATTR_FIELD_POSITION      = "position";
     public static final String ATTR_PROP_CHANGE_SUPPORT = "propertyChangeSupport";
 
+    public int setMask                                  = 0;
+    
     public static enum Role {
         FACT, EVENT;
 
@@ -94,7 +100,7 @@ public class TypeDeclaration
     private ClassDefinition      typeClassDef;
     private Resource             resource;
     private boolean              dynamic;
-    private boolean              typesafe =  true;
+    private boolean              typesafe;
     private boolean              novel;
 
     private transient ObjectType objectType;
@@ -110,6 +116,7 @@ public class TypeDeclaration
         this.durationAttribute = null;
         this.timestampAttribute = null;
         this.typeTemplate = null;
+        this.typesafe =  true;
         
     }
 
@@ -147,6 +154,10 @@ public class TypeDeclaration
         out.writeBoolean( dynamic );
         out.writeBoolean( typesafe );
     }
+    
+    public int getSetMask() {
+        return this.setMask;
+    }
 
     /**
      * @return the type
@@ -166,6 +177,7 @@ public class TypeDeclaration
      * @param role the category to set
      */
     public void setRole(Role role) {
+        this.setMask = this.setMask | ROLE_BIT;
         this.role = role;
     }
 
@@ -180,6 +192,7 @@ public class TypeDeclaration
      * @param format the format to set
      */
     public void setFormat(Format format) {
+        this.setMask = this.setMask | FORMAT_BIT;
         this.format = format;
     }
 
@@ -381,6 +394,7 @@ public class TypeDeclaration
     }
 
     public void setTypesafe(boolean typesafe) {
+        this.setMask = this.setMask | TYPESAFE_BIT;
         this.typesafe = typesafe;
     }
 
