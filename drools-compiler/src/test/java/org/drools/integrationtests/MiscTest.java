@@ -8501,6 +8501,30 @@ public class MiscTest {
     }
 
     @Test
+    public void testRestrictionsWithOr() {
+        // JBRULES-2203: NullPointerException When Using Conditional Element "or" in LHS Together with a Return Value Restriction
+
+        String str = "package org.drools\n" +
+                     "rule \"test\"\n" + 
+                     "when\n" + 
+                     "    Cheese( price == (1 + 1) );\n" + 
+                     "    (or eval(true);\n" + 
+                     "        eval(true);\n" + 
+                     "    )\n" + 
+                     "then\n" + 
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Cheese( "Stilton", 2 ) );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 2,
+                      rules );
+    }
+
+    @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
