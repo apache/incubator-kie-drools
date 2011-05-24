@@ -382,6 +382,7 @@ public class ReturnValueRestriction
         }
 
         ReturnValueRestriction clone = new ReturnValueRestriction( this.readAccessor,
+                                                                   this.expression,
                                                                    previous,
                                                                    local,
                                                                    this.requiredGlobals,
