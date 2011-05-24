@@ -129,6 +129,31 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	protected KnowledgeBase createKnowledgeBaseGuvnor(String... packages) throws Exception {
 		return createKnowledgeBaseGuvnor(false, "http://localhost:8080/drools-guvnor", "admin", "admin", packages);
 	}
+	
+	protected KnowledgeBase createKnowledgeBaseGuvnorAssets(String pkg, String...assets) throws Exception {
+	    return createKnowledgeBaseGuvnor(false, "http://localhost:8080/drools-guvnor", "admin", "admin", pkg, assets);
+	}
+	
+	protected KnowledgeBase createKnowledgeBaseGuvnor(boolean dynamic, String url, String username, 
+            String password, String pkg, String... assets) throws Exception {
+	    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+	    String changeSet = 
+	        "<change-set xmlns='http://drools.org/drools-5.0/change-set'" + EOL +
+	        "            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'" + EOL +
+	        "            xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >" + EOL +
+	        "    <add>" + EOL;
+	    for(String a : assets) {
+	        if(a.indexOf(".bpmn") >= 0) {
+	            a = a.substring(0, a.indexOf(".bpmn"));
+	        } 
+	        changeSet += "        <resource source='" + url + "/rest/packages/" + pkg + "/assets/" + a + "/binary' type='BPMN2' basicAuthentication=\"enabled\" username=\"" + username + "\" password=\"" + password + "\" />" + EOL;
+	    }
+	    changeSet +=
+	        "    </add>" + EOL +
+	        "</change-set>";
+	    kbuilder.add(ResourceFactory.newByteArrayResource(changeSet.getBytes()), ResourceType.CHANGE_SET);
+	    return kbuilder.newKnowledgeBase();
+	}
 
 	protected KnowledgeBase createKnowledgeBaseGuvnor(boolean dynamic, String url, String username, 
 													  String password, String... packages) throws Exception {
@@ -138,8 +163,8 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			"            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'" + EOL +
 			"            xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >" + EOL +
 			"    <add>" + EOL;
-		for (String p: packages) {
-			changeSet += "        <resource source='" + url + "/org.drools.guvnor.Guvnor/package/" + p + "/LATEST' type='PKG' basicAuthentication=\"enabled\" username=\"" + username + "\" password=\"" + password + "\" />" + EOL;
+		for (String p : packages) {
+			changeSet += "        <resource source='" + url + "/rest/packages/" + p + "/binary' type='PKG' basicAuthentication=\"enabled\" username=\"" + username + "\" password=\"" + password + "\" />" + EOL;
 		}
 		changeSet +=
 			"    </add>" + EOL +
