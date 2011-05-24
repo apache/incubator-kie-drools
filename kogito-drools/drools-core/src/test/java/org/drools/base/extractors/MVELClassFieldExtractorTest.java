@@ -27,12 +27,15 @@ import org.drools.Address;
 import org.drools.Person;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.core.util.ClassUtils;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.util.ClassLoaderUtil;
 
 public class MVELClassFieldExtractorTest {
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-    InternalReadAccessor    extractor;
+    MVELClassFieldReader    extractor;
     private final Person[]  person   = new Person[2];
     private final Address[] business = new Address[2];
     private final Address[] home     = new Address[2];
@@ -42,9 +45,17 @@ public class MVELClassFieldExtractorTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
-        extractor = store.getReader( Person.class,
-                                     "addresses['home'].street",
-                                     getClass().getClassLoader() );
+        extractor = ( MVELClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
+                                                                   Person.class.getName(),
+                                                                   "addresses['home'].street",
+                                                                   true );
+        MVELDialectRuntimeData data = new MVELDialectRuntimeData();
+        data.addImport( Person.class.getSimpleName(), Person.class );
+        data.onAdd( null, ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
+        
+        extractor.compile( data );
+        
+        
         person[0] = new Person( "bob",
                                 30 );
         business[0] = new Address( "Business Street",
@@ -178,13 +189,23 @@ public class MVELClassFieldExtractorTest {
     public void testIsNullValue() {
         try {
             assertFalse( this.extractor.isNullValue( null,
-                                                            this.person[0] ) );
-
-            InternalReadAccessor nullExtractor = store.getReader( Person.class,
-                                                                  "addresses['business'].phone",
-                                                                  getClass().getClassLoader() );
+                                                     this.person[0] ) );
+            
+            MVELClassFieldReader nullExtractor =  ( MVELClassFieldReader ) store.getMVELReader(  Person.class.getPackage().getName(),
+                                                                       Person.class.getName(),
+                                                                       "addresses['business'].phone",
+                                                                       true );
+            MVELDialectRuntimeData data = new MVELDialectRuntimeData();
+            data.addImport( Person.class.getSimpleName(), Person.class );
+            data.onAdd( null, ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
+            
+            nullExtractor.compile( data );            
+//
+//            InternalReadAccessor nullExtractor = store.getReader( Person.class,
+//                                                                  "addresses['business'].phone",
+//                                                                  getClass().getClassLoader() );
             assertTrue( nullExtractor.isNullValue( null,
-                                                          this.person[0] ) );
+                                                   this.person[0] ) );
         } catch ( final Exception e ) {
             fail( "Should not throw an exception" );
         }
