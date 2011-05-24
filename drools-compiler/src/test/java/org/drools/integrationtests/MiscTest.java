@@ -139,6 +139,8 @@ import org.drools.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.integrationtests.MVELTest.DMap;
+import org.drools.integrationtests.MVELTest.Triangle;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
@@ -4020,6 +4022,74 @@ public class MiscTest {
         assertEquals( 1,
                       results.size() );
     }
+    
+    @Test
+    public void testMVELImplicitWithFrom() {
+        String str = ""+
+           "package org.test \n" +
+           "import java.util.List \n" +
+           "global java.util.List list \n" +
+           "global java.util.List list2 \n" +
+           "rule \"show\" dialect \"mvel\" \n" + 
+           "when  \n" + 
+           "    $m : List( eval( size == 0 ) ) from [list] \n" + 
+           "then \n" + 
+           "    list2.add('r1'); \n" +
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "list2", list );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+    } 
+    
+    @Test
+    public void testJavaImplicitWithFrom() {
+        String str = ""+
+           "package org.test \n" +
+           "import java.util.List \n" +
+           "global java.util.List list \n" +
+           "global java.util.List list2 \n" +
+           "rule \"show\" dialect \"java\" \n" + 
+           "when  \n" + 
+           "    $m : List( eval( size == 0 )  ) from [list] \n" + 
+           "then \n" + 
+           "    list2.add('r1'); \n" +
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "list2", list );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+    }       
+    
+    
 
     @Test
     public void testCastingInsideEvals() throws Exception {

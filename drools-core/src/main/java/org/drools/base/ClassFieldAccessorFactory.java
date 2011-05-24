@@ -102,11 +102,6 @@ public class ClassFieldAccessorFactory {
                 // then just create an instance of the special class field extractor
                 return new SelfReferenceClassFieldReader( clazz,
                                                           fieldName );
-            } else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 ) {
-                // we need MVEL extractor for expressions
-                return new MVELClassFieldReader( clazz,
-                                                 fieldName,
-                                                 cache );
             } else {
                 // otherwise, bytecode generate a specific extractor
                 ClassFieldInspector inspector = inspectors.get( clazz );

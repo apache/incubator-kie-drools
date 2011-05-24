@@ -20,7 +20,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Person
         implements
@@ -45,6 +47,12 @@ public class Person
 
     private Address address;
     private Pet pet;
+    
+    private List<Address> addresses = new ArrayList<Address>();
+    private Map<Object, Address> namedAddresses = new HashMap<Object, Address>();
+    
+
+    public Object object;
 
     public Address getAddress() {
         return address;
@@ -53,37 +61,6 @@ public class Person
     public void setAddress(Address address) {
         this.address = address;
     }
-
-    private List<Address> addresses = new ArrayList<Address>();
-
-    public Object object;
-
-    //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    //        name    = (String)in.readObject();
-    //        likes    = (String)in.readObject();
-    //        age     = in.readInt();
-    //        bigDecimal    = (BigDecimal)in.readObject();
-    //        bigInteger    = (BigInteger)in.readObject();
-    //        hair    = (String)in.readObject();
-    //        sex     = in.readChar();
-    //        alive   = in.readBoolean();
-    //        status    = (String)in.readObject();
-    //        cheese    = (Cheese)in.readObject();
-    //        addresses    = (List)in.readObject();
-    //    }
-    //
-    //    public void writeExternal(ObjectOutput out) throws IOException {
-    //        out.writeObject(name);
-    //        out.writeObject(likes);
-    //        out.writeObject(bigDecimal);
-    //        out.writeObject(bigInteger);
-    //        out.writeObject(hair);
-    //        out.writeChar(sex);
-    //        out.writeBoolean(alive);
-    //        out.writeObject(status);
-    //        out.writeObject(cheese);
-    //        out.writeObject(addresses);
-    //    }
 
     public Person() {
 
@@ -105,6 +82,10 @@ public class Person
     public List<Address> getAddresses() {
         return addresses;
     }
+    
+    public List getAddressesNoGenerics() {
+        return addresses;
+    }    
 
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
@@ -112,6 +93,14 @@ public class Person
 
     public void addAddress(Address address) {
         this.addresses.add(address);
+    }
+
+    public Map<Object, Address> getNamedAddresses() {
+        return namedAddresses;
+    }
+
+    public void setNamedAddresses(Map<Object, Address> namedAddresses) {
+        this.namedAddresses = namedAddresses;
     }
 
     public Person(final String name,
