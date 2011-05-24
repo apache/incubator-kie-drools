@@ -55,7 +55,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	private JPAProcessInstanceDbLog log;
 
 	public JbpmJUnitTestCase() {
-		this(true);
+		this(false);
 	}
 	
 	public JbpmJUnitTestCase(boolean persistence) {
