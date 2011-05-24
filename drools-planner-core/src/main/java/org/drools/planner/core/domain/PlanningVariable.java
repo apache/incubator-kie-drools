@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.annotations;
+package org.drools.planner.core.domain;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.drools.planner.core.domain.valuerange.ValueRange;
+
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+/**
+ * Specifies that a bean property should be optimized by Drools Planner.
+ * <p/>
+ * It is specified on a getter of a java bean property of a class with the {@link PlanningEntity} annotation.
+ */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface PlanningValueProperty {
+public @interface PlanningVariable {
 
 }

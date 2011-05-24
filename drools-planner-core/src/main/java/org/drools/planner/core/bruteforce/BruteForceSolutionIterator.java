@@ -20,30 +20,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.planner.core.annotations.PlanningVariableClass;
-import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.domain.PlanningEntity;
 
 public class BruteForceSolutionIterator {
 
     private BruteForceSolverScope bruteForceSolverScope;
 
-    private List<PlanningVariableHandler> list = new ArrayList<PlanningVariableHandler>();
+    private List<PlanningEntityVariableIterator> list = new ArrayList<PlanningEntityVariableIterator>();
 
     public BruteForceSolutionIterator(BruteForceSolverScope bruteForceSolverScope) {
         this.bruteForceSolverScope = bruteForceSolverScope; // TODO move startingSolution etc out of here
         Collection<? extends Object> facts = bruteForceSolverScope.getWorkingSolution().getFacts();
         for (Object fact : facts) {
-            PlanningVariableClass planningVariableClass = fact.getClass().getAnnotation(PlanningVariableClass.class);
-            if (planningVariableClass != null) {
-                PlanningVariableHandler planningVariableHandler = new PlanningVariableHandler(fact, planningVariableClass, facts);
-                list.add(planningVariableHandler);
+            PlanningEntity planningEntityAnnotation = fact.getClass().getAnnotation(PlanningEntity.class);
+            if (planningEntityAnnotation != null) {
+                PlanningEntityVariableIterator planningEntityVariableIterator = new PlanningEntityVariableIterator(fact, planningEntityAnnotation, facts);
+                list.add(planningEntityVariableIterator);
             }
         }
     }
 
     public boolean hasNext() {
-        for (PlanningVariableHandler planningVariableHandler : list) {
-            if (planningVariableHandler.hasNext()) {
+        for (PlanningEntityVariableIterator planningEntityVariableIterator : list) {
+            if (planningEntityVariableIterator.hasNext()) {
                 return true;
             }
         }
@@ -53,15 +52,15 @@ public class BruteForceSolutionIterator {
 
     public void next() {
         // Find the level to increment (for example in 115999)
-        for (PlanningVariableHandler planningVariableHandler : list) {
-            if (planningVariableHandler.hasNext()) {
+        for (PlanningEntityVariableIterator planningEntityVariableIterator : list) {
+            if (planningEntityVariableIterator.hasNext()) {
                 // Increment that level (for example 5 in 115999)
-                planningVariableHandler.next(bruteForceSolverScope.getWorkingMemory());
+                planningEntityVariableIterator.next(bruteForceSolverScope.getWorkingMemory());
                 // Do not touch the higher levels (for example each 1 in 115999)
                 break;
             } else {
                 // Reset the lower levels (for example each 9 in 115999)
-                planningVariableHandler.reset(bruteForceSolverScope.getWorkingMemory());
+                planningEntityVariableIterator.reset(bruteForceSolverScope.getWorkingMemory());
             }
         }
     }

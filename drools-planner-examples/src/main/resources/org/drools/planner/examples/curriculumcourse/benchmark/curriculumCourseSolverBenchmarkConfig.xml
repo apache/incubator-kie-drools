@@ -20,6 +20,8 @@
       <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp14.xml</unsolvedSolutionFile>
 
       <localSearchSolver>
+          <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+          <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
           <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
           <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
           <termination>

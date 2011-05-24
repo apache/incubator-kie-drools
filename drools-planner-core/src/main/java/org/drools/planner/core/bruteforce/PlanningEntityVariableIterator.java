@@ -24,26 +24,26 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.annotations.PlanningValueProperty;
-import org.drools.planner.core.annotations.PlanningVariableClass;
+import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.runtime.rule.FactHandle;
 
-public class PlanningVariableHandler {
+public class PlanningEntityVariableIterator {
 
-    private Object planningVariable;
-    private final PlanningVariableClass planningVariableClass;
+    private Object planningEntity;
+    private final PlanningEntity planningEntityAnnotation;
     private Method valueMethod;
 
     private List<Object> planningValueList;
     private Iterator<Object> planningValueListIterator;
 
-    public PlanningVariableHandler(Object planningVariable, PlanningVariableClass planningVariableClass,
+    public PlanningEntityVariableIterator(Object planningEntity, PlanningEntity planningEntityAnnotation,
             Collection<? extends Object> facts) {
-        this.planningVariable = planningVariable;
-        this.planningVariableClass = planningVariableClass;
+        this.planningEntity = planningEntity;
+        this.planningEntityAnnotation = planningEntityAnnotation;
 
-        for (Method method : planningVariable.getClass().getMethods()) {
-            PlanningValueProperty planningValueProperty = method.getAnnotation(PlanningValueProperty.class);
+        for (Method method : planningEntity.getClass().getMethods()) {
+            PlanningVariable planningValueProperty = method.getAnnotation(PlanningVariable.class);
             if (planningValueProperty != null) {
                 valueMethod = method;
                 // TODO use when refactored to getter valueMethod.getReturnType();
@@ -76,15 +76,15 @@ public class PlanningVariableHandler {
     }
 
     private void doValue(WorkingMemory workingMemory, Object value) {
-        FactHandle factHandle = workingMemory.getFactHandle(planningVariable);
+        FactHandle factHandle = workingMemory.getFactHandle(planningEntity);
         try {
-            valueMethod.invoke(planningVariable, value);
+            valueMethod.invoke(planningEntity, value);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException("Could not call method to set planningValue", e);
         } catch (InvocationTargetException e) {
             throw new IllegalStateException("Could not call method to set planningValue", e);
         }
-        workingMemory.update(factHandle, planningVariable);
+        workingMemory.update(factHandle, planningEntity);
     }
 
 }

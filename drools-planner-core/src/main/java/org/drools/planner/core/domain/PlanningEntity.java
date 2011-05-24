@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.annotations;
+package org.drools.planner.core.domain;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -22,8 +22,14 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
+/**
+ * Specifies that the class is a planning entity.
+ * Each planning entity must have at least on {@link PlanningVariable} property.
+ * <p/>
+ * The class should have a public no-arg constructor, so it can be instantiated by Drools Planner.
+ */
 @Target({TYPE})
 @Retention(RUNTIME)
-public @interface PlanningVariableClass {
+public @interface PlanningEntity {
 
 }

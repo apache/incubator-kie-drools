@@ -16,10 +16,15 @@
 
 package org.drools.planner.config;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -33,7 +38,11 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
+import org.drools.planner.core.domain.PlanningEntity;
+import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
 import org.drools.planner.core.solver.AbstractSolver;
 
@@ -46,6 +55,10 @@ public abstract class AbstractSolverConfig {
 
     protected EnvironmentMode environmentMode = null;
     protected Long randomSeed = null;
+
+    protected Class<Solution> solutionClass = null;
+    @XStreamImplicit(itemFieldName = "planningEntityClass")
+    protected Set<Class<?>> planningEntityClassSet = null;
 
     @XStreamOmitField
     protected RuleBase ruleBase = null;
@@ -71,6 +84,22 @@ public abstract class AbstractSolverConfig {
 
     public void setRandomSeed(Long randomSeed) {
         this.randomSeed = randomSeed;
+    }
+
+    public Class<Solution> getSolutionClass() {
+        return solutionClass;
+    }
+
+    public void setSolutionClass(Class<Solution> solutionClass) {
+        this.solutionClass = solutionClass;
+    }
+
+    public Set<Class<?>> getPlanningEntityClassSet() {
+        return planningEntityClassSet;
+    }
+
+    public void setPlanningEntityClassSet(Set<Class<?>> planningEntityClassSet) {
+        this.planningEntityClassSet = planningEntityClassSet;
     }
 
     public RuleBase getRuleBase() {
@@ -127,6 +156,7 @@ public abstract class AbstractSolverConfig {
                 abstractSolver.setRandomSeed(DEFAULT_RANDOM_SEED);
             }
         }
+        buildMeta();
         abstractSolver.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
         abstractSolver.setScoreDefinition(scoreDefinition);
@@ -135,6 +165,72 @@ public abstract class AbstractSolverConfig {
         abstractSolver.setStartingSolutionInitializer(buildStartingSolutionInitializer());
         abstractSolver.setBestSolutionRecaller(new BestSolutionRecaller());
         return scoreDefinition;
+    }
+
+    private void buildMeta() {
+        if (solutionClass == null) {
+            throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
+        }
+        BeanInfo solutionBeanInfo;
+        try {
+            solutionBeanInfo = Introspector.getBeanInfo(solutionClass);
+        } catch (IntrospectionException e) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
+        }
+
+        if (planningEntityClassSet == null) {
+            throw new IllegalArgumentException(
+                    "Configure at least 1 <planningEntityClass> in the solver configuration.");
+        }
+        for (Class<?> planningEntityClass : planningEntityClassSet) {
+            PlanningEntity planningEntityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
+            if (planningEntityAnnotation == null) {
+                throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                        + ") has been specified as a planning entity in the configuration," +
+                        " but does not have a PlanningEntity annotation.");
+            }
+            BeanInfo beanInfo;
+            try {
+                beanInfo = Introspector.getBeanInfo(planningEntityClass);
+            } catch (IntrospectionException e) {
+                throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                        + ") is not a valid java bean.", e);
+            }
+            boolean noPlanningVariableAnnotation = true;
+            for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
+                PlanningVariable planningVariableAnnotation = propertyDescriptor.getReadMethod()
+                        .getAnnotation(PlanningVariable.class);
+                if (planningVariableAnnotation != null) {
+                    noPlanningVariableAnnotation = false;
+                    if (propertyDescriptor.getWriteMethod() == null) {
+                        throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                                + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
+                                + ") that should have a setter.");
+                    }
+                    ValueRangeFromSolutionProperty valueRangeFromSolutionPropertyAnnotation
+                            = propertyDescriptor.getReadMethod().getAnnotation(ValueRangeFromSolutionProperty.class);
+                    if (valueRangeFromSolutionPropertyAnnotation == null) {
+                        // TODO support plugging in other ValueRange implementations
+                        throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
+                                + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
+                                + ") that has no ValueRangeFromSolutionProperty annotation.");
+                    }
+                    for (PropertyDescriptor solutionPropertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
+                        if (valueRangeFromSolutionPropertyAnnotation.propertyName().equals(solutionPropertyDescriptor.getName())) {
+System.out.println("yes, found " + solutionPropertyDescriptor.getName());
+                            break;
+                        }
+                    }
+
+                    // TODO Cool, we got a working property
+System.out.println("yaay " + propertyDescriptor.getName());
+                }
+            }
+            if (noPlanningVariableAnnotation) {
+                throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                        + ") should have at least 1 getter with a PlanningVariable annotation.");
+            }
+        }
     }
 
     private RuleBase buildRuleBase() {
@@ -198,6 +294,11 @@ public abstract class AbstractSolverConfig {
         }
         if (randomSeed == null) {
             randomSeed = inheritedConfig.getRandomSeed();
+        }
+        if (planningEntityClassSet == null) {
+            planningEntityClassSet = inheritedConfig.getPlanningEntityClassSet();
+        } else if (inheritedConfig.getPlanningEntityClassSet() != null) {
+            planningEntityClassSet.addAll(inheritedConfig.getPlanningEntityClassSet());
         }
         if (scoreDrlList == null) {
             scoreDrlList = inheritedConfig.getScoreDrlList();

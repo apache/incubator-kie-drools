@@ -22,8 +22,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntity;
+import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 @XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
 
@@ -50,6 +54,8 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.lectureIndexInCourse = lectureIndexInCourse;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "periodList")
     public Period getPeriod() {
         return period;
     }
@@ -58,6 +64,8 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.period = period;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "roomList")
     public Room getRoom() {
         return room;
     }
