@@ -84,6 +84,7 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
@@ -383,7 +384,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             fail( builder1.getErrors().toString() );
         }
         final Pattern pattern1 = (Pattern) builder1.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final VariableConstraint returnValue1 = (VariableConstraint) pattern1.getConstraints().get( 0 );
+        final ReturnValueConstraint returnValue1 = (ReturnValueConstraint) pattern1.getConstraints().get( 0 );
 
         final PackageBuilder builder2 = new PackageBuilder();
         final PackageDescr packageDescr2 = new PackageDescr( "package2" );
@@ -391,7 +392,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                " x + y " );
         builder2.addPackage( packageDescr2 );
         final Pattern pattern2 = (Pattern) builder2.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final VariableConstraint returnValue2 = (VariableConstraint) pattern2.getConstraints().get( 0 );
+        final ReturnValueConstraint returnValue2 = (ReturnValueConstraint) pattern2.getConstraints().get( 0 );
 
         final PackageBuilder builder3 = new PackageBuilder();
         final PackageDescr packageDescr3 = new PackageDescr( "package3" );
@@ -399,7 +400,7 @@ public class PackageBuilderTest extends DroolsTestCase {
                                " x - y " );
         builder3.addPackage( packageDescr3 );
         final Pattern pattern3 = (Pattern) builder3.getPackage().getRules()[0].getLhs().getChildren().get( 0 );
-        final VariableConstraint returnValue3 = (VariableConstraint) pattern3.getConstraints().get( 0 );
+        final ReturnValueConstraint returnValue3 = (ReturnValueConstraint) pattern3.getConstraints().get( 0 );
 
         assertEquals( returnValue1,
                       returnValue2 );

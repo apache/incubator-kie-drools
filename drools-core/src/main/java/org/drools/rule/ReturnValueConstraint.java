@@ -83,6 +83,10 @@ public class ReturnValueConstraint extends MutableTypeConstraint
         this.restriction.setReturnValueExpression( expression );
     }
 
+    public ReturnValueRestriction getRestriction() {
+        return this.restriction;
+    }
+
     public ReturnValueExpression getExpression() {
         return this.restriction.getExpression();
     }
