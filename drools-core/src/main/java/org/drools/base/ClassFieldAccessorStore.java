@@ -29,10 +29,12 @@ import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.AccessorKey.AccessorType;
+import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.spi.Acceptor;
 import org.drools.spi.AcceptsClassObjectType;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.AcceptsWriteAccessor;
+import org.drools.spi.InternalReadAccessor;
 
 public class ClassFieldAccessorStore
     implements
@@ -128,8 +130,27 @@ public class ClassFieldAccessorStore
                              entry );
         }
 
-        return entry.getClassFieldReader();
+        return ( ClassFieldReader ) entry.getClassFieldReader();
     }
+    
+    
+    public MVELClassFieldReader getMVELReader(final String pkgName,
+                                              final String className,
+                                              final String expr,
+                                              final boolean typesafe) {
+        AccessorKey key = new AccessorKey( pkgName + className,
+                                           expr,
+                                           AccessorKey.AccessorType.FieldAccessor );
+        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );    
+        if ( entry == null ) {
+            MVELClassFieldReader reader  = new MVELClassFieldReader( className, expr, typesafe );            
+            entry = new FieldLookupEntry( reader );  
+            this.lookup.put( key,
+                             entry );            
+        }
+
+        return ( MVELClassFieldReader ) entry.getClassFieldReader();
+    }    
 
     public synchronized ClassFieldWriter getWriter(final String className,
                                                    final String fieldName,
@@ -185,7 +206,7 @@ public class ClassFieldAccessorStore
                              entry );
         }
 
-        ClassFieldAccessor accessor = new ClassFieldAccessor( entry.getClassFieldReader(),
+        ClassFieldAccessor accessor = new ClassFieldAccessor( (ClassFieldReader) entry.getClassFieldReader(),
                                                               entry.getClassFieldWriter() );
 
         entry.addAccessorTarget( accessor );
@@ -298,7 +319,7 @@ public class ClassFieldAccessorStore
                         }
                     }
                     // wire up ClassFieldReaders                    
-                    if (lookupEntry.getClassFieldReader() != null) {
+                    if (lookupEntry.getClassFieldReader() != null ) {
                         wire(((FieldLookupEntry)entry.getValue()).getClassFieldReader());
                     }
                     if (lookupEntry.getClassFieldWriter() != null) {
@@ -362,7 +383,7 @@ public class ClassFieldAccessorStore
         for ( Entry<AccessorKey, BaseLookupEntry> entry : lookup.entrySet() ) {
             switch ( entry.getValue().getAccessorType() ) {
                 case FieldAccessor : {
-                    ClassFieldReader reader = ((FieldLookupEntry) entry.getValue()).getClassFieldReader();
+                    InternalReadAccessor reader = ((FieldLookupEntry) entry.getValue()).getClassFieldReader();
                     if ( reader != null ) {
                         wire( reader );
                     }
@@ -393,8 +414,10 @@ public class ClassFieldAccessorStore
         }
     }
 
-    public void wire(ClassFieldReader reader) {
-        reader.setReadAccessor( cache.getReadAcessor( reader ) );
+    public void wire(InternalReadAccessor reader) {
+        if ( reader  instanceof ClassFieldReader ) {
+            ((ClassFieldReader)reader).setReadAccessor( cache.getReadAcessor( (ClassFieldReader) reader ) );
+        }
     }
 
     public void wire(ClassFieldWriter writer) {
@@ -578,14 +601,14 @@ public class ClassFieldAccessorStore
     //    }
     //
     public static class FieldLookupEntry extends BaseLookupEntry {
-        private ClassFieldReader reader;
+        private InternalReadAccessor reader;
         private ClassFieldWriter writer;
 
         public FieldLookupEntry() {
 
         }
 
-        public FieldLookupEntry(ClassFieldReader reader) {
+        public FieldLookupEntry(InternalReadAccessor reader) {
             this.reader = reader;
         }
 
@@ -608,11 +631,11 @@ public class ClassFieldAccessorStore
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             super.readExternal( in );
-            reader = (ClassFieldReader) in.readObject();
+            reader = (InternalReadAccessor) in.readObject();
             writer = (ClassFieldWriter) in.readObject();
         }
 
-        public ClassFieldReader getClassFieldReader() {
+        public InternalReadAccessor getClassFieldReader() {
             return reader;
         }
 

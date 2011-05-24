@@ -22,6 +22,7 @@ import org.drools.base.*;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.base.mvel.MVELCompileable;
 import org.drools.compiler.*;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
@@ -63,9 +64,9 @@ public class PatternBuilder
                                        BaseDescr descr ) {
         boolean typeSafe = context.isTypesafe();
         try {
-        return this.build( context,
-                           descr,
-                           null );
+            return this.build( context,
+                               descr,
+                               null );
         } finally {
             context.setTypesafe( typeSafe );
         }
@@ -408,7 +409,9 @@ public class PatternBuilder
                 }
             }
 
-            if ( !simple || !context.isTypesafe() ) {
+            // Either it's a complex expression, so do as predicate
+            // Or it's a Map and we have to treat it as a special case
+            if ( !simple  ||  new ClassObjectType(Map.class).isAssignableFrom( pattern.getObjectType() ) ) {
                 Dialect dialect = context.getDialect();
                 MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
                 context.setDialect( mvelDialect );
@@ -444,26 +447,8 @@ public class PatternBuilder
             String[] parts = fieldName.split( "\\." );
             if ( parts.length == 2 ) {
                 if ( "this".equals( parts[0].trim() ) ) {
-                    if ( parts[1].trim().startsWith( "[" ) ) {
-                        // they are trying map accessors to rewrite to eval
-                        Dialect dialect = context.getDialect();
-                        MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
-                        context.setDialect( mvelDialect );
-
-                        PredicateDescr pdescr = new PredicateDescr( expr );
-                        buildEval( context,
-                                   pattern,
-                                   pdescr,
-                                   null,
-                                   aliases );
-
-                        // fall back to original dialect
-                        context.setDialect( dialect );
-                        continue;
-                    } else {
-                        // it's a redundant this so trim
-                        fieldName = parts[1];
-                    }
+                    // it's a redundant this so trim
+                    fieldName = parts[1];                    
                 } else if ( pattern.getDeclaration() != null && parts[0].trim().equals( pattern.getDeclaration().getIdentifier() ) ) {
                     // it's a redundant declaration so trim
                     fieldName = parts[1];
@@ -853,6 +838,7 @@ public class PatternBuilder
         this.createImplicitBindings( context,
                                      pattern,
                                      analysis.getNotBoundedIdentifiers(),
+                                     analysis.getBoundIdentifiers(),
                                      factDeclarations );
 
         final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
@@ -919,6 +905,7 @@ public class PatternBuilder
     private void createImplicitBindings( final RuleBuildContext context,
                                          final Pattern pattern,
                                          final Set<String> unboundIdentifiers,
+                                         final BoundIdentifiers boundIdentifiers,
                                          final List factDeclarations ) {
         for ( String identifier : unboundIdentifiers ) {
             Declaration declaration = createDeclarationObject( context,
@@ -929,6 +916,14 @@ public class PatternBuilder
             // that we would need to know about
             if ( declaration != null ) {
                 factDeclarations.add( declaration );
+                // implicit bindings need to be added to "local" declarations, as they are nolonger unbound
+                if ( boundIdentifiers.getDeclarations() == null ) {
+                    boundIdentifiers.setDeclarations( new HashMap<String, Declaration>() );
+                }
+                boundIdentifiers.getDeclarations().put( identifier, declaration );
+                boundIdentifiers.getDeclrClasses().put( identifier, declaration.getExtractor().getExtractToClass() );
+                unboundIdentifiers.remove( identifier );
+                
             }
         }
     }
@@ -952,10 +947,10 @@ public class PatternBuilder
 
     }
 
-    private Declaration createDeclarationObject( final RuleBuildContext context,
+    private Declaration createDeclarationObject(final RuleBuildContext context,
                                                  final String identifier,
                                                  final String expr,
-                                                 final Pattern pattern ) {
+                                                 final Pattern pattern) {
         final BindingDescr implicitBinding = new BindingDescr( identifier,
                                                                expr );
 
@@ -964,34 +959,12 @@ public class PatternBuilder
                                                          pattern,
                                                          true );
 
-        InternalReadAccessor extractor = null;
-        if ( expr.indexOf( '.' ) >= 0 || expr.indexOf( '[' ) >= 0 || expr.indexOf( '(' ) >= 0 ) {
-            ObjectType objectType = pattern.getObjectType();
-            Class<?> classType;
-            if (objectType instanceof ClassObjectType) {
-                ClassObjectType classObjectType = (ClassObjectType) objectType;
-                classType = classObjectType.getClassType();
-            } else if (objectType instanceof FactTemplateObjectType) {
-                FactTemplateObjectType factTemplateObjectType = (FactTemplateObjectType) objectType;
-                String className = factTemplateObjectType.getFactTemplate().getName();
-                try {
-                    classType = context.getDialect().getTypeResolver().resolveType(className);
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException("Can't figure out: " + expr + ", class name: " + className);
-                }
-            } else {
-                throw new RuntimeException("Can't figure out: " + expr);
-            }
-            extractor = new MVELClassFieldReader(classType,
-                                                 expr, null);
-        } else {
-            extractor = getFieldReadAccessor( context,
-                                              implicitBinding,
-                                              pattern.getObjectType(),
-                                              implicitBinding.getExpression(),
-                                              declaration,
-                                              false );
-        }
+        InternalReadAccessor extractor = getFieldReadAccessor( context,
+                                                               implicitBinding,
+                                                               pattern.getObjectType(),
+                                                               implicitBinding.getExpression(),
+                                                               declaration,
+                                                               false );
 
         if ( extractor == null ) {
             return null;
@@ -1092,6 +1065,7 @@ public class PatternBuilder
         this.createImplicitBindings( context,
                                      pattern,
                                      analysis.getNotBoundedIdentifiers(),
+                                     usedIdentifiers,
                                      factDeclarations );
 
         Target right = getRightTarget( extractor );
@@ -1162,6 +1136,24 @@ public class PatternBuilder
                                                      factTemplate.getFieldTemplateIndex( fieldName ) );
             if ( target != null ) {
                 target.setReadAccessor( reader );
+            }
+        }  else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) {
+            // we need MVEL extractor for expressions
+            try {
+                reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
+                                                                                      ((ClassObjectType) objectType).getClassName(),
+                                                                                      fieldName,
+                                                                                      context.isTypesafe() );
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData)context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile( data );
+            } catch ( final Exception e ) {
+                if ( reportError ) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  descr,
+                                                                  e,
+                                                                  "Unable to create Field Extractor for '" + fieldName + "'" ) );
+                }
             }
         } else {
             try {

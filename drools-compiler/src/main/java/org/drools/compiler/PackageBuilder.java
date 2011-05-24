@@ -972,72 +972,119 @@ public class PackageBuilder {
     public TypeDeclaration getTypeDeclaration(Class< ? > cls) {
         if ( cls.isPrimitive() || cls.isArray() ) {
             return null;
-        }
+        }        
+                    
+        // If this class has already been accessed, it'll be in the cache
         TypeDeclaration tdecl = null;
-        if ( this.cacheTypes != null ) {
+        PackageRegistry pkgReg = null;
+        if ( this.cacheTypes == null ) {
+            this.cacheTypes = new HashMap<String, TypeDeclaration>();
+        } else {        
             tdecl = cacheTypes.get( cls.getName() );
             if ( tdecl != null ) {
                 return tdecl;
-            }
+            }    
         }
+        
+        // Check if we are in the built-ins
         tdecl = this.builtinTypes.get( (cls.getName()) );
-
-        PackageRegistry pkgReg = null;
         if ( tdecl == null ) {
-            String pack = ClassUtils.getPackage( cls );
-            pkgReg = this.pkgRegistryMap.get( pack );
+            // No built-in
+            // Check if there is a user specified typedeclr
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
+            if ( pkgReg != null ) {
+                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+            }
+        }    
+        
+        if ( tdecl == null ) {
+            // no typedeclr exists, so create one, which will be added to the cach
+            tdecl = new TypeDeclaration( cls.getSimpleName() );
+        }
+        
+        // build up a set of all the super classes and interfaces
+        Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
+        buildTypeDeclarations(cls, tdecls);
+        
+        // Iterate and for each typedeclr assign it's value if it's not already set
+        // We start from the rear as those are the furthest away classes and interfaces
+        TypeDeclaration[] tarray = tdecls.toArray( new   TypeDeclaration[tdecls.size()] );
+        for ( int i = tarray.length-1; i >= 0; i-- ) {
+            TypeDeclaration currentTDecl = tarray[i];
+            if ( ( tdecl.getSetMask() & TypeDeclaration.ROLE_BIT ) != TypeDeclaration.ROLE_BIT ) {
+                tdecl.setRole( currentTDecl.getRole() );
+            }
+            if ( ( tdecl.getSetMask() & TypeDeclaration.FORMAT_BIT ) != TypeDeclaration.FORMAT_BIT ) {
+                tdecl.setFormat(currentTDecl.getFormat() );
+            }     
+            if ( ( tdecl.getSetMask() & TypeDeclaration.TYPESAFE_BIT ) != TypeDeclaration.TYPESAFE_BIT ) {
+                tdecl.setTypesafe( currentTDecl.isTypesafe() );
+            }             
+        }
+        
+        this.cacheTypes.put( cls.getName(), tdecl );
+        
+        return tdecl;
+    }
+    
+    public void buildTypeDeclarations(Class< ? > cls, Set<TypeDeclaration> tdecls) {
+        TypeDeclaration tdecl = null;
+        
+        // Process current interfaces
+        Class< ? >[] intfs = cls.getInterfaces();
+        for ( Class< ? > intf : intfs ) {
+            buildTypeDeclarationInterfaces( intf, tdecls );
+        }
+        
+        // Process super classes and their interfaces
+        cls = cls.getSuperclass();
+        while ( tdecl == null && ( cls != null && cls != Object.class )) {            
+            if ( !buildTypeDeclarationInterfaces( cls, tdecls ) ) {
+                break;
+            }
+            cls = cls.getSuperclass();
+        }
+
+    }
+
+    public boolean buildTypeDeclarationInterfaces(Class cls, Set<TypeDeclaration> tdecls) {
+        PackageRegistry pkgReg = null;
+        TypeDeclaration tdecl = null;
+        
+        tdecl = this.builtinTypes.get( (cls.getName()) );
+        if ( tdecl == null ) {              
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if ( pkgReg != null ) {
                 tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
             }
         }
-
-        Class< ? > originalCls = cls;
-        while ( tdecl == null && cls != Object.class ) {
-            cls = cls.getSuperclass();
-            if ( cls == null ) {
-                break;
+        if ( tdecl != null ) {
+            if ( !tdecls.add( tdecl ) ) {
+                return false; // the interface already exists, return to stop recursion
             }
-            tdecl = this.builtinTypes.get( (cls.getName()) );
-            if ( tdecl == null ) {
-                pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
-                if ( pkgReg != null ) {
-                    tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
-                }
+        }           
+        
+        Class< ? >[] intfs = cls.getInterfaces();
+        for ( Class< ? > intf : intfs ) {
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( intf ) );
+            if ( pkgReg != null ) {
+                tdecl = pkgReg.getPackage().getTypeDeclaration( intf.getSimpleName() );
             }
+            if ( tdecl != null ) {
+                tdecls.add( tdecl );
+            }            
         }
-
-        if ( tdecl == null ) {
-            Class< ? >[] intfs = originalCls.getInterfaces();
-            for ( Class< ? > intf : intfs ) {
-                cls = intf;
-                pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
-                if ( pkgReg != null ) {
-                    tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
-                }
-                while ( tdecl == null ) {
-                    cls = cls.getSuperclass();
-                    if ( cls == null ) {
-                        break;
-                    }
-                    tdecl = this.builtinTypes.get( (cls.getName()) );
-                    if ( tdecl == null ) {
-                        pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
-                        if ( pkgReg != null ) {
-                            tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
-                        }
-                    }
-                }
+        
+        for ( Class< ? > intf : intfs ) {
+            if ( !buildTypeDeclarationInterfaces( intf, tdecls ) ) {
+                return false;
             }
         }
-
-        if ( this.cacheTypes == null ) {
-            this.cacheTypes = new HashMap<String, TypeDeclaration>();
-        }
-        this.cacheTypes.put( originalCls.getName(),
-                             tdecl ); // should also cache null, to avoid expensive lookups with no results
-        return tdecl;
-    }
-
+        
+        return true;
+        
+    }    
+    
     /**
      * Tries to determine the namespace (package) of a simple type chosen to be
      * the superclass of a declared bean. Looks among imports, local
@@ -1237,9 +1284,35 @@ public class PackageBuilder {
 
             int dotPos = typeDescr.getTypeName().lastIndexOf( '.' );
             if ( dotPos >= 0 ) {
-                typeDescr.setNamespace( typeDescr.getTypeName().substring( 0,
-                                                                           dotPos ) );
-                typeDescr.setTypeName( typeDescr.getTypeName().substring( dotPos + 1 ) );
+                // see if this overwrites an existing bean, which also could be a nested class.
+                Class cls = null;
+                try {
+                    cls = Class.forName(  typeDescr.getTypeName(), true, this.rootClassLoader );
+                } catch ( ClassNotFoundException e ) {
+                }
+                
+                String qualifiedClass = typeDescr.getTypeName();
+                int lastIndex;
+                while ( cls == null && (lastIndex = qualifiedClass.lastIndexOf( '.' )) != -1 ) {
+                    try {
+
+                        qualifiedClass = qualifiedClass.substring( 0,
+                                                                   lastIndex ) + "$" + qualifiedClass.substring( lastIndex + 1 );
+                        cls = Class.forName(  qualifiedClass, true, this.rootClassLoader );
+                    } catch ( final ClassNotFoundException e ) {
+                        cls = null;
+                    }
+                }                
+                
+                if ( cls != null ) {
+                    String str = ClassUtils.getPackage( cls );
+                    typeDescr.setNamespace( str );
+                    typeDescr.setTypeName( cls.getSimpleName() );
+                } else {
+                    typeDescr.setNamespace( typeDescr.getTypeName().substring( 0,
+                                                                               dotPos ) );
+                    typeDescr.setTypeName( typeDescr.getTypeName().substring( dotPos + 1 ) );
+                }
             }
 
             if ( isEmpty( typeDescr.getNamespace() ) ) {
@@ -1275,7 +1348,11 @@ public class PackageBuilder {
                 for ( ImportDescr imp : packageDescr.getImports() ) {
                     altDescr.addImport( imp );
                 }
-                newPackage( altDescr );
+                if ( getPackageRegistry().containsKey( altDescr.getNamespace() ) ) {
+                    mergePackage( altDescr );   
+                } else {
+                    newPackage( altDescr );
+                }
             }
 
         }
