@@ -1,0 +1,84 @@
+<CloudBalance id="1">
+  <id>0</id>
+  <cloudComputerList id="2">
+    <CloudComputer id="3">
+      <id>0</id>
+      <cpuPower>4</cpuPower>
+      <memory>8</memory>
+      <networkBandwidth>2</networkBandwidth>
+      <cost>460</cost>
+    </CloudComputer>
+    <CloudComputer id="4">
+      <id>1</id>
+      <cpuPower>6</cpuPower>
+      <memory>8</memory>
+      <networkBandwidth>6</networkBandwidth>
+      <cost>700</cost>
+    </CloudComputer>
+    <CloudComputer id="5">
+      <id>2</id>
+      <cpuPower>12</cpuPower>
+      <memory>32</memory>
+      <networkBandwidth>16</networkBandwidth>
+      <cost>1600</cost>
+    </CloudComputer>
+    <CloudComputer id="6">
+      <id>3</id>
+      <cpuPower>16</cpuPower>
+      <memory>64</memory>
+      <networkBandwidth>16</networkBandwidth>
+      <cost>2300</cost>
+    </CloudComputer>
+    <CloudComputer id="7">
+      <id>4</id>
+      <cpuPower>8</cpuPower>
+      <memory>16</memory>
+      <networkBandwidth>8</networkBandwidth>
+      <cost>970</cost>
+    </CloudComputer>
+  </cloudComputerList>
+  <cloudProcessList id="8">
+    <CloudProcess id="9">
+      <id>0</id>
+      <minimalCpuPower>1</minimalCpuPower>
+      <minimalMemory>20</minimalMemory>
+      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+    </CloudProcess>
+    <CloudProcess id="10">
+      <id>1</id>
+      <minimalCpuPower>1</minimalCpuPower>
+      <minimalMemory>1</minimalMemory>
+      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+    </CloudProcess>
+    <CloudProcess id="11">
+      <id>2</id>
+      <minimalCpuPower>1</minimalCpuPower>
+      <minimalMemory>1</minimalMemory>
+      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+    </CloudProcess>
+    <CloudProcess id="12">
+      <id>3</id>
+      <minimalCpuPower>8</minimalCpuPower>
+      <minimalMemory>1</minimalMemory>
+      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+    </CloudProcess>
+    <CloudProcess id="13">
+      <id>4</id>
+      <minimalCpuPower>1</minimalCpuPower>
+      <minimalMemory>1</minimalMemory>
+      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+    </CloudProcess>
+    <CloudProcess id="14">
+      <id>5</id>
+      <minimalCpuPower>1</minimalCpuPower>
+      <minimalMemory>3</minimalMemory>
+      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+    </CloudProcess>
+    <CloudProcess id="15">
+      <id>6</id>
+      <minimalCpuPower>12</minimalCpuPower>
+      <minimalMemory>14</minimalMemory>
+      <minimalNetworkBandwidth>11</minimalNetworkBandwidth>
+    </CloudProcess>
+  </cloudProcessList>
+</CloudBalance>

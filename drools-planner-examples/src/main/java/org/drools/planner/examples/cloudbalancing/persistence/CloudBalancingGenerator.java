@@ -101,6 +101,9 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     public void generate() {
+        writeCloudBalance(5, 7);
+        writeCloudBalance(6, 8);
+        writeCloudBalance(7, 10);
         writeCloudBalance(10, 15);
         writeCloudBalance(100, 100);
         writeCloudBalance(100, 200);
