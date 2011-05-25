@@ -26,7 +26,7 @@ public class QueryBuilder implements EngineElementBuilder {
                                              queryObjectType,
                                              null );
         
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, queryObjectType, "name", null );
+        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, queryObjectType, "name", null, true );
 
         final FieldValue field = FieldFactory.getFieldValue( queryDescr.getName(),
                                                              ValueType.STRING_TYPE,
@@ -44,7 +44,7 @@ public class QueryBuilder implements EngineElementBuilder {
 
         ObjectType argsObjectType = new ClassObjectType( ArrayElements.class );
         
-        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null );
+        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
 
         String[] params = queryDescr.getParameters();
         String[] types = queryDescr.getParameterTypes();
