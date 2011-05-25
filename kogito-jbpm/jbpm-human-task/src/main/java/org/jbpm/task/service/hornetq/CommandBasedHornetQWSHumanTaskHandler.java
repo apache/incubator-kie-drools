@@ -195,6 +195,24 @@ public class CommandBasedHornetQWSHumanTaskHandler implements WorkItemHandler {
 				e.printStackTrace();
 			}
 		}
+                // If the content is not set we will automatically copy all the input objects into 
+                // the task content
+                else {
+                    contentObject = workItem.getParameters();
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream out;
+			try {
+				out = new ObjectOutputStream(bos);
+				out.writeObject(contentObject);
+				out.close();
+				content = new ContentData();
+				content.setContent(bos.toByteArray());
+				content.setAccessType(AccessType.Inline);
+                                content.setType("java.util.map");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+                }
 		client.addTask(task, content, null);
 	}
 	
