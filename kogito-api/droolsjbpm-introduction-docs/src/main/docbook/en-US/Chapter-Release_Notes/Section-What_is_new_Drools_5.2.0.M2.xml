@@ -201,8 +201,7 @@
           <row>
             <entry>org.drools</entry>
 
-            <entry><emphasis
-            role="bold">drools-bpmn2</emphasis></entry>
+            <entry><emphasis role="bold">drools-bpmn2</emphasis></entry>
 
             <entry>org.jbpm</entry>
 
@@ -373,7 +372,7 @@
 
       <para>The parser has been rewritten. We had reached the limitations of
       what we could achieve in pure ANTLR and moved to a hybrid parser, that
-      adds flexibility to the language. </para>
+      adds flexibility to the language.</para>
 
       <para>The main benefit with the new parser is that the language now
       support free form expressions for constraints and 'from' statements. So
@@ -620,8 +619,6 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
 
   <section>
     <title>Guvnor</title>
-
-    <para>TODO</para>
 
     <section>
       <title>Decision Tables</title>
