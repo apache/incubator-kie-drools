@@ -44,9 +44,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         queryDescr.setLhs( lhs );
         PatternDescr pattern = new PatternDescr( Person.class.getName() );
         lhs.addDescr( pattern );
-        pattern.addBinding( new BindingDescr( "$name", "name" ) );
-        pattern.addBinding( new BindingDescr( "$age", "age" ) );
-        pattern.addBinding( new BindingDescr( "$likes", "likes" ) );
+        pattern.addBinding( new BindingDescr( "$name", "name", true ) );
+        pattern.addBinding( new BindingDescr( "$age", "age", true ) );
+        pattern.addBinding( new BindingDescr( "$likes", "likes", true ) );
 
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
