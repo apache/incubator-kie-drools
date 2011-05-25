@@ -39,8 +39,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
 
     @Override
     public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) abstractSolverScope.getWorkingSolution();
-        return schedule.isInitialized();
+        return false; // TODO
     }
 
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {

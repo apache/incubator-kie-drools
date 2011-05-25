@@ -94,9 +94,11 @@ public class CurriculumCoursePanel extends SolutionPanel {
                 roomPanelMap.put(room, periodRoomPanel);
             }
         }
-        if (schedule.isInitialized()) {
-            for (Lecture lecture : schedule.getLectureList()) {
-                PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(lecture.getPeriod()).get(lecture.getRoom());
+        for (Lecture lecture : schedule.getLectureList()) {
+            Period period = lecture.getPeriod();
+            Room room = lecture.getRoom();
+            if (period != null && room != null) {
+                PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(period).get(room);
                 periodRoomPanel.addLecture(lecture);
             }
         }

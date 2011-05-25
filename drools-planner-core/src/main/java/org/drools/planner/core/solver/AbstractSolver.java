@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.RuleBase;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolver;
@@ -54,6 +55,10 @@ public abstract class AbstractSolver implements Solver {
 
     public void setRandomSeed(long randomSeed) {
         this.randomSeed = randomSeed;
+    }
+
+    public void setSolutionDescriptor(SolutionDescriptor solutionDescriptor) {
+        getAbstractSolverScope().setSolutionDescriptor(solutionDescriptor);
     }
 
     public void setRuleBase(RuleBase ruleBase) {

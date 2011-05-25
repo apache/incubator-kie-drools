@@ -76,9 +76,9 @@ public class CloudBalancingPanel extends SolutionPanel {
             computerToPanelMap.put(cloudComputer, cloudComputerPanel);
             add(cloudComputerPanel);
         }
-        if (cloudBalance.isInitialized()) {
-            for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
-                CloudComputer cloudComputer = cloudAssignment.getCloudComputer();
+        for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
+            CloudComputer cloudComputer = cloudAssignment.getCloudComputer();
+            if (cloudComputer != null) {
                 CloudComputerPanel cloudComputerPanel = computerToPanelMap.get(cloudComputer);
                 cloudComputerPanel.addCloudAssignment(cloudAssignment);
             }

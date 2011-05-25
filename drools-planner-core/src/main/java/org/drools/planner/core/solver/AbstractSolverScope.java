@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.solver;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
@@ -25,6 +26,7 @@ import org.drools.ClassObjectFilter;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
@@ -42,6 +44,8 @@ public abstract class AbstractSolverScope {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected SolutionDescriptor solutionDescriptor;
+
     protected RuleBase ruleBase;
     protected ScoreDefinition scoreDefinition;
 
@@ -58,6 +62,14 @@ public abstract class AbstractSolverScope {
     protected int bestSolutionStepIndex;
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me
+
+    public SolutionDescriptor getSolutionDescriptor() {
+        return solutionDescriptor;
+    }
+
+    public void setSolutionDescriptor(SolutionDescriptor solutionDescriptor) {
+        this.solutionDescriptor = solutionDescriptor;
+    }
 
     public RuleBase getRuleBase() {
         return ruleBase;
@@ -176,12 +188,13 @@ public abstract class AbstractSolverScope {
         }
         workingMemory = ruleBase.newStatefulSession();
         workingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, workingScoreCalculator);
-//        if (logger.isTraceEnabled()) {
-//            statefulSession.addEventListener(new DebugWorkingMemoryEventListener());
-//        }
-        for (Object fact : workingSolution.getFacts()) {
+        for (Object fact : getWorkingFacts()) {
             workingMemory.insert(fact);
         }
+    }
+
+    protected Collection<? extends Object> getWorkingFacts() {
+        return solutionDescriptor.getFacts(workingSolution);
     }
 
     /**
@@ -191,7 +204,7 @@ public abstract class AbstractSolverScope {
         StatefulSession tmpWorkingMemory = ruleBase.newStatefulSession();
         ScoreCalculator tmpScoreCalculator = workingScoreCalculator.clone();
         tmpWorkingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, tmpScoreCalculator);
-        for (Object fact : workingSolution.getFacts()) {
+        for (Object fact : getWorkingFacts()) {
             tmpWorkingMemory.insert(fact);
         }
         tmpWorkingMemory.fireAllRules();

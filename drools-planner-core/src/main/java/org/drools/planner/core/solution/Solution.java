@@ -46,13 +46,6 @@ public interface Solution<S extends Score> {
     void setScore(S score);
 
     /**
-     * Called by the {@link Solver} when the solution needs to be asserted into an empty WorkingMemory.
-     * These facts can be used by the score rules.
-     * @return never null (although an empty collection is allowed), all the facts of this solution
-     */
-    Collection<? extends Object> getFacts();
-
-    /**
      * Called by the {@link Solver} when the solution needs to be cloned,
      * for example to store a clone of the current solution as the best solution.
      * <p/>

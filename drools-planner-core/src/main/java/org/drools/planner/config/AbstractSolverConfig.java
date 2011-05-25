@@ -23,6 +23,7 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -40,9 +41,13 @@ import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.domain.PlanningEntity;
-import org.drools.planner.core.domain.PlanningEntityCollection;
+import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
+import org.drools.planner.core.domain.PlanningFactCollectionProperty;
+import org.drools.planner.core.domain.PlanningFactProperty;
 import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
+import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
@@ -158,7 +163,7 @@ public abstract class AbstractSolverConfig {
                 abstractSolver.setRandomSeed(DEFAULT_RANDOM_SEED);
             }
         }
-        buildMeta();
+        abstractSolver.setSolutionDescriptor(buildSolutionDescriptor());
         abstractSolver.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
         abstractSolver.setScoreDefinition(scoreDefinition);
@@ -169,111 +174,23 @@ public abstract class AbstractSolverConfig {
         return scoreDefinition;
     }
 
-    private void buildMeta() {
+    private SolutionDescriptor buildSolutionDescriptor() {
         if (solutionClass == null) {
             throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
         }
-        BeanInfo solutionBeanInfo;
-        try {
-            solutionBeanInfo = Introspector.getBeanInfo(solutionClass);
-        } catch (IntrospectionException e) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
-        }
-        boolean noPlanningEntityCollectionAnnotation = true;
-        for (PropertyDescriptor entityCollectionDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            PlanningEntityCollection planningEntityCollectionAnnotation = entityCollectionDescriptor.getReadMethod()
-                    .getAnnotation(PlanningEntityCollection.class);
-            if (planningEntityCollectionAnnotation != null) {
-                noPlanningEntityCollectionAnnotation = false;
-                if (!Collection.class.isAssignableFrom(entityCollectionDescriptor.getPropertyType())) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ") has a PlanningEntityCollection annotated property (" + entityCollectionDescriptor.getName()
-                            + ") that does not return a Collection.");
-                }
-// TODO Cool
-System.out.println("Here we go: " + entityCollectionDescriptor.getName());
-            }
-        }
-        if (noPlanningEntityCollectionAnnotation) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") should have at least 1 getter with a PlanningEntityCollection annotation.");
-        }
-
+        SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         if (planningEntityClassSet == null) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }
         for (Class<?> planningEntityClass : planningEntityClassSet) {
-            PlanningEntity planningEntityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
-            if (planningEntityAnnotation == null) {
-                throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                        + ") has been specified as a planning entity in the configuration," +
-                        " but does not have a PlanningEntity annotation.");
-            }
-            BeanInfo entityBeanInfo;
-            try {
-                entityBeanInfo = Introspector.getBeanInfo(planningEntityClass);
-            } catch (IntrospectionException e) {
-                throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                        + ") is not a valid java bean.", e);
-            }
-            boolean noPlanningVariableAnnotation = true;
-            for (PropertyDescriptor variableDescriptor : entityBeanInfo.getPropertyDescriptors()) {
-                PlanningVariable planningVariableAnnotation = variableDescriptor.getReadMethod()
-                        .getAnnotation(PlanningVariable.class);
-                if (planningVariableAnnotation != null) {
-                    noPlanningVariableAnnotation = false;
-                    if (variableDescriptor.getWriteMethod() == null) {
-                        throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
-                                + ") that should have a setter.");
-                    }
-// TODO Cool, we got a working property
-System.out.println("yaay " + variableDescriptor.getName());
-                    ValueRangeFromSolutionProperty valueRangeFromSolutionPropertyAnnotation
-                            = variableDescriptor.getReadMethod().getAnnotation(ValueRangeFromSolutionProperty.class);
-                    if (valueRangeFromSolutionPropertyAnnotation == null) {
-                        // TODO Support plugging in other ValueRange implementations
-                        throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
-                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
-                                + ") that has no ValueRangeFromSolutionProperty annotation.");
-                    }
-                    String solutionPropertyName = valueRangeFromSolutionPropertyAnnotation.propertyName();
-                    PropertyDescriptor solutionPropertyDescriptor = findSolutionPropertyDescriptor(solutionBeanInfo,
-                            solutionPropertyName);
-                    if (solutionPropertyDescriptor == null) {
-                        throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
-                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
-                                + ") that refers to a solutionClass (" + solutionClass
-                                + ") solutionProperty (" + solutionPropertyName
-                                + ") that does not exist.");
-                    }
-                    if (!Collection.class.isAssignableFrom(solutionPropertyDescriptor.getPropertyType())) {
-                        throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
-                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
-                                + ") that refers to a solutionClass (" + solutionClass
-                                + ") solutionProperty (" + solutionPropertyName
-                                + ") that does not return a Collection.");
-                    }
-// TODO Cool, prepare the rest
-System.out.println("yes, solutionPropertyDescriptor " + solutionPropertyDescriptor.getName());
-                }
-            }
-            if (noPlanningVariableAnnotation) {
-                throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                        + ") should have at least 1 getter with a PlanningVariable annotation.");
-            }
+            PlanningEntityDescriptor planningEntityDescriptor = new PlanningEntityDescriptor(
+                    solutionDescriptor, planningEntityClass);
+            solutionDescriptor.addPlanningEntityDescriptor(planningEntityDescriptor);
         }
+        return solutionDescriptor;
     }
 
-    private PropertyDescriptor findSolutionPropertyDescriptor(BeanInfo solutionBeanInfo, String solutionPropertyName) {
-        for (PropertyDescriptor solutionPropertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-            if (solutionPropertyName.equals(solutionPropertyDescriptor.getName())) {
-                return solutionPropertyDescriptor;
-            }
-        }
-        return null;
-    }
 
     private RuleBase buildRuleBase() {
         if (ruleBase != null) {

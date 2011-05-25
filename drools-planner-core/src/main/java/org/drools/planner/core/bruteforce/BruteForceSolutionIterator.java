@@ -30,7 +30,7 @@ public class BruteForceSolutionIterator {
 
     public BruteForceSolutionIterator(BruteForceSolverScope bruteForceSolverScope) {
         this.bruteForceSolverScope = bruteForceSolverScope; // TODO move startingSolution etc out of here
-        Collection<? extends Object> facts = bruteForceSolverScope.getWorkingSolution().getFacts();
+        Collection<? extends Object> facts = null; // TODO
         for (Object fact : facts) {
             PlanningEntity planningEntityAnnotation = fact.getClass().getAnnotation(PlanningEntity.class);
             if (planningEntityAnnotation != null) {

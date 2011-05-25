@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.planner.core.domain.PlanningEntityCollection;
-import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
+import org.drools.planner.core.domain.PlanningFactCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
@@ -39,6 +39,7 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
 
     private HardAndSoftScore score;
 
+    @PlanningFactCollectionProperty
     public List<CloudComputer> getCloudComputerList() {
         return cloudComputerList;
     }
@@ -47,6 +48,7 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         this.cloudComputerList = cloudComputerList;
     }
 
+    @PlanningFactCollectionProperty
     public List<CloudProcess> getCloudProcessList() {
         return cloudProcessList;
     }
@@ -55,7 +57,7 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         this.cloudProcessList = cloudProcessList;
     }
 
-    @PlanningEntityCollection
+    @PlanningEntityCollectionProperty
     public List<CloudAssignment> getCloudAssignmentList() {
         return cloudAssignmentList;
     }
@@ -70,21 +72,6 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
 
     public void setScore(HardAndSoftScore score) {
         this.score = score;
-    }
-
-    public boolean isInitialized() {
-        return (cloudAssignmentList != null);
-    }
-
-    public Collection<? extends Object> getFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(cloudComputerList);
-        facts.addAll(cloudProcessList);
-
-        if (isInitialized()) {
-            facts.addAll(cloudAssignmentList);
-        }
-        return facts;
     }
 
     /**

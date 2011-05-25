@@ -37,8 +37,7 @@ public class CloudBalancingStartingSolutionInitializer extends AbstractStartingS
 
     @Override
     public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        CloudBalance cloudBalance = (CloudBalance) abstractSolverScope.getWorkingSolution();
-        return cloudBalance.isInitialized();
+        return false; // TODO
     }
 
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
