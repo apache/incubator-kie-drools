@@ -3825,12 +3825,12 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when $p := Person( $name := name, $loc : location ) then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
                                                                   text )).getLhs().getDescrs().get( 0 );
-        
+
         assertEquals( "$p",
                       pattern.getIdentifier() );
         assertTrue( pattern.isUnification() );
 
-        assertEquals( 2, 
+        assertEquals( 2,
                       pattern.getBindings().size() );
         BindingDescr bindingDescr = pattern.getBindings().get( 0 );
         assertEquals( "$name",
@@ -3846,7 +3846,25 @@ public class RuleParserTest extends TestCase {
                       bindingDescr.getExpression() );
         assertFalse( bindingDescr.isUnification() );
 
-        
+    }
+
+    @Test
+    public void testPluggableOperators2() throws Exception {
+        final String text = "rule \"tt\"\n" +
+                            "    dialect \"mvel\"\n" +
+                            "when\n" +
+                            "    exists (TelephoneCall( this finishes [1m] \"25-May-2011\" ))\n" +
+                            "then\n" +
+                            "end";
+        PatternDescr pattern = (PatternDescr) ((ExistsDescr) ((RuleDescr) parse( "rule",
+                                                                                 text )).getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
+
+        assertEquals( "TelephoneCall",
+                      pattern.getObjectType() );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        assertEquals( "this finishes [1m] \"25-May-2011\"",
+                      constr.getText() );
+
     }
 
     private Object parse( final String parserRuleName,
