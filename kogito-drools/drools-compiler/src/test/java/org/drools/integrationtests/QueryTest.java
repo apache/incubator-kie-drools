@@ -132,6 +132,10 @@ public class QueryTest {
     public void testQuery2() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_Query.drl" ) ) );
+        
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
 
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( builder.getPackage() );
@@ -575,7 +579,7 @@ public class QueryTest {
         str += "package org.drools.test  \n";
         str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, int $age ) \n";
-        str += "    $p : Person( $name : name, $likes : likes, $age : age ) \n";
+        str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -683,7 +687,7 @@ public class QueryTest {
         str += "package org.drools.test  \n";
         str += "import org.drools.Person \n";
         str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
-        str += "    $p : Person( $name : name, $likes : likes, $age : age ) \n";
+        str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -752,7 +756,7 @@ public class QueryTest {
         str += "package org.drools.test  \n";
         str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
-        str += "    $p : Person( $name : name, $likes : likes, $street : address.street ) \n";
+        str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

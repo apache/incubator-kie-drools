@@ -307,6 +307,62 @@ public class MVELTest {
     }
     
     @Test
+    public void testSizeCheckInObject() {
+        String str = ""+
+        "package org.test \n" +
+        "import " + Triangle.class.getCanonicalName() + "\n" +
+        //"import " + Address.class.getCanonicalName() + "\n" +
+        "global java.util.List list \n" +
+        "rule \"show\" \n" + 
+        "when  \n" + 
+        "    $m : Triangle( deliveries.size == 0) \n" + 
+        "then \n" + 
+        "    list.add('r1'); \n" + 
+        "end \n";
+         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+         
+         if ( kbuilder.hasErrors() ) {
+             System.out.println( kbuilder.getErrors().toString()  );
+             fail( kbuilder.getErrors().toString());
+         }
+         
+//         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+//    
+//         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//         List list = new ArrayList();
+//         ksession.setGlobal( "list", list );
+//         
+//         Person p = new Person("yoda");
+//         p.setAddress( new Address("s1") );
+//         
+//         ksession.insert( p );
+//         
+//         ksession.fireAllRules();    
+//         
+//         assertEquals( "r1", list.get(0) );
+//         
+//         // Check it was built with MVELReturnValueExpression constraint
+//         List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+//         ObjectTypeNode node = null;
+//         for ( ObjectTypeNode n : nodes ) {
+//             if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+//                 node = n;
+//                 break;
+//             }
+//         }
+//         
+//         AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+//         assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof ClassFieldReader );
+//         ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+//         
+//         assertTrue( r.getExpression() instanceof ReturnValueExpression );
+//         assertTrue( r.getExpression() instanceof MVELReturnValueExpression );  
+    }
+    
+    
+    @Test
     public void testNestedEnum() {
         String str = ""+
            "package org.test \n" +
@@ -722,6 +778,8 @@ public class MVELTest {
     public static class Triangle {
         public static final int ZERO = 0;
         
+        private List<Map<String, Object>> deliveries;
+        
         public static enum Type {
             ACUTE, OBTUSE;
         }
@@ -739,6 +797,14 @@ public class MVELTest {
         public void setT(Type t) {
             this.t = t;
         }
+        
+        public List<Map<String, Object>> getDeliveries() {
+            return deliveries;
+        }
+    
+        public void setDeliveries(List<Map<String, Object>> deliveries) {
+                this.deliveries = deliveries;
+        }        
     }
     
 

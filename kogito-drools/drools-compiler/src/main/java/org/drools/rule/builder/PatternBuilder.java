@@ -170,10 +170,18 @@ public class PatternBuilder
         }
 
         if ( duplicateBindings ) {
-            // rewrite existing bindings into == constraints, so it unifies
-            build( context,
-                   pattern,
-                   new ExprConstraintDescr( "this == " + patternDescr.getIdentifier() ) );
+            if ( patternDescr.isUnification() ) {
+                // rewrite existing bindings into == constraints, so it unifies
+                build( context,
+                       pattern,
+                       new ExprConstraintDescr( "this == " + patternDescr.getIdentifier() ) );
+            } else {
+                // This declaration already exists, so throw an Exception
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              patternDescr,
+                                                              null,
+                                                              "Duplicate declaration for variable '" + patternDescr.getIdentifier() + "' in the rule '" + context.getRule().getName() + "'" ) );                
+            }
         }
 
         if ( objectType instanceof ClassObjectType ) {
@@ -347,6 +355,7 @@ public class PatternBuilder
 
                 if ( isSimpleIdentifier ) {
                     BindingDescr binder = new BindingDescr();
+                    binder.setUnification( true );
                     binder.setExpression( field.getName() );
                     binder.setVariable( descr.getExpression() );
                     patternDescr.addBinding( binder );
@@ -484,8 +493,7 @@ public class PatternBuilder
                                                                          d,
                                                                          pattern.getObjectType(),
                                                                          fieldName,
-                                                                         null,
-                                                                         false );
+                                                                         null );
 
             if ( extractor == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -507,6 +515,10 @@ public class PatternBuilder
                                                                                     relDescr.getParameters(),
                                                                                     value,
                                                                                     LiteralRestrictionDescr.TYPE_STRING ) ); // default type
+                if ( restriction == null ) {
+                    // otherwise we just get wierd errors after this point on literals
+                    continue;
+                }
             } else {
                 // is it an enum?
                 int dotPos = value.lastIndexOf( '.' );
@@ -731,11 +743,19 @@ public class PatternBuilder
 
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getVariable() ) ) {
-            // rewrite existing bindings into == constraints, so it unifies
-            build( context,
-                   pattern,
-                   new ExprConstraintDescr( fieldBindingDescr.getExpression() + " == " + fieldBindingDescr.getVariable() ) );
-            return;
+            if ( fieldBindingDescr.isUnification() ) {
+                // rewrite existing bindings into == constraints, so it unifies
+                build( context,
+                       pattern,
+                       new ExprConstraintDescr( fieldBindingDescr.getExpression() + " == " + fieldBindingDescr.getVariable() ) );
+                return;
+            } else {
+                // This declaration already exists, so throw an Exception
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              fieldBindingDescr,
+                                                              null,
+                                                              "Duplicate declaration for variable '" + fieldBindingDescr.getVariable() + "' in the rule '" + context.getRule().getName() + "'" ) );                
+            }
         }
 
         Declaration declr = pattern.addDeclaration( fieldBindingDescr.getVariable() );
@@ -745,8 +765,7 @@ public class PatternBuilder
                                                                      fieldBindingDescr,
                                                                      pattern.getObjectType(),
                                                                      fieldBindingDescr.getExpression(),
-                                                                     declr,
-                                                                     true );
+                                                                     declr );
         declr.setReadAccessor( extractor );
 
     }
@@ -968,8 +987,7 @@ public class PatternBuilder
                                                                implicitBinding,
                                                                pattern.getObjectType(),
                                                                implicitBinding.getExpression(),
-                                                               declaration,
-                                                               false );
+                                                               declaration );
 
         if ( extractor == null ) {
             return null;
@@ -984,6 +1002,7 @@ public class PatternBuilder
                                                         final InternalReadAccessor extractor,
                                                         final LiteralRestrictionDescr literalRestrictionDescr ) {
         FieldValue field = null;
+        ValueType vtype = extractor.getValueType();
         try {
             String value = literalRestrictionDescr.getText().trim();            
             
@@ -991,9 +1010,15 @@ public class PatternBuilder
             ParserConfiguration pconf = data.getParserConfiguration();
             ParserContext pctx = new ParserContext( pconf );
             
-            field = FieldFactory.getFieldValue( MVEL.executeExpression( MVEL.compileExpression( value,
-                                                                                                pctx ) ),
-                                                extractor.getValueType(),
+            Object o = MVEL.executeExpression( MVEL.compileExpression( value,
+                                               pctx ) );
+            if (  o != null && vtype == null ) {
+                // was a compilation problem else where, so guess valuetype so we can continue
+                vtype = ValueType.determineValueType( o.getClass() );
+            }
+            
+            field = FieldFactory.getFieldValue( o,
+                                                vtype,
                                                 context.getPackageBuilder().getDateFormats() );
         } catch ( final Exception e ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -1010,7 +1035,7 @@ public class PatternBuilder
         Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
                                                   literalRestrictionDescr,
-                                                  extractor.getValueType(),
+                                                  vtype,
                                                   literalRestrictionDescr.getEvaluator(),
                                                   literalRestrictionDescr.isNegated(),
                                                   literalRestrictionDescr.getParameterText(),
@@ -1130,8 +1155,7 @@ public class PatternBuilder
                                                              final BaseDescr descr,
                                                              final ObjectType objectType,
                                                              final String fieldName,
-                                                             final AcceptsReadAccessor target,
-                                                             final boolean reportError ) {
+                                                             final AcceptsReadAccessor target ) {
         InternalReadAccessor reader = null;
 
         if ( ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
@@ -1153,12 +1177,10 @@ public class PatternBuilder
                 data.addCompileable( (MVELCompileable) reader );
                 ((MVELCompileable) reader).compile( data );
             } catch ( final Exception e ) {
-                if ( reportError ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  descr,
-                                                                  e,
-                                                                  "Unable to create Field Extractor for '" + fieldName + "'" ) );
-                }
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              e,
+                                                              "Unable to create reader for '" + fieldName + "':" + e.getMessage() ) );
             }
         } else {
             try {
@@ -1166,12 +1188,10 @@ public class PatternBuilder
                                                                                   fieldName,
                                                                                   target );
             } catch ( final Exception e ) {
-                if ( reportError ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  descr,
-                                                                  e,
-                                                                  "Unable to create Field Extractor for '" + fieldName + "'" ) );
-                }
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              e,
+                                                              "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage()  ) );
             }
         }
 

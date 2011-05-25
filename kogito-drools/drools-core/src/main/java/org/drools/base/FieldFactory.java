@@ -105,7 +105,7 @@ public class FieldFactory {
         return field;
     }
 
-    public static FieldValue getFieldValue(final Object value,
+    public static FieldValue getFieldValue(Object value,
                                            ValueType valueType,
                                            DateFormats dateFormats) {
         FieldValue field = null;
@@ -115,71 +115,55 @@ public class FieldFactory {
 
         if ( valueType == ValueType.NULL_TYPE ) {
             field = new ObjectFieldImpl( null );
-        } else if ( valueType == ValueType.PCHAR_TYPE ) {
+        } else if ( valueType == ValueType.PCHAR_TYPE || valueType == ValueType.CHAR_TYPE) {
             if( value instanceof String && ((String)value).length() == 1 ) {
                 field = new LongFieldImpl( ((String) value).charAt(0) );
             } else {
                 field = new LongFieldImpl( ((Character) value).charValue() );
             }
-        } else if ( valueType == ValueType.PBYTE_TYPE ) {
+        } else if ( valueType == ValueType.PBYTE_TYPE ||   valueType == ValueType.BYTE_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Byte.parseByte( (String) value) );
             } else {
                 field = new LongFieldImpl( ((Number) value).byteValue() );
             }
-        } else if ( valueType == ValueType.PSHORT_TYPE ) {
+        } else if ( valueType == ValueType.PSHORT_TYPE ||  valueType == ValueType.SHORT_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Short.parseShort( (String) value) );
             } else {
                 field = new LongFieldImpl( ((Number) value).shortValue() );
             }
-        } else if ( valueType == ValueType.PINTEGER_TYPE ) {
+        } else if ( valueType == ValueType.PINTEGER_TYPE || valueType == ValueType.INTEGER_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Integer.parseInt( stripNumericType( (String) value ) ) );
             } else {
                 field = new LongFieldImpl( ((Number) value).intValue() );
             }
-        } else if ( valueType == ValueType.PLONG_TYPE ) {
+        } else if ( valueType == ValueType.PLONG_TYPE || valueType == ValueType.LONG_TYPE ) {
             if( value instanceof String ) {
                 field = new LongFieldImpl( Long.parseLong( stripNumericType( (String) value ) ) );
             } else {
                 field = new LongFieldImpl( ((Number) value).longValue() );
             }
-        } else if ( valueType == ValueType.PFLOAT_TYPE ) {
+        } else if ( valueType == ValueType.PFLOAT_TYPE || valueType == ValueType.FLOAT_TYPE ) {
             if( value instanceof String ) {
                 field = new DoubleFieldImpl( Float.parseFloat( stripNumericType( (String) value ) ) );
             } else {
                 field = new DoubleFieldImpl( ((Number) value).floatValue() );
             }
-        } else if ( valueType == ValueType.PDOUBLE_TYPE ) {
+        } else if ( valueType == ValueType.PDOUBLE_TYPE || valueType == ValueType.DOUBLE_TYPE ) {
             if( value instanceof String ) {
                 field = new DoubleFieldImpl( Double.parseDouble( stripNumericType( (String) value ) ) );
             } else {
                 field = new DoubleFieldImpl( ((Number) value).doubleValue() );
             }
-        } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
+        } else if ( valueType == ValueType.PBOOLEAN_TYPE || valueType == ValueType.BOOLEAN_TYPE ) {
             if( value instanceof String ) {
                 field = new BooleanFieldImpl( Boolean.valueOf( (String) value).booleanValue() );
             } else {
                 field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
             }
-        } else if ( valueType == ValueType.CHAR_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.BYTE_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.SHORT_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.INTEGER_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.LONG_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.FLOAT_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.DOUBLE_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.BOOLEAN_TYPE ) {
-            field = new ObjectFieldImpl( value );
-        } else if ( valueType == ValueType.STRING_TYPE ) {
+        }  else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value );
         } else if ( valueType == ValueType.DATE_TYPE ) {
             //MN: I think its fine like this, seems to work !

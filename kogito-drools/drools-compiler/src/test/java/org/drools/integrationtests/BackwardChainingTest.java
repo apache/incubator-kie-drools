@@ -33,7 +33,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( String $name, String $likes, int $age ) \n" +
-            "    Person( $name : name, $likes : likes, $age : age; ) \n"+
+            "    Person( $name := name, $likes := likes, $age := age; ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -173,7 +173,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( String $name, String $likes, int $age ) \n" +
-            "    Person( $name : name, $likes : likes, $age : age ) \n"+
+            "    Person( $name := name, $likes := likes, $age := age ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -300,7 +300,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( String $name, String $likes, int $age ) \n" +
-            "    Person( $name : name, $likes : likes, $age : age; ) \n"+
+            "    Person( $name := name, $likes := likes, $age := age; ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -429,7 +429,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
-            "    $p : Person( $name : name, $likes : likes, $age : age; ) \n"+
+            "    $p := Person( $name := name, $likes := likes, $age := age; ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -506,7 +506,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( String $name, String $likes, String $street ) \n" +
-            "   Person( $name : name, $likes : likes, $street : address.street ) \n"+
+            "   Person( $name := name, $likes := likes, $street := address.street ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -564,7 +564,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( String $name, String $likes, String $street ) \n" +
-            "   Person( $name : name, $likes : likes, $street : address.street ) \n"+
+            "   Person( $name := name, $likes := likes, $street := address.street ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -629,7 +629,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
-            "    $p : Person( ) from new Person( $name, $likes, $age ) \n"+
+            "    $p := Person( ) from new Person( $name, $likes, $age ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -691,7 +691,7 @@ public class BackwardChainingTest {
             "import org.drools.Person \n" +
             "global java.util.List list\n" +
             "query peeps( Person $p, String $name, String $likes, int $age ) \n" +
-            "    $p : Person( ) from new Person( $name, $likes, $age ) \n"+
+            "    $p := Person( ) from new Person( $name, $likes, $age ) \n"+
             "end\n";
 
         str += "rule x1\n" + 
@@ -778,15 +778,15 @@ public class BackwardChainingTest {
 //            "end \n" + 
             "\n" + 
             "query q(int x)\n" + 
-            "    Q( x : value; )\n" + 
+            "    Q( x := value; )\n" + 
             "end\n" + 
             "\n" + 
             "query r(int x)\n" + 
-            "    R( x : value; )\n" + 
+            "    R( x := value; )\n" + 
             "end\n" + 
             "\n" + 
             "query s(int x)\n" + 
-            "    S( x : value; )    \n" + 
+            "    S( x := value; )    \n" + 
             "end\n" + 
             "\n" + 
             
@@ -862,15 +862,15 @@ public class BackwardChainingTest {
             "dialect \"mvel\"\n" +                   
                                     
             "query man( String name ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Man( name : name ) \n"+
+            "   org.drools.integrationtests.BackwardChainingTest.Man( name := name ) \n"+
             "end\n" +
         
             "query woman( String name ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Woman( name : name ) \n"+
+            "   org.drools.integrationtests.BackwardChainingTest.Woman( name := name ) \n"+
             "end\n" +    
             
             "query parent( String parent, String child ) \n" +
-            "   org.drools.integrationtests.BackwardChainingTest.Parent( parent : parent, child : child ) \n"+
+            "   org.drools.integrationtests.BackwardChainingTest.Parent( parent := parent, child := child ) \n"+
             "end\n" +              
             
             "query father( String father, String child ) \n" +
@@ -1129,12 +1129,12 @@ public class BackwardChainingTest {
             "\n" +              
             "query look(String place, List things, List food, List exits) \n" +
             "    Here(place;)\n"+            
-            "    things : List() from accumulate( Location(thing, place;),\n" +
+            "    things := List() from accumulate( Location(thing, place;),\n" +
             "                                    collectList( thing ) )\n" +   
-            "    food : List() from accumulate( ?whereFood(thing, place;) ," +
+            "    food := List() from accumulate( ?whereFood(thing, place;) ," +
             "                                    collectList( thing ) )\n" +                
             
-            "    exits : List() from accumulate( ?connect(place, exit;),\n" +
+            "    exits := List() from accumulate( ?connect(place, exit;),\n" +
             "                                    collectList( exit ) )\n" +        
             "end\n" +
             "\n" +
