@@ -17,6 +17,7 @@
 package org.drools.planner.examples.nurserostering.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -123,7 +124,11 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                             nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
                                     + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size()
                     });
-
+            BigInteger possibleSolutionSize = BigInteger.valueOf(nurseRoster.getEmployeeList().size()).pow(
+                    nurseRoster.getShiftList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("NurseRoster with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return nurseRoster;
         }
 

@@ -17,10 +17,12 @@
 package org.drools.planner.examples.cloudbalancing.persistence;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
@@ -129,6 +131,14 @@ public class CloudBalancingGenerator extends LoggingMain {
         cloudBalance.setId(0L);
         cloudBalance.setCloudComputerList(createCloudComputerList(cloudComputerListSize));
         cloudBalance.setCloudProcessList(createCloudProcessList(cloudProcessListSize));
+        cloudBalance.setCloudAssignmentList(createCloudAssignmentList(cloudBalance.getCloudProcessList()));
+        logger.info("CloudBalance {} with {} computers and {} processes.",
+                cloudBalance.getCloudComputerList().size(), cloudBalance.getCloudProcessList().size());
+        BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getCloudComputerList().size()).pow(
+                cloudBalance.getCloudAssignmentList().size());
+        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+        logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                flooredPossibleSolutionSize, possibleSolutionSize);
         return cloudBalance;
     }
 
@@ -146,7 +156,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
                     + MEMORY_PRICES[memoryPricesIndex].getCost()
                     + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
-            logger.info("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
+            logger.debug("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
                     + " networkBandwidthPricesIndex({}).",
                     new Object[]{cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex});
             cloudComputer.setCost(cost);
@@ -182,7 +192,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             cloudProcess.setMinimalMemory(minimalMemory);
             int minimalNetworkBandwidth = generateRandom(MAXIMUM_MINIMAL_NETWORK_BANDWIDTH);
             cloudProcess.setMinimalNetworkBandwidth(minimalNetworkBandwidth);
-            logger.info("Created CloudProcess with minimalCpuPower ({}), minimalMemory({}),"
+            logger.debug("Created CloudProcess with minimalCpuPower ({}), minimalMemory({}),"
                     + " minimalNetworkBandwidth({}).",
                     new Object[]{minimalCpuPower, minimalMemory, minimalNetworkBandwidth});
             cloudProcessList.add(cloudProcess);
@@ -202,6 +212,20 @@ public class CloudBalancingGenerator extends LoggingMain {
             throw new IllegalArgumentException("Invalid generated value (" + value + ")");
         }
         return value;
+    }
+
+    private List<CloudAssignment> createCloudAssignmentList(List<CloudProcess> cloudProcessList) {
+        List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>(cloudProcessList.size());
+        long id = 0L;
+        for (CloudProcess cloudProcess : cloudProcessList) {
+            CloudAssignment cloudAssignment = new CloudAssignment();
+            cloudAssignment.setId(id);
+            cloudAssignment.setCloudProcess(cloudProcess);
+            // Notice that we lave the PlanningVariable properties on null
+            cloudAssignmentList.add(cloudAssignment);
+            id++;
+        }
+        return cloudAssignmentList;
     }
 
 }

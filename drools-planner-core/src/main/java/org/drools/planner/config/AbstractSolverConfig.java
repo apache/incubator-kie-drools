@@ -228,6 +228,8 @@ System.out.println("Here we go: " + entityCollectionDescriptor.getName());
                                 + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
                                 + ") that should have a setter.");
                     }
+// TODO Cool, we got a working property
+System.out.println("yaay " + variableDescriptor.getName());
                     ValueRangeFromSolutionProperty valueRangeFromSolutionPropertyAnnotation
                             = variableDescriptor.getReadMethod().getAnnotation(ValueRangeFromSolutionProperty.class);
                     if (valueRangeFromSolutionPropertyAnnotation == null) {
@@ -255,9 +257,6 @@ System.out.println("Here we go: " + entityCollectionDescriptor.getName());
                     }
 // TODO Cool, prepare the rest
 System.out.println("yes, solutionPropertyDescriptor " + solutionPropertyDescriptor.getName());
-
-// TODO Cool, we got a working property
-System.out.println("yaay " + variableDescriptor.getName());
                 }
             }
             if (noPlanningVariableAnnotation) {

@@ -17,6 +17,7 @@
 package org.drools.planner.examples.curriculumcourse.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Day;
+import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.Teacher;
@@ -88,6 +90,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             readUnavailablePeriodConstraintList(
                     schedule, courseMap, periodMap, unavailablePeriodConstraintListSize);
             readHeader("END.");
+            schedule.setLectureList(createLectureList(schedule.getCourseList()));
 
             logger.info("CurriculumCourseSchedule with {} teachers, {} curricula, {} courses, {} periods, {} rooms" +
                     " and {} unavailable period constraints.",
@@ -97,8 +100,12 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                             schedule.getPeriodList().size(),
                             schedule.getRoomList().size(),
                             schedule.getUnavailablePeriodConstraintList().size()});
-
-            // Note: lectureList stays null, that's work for the StartingSolutionInitializer
+            int possibleForOneLectureSize = schedule.getPeriodList().size() * schedule.getRoomList().size();
+            BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
+                    schedule.getLectureList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("CurriculumCourseSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return schedule;
         }
 
@@ -259,6 +266,23 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                 constraintList.add(constraint);
             }
             schedule.setUnavailablePeriodConstraintList(constraintList);
+        }
+
+        private List<Lecture> createLectureList(List<Course> courseList) {
+            List<Lecture> lectureList = new ArrayList<Lecture>(courseList.size());
+            long id = 0L;
+            for (Course course : courseList) {
+                for (int i = 0; i < course.getLectureSize(); i++) {
+                    Lecture lecture = new Lecture();
+                    lecture.setId((long) id);
+                    id++;
+                    lecture.setCourse(course);
+                    lecture.setLectureIndexInCourse(i);
+                    // Notice that we lave the PlanningVariable properties on null
+                    lectureList.add(lecture);
+                }
+            }
+            return lectureList;
         }
 
         private String readParam(String key) throws IOException {

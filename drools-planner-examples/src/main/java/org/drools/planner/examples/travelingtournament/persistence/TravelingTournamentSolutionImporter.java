@@ -47,7 +47,8 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
             List<Day> dayList = constructDayList(n);
             travelingTournament.setDayList(dayList);
             List<List<Integer>> outerDistanceList = readOuterDistanceList();
-            List<Match> matchList = constructMatchListAndSetDistancesInTeamList(teamList, outerDistanceList);
+            // TODO setting the distances should be a separate method
+            List<Match> matchList = createMatchListAndSetDistancesInTeamList(teamList, outerDistanceList);
             travelingTournament.setMatchList(matchList);
             initializeMatchDays(travelingTournament);
             return travelingTournament;
@@ -102,7 +103,7 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
             return dayList;
         }
 
-        private List<Match> constructMatchListAndSetDistancesInTeamList(List<Team> teamList, List<List<Integer>> outerDistanceList) {
+        private List<Match> createMatchListAndSetDistancesInTeamList(List<Team> teamList, List<List<Integer>> outerDistanceList) {
             List<Match> matchList = new ArrayList<Match>();
             int i = 0;
             long matchId = 0;
