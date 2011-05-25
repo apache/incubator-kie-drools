@@ -80,8 +80,7 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
 
     public void compile(MVELDialectRuntimeData runtimeData) {
         Class cls = null;
-        try {
-            
+        try {            
             cls = runtimeData.getRootClassLoader().loadClass( this.className );
         } catch ( ClassNotFoundException e ) {
             throw new IllegalStateException( "Unable to compile as Class could not b e found '" + className + "'");
