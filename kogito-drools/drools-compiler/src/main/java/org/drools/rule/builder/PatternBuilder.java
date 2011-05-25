@@ -652,13 +652,8 @@ public class PatternBuilder
                 // something failed and an error should already have been reported
                 return;
             }
-            if( restriction instanceof ReturnValueRestriction ) {
-                pattern.addConstraint( new ReturnValueConstraint( extractor,
-                                                                  (ReturnValueRestriction) restriction ) );
-            } else {
-                pattern.addConstraint( new VariableConstraint( extractor,
-                                                               restriction ) );
-            }
+            pattern.addConstraint( new VariableConstraint( extractor,
+                                                           restriction ) );
         }
     }
 
