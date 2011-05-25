@@ -110,7 +110,7 @@ public class IndexingTest {
         str += "package org.drools.test  \n";
         str += "import org.drools.Person \n";
         str += "query peeps( String $name, String $likes, String $street) \n";
-        str += "    $p : Person( $name : name, $likes : likes, $street : address.street ) \n";
+        str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
