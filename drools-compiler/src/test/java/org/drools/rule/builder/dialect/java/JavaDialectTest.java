@@ -76,7 +76,7 @@ public class JavaDialectTest {
         assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
         
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
-        ReturnValueRestriction r = (ReturnValueRestriction) (( ReturnValueConstraint ) alphanode.getConstraint()).getRestriction();
+        ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
         
         assertTrue( r.getExpression() instanceof ReturnValueExpression );
         assertTrue( r.getExpression() instanceof CompiledInvoker );
@@ -127,7 +127,7 @@ public class JavaDialectTest {
         assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
         assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
          
-        ReturnValueRestriction r = ( ReturnValueRestriction ) (( ReturnValueConstraint )constraint[1]).getRestriction();
+        ReturnValueRestriction r = ( ReturnValueRestriction ) (( VariableConstraint )constraint[1]).getRestriction();
         assertTrue( r.getExpression() instanceof ReturnValueExpression );
         assertTrue( r.getExpression() instanceof CompiledInvoker );
         assertTrue( !(r.getExpression() instanceof MVELReturnValueExpression ) );        
