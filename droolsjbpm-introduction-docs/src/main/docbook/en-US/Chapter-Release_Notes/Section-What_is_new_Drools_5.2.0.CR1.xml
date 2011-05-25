@@ -64,4 +64,27 @@
       </figure>
     </section>
   </section>
+
+  <section>
+    <title>Expert and Fusion</title>
+
+    <section>
+      <title>Multi-function Accumulates</title>
+
+      <para>The accumulate CE now supports multiple functions. For instance,
+      if one needs to find the minimum, maximum and average value for the same
+      set of data, instead of having to repeat the accumulate statement 3
+      times, a single accumulate can be used.</para>
+
+      <programlisting>rule "Max, min and average" 
+    when
+        accumulate( Cheese( $price : price ),
+                    $max : max( $price ),
+                    $min : min( $price ),
+                    $avg : average( $price ) )
+    then
+        // do something
+end </programlisting>
+    </section>
+  </section>
 </section>
