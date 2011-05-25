@@ -306,7 +306,7 @@ public class MVELTest {
         assertEquals(3, insertedObjects.size());
     }
     
-    @Test
+    @Test @Ignore // MVEL bug
     public void testSizeCheckInObject() {
         String str = ""+
         "package org.test \n" +
