@@ -23,6 +23,7 @@ import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.domain.PlanningEntity;
+import org.drools.planner.core.domain.PlanningEntityCollection;
 import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -177,6 +179,25 @@ public abstract class AbstractSolverConfig {
         } catch (IntrospectionException e) {
             throw new IllegalStateException("The solutionClass (" + solutionClass + ") is not a valid java bean.", e);
         }
+        boolean noPlanningEntityCollectionAnnotation = true;
+        for (PropertyDescriptor entityCollectionDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
+            PlanningEntityCollection planningEntityCollectionAnnotation = entityCollectionDescriptor.getReadMethod()
+                    .getAnnotation(PlanningEntityCollection.class);
+            if (planningEntityCollectionAnnotation != null) {
+                noPlanningEntityCollectionAnnotation = false;
+                if (!Collection.class.isAssignableFrom(entityCollectionDescriptor.getPropertyType())) {
+                    throw new IllegalStateException("The solutionClass (" + solutionClass
+                            + ") has a PlanningEntityCollection annotated property (" + entityCollectionDescriptor.getName()
+                            + ") that does not return a Collection.");
+                }
+// TODO Cool
+System.out.println("Here we go: " + entityCollectionDescriptor.getName());
+            }
+        }
+        if (noPlanningEntityCollectionAnnotation) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") should have at least 1 getter with a PlanningEntityCollection annotation.");
+        }
 
         if (planningEntityClassSet == null) {
             throw new IllegalArgumentException(
@@ -189,41 +210,54 @@ public abstract class AbstractSolverConfig {
                         + ") has been specified as a planning entity in the configuration," +
                         " but does not have a PlanningEntity annotation.");
             }
-            BeanInfo beanInfo;
+            BeanInfo entityBeanInfo;
             try {
-                beanInfo = Introspector.getBeanInfo(planningEntityClass);
+                entityBeanInfo = Introspector.getBeanInfo(planningEntityClass);
             } catch (IntrospectionException e) {
                 throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                         + ") is not a valid java bean.", e);
             }
             boolean noPlanningVariableAnnotation = true;
-            for (PropertyDescriptor propertyDescriptor : beanInfo.getPropertyDescriptors()) {
-                PlanningVariable planningVariableAnnotation = propertyDescriptor.getReadMethod()
+            for (PropertyDescriptor variableDescriptor : entityBeanInfo.getPropertyDescriptors()) {
+                PlanningVariable planningVariableAnnotation = variableDescriptor.getReadMethod()
                         .getAnnotation(PlanningVariable.class);
                 if (planningVariableAnnotation != null) {
                     noPlanningVariableAnnotation = false;
-                    if (propertyDescriptor.getWriteMethod() == null) {
+                    if (variableDescriptor.getWriteMethod() == null) {
                         throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                                + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
+                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
                                 + ") that should have a setter.");
                     }
                     ValueRangeFromSolutionProperty valueRangeFromSolutionPropertyAnnotation
-                            = propertyDescriptor.getReadMethod().getAnnotation(ValueRangeFromSolutionProperty.class);
+                            = variableDescriptor.getReadMethod().getAnnotation(ValueRangeFromSolutionProperty.class);
                     if (valueRangeFromSolutionPropertyAnnotation == null) {
-                        // TODO support plugging in other ValueRange implementations
+                        // TODO Support plugging in other ValueRange implementations
                         throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
-                                + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
+                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
                                 + ") that has no ValueRangeFromSolutionProperty annotation.");
                     }
-                    for (PropertyDescriptor solutionPropertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
-                        if (valueRangeFromSolutionPropertyAnnotation.propertyName().equals(solutionPropertyDescriptor.getName())) {
-System.out.println("yes, found " + solutionPropertyDescriptor.getName());
-                            break;
-                        }
+                    String solutionPropertyName = valueRangeFromSolutionPropertyAnnotation.propertyName();
+                    PropertyDescriptor solutionPropertyDescriptor = findSolutionPropertyDescriptor(solutionBeanInfo,
+                            solutionPropertyName);
+                    if (solutionPropertyDescriptor == null) {
+                        throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
+                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
+                                + ") that refers to a solutionClass (" + solutionClass
+                                + ") solutionProperty (" + solutionPropertyName
+                                + ") that does not exist.");
                     }
+                    if (!Collection.class.isAssignableFrom(solutionPropertyDescriptor.getPropertyType())) {
+                        throw new IllegalArgumentException("The planningEntityClass (" + planningEntityClass
+                                + ") has a PlanningVariable annotated property (" + variableDescriptor.getName()
+                                + ") that refers to a solutionClass (" + solutionClass
+                                + ") solutionProperty (" + solutionPropertyName
+                                + ") that does not return a Collection.");
+                    }
+// TODO Cool, prepare the rest
+System.out.println("yes, solutionPropertyDescriptor " + solutionPropertyDescriptor.getName());
 
-                    // TODO Cool, we got a working property
-System.out.println("yaay " + propertyDescriptor.getName());
+// TODO Cool, we got a working property
+System.out.println("yaay " + variableDescriptor.getName());
                 }
             }
             if (noPlanningVariableAnnotation) {
@@ -231,6 +265,15 @@ System.out.println("yaay " + propertyDescriptor.getName());
                         + ") should have at least 1 getter with a PlanningVariable annotation.");
             }
         }
+    }
+
+    private PropertyDescriptor findSolutionPropertyDescriptor(BeanInfo solutionBeanInfo, String solutionPropertyName) {
+        for (PropertyDescriptor solutionPropertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
+            if (solutionPropertyName.equals(solutionPropertyDescriptor.getName())) {
+                return solutionPropertyDescriptor;
+            }
+        }
+        return null;
     }
 
     private RuleBase buildRuleBase() {

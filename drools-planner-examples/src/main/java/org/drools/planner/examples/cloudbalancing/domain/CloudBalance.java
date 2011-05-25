@@ -23,8 +23,9 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntityCollection;
+import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.score.HardAndSoftScore;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
@@ -54,6 +55,7 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         this.cloudProcessList = cloudProcessList;
     }
 
+    @PlanningEntityCollection
     public List<CloudAssignment> getCloudAssignmentList() {
         return cloudAssignmentList;
     }

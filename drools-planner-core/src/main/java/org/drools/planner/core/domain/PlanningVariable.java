@@ -33,4 +33,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 public @interface PlanningVariable {
 
+    // TODO Add null
+    // boolean nullable() default false;
+
 }

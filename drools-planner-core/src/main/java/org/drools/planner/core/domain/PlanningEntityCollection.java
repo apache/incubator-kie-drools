@@ -18,7 +18,6 @@ package org.drools.planner.core.domain;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.Collection;
 
 import org.drools.planner.core.solution.Solution;
 
@@ -26,18 +25,15 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that the planning value range for a planning variable is defined by a property on the {@link Solution}.
+ * Specifies that a property on a {@link Solution} is a collection of planning entities.
  * <p/>
- * It is specified on a getter of a java bean property which already has a {@link PlanningVariable} annotation.
+ * Every element in the planning entity collection should have the {@link PlanningEntity} annotation.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface ValueRangeFromSolutionProperty {
+public @interface PlanningEntityCollection {
 
-    /**
-     * The property name of which exists a getter on the {@link Solution} that returns a {@link Collection}.
-     * @return never null
-     */
-    String propertyName();
+    // TODO factory for dynamic length entity collections
+    // PlanningEntityFactory factory() default Void.class;
 
 }
