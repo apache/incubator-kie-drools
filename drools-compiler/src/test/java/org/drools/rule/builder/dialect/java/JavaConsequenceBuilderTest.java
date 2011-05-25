@@ -85,7 +85,8 @@ public class JavaConsequenceBuilderTest {
                                                                                     new BindingDescr("age", "age"),
                                                                                     p.getObjectType(),
                                                                                     "age",
-                                                                                    declr );
+                                                                                    declr,
+                                                                                    true );
         
         rule.addPattern( p );
         

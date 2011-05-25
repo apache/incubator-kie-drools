@@ -493,7 +493,8 @@ public class PatternBuilder
                                                                          d,
                                                                          pattern.getObjectType(),
                                                                          fieldName,
-                                                                         null );
+                                                                         null,
+                                                                         false );
 
             if ( extractor == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -760,7 +761,8 @@ public class PatternBuilder
                                                                      fieldBindingDescr,
                                                                      pattern.getObjectType(),
                                                                      fieldBindingDescr.getExpression(),
-                                                                     declr );
+                                                                     declr,
+                                                                     true );
         declr.setReadAccessor( extractor );
 
     }
@@ -982,7 +984,8 @@ public class PatternBuilder
                                                                implicitBinding,
                                                                pattern.getObjectType(),
                                                                implicitBinding.getExpression(),
-                                                               declaration );
+                                                               declaration,
+                                                               false );
 
         if ( extractor == null ) {
             return null;
@@ -1150,7 +1153,9 @@ public class PatternBuilder
                                                              final BaseDescr descr,
                                                              final ObjectType objectType,
                                                              final String fieldName,
-                                                             final AcceptsReadAccessor target ) {
+                                                             final AcceptsReadAccessor target,
+                                                             final boolean reportError ) {
+        // reportError is needed as some times failure to build accessor is not a failure, just an indication that building is not possible so try something else.
         InternalReadAccessor reader = null;
 
         if ( ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
@@ -1172,10 +1177,12 @@ public class PatternBuilder
                 data.addCompileable( (MVELCompileable) reader );
                 ((MVELCompileable) reader).compile( data );
             } catch ( final Exception e ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              descr,
-                                                              e,
-                                                              "Unable to create reader for '" + fieldName + "':" + e.getMessage() ) );
+                if ( reportError ) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  descr,
+                                                                  e,
+                                                                  "Unable to create reader for '" + fieldName + "':" + e.getMessage() ) );
+                }
             }
         } else {
             try {
@@ -1183,10 +1190,12 @@ public class PatternBuilder
                                                                                   fieldName,
                                                                                   target );
             } catch ( final Exception e ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              descr,
-                                                              e,
-                                                              "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage()  ) );
+                if ( reportError ) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  descr,
+                                                                  e,
+                                                                  "Unable to create Field Extractor for '" + fieldName + "'" + e.getMessage()  ) );
+                }
             }
         }
 
