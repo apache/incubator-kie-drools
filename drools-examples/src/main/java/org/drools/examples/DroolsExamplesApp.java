@@ -72,11 +72,12 @@ public class DroolsExamplesApp extends JFrame {
                 PetStoreExample.main(new String[0]);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("PacmanExample") {
-            public void actionPerformed(ActionEvent e) {
-                PacmanExample.main(new String[0]);
-            }
-        }));
+        // Mask Pacman for CR1
+//        contentPane.add(new JButton(new AbstractAction("PacmanExample") {
+//            public void actionPerformed(ActionEvent e) {
+//                PacmanExample.main(new String[0]);
+//            }
+//        }));
         
         contentPane.add(new JLabel("Which output example do you want to see?"));
 
