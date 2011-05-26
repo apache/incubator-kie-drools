@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
-    <version>5.2.0.CR1</version>
+    <version>5.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
@@ -41,7 +41,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="5.2.0.CR1", org.drools.compiler;bundle-version="5.2.0.CR1"</Require-Bundle>
+            <Require-Bundle>org.drools.core;bundle-version="5.2.0.SNAPSHOT", org.drools.compiler;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
             <Import-Package>!org.drools.*, *</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
