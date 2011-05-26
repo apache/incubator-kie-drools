@@ -31,6 +31,8 @@ import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.FactHandle;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -39,10 +41,15 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.common.EqualityKey;
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.RuleBasePartitionId;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.rule.EntryPoint;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.GlobalResolver;
 
 public class ReteooWorkingMemoryTest {
@@ -161,6 +168,47 @@ public class ReteooWorkingMemoryTest {
         wm.queueWorkingMemoryAction( action );
         wm.executeQueuedActions();
         assertEquals( 2, action.counter.get() );
+    }
+    
+    @Test
+    public void testDifferentEntryPointsOnSameFact() {
+        //JBRULES-2971
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        ReteooRuleBase rbase = ( ReteooRuleBase ) ((KnowledgeBaseImpl)kbase).getRuleBase();
+        Rete rete = rbase.getRete();
+        EntryPointNode epn = new EntryPointNode( rbase.getReteooBuilder().getIdGenerator().getNextId(),
+                                                 RuleBasePartitionId.MAIN_PARTITION,
+                                                 rbase.getConfig().isMultithreadEvaluation(),
+                                                 rete,
+                                                 new EntryPoint( "xxx" ) );
+        
+        
+        rbase.getRete().addObjectSink( epn );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        org.drools.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
+        
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "xxx" );
+        try {
+            ep.update( f1, "s1" );
+            fail( "Should throw an exception" );
+        } catch ( IllegalArgumentException e ) {
+            
+        }
+       
+        try {
+            ep.retract( f1 );
+            fail( "Should throw an exception" );
+        } catch ( IllegalArgumentException e ) {
+            
+        }   
+        
+        ksession.update( f1, "s1" );
+        assertNotNull( ksession.getObject( f1 ) );
+        ksession.retract( f1 );
+        
+        ksession.retract( f1 );
+        assertNull( ksession.getObject( f1 ) );
     }
 
     private static class ReentrantAction implements WorkingMemoryAction {
