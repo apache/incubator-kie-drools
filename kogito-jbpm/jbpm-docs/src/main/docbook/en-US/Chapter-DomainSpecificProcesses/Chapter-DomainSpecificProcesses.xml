@@ -88,7 +88,7 @@ and the display name of the work item.</para>
 
 <para> In our example we will use MVEL for reading in the configuration file,
 which allows us to do more advanced configuration files. This file must be placed in the project
-classpath in a directory called META-INF. Our MyWorkDefinitions.conf file
+classpath in a directory called META-INF. Our MyWorkDefinitions.wid file
 looks like this:</para>
 
 <programlisting>
@@ -113,11 +113,11 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
 <para>The project directory structure could then look something like this:</para>
 
 <programlisting>
-project/src/main/resources/META-INF/MyWorkDefinitions.conf
+project/src/main/resources/META-INF/MyWorkDefinitions.wid
 </programlisting>
 
 <para>You might now want to create your own icons to go along with your new work definition.
-To add these you will need .gif images with a pixel size of 16x16. Place them in a directory
+To add these you will need .gif or .png images with a pixel size of 16x16. Place them in a directory
 outside of the META-INF directory, for example as follows:</para>
 
 <programlisting>
@@ -135,7 +135,7 @@ definitions (separated usings spaces). For example, include a drools.rulebase.co
 the META-INF directory of your project and add the following line:</para>
 
 <programlisting>
-  drools.workDefinitions = MyWorkDefinitions.conf
+  drools.workDefinitions = MyWorkDefinitions.wid
 </programlisting>
 
 <para>This will replace the default domain specific node types EMAIL and LOG with the newly 
