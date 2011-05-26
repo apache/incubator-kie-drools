@@ -77,6 +77,22 @@ public class SolutionDescriptor implements Serializable {
         }
     }
 
+    public Class<? extends Solution> getSolutionClass() {
+        return solutionClass;
+    }
+
+    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
+        return propertyDescriptorMap.get(propertyName);
+    }
+
+    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
+        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
+    }
+
+    public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityClass) {
+        return planningEntityDescriptorMap.get(planningEntityClass);
+    }
+
     public Collection<? extends Object> getFacts(Solution solution) {
         Collection<Object> planningFacts = new ArrayList<Object>();
         for (PropertyDescriptor factPropertyDescriptor : factPropertyDescriptorMap.values()) {
@@ -101,16 +117,16 @@ public class SolutionDescriptor implements Serializable {
         return planningFacts;
     }
 
-    public void addPlanningEntityDescriptor(PlanningEntityDescriptor planningEntityDescriptor) {
-        planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
-    }
-
-    public Class<? extends Solution> getSolutionClass() {
-        return solutionClass;
-    }
-
-    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
-        return propertyDescriptorMap.get(propertyName);
+    public Collection<? extends Object> getPlanningEntities(Solution solution) {
+        Collection<Object> planningEntities = new ArrayList<Object>();
+        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+            Collection<? extends Object> entityCollection = (Collection<? extends Object>)
+                    DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+            for (Object entity : entityCollection) {
+                planningEntities.add(entity);
+            }
+        }
+        return planningEntities;
     }
 
 }

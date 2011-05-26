@@ -18,6 +18,20 @@ public class DescriptorUtils {
         }
     }
 
+    public static void executeSetter(PropertyDescriptor propertyDescriptor, Object bean, Object value) {
+        // TODO generated
+        try {
+            propertyDescriptor.getWriteMethod().invoke(bean, value);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException("Cannot call property (" + propertyDescriptor.getName()
+                    + ") setter on bean of class (" + bean.getClass() + ").", e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException("The property (" + propertyDescriptor.getName()
+                    + ") setter on bean of class (" + bean.getClass() + ") throws an exception.",
+                    e.getCause());
+        }
+    }
+
     private DescriptorUtils() {
     }
 

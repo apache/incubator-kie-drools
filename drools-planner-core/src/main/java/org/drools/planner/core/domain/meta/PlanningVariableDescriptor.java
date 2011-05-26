@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
+import org.drools.planner.core.solution.Solution;
 
 public class PlanningVariableDescriptor {
 
@@ -64,6 +65,19 @@ public class PlanningVariableDescriptor {
         // TODO extract to VariableInitialized interface
         Object variable = DescriptorUtils.executeGetter(variablePropertyDescriptor, planningEntity);
         return variable != null;
+    }
+
+    public Object getValue(Object bean) {
+        return DescriptorUtils.executeGetter(variablePropertyDescriptor, bean);
+    }
+
+    public void setValue(Object bean, Object value) {
+        DescriptorUtils.executeSetter(variablePropertyDescriptor, bean, value);
+    }
+
+    // TODO extract to RangeValue interface
+    public Collection<?> getRangeValues(Solution solution) {
+        return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, solution);
     }
 
 }

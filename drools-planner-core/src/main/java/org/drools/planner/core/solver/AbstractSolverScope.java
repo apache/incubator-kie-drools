@@ -193,8 +193,12 @@ public abstract class AbstractSolverScope {
         }
     }
 
-    protected Collection<? extends Object> getWorkingFacts() {
+    public Collection<? extends Object> getWorkingFacts() {
         return solutionDescriptor.getFacts(workingSolution);
+    }
+
+    public Collection<? extends Object> getWorkingPlanningEntities() {
+        return solutionDescriptor.getPlanningEntities(workingSolution);
     }
 
     /**

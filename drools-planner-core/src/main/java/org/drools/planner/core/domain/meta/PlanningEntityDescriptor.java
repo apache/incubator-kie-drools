@@ -73,6 +73,10 @@ public class PlanningEntityDescriptor {
         return planningEntityClass;
     }
 
+    public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {
+        return planningVariableDescriptorMap.values();
+    }
+
     public boolean isInitialized(Object planningEntity) {
         for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
             if (!planningVariableDescriptor.isInitialized(planningEntity)) {
