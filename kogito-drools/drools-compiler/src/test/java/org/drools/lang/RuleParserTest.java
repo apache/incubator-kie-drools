@@ -32,6 +32,7 @@ import org.antlr.runtime.CharStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.DrlParser;
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
 import org.drools.lang.descr.AndDescr;
@@ -3894,10 +3895,18 @@ public class RuleParserTest extends TestCase {
         try {
             createParser( charStream );
             /** Use Reflection to get rule method from parser */
-            Method ruleName = DRLParser.class.getMethod( testRuleName );
+            Method ruleName = null;
+            Object[] params = null;
+            for( Method method : DRLParser.class.getMethods() ) {
+                if( method.getName().equals( testRuleName ) ) {
+                    ruleName = method;
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    params = new Object[parameterTypes.length];
+                }
+            }
 
             /** Invoke grammar rule, and get the return value */
-            Object ruleReturn = ruleName.invoke( parser );
+            Object ruleReturn = ruleName.invoke( parser, params );
 
             if ( parser.hasErrors() ) {
                 System.out.println( parser.getErrorMessages() );

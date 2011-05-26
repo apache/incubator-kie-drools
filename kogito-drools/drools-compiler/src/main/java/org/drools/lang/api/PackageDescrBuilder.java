@@ -4,8 +4,7 @@ import org.drools.lang.descr.PackageDescr;
 
 public interface PackageDescrBuilder
     extends
-    DescrBuilder<PackageDescr>,
-    AttributeSupportBuilder {
+    AttributeSupportBuilder<PackageDescr> {
 
     public PackageDescrBuilder name( String name );
 
