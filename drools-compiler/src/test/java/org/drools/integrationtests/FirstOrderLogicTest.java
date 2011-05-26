@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -1502,4 +1503,112 @@ public class FirstOrderLogicTest {
                       rules );
 
     }
+    
+    @Test @Ignore
+    public void testLotsOfOrs() throws Exception {
+        // Decomposed this test down to just two rules, while still exhibiting the problem
+        // Uncomment rest of rule as those are fixed, to complicate it again.
+        String str = "package org.drools.test\n" + 
+                "\n" + 
+                "import " + FirstOrderLogicTest.class.getCanonicalName() + ".Field;\n" + 
+                " \n" + 
+                "rule \"test\"\n" + 
+                "    when\n" + 
+//                "        (\n" + 
+//                "            ( \n" + 
+//                "                a : Field( name == \"a\") and\n" + 
+//                "                eval( !a.getValue().equals(\"a\") ) and\n" + 
+//                "                b : Field( name == \"b\" ) and\n" + 
+//                "                eval( b.intValue()>10 )\n" + 
+//                "           )\n" + 
+//                "           /*\n" + 
+//                "           or\n" + 
+//                "           (\n" + 
+//                "                b2 : Field( name == \"b\" ) and\n" + 
+//                "                eval( b2.intValue()<10 )\n" + 
+//                "           )\n" + 
+//                "           */\n" + 
+//                "        )\n" + 
+//                "        and \n" + 
+//                "        (\n" + 
+//                "            t : Field( name == \"t\" ) and\n" + 
+//                "            eval( t.getValue().equals(\"Y\") )\n" + 
+//                "        )\n" + 
+//                "        and (\n" + 
+//                "           (\n" + 
+//                "                c : Field( name == \"c\" ) and\n" + 
+//                "                eval( c.getValue().equals(\"c\") ) and\n" +                 
+//                "                d : Field( name == \"d\" ) and\n" + 
+//                "                eval( d.intValue()<5 )\n" + 
+//                "           ) \n" + 
+//                "           or \n" + 
+                "           (\n" + 
+                "                c : Field( name == \"c\" ) and\n" + 
+                "                eval( c.getValue().equals(\"c\") ) and\n" + 
+                "                d : Field( name == \"d\" ) and\n" + 
+                "                eval( d.intValue()<20 )\n" + 
+                "           ) \n" + 
+                "           or \n" + 
+                "           ( \n" + 
+                "                c : Field( name == \"c\") and\n" + 
+                "                eval( c.getValue().equals(\"d\") ) and\n" + 
+                "                d : Field( name == \"d\" ) and\n" + 
+                "                eval( d.intValue()<20 )\n" + 
+                "           )\n" + 
+//                "        )\n" + 
+                "    then\n" + 
+                "        System.out.println( \"Worked!\" ); \n" + 
+                "end";
+        
+        System.out.println( str );
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+             
+        ksession.insert(new Field("t", "Y"));
+        ksession.insert(new Field("a", "b"));
+        ksession.insert(new Field("b", "15"));
+        ksession.insert(new Field("c", "d"));
+        ksession.insert(new Field("d", "15"));
+        ksession.fireAllRules();   
+        ksession.dispose();
+    }
+    
+
+    public class Field {
+        public Field(String name, String value) {
+            super();
+            this.name = name;
+            this.value = value;
+        }
+        
+        private String name;
+        private String value;
+        
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getValue() {
+            return value;
+        }
+        public void setValue(String value) {
+            this.value = value;
+        }
+        
+        public int intValue() {
+            Integer intValue = Integer.valueOf(value);
+            return intValue;
+        }
+    }    
 }
