@@ -274,9 +274,9 @@ public class FirstOrderLogicTest {
         wm.fireAllRules();
 
         assertEquals( 1,
-                             results.size() );
+                      results.size() );
         assertEquals( 1,
-                             ((Collection) results.get( 0 )).size() );
+                      ((Collection) results.get( 0 )).size() );
 
         wm.insert( new Cheese( "stilton",
                                7 ) );
@@ -288,11 +288,12 @@ public class FirstOrderLogicTest {
         results = (List) wm.getGlobal( "results" );
 
         assertEquals( 1,
-                             results.size() );
-        assertEquals( 1,
-                             ((Collection) results.get( 0 )).size() );
+                      results.size() );
+        // It's 3 as while the rule does not fire, it does continue to evaluate and update the collection
+        assertEquals( 3,
+                      ((Collection) results.get( 0 )).size() );
         assertEquals( ArrayList.class.getName(),
-                             results.get( 0 ).getClass().getName() );
+                      results.get( 0 ).getClass().getName() );
     }
 
     @Test

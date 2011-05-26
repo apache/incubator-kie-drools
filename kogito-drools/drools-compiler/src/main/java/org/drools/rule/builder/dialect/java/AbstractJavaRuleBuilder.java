@@ -93,6 +93,11 @@ public class AbstractJavaRuleBuilder {
         final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
             declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
+            if ( declarationTypes[i] == null ) {
+                // declaration type was not fixed properly, assume this was reported from it's original problem
+                //return null;
+                declarationTypes[i] = "java.lang.Object";
+            }
         }
 
         map.put( "declarations",

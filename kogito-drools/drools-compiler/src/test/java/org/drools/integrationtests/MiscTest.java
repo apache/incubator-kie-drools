@@ -7409,6 +7409,26 @@ public class MiscTest {
         assertEquals( 3,
                       list.size() );
     }
+    
+    @Test
+    public void testBindingToMissingField() throws Exception {
+        // JBRULES-3047
+        String rule1 = "package org.drools\n";
+        rule1 += "rule rule1\n";
+        rule1 += "when\n";
+        rule1 += "    Integer( $i : noSuchField ) \n";
+        rule1 += "    eval( $i > 0 )\n";
+        rule1 += "then \n";
+        rule1 += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( !kbuilder.hasErrors() ) {
+            fail( "this should have errors" );
+        }
+    }    
 
     @Test
     public void testJBRules2140() {
