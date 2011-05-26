@@ -29,6 +29,8 @@
 </localSearchSolver>
 <!--<bruteForceSolver>-->
     <!--<environmentMode>DEBUG</environmentMode>-->
+    <!--<solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>-->
+    <!--<planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudAssignment</planningEntityClass>-->
     <!--<scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
     <!--<scoreDefinition>-->
         <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
