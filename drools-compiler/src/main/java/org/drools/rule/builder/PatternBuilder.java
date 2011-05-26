@@ -328,7 +328,6 @@ public class PatternBuilder
                                                                   "Unable to find @positional field " + descr.getPosition() ) + "\n" );
                     continue;
                 }
-                //                System.err.println("Field is " + field.getName());
 
                 DRLLexer lex = new DRLLexer( new ANTLRStringStream( descr.getExpression() ) );
                 boolean isSimpleIdentifier = false;
@@ -338,20 +337,6 @@ public class PatternBuilder
                 } catch ( RecognitionException e ) {
 
                 }
-//
-//                boolean isBound = false;
-//                if ( isSimpleIdentifier ) {
-//                    isBound = context.getDeclaration( descr.getExpression() ) != null;
-//                    if ( !isBound ) {
-//                        Iterator< ? extends BaseDescr> inner = patternDescr.getConstraint().getDescrs().iterator();
-//                        BaseDescr innerDescr = inner.next();
-//                        while ( !isBound && innerDescr != descr ) {
-//                            if ( innerDescr.getText().equals( descr.getExpression() ) ) isBound = true;
-//                            innerDescr = inner.next();
-//                        }
-//
-//                    }
-//                }
 
                 if ( isSimpleIdentifier ) {
                     BindingDescr binder = new BindingDescr();
