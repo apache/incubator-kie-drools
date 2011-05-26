@@ -57,7 +57,24 @@ end</programlisting>
       evaluated type unsafely. We have changed this so that even with
       @typesafe(false) it will attempt to compile first with type safety,
       which gives faster execution, and only falls back to type unsafe
-      evaluation if that fails.</para>
+      evaluation if that fails.Type </para>
+    </section>
+
+    <section>
+      <title>Type Declaration 'extends'</title>
+
+      <para>Type declarations now support 'extends' keyword for
+      inheritence</para>
+
+      <programlisting>declare Student extends Person
+    school : String @key
+end
+
+
+declare LongTermStudent extends Student
+    years : int @key
+    course : String
+end</programlisting>
     </section>
   </section>
 
