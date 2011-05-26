@@ -3042,18 +3042,6 @@ public class DRLParser {
                 // accumulate functions
                 accumulateFunction( accumulate );
                 if ( state.failed ) return;
-
-                while ( input.LA( 1 ) == DRLLexer.COMMA ) {
-                    match( input,
-                           DRLLexer.COMMA,
-                           null,
-                           null,
-                           DroolsEditorType.SYMBOL );
-                    if ( state.failed ) return;
-
-                    accumulateFunction( accumulate );
-                    if ( state.failed ) return;
-                }
             }
 
             match( input,
