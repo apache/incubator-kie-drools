@@ -526,7 +526,7 @@ query look(String place, List things, List food, List exits)
 end
 
 rule reactiveLook when
-    Here( place : place) 
+    Here( $place : place) 
     ?look($place, $things; $food : food, $exits : exits)
 then
     System.out.println( "You are in the " + $place);
@@ -551,7 +551,7 @@ end
       <para>@type( &lt;boolean&gt;) has been added to type declarations. This
       allows patterns with that annotation to be compiled without any static
       compile time checks. All constrants are generated as MVEL constraints
-      and executed dynamially. This can be important when dealing with
+      and executed dynamically. This can be important when dealing with
       collections that do not have any generics or mixed type
       collections.</para>
     </section>
