@@ -14,6 +14,7 @@ import org.drools.compiler.Dialect;
 import org.drools.compiler.ReturnValueDescr;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.ProcessContext;
@@ -48,20 +49,20 @@ public class MVELReturnValueEvaluatorBuilder
             
             context.setTypesafe( false ); // we can't know all the types ahead of time with processes, but we don't need return types, so it's ok
             BoundIdentifiers boundIdentifiers = new BoundIdentifiers(variables, context.getPackageBuilder().getGlobals());
-            AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                            descr,
-                                                            dialect.getInterceptors(),
-                                                            text,
-                                                            boundIdentifiers,
-                                                            null,
-                                                            "context",
-                                                            org.drools.runtime.process.ProcessContext.class );                       
+            MVELAnalysisResult analysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
+                                                                                       descr,
+                                                                                       dialect.getInterceptors(),
+                                                                                       text,
+                                                                                       boundIdentifiers,
+                                                                                       null,
+                                                                                       "context",
+                                                                                       org.drools.runtime.process.ProcessContext.class );                      
             context.setTypesafe( typeSafe );
 
             Set<String> variableNames = analysis.getNotBoundedIdentifiers();
             if (contextResolver != null) {
                 for (String variableName: variableNames) {
-                    if ( variableName.equals( "kcontext" ) || variableName.equals( "context" ) ) {
+                    if (  analysis.getMvelVariables().keySet().contains( variableName ) ||  variableName.equals( "kcontext" ) || variableName.equals( "context" ) ) {
                         continue;
                     }                    
                     VariableScope variableScope = (VariableScope) contextResolver.resolveContext(VariableScope.VARIABLE_SCOPE, variableName);

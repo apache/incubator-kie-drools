@@ -204,6 +204,9 @@ public class ProcessActionTest extends JbpmTestCase {
             "\n" +
             "</process>");
         kbuilder.add(new ReaderResource(source), ResourceType.DRF);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List<String> list = new ArrayList<String>();
