@@ -25,7 +25,7 @@ import org.drools.lang.descr.RuleDescr;
 public interface RuleDescrBuilder
     extends
     AnnotatedDescrBuilder<RuleDescr>,
-    AttributeSupportBuilder {
+    AttributeSupportBuilder<RuleDescr> {
 
     public RuleDescrBuilder name( String name );
 
