@@ -177,7 +177,7 @@ public class ClassTypeResolver
                     }
                     sb.append( ((Class) clazzCandIter.next()).getName() );
                 }
-                throw new Error( "Unable to find unambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
+                throw new Error( "Unable to find ambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
             } else if ( validClazzCandidates.size() == 1 ) {
                 clazz = (Class) validClazzCandidates.toArray()[0];
             } else {
