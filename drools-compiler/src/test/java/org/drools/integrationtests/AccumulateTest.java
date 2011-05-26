@@ -121,6 +121,19 @@ public class AccumulateTest {
 
     }
 
+    public KnowledgeBase loadKnowledgeBaseFromString( final String content ) {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( content ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
+    }
+
     @Test
     public void testAccumulateModify() throws Exception {
         // read in the source
@@ -930,17 +943,17 @@ public class AccumulateTest {
     public void testAccumulateCollectSetMVEL() throws Exception {
         execTestAccumulateCollectSet( "test_AccumulateCollectSetMVEL.drl" );
     }
-    
+
     @Test
     public void testAccumulateMultipleFunctionsJava() throws Exception {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctions.drl" );
     }
-    
+
     @Test
     public void testAccumulateMultipleFunctionsMVEL() throws Exception {
         execTestAccumulateMultipleFunctions( "test_AccumulateMultipleFunctionsMVEL.drl" );
     }
-    
+
     public void execTestAccumulateSum( String fileName ) throws Exception {
         // read in the source
         final Reader reader = new InputStreamReader( getClass().getResourceAsStream( fileName ) );
@@ -1648,26 +1661,24 @@ public class AccumulateTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
-    
-    
-    
     public void execTestAccumulateMultipleFunctions( String fileName ) throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase( fileName, null );
+        KnowledgeBase kbase = loadKnowledgeBase( fileName,
+                                                 null );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
-        final Cheese[] cheese = new Cheese[]{ new Cheese( "stilton",
-                                                          10 ), 
+        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
+                                                          10 ),
                                               new Cheese( "stilton",
-                                                          3 ), 
+                                                          3 ),
                                               new Cheese( "stilton",
-                                                          5 ), 
+                                                          5 ),
                                               new Cheese( "brie",
-                                                          15 ), 
+                                                          15 ),
                                               new Cheese( "brie",
-                                                          17 ), 
+                                                          17 ),
                                               new Cheese( "provolone",
                                                           8 )};
         final Person bob = new Person( "Bob",
@@ -1678,46 +1689,55 @@ public class AccumulateTest {
             cheeseHandles[i] = (FactHandle) ksession.insert( cheese[i] );
         }
         final FactHandle bobHandle = (FactHandle) ksession.insert( bob );
-        
+
         // ---------------- 1st scenario
         ksession.fireAllRules();
-        
-        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass(AfterActivationFiredEvent.class);        
+
+        ArgumentCaptor<AfterActivationFiredEvent> cap = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
-        
+
         Activation activation = cap.getValue().getActivation();
-        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 18 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 3 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 6 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
+                    is( 18 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
+                    is( 6 ) );
 
         Mockito.reset( ael );
         // ---------------- 2nd scenario
         final int index = 1;
         cheese[index].setPrice( 9 );
         ksession.update( cheeseHandles[index],
-                   cheese[index] );
+                         cheese[index] );
         ksession.fireAllRules();
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
-        
+
         activation = cap.getValue().getActivation();
-        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 24 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 5 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 8 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
+                    is( 24 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
+                    is( 5 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
+                    is( 8 ) );
 
         Mockito.reset( ael );
         // ---------------- 3rd scenario
         bob.setLikes( "brie" );
         ksession.update( bobHandle,
-                   bob );
+                         bob );
         ksession.fireAllRules();
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
-        
+
         activation = cap.getValue().getActivation();
-        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 32 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 15 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 16 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
+                    is( 32 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
+                    is( 15 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
+                    is( 16 ) );
 
         Mockito.reset( ael );
         // ---------------- 4th scenario
@@ -1725,11 +1745,14 @@ public class AccumulateTest {
         ksession.fireAllRules();
 
         Mockito.verify( ael ).afterActivationFired( cap.capture() );
-        
+
         activation = cap.getValue().getActivation();
-        assertThat( ((Number)activation.getDeclarationValue( "$sum" )).intValue(), is( 17 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$min" )).intValue(), is( 17 ) );
-        assertThat( ((Number)activation.getDeclarationValue( "$avg" )).intValue(), is( 17 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$sum" )).intValue(),
+                    is( 17 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$min" )).intValue(),
+                    is( 17 ) );
+        assertThat( ((Number) activation.getDeclarationValue( "$avg" )).intValue(),
+                    is( 17 ) );
     }
 
     public static class DataSet {
@@ -1738,5 +1761,52 @@ public class AccumulateTest {
         public Person       bob;
         public FactHandle   bobHandle;
         public List< ? >    results;
+    }
+
+    @Test
+    public void testAccumulateMinMax() throws Exception {
+        String drl = "package org.drools.test \n" +
+                     "import org.drools.Cheese \n" +
+                     "global java.util.List results \n " +
+                     "rule minMax \n" +
+                     "when \n" +
+                     "    accumulate( Cheese( $p: price ), $min: min($p), $max: max($p) ) \n" +
+                     "then \n" +
+                     "    results.add($min); results.add($max); \n" +
+                     "end \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<Number> results = new ArrayList<Number>();
+        ksession.setGlobal( "results",
+                            results );
+        final Cheese[] cheese = new Cheese[]{new Cheese( "Emmentaler",
+                                                         4 ), 
+                                             new Cheese( "Appenzeller",
+                                                         6 ), 
+                                             new Cheese( "Greyerzer",
+                                                         2 ), 
+                                             new Cheese( "Raclette",
+                                                         3 ), 
+                                             new Cheese( "Olmützer Quargel",
+                                                         15 ), 
+                                             new Cheese( "Brie",
+                                                         17 ), 
+                                             new Cheese( "Dolcelatte",
+                                                         8 )};
+
+        for ( int i = 0; i < cheese.length; i++ ) {
+            ksession.insert( cheese[i] );
+        }
+
+        // ---------------- 1st scenario
+        ksession.fireAllRules();
+        assertEquals( 2,
+                      results.size() );
+        assertEquals( results.get( 0 ).intValue(),
+                      2 );
+        assertEquals( results.get( 1 ).intValue(),
+                      17 );
     }
 }
