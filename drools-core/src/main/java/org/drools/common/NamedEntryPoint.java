@@ -370,22 +370,28 @@ public class NamedEntryPoint
             this.lock.lock();
             this.wm.startOperation();
             this.ruleBase.executeQueuedActions();
+            
+            InternalFactHandle handle = (InternalFactHandle) factHandle;
+            final Object originalObject = handle.getObject();
 
             // the handle might have been disconnected, so reconnect if it has
-            if ( ((InternalFactHandle)factHandle).isDisconnected() ) {
-                factHandle = this.objectStore.reconnect( factHandle );
+            if ( handle.isDisconnected() ) {
+                handle = ( InternalFactHandle ) this.objectStore.reconnect( factHandle );
+            }
+            
+            if ( handle.getEntryPoint() != this ) {
+                throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }
             
             final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                object );
+                                                                                object );
 
             // only needed if we maintain tms, but either way we must get it before we do the retract
             int status = -1;
             if ( typeConf.isTMSEnabled() ) {
-                status = ((InternalFactHandle) factHandle).getEqualityKey().getStatus();
+                status = handle.getEqualityKey().getStatus();
             }
-            final InternalFactHandle handle = (InternalFactHandle) factHandle;
-            final Object originalObject = handle.getObject();
+
 
             if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
@@ -495,6 +501,10 @@ public class NamedEntryPoint
             if ( handle.isDisconnected() ) {
                 handle = this.objectStore.reconnect( handle );
             }
+            
+            if ( handle.getEntryPoint() != this ) {
+                throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
+            }            
 
             removePropertyChangeListener( handle );
 
