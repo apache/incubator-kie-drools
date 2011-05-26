@@ -30,6 +30,7 @@ import org.drools.lang.api.AccumulateDescrBuilder;
 import org.drools.lang.api.AnnotatedDescrBuilder;
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
+import org.drools.lang.api.AttributeSupportBuilder;
 import org.drools.lang.api.BehaviorDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.CollectDescrBuilder;
@@ -140,11 +141,9 @@ public class DRLParser {
         PackageDescrBuilder pkg = DescrFactory.newPackage();
 
         try {
-            helper.pushBuilderContext( pkg );
-
             // package declaration?
             if ( input.LA( 1 ) != DRLLexer.EOF && helper.validateIdentifierKey( DroolsSoftKeywords.PACKAGE ) ) {
-                String pkgName = packageStatement();
+                String pkgName = packageStatement( pkg );
                 pkg.name( pkgName );
                 if ( state.failed ) return pkg.getDescr();
             }
@@ -153,7 +152,7 @@ public class DRLParser {
             while ( input.LA( 1 ) != DRLLexer.EOF ) {
                 int next = input.index();
                 if ( helper.validateStatement( 1 ) ) {
-                    statement();
+                    statement( pkg );
                     if ( state.failed ) return pkg.getDescr();
 
                     if ( next == input.index() ) {
@@ -170,8 +169,7 @@ public class DRLParser {
         } catch ( Exception e ) {
             helper.reportError( e );
         } finally {
-            helper.setEnd();
-            helper.popBuilderContext();
+            helper.setEnd( pkg );
         }
         return pkg.getDescr();
     }
@@ -193,12 +191,12 @@ public class DRLParser {
      * 
      * @return the name of the package or null if none is defined
      */
-    public String packageStatement() throws RecognitionException {
+    public String packageStatement( PackageDescrBuilder pkg ) throws RecognitionException {
         String pkgName = null;
 
         try {
-            helper.start( PackageDescrBuilder.class,
-                          null,
+            helper.start( pkg,
+                          PackageDescrBuilder.class,
                           null );
 
             match( input,
@@ -228,7 +226,7 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( PackageDescrBuilder.class,
-                        null );
+                        pkg );
         }
         return pkgName;
     }
@@ -245,29 +243,29 @@ public class DRLParser {
      *           
      * @throws RecognitionException
      */
-    public BaseDescr statement() throws RecognitionException {
+    public BaseDescr statement( PackageDescrBuilder pkg ) throws RecognitionException {
         BaseDescr descr = null;
         try {
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.IMPORT ) ) {
-                descr = importStatement();
+                descr = importStatement( pkg );
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.GLOBAL ) ) {
-                descr = globalStatement();
+                descr = globalStatement( pkg );
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DECLARE ) ) {
-                descr = declare();
+                descr = declare( pkg );
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.RULE ) ) {
-                descr = rule();
+                descr = rule( pkg );
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.QUERY ) ) {
-                descr = query();
+                descr = query( pkg );
                 if ( state.failed ) return descr;
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FUNCTION ) ) {
-                descr = function();
+                descr = function( pkg );
                 if ( state.failed ) return descr;
             } else if ( helper.validateAttribute( 1 ) ) {
-                descr = attribute();
+                descr = attribute( pkg );
                 if ( state.failed ) return descr;
             }
         } catch ( RecognitionException e ) {
@@ -288,11 +286,11 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public ImportDescr importStatement() throws RecognitionException {
+    public ImportDescr importStatement( PackageDescrBuilder pkg ) throws RecognitionException {
         ImportDescrBuilder imp = null;
         try {
-            imp = helper.start( ImportDescrBuilder.class,
-                                null,
+            imp = helper.start( pkg,
+                                ImportDescrBuilder.class,
                                 null );
 
             // import
@@ -305,7 +303,7 @@ public class DRLParser {
 
             String kwd;
             if ( helper.validateIdentifierKey( kwd = DroolsSoftKeywords.FUNCTION ) ||
-                 helper.validateIdentifierKey( kwd = DroolsSoftKeywords.STATIC ) ){
+                 helper.validateIdentifierKey( kwd = DroolsSoftKeywords.STATIC ) ) {
                 // function
                 match( input,
                        DRLLexer.ID,
@@ -350,7 +348,7 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( ImportDescrBuilder.class,
-                        null );
+                        imp );
         }
         return (imp != null) ? imp.getDescr() : null;
     }
@@ -365,11 +363,11 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public GlobalDescr globalStatement() throws RecognitionException {
+    public GlobalDescr globalStatement( PackageDescrBuilder pkg ) throws RecognitionException {
         GlobalDescrBuilder global = null;
         try {
-            global = helper.start( GlobalDescrBuilder.class,
-                                   null,
+            global = helper.start( pkg,
+                                   GlobalDescrBuilder.class,
                                    null );
 
             // 'global'
@@ -411,7 +409,7 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( GlobalDescrBuilder.class,
-                        null );
+                        global );
         }
         return (global != null) ? global.getDescr() : null;
     }
@@ -426,11 +424,11 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public TypeDeclarationDescr declare() throws RecognitionException {
+    public TypeDeclarationDescr declare( PackageDescrBuilder pkg ) throws RecognitionException {
         DeclareDescrBuilder declare = null;
         try {
-            declare = helper.start( DeclareDescrBuilder.class,
-                                    null,
+            declare = helper.start( pkg,
+                                    DeclareDescrBuilder.class,
                                     null );
 
             // 'declare'
@@ -442,10 +440,9 @@ public class DRLParser {
             if ( state.failed ) return null;
 
             // type may be qualified when adding metadata
-            String type = qualifiedIdentifier();           
+            String type = qualifiedIdentifier();
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) declare.type( type );
-
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXTENDS ) ) {
                 match( input,
@@ -453,10 +450,10 @@ public class DRLParser {
                        DroolsSoftKeywords.EXTENDS,
                        null,
                        DroolsEditorType.KEYWORD );
-                if (! state.failed ) {
+                if ( !state.failed ) {
                     // Going for type includes generics, which is a no-no (JIRA-3040)
                     String superType = qualifiedIdentifier();
-                    declare.superType(superType);
+                    declare.superType( superType );
                 }
             }
 
@@ -468,7 +465,7 @@ public class DRLParser {
 
             //boolean qualified = type.indexOf( '.' ) >= 0;
             while ( //! qualified &&
-                    input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+            input.LA( 1 ) == DRLLexer.ID && !helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
                 // field*
                 field( declare );
                 if ( state.failed ) return null;
@@ -494,7 +491,7 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( DeclareDescrBuilder.class,
-                        null );
+                        declare );
         }
         return (declare != null) ? declare.getDescr() : null;
     }
@@ -513,9 +510,9 @@ public class DRLParser {
         }
 
         try {
-            field = helper.start( FieldDescrBuilder.class,
-                    fname,
-                    null );
+            field = helper.start( declare,
+                                  FieldDescrBuilder.class,
+                                  fname );
 
             // type
             String type = qualifiedIdentifier();
@@ -562,7 +559,7 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( FieldDescrBuilder.class,
-                        null );
+                        field );
         }
     }
 
@@ -576,11 +573,11 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public FunctionDescr function() throws RecognitionException {
+    public FunctionDescr function( PackageDescrBuilder pkg ) throws RecognitionException {
         FunctionDescrBuilder function = null;
         try {
-            function = helper.start( FunctionDescrBuilder.class,
-                                     null,
+            function = helper.start( pkg,
+                                     FunctionDescrBuilder.class,
                                      null );
 
             // 'function'
@@ -635,8 +632,8 @@ public class DRLParser {
         } catch ( RecognitionException re ) {
             reportError( re );
         } finally {
-            helper.end( DeclareDescrBuilder.class,
-                        null );
+            helper.end( FunctionDescrBuilder.class,
+                        function );
         }
         return (function != null) ? function.getDescr() : null;
     }
@@ -737,11 +734,11 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public RuleDescr query() throws RecognitionException {
+    public RuleDescr query( PackageDescrBuilder pkg ) throws RecognitionException {
         QueryDescrBuilder query = null;
         try {
-            query = helper.start( QueryDescrBuilder.class,
-                                  null,
+            query = helper.start( pkg, 
+                                  QueryDescrBuilder.class,
                                   null );
 
             // 'query'
@@ -809,8 +806,8 @@ public class DRLParser {
         } catch ( RecognitionException re ) {
             reportError( re );
         } finally {
-            helper.end( RuleDescrBuilder.class,
-                        null );
+            helper.end( QueryDescrBuilder.class,
+                        query );
         }
         return (query != null) ? query.getDescr() : null;
     }
@@ -842,11 +839,11 @@ public class DRLParser {
      * @return
      * @throws RecognitionException
      */
-    public RuleDescr rule() throws RecognitionException {
+    public RuleDescr rule( PackageDescrBuilder pkg ) throws RecognitionException {
         RuleDescrBuilder rule = null;
         try {
-            rule = helper.start( RuleDescrBuilder.class,
-                                 null,
+            rule = helper.start( pkg,
+                                 RuleDescrBuilder.class,
                                  null );
 
             // 'rule'
@@ -930,7 +927,7 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( RuleDescrBuilder.class,
-                        null );
+                        rule );
         }
         return (rule != null) ? rule.getDescr() : null;
     }
@@ -986,7 +983,7 @@ public class DRLParser {
         }
 
         if ( helper.validateAttribute( 1 ) ) {
-            attribute();
+            attribute( rule );
             if ( state.failed ) return;
 
             while ( input.LA( 1 ) == DRLLexer.COMMA || helper.validateAttribute( 1 ) ) {
@@ -998,7 +995,7 @@ public class DRLParser {
                            DroolsEditorType.SYMBOL );
                     if ( state.failed ) return;
                 }
-                attribute();
+                attribute( rule );
                 if ( state.failed ) return;
             }
         }
@@ -1022,28 +1019,28 @@ public class DRLParser {
      * 
      * @return
      */
-    public AttributeDescr attribute() {
+    public AttributeDescr attribute( AttributeSupportBuilder<?> as ) {
         AttributeDescr attribute = null;
         try {
             if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_RULE_HEADER_KEYWORD );
             }
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.SALIENCE ) ) {
-                attribute = salience();
+                attribute = salience( as );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ENABLED ) ) {
-                attribute = enabled();
+                attribute = enabled( as );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.NO ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.LOOP ) ) {
-                attribute = booleanAttribute( new String[]{DroolsSoftKeywords.NO, "-", DroolsSoftKeywords.LOOP} );
+                attribute = booleanAttribute( as, new String[]{DroolsSoftKeywords.NO, "-", DroolsSoftKeywords.LOOP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AUTO ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.FOCUS ) ) {
-                attribute = booleanAttribute( new String[]{DroolsSoftKeywords.AUTO, "-", DroolsSoftKeywords.FOCUS} );
+                attribute = booleanAttribute( as, new String[]{DroolsSoftKeywords.AUTO, "-", DroolsSoftKeywords.FOCUS} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.LOCK ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
@@ -1053,47 +1050,47 @@ public class DRLParser {
                                            "-" ) &&
                         helper.validateLT( 5,
                                            DroolsSoftKeywords.ACTIVE ) ) {
-                attribute = booleanAttribute( new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
+                attribute = booleanAttribute( as, new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AGENDA ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.GROUP ) ) {
-                attribute = stringAttribute( new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP} );
+                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACTIVATION ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.GROUP ) ) {
-                attribute = stringAttribute( new String[]{DroolsSoftKeywords.ACTIVATION, "-", DroolsSoftKeywords.GROUP} );
+                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.ACTIVATION, "-", DroolsSoftKeywords.GROUP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.RULEFLOW ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.GROUP ) ) {
-                attribute = stringAttribute( new String[]{DroolsSoftKeywords.RULEFLOW, "-", DroolsSoftKeywords.GROUP} );
+                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.RULEFLOW, "-", DroolsSoftKeywords.GROUP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.EFFECTIVE ) ) {
-                attribute = stringAttribute( new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
+                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
                 attribute.setType( AttributeDescr.Type.DATE );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.EXPIRES ) ) {
-                attribute = stringAttribute( new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
+                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
                 attribute.setType( AttributeDescr.Type.DATE );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DIALECT ) ) {
-                attribute = stringAttribute( new String[]{DroolsSoftKeywords.DIALECT} );
+                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.DIALECT} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.CALENDARS ) ) {
-                attribute = stringListAttribute( new String[]{DroolsSoftKeywords.CALENDARS} );
+                attribute = stringListAttribute( as, new String[]{DroolsSoftKeywords.CALENDARS} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.TIMER ) ) {
-                attribute = intOrChunkAttribute( new String[]{DroolsSoftKeywords.TIMER} );
+                attribute = intOrChunkAttribute( as, new String[]{DroolsSoftKeywords.TIMER} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DURATION ) ) {
-                attribute = intOrChunkAttribute( new String[]{DroolsSoftKeywords.DURATION} );
+                attribute = intOrChunkAttribute( as, new String[]{DroolsSoftKeywords.DURATION} );
             }
         } catch ( RecognitionException re ) {
             reportError( re );
@@ -1108,7 +1105,7 @@ public class DRLParser {
      * salience := SALIENCE conditionalExpression
      * @throws RecognitionException
      */
-    private AttributeDescr salience() throws RecognitionException {
+    private AttributeDescr salience( AttributeSupportBuilder<?> as ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             // 'salience'
@@ -1119,9 +1116,9 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( AttributeDescrBuilder.class,
-                                          DroolsSoftKeywords.SALIENCE,
-                                          null );
+                attribute = helper.start( as,
+                                          AttributeDescrBuilder.class,
+                                          DroolsSoftKeywords.SALIENCE );
             }
 
             boolean hasParen = input.LA( 1 ) == DRLLexer.LEFT_PAREN;
@@ -1158,7 +1155,7 @@ public class DRLParser {
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
-                            null );
+                            attribute );
             }
         }
         return attribute != null ? attribute.getDescr() : null;
@@ -1168,7 +1165,7 @@ public class DRLParser {
      * enabled := ENABLED conditionalExpression
      * @throws RecognitionException
      */
-    private AttributeDescr enabled() throws RecognitionException {
+    private AttributeDescr enabled( AttributeSupportBuilder<?> as ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             // 'enabled'
@@ -1179,9 +1176,9 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( AttributeDescrBuilder.class,
-                                          DroolsSoftKeywords.ENABLED,
-                                          null );
+                attribute = helper.start( as,
+                                          AttributeDescrBuilder.class,
+                                          DroolsSoftKeywords.ENABLED );
             }
 
             boolean hasParen = input.LA( 1 ) == DRLLexer.LEFT_PAREN;
@@ -1218,7 +1215,7 @@ public class DRLParser {
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
-                            null );
+                            attribute );
             }
         }
         return attribute != null ? attribute.getDescr() : null;
@@ -1229,7 +1226,7 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr booleanAttribute( String[] key ) throws RecognitionException {
+    private AttributeDescr booleanAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1252,9 +1249,9 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( AttributeDescrBuilder.class,
-                                          builder.toString(),
-                                          null );
+                attribute = helper.start( as,
+                                          AttributeDescrBuilder.class,
+                                          builder.toString() );
             }
 
             String value = "true";
@@ -1274,7 +1271,7 @@ public class DRLParser {
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
-                            null );
+                            attribute );
             }
         }
         return attribute != null ? attribute.getDescr() : null;
@@ -1285,7 +1282,7 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr stringAttribute( String[] key ) throws RecognitionException {
+    private AttributeDescr stringAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1308,9 +1305,9 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( AttributeDescrBuilder.class,
-                                          builder.toString(),
-                                          null );
+                attribute = helper.start( as,
+                                          AttributeDescrBuilder.class,
+                                          builder.toString() );
             }
 
             Token value = match( input,
@@ -1326,7 +1323,7 @@ public class DRLParser {
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
-                            null );
+                            attribute );
             }
         }
         return attribute != null ? attribute.getDescr() : null;
@@ -1337,7 +1334,7 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr stringListAttribute( String[] key ) throws RecognitionException {
+    private AttributeDescr stringListAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1360,9 +1357,9 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( AttributeDescrBuilder.class,
-                                          builder.toString(),
-                                          null );
+                attribute = helper.start( as,
+                                          AttributeDescrBuilder.class,
+                                          builder.toString() );
             }
 
             builder = new StringBuilder();
@@ -1399,7 +1396,7 @@ public class DRLParser {
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
-                            null );
+                            attribute );
             }
         }
         return attribute != null ? attribute.getDescr() : null;
@@ -1410,7 +1407,7 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr intOrChunkAttribute( String[] key ) throws RecognitionException {
+    private AttributeDescr intOrChunkAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1433,9 +1430,9 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( AttributeDescrBuilder.class,
-                                          builder.toString(),
-                                          null );
+                attribute = helper.start( as,
+                                          AttributeDescrBuilder.class,
+                                          builder.toString() );
             }
 
             if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
@@ -1444,7 +1441,9 @@ public class DRLParser {
                                       -1 );
                 if ( state.failed ) return null;
                 if ( state.backtracking == 0 ) {
-                    attribute.value( safeStripDelimiters( value, "(", ")" ) );
+                    attribute.value( safeStripDelimiters( value,
+                                                          "(",
+                                                          ")" ) );
                     attribute.type( AttributeDescr.Type.EXPRESSION );
                 }
             } else {
@@ -1481,7 +1480,7 @@ public class DRLParser {
         } finally {
             if ( attribute != null ) {
                 helper.end( AttributeDescrBuilder.class,
-                            null );
+                            attribute );
             }
         }
         return attribute != null ? attribute.getDescr() : null;
@@ -1520,9 +1519,9 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void lhsStatement( CEDescrBuilder< ? , AndDescr> lhs ) throws RecognitionException {
-        helper.start( CEDescrBuilder.class,
-                      null,
-                      lhs );
+        helper.start( lhs,
+                      CEDescrBuilder.class,
+                      null );
         if ( state.backtracking == 0 ) {
             helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
         }
@@ -1569,9 +1568,9 @@ public class DRLParser {
             if ( state.backtracking == 0 ) {
                 or = ce.or();
                 result = or.getDescr();
-                helper.start( CEDescrBuilder.class,
-                              null,
-                              or );
+                helper.start( or,
+                              CEDescrBuilder.class,
+                              null );
             }
             try {
                 match( input,
@@ -1606,7 +1605,7 @@ public class DRLParser {
             } finally {
                 if ( state.backtracking == 0 ) {
                     helper.end( CEDescrBuilder.class,
-                            or );
+                                or );
                 }
             }
         } else {
@@ -1617,9 +1616,9 @@ public class DRLParser {
             if ( state.backtracking == 0 ) {
                 or = ce.or();
                 result = or.getDescr();
-                helper.start( CEDescrBuilder.class,
-                              null,
-                              or );
+                helper.start( or,
+                              CEDescrBuilder.class,
+                              null );
             }
             try {
                 lhsAnd( or,
@@ -1627,9 +1626,9 @@ public class DRLParser {
                 if ( state.failed ) return null;
 
                 if ( allowOr &&
-                        ( helper.validateIdentifierKey( DroolsSoftKeywords.OR )
+                        (helper.validateIdentifierKey( DroolsSoftKeywords.OR )
                                 ||
-                                input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) ) {
+                                input.LA( 1 ) == DRLLexer.DOUBLE_PIPE) ) {
                     while ( helper.validateIdentifierKey( DroolsSoftKeywords.OR ) ||
                             input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
                         if ( input.LA( 1 ) == DRLLexer.DOUBLE_PIPE ) {
@@ -1667,7 +1666,7 @@ public class DRLParser {
             } finally {
                 if ( state.backtracking == 0 ) {
                     helper.end( CEDescrBuilder.class,
-                            or );
+                                or );
                 }
             }
         }
@@ -1683,7 +1682,7 @@ public class DRLParser {
      */
     private BaseDescr lhsAnd( final CEDescrBuilder< ? , ? > ce,
                               boolean allowOr ) throws RecognitionException {
-       BaseDescr result = null;
+        BaseDescr result = null;
         if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN && helper.validateLT( 2,
                                                                         DroolsSoftKeywords.AND ) ) {
             // prefixed AND
@@ -1691,9 +1690,9 @@ public class DRLParser {
             if ( state.backtracking == 0 ) {
                 and = ce.and();
                 result = ce.getDescr();
-                helper.start( CEDescrBuilder.class,
-                              null,
-                              and );
+                helper.start( and,
+                              CEDescrBuilder.class,
+                              null );
             }
             try {
                 match( input,
@@ -1715,7 +1714,7 @@ public class DRLParser {
                 }
                 while ( input.LA( 1 ) != DRLLexer.RIGHT_PAREN ) {
                     lhsUnary( and,
-                            allowOr );
+                              allowOr );
                     if ( state.failed ) return null;
                 }
 
@@ -1728,7 +1727,7 @@ public class DRLParser {
             } finally {
                 if ( state.backtracking == 0 ) {
                     helper.end( CEDescrBuilder.class,
-                            and );
+                                and );
                 }
             }
         } else {
@@ -1739,13 +1738,13 @@ public class DRLParser {
             if ( state.backtracking == 0 ) {
                 and = ce.and();
                 result = and.getDescr();
-                helper.start( CEDescrBuilder.class,
-                              null,
-                              and );
+                helper.start( and,
+                              CEDescrBuilder.class,
+                              null );
             }
             try {
                 lhsUnary( and,
-                        allowOr );
+                          allowOr );
                 if ( state.failed ) return null;
 
                 if ( helper.validateIdentifierKey( DroolsSoftKeywords.AND ) ||
@@ -1771,7 +1770,7 @@ public class DRLParser {
                             helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION_AND_OR );
                         }
                         lhsUnary( and,
-                                allowOr );
+                                  allowOr );
                         if ( state.failed ) return null;
                     }
                 } else {
@@ -1787,7 +1786,7 @@ public class DRLParser {
             } finally {
                 if ( state.backtracking == 0 ) {
                     helper.end( CEDescrBuilder.class,
-                            and );
+                                and );
                 }
             }
         }
@@ -1863,9 +1862,9 @@ public class DRLParser {
 
         if ( state.backtracking == 0 ) {
             exists = ce.exists();
-            helper.start( CEDescrBuilder.class,
-                    null,
-                    exists );
+            helper.start( exists,
+                          CEDescrBuilder.class,
+                          null );
         }
         try {
             match( input,
@@ -1880,8 +1879,8 @@ public class DRLParser {
             }
             if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
                 boolean prefixed = helper.validateLT( 2,
-                        DroolsSoftKeywords.AND ) || helper.validateLT( 2,
-                                DroolsSoftKeywords.OR );
+                                                      DroolsSoftKeywords.AND ) || helper.validateLT( 2,
+                                                                                                     DroolsSoftKeywords.OR );
 
                 if ( !prefixed ) {
                     match( input,
@@ -1907,14 +1906,14 @@ public class DRLParser {
             } else {
 
                 lhsPatternBind( exists,
-                        true );
+                                true );
                 if ( state.failed ) return null;
             }
 
         } finally {
             if ( state.backtracking == 0 ) {
                 helper.end( CEDescrBuilder.class,
-                        exists );
+                            exists );
             }
         }
         return exists != null ? exists.getDescr() : null;
@@ -1937,9 +1936,9 @@ public class DRLParser {
 
         if ( state.backtracking == 0 ) {
             not = ce.not();
-            helper.start( CEDescrBuilder.class,
-                    null,
-                    not );
+            helper.start( not,
+                          CEDescrBuilder.class,
+                          null );
         }
 
         try {
@@ -1955,8 +1954,8 @@ public class DRLParser {
             }
             if ( input.LA( 1 ) == DRLLexer.LEFT_PAREN ) {
                 boolean prefixed = helper.validateLT( 2,
-                        DroolsSoftKeywords.AND ) || helper.validateLT( 2,
-                                DroolsSoftKeywords.OR );
+                                                      DroolsSoftKeywords.AND ) || helper.validateLT( 2,
+                                                                                                     DroolsSoftKeywords.OR );
 
                 if ( !prefixed ) {
                     match( input,
@@ -1984,14 +1983,14 @@ public class DRLParser {
                 }
             } else if ( input.LA( 1 ) != DRLLexer.EOF ) {
                 lhsPatternBind( not,
-                        true );
+                                true );
                 if ( state.failed ) return null;
             }
 
         } finally {
             if ( state.backtracking == 0 ) {
                 helper.end( CEDescrBuilder.class,
-                        not );
+                            not );
             }
         }
         return not != null ? not.getDescr() : null;
@@ -2005,8 +2004,8 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private BaseDescr lhsForall( CEDescrBuilder< ? , ? > ce ) throws RecognitionException {
-        ForallDescrBuilder< ? > forall = helper.start( ForallDescrBuilder.class,
-                                                       null,
+        ForallDescrBuilder< ? > forall = helper.start( ce,
+                                                       ForallDescrBuilder.class,
                                                        null );
 
         try {
@@ -2047,7 +2046,7 @@ public class DRLParser {
             if ( state.failed ) return null;
         } finally {
             helper.end( ForallDescrBuilder.class,
-                        null );
+                        forall );
         }
 
         return forall != null ? forall.getDescr() : null;
@@ -2064,8 +2063,8 @@ public class DRLParser {
         EvalDescrBuilder< ? > eval = null;
 
         try {
-            eval = helper.start( EvalDescrBuilder.class,
-                                 null,
+            eval = helper.start( ce,
+                                 EvalDescrBuilder.class,
                                  null );
 
             match( input,
@@ -2097,7 +2096,7 @@ public class DRLParser {
 
         } finally {
             helper.end( EvalDescrBuilder.class,
-                        null );
+                        eval );
             if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
@@ -2156,8 +2155,8 @@ public class DRLParser {
         BaseDescr result = null;
 
         Token first = input.LT( 1 );
-        pattern = helper.start( PatternDescrBuilder.class,
-                                null,
+        pattern = helper.start( ce,
+                                PatternDescrBuilder.class,
                                 null );
         if ( pattern != null ) {
             result = pattern.getDescr();
@@ -2168,7 +2167,7 @@ public class DRLParser {
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
             label = label( DroolsEditorType.IDENTIFIER_PATTERN );
             if ( state.failed ) return null;
-        } else if (input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY && !helper.validateCEKeyword( 1 )) {
+        } else if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY && !helper.validateCEKeyword( 1 ) ) {
             label = unif( DroolsEditorType.IDENTIFIER_PATTERN );
             if ( state.failed ) return null;
             isUnification = true;
@@ -2200,10 +2199,10 @@ public class DRLParser {
                         result = or.getDescr();
 
                         helper.end( PatternDescrBuilder.class,
-                                    null );
-                        helper.start( CEDescrBuilder.class,
-                                      null,
-                                      or );
+                                    pattern );
+                        helper.start( or,
+                                      CEDescrBuilder.class,
+                                      null );
                         // adjust real or starting token:
                         helper.setStart( or,
                                          first );
@@ -2222,8 +2221,8 @@ public class DRLParser {
                                DroolsEditorType.KEYWORD );
                         if ( state.failed ) return null;
 
-                        pattern = helper.start( PatternDescrBuilder.class,
-                                                null,
+                        pattern = helper.start( or,
+                                                PatternDescrBuilder.class,
                                                 null );
                         // new pattern, same binding
                         lhsPattern( pattern,
@@ -2232,7 +2231,7 @@ public class DRLParser {
                         if ( state.failed ) return null;
 
                         helper.end( PatternDescrBuilder.class,
-                                    null );
+                                    pattern );
                     }
                 }
 
@@ -2249,7 +2248,7 @@ public class DRLParser {
                                 or );
                 } else {
                     helper.end( PatternDescrBuilder.class,
-                                null );
+                                pattern );
                 }
             }
 
@@ -2262,7 +2261,7 @@ public class DRLParser {
 
             } finally {
                 helper.end( PatternDescrBuilder.class,
-                            null );
+                            pattern );
             }
         }
 
@@ -2282,8 +2281,8 @@ public class DRLParser {
         PatternDescrBuilder< ? > pattern = null;
         BaseDescr result = null;
 
-        pattern = helper.start( PatternDescrBuilder.class,
-                                null,
+        pattern = helper.start( ce,
+                                PatternDescrBuilder.class,
                                 null );
         if ( pattern != null ) {
             result = pattern.getDescr();
@@ -2296,8 +2295,8 @@ public class DRLParser {
                 // might have to add the implicit bindings as well
             }
 
-            AccumulateDescrBuilder< ? > accumulate = helper.start( AccumulateDescrBuilder.class,
-                                                                   null,
+            AccumulateDescrBuilder< ? > accumulate = helper.start( pattern,
+                                                                   AccumulateDescrBuilder.class,
                                                                    null );
             try {
                 match( input,
@@ -2319,9 +2318,9 @@ public class DRLParser {
 
                 CEDescrBuilder< ? , AndDescr> source = accumulate.source();
                 try {
-                    helper.start( CEDescrBuilder.class,
-                                  null,
-                                  source );
+                    helper.start( source,
+                                  CEDescrBuilder.class,
+                                  null );
                     lhsAnd( source,
                             false );
                     if ( state.failed ) return null;
@@ -2370,14 +2369,14 @@ public class DRLParser {
                 if ( state.failed ) return null;
             } finally {
                 helper.end( AccumulateDescrBuilder.class,
-                            null );
+                            accumulate );
                 if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                     helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
                 }
             }
         } finally {
             helper.end( PatternDescrBuilder.class,
-                        null );
+                        pattern );
         }
 
         if ( input.LA( 1 ) == DRLLexer.SEMICOLON ) {
@@ -2390,7 +2389,7 @@ public class DRLParser {
         }
         return result;
     }
-    
+
     private void failMismatchedTokenException() throws DroolsMismatchedTokenException {
         if ( state.backtracking > 0 ) {
             state.failed = true;
@@ -2425,7 +2424,7 @@ public class DRLParser {
                              String label,
                              boolean isUnification ) throws RecognitionException {
         boolean query = false;
-        if( input.LA(1) == DRLLexer.QUESTION ) {
+        if ( input.LA( 1 ) == DRLLexer.QUESTION ) {
             match( input,
                    DRLLexer.QUESTION,
                    null,
@@ -2434,7 +2433,7 @@ public class DRLParser {
             if ( state.failed ) return;
             query = true;
         }
-        
+
         String type = this.qualifiedIdentifier();
         if ( state.failed ) return;
 
@@ -2442,7 +2441,8 @@ public class DRLParser {
             pattern.type( type );
             pattern.isQuery( query );
             if ( label != null ) {
-                pattern.id( label, isUnification );
+                pattern.id( label,
+                            isUnification );
             }
         }
 
@@ -2545,7 +2545,8 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void positionalConstraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        constraint( pattern, true );
+        constraint( pattern,
+                    true );
         if ( state.failed ) return;
 
         while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -2556,10 +2557,11 @@ public class DRLParser {
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
 
-            constraint( pattern, true );
+            constraint( pattern,
+                        true );
             if ( state.failed ) return;
         }
-        
+
         match( input,
                DRLLexer.SEMICOLON,
                null,
@@ -2574,7 +2576,8 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void constraints( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        constraint( pattern, false );
+        constraint( pattern,
+                    false );
         if ( state.failed ) return;
 
         while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -2585,7 +2588,8 @@ public class DRLParser {
                    DroolsEditorType.SYMBOL );
             if ( state.failed ) return;
 
-            constraint( pattern, false );
+            constraint( pattern,
+                        false );
             if ( state.failed ) return;
         }
     }
@@ -2595,7 +2599,8 @@ public class DRLParser {
      * @param pattern
      * @throws RecognitionException 
      */
-    private void constraint( PatternDescrBuilder< ? > pattern, boolean positional ) throws RecognitionException {
+    private void constraint( PatternDescrBuilder< ? > pattern,
+                             boolean positional ) throws RecognitionException {
         if ( state.backtracking == 0 && !state.errorRecovery ) {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
         }
@@ -2604,7 +2609,7 @@ public class DRLParser {
         if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
             bind = label( DroolsEditorType.IDENTIFIER_VARIABLE );
             if ( state.failed ) return;
-        } else if( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY ) {
+        } else if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY ) {
             bind = unif( DroolsEditorType.IDENTIFIER_VARIABLE );
             if ( state.failed ) return;
             unification = true;
@@ -2626,7 +2631,8 @@ public class DRLParser {
                                           input.LT( -1 ).getTokenIndex() );
             if ( bind == null ) {
                 // it is a constraint
-                pattern.constraint( expr, positional );
+                pattern.constraint( expr,
+                                    positional );
             } else {
                 // it is a bind
                 pattern.bind( bind,
@@ -2674,8 +2680,8 @@ public class DRLParser {
      * @throws RecognitionException 
      */
     private void behaviorDef( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        BehaviorDescrBuilder< ? > behavior = helper.start( BehaviorDescrBuilder.class,
-                                                           null,
+        BehaviorDescrBuilder< ? > behavior = helper.start( pattern,
+                                                           BehaviorDescrBuilder.class,
                                                            null );
         try {
             String bName = label( DroolsEditorType.IDENTIFIER_PATTERN );
@@ -2701,11 +2707,10 @@ public class DRLParser {
             }
         } finally {
             helper.end( BehaviorDescrBuilder.class,
-                        null );
+                        behavior );
         }
     }
 
-    
     /**
      * patternSource := FROM
      *                ( accumulate
@@ -2831,8 +2836,8 @@ public class DRLParser {
      * @throws RecognitionException
      */
     private void fromCollect( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        CollectDescrBuilder< ? > collect = helper.start( CollectDescrBuilder.class,
-                                                         null,
+        CollectDescrBuilder< ? > collect = helper.start( pattern,
+                                                         CollectDescrBuilder.class,
                                                          null );
         try {
             match( input,
@@ -2864,7 +2869,7 @@ public class DRLParser {
             if ( state.failed ) return;
         } finally {
             helper.end( CollectDescrBuilder.class,
-                        null );
+                        collect );
             if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
@@ -2881,8 +2886,8 @@ public class DRLParser {
      * @throws RecognitionException
      */
     private void fromAccumulate( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
-        AccumulateDescrBuilder< ? > accumulate = helper.start( AccumulateDescrBuilder.class,
-                                                               null,
+        AccumulateDescrBuilder< ? > accumulate = helper.start( pattern,
+                                                               AccumulateDescrBuilder.class,
                                                                null );
         try {
             match( input,
@@ -2904,9 +2909,9 @@ public class DRLParser {
 
             CEDescrBuilder< ? , AndDescr> source = accumulate.source();
             try {
-                helper.start( CEDescrBuilder.class,
-                              null,
-                              source );
+                helper.start( source,
+                              CEDescrBuilder.class,
+                              null );
                 lhsAnd( source,
                         false );
                 if ( state.failed ) return;
@@ -3059,7 +3064,7 @@ public class DRLParser {
             if ( state.failed ) return;
         } finally {
             helper.end( AccumulateDescrBuilder.class,
-                        null );
+                        accumulate );
             if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
@@ -3175,7 +3180,8 @@ public class DRLParser {
                 }
                 // remove the "then" keyword and any subsequent spaces and line breaks
                 // keep indendation of 1st non-blank line
-                chunk = chunk.replaceFirst( "^then\\s*\\r?\\n?", "" );
+                chunk = chunk.replaceFirst( "^then\\s*\\r?\\n?",
+                                            "" );
             }
             rule.rhs( chunk );
 
@@ -3191,6 +3197,7 @@ public class DRLParser {
      * annotation := AT ID (elementValuePairs | parenChunk )?
      */
     private void annotation( AnnotatedDescrBuilder< ? > adb ) {
+        AnnotationDescrBuilder annotation = null;
         try {
             // '@'
             Token at = match( input,
@@ -3208,12 +3215,10 @@ public class DRLParser {
                               DroolsEditorType.IDENTIFIER );
             if ( state.failed ) return;
 
-            AnnotationDescrBuilder annotation = null;
             if ( state.backtracking == 0 ) {
                 annotation = adb.newAnnotation( id.getText() );
                 helper.setStart( annotation,
                                  at );
-                helper.pushBuilderContext( annotation );
             }
 
             try {
@@ -3236,8 +3241,7 @@ public class DRLParser {
                 }
             } finally {
                 if ( state.backtracking == 0 ) {
-                    helper.setEnd();
-                    helper.popBuilderContext();
+                    helper.setEnd( annotation );
                 }
             }
 
@@ -3340,11 +3344,12 @@ public class DRLParser {
             if ( state.backtracking == 0 ) {
                 String actKey = key != null ? key : "value";
                 String actVal = annotation.getDescr().getValue( actKey );
-                if( actVal != null ){
+                if ( actVal != null ) {
                     // TODO: error message?
                     value = "\"" + AnnotationDescr.unquote( actVal ) + AnnotationDescr.unquote( value ) + "\"";
                 }
-                annotation.keyValue( actKey, value );
+                annotation.keyValue( actKey,
+                                     value );
             }
 
         } catch ( RecognitionException re ) {
@@ -3426,7 +3431,7 @@ public class DRLParser {
     /* ------------------------------------------------------------------------------------------------
      *                         UTILITY RULES
      * ------------------------------------------------------------------------------------------------ */
-    
+
     /**
      * Matches a type name
      * 
@@ -3490,7 +3495,8 @@ public class DRLParser {
             last = input.LT( -1 ).getTokenIndex();
             type = input.toString( first,
                                    last );
-            type = type.replace(" ", "");
+            type = type.replace( " ",
+                                 "" );
         } catch ( RecognitionException re ) {
             reportError( re );
         }
@@ -3642,7 +3648,8 @@ public class DRLParser {
             }
             qi = input.toString( first,
                                  last );
-            qi = qi.replace(" ", "");
+            qi = qi.replace( " ",
+                             "" );
         } catch ( RecognitionException re ) {
             reportError( re );
         }
@@ -3867,12 +3874,13 @@ public class DRLParser {
     }
 
     private String safeStripDelimiters( String value,
-                                        String left, String right ) {
+                                        String left,
+                                        String right ) {
         if ( value != null ) {
             value = value.trim();
             if ( value.length() >= left.length() + right.length() &&
                  value.startsWith( left ) && value.endsWith( right ) ) {
-                 value = value.substring( left.length(),
+                value = value.substring( left.length(),
                                           value.length() - right.length() );
             }
         }
