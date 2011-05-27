@@ -170,7 +170,7 @@ public class AccumulateDescr extends PatternSourceDescr
             functions = new ArrayList<AccumulateDescr.AccumulateFunctionCallDescr>();
         }
         this.functions.add( function );
-        if( functions.size() > 0 ) {
+        if( functions.size() > 1 ) {
             this.setMultiFunction( true );
         }
     }

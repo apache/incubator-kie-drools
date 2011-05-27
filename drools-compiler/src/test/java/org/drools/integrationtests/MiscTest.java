@@ -100,6 +100,10 @@ import org.drools.StockTick;
 import org.drools.TestParam;
 import org.drools.Win;
 import org.drools.WorkingMemory;
+import org.drools.base.RuleNameEndsWithAgendaFilter;
+import org.drools.base.RuleNameEqualsAgendaFilter;
+import org.drools.base.RuleNameMatchesAgendaFilter;
+import org.drools.base.RuleNameStartsWithAgendaFilter;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderError;
@@ -4022,74 +4026,80 @@ public class MiscTest {
         assertEquals( 1,
                       results.size() );
     }
-    
+
     @Test
     public void testMVELImplicitWithFrom() {
-        String str = ""+
-           "package org.test \n" +
-           "import java.util.List \n" +
-           "global java.util.List list \n" +
-           "global java.util.List list2 \n" +
-           "rule \"show\" dialect \"mvel\" \n" + 
-           "when  \n" + 
-           "    $m : List( eval( size == 0 ) ) from [list] \n" + 
-           "then \n" + 
-           "    list2.add('r1'); \n" +
-           "end \n";
+        String str = "" +
+                     "package org.test \n" +
+                     "import java.util.List \n" +
+                     "global java.util.List list \n" +
+                     "global java.util.List list2 \n" +
+                     "rule \"show\" dialect \"mvel\" \n" +
+                     "when  \n" +
+                     "    $m : List( eval( size == 0 ) ) from [list] \n" +
+                     "then \n" +
+                     "    list2.add('r1'); \n" +
+                     "end \n";
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        ksession.setGlobal( "list2", list );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
-    } 
-    
+        ksession.setGlobal( "list",
+                            list );
+        ksession.setGlobal( "list2",
+                            list );
+
+        ksession.fireAllRules();
+
+        assertEquals( "r1",
+                      list.get( 0 ) );
+    }
+
     @Test
     public void testJavaImplicitWithFrom() {
-        String str = ""+
-           "package org.test \n" +
-           "import java.util.List \n" +
-           "global java.util.List list \n" +
-           "global java.util.List list2 \n" +
-           "rule \"show\" dialect \"java\" \n" + 
-           "when  \n" + 
-           "    $m : List( eval( size == 0 )  ) from [list] \n" + 
-           "then \n" + 
-           "    list2.add('r1'); \n" +
-           "end \n";
+        String str = "" +
+                     "package org.test \n" +
+                     "import java.util.List \n" +
+                     "global java.util.List list \n" +
+                     "global java.util.List list2 \n" +
+                     "rule \"show\" dialect \"java\" \n" +
+                     "when  \n" +
+                     "    $m : List( eval( size == 0 )  ) from [list] \n" +
+                     "then \n" +
+                     "    list2.add('r1'); \n" +
+                     "end \n";
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        
+
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
- 
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
-        ksession.setGlobal( "list", list );
-        ksession.setGlobal( "list2", list );
-        
-        ksession.fireAllRules();    
-        
-        assertEquals( "r1", list.get(0) );
-    }       
-    
-    
+        ksession.setGlobal( "list",
+                            list );
+        ksession.setGlobal( "list2",
+                            list );
+
+        ksession.fireAllRules();
+
+        assertEquals( "r1",
+                      list.get( 0 ) );
+    }
 
     @Test
     public void testCastingInsideEvals() throws Exception {
@@ -7410,7 +7420,7 @@ public class MiscTest {
         assertEquals( 3,
                       list.size() );
     }
-    
+
     @Test
     public void testBindingToMissingField() throws Exception {
         // JBRULES-3047
@@ -7429,7 +7439,7 @@ public class MiscTest {
         if ( !kbuilder.hasErrors() ) {
             fail( "this should have errors" );
         }
-    }    
+    }
 
     @Test
     public void testJBRules2140() {
@@ -8592,23 +8602,120 @@ public class MiscTest {
     }
 
     @Test
+    public void testAgendaFilter1() {
+        String str = "package org.drools\n" +
+                     "rule Aaa when then end\n" +
+                     "rule Bbb when then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        RuleNameStartsWithAgendaFilter af = new RuleNameStartsWithAgendaFilter( "B" );
+
+        int rules = ksession.fireAllRules( af );
+        assertEquals( 1,
+                      rules );
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael ).afterActivationFired( arg.capture() );
+        assertThat( arg.getValue().getActivation().getRule().getName(),
+                    is( "Bbb" ) );
+    }
+
+    @Test
+    public void testAgendaFilter2() {
+        String str = "package org.drools\n" +
+                     "rule Aaa when then end\n" +
+                     "rule Bbb when then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        RuleNameEndsWithAgendaFilter af = new RuleNameEndsWithAgendaFilter( "a" );
+
+        int rules = ksession.fireAllRules( af );
+        assertEquals( 1,
+                      rules );
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael ).afterActivationFired( arg.capture() );
+        assertThat( arg.getValue().getActivation().getRule().getName(),
+                    is( "Aaa" ) );
+    }
+
+    @Test
+    public void testAgendaFilter3() {
+        String str = "package org.drools\n" +
+                     "rule Aaa when then end\n" +
+                     "rule Bbb when then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        RuleNameMatchesAgendaFilter af = new RuleNameMatchesAgendaFilter( ".*b." );
+
+        int rules = ksession.fireAllRules( af );
+        assertEquals( 1,
+                      rules );
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael ).afterActivationFired( arg.capture() );
+        assertThat( arg.getValue().getActivation().getRule().getName(),
+                    is( "Bbb" ) );
+    }
+
+    @Test
+    public void testAgendaFilter4() {
+        String str = "package org.drools\n" +
+                     "rule Aaa when then end\n" +
+                     "rule Bbb when then end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        RuleNameEqualsAgendaFilter af = new RuleNameEqualsAgendaFilter( "Aaa" );
+
+        int rules = ksession.fireAllRules( af );
+        assertEquals( 1,
+                      rules );
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael ).afterActivationFired( arg.capture() );
+        assertThat( arg.getValue().getActivation().getRule().getName(),
+                    is( "Aaa" ) );
+    }
+
+    @Test
     public void testRestrictionsWithOr() {
         // JBRULES-2203: NullPointerException When Using Conditional Element "or" in LHS Together with a Return Value Restriction
 
         String str = "package org.drools\n" +
-                     "rule \"test\"\n" + 
-                     "when\n" + 
-                     "    Cheese( price == (1 + 1) );\n" + 
-                     "    (or eval(true);\n" + 
-                     "        eval(true);\n" + 
-                     "    )\n" + 
-                     "then\n" + 
+                     "rule \"test\"\n" +
+                     "when\n" +
+                     "    Cheese( price == (1 + 1) );\n" +
+                     "    (or eval(true);\n" +
+                     "        eval(true);\n" +
+                     "    )\n" +
+                     "then\n" +
                      "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert( new Cheese( "Stilton", 2 ) );
+        ksession.insert( new Cheese( "Stilton",
+                                     2 ) );
 
         int rules = ksession.fireAllRules();
         assertEquals( 2,
