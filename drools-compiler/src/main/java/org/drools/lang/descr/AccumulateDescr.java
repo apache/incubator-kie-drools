@@ -44,6 +44,7 @@ public class AccumulateDescr extends PatternSourceDescr
     private String[]                          declarations;
     private String                            className;
     private List<AccumulateFunctionCallDescr> functions        = null;
+    private boolean                           multiFunction;
 
     @SuppressWarnings("unchecked")
     public void readExternal( ObjectInput in ) throws IOException,
@@ -169,6 +170,9 @@ public class AccumulateDescr extends PatternSourceDescr
             functions = new ArrayList<AccumulateDescr.AccumulateFunctionCallDescr>();
         }
         this.functions.add( function );
+        if( functions.size() > 0 ) {
+            this.setMultiFunction( true );
+        }
     }
 
     public boolean removeFunction( AccumulateFunctionCallDescr function ) {
@@ -216,6 +220,14 @@ public class AccumulateDescr extends PatternSourceDescr
     public boolean hasValidInput() {
         // TODO: need to check that there are no OR occurences
         return this.input != null;
+    }
+
+    public void setMultiFunction( boolean multiFunction ) {
+        this.multiFunction = multiFunction;
+    }
+
+    public boolean isMultiFunction() {
+        return multiFunction;
     }
 
     public static class AccumulateFunctionCallDescr
