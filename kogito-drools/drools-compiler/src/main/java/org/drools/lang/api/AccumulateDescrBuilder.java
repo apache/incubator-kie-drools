@@ -34,6 +34,8 @@ public interface AccumulateDescrBuilder<P extends DescrBuilder< ? >>
     public AccumulateDescrBuilder<P> action( String block );
     public AccumulateDescrBuilder<P> reverse( String block );
     public AccumulateDescrBuilder<P> result( String expr );
+    public AccumulateDescrBuilder<P> multiFunction( boolean b );
     
     public P end();
+
 }

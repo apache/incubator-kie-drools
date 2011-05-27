@@ -1809,4 +1809,48 @@ public class AccumulateTest {
         assertEquals( results.get( 1 ).intValue(),
                       17 );
     }
+    
+    @Test
+    public void testAccumulateCE() throws Exception {
+        String drl = "package org.drools\n" +
+        		     "global java.util.List results\n" +
+        		     "rule \"ocount\"\n" + 
+        		     "when\n" + 
+        		     "    accumulate( Cheese(), $c: count(1) )\n" + 
+        		     "then\n" + 
+        		     "    results.add( $c + \" facts\" );\n" + 
+        		     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final List<String> results = new ArrayList<String>();
+        ksession.setGlobal( "results",
+                            results );
+        final Cheese[] cheese = new Cheese[]{new Cheese( "Emmentaler",
+                                                         4 ), 
+                                             new Cheese( "Appenzeller",
+                                                         6 ), 
+                                             new Cheese( "Greyerzer",
+                                                         2 ), 
+                                             new Cheese( "Raclette",
+                                                         3 ), 
+                                             new Cheese( "Olmützer Quargel",
+                                                         15 ), 
+                                             new Cheese( "Brie",
+                                                         17 ), 
+                                             new Cheese( "Dolcelatte",
+                                                         8 )};
+
+        for ( int i = 0; i < cheese.length; i++ ) {
+            ksession.insert( cheese[i] );
+        }
+
+        // ---------------- 1st scenario
+        ksession.fireAllRules();
+        assertEquals( 1,
+                      results.size() );
+        assertEquals( "7 facts", 
+                      results.get( 0 ) );
+    }
 }

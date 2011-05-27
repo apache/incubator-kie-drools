@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.drools.base.ValueType;
 import org.drools.base.accumulators.JavaAccumulatorFunctionExecutor;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
@@ -176,13 +175,12 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                       usedIdentifiers,
                                                                       previousDeclarations );
         }
-        boolean isMultiFunction = ((Pattern) context.getBuildStack().peek()).getObjectType().getValueType().equals( ValueType.ARRAY_TYPE ) && funcCalls.size() > 1;
         
         accumulate = new Accumulate( source,
                                      requiredDecl.toArray( new Declaration[requiredDecl.size()] ),
                                      sourceDeclArr,
                                      accumulators,
-                                     isMultiFunction );
+                                     accumDescr.isMultiFunction() );
         return accumulate;
     }
 

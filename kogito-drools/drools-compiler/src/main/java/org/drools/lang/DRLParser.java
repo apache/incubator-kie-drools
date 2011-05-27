@@ -2298,6 +2298,9 @@ public class DRLParser {
             AccumulateDescrBuilder< ? > accumulate = helper.start( pattern,
                                                                    AccumulateDescrBuilder.class,
                                                                    null );
+            if( state.backtracking == 0 ) {
+                accumulate.multiFunction( true );
+            }
             try {
                 match( input,
                        DRLLexer.ID,
