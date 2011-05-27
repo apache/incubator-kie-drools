@@ -226,6 +226,10 @@ public class StatefulKnowledgeSessionImpl
         return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ) );
     }
 
+    public int fireAllRules(AgendaFilter agendaFilter, int max) {
+        return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ), max );
+    }
+
     public void fireUntilHalt() {
         this.session.fireUntilHalt();
     }
