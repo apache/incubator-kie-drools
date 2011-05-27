@@ -20,8 +20,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResultsRow;
 
-import org.junit.Ignore;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 
@@ -492,7 +490,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
-    @Test @Ignore
+    @Test 
     public void testUpdatePackageUrlIncremental() throws Exception {
 
         // Add Rule1 and Rule2 in the first package
@@ -544,9 +542,11 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         list.clear();
 
         kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( createDefaultRule( "rule2" ).getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource( createLhsRule( "rule2",
+                                                                           "String()\n" ).getBytes() ),
                       ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource( createDefaultRule( "rule3" ).getBytes() ),
+        kbuilder.add( ResourceFactory.newByteArrayResource( createLhsRule( "rule3",
+                                                                           "String()\n" ).getBytes() ),
                       ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
@@ -558,7 +558,6 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         scan( kagent );
         ksession.fireAllRules();
 
-        // !!! MDP rule2 is not new, it should not have fired
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( "rule3" ) );
@@ -678,7 +677,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         kagent.dispose();
     }
 
-    @Test @Ignore
+    @Test
     public void testCompleteRuleScenario() throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createLhsRule( new String[]{"rule1", "rule2"},
@@ -796,14 +795,14 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         scan( kagent );
 
         // Check as a result of old data against new rules
+        // Even if rule3 and rule3-V2 are defined in different resources, both
+        // are the same rule (they have the same name ('rule3') and are defined 
+        // in the same package), so in the kbase, rule3 is overwiritten by rule3-V2
         ksession.fireAllRules();
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( "rule3-V2" ) );
         list.clear();
-
-        // !!! MDP this logic is wrong rule3 and rule3-v2 should both exist
-        //     rule3 is in rule2.drl and rule3-V2 is in rules3.drl
 
         // Check all rules are still there with new data
         ksession.retract( h1 );
@@ -849,57 +848,46 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
                                 str );
         scan( kagent );
 
-        ksession.fireAllRules();
-
-        System.out.println( list );
-
-        // MDP the logic from this point is wrong. Rule3 was removed when added, so it should be in the list
-
-        //        File f3 = fileManager.write( "rule3.drl",
-        //                                     createVersionedRule( null,
-        //                                                          new String[]{"rule1"},
-        //                                                          null,
-        //                                                          "String()\n",
-        //                                                          "2" ) );
-        //    
-        //            //adds rules1-V3 definition to rules2.drl
-        //            output = new BufferedWriter(new FileWriter(f2));
-        //            output.write(header);
-        //            output.write(rule1V3);
-        //            output.write(rule3);
-        //            output.write(rule4);
-        //            output.close();
-        //            System.gc();
-        //            Thread.sleep(3000);
-        //    
-        //            ksession = kbase.newStatefulKnowledgeSession();
-        //            list = new ArrayList<String>();
-        //            ksession.setGlobal("list", list);
-        //            ksession.fireAllRules();
-        //            ksession.dispose();
-        //    
-        assertEquals( 2,
-                      list.size() );
-        assertTrue( list.contains( "rule1-V3" ) );
-        assertTrue( list.contains( "rule3" ) );
-        list.clear();
-        
+        // Check remaining rules are still there with new data
         ksession.retract( h1 );
-        h1 = ksession.insert( "String5" );
+        h1 = ksession.insert( "String6" );
         ksession.fireAllRules();
-        
-        //rule3 doesn't reapear because it was not modified in the resource
-        //assertTrue(list.contains("rule3"));
-        
-        
-        assertEquals( 4,
+        assertEquals( 3,
                       list.size() );
         assertTrue( list.contains( "rule1-V3" ) );
         assertTrue( list.contains( "rule2" ) );
-        assertTrue( list.contains( "rule3" ) );
+        //Rule3 doesn't appear again because a new version was defined earleir
+        //in rule3.drl. So, from the Agent's point of view, the deffinition of
+        //Rule3 didn't change in this file
+        //assertTrue( list.contains( "rule3" ) );  
         assertTrue( list.contains( "rule4" ) );
-        //    
-        //            kagent.monitorResourceChangeEvents(false);
+        list.clear();
+        
+        
+        //Add a new version of Rule1 in rule3.drl
+              f3 =  fileManager.write( "rule3.drl",
+                                             createVersionedRule( null,
+                                                                  new String[]{"rule1"},
+                                                                  null,
+                                                                  "String()\n",
+                                                                  "4" ) );
+              
+        //rule3.drl was removed, so we need to force the agent to start 
+        //monitoring it again.
+        applyChangeSet(kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ));         
+        
+        // Check remaining rules are still there with new data
+        ksession.retract( h1 );
+        h1 = ksession.insert( "String7" );
+        ksession.fireAllRules();
+        
+        assertEquals( 3,
+                      list.size() );
+        assertTrue( list.contains( "rule1-V4" ) );
+        assertTrue( list.contains( "rule2" ) );
+        assertTrue( list.contains( "rule4" ) );
+        list.clear();
+        
         ksession.dispose();
         kagent.dispose();
 
