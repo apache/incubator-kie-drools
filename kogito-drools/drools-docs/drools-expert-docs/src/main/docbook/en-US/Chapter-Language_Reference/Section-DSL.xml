@@ -414,7 +414,7 @@ There is a person with name of "Bob" and Person is at least 30 years old and liv
 
 # conditional element: "T" or "t", "a" or "an", convert matched word
 [when][][Tt]here is an? {entity:\w+}=
-        ${entity!lc}: ${entity!ucfirst} ()
+        ${entity!lc}: {entity!ucfirst} ()
 
 # consequence statement: convert matched word, literal braces
 [then][]update {entity:\w+}=modify( ${entity!lc} )\{ \}
