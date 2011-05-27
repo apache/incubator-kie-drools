@@ -20,6 +20,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResultsRow;
 
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
