@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
     <!--<environmentMode>DEBUG</environmentMode>-->
+    <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
+    <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
     <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

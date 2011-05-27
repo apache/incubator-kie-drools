@@ -37,11 +37,6 @@ import org.drools.runtime.rule.FactHandle;
 
 public class CurriculumCourseStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        return false; // TODO
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) abstractSolverScope.getWorkingSolution();
         initializeLectureList(abstractSolverScope, schedule);

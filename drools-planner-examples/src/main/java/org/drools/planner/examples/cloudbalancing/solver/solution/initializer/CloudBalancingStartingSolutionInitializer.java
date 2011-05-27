@@ -35,11 +35,6 @@ import org.drools.planner.examples.common.domain.PersistableIdComparator;
 
 public class CloudBalancingStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        return false; // TODO
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         CloudBalance cloudBalance = (CloudBalance) abstractSolverScope.getWorkingSolution();
         initializeCloudAssignmentList(abstractSolverScope, cloudBalance);

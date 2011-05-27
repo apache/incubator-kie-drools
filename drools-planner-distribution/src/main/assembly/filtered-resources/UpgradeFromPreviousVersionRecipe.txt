@@ -657,3 +657,350 @@ Before in *AcceptorConfig.java:
     public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
 After in *AcceptorConfig.java:
     public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+
+[MAJOR] You need to define your solution class in the configuration now:
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+        <scoreDrl>...</scoreDrl>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+        <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+        <scoreDrl>...</scoreDrl>
+
+[RECOMMENDED] Understand the concept of a "planning entity" class.
+The class (or classes) that change during planning (and do not implement Solution) are a planning entity.
+For example: ShiftAssignment, BedDesignation, Queen, CloudAssignment, ...
+The other domain classes are considered normal planning facts,
+for example Shift, Employee, Bed, Room, Department, ...
+They do not change during planning (at least not without pausing the solver).
+Read the manual to understand the "planning entity" concept better.
+
+[MAJOR] You need to define your planning entity class(es) in the configuration now:
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+        <solutionClass>...</solutionClass>
+        <scoreDrl>...</scoreDrl>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+        <solutionClass>...</solutionClass>
+        <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+        <scoreDrl>...</scoreDrl>
+
+[MAJOR] You need to annotate your planning entity class(es) with the @PlanningEntity annotation
+Before in *.java:
+    public class Lecture ... {
+        ...
+    }
+After in *.java:
+    @PlanningEntity
+    public class Lecture ... {
+        ...
+    }
+
+[RECOMMENDED] Understand the concept of a "planning variable" property.
+The property (or properties) on a planning entity class that are changed (through their setter) during planning
+are planning variables.
+For example: ShiftAssignment.getEmployee(), BedDesignation.getBed(), Queen.getY(), ...
+Note that most planning entities have 1 property which defines the planning entity
+and that property is NOT a planning variable.
+For example: ShiftAssignment.getShift(), BedDesignation.getAdmissionPart(), Queen.getX(), ...
+Read the manual to understand the "planning variable" concept better.
+
+[MAJOR] You need to annotate your planning variable property(ies) with the @PlanningVariable annotation.
+Furthermore, you need to annotate a @ValueRange* annotation on to define the allowed values.
+Commonly, you 'll use @ValueRangeFromSolutionProperty which specifies a property name on the solution
+which returns a collection of the allowed values for that variable.
+Before in *.java:
+    @PlanningEntity
+    public class Lecture ... {
+
+        private Course course;
+        private int lectureIndexInCourse;
+
+        // Changed by moves, between score calculations.
+        private Period period;
+        private Room room;
+
+        public Course getCourse() {...}
+        public void setCourse(Course course) {...}
+
+        public int getLectureIndexInCourse() {...}
+        public void setLectureIndexInCourse(int lectureIndexInCourse) {...}
+
+        public Period getPeriod() {...}
+        public void setPeriod(Period period) {...}
+
+        public Room getRoom() {...}
+        public void setRoom(Room room) {...}
+
+        ...
+
+        public int getStudentSize() {
+            return course.getStudentSize();
+        }
+
+        public Day getDay() {
+            return period.getDay();
+        }
+
+    }
+After in *.java:
+    @PlanningEntity
+    public class Lecture ... {
+
+        private Course course;
+        private int lectureIndexInCourse;
+
+        // Changed by moves, between score calculations.
+        private Period period;
+        private Room room;
+
+        // This is not a PlanningVariable: it defines the planning entity
+        public Course getCourse() {...}
+        public void setCourse(Course course) {...}
+
+        // This is not a PlanningVariable: it defines the planning entity
+        public int getLectureIndexInCourse() {...}
+        public void setLectureIndexInCourse(int lectureIndexInCourse) {...}
+
+        @PlanningVariable
+        @ValueRangeFromSolutionProperty(propertyName = "periodList")
+        public Period getPeriod() {...}
+        public void setPeriod(Period period) {...}
+
+        @PlanningVariable
+        @ValueRangeFromSolutionProperty(propertyName = "roomList")
+        public Room getRoom() {...}
+        public void setRoom(Room room) {...}
+
+        ...
+
+        // This is not a PlanningVariable: no setter
+        public int getStudentSize() {
+            return course.getStudentSize();
+        }
+
+        // This is not a PlanningVariable: no setter
+        public Day getDay() {
+            return period.getDay();
+        }
+
+    }
+
+[MAJOR] Annotate every property on your Solution that returns a collection of planning entities
+with @PlanningEntityCollectionProperty.
+Before in *.java:
+    public class CurriculumCourseSchedule ... implements Solution<...> {
+
+        private List<Lecture> lectureList;
+
+        ...
+
+        public List<Lecture> getLectureList() {...}
+        public void setLectureList(List<Lecture> lectureList) {...}
+
+    }
+After in *.java:
+    public class CurriculumCourseSchedule ... implements Solution<...> {
+
+        private List<Lecture> lectureList;
+
+        ...
+
+        @PlanningEntityCollectionProperty
+        public List<Lecture> getLectureList() {...}
+        public void setLectureList(List<Lecture> lectureList) {...}
+
+    }
+
+[MAJOR] The method getFacts() has been removed from the Solution interface.
+Annotate every property that returns a fact or fact collection with the @PlanningFactProperty
+or @PlanningFactCollectionProperty annotation respectively,
+except those already annotated with @PlanningEntityCollectionProperty.
+Properties annotated with these annotations are inserted into the working memory as facts:
+- @PlanningFactProperty
+- @PlanningFactCollectionProperty: each element in the collection
+- @PlanningEntityCollectionProperty: each planning entity in the collection that is initialized
+Remove the getFacts() method.
+Before in *.java:
+    public class ... implements Solution<...> {
+
+        private InstitutionalWeighting institutionalWeighting;
+
+        private List<Teacher> teacherList;
+        private List<Curriculum> curriculumList;
+        ...
+        private List<UnavailablePeriodConstraint> unavailablePeriodConstraintList;
+
+        private List<Lecture> lectureList;
+
+        private HardAndSoftScore score;
+
+        ...
+
+        public String getName() {...}
+
+        public InstitutionalWeighting getInstitutionalWeighting() {...}
+
+        public List<Teacher> getTeacherList() {...}
+
+        public List<Curriculum> getCurriculumList() {...}
+
+        ...
+
+        public List<UnavailablePeriodConstraint> getUnavailablePeriodConstraintList() {...}
+
+        @PlanningEntityCollectionProperty
+        public List<Lecture> getLectureList() {...}
+
+        public ...Score getScore() {...}
+
+        public Collection<? extends Object> getFacts() {
+            List<Object> facts = new ArrayList<Object>();
+            facts.addAll(teacherList);
+            facts.addAll(curriculumList);
+            ...
+            facts.addAll(unavailablePeriodConstraintList);
+            if (isInitialized()) {
+                facts.addAll(lectureList);
+            }
+            facts.addAll(calculateTopicConflictList());
+            return facts;
+        }
+
+        public List<TopicConflict> calculateTopicConflictList() {...}
+
+    }
+After in *.java:
+    public class ... implements Solution<...> {
+
+        private InstitutionalWeighting institutionalWeighting;
+
+        private List<Teacher> teacherList;
+        private List<Curriculum> curriculumList;
+        ...
+        private List<UnavailablePeriodConstraint> unavailablePeriodConstraintList;
+
+        private List<Lecture> lectureList;
+
+        private HardAndSoftScore score;
+
+        ...
+
+        // This is not a PlanningFactProperty: the name is inserted into the working memory
+        public String getName() {...}
+
+        @PlanningFactProperty
+        public InstitutionalWeighting getInstitutionalWeighting() {...}
+
+        @PlanningFactCollectionProperty
+        public List<Teacher> getTeacherList() {...}
+
+        @PlanningFactCollectionProperty
+        public List<Curriculum> getCurriculumList() {...}
+
+        ...
+
+        @PlanningFactCollectionProperty
+        public List<UnavailablePeriodConstraint> getUnavailablePeriodConstraintList() {...}
+
+        // This is not a PlanningFactCollectionProperty: it is a PlanningEntityCollectionProperty
+        @PlanningEntityCollectionProperty
+        public List<Lecture> getLectureList() {...}
+
+        // This is not a PlanningFactProperty: the score is inserted into the working memory
+        public ...Score getScore() {...}
+
+        // renamed from calculateTopicConflictList because these are also facts needed in the working memory
+        @PlanningFactCollectionProperty
+        public List<TopicConflict> getTopicConflictList() {...}
+
+    }
+
+[RECOMMEND] A planning entity is considered uninitialized if one if at least on of its planning variables is null.
+Therefor it's now possible to start planning from a partially initialized starting solution,
+for example during real-time re-planning after facts change.
+
+[MAJOR] The StartingSolutionInitializer no longer has a isSolutionInitialized(AbstractSolverScope) method
+Before in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+
+        @Override
+        public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
+            ...
+        }
+
+        ...
+
+    }
+After in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+
+        ...
+
+    }
+
+[MAJOR] The planning entity collection in the Solution can never be null,
+but some (or all) of its planning entity's can be uninitialized.
+So create them before setting the starting solution, instead of in your StartingSolutionInitializer.
+Before in *.java:
+    public class ... {
+
+        public void ...() {
+            CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
+            schedule.setTeacherList(teacherList);
+            schedule.setCourseList(courseList);
+            ...
+            solver.setStartingSolution(schedule);
+        }
+
+    }
+After in *.java:
+    public class ... {
+
+        public void ...() {
+            CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
+            schedule.setTeacherList(teacherList);
+            schedule.setCourseList(courseList);
+            ...
+            schedule.setLectureList(createLectureList(schedule.getCourseList()));
+            solver.setStartingSolution(schedule);
+        }
+
+        private List<Lecture> createLectureList(List<Course> courseList) {
+            List<Lecture> lectureList = new ArrayList<Lecture>(courseList.size());
+            long id = 0L;
+            for (Course course : courseList) {
+                for (int i = 0; i < course.getLectureSize(); i++) {
+                    Lecture lecture = new Lecture();
+                    lecture.setId((long) id);
+                    id++;
+                    lecture.setCourse(course);
+                    // Make sure to set all non PlanningVariable properties
+                    lecture.setLectureIndexInCourse(i);
+                    // Notice that we leave the PlanningVariable properties on null
+                    lectureList.add(lecture);
+                }
+            }
+            return lectureList;
+        }
+
+    }
+
+[RECOMMENDED] Remove the isInitialized() from Solution if you copied that from the examples.
+Before in *.java:
+    public class ... implements Solution<...> {
+
+        public boolean isInitialized() {
+            return (lectureList != null);
+        }
+        
+        ...
+
+    }
+After in *.java:
+    public class ... implements Solution<...> {
+
+        ...
+
+    }

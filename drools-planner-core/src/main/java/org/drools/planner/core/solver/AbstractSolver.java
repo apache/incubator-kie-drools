@@ -141,12 +141,8 @@ public abstract class AbstractSolver implements Solver {
             abstractSolverScope.setWorkingRandom(new Random());
         }
         if (startingSolutionInitializer != null) {
-            if (!startingSolutionInitializer.isSolutionInitialized(abstractSolverScope)) {
-                logger.info("Initializing solution.");
-                startingSolutionInitializer.initializeSolution(abstractSolverScope);
-            } else {
-                logger.debug("Solution is already initialized.");
-            }
+            logger.info("Initializing solution.");
+            startingSolutionInitializer.initializeSolution(abstractSolverScope);
         }
         bestSolutionRecaller.solvingStarted(abstractSolverScope);
         logger.info("Starting with time spend ({}), score ({}), new best score ({}).",

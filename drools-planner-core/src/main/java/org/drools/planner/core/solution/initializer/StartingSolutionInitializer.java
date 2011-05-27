@@ -20,8 +20,6 @@ import org.drools.planner.core.solver.AbstractSolverScope;
 
 public interface StartingSolutionInitializer {
 
-    boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope);
-
     void initializeSolution(AbstractSolverScope abstractSolverScope);
 
 }

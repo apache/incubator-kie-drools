@@ -36,12 +36,6 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
 public class NurseRosteringStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        NurseRoster nurseRoster = (NurseRoster) abstractSolverScope.getWorkingSolution();
-        return nurseRoster.isInitialized();
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         NurseRoster nurseRoster = (NurseRoster) abstractSolverScope.getWorkingSolution();
         initializeAssignmentList(abstractSolverScope, nurseRoster);

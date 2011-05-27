@@ -28,8 +28,4 @@ public abstract class AbstractStartingSolutionInitializer implements StartingSol
     // Worker methods
     // ************************************************************************
 
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        return false;
-    }
-
 }

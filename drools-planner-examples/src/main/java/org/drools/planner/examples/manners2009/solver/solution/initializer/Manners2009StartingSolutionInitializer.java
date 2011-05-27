@@ -34,12 +34,6 @@ import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
 public class Manners2009StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        Manners2009 manners2009 = (Manners2009) abstractSolverScope.getWorkingSolution();
-        return manners2009.isInitialized();
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         Manners2009 manners2009 = (Manners2009) abstractSolverScope.getWorkingSolution();
         initializeSeatDesignationList(abstractSolverScope, manners2009);

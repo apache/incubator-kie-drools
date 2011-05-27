@@ -44,12 +44,6 @@ import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
 public class ExaminationStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        Examination examination = (Examination) abstractSolverScope.getWorkingSolution();
-        return examination.isInitialized();
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         Examination examination = (Examination) abstractSolverScope.getWorkingSolution();
         initializeExamList(abstractSolverScope, examination);

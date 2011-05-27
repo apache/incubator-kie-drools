@@ -41,12 +41,6 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
 
     private boolean checkSameBedInSameNight = true;
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) abstractSolverScope.getWorkingSolution();
-        return patientAdmissionSchedule.isInitialized();
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule)
                 abstractSolverScope.getWorkingSolution();

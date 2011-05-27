@@ -33,12 +33,6 @@ import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 
 public class TspStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) abstractSolverScope.getWorkingSolution();
-        return travelingSalesmanTour.isInitialized();
-    }
-
     public void initializeSolution(AbstractSolverScope abstractSolverScope) {
         TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) abstractSolverScope.getWorkingSolution();
         initializeCityAssignmentList(abstractSolverScope, travelingSalesmanTour);

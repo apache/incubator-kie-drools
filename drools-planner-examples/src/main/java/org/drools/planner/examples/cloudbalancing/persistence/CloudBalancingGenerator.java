@@ -221,7 +221,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             CloudAssignment cloudAssignment = new CloudAssignment();
             cloudAssignment.setId(id);
             cloudAssignment.setCloudProcess(cloudProcess);
-            // Notice that we lave the PlanningVariable properties on null
+            // Notice that we leave the PlanningVariable properties on null
             cloudAssignmentList.add(cloudAssignment);
             id++;
         }
