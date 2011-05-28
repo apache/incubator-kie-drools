@@ -56,6 +56,11 @@ public class FireAllRulesCommand
         this.agendaFilter = agendaFilter;
     }
 
+    public FireAllRulesCommand(AgendaFilter agendaFilter, int max) {
+        this.agendaFilter = agendaFilter;
+        this.max = max;
+    }
+
     public FireAllRulesCommand(String outIdentifier,
                                int max,
                                AgendaFilter agendaFilter) {
@@ -91,7 +96,9 @@ public class FireAllRulesCommand
     public Integer execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         int fired;
-        if ( max != -1 ) {
+        if ( max != -1 && agendaFilter != null ) {
+            fired = ((StatefulKnowledgeSessionImpl) ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ), max );
+        } else if ( max != -1 ) {
             fired = ksession.fireAllRules( max );
         } else if ( agendaFilter != null ) {
             fired = ((StatefulKnowledgeSessionImpl) ksession).session.fireAllRules( new StatefulKnowledgeSessionImpl.AgendaFilterWrapper( agendaFilter ) );
@@ -107,7 +114,9 @@ public class FireAllRulesCommand
     }
 
     public String toString() {
-        if ( max > 0 ) {
+        if ( max != -1 && agendaFilter != null ) {
+            return "session.fireAllRules( " + agendaFilter + ", " + max + " );";
+        } else if ( max != -1 ) {
             return "session.fireAllRules( " + max + " );";
         } else if ( agendaFilter != null ) {
             return "session.fireAllRules( " + agendaFilter + " );";

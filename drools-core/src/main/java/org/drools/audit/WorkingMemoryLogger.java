@@ -134,7 +134,7 @@ public abstract class WorkingMemoryLogger
         if (session instanceof StatefulKnowledgeSessionImpl) {
             WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
             eventManager.addEventListener( (WorkingMemoryEventListener) this );
-            eventManager.addEventListener( (RuleBaseEventListener) this );
+            eventManager.addEventListener( (AgendaEventListener) this );
             eventManager.addEventListener( (RuleBaseEventListener) this );
             InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
             if (processRuntime != null) {
