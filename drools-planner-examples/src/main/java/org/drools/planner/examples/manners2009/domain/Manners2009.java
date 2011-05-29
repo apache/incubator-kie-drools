@@ -24,6 +24,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleScore;
@@ -82,6 +83,7 @@ public class Manners2009 extends AbstractPersistable implements Solution<SimpleS
         this.seatList = seatList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<SeatDesignation> getSeatDesignationList() {
         return seatDesignationList;
     }
@@ -102,7 +104,7 @@ public class Manners2009 extends AbstractPersistable implements Solution<SimpleS
         return (seatDesignationList != null);
     }
 
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(EnumSet.allOf(JobType.class));
         facts.addAll(jobList);
@@ -111,9 +113,7 @@ public class Manners2009 extends AbstractPersistable implements Solution<SimpleS
         facts.addAll(hobbyPracticianList);
         facts.addAll(tableList);
         facts.addAll(seatList);
-        if (isInitialized()) {
-            facts.addAll(seatDesignationList);
-        }
+        // Do not add the planning entity's (seatDesignationList) because that will be done automatically
         return facts;
     }
 

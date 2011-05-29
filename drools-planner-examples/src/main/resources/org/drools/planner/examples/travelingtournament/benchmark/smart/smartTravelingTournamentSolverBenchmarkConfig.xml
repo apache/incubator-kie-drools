@@ -6,6 +6,8 @@
     <inheritedSolverBenchmark>
         <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
         <localSearchSolver>
+            <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+            <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
             <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
             <scoreDefinition>
                 <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

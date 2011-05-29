@@ -7,6 +7,8 @@
         <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</unsolvedSolutionFile>
         <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</unsolvedSolutionFile>
         <localSearchSolver>
+            <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
+            <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
             <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
             <scoreDefinition>
                 <scoreDefinitionType>SIMPLE</scoreDefinitionType>

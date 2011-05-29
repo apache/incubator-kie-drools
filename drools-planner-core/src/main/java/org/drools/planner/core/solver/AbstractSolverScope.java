@@ -194,7 +194,7 @@ public abstract class AbstractSolverScope {
     }
 
     public Collection<? extends Object> getWorkingFacts() {
-        return solutionDescriptor.getFacts(workingSolution);
+        return solutionDescriptor.getAllFacts(workingSolution);
     }
 
     public Collection<? extends Object> getWorkingPlanningEntities() {

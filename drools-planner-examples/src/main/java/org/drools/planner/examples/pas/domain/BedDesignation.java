@@ -20,8 +20,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntity;
+import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 @XStreamAlias("BedDesignation")
 public class BedDesignation extends AbstractPersistable implements Comparable<BedDesignation> {
 
@@ -36,6 +40,8 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
         this.admissionPart = admissionPart;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "bedList")
     public Bed getBed() {
         return bed;
     }

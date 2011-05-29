@@ -5,7 +5,6 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
-import org.drools.planner.core.domain.PlanningFactCollectionProperty;
-import org.drools.planner.core.domain.PlanningFactProperty;
+import org.drools.planner.core.domain.PlanningEntityProperty;
 import org.drools.planner.core.solution.Solution;
 
 public class SolutionDescriptor implements Serializable {
@@ -23,8 +21,7 @@ public class SolutionDescriptor implements Serializable {
     private final BeanInfo solutionBeanInfo;
     
     private final Map<String, PropertyDescriptor> propertyDescriptorMap;
-    private final Map<String, PropertyDescriptor> factPropertyDescriptorMap;
-    private final Map<String, PropertyDescriptor> factCollectionPropertyDescriptorMap;
+    private final Map<String, PropertyDescriptor> entityPropertyDescriptorMap;
     private final Map<String, PropertyDescriptor> entityCollectionPropertyDescriptorMap;
 
     private final Map<Class<?>, PlanningEntityDescriptor> planningEntityDescriptorMap;
@@ -38,31 +35,22 @@ public class SolutionDescriptor implements Serializable {
         }
         int mapSize = solutionBeanInfo.getPropertyDescriptors().length;
         propertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
-        factPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
-        factCollectionPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
+        entityPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
         entityCollectionPropertyDescriptorMap = new HashMap<String, PropertyDescriptor>(mapSize);
         planningEntityDescriptorMap = new HashMap<Class<?>, PlanningEntityDescriptor>(mapSize);
         processPropertyAnnotations();
     }
 
     private void processPropertyAnnotations() {
-        boolean noPlanningEntityCollectionAnnotation = true;
+        boolean noPlanningEntityPropertyAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
             propertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
             Method propertyGetter = propertyDescriptor.getReadMethod();
-            if (propertyGetter.isAnnotationPresent(PlanningFactProperty.class)) {
-                factPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
-            } else if (propertyGetter.isAnnotationPresent(PlanningFactCollectionProperty.class)) {
-                if (!Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ") has a PlanningFactCollectionProperty annotated property ("
-                            + propertyDescriptor.getName() + ") that does not return a Collection.");
-                }
-                factCollectionPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
+            if (propertyGetter.isAnnotationPresent(PlanningEntityProperty.class)) {
+                noPlanningEntityPropertyAnnotation = false;
+                entityPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
             } else if (propertyGetter.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
-                PlanningEntityCollectionProperty planningEntityCollectionPropertyAnnotation = propertyGetter
-                        .getAnnotation(PlanningEntityCollectionProperty.class);
-                noPlanningEntityCollectionAnnotation = false;
+                noPlanningEntityPropertyAnnotation = false;
                 if (!Collection.class.isAssignableFrom(propertyDescriptor.getPropertyType())) {
                     throw new IllegalStateException("The solutionClass (" + solutionClass
                             + ") has a PlanningEntityCollection annotated property ("
@@ -71,9 +59,10 @@ public class SolutionDescriptor implements Serializable {
                 entityCollectionPropertyDescriptorMap.put(propertyDescriptor.getName(), propertyDescriptor);
             }
         }
-        if (noPlanningEntityCollectionAnnotation) {
+        if (noPlanningEntityPropertyAnnotation) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") should have at least 1 getter with a PlanningEntityCollection annotation.");
+                    + ") should have at least 1 getter with a PlanningEntityCollection or PlanningEntityProperty"
+                    + " annotation.");
         }
     }
 
@@ -93,16 +82,15 @@ public class SolutionDescriptor implements Serializable {
         return planningEntityDescriptorMap.get(planningEntityClass);
     }
 
-    public Collection<? extends Object> getFacts(Solution solution) {
+    public Collection<? extends Object> getAllFacts(Solution solution) {
         Collection<Object> planningFacts = new ArrayList<Object>();
-        for (PropertyDescriptor factPropertyDescriptor : factPropertyDescriptorMap.values()) {
-            Object fact = DescriptorUtils.executeGetter(factPropertyDescriptor, solution);
-            planningFacts.add(fact);
-        }
-        for (PropertyDescriptor factCollectionPropertyDescriptor : factCollectionPropertyDescriptorMap.values()) {
-            Collection<? extends Object> factCollection = (Collection<? extends Object>)
-                    DescriptorUtils.executeGetter(factCollectionPropertyDescriptor, solution);
-            planningFacts.addAll(factCollection);
+        planningFacts.addAll(solution.getProblemFacts());
+        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
+            Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+            PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+            if (entity != null && planningEntityDescriptor.isInitialized(entity)) {
+                planningFacts.add(entity);
+            }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
             Collection<? extends Object> entityCollection = (Collection<? extends Object>)
@@ -119,6 +107,12 @@ public class SolutionDescriptor implements Serializable {
 
     public Collection<? extends Object> getPlanningEntities(Solution solution) {
         Collection<Object> planningEntities = new ArrayList<Object>();
+        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
+            Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+            if (entity != null) {
+                planningEntities.add(entity);
+            }
+        }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
             Collection<? extends Object> entityCollection = (Collection<? extends Object>)
                     DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);

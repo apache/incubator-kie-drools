@@ -812,108 +812,38 @@ After in *.java:
         public void setLectureList(List<Lecture> lectureList) {...}
 
     }
+If you have a property that returns a single planning entity (instead of a collection), use @PlanningEntityProperty.
 
-[MAJOR] The method getFacts() has been removed from the Solution interface.
-Annotate every property that returns a fact or fact collection with the @PlanningFactProperty
-or @PlanningFactCollectionProperty annotation respectively,
-except those already annotated with @PlanningEntityCollectionProperty.
-Properties annotated with these annotations are inserted into the working memory as facts:
-- @PlanningFactProperty
-- @PlanningFactCollectionProperty: each element in the collection
-- @PlanningEntityCollectionProperty: each planning entity in the collection that is initialized
-Remove the getFacts() method.
+[MAJOR] The method getFacts() is renamed to getProblemFacts() and should no longer include planning entities.
+Every planning entity is now automatically inserted into the working memory if and only if it is initialized.
+When it's initialized later, it's also automatically inserted.
+Remove the adding of the planning entities in the getFacts() method.
 Before in *.java:
     public class ... implements Solution<...> {
-
-        private InstitutionalWeighting institutionalWeighting;
-
-        private List<Teacher> teacherList;
-        private List<Curriculum> curriculumList;
-        ...
-        private List<UnavailablePeriodConstraint> unavailablePeriodConstraintList;
-
-        private List<Lecture> lectureList;
-
-        private HardAndSoftScore score;
-
-        ...
-
-        public String getName() {...}
-
-        public InstitutionalWeighting getInstitutionalWeighting() {...}
-
-        public List<Teacher> getTeacherList() {...}
-
-        public List<Curriculum> getCurriculumList() {...}
-
-        ...
-
-        public List<UnavailablePeriodConstraint> getUnavailablePeriodConstraintList() {...}
-
-        @PlanningEntityCollectionProperty
-        public List<Lecture> getLectureList() {...}
-
-        public ...Score getScore() {...}
 
         public Collection<? extends Object> getFacts() {
             List<Object> facts = new ArrayList<Object>();
             facts.addAll(teacherList);
-            facts.addAll(curriculumList);
             ...
-            facts.addAll(unavailablePeriodConstraintList);
+            facts.addAll(calculateTopicConflictList());
             if (isInitialized()) {
                 facts.addAll(lectureList);
             }
-            facts.addAll(calculateTopicConflictList());
             return facts;
         }
-
-        public List<TopicConflict> calculateTopicConflictList() {...}
 
     }
 After in *.java:
     public class ... implements Solution<...> {
 
-        private InstitutionalWeighting institutionalWeighting;
-
-        private List<Teacher> teacherList;
-        private List<Curriculum> curriculumList;
-        ...
-        private List<UnavailablePeriodConstraint> unavailablePeriodConstraintList;
-
-        private List<Lecture> lectureList;
-
-        private HardAndSoftScore score;
-
-        ...
-
-        // This is not a PlanningFactProperty: the name is inserted into the working memory
-        public String getName() {...}
-
-        @PlanningFactProperty
-        public InstitutionalWeighting getInstitutionalWeighting() {...}
-
-        @PlanningFactCollectionProperty
-        public List<Teacher> getTeacherList() {...}
-
-        @PlanningFactCollectionProperty
-        public List<Curriculum> getCurriculumList() {...}
-
-        ...
-
-        @PlanningFactCollectionProperty
-        public List<UnavailablePeriodConstraint> getUnavailablePeriodConstraintList() {...}
-
-        // This is not a PlanningFactCollectionProperty: it is a PlanningEntityCollectionProperty
-        @PlanningEntityCollectionProperty
-        public List<Lecture> getLectureList() {...}
-
-        // This is not a PlanningFactProperty: the score is inserted into the working memory
-        public ...Score getScore() {...}
-
-        // renamed from calculateTopicConflictList because these are also facts needed in the working memory
-        @PlanningFactCollectionProperty
-        public List<TopicConflict> getTopicConflictList() {...}
+        public Collection<? extends Object> getProblemFacts() {
+            List<Object> facts = new ArrayList<Object>();
+            facts.addAll(teacherList);
+            ...
+            facts.addAll(calculateTopicConflictList());
+            // Do not add the planning entity's (lectureList) because that will be done automatically
+            return facts;
+        }
 
     }
 

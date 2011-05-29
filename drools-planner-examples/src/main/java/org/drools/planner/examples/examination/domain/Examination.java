@@ -24,8 +24,6 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
-import org.drools.planner.core.domain.PlanningFactCollectionProperty;
-import org.drools.planner.core.domain.PlanningFactProperty;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
@@ -49,7 +47,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
 
     private HardAndSoftScore score;
 
-    @PlanningFactProperty
     public InstitutionalWeighting getInstitutionalWeighting() {
         return institutionalWeighting;
     }
@@ -58,7 +55,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.institutionalWeighting = institutionalWeighting;
     }
 
-    @PlanningFactCollectionProperty
     public List<Student> getStudentList() {
         return studentList;
     }
@@ -67,7 +63,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.studentList = studentList;
     }
 
-    @PlanningFactCollectionProperty
     public List<Topic> getTopicList() {
         return topicList;
     }
@@ -76,7 +71,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.topicList = topicList;
     }
 
-    @PlanningFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -85,7 +79,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.periodList = periodList;
     }
 
-    @PlanningFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -94,7 +87,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.roomList = roomList;
     }
 
-    @PlanningFactCollectionProperty
     public List<PeriodHardConstraint> getPeriodHardConstraintList() {
         return periodHardConstraintList;
     }
@@ -103,7 +95,6 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.periodHardConstraintList = periodHardConstraintList;
     }
 
-    @PlanningFactCollectionProperty
     public List<RoomHardConstraint> getRoomHardConstraintList() {
         return roomHardConstraintList;
     }
@@ -129,8 +120,24 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.score = score;
     }
 
-    @PlanningFactCollectionProperty
-    public List<TopicConflict> getTopicConflictList() {
+    public Collection<? extends Object> getProblemFacts() {
+        List<Object> facts = new ArrayList<Object>();
+        facts.add(institutionalWeighting);
+        // Student isn't used in the DRL at the moment
+        // Notice that asserting them is not a noticable performance cost, only a memory cost.
+        // facts.addAll(studentList);
+        facts.addAll(topicList);
+        facts.addAll(periodList);
+        facts.addAll(roomList);
+        facts.addAll(periodHardConstraintList);
+        facts.addAll(roomHardConstraintList);
+        // A faster alternative to a insertLogicalTopicConflicts rule.
+        facts.addAll(calculateTopicConflictList());
+        // Do not add the planning entity's (examList) because that will be done automatically
+        return facts;
+    }
+
+    private List<TopicConflict> calculateTopicConflictList() {
         List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
         for (Topic leftTopic : topicList) {
             for (Topic rightTopic : topicList) {

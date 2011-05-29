@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
@@ -154,6 +155,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.preferredPatientEquipmentList = preferredPatientEquipmentList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<BedDesignation> getBedDesignationList() {
         return bedDesignationList;
     }
@@ -174,7 +176,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         return (bedDesignationList != null);
     }
 
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);
         facts.addAll(equipmentList);
@@ -189,11 +191,9 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(admissionPartList);
         facts.addAll(requiredPatientEquipmentList);
         facts.addAll(preferredPatientEquipmentList);
-        if (isInitialized()) {
-            facts.addAll(bedDesignationList);
-        }
         facts.addAll(calculateAdmissionPartConflictList());
 //        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
+        // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
     }
 

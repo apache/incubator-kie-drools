@@ -17,8 +17,12 @@
 package org.drools.planner.examples.nqueens.domain;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.drools.planner.core.domain.PlanningEntity;
+import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 public class Queen extends AbstractPersistable implements Comparable<Queen> {
 
     private int x;
@@ -32,6 +36,8 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
         this.x = x;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "yList")
     public int getY() {
         return y;
     }

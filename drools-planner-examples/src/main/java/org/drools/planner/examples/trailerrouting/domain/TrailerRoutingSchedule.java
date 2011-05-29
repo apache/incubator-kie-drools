@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
@@ -108,6 +109,7 @@ public class TrailerRoutingSchedule extends AbstractPersistable implements Solut
         this.orderList = orderList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<TrailerRoutingOrderAssignment> getOrderAssignmentList() {
         return orderAssignmentList;
     }
@@ -128,7 +130,7 @@ public class TrailerRoutingSchedule extends AbstractPersistable implements Solut
         return (orderAssignmentList != null);
     }
 
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(locationList);
         facts.addAll(resourceKindList);
@@ -137,9 +139,7 @@ public class TrailerRoutingSchedule extends AbstractPersistable implements Solut
         facts.addAll(trailerList);
         facts.addAll(locationResourceKindRejectionList);
         facts.addAll(orderList);
-        if (isInitialized()) {
-            facts.addAll(orderAssignmentList);
-        }
+        // Do not add the planning entity's (orderAssignmentList) because that will be done automatically
         return facts;
     }
 

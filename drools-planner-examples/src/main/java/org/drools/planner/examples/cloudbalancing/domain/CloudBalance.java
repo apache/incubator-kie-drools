@@ -24,7 +24,6 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
-import org.drools.planner.core.domain.PlanningFactCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
@@ -39,7 +38,6 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
 
     private HardAndSoftScore score;
 
-    @PlanningFactCollectionProperty
     public List<CloudComputer> getCloudComputerList() {
         return cloudComputerList;
     }
@@ -48,7 +46,6 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         this.cloudComputerList = cloudComputerList;
     }
 
-    @PlanningFactCollectionProperty
     public List<CloudProcess> getCloudProcessList() {
         return cloudProcessList;
     }
@@ -72,6 +69,14 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
 
     public void setScore(HardAndSoftScore score) {
         this.score = score;
+    }
+
+    public Collection<? extends Object> getProblemFacts() {
+        List<Object> facts = new ArrayList<Object>();
+        facts.addAll(cloudComputerList);
+        facts.addAll(cloudProcessList);
+        // Do not add the planning entity's (cloudAssignmentList) because that will be done automatically
+        return facts;
     }
 
     /**

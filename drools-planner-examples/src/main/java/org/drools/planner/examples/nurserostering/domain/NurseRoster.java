@@ -23,6 +23,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
@@ -188,6 +189,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         this.shiftOnRequestList = shiftOnRequestList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<Assignment> getAssignmentList() {
         return assignmentList;
     }
@@ -208,7 +210,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         return (assignmentList != null);
     }
 
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         // TODO add RosterInfo as a property on NurseRoster
         facts.add(new RosterInfo(shiftDateList.get(0), shiftDateList.get(shiftDateList.size() - 1)));
@@ -227,11 +229,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         facts.addAll(dayOnRequestList);
         facts.addAll(shiftOffRequestList);
         facts.addAll(shiftOnRequestList);
-        // TODO add more properties
-
-        if (isInitialized()) {
-            facts.addAll(assignmentList);
-        }
+        // Do not add the planning entity's (assignmentList) because that will be done automatically
         return facts;
     }
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
     <!--<environmentMode>DEBUG</environmentMode>-->
+    <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
+    <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
     <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

@@ -20,8 +20,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.core.domain.PlanningEntity;
+import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 @XStreamAlias("TrailerRoutingOrderAssignment")
 public class TrailerRoutingOrderAssignment extends AbstractPersistable implements Comparable<TrailerRoutingOrderAssignment> {
 
@@ -41,6 +45,8 @@ public class TrailerRoutingOrderAssignment extends AbstractPersistable implement
         this.order = order;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "driverList")
     public TrailerRoutingDriver getDriver() {
         return driver;
     }
@@ -49,6 +55,8 @@ public class TrailerRoutingOrderAssignment extends AbstractPersistable implement
         this.driver = driver;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "truckList")
     public TrailerRoutingTruck getTruck() {
         return truck;
     }
@@ -57,6 +65,8 @@ public class TrailerRoutingOrderAssignment extends AbstractPersistable implement
         this.truck = truck;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "trailerList")
     public TrailerRoutingTrailer getPrimaryTrailer() {
         return primaryTrailer;
     }
@@ -65,6 +75,8 @@ public class TrailerRoutingOrderAssignment extends AbstractPersistable implement
         this.primaryTrailer = primaryTrailer;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "trailerList")
     public TrailerRoutingTrailer getSecondaryTrailer() {
         return secondaryTrailer;
     }

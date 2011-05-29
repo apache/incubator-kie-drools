@@ -29,6 +29,8 @@
         <!--<unsolvedSolutionFile>data/nurserostering/unsolved/sprint_late10.xml</unsolvedSolutionFile>-->
     
         <localSearchSolver>
+            <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+            <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
             <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
             <scoreDefinition>
                 <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

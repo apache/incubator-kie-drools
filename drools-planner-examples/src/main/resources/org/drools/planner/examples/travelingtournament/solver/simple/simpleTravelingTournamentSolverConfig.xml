@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
+    <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+    <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
     <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/simple/simpleTravelingTournamentScoreRules.drl</scoreDrl>
     <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

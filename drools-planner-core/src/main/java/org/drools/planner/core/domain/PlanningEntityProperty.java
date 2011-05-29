@@ -25,12 +25,16 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a property on a {@link Solution} is a planning fact.
+ * Specifies that a property on a {@link Solution} is a planning entity.
  * <p/>
- * The planning fact will be inserted in the WorkingMemory.
+ * The planning entity should have the {@link PlanningEntity} annotation.
+ * An initialized planning entity will be inserted in the WorkingMemory.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface PlanningFactProperty {
+public @interface PlanningEntityProperty {
+
+    // TODO factory for dynamic length entity collections
+    // PlanningEntityFactory factory() default Void.class;
 
 }
