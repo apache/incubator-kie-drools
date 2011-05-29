@@ -893,11 +893,12 @@ After in *.java:
             schedule.setTeacherList(teacherList);
             schedule.setCourseList(courseList);
             ...
-            schedule.setLectureList(createLectureList(schedule.getCourseList()));
+            createLectureList(schedule);
             solver.setStartingSolution(schedule);
         }
 
-        private List<Lecture> createLectureList(List<Course> courseList) {
+        private void createLectureList(CurriculumCourseSchedule schedule) {
+            List<Course> courseList = schedule.getCourseList();
             List<Lecture> lectureList = new ArrayList<Lecture>(courseList.size());
             long id = 0L;
             for (Course course : courseList) {
@@ -912,7 +913,7 @@ After in *.java:
                     lectureList.add(lecture);
                 }
             }
-            return lectureList;
+            schedule.setLectureList(lectureList);
         }
 
     }

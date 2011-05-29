@@ -142,10 +142,24 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         }
 
         public String[] splitBySpace(String line, int numberOfTokens) {
-            String[] lineTokens = line.split("\\ ");
+            String[] lineTokens = splitBySpace(line);
             if (lineTokens.length != numberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line
                         + ") is expected to contain " + numberOfTokens + " tokens separated by a space ( ).");
+            }
+            return lineTokens;
+        }
+
+        public String[] splitBySpacesOrTabs(String line) {
+            String[] lineTokens = line.split("[\\ \\t]+");
+            return lineTokens;
+        }
+
+        public String[] splitBySpacesOrTabs(String line, int numberOfTokens) {
+            String[] lineTokens = splitBySpacesOrTabs(line);
+            if (lineTokens.length != numberOfTokens) {
+                throw new IllegalArgumentException("Read line (" + line
+                        + ") is expected to contain " + numberOfTokens + " tokens separated by spaces or tabs.");
             }
             return lineTokens;
         }

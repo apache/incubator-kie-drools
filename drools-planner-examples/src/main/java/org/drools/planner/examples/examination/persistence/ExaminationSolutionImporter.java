@@ -35,8 +35,6 @@ import java.util.Set;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.drools.planner.examples.curriculumcourse.domain.Course;
-import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
@@ -94,7 +92,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             tagFrontLoadLargeTopics(examination);
             tagFrontLoadLastPeriods(examination);
 
-            examination.setExamList(createExamList(examination));
+            createExamList(examination);
 
             logger.info("Examination with {} students, {} topics/exams, {} periods, {} rooms, {} period constraints" +
                     " and {} room constraints.",
@@ -353,7 +351,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             }
         }
 
-        private List<Exam> createExamList(Examination examination) {
+        private void createExamList(Examination examination) {
             List<Topic> topicList = examination.getTopicList();
             List<Exam> examList = new ArrayList<Exam>(topicList.size());
             Map<Topic, Exam> topicToExamMap = new HashMap<Topic, Exam>(topicList.size());
@@ -398,7 +396,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
                     examBefore.getAfterExamSet().add(afterExam);
                 }
             }
-            return examList;
+            examination.setExamList(examList);
         }
 
     }
