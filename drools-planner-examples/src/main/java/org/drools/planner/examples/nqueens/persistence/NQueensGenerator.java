@@ -54,6 +54,7 @@ public class NQueensGenerator extends LoggingMain {
             Queen queen = new Queen();
             queen.setId((long) i);
             queen.setX(i);
+            // TODO we don't this at this time: Notice that we leave the PlanningVariable properties on null
             queen.setY(0);
             queenList.add(queen);
         }

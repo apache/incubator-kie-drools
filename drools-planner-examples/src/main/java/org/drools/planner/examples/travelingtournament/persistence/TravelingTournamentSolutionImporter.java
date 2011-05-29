@@ -42,14 +42,11 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
             TravelingTournament travelingTournament = new TravelingTournament();
             travelingTournament.setId(0L);
             int n = readN();
-            List<Team> teamList = readTeamList(n);
-            travelingTournament.setTeamList(teamList);
-            List<Day> dayList = constructDayList(n);
-            travelingTournament.setDayList(dayList);
-            List<List<Integer>> outerDistanceList = readOuterDistanceList();
+            readTeamList(travelingTournament, n);
+            createDayList(travelingTournament, n);
+            List<List<Integer>> outerDistanceList = readOuterDistanceList(travelingTournament);
             // TODO setting the distances should be a separate method
-            List<Match> matchList = createMatchListAndSetDistancesInTeamList(teamList, outerDistanceList);
-            travelingTournament.setMatchList(matchList);
+            createMatchListAndSetDistancesInTeamList(travelingTournament, outerDistanceList);
             initializeMatchDays(travelingTournament);
             return travelingTournament;
         }
@@ -58,7 +55,7 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
             return Integer.parseInt(bufferedReader.readLine());
         }
 
-        private List<Team> readTeamList(int n) throws IOException {
+        private void readTeamList(TravelingTournament travelingTournament, int n) throws IOException {
             List<Team> teamList = new ArrayList<Team>();
             for (int i = 0; i < n; i++) {
                 Team team = new Team();
@@ -67,10 +64,10 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
                 team.setDistanceToTeamMap(new HashMap<Team, Integer>());
                 teamList.add(team);
             }
-            return teamList;
+            travelingTournament.setTeamList(teamList);
         }
 
-        private List<List<Integer>> readOuterDistanceList() throws IOException {
+        private List<List<Integer>> readOuterDistanceList(TravelingTournament travelingTournament) throws IOException {
             List<List<Integer>> outerDistanceList = new ArrayList<List<Integer>>();
             String line = bufferedReader.readLine();
             while (line != null && !line.replaceAll("\\s+", "").equals("")) {
@@ -86,7 +83,7 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
             return outerDistanceList;
         }
 
-        private List<Day> constructDayList(int n) {
+        private void createDayList(TravelingTournament travelingTournament, int n) {
             List<Day> dayList = new ArrayList<Day>();
             int daySize = (n - 1) * 2; // Play vs each team (except itself) twice (home and away)
             Day previousDay = null;
@@ -100,10 +97,12 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
                 }
                 previousDay = day;
             }
-            return dayList;
+            travelingTournament.setDayList(dayList);
         }
 
-        private List<Match> createMatchListAndSetDistancesInTeamList(List<Team> teamList, List<List<Integer>> outerDistanceList) {
+        private void createMatchListAndSetDistancesInTeamList(TravelingTournament travelingTournament,
+                List<List<Integer>> outerDistanceList) {
+            List<Team> teamList = travelingTournament.getTeamList();
             List<Match> matchList = new ArrayList<Match>();
             int i = 0;
             long matchId = 0;
@@ -124,7 +123,7 @@ public abstract class TravelingTournamentSolutionImporter extends AbstractTxtSol
                 }
                 i++;
             }
-            return matchList;
+            travelingTournament.setMatchList(matchList);
         }
 
         protected abstract void initializeMatchDays(TravelingTournament travelingTournament);

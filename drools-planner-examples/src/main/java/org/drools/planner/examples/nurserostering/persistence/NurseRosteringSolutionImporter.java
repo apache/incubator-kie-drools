@@ -33,6 +33,7 @@ import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
@@ -110,6 +111,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
             readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
             readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
+            createAssignmentList(nurseRoster);
 
             logger.info("NurseRoster {} with {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
                     " {} shiftDates, {} shifts and {} requests.",
@@ -993,6 +995,21 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
             }
             nurseRoster.setShiftOnRequestList(shiftOnRequestList);
+        }
+
+        private void createAssignmentList(NurseRoster nurseRoster) {
+            List<Shift> shiftList = nurseRoster.getShiftList();
+            List<Assignment> assignmentList = new ArrayList<Assignment>(shiftList.size());
+            long id = 0L;
+            for (Shift shift : shiftList) {
+                Assignment assignment = new Assignment();
+                assignment.setId((long) id);
+                id++;
+                assignment.setShift(shift);
+                // Notice that we leave the PlanningVariable properties on null
+                assignmentList.add(assignment);
+            }
+            nurseRoster.setAssignmentList(assignmentList);
         }
 
     }

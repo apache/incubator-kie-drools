@@ -28,6 +28,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
+import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.Department;
 import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
 import org.drools.planner.examples.pas.domain.Equipment;
@@ -95,6 +96,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             readPatientListAndAdmissionPartListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList();
             readEmptyLine();
             readConstantLine("END.");
+            createBedDesignationList();
             // TODO not all nights are planned, only the "planning horizon" nights are planned
             logger.info("PatientAdmissionSchedule with {} specialisms, {} equipments, {} departments, {} rooms, "
                     + "{} beds, {} nights, {} patients and {} admissions.",
@@ -505,6 +507,21 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
 //                }
 //            }
 //        }
+
+        private void createBedDesignationList() {
+            List<AdmissionPart> admissionPartList = patientAdmissionSchedule.getAdmissionPartList();
+            List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(admissionPartList.size());
+            long id = 0L;
+            for (AdmissionPart admissionPart : admissionPartList) {
+                BedDesignation bedDesignation = new BedDesignation();
+                bedDesignation.setId((long) id);
+                id++;
+                bedDesignation.setAdmissionPart(admissionPart);
+                // Notice that we leave the PlanningVariable properties on null
+                bedDesignationList.add(bedDesignation);
+            }
+            patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
+        }
 
     }
 
