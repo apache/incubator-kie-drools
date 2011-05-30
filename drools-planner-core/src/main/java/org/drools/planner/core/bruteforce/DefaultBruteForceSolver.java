@@ -64,7 +64,7 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
             completedBruteForceStepScope.setScore(bruteForceSolverScope.getStartingScore());
             completedBruteForceStepScope.setStepIndex(-1);
         }
-//        bruteForceSolverScope.setLastCompletedLocalSearchStepScope(completedBruteForceStepScope); TODO add back in
+        bruteForceSolverScope.setLastCompletedBruteForceStepScope(completedBruteForceStepScope);
         BruteForceStepScope bruteForceStepScope = new BruteForceStepScope(bruteForceSolverScope);
         bruteForceStepScope.setStepIndex(completedBruteForceStepScope.getStepIndex() + 1);
         return bruteForceStepScope;

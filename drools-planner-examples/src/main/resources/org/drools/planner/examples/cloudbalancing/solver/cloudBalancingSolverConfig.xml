@@ -35,7 +35,7 @@
     <!--<scoreDefinition>-->
         <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
     <!--</scoreDefinition>-->
-    <!--<startingSolutionInitializerClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingStartingSolutionInitializer</startingSolutionInitializerClass>-->
+    <!-- TODO remove me --><!--<startingSolutionInitializerClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingStartingSolutionInitializer</startingSolutionInitializerClass>-->
 <!--</bruteForceSolver>-->
 <!--<greedySolver>-->
     <!--<environmentMode>DEBUG</environmentMode>-->
@@ -45,4 +45,5 @@
     <!--<scoreDefinition>-->
         <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
     <!--</scoreDefinition>-->
+    <!--<fitOrderPlanningEntityComparatorClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingFitOrderPlanningEntityComparator</fitOrderPlanningEntityComparatorClass>-->
 <!--</greedySolver>-->

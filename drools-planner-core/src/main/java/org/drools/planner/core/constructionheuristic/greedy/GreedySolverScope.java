@@ -17,8 +17,23 @@
 package org.drools.planner.core.constructionheuristic.greedy;
 
 import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
 public class GreedySolverScope extends AbstractSolverScope {
+
+    private GreedyStepScope lastCompletedGreedyStepScope;
+
+    public AbstractStepScope getLastCompletedAbstractStepScope() {
+        return lastCompletedGreedyStepScope;
+    }
+
+    public GreedyStepScope getLastCompletedGreedyStepScope() {
+        return lastCompletedGreedyStepScope;
+    }
+
+    public void setLastCompletedGreedyStepScope(GreedyStepScope lastCompletedGreedyStepScope) {
+        this.lastCompletedGreedyStepScope = lastCompletedGreedyStepScope;
+    }
 
     // ************************************************************************
     // Calculated methods

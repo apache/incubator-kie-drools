@@ -17,10 +17,15 @@
 package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
 public class LocalSearchSolverScope extends AbstractSolverScope {
 
     private LocalSearchStepScope lastCompletedLocalSearchStepScope;
+
+    public AbstractStepScope getLastCompletedAbstractStepScope() {
+        return lastCompletedLocalSearchStepScope;
+    }
 
     public LocalSearchStepScope getLastCompletedLocalSearchStepScope() {
         return lastCompletedLocalSearchStepScope;

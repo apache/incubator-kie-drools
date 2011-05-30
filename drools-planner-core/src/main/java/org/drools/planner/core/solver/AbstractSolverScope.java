@@ -160,6 +160,8 @@ public abstract class AbstractSolverScope {
         this.bestScore = bestScore;
     }
 
+    public abstract AbstractStepScope getLastCompletedAbstractStepScope();
+
     // ************************************************************************
     // Calculated methods
     // ************************************************************************

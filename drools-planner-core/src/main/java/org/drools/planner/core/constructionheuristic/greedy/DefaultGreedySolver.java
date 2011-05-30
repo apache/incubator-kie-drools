@@ -55,7 +55,6 @@ public class DefaultGreedySolver extends AbstractSolver implements GreedySolver 
         GreedySolverScope greedySolverScope = this.greedySolverScope;
         solvingStarted(greedySolverScope);
 
-
         GreedyStepScope greedyStepScope = createNextStepScope(greedySolverScope, null);
         for (Object planningEntity : greedyPlanningEntitySelector) {
             greedyStepScope.setPlanningEntity(planningEntity);
@@ -66,7 +65,8 @@ public class DefaultGreedySolver extends AbstractSolver implements GreedySolver 
                             greedyStepScope.getScore()});
             greedyStepScope = createNextStepScope(greedySolverScope, greedyStepScope);
         }
-        bestSolutionRecaller.stepTaken(greedyStepScope); // TODO rename stepTaken or use isSolutionInitialized()
+        // TODO rename stepTaken or use isSolutionInitialized()
+        bestSolutionRecaller.stepTaken(greedySolverScope.getLastCompletedGreedyStepScope());
         solvingEnded(greedySolverScope);
     }
 
@@ -76,7 +76,7 @@ public class DefaultGreedySolver extends AbstractSolver implements GreedySolver 
             completedGreedyStepScope.setScore(greedySolverScope.getStartingScore());
             completedGreedyStepScope.setStepIndex(-1);
         }
-//        greedySolverScope.setLastCompletedLocalSearchStepScope(completedGreedyStepScope); TODO add back in
+        greedySolverScope.setLastCompletedGreedyStepScope(completedGreedyStepScope);
         GreedyStepScope greedyStepScope = new GreedyStepScope(greedySolverScope);
         greedyStepScope.setStepIndex(completedGreedyStepScope.getStepIndex() + 1);
         return greedyStepScope;
