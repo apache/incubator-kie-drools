@@ -16,10 +16,6 @@
 
 package org.drools.planner.core.bruteforce;
 
-import org.drools.RuleBase;
-import org.drools.planner.core.bestsolution.BestSolutionRecaller;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -75,19 +71,6 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
         BruteForceStepScope bruteForceStepScope = new BruteForceStepScope(bruteForceSolverScope);
         bruteForceStepScope.setStepIndex(completedBruteForceStepScope.getStepIndex() + 1);
         return bruteForceStepScope;
-    }
-
-    private LocalSearchStepScope createNextStepScope(LocalSearchSolverScope localSearchSolverScope, LocalSearchStepScope completedLocalSearchStepScope) {
-        if (completedLocalSearchStepScope == null) {
-            completedLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverScope);
-            completedLocalSearchStepScope.setScore(localSearchSolverScope.getStartingScore());
-            completedLocalSearchStepScope.setStepIndex(-1);
-            completedLocalSearchStepScope.setTimeGradient(0.0);
-        }
-        localSearchSolverScope.setLastCompletedLocalSearchStepScope(completedLocalSearchStepScope);
-        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverScope);
-        localSearchStepScope.setStepIndex(completedLocalSearchStepScope.getStepIndex() + 1);
-        return localSearchStepScope;
     }
 
     public void solvingStarted(BruteForceSolverScope bruteForceSolverScope) {
