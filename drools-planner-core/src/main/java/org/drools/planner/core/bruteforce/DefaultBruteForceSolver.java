@@ -34,39 +34,6 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
 
     protected BruteForceSolverScope bruteForceSolverScope = new BruteForceSolverScope();
 
-    public void setRuleBase(RuleBase ruleBase) {
-        bruteForceSolverScope.setRuleBase(ruleBase);
-    }
-
-    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
-        bruteForceSolverScope.setScoreDefinition(scoreDefinition);
-    }
-
-    public ScoreDefinition getScoreDefinition() {
-        return bruteForceSolverScope.getScoreDefinition();
-    }
-
-    public void setScoreCalculator(ScoreCalculator scoreCalculator) {
-        bruteForceSolverScope.setWorkingScoreCalculator(scoreCalculator);
-    }
-
-    public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
-        this.bestSolutionRecaller = bestSolutionRecaller;
-        this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
-    }
-
-    public void setStartingSolution(Solution startingSolution) {
-        bruteForceSolverScope.setWorkingSolution(startingSolution);
-    }
-
-    public Solution getBestSolution() {
-        return this.bruteForceSolverScope.getBestSolution();
-    }
-
-    public long getTimeMillisSpend() {
-        return this.bruteForceSolverScope.calculateTimeMillisSpend();
-    }
-
     @Override
     public AbstractSolverScope getAbstractSolverScope() {
         return bruteForceSolverScope;
