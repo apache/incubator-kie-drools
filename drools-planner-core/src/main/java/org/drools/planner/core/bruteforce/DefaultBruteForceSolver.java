@@ -17,9 +17,6 @@
 package org.drools.planner.core.bruteforce;
 
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.AbstractSolver;
 import org.drools.planner.core.solver.AbstractSolverScope;
 
@@ -27,6 +24,8 @@ import org.drools.planner.core.solver.AbstractSolverScope;
  * Default implementation of {@link BruteForceSolver}.
  */
 public class DefaultBruteForceSolver extends AbstractSolver implements BruteForceSolver {
+
+    protected BruteForceSolutionIterator bruteForceSolutionIterator = new BruteForceSolutionIterator();
 
     protected BruteForceSolverScope bruteForceSolverScope = new BruteForceSolverScope();
 
@@ -44,11 +43,9 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
         BruteForceSolverScope bruteForceSolverScope = this.bruteForceSolverScope;
         solvingStarted(bruteForceSolverScope);
 
-        BruteForceSolutionIterator bruteForceSolutionIterator
-                = new BruteForceSolutionIterator(bruteForceSolverScope);
-
         BruteForceStepScope bruteForceStepScope = createNextStepScope(bruteForceSolverScope, null);
-        for (; bruteForceSolutionIterator.hasNext(); bruteForceSolutionIterator.next()) {
+        while (bruteForceSolutionIterator.hasNext()) {
+            bruteForceSolutionIterator.next();
             Score score = bruteForceSolverScope.calculateScoreFromWorkingMemory();
             bruteForceStepScope.setScore(score);
             bestSolutionRecaller.stepTaken(bruteForceStepScope);
@@ -75,9 +72,11 @@ public class DefaultBruteForceSolver extends AbstractSolver implements BruteForc
 
     public void solvingStarted(BruteForceSolverScope bruteForceSolverScope) {
         super.solvingStarted(bruteForceSolverScope);
+        bruteForceSolutionIterator.solvingStarted(bruteForceSolverScope);
     }
 
     public void solvingEnded(BruteForceSolverScope bruteForceSolverScope) {
+        bruteForceSolutionIterator.solvingEnded(bruteForceSolverScope);
         bestSolutionRecaller.solvingEnded(bruteForceSolverScope);
         long timeMillisSpend = bruteForceSolverScope.calculateTimeMillisSpend();
         long averageCalculateCountPerSecond = bruteForceSolverScope.getCalculateCount() * 1000L / timeMillisSpend;

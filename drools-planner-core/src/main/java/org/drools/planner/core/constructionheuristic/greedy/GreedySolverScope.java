@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver;
+package org.drools.planner.core.constructionheuristic.greedy;
 
-public interface AbstractSolverLifecycleListener {
+import org.drools.planner.core.solver.AbstractSolverScope;
 
-    void solvingStarted(AbstractSolverScope abstractSolverScope);
+public class GreedySolverScope extends AbstractSolverScope {
 
-    void solvingEnded(AbstractSolverScope abstractSolverScope);
+    // ************************************************************************
+    // Calculated methods
+    // ************************************************************************
 
 }

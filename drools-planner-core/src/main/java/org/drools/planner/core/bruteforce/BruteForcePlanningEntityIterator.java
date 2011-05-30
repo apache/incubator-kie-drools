@@ -16,38 +16,31 @@
 
 package org.drools.planner.core.bruteforce;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.drools.WorkingMemory;
-import org.drools.planner.core.domain.PlanningVariable;
-import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.planner.core.solver.AbstractSolverScope;
 
 public class BruteForcePlanningEntityIterator {
 
-    private final BruteForceSolverScope bruteForceSolverScope;
     private final Object planningEntity;
 
     private List<BruteForcePlanningVariableIterator> planningVariableIteratorList
             = new ArrayList<BruteForcePlanningVariableIterator>();
 
-
-    public BruteForcePlanningEntityIterator(BruteForceSolverScope bruteForceSolverScope, Object planningEntity) {
-        this.bruteForceSolverScope = bruteForceSolverScope;
+    public BruteForcePlanningEntityIterator(AbstractSolverScope solverScope, Object planningEntity) {
         this.planningEntity = planningEntity;
-        PlanningEntityDescriptor planningEntityDescriptor = bruteForceSolverScope.getSolutionDescriptor()
+        PlanningEntityDescriptor planningEntityDescriptor = solverScope.getSolutionDescriptor()
                 .getPlanningEntityDescriptor(planningEntity.getClass());
         for (PlanningVariableDescriptor planningVariableDescriptor
                 : planningEntityDescriptor.getPlanningVariableDescriptors()) {
             BruteForcePlanningVariableIterator planningVariableIterator = new BruteForcePlanningVariableIterator(
-                    bruteForceSolverScope, planningEntity, planningVariableDescriptor);
+                    solverScope, planningEntity, planningVariableDescriptor);
             planningVariableIteratorList.add(planningVariableIterator);
         }
     }
@@ -83,4 +76,12 @@ public class BruteForcePlanningEntityIterator {
         }
     }
 
+    public Map<PlanningVariableDescriptor, Object> getVariableToValueMap() {
+        Map variableToValueMap = new LinkedHashMap<PlanningVariableDescriptor, Object>();
+        for (BruteForcePlanningVariableIterator planningVariableIterator : planningVariableIteratorList) {
+            variableToValueMap.put(planningVariableIterator.getPlanningVariableDescriptor(),
+                    planningVariableIterator.getWorkingValue());
+        }
+        return variableToValueMap;
+    }
 }

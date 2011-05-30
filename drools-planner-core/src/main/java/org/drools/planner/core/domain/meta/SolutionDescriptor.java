@@ -82,7 +82,7 @@ public class SolutionDescriptor implements Serializable {
         return planningEntityDescriptorMap.get(planningEntityClass);
     }
 
-    public Collection<? extends Object> getAllFacts(Solution solution) {
+    public Collection<Object> getAllFacts(Solution solution) {
         Collection<Object> planningFacts = new ArrayList<Object>();
         planningFacts.addAll(solution.getProblemFacts());
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
@@ -105,7 +105,7 @@ public class SolutionDescriptor implements Serializable {
         return planningFacts;
     }
 
-    public Collection<? extends Object> getPlanningEntities(Solution solution) {
+    public Collection<Object> getPlanningEntities(Solution solution) {
         Collection<Object> planningEntities = new ArrayList<Object>();
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
