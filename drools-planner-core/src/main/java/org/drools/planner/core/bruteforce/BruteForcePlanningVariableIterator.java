@@ -30,7 +30,7 @@ public class BruteForcePlanningVariableIterator {
     private final PlanningVariableDescriptor planningVariableDescriptor;
 
     private Collection<?> planningValues;
-    private Iterator<?> planningValuesIterator;
+    private Iterator<?> planningValueIterator;
 
     public BruteForcePlanningVariableIterator(BruteForceSolverScope bruteForceSolverScope, Object planningEntity,
             PlanningVariableDescriptor planningVariableDescriptor) {
@@ -39,21 +39,21 @@ public class BruteForcePlanningVariableIterator {
         this.planningVariableDescriptor = planningVariableDescriptor;
 
         planningValues = planningVariableDescriptor.getRangeValues(bruteForceSolverScope.getWorkingSolution());
-        planningValuesIterator = planningValues.iterator();
+        planningValueIterator = planningValues.iterator();
     }
 
     public boolean hasNext() {
-        return planningValuesIterator.hasNext();
+        return planningValueIterator.hasNext();
     }
 
     public void next() {
-        Object value = planningValuesIterator.next();
+        Object value = planningValueIterator.next();
         changeValue(value);
     }
 
     public void reset() {
-        planningValuesIterator = planningValues.iterator();
-        Object value = planningValuesIterator.next();
+        planningValueIterator = planningValues.iterator();
+        Object value = planningValueIterator.next();
         changeValue(value);
     }
 
