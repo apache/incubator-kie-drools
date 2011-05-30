@@ -18,7 +18,7 @@ package org.drools.planner.examples.tsp.solver.move;
 
 import org.drools.WorkingMemory;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class TspMoveHelper {
 

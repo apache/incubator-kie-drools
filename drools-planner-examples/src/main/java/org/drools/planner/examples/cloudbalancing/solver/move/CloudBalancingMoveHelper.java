@@ -19,7 +19,7 @@ package org.drools.planner.examples.cloudbalancing.solver.move;
 import org.drools.WorkingMemory;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class CloudBalancingMoveHelper {
 

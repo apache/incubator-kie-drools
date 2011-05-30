@@ -22,7 +22,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
 import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.core.solver.AbstractStepScope;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class GreedyStepScope extends AbstractStepScope {
 

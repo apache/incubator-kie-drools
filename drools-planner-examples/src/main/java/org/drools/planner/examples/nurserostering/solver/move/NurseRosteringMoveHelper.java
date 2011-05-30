@@ -19,7 +19,7 @@ package org.drools.planner.examples.nurserostering.solver.move;
 import org.drools.WorkingMemory;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class NurseRosteringMoveHelper {
 

@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.FactHandle;
 import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
 import org.drools.planner.core.solver.AbstractSolverScope;
@@ -29,20 +30,26 @@ import org.drools.planner.core.solver.AbstractSolverScope;
 public class BruteForcePlanningEntityIterator {
 
     private final Object planningEntity;
+    private FactHandle planningEntityFactHandle;
+
+    private boolean isFirst; // HACK TODO remove this workaround
 
     private List<BruteForcePlanningVariableIterator> planningVariableIteratorList
             = new ArrayList<BruteForcePlanningVariableIterator>();
 
     public BruteForcePlanningEntityIterator(AbstractSolverScope solverScope, Object planningEntity) {
         this.planningEntity = planningEntity;
+        planningEntityFactHandle = solverScope.getWorkingMemory().insert(planningEntity);
         PlanningEntityDescriptor planningEntityDescriptor = solverScope.getSolutionDescriptor()
                 .getPlanningEntityDescriptor(planningEntity.getClass());
         for (PlanningVariableDescriptor planningVariableDescriptor
                 : planningEntityDescriptor.getPlanningVariableDescriptors()) {
             BruteForcePlanningVariableIterator planningVariableIterator = new BruteForcePlanningVariableIterator(
-                    solverScope, planningEntity, planningVariableDescriptor);
+                    solverScope, planningEntity, planningEntityFactHandle, planningVariableDescriptor);
             planningVariableIteratorList.add(planningVariableIterator);
         }
+        reset();
+        isFirst = true;
     }
 
     public boolean hasNext() {
@@ -56,6 +63,10 @@ public class BruteForcePlanningEntityIterator {
     }
 
     public void next() {
+        if (isFirst) {
+            isFirst = false;
+            return;
+        }
         // Find the level to increment (for example in 115999)
         for (BruteForcePlanningVariableIterator planningVariableIterator : planningVariableIteratorList) {
             if (planningVariableIterator.hasNext()) {

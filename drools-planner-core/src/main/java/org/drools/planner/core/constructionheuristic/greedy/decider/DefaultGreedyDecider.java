@@ -20,7 +20,6 @@ public class DefaultGreedyDecider implements GreedyDecider {
         BruteForcePlanningEntityIterator bruteForcePlanningEntityIterator = new BruteForcePlanningEntityIterator(
                 greedySolverScope, greedyStepScope.getPlanningEntity());
         Score maxScore = greedySolverScope.getScoreDefinition().getPerfectMinimumScore();
-        greedySolverScope.getWorkingMemory().insert(greedyStepScope.getPlanningEntity()); // TODO let the BruteForcePlanningEntityIterator do that
         while (bruteForcePlanningEntityIterator.hasNext()) {
             bruteForcePlanningEntityIterator.next();
             Score score = greedySolverScope.calculateScoreFromWorkingMemory();

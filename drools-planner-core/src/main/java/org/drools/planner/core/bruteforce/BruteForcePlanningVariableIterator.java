@@ -19,15 +19,16 @@ package org.drools.planner.core.bruteforce;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
 import org.drools.planner.core.solver.AbstractSolverScope;
-import org.drools.runtime.rule.FactHandle;
 
 public class BruteForcePlanningVariableIterator {
 
     private final AbstractSolverScope solverScope;
     private final Object planningEntity;
+    private final FactHandle planningEntityFactHandle;
     private final PlanningVariableDescriptor planningVariableDescriptor;
 
     private Collection<?> planningValues;
@@ -36,9 +37,10 @@ public class BruteForcePlanningVariableIterator {
     private Object workingValue;
 
     public BruteForcePlanningVariableIterator(AbstractSolverScope solverScope, Object planningEntity,
-            PlanningVariableDescriptor planningVariableDescriptor) {
+            FactHandle planningEntityFactHandle, PlanningVariableDescriptor planningVariableDescriptor) {
         this.solverScope = solverScope;
         this.planningEntity = planningEntity;
+        this.planningEntityFactHandle = planningEntityFactHandle;
         this.planningVariableDescriptor = planningVariableDescriptor;
 
         planningValues = planningVariableDescriptor.getRangeValues(solverScope.getWorkingSolution());
@@ -70,9 +72,8 @@ public class BruteForcePlanningVariableIterator {
 
     private void changeWorkingValue(Object value) {
         WorkingMemory workingMemory = solverScope.getWorkingMemory();
-        FactHandle factHandle = workingMemory.getFactHandle(planningEntity);
         planningVariableDescriptor.setValue(planningEntity, value);
-        workingMemory.update(factHandle, planningEntity);
+        workingMemory.update(planningEntityFactHandle, planningEntity);
         workingValue = value;
     }
 

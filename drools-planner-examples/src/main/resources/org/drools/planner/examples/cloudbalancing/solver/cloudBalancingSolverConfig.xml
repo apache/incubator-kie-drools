@@ -35,7 +35,6 @@
     <!--<scoreDefinition>-->
         <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
     <!--</scoreDefinition>-->
-    <!-- TODO remove me --><!--<startingSolutionInitializerClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingStartingSolutionInitializer</startingSolutionInitializerClass>-->
 <!--</bruteForceSolver>-->
 <!--<greedySolver>-->
     <!--<environmentMode>DEBUG</environmentMode>-->

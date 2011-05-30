@@ -44,7 +44,7 @@ public class BestSolutionRecaller implements SolverLifecycleListener {
     // ************************************************************************
 
     public void solvingStarted(AbstractSolverScope abstractSolverScope) {
-        // TODO implement how this is determined
+        // TODO implement how this is determined - currently needs to be manually set to false for greedy and brute force
         boolean initializedSolution = true;
         Score initialScore;
         Solution newBestSolution;

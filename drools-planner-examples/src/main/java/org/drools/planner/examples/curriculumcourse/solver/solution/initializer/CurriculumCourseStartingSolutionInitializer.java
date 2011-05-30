@@ -33,7 +33,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 
 public class CurriculumCourseStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 

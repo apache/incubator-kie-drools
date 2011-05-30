@@ -17,7 +17,7 @@
 package org.drools.planner.examples.curriculumcourse.solver.move;
 
 import org.drools.WorkingMemory;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
