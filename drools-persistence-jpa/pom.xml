@@ -41,7 +41,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="5.2.0.SNAPSHOT", org.drools.compiler;bundle-version="5.2.0.SNAPSHOT"</Require-Bundle>
+            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>!org.drools.*, *</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>
