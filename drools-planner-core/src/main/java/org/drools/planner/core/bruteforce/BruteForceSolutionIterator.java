@@ -21,9 +21,10 @@ import java.util.List;
 
 public class BruteForceSolutionIterator {
 
-    private List<BruteForcePlanningEntityIterator> planningEntityIteratorList = new ArrayList<BruteForcePlanningEntityIterator>();
+    private List<BruteForcePlanningEntityIterator> planningEntityIteratorList;
 
     public void solvingStarted(BruteForceSolverScope bruteForceSolverScope) {
+        planningEntityIteratorList = new ArrayList<BruteForcePlanningEntityIterator>();
         for (Object planningEntity : bruteForceSolverScope.getWorkingPlanningEntities()) {
             BruteForcePlanningEntityIterator planningEntityIterator = new BruteForcePlanningEntityIterator(
                     bruteForceSolverScope, planningEntity);
@@ -57,7 +58,7 @@ public class BruteForceSolutionIterator {
     }
 
     public void solvingEnded(BruteForceSolverScope bruteForceSolverScope) {
-        // Do nothing
+        planningEntityIteratorList = null;
     }
 
 }
