@@ -3085,7 +3085,7 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( "max",
                       functions.get( 2 ).getFunction() );
-        assertEquals( null,
+        assertEquals( "$M1",
                       functions.get( 2 ).getBind() );
         assertEquals( "$price",
                       functions.get( 2 ).getParams()[0] );
