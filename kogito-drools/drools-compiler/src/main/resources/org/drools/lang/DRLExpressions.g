@@ -19,6 +19,7 @@ options {
     import org.drools.lang.descr.BaseDescr;
     import org.drools.lang.descr.ConstraintConnectiveDescr;
     import org.drools.lang.descr.RelationalExprDescr;
+    import org.drools.lang.descr.BindingDescr;
     
 }
 
@@ -44,11 +45,17 @@ options {
     public void emitErrorMessage(String msg)                  {}
     
     private boolean buildDescr;
+    private int inMap = 0;
+    private int ternOp = 0;
+    private boolean hasBindings;
     public void setBuildDescr( boolean build ) { this.buildDescr = build; }
     public boolean isBuildDescr() { return this.buildDescr; }
     
     public void setLeftMostExpr( String value ) { helper.setLeftMostExpr( value ); }
     public String getLeftMostExpr() { return helper.getLeftMostExpr(); }
+    
+    public void setHasBindings( boolean value ) { this.hasBindings = value; }
+    public boolean hasBindings() { return this.hasBindings; }
 }
 
 // Alter code generation so catch-clauses get replace with
@@ -136,8 +143,14 @@ expression returns [BaseDescr result]
 
 conditionalExpression returns [BaseDescr result]
     :   left=conditionalOrExpression { if( buildDescr  ) { $result = $left.result; } }
-        ( QUESTION ts=expression COLON fs=expression )? 
+        ternaryExpression? 
     ;
+    
+ternaryExpression
+@init{ ternOp++; }
+    :	QUESTION ts=expression COLON fs=expression
+    ;
+finally { ternOp--; }
 
 conditionalOrExpression returns [BaseDescr result]
   : left=conditionalAndExpression  { if( buildDescr  ) { $result = $left.result; } }
@@ -360,19 +373,35 @@ unaryExpression returns [BaseDescr result]
     ;
 
 unaryExpressionNotPlusMinus returns [BaseDescr result]
-@init { boolean isLeft = false; }
+@init { boolean isLeft = false; BindingDescr bind = null;}
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
-        left=primary { if( buildDescr  ) { $result = $left.result; } }
+        ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.COLON}? (var=ID COLON 
+                { hasBindings = true; if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
+        | ({inMap == 0 && ternOp == 0 && input.LA(2) == DRLLexer.UNIFY}? (var=ID UNIFY 
+                { hasBindings = true; if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
+        )?
+        left=primary { if( buildDescr ) { $result = $left.result; } }
         ((selector)=>selector)* 
-        {     if( isLeft ) { 
-                  if( buildDescr ) {
-                      helper.setLeftMostExpr( $unaryExpressionNotPlusMinus.text ); 
-                  }
-                  
-              } 
+        {     
+            if( buildDescr ) {
+                String expr = $unaryExpressionNotPlusMinus.text;
+                if( isLeft ) {
+                    helper.setLeftMostExpr( expr ); 
+                }
+                if( bind != null ) {
+                    if( bind.isUnification() ) {
+                        expr = expr.substring( expr.indexOf( ":=" ) + 2 ).trim();
+                    } else {
+                        expr = expr.substring( expr.indexOf( ":" ) + 1 ).trim();
+                    }
+                    bind.setExpression( expr );
+                    helper.setEnd( bind );
+                    $result = bind;
+                }
+            }
         }
         ((INCR|DECR)=> (INCR|DECR))? 
     ;
@@ -414,8 +443,10 @@ inlineListExpression
     ;
     
 inlineMapExpression
+@init{ inMap++; }
     :	LEFT_SQUARE mapExpressionList RIGHT_SQUARE 
     ;
+finally { inMap--; }
 
 mapExpressionList
     :	mapEntry (COMMA mapEntry)*
@@ -563,7 +594,7 @@ instanceof_key
     ;
 
 boolean_key
-    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.INSTANCEOF))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
+    :      {(helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN))}?=> id=ID { helper.emit($ID, DroolsEditorType.KEYWORD); } 
     ;
 
 char_key

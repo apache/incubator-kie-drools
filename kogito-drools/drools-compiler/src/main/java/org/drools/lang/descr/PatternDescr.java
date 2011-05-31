@@ -27,7 +27,6 @@ public class PatternDescr extends BaseDescr
     private String                  identifier;
     private boolean                 unification;
     private ConditionalElementDescr constraint           = new AndDescr();
-    private List<BindingDescr>      bindings;
     private int                     leftParentCharacter  = -1;
     private int                     rightParentCharacter = -1;
     private PatternSourceDescr      source;
@@ -96,18 +95,6 @@ public class PatternDescr extends BaseDescr
 
     public ConditionalElementDescr getConstraint() {
         return this.constraint;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<BindingDescr> getBindings() {
-        return (List<BindingDescr>) (this.bindings == null ? Collections.emptyList() : this.bindings);
-    }
-
-    public void addBinding( BindingDescr binding ) {
-        if ( this.bindings == null ) {
-            this.bindings = new ArrayList<BindingDescr>();
-        }
-        this.bindings.add( binding );
     }
 
     public boolean isInternalFact() {
@@ -213,11 +200,6 @@ public class PatternDescr extends BaseDescr
         if ( behaviors != null ) {
             for ( BehaviorDescr behavior : behaviors ) {
                 clone.addBehavior( behavior );
-            }
-        }
-        if ( bindings != null ) {
-            for ( BindingDescr binding : bindings ) {
-                clone.addBinding( binding );
             }
         }
         return clone;

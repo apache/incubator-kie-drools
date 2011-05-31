@@ -118,10 +118,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -354,10 +354,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -425,11 +425,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                                  "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
                                                                   "price" );
-        pattern.addBinding( fieldBindingDescr2 );
+        pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -504,10 +504,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -978,10 +978,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -1005,11 +1005,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                                  "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
                                                                   "price" );
-        pattern.addBinding( fieldBindingDescr2 );
+        pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );

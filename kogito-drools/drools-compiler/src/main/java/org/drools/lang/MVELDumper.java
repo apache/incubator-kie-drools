@@ -13,8 +13,11 @@
  */
 package org.drools.lang;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +27,7 @@ import org.drools.compiler.DrlExprParser;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.lang.descr.AtomicExprDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.OperatorDescr;
@@ -43,6 +47,7 @@ public class MVELDumper extends ReflectiveVisitor {
         return dump( new StringBuilder(),
                      base,
                      0,
+                     false,
                      new MVELDumperContext() ).toString();
     }
 
@@ -51,6 +56,7 @@ public class MVELDumper extends ReflectiveVisitor {
         return dump( new StringBuilder(),
                      base,
                      0,
+                     false,
                      context ).toString();
     }
 
@@ -59,12 +65,14 @@ public class MVELDumper extends ReflectiveVisitor {
         return dump( new StringBuilder(),
                      base,
                      parentPrecedence,
+                     false,
                      new MVELDumperContext() ).toString();
     }
 
     public StringBuilder dump( StringBuilder sbuilder,
                                BaseDescr base,
                                int parentPriority,
+                               boolean isInsideRelCons,
                                MVELDumperContext context ) {
         if ( context == null ) {
             context = new MVELDumperContext();
@@ -88,6 +96,7 @@ public class MVELDumper extends ReflectiveVisitor {
                 dump( sbuilder,
                       constr,
                       ccd.getConnective().getPrecedence(),
+                      isInsideRelCons,
                       context );
             }
             if ( wrapParenthesis ) {
@@ -103,12 +112,27 @@ public class MVELDumper extends ReflectiveVisitor {
                                        expr.lastIndexOf( ')' ) );
             }
             sbuilder.append( expr );
+        } else if ( base instanceof BindingDescr ) {
+            context.addBinding( (BindingDescr) base ); 
+            if( isInsideRelCons ) {
+                BindingDescr bind = (BindingDescr) base;
+                String expr = bind.getExpression().trim();
+                sbuilder.append( expr );
+            } else {
+                sbuilder.append( "true" );
+            }
         } else if ( base instanceof RelationalExprDescr ) {
             RelationalExprDescr red = (RelationalExprDescr) base;
-            String left = dump( red.getLeft(),
-                                Integer.MAX_VALUE ); // maximum precedence, so wrap any child connective in parenthesis
-            String right = dump( red.getRight(),
-                                 Integer.MAX_VALUE );
+            String left = dump( new StringBuilder(),
+                                red.getLeft(),
+                                Integer.MAX_VALUE,
+                                true,
+                                context ).toString(); // maximum precedence, so wrap any child connective in parenthesis
+            String right = dump( new StringBuilder(),
+                                 red.getRight(),
+                                 Integer.MAX_VALUE,
+                                 true,
+                                 context ).toString();
             processRestriction( context,
                                 sbuilder,
                                 left,
@@ -121,11 +145,13 @@ public class MVELDumper extends ReflectiveVisitor {
                 dump( sbuilder,
                       result.getDescrs().get( 0 ),
                       0,
+                      isInsideRelCons,
                       context );
             } else {
                 dump( sbuilder,
                       result,
                       0,
+                      isInsideRelCons,
                       context );
             }
         }
@@ -209,10 +235,12 @@ public class MVELDumper extends ReflectiveVisitor {
     public static class MVELDumperContext {
         private Map<String, OperatorDescr> aliases;
         private int                        counter;
+        private List<BindingDescr>         bindings;
 
         public MVELDumperContext() {
             this.aliases = new HashMap<String, OperatorDescr>();
             this.counter = 0;
+            this.bindings = null;
         }
 
         /**
@@ -242,6 +270,22 @@ public class MVELDumper extends ReflectiveVisitor {
             this.aliases.put( alias,
                               operator );
             return alias;
+        }
+        
+        /**
+         * Adds a binding to the list of bindings on this context
+         * @param bind
+         */
+        public void addBinding( BindingDescr bind ) {
+            if( this.bindings == null ) {
+                this.bindings = new ArrayList<BindingDescr>();
+            }
+            this.bindings.add( bind );
+        }
+        
+        @SuppressWarnings("unchecked")
+        public List<BindingDescr> getBindings() {
+            return this.bindings == null ? Collections.EMPTY_LIST : this.bindings;
         }
 
     }
