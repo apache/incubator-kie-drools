@@ -60,7 +60,7 @@ public class DefaultGreedySolver extends AbstractSolver implements GreedySolver 
             greedyStepScope.setPlanningEntity(planningEntity);
             greedyDecider.decideNextStep(greedyStepScope);
             greedyStepScope.doStep();
-            logger.info("Step index ({}), time spend ({}), score ({}), initializing entities.",
+            logger.info("Step index ({}), time spend ({}), score ({}), initializing planning entities.",
                     new Object[]{greedyStepScope.getStepIndex(), greedySolverScope.calculateTimeMillisSpend(),
                             greedyStepScope.getScore()});
             greedyStepScope = createNextStepScope(greedySolverScope, greedyStepScope);
