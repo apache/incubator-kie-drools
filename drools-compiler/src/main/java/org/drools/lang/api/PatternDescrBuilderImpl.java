@@ -73,7 +73,7 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
     public PatternDescrBuilder<P> bind( String var,
                                         String target,
                                         boolean isUnification ) {
-        descr.addBinding( new BindingDescr( var, target, isUnification ) );
+        descr.addConstraint( new BindingDescr( var, target, isUnification ) );
         return this;
     }
 
