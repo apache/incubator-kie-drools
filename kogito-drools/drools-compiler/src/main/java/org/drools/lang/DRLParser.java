@@ -2287,7 +2287,7 @@ public class DRLParser {
 
     /**
      * lhsAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA
-     *                      accumulateFunction (COMMA accumulateFunction)*
+     *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
      *                  RIGHT_PAREN SEMICOLON?
      *  
      * @param ce
@@ -2366,7 +2366,7 @@ public class DRLParser {
                 if ( state.failed ) return null;
 
                 // accumulate functions
-                accumulateFunction( accumulate );
+                accumulateFunctionBinding( accumulate );
                 if ( state.failed ) return null;
 
                 while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -2377,7 +2377,7 @@ public class DRLParser {
                            DroolsEditorType.SYMBOL );
                     if ( state.failed ) return null;
 
-                    accumulateFunction( accumulate );
+                    accumulateFunctionBinding( accumulate );
                     if ( state.failed ) return null;
                 }
 
@@ -3042,7 +3042,7 @@ public class DRLParser {
                 if ( state.backtracking == 0 ) accumulate.result( result );
             } else {
                 // accumulate functions
-                accumulateFunction( accumulate );
+                accumulateFunction( accumulate, null );
                 if ( state.failed ) return;
             }
 
@@ -3062,17 +3062,21 @@ public class DRLParser {
     }
 
     /**
+     * accumulateFunctionBinding := label accumulateFunction
+     * @param accumulate
+     * @throws RecognitionException
+     */
+    private void accumulateFunctionBinding( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
+        String label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
+        accumulateFunction( accumulate, label );
+    }
+
+    /**
      * accumulateFunction := label? ID parameters
      * @param accumulate
      * @throws RecognitionException
      */
-    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
-        String label = null;
-        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
-            label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
-            if ( state.failed ) return;
-        }
-
+    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate, String label ) throws RecognitionException {
         Token function = match( input,
                                 DRLLexer.ID,
                                 null,

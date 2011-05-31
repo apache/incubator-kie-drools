@@ -105,10 +105,10 @@ end</programlisting>
 
           <para>type: Boolean</para>
 
-          <para>When the rule's consequence modifies a fact it may cause the
-          Rule to activate again, causing recursion. Setting no-loop to true
-          means the attempt to create the Activation for the current set of
-          data will be ignored.</para>
+          <para>When a rule's consequence modifies a fact it may cause the
+          rule to activate again, causing an infinite loop. Setting no-loop
+          to true will skip the creation of another Activation for the rule
+          with the current set of facts.</para>
         </listitem>
       </varlistentry>
 
@@ -158,9 +158,9 @@ end</programlisting>
 
           <para>type: integer</para>
 
-          <para>Each rule has a salience attribute that can be assigned an
-          integer number, which defaults to zero and can be negative or
-          positive. Salience is a form of priority where rules with higher
+          <para>Each rule has an integer salience attribute which defaults
+          to zero and can be negative or positive. Salience is a form of
+          priority where rules with higher
           salience values are given higher priority when ordered in the
           Activation queue.</para>
           <para>Drools also supports dynamic salience where you can use
@@ -299,7 +299,7 @@ end</programlisting>
   <section>
     <title>Timers and Calendars</title>
 
-    <para>Rule's now suport both interval and cron based timers, which replace
+    <para>Rules now suport both interval and cron based timers, which replace
     the now deprecated duration attribute.</para>
 
     <example>
@@ -313,9 +313,10 @@ timer ( cron: &lt;cron expression&gt; )
 timer ( cron:* 0/15 * * * ? )</programlisting>
     </example>
 
-    <para>Interval "int:" timers follow the JDK semantics for initial delay
-    optionally followed by a repeat interval. Cron "cron:" timers follow
-    standard cron expressions:</para>
+    <para>Interval (indicated by "int:") timers follow the semantics
+    of java.util.Timer objects, with an initial delay and an optional
+    repeat interval. Cron (indicated by "cron:") timers follow
+    standard Unix cron expressions:</para>
 
     <example>
       <title>A Cron Example</title>
@@ -329,7 +330,7 @@ then
 end</programlisting>
     </example>
 
-    <para>Calendars may now be used to control when rules can fire. The Calendar API is
+    <para>Calendars are used to control when rules can fire. The Calendar API is
     modelled on <link xlink:href="http://www.quartz-scheduler.org/">Quartz
     http://www.quartz-scheduler.org/</link> :</para>
 
@@ -344,12 +345,12 @@ end</programlisting>
     <example>
       <title>Registering a Calendar</title>
 
-      <programlisting language="java">ksession.getCalendars().set( "week day", weekDayCal );</programlisting>
+      <programlisting language="java">ksession.getCalendars().set( "weekday", weekDayCal );</programlisting>
     </example>
 
     <para>They can be used in conjunction with normal rules and rules
-    including timers. The rule calendar attribute can have one or more comma
-    calendar names.</para>
+    including timers. The rule attribute "calendars" may contain one or
+    more comma-separated calendar names written as string literals.</para>
 
     <example>
       <title>Using Calendars and Timers together</title>
