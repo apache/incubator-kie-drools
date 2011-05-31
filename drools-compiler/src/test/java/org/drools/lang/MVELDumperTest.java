@@ -6,6 +6,8 @@ import static org.junit.Assert.assertFalse;
 import org.drools.base.evaluators.MatchesEvaluatorsDefinition;
 import org.drools.base.evaluators.SetEvaluatorsDefinition;
 import org.drools.compiler.DrlExprParser;
+import org.drools.lang.MVELDumper.MVELDumperContext;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -95,7 +97,7 @@ public class MVELDumperTest {
         assertEquals( expected,
                       result );
     }
-    
+
     @Test
     public void testDumpExcludes() throws Exception {
         String input = "list excludes \"b\"";
@@ -107,7 +109,7 @@ public class MVELDumperTest {
         assertEquals( expected,
                       result );
     }
-    
+
     @Test
     public void testDumpExcludes2() throws Exception {
         String input = "list not excludes \"b\"";
@@ -119,7 +121,7 @@ public class MVELDumperTest {
         assertEquals( expected,
                       result );
     }
-    
+
     @Test
     @Ignore
     public void testDumpWithDateAttr() throws Exception {
@@ -137,6 +139,82 @@ public class MVELDumperTest {
     public void testDumpComplex() throws Exception {
         String input = "a ( > 60 && < 70 ) || ( > 50 && < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\"";
         String expected = "( ( a > 60 && a < 70 || a > 50 && a < 55 ) && a3 == \"black\" || a == 40 && a3 == \"pink\" || a == 12 && a3 == \"yellow\" || a3 == \"blue\" )";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+
+    @Test
+    public void testDumpBindings() throws Exception {
+        String input = "$x : property > value";
+        String expected = "property > value";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        MVELDumperContext ctx = new MVELDumperContext();
+        String result = dumper.dump( descr,
+                                     ctx );
+
+        assertEquals( expected,
+                      result );
+        assertEquals( 1,
+                      ctx.getBindings().size() );
+        BindingDescr bind = ctx.getBindings().get( 0 );
+        assertEquals( "$x",
+                      bind.getVariable() );
+        assertEquals( "property",
+                      bind.getExpression() );
+    }
+
+    @Test
+    public void testDumpBindings2() throws Exception {
+        String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10) == 20";
+        String expected = "( a > b[10].prop || 10 != 20 ) && someMethod(10) == 20";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        MVELDumperContext ctx = new MVELDumperContext();
+        String result = dumper.dump( descr, 
+                                     ctx );
+
+        assertEquals( expected,
+                      result );
+        assertEquals( 3,
+                      ctx.getBindings().size() );
+        BindingDescr bind = ctx.getBindings().get( 0 );
+        assertEquals( "$a",
+                      bind.getVariable() );
+        assertEquals( "a",
+                      bind.getExpression() );
+        bind = ctx.getBindings().get( 1 );
+        assertEquals( "$b",
+                      bind.getVariable() );
+        assertEquals( "b[10].prop",
+                      bind.getExpression() );
+        bind = ctx.getBindings().get( 2 );
+        assertEquals( "$x",
+                      bind.getVariable() );
+        assertEquals( "someMethod(10)",
+                      bind.getExpression() );
+    }
+
+    @Test
+    public void testDumpBindings3() throws Exception {
+        String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10)";
+        String expected = "( a > b[10].prop || 10 != 20 ) && true";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        String result = dumper.dump( descr );
+
+        assertEquals( expected,
+                      result );
+    }
+
+    @Test
+    public void testDumpBindings4() throws Exception {
+        String input = "( $a : a > $b : b[10].prop || $x : someMethod(10) ) && 10 != 20";
+        String expected = "( a > b[10].prop || true ) && 10 != 20";
 
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );

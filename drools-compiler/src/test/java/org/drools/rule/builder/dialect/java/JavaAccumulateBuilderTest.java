@@ -38,7 +38,7 @@ public class JavaAccumulateBuilderTest {
         
         BindingDescr price = new BindingDescr( "$price", "price" );
         PatternDescr cheeseDescr = new PatternDescr( "org.drools.Cheese" );
-        cheeseDescr.addBinding( price );
+        cheeseDescr.addConstraint( price );
         accumDescr.setInputPattern( cheeseDescr );
         
         accumDescr.setInitCode( "int x = 0; int y = 0;" );

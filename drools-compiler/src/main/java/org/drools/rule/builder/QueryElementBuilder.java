@@ -142,7 +142,11 @@ public class QueryElementBuilder
         }
         
         // now do the slotted, all of which should be done via : bindings
-        for ( BindingDescr binding : patternDescr.getBindings() ) {
+        for ( BaseDescr base : patternDescr.getDescrs() ) {
+            if( ! ( base instanceof BindingDescr ) ) {
+                continue;
+            }
+            BindingDescr binding = (BindingDescr) base;
             // if left is for existing binding, we need to actual execute as an input var           
             Declaration declr = context.getDeclarationResolver().getDeclaration( context.getRule(), binding.getVariable() );
             if ( declr != null ) {

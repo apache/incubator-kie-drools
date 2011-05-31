@@ -51,6 +51,7 @@ import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
 
 /**
  * This is a class to hold all the helper functions/methods used
@@ -196,7 +197,7 @@ public class ParserHelper {
     public boolean validateLT( int LTNumber,
                                String text ) {
         String text2Validate = retrieveLT( LTNumber );
-        return text2Validate == null ? false : text2Validate.equalsIgnoreCase( text );
+        return text2Validate == null ? false : text2Validate.equals( text );
     }
 
     public boolean isPluggableEvaluator( int offset,
@@ -569,6 +570,25 @@ public class ParserHelper {
         if ( db != null && first != null ) {
             db.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
                                                                                       first.getCharPositionInLine() );
+        }
+    }
+
+    void setStart( BaseDescr descr,
+                   Token first ) {
+        if ( descr != null && first != null ) {
+            descr.setLocation( first.getLine(),
+                               first.getCharPositionInLine() );
+            descr.setStartCharacter( ((CommonToken) first).getStartIndex() );
+        }
+    }
+    
+    void setEnd( BaseDescr descr ) {
+        Token last = input.LT( -1 );
+        if ( descr != null && last != null ) {
+            int endLocation = last.getText() != null ? last.getCharPositionInLine() + last.getText().length() - 1 : last.getCharPositionInLine();
+            descr.setEndCharacter( ((CommonToken) last).getStopIndex() + 1 );
+            descr.setEndLocation( last.getLine(),
+                                  endLocation );
         }
     }
 
