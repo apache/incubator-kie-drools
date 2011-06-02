@@ -73,5 +73,9 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-human-task</artifactId>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
   </dependencies>
 </project>
