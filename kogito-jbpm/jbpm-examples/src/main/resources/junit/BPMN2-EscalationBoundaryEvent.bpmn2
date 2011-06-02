@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <escalation id="MyEscalation" escalationCode="MyEscalation" />
+  <process processType="Private" isExecutable="true" id="EscalationBoundaryEvent" name="Escalation Boundary Event Process" >
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <subProcess id="_2" name="Hello"  >
+    <!-- nodes -->
+    <startEvent id="_2-1" name="StartSubProcess" />
+    <endEvent id="_2-2" name="EscalationEvent" >
+      <escalationEventDefinition escalationRef="MyEscalation" />
+    </endEvent>
+    <!-- connections -->
+    <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+    </subProcess>
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <boundaryEvent id="_4" name="EscalationEvent" attachedToRef="_2" cancelActivity="false" >
+      <escalationEventDefinition escalationRef="MyEscalation" />
+    </boundaryEvent>
+    <scriptTask id="_5" name="Goodbye" >
+      <script>System.out.println("Escalation handled");</script>
+    </scriptTask>
+    <endEvent id="_6" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="EscalationBoundaryEvent" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="20" y="69" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="30" width="152" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-1" >
+        <dc:Bounds x="109" y="63" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2" >
+        <dc:Bounds x="187" y="64" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="276" y="66" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="190" y="126" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="169" y="206" width="91" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="191" y="281" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_2-1-_2-2" >
+        <di:waypoint x="37" y="57" />
+        <di:waypoint x="115" y="58" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="44" y="93" />
+        <di:waypoint x="172" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="172" y="90" />
+        <di:waypoint x="300" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
+        <di:waypoint x="214" y="150" />
+        <di:waypoint x="214" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_6" >
+        <di:waypoint x="214" y="230" />
+        <di:waypoint x="215" y="305" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <error id="MyError" errorCode="MyError" />
+  <process processType="Private" isExecutable="true" id="ErrorBoundaryEvent" name="Error Boundary Event Process" >
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" />
+    <subProcess id="_2" name="Hello"  >
+    <!-- nodes -->
+    <startEvent id="_2-1" name="StartSubProcess" />
+    <parallelGateway id="_2-2" gatewayDirection="Diverging" />
+    <endEvent id="_2-3" name="ErrorEvent" >
+      <errorEventDefinition errorRef="MyError" />
+    </endEvent>
+    <task id="_2-4" name="Task" tns:taskName="MyTask" >
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+    <endEvent id="_2-5" name="EndEvent" />
+    <!-- connections -->
+    <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+    <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+    <sequenceFlow id="_2-2-_2-4" sourceRef="_2-2" targetRef="_2-4" />
+    <sequenceFlow id="_2-4-_2-5" sourceRef="_2-4" targetRef="_2-5" />
+    </subProcess>
+    <endEvent id="_3" name="EndProcess" >
+        <terminateEventDefinition/>
+    </endEvent>
+    <boundaryEvent id="_4" name="ErrorEvent" attachedToRef="_2" >
+      <errorEventDefinition errorRef="MyError" />
+    </boundaryEvent>
+    <scriptTask id="_5" name="Goodbye" >
+      <script>System.out.println("Error handled");</script>
+    </scriptTask>
+    <endEvent id="_6" name="EndProcess" />
+
+    <!-- connections -->
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="ErrorBoundaryEvent" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="18" y="106" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="97" y="15" width="349" height="221" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-1" >
+        <dc:Bounds x="109" y="102" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-2" >
+        <dc:Bounds x="178" y="101" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-3" >
+        <dc:Bounds x="268" y="142" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-4" >
+        <dc:Bounds x="243" y="68" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2-5" >
+        <dc:Bounds x="361" y="67" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="480" y="104" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" >
+        <dc:Bounds x="371" y="215" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_5" >
+        <dc:Bounds x="355" y="288" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_6" >
+        <dc:Bounds x="371" y="360" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_2-1-_2-2" >
+        <di:waypoint x="36" y="111" />
+        <di:waypoint x="105" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-2-_2-3" >
+        <di:waypoint x="105" y="110" />
+        <di:waypoint x="195" y="151" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-2-_2-4" >
+        <di:waypoint x="105" y="110" />
+        <di:waypoint x="196" y="77" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-4-_2-5" >
+        <di:waypoint x="196" y="77" />
+        <di:waypoint x="288" y="76" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="42" y="130" />
+        <di:waypoint x="271" y="125" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="271" y="125" />
+        <di:waypoint x="504" y="128" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4-_5" >
+        <di:waypoint x="395" y="239" />
+        <di:waypoint x="395" y="312" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5-_6" >
+        <di:waypoint x="395" y="312" />
+        <di:waypoint x="395" y="384" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>

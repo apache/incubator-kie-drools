@@ -41,6 +41,7 @@
             <descriptor>src/main/assembly/installer.xml</descriptor>
             <descriptor>src/main/assembly/docs-build.xml</descriptor>
             <descriptor>src/main/assembly/docs.xml</descriptor>
+            <descriptor>src/main/assembly/examples.xml</descriptor>
           </descriptors>
           <!--<appendAssemblyId>false</appendAssemblyId>-->
         </configuration>

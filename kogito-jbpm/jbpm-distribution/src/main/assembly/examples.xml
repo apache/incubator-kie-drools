@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+  <id>examples</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+    <fileSet>
+      <directory>..</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>jbpm-examples/**</include>	  
+      </includes>
+      <excludes>
+        <exclude>**/.gitignore</exclude>
+        <exclude>**/*.log/**</exclude>
+        <exclude>**/target/**</exclude>
+        <exclude>**/.git</exclude>
+        <exclude>**/.metadata/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>
