@@ -57,7 +57,7 @@ end</programlisting>
       evaluated type unsafely. We have changed this so that even with
       @typesafe(false) it will attempt to compile first with type safety,
       which gives faster execution, and only falls back to type unsafe
-      evaluation if that fails.Type </para>
+      evaluation if that fails.Type</para>
     </section>
 
     <section>
@@ -131,6 +131,19 @@ end</programlisting>
           </imageobject>
         </mediaobject>
       </figure>
+    </section>
+  </section>
+
+  <section>
+    <title>Eclipse</title>
+
+    <section>
+      <title>Removal of BRL Guided Editor</title>
+
+      <para>The BRL Guided Editor has been removed due to lack of interest and
+      it falling behind. Its removal allows more focus on the GWT based Guided
+      Editor in Guvnor. The DRL, text-based, Guided Editor remains
+      unaffected.</para>
     </section>
   </section>
 </section>
