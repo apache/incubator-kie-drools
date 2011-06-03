@@ -345,45 +345,66 @@ RuleBase ruleBase = RuleBaseFactory.newRuleBase( conf );</programlisting>
     <section>
       <title>Insertion</title>
 
-      <para>"Insert" is the act of telling the <code>WorkingMemory</code> about a fact, which you do
-      by <code>wm.insert(yourObject)</code>, for example. When you insert a fact, it
-      is examined for matches against the rules. This means <emphasis>all</emphasis> of the
-      work for deciding about firing or not firing a rule is done during
-      insertion; no rule, however, is executed until you
-      call <code>fireAllRules()</code>, which you call <code>fireAllRules()</code> after you
-      have finished inserting your facts. It is a common misunderstanding for
-      people to think the condition evaluation happens when you call <code>fireAllRules()</code>. Expert
-      systems typically use the term <code>assert</code> or <code>assertion</code> to refer to facts
-      made available to the system. However due to the <code>assert</code> being a keyword
-      in most languages we have moved to use the <code>insert</code> keyword; so expect
-      to hear the two used interchangeably.</para>
+      <para><firstterm>Insertion</firstterm> is the act of telling the <code>WorkingMemory</code> 
+      about the facts.</para>
 
+      <important>
+        <para>In many Expert Systems the term used for this concept is <firstterm>assert</firstterm> 
+        or <firstterm>assertion</firstterm>. However as the keyword <code>assert</code> 
+        is already used in many languages, Drools uses the keyword & term <code>insert</code>.
+        You will often encounter these terms used interchangably in discussion of Rules Engines.</para>
+      </important>
+      
+      <para>When inserted, the rule is examined for matches against the rules. The work
+      of determining which rules to fire is done during insertion, but no rules are
+      executed at this time. The rules are executed when <code>fireAllRules()</code> is 
+      called, and it should only be called after you have inserted all your facts.
+      </para>
+
+      <para>It is a common misconception that rule matching occurs when 
+      <code>fireAllRules()</code> is called.</para>
+
+      
       <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
         However, when the rules are executed, they can assert new objects 
         thus causing new work to be needed. 
       -->
 
       <para>When an Object is inserted it returns a <code>FactHandle</code>. This <code>FactHandle</code>
-      is the token used to represent your inserted object within the
-      <code>WorkingMemory</code>. It is also used for interactions with the <code>WorkingMemory</code>
+      is the token used to represent your inserted object inside the
+      <code>WorkingMemory</code>, it is also used for interactions with the <code>WorkingMemory</code>
       when you wish to retract or modify an object.</para>
 
       <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = session.insert( stilton );      </programlisting>
 
-      <para>As mentioned in the Rule Base section a Working Memory may operate
-      in two assertion modes, i.e., equality or identity, with identity being
-      default.</para>
+      <para>As mentioned in the Rule Base section a Working Memory can operate
+      in two assertion modes: equality and identity. The assertion mode determines 
+      how the Working Memory stores the facts and how it compares the
+      newly inserted fact to previously inserted ones. If the Working Memory
+      determines the fact to "be the same" as an already inserted one it will ignore 
+      the new fact and return the FactHandle for the previously inserted one.</para>
 
-      <para><emphasis>Identity</emphasis> means that the Working Memory uses an <code>IdentityHashMap</code> to store
-      all asserted objects. New instance assertions always result in the
-      return of a new <code>FactHandle</code>, but if an instance is asserted again then it
-      returns the original fact handle, i.e., it ignores repeated insertions
-      for the same fact.</para>
-
-      <para><emphasis>Equality</emphasis> means that the Working Memory uses a <code>HashMap</code> to store all
-      asserted Objects. New instance assertions will only return a new
-      <code>FactHandle</code> if no equal objects have been asserted.</para>
+      <variablelist>
+        <varlistentry>
+          <term>Identity</term>
+          <listitem>
+            <para>Identity Mode uses an <emphasis>IdentityHashMap</emphasis>to store all
+            asserted Objects. New facts being inserted are compared to existing facts
+            "by reference". A new FactHandle will be returned if the object being
+            inserted is not a reference to an object that has been inserted previously.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Equality</term>
+          <listitem>
+            <para>Equality Mode uses a <emphasis>HashMap</emphasis> to store all asserted
+            Objects. New facts being inserted are compared to existing facts "by value".
+            A new FactHandle will be returned if the content of the object is not
+            identical to that of a previously inserted object.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </section>
 
     <section>
@@ -550,7 +571,7 @@ end</programlisting>
         modifyInsert().</emphasis> This way, the engine becomes aware that
         attributes will be changed and can prepare itself for them.</para>
         <example>
-          <title>Safely modifying attributes in the application
+          <title>Safely modifying attributes in the application<
           code</title>
           <programlisting language="java">         // create session
          StatefulSession session = ruleBase.newStatefulSession();
