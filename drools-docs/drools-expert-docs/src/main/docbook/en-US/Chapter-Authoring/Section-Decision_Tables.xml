@@ -846,32 +846,30 @@ end
       </listitem>
     </itemizedlist>
 
-    <section>
-      <title>A decision table-like example</title>
 
-      <para>As an example, a more classic decision table is shown, but without any hidden rows for the rule meta data
-      (so the spreadsheet only contains the raw data to generate the rules).</para>
+    <para>As an example, a more classic decision table is shown, but without any hidden rows for the rule meta data
+    (so the spreadsheet only contains the raw data to generate the rules).</para>
 
-      <screenshot>
-        <info>
-          Template data
-        </info>
+    <screenshot>
+      <info>
+        Template data
+      </info>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Decision_Tables/template1.png"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Decision_Tables/template1.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
 
-      <para>See the <filename>ExampleCheese.xls</filename> in the examples download for the above spreadsheet.</para>
+    <para>See the <filename>ExampleCheese.xls</filename> in the examples download for the above spreadsheet.</para>
 
-      <para>If this was a regular decision table there would be hidden rows before row 1 and between rows 1 and 2
-      containing rule metadata. With rule templates the data is completely separate from the rules. This has two handy
-      consequences - you can apply multiple rule templates to the same data and your data is not tied to your rules at
-      all. So what does the template look like?</para>
+    <para>If this was a regular decision table there would be hidden rows before row 1 and between rows 1 and 2
+    containing rule metadata. With rule templates the data is completely separate from the rules. This has two handy
+    consequences - you can apply multiple rule templates to the same data and your data is not tied to your rules at
+    all. So what does the template look like?</para>
 
-      <programlisting>
+    <programlisting>
 1  template header
 2  age
 3  type
@@ -892,26 +890,32 @@ end
 18 end
 19
 20 end template
-  </programlisting>
-
-      <para>Referring to the above:</para>
-
-      <programlisting>
-Line 1: all rule templates start with "template header"
-Lines 2-4: following the header is the list of columns in the order they appear in the data. In this case we are calling the first column "age", the second "type" and the third "log".
-Lines 5: empty line signifying the end of the column definitions
-Lines 6-9: standard rule header text. This is standard rule DRL and will appear at the top of the generated DRL. Put the package statement and any imports and global definitions
-Line 10: The "template" keyword signals the start of a rule template. There can be more than one template in a template file. The template should have a unique name.
-Lines 11-18: The rule template - see below
-Line 20: "end template" signifies the end of the template.
 </programlisting>
 
-      <para>The rule templates rely on MVEL to do substitution using the syntax @{token_name}. There is currently one
-      built-in expression, @{row.rowNumber} which gives a unique number for each row of data and enables you to generate
-      unique rule names. For each row of data a rule will be generated with the values in the data substituted for the
-      tokens in the template. With the example data above the following rule file would be generated:</para>
+    <para>Annotations to the preceding program listing:
+    <itemizedlist>
+      <listitem><para>Line 1: All rule templates start with <code>template header</code>.</para></listitem>
+      <listitem><para>Lines 2-4: Following the header is the list of columns in the order
+                      they appear in the data. In this case we are calling the first column <code>age</code>,
+                      the second <code>type</code> and the third <code>log</code>.</para></listitem>
+      <listitem><para>Line 5: An empty line signifies the end of the column definitions.</para></listitem>
+      <listitem><para>Lines 6-9: Standard rule header text. This is standard rule DRL and will appear
+                      at the top of the generated DRL. Put the package statement and any imports and 
+                      global and function definitions into this section.</para></listitem>
+      <listitem><para>Line 10: The keyword <code>template</code> signals the start of a rule template. There
+                      can be more than one template in a template file, but each template should have
+                      a unique name.</para></listitem>
+      <listitem><para>Lines 11-18: The rule template - see below for details.</para></listitem>
+      <listitem><para>Line 20: The keywords <code>end template</code> signify the end of the template.</para></listitem>
+    </itemizedlist>
+    </para>
 
-      <programlisting>
+    <para>The rule templates rely on MVEL to do substitution using the syntax @{token_name}. There is currently one
+    built-in expression, @{row.rowNumber} which gives a unique number for each row of data and enables you to generate
+    unique rule names. For each row of data a rule will be generated with the values in the data substituted for the
+    tokens in the template. With the example data above the following rule file would be generated:</para>
+
+    <programlisting>
 package org.drools.examples.templates;
 
 global java.util.List list;
@@ -935,7 +939,9 @@ end
 
       <para>The code to run this is simple:</para>
 
-      <programlisting language="java">DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+      <programlisting language="java">
+DecisionTableConfiguration dtableconfiguration =
+    KnowledgeBuilderFactory.newDecisionTableConfiguration();
 dtableconfiguration.setInputType( DecisionTableInputType.XLS );
 
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -945,6 +951,6 @@ kbuilder.add( ResourceFactory.newClassPathResource( getSpreadsheetName(),
               ResourceType.DTABLE,
               dtableconfiguration );
 </programlisting>
-    </section>
+
   </section>
 </section>
