@@ -223,6 +223,27 @@ public class MVELDumperTest {
                       result );
     }
 
+    @Test
+    public void testDumpBindingsWithRestriction() throws Exception {
+        String input = "$x : age > 10 && < 20 || > 30";
+        String expected = "( age > 10 && age < 20 || age > 30 )";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        MVELDumperContext ctx = new MVELDumperContext();
+        String result = dumper.dump( descr,
+                                     ctx );
+
+        assertEquals( expected,
+                      result );
+        assertEquals( 1,
+                      ctx.getBindings().size() );
+        BindingDescr bind = ctx.getBindings().get( 0 );
+        assertEquals( "$x",
+                      bind.getVariable() );
+        assertEquals( "age",
+                      bind.getExpression() );
+    }
+
     public ConstraintConnectiveDescr parse( final String constraint ) {
         DrlExprParser parser = new DrlExprParser();
         ConstraintConnectiveDescr result = parser.parse( constraint );

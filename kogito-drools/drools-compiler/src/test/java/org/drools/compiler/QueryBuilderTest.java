@@ -13,15 +13,10 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.ExprConstraintDescr.Type;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.VariableDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class QueryBuilderTest extends DroolsTestCase {
