@@ -193,6 +193,44 @@ public class DRLExprParserTest extends TestCase {
                       right.getExpression() );
     }
 
+    public void testBindingWithRestrictions() throws Exception {
+        String source = "$x : property > value && < 20";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( ConnectiveType.AND,
+                      result.getConnective() );
+        assertEquals( 2,
+                      result.getDescrs().size() );
+
+        RelationalExprDescr rel = (RelationalExprDescr) result.getDescrs().get( 0 );
+        assertEquals( ">",
+                      rel.getOperator() );
+
+        BindingDescr bind = (BindingDescr) rel.getLeft();
+        assertEquals( "$x",
+                      bind.getVariable() );
+        assertEquals( "property",
+                      bind.getExpression() );
+
+        AtomicExprDescr right = (AtomicExprDescr) rel.getRight();
+        assertEquals( "value",
+                      right.getExpression() );
+        
+        rel = (RelationalExprDescr) result.getDescrs().get( 1 );
+        assertEquals( "<",
+                      rel.getOperator() );
+
+        AtomicExprDescr left = (AtomicExprDescr) rel.getLeft();
+        assertEquals( "property",
+                      left.getExpression() );
+
+        right = (AtomicExprDescr) rel.getRight();
+        assertEquals( "20",
+                      right.getExpression() );
+    }
+
     public void testDoubleBinding() throws Exception {
         String source = "$x : x.m( 1, a ) && $y : y[z].foo";
         ConstraintConnectiveDescr result = parser.parse( source );

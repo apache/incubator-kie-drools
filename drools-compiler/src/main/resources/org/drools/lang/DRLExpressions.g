@@ -272,6 +272,7 @@ inExpression returns [BaseDescr result]
   ;
 
 relationalExpression returns [BaseDescr result]
+scope { BaseDescr lsd = null; }
   : left=shiftExpression 
     { if( buildDescr  ) { 
           $result = ( $left.result != null && 
@@ -279,9 +280,10 @@ relationalExpression returns [BaseDescr result]
                         ($left.text.equals(((AtomicExprDescr)$left.result).getExpression())) )) ? 
                     $left.result : 
                     new AtomicExprDescr( $left.text ) ; 
+          $relationalExpression::lsd = $result;
       } 
     }
-  ( (orRestriction[null])=> right=orRestriction[$result]
+  ( (orRestriction)=> right=orRestriction
          { if( buildDescr  ) {
                $result = $right.result;
            }
@@ -289,9 +291,9 @@ relationalExpression returns [BaseDescr result]
   )*
   ;
 
-orRestriction[BaseDescr inp] returns [BaseDescr result]
-  : left=andRestriction[$inp] { if( buildDescr  ) { $result = $left.result; } }
-    ( (DOUBLE_PIPE andRestriction[null])=>lop=DOUBLE_PIPE right=andRestriction[$inp] 
+orRestriction returns [BaseDescr result]
+  : left=andRestriction { if( buildDescr  ) { $result = $left.result; } }
+    ( (DOUBLE_PIPE andRestriction)=>lop=DOUBLE_PIPE right=andRestriction 
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newOr(); 
                descr.addOrMerge( $result );  
@@ -302,9 +304,9 @@ orRestriction[BaseDescr inp] returns [BaseDescr result]
    )* EOF?
   ;    
 
-andRestriction[BaseDescr inp] returns [BaseDescr result]
-  : left=singleRestriction[$inp] { if( buildDescr  ) { $result = $left.result; } }
-  ( (DOUBLE_AMPER singleRestriction[null])=>lop=DOUBLE_AMPER right=singleRestriction[$inp] 
+andRestriction returns [BaseDescr result]
+  : left=singleRestriction { if( buildDescr  ) { $result = $left.result; } }
+  ( (DOUBLE_AMPER singleRestriction)=>lop=DOUBLE_AMPER right=singleRestriction
          { if( buildDescr  ) {
                ConstraintConnectiveDescr descr = ConstraintConnectiveDescr.newAnd(); 
                descr.addOrMerge( $result );  
@@ -315,7 +317,7 @@ andRestriction[BaseDescr inp] returns [BaseDescr result]
   )* 
   ;    
   
-singleRestriction[BaseDescr inp] returns [BaseDescr result]
+singleRestriction returns [BaseDescr result]
   :  op=operator value=shiftExpression
          { if( buildDescr  ) {
                BaseDescr descr = ( $value.result != null && 
@@ -323,10 +325,13 @@ singleRestriction[BaseDescr inp] returns [BaseDescr result]
                                    ($value.text.equals(((AtomicExprDescr)$value.result).getExpression())) )) ? 
 		                    $value.result : 
 		                    new AtomicExprDescr( $value.text ) ;
-               $result = new RelationalExprDescr( $op.opr, $op.negated, $op.params, $inp, descr );
+               $result = new RelationalExprDescr( $op.opr, $op.negated, $op.params, $relationalExpression::lsd, descr );
+	       if( $relationalExpression::lsd instanceof BindingDescr ) {
+	           $relationalExpression::lsd = new AtomicExprDescr( ((BindingDescr)$relationalExpression::lsd).getExpression() );
+	       }
            }
          }
-  |  LEFT_PAREN or=orRestriction[$inp] RIGHT_PAREN  { $result = $or.result; }
+  |  LEFT_PAREN or=orRestriction RIGHT_PAREN  { $result = $or.result; }
   ;  
   
     

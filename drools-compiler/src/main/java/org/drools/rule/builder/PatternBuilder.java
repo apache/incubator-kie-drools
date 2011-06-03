@@ -16,14 +16,33 @@
 
 package org.drools.rule.builder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.RecognitionException;
-import org.drools.base.*;
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
+import org.drools.base.EvaluatorWrapper;
+import org.drools.base.FieldFactory;
+import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.mvel.MVELCompileable;
-import org.drools.compiler.*;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
+import org.drools.compiler.DescrBuildError;
+import org.drools.compiler.Dialect;
+import org.drools.compiler.DrlExprParser;
+import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.factmodel.FieldDefinition;
@@ -32,21 +51,54 @@ import org.drools.facttemplates.FactTemplateFieldExtractor;
 import org.drools.facttemplates.FactTemplateObjectType;
 import org.drools.lang.DRLLexer;
 import org.drools.lang.MVELDumper;
-import org.drools.lang.descr.*;
+import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BehaviorDescr;
+import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.ExprConstraintDescr;
+import org.drools.lang.descr.LiteralRestrictionDescr;
+import org.drools.lang.descr.OperatorDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.PredicateDescr;
+import org.drools.lang.descr.RelationalExprDescr;
+import org.drools.lang.descr.ReturnValueRestrictionDescr;
 import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
-import org.drools.rule.*;
+import org.drools.rule.AbstractCompositeConstraint;
+import org.drools.rule.Behavior;
+import org.drools.rule.Declaration;
+import org.drools.rule.LiteralConstraint;
+import org.drools.rule.LiteralRestriction;
+import org.drools.rule.MVELDialectRuntimeData;
+import org.drools.rule.MutableTypeConstraint;
+import org.drools.rule.Pattern;
+import org.drools.rule.PatternSource;
+import org.drools.rule.PredicateConstraint;
+import org.drools.rule.Query;
+import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.Rule;
+import org.drools.rule.RuleConditionElement;
+import org.drools.rule.SlidingLengthWindow;
+import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.TypeDeclaration;
+import org.drools.rule.UnificationRestriction;
+import org.drools.rule.VariableConstraint;
+import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.spi.*;
+import org.drools.spi.AcceptsReadAccessor;
+import org.drools.spi.Constraint;
 import org.drools.spi.Constraint.ConstraintType;
+import org.drools.spi.Evaluator;
+import org.drools.spi.FieldValue;
+import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.ObjectType;
+import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.util.PropertyTools;
-
-import java.util.*;
-import java.util.regex.Matcher;
 
 /**
  * A builder for patterns
@@ -206,14 +258,6 @@ public class PatternBuilder
             }
         }
 
-        List<BaseDescr> notAConstraints = processPositional( new ArrayList<BaseDescr>( patternDescr.getDescrs() ), // needs to be cloned
-                                                             context,
-                                                             patternDescr,
-                                                             pattern );
-        for ( BaseDescr nac : notAConstraints ) {
-            patternDescr.removeConstraint( nac );
-        }
-
         // Process all constraints
         processConstraintsAndBinds( context,
                                     patternDescr,
@@ -267,11 +311,14 @@ public class PatternBuilder
 
         for ( BaseDescr b : patternDescr.getDescrs() ) {
             String expression = null;
+            boolean isPositional = false;
             if ( b instanceof BindingDescr ) {
                 BindingDescr bind = (BindingDescr) b;
                 expression = bind.getVariable() + (bind.isUnification() ? " := " : " : ") + bind.getExpression();
             } else if ( b instanceof ExprConstraintDescr ) {
-                expression = ((ExprConstraintDescr) b).getExpression();
+                ExprConstraintDescr descr = (ExprConstraintDescr) b;
+                expression = descr.getExpression();
+                isPositional = descr.getType() == ExprConstraintDescr.Type.POSITIONAL;
             } else {
                 expression = b.getText();
             }
@@ -290,73 +337,76 @@ public class PatternBuilder
                                    pattern,
                                    (BindingDescr) result.getDescrs().get( 0 ),
                                    null ); // null containers get added to the pattern
+            } else if ( isPositional ) {
+                processPositional( context,
+                                   patternDescr,
+                                   pattern,
+                                   (ExprConstraintDescr) b );
             } else {
-                // need to build the actual constraints as well
+                // need to build the actual constraint
                 build( context,
                        patternDescr,
                        pattern,
                        result );
-
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<BaseDescr> processPositional( List< ? extends BaseDescr> descrs,
-                                               RuleBuildContext context,
-                                               PatternDescr patternDescr,
-                                               Pattern pattern ) {
-        List<BaseDescr> victims = new LinkedList<BaseDescr>();
-        for ( BaseDescr baseDescr : descrs ) {
+    private void processPositional( final RuleBuildContext context,
+                                    final PatternDescr patternDescr,
+                                    final Pattern pattern,
+                                    final ExprConstraintDescr descr ) {
+        if ( descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType ) {
+            Class< ? > klazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
+            TypeDeclaration tDecl = context.getPackageBuilder().getTypeDeclaration( klazz );
 
-            ExprConstraintDescr descr = (ExprConstraintDescr) baseDescr;
+            if ( tDecl == null ) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              klazz,
+                                                              "Unable to find @positional definitions for :" + klazz + "\n" ) );
+                return;
+            }
 
-            if ( descr.getType() == ExprConstraintDescr.Type.POSITIONAL && pattern.getObjectType() instanceof ClassObjectType ) {
-                Class< ? > klazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
-                TypeDeclaration tDecl = context.getPackageBuilder().getTypeDeclaration( klazz );
+            FieldDefinition field = tDecl.getTypeClassDef().getField( descr.getPosition() );
+            if ( field == null ) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "Unable to find @positional field " + descr.getPosition() ) + "\n" );
+                return;
+            }
 
-                if ( tDecl == null ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  descr,
-                                                                  klazz,
-                                                                  "Unable to find @positional definitions for :" + klazz + "\n" ) );
-                    continue;
-                }
+            // TODO: WTH is this??????
+            DRLLexer lex = new DRLLexer( new ANTLRStringStream( descr.getExpression() ) );
+            boolean isSimpleIdentifier = false;
+            try {
+                lex.mID();
+                isSimpleIdentifier = lex.getCharIndex() >= descr.getExpression().length();
+            } catch ( RecognitionException e ) {
 
-                FieldDefinition field = tDecl.getTypeClassDef().getField( descr.getPosition() );
-                if ( field == null ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  descr,
-                                                                  null,
-                                                                  "Unable to find @positional field " + descr.getPosition() ) + "\n" );
-                    continue;
-                }
+            }
 
-                // TODO: WTH is this??????
-                DRLLexer lex = new DRLLexer( new ANTLRStringStream( descr.getExpression() ) );
-                boolean isSimpleIdentifier = false;
-                try {
-                    lex.mID();
-                    isSimpleIdentifier = lex.getCharIndex() >= descr.getExpression().length();
-                } catch ( RecognitionException e ) {
-
-                }
-
-                if ( isSimpleIdentifier ) {
-                    BindingDescr binder = new BindingDescr();
-                    binder.setUnification( true );
-                    binder.setExpression( field.getName() );
-                    binder.setVariable( descr.getExpression() );
-                    patternDescr.addConstraint( binder );
-                    victims.add( descr );
-                    continue;
-                } else {
-                    descr.setText( field.getName() + " == " + descr.getExpression() );
-                    descr.setType( ExprConstraintDescr.Type.NAMED );
-                }
+            if ( isSimpleIdentifier ) {
+                // create a binding
+                BindingDescr binder = new BindingDescr();
+                binder.setUnification( true );
+                binder.setExpression( field.getName() );
+                binder.setVariable( descr.getExpression() );
+                buildRuleBindings( context,
+                                   patternDescr,
+                                   pattern,
+                                   binder,
+                                   null );
+            } else {
+                // create a constraint
+                build( context,
+                       patternDescr,
+                       pattern,
+                       field.getName() + " == " + descr.getExpression() );
             }
         }
-        return victims;
     }
 
     private void build( final RuleBuildContext context,
@@ -386,8 +436,8 @@ public class PatternBuilder
             String expr = new MVELDumper().dump( d,
                                                  mvelCtx );
             Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
-            
-            for( BindingDescr bind : mvelCtx.getBindings() ) {
+
+            for ( BindingDescr bind : mvelCtx.getBindings() ) {
                 buildRuleBindings( context,
                                    patternDescr,
                                    pattern,
@@ -415,8 +465,8 @@ public class PatternBuilder
             RelationalExprDescr relDescr = null;
             if ( d instanceof RelationalExprDescr ) {
                 relDescr = (RelationalExprDescr) d;
-                if ( relDescr.getLeft() instanceof AtomicExprDescr &&
-                     relDescr.getRight() instanceof AtomicExprDescr ) {
+                if ( (relDescr.getLeft() instanceof AtomicExprDescr || relDescr.getLeft() instanceof BindingDescr) &&
+                     (relDescr.getRight() instanceof AtomicExprDescr || relDescr.getRight() instanceof BindingDescr) ) {
                     simple = true;
                 }
             }
@@ -446,9 +496,23 @@ public class PatternBuilder
 
             RelationalExprDescr exprDescr = (RelationalExprDescr) d;
 
-            AtomicExprDescr rdescr = ((AtomicExprDescr) exprDescr.getRight());
-            String fieldName = ((AtomicExprDescr) exprDescr.getLeft()).getExpression();
-            String value = rdescr.getExpression().trim();
+            boolean isLiteral = false;
+            String fieldName = null;
+            String value = null;
+            if ( exprDescr.getRight() instanceof AtomicExprDescr ) {
+                AtomicExprDescr rdescr = ((AtomicExprDescr) exprDescr.getRight());
+                value = rdescr.getExpression().trim();
+                isLiteral = rdescr.isLiteral();
+            } else {
+                BindingDescr rdescr = ((BindingDescr) exprDescr.getRight());
+                value = rdescr.getExpression().trim();
+                isLiteral = false;
+            }
+            if ( exprDescr.getLeft() instanceof AtomicExprDescr ) {
+                fieldName = ((AtomicExprDescr) exprDescr.getLeft()).getExpression();
+            } else {
+                fieldName = ((BindingDescr) exprDescr.getLeft()).getExpression();
+            }
 
             ExprBindings rightExpr = new ExprBindings();
             setInputs( context,
@@ -511,7 +575,7 @@ public class PatternBuilder
 
             Restriction restriction = null;
             // is it a literal? Does not include enums
-            if ( rdescr.isLiteral() ) {
+            if ( isLiteral ) {
                 restriction = buildLiteralRestriction( context,
                                                        extractor,
                                                        new LiteralRestrictionDescr( operator,
