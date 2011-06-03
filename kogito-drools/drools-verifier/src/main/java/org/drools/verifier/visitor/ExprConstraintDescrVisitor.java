@@ -88,9 +88,26 @@ public class ExprConstraintDescrVisitor {
             visit((ConstraintConnectiveDescr) descr);
         } else if (descr instanceof RelationalExprDescr) {
             visit((RelationalExprDescr) descr);
+        } else if (descr instanceof BindingDescr) {
+            visit((BindingDescr) descr);
         }
 
         return "";
+    }
+
+    private void visit(BindingDescr descr) {
+        Field field = new Field();
+        field.setName(descr.getExpression());
+        field.setObjectTypeName(pattern.getName());
+        field.setObjectTypePath(pattern.getObjectTypePath());
+        data.add(field);
+
+        FieldVariable fieldVariable = new FieldVariable(pattern);
+        fieldVariable.setParentPath(field.getPath());
+        fieldVariable.setName(descr.getVariable());
+        fieldVariable.setOrderNumber(orderNumber.next());
+
+        data.add(fieldVariable);
     }
 
     private void visit(ConstraintConnectiveDescr descr) {

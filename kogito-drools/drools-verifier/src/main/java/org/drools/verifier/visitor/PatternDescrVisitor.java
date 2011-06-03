@@ -104,8 +104,6 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             pattern.setSourceType(workingMemory.getVerifierComponentType());
         }
 
-        visit(descr.getBindings());
-
         solvers.startPatternSolver(pattern);
 
         visit(descr.getConstraint());

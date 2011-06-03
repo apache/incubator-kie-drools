@@ -61,7 +61,7 @@ then
 }exists( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof ForallDescr }@comment{    
 }forall( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof EvalDescr }@comment{    
 }eval( @{base.content} )@elseif{ base instanceof PatternDescr }@comment{    
-}@if{base.identifier!=null}@{base.identifier} : @end{}@{base.objectType}( @foreach{bind:base.bindings}@{bind.variable} : @{bind.expression}@end{", "}@if{!base.bindings.isEmpty()&&!base.descrs.isEmpty()}, @end{}@foreach{constr:base.descrs}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@includeNamed{"psource";source=base.source}@end{}@end{}
+}@if{base.identifier!=null}@{base.identifier} : @end{}@{base.objectType}( @foreach{constr:base.descrs}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@includeNamed{"psource";source=base.source}@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE
