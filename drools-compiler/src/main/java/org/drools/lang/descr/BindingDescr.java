@@ -68,7 +68,7 @@ public class BindingDescr extends BaseDescr {
     }
     
     public String toString() {
-        return "[Binding: " + this.variable + ( this.unification ? " := " : " : " ) + this.expression + "]";
+        return this.variable + ( this.unification ? " := " : " : " ) + this.expression;
     }
 
 }

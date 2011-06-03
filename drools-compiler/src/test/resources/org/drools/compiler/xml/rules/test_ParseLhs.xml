@@ -33,15 +33,14 @@
       </pattern>
 
       <pattern object-type="Foo">
-          <field-constraint field-name="field1">
+        <field-binding field-name="field1" identifier="var1" />
+        <field-constraint field-name="field1">
             <literal-restriction       evaluator="==" value="value1" />
             <return-value-restriction  evaluator="==">1==1</return-value-restriction>
             <variable-restriction      evaluator="==" identifier="var1" />
         </field-constraint>
 
         <predicate field-name="field1" identifier="var1">1==1</predicate>
-
-        <field-binding field-name="field1" identifier="var1" />
       </pattern>
 
       <not>
