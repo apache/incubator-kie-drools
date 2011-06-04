@@ -115,10 +115,6 @@ public class XmlDumper extends ReflectiveVisitor
             visit( descr.getSource() );
             localString.append( this.template );
         }
-        for ( BindingDescr binding : descr.getBindings() ) {
-            visitFieldBindingDescr( binding );
-            localString.append( this.template );            
-        }        
         localString.append( "</pattern>" + XmlDumper.eol );
         
 
@@ -190,7 +186,7 @@ public class XmlDumper extends ReflectiveVisitor
         }
     }
 
-    public void visitFieldBindingDescr(final BindingDescr descr) {
+    public void visitBindingDescr(final BindingDescr descr) {
         this.template = new String();
         this.template = "<field-binding field-name=\"" + descr.getExpression() + "\" identifier=\"" + descr.getVariable() + "\" />" + XmlDumper.eol;
     }

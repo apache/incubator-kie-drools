@@ -23,22 +23,25 @@ import org.drools.lang.descr.PatternDescr;
 /**
  * A descr builder implementation for Patterns
  */
-public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDescrBuilderImpl<PatternDescr>
+public class PatternDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDescrBuilderImpl<PatternDescr>
     implements
     PatternDescrBuilder<P> {
 
     private P parent;
-    
-    protected PatternDescrBuilderImpl( P parent ) {
-        this( parent, null );
+
+    protected PatternDescrBuilderImpl(P parent) {
+        this( parent,
+              null );
     }
 
-    protected PatternDescrBuilderImpl(P parent, String type) {
+    protected PatternDescrBuilderImpl(P parent,
+                                      String type) {
         super( new PatternDescr( type ) );
         this.parent = parent;
     }
 
-    public PatternDescrBuilder<P> id( String id, boolean isUnification ) {
+    public PatternDescrBuilder<P> id( String id,
+                                      boolean isUnification ) {
         descr.setIdentifier( id );
         descr.setUnification( isUnification );
         return this;
@@ -62,7 +65,8 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
         return this;
     }
 
-    public PatternDescrBuilder<P> constraint( String constraint, boolean positional ) {
+    public PatternDescrBuilder<P> constraint( String constraint,
+                                              boolean positional ) {
         ExprConstraintDescr constr = new ExprConstraintDescr( constraint );
         constr.setType( positional ? ExprConstraintDescr.Type.POSITIONAL : ExprConstraintDescr.Type.NAMED );
         constr.setPosition( descr.getConstraint().getDescrs().size() );
@@ -73,7 +77,9 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDesc
     public PatternDescrBuilder<P> bind( String var,
                                         String target,
                                         boolean isUnification ) {
-        descr.addBinding( new BindingDescr( var, target, isUnification ) );
+        descr.addConstraint( new BindingDescr( var,
+                                               target,
+                                               isUnification ) );
         return this;
     }
 

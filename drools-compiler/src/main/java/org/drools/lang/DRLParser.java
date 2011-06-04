@@ -53,6 +53,7 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -737,7 +738,7 @@ public class DRLParser {
     public RuleDescr query( PackageDescrBuilder pkg ) throws RecognitionException {
         QueryDescrBuilder query = null;
         try {
-            query = helper.start( pkg, 
+            query = helper.start( pkg,
                                   QueryDescrBuilder.class,
                                   null );
 
@@ -1019,7 +1020,7 @@ public class DRLParser {
      * 
      * @return
      */
-    public AttributeDescr attribute( AttributeSupportBuilder<?> as ) {
+    public AttributeDescr attribute( AttributeSupportBuilder< ? > as ) {
         AttributeDescr attribute = null;
         try {
             if ( state.backtracking == 0 && input.LA( 1 ) != DRLLexer.EOF ) {
@@ -1034,13 +1035,15 @@ public class DRLParser {
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.LOOP ) ) {
-                attribute = booleanAttribute( as, new String[]{DroolsSoftKeywords.NO, "-", DroolsSoftKeywords.LOOP} );
+                attribute = booleanAttribute( as,
+                                              new String[]{DroolsSoftKeywords.NO, "-", DroolsSoftKeywords.LOOP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AUTO ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.FOCUS ) ) {
-                attribute = booleanAttribute( as, new String[]{DroolsSoftKeywords.AUTO, "-", DroolsSoftKeywords.FOCUS} );
+                attribute = booleanAttribute( as,
+                                              new String[]{DroolsSoftKeywords.AUTO, "-", DroolsSoftKeywords.FOCUS} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.LOCK ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
@@ -1050,47 +1053,57 @@ public class DRLParser {
                                            "-" ) &&
                         helper.validateLT( 5,
                                            DroolsSoftKeywords.ACTIVE ) ) {
-                attribute = booleanAttribute( as, new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
+                attribute = booleanAttribute( as,
+                                              new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AGENDA ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.GROUP ) ) {
-                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP} );
+                attribute = stringAttribute( as,
+                                             new String[]{DroolsSoftKeywords.AGENDA, "-", DroolsSoftKeywords.GROUP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACTIVATION ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.GROUP ) ) {
-                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.ACTIVATION, "-", DroolsSoftKeywords.GROUP} );
+                attribute = stringAttribute( as,
+                                             new String[]{DroolsSoftKeywords.ACTIVATION, "-", DroolsSoftKeywords.GROUP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.RULEFLOW ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.GROUP ) ) {
-                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.RULEFLOW, "-", DroolsSoftKeywords.GROUP} );
+                attribute = stringAttribute( as,
+                                             new String[]{DroolsSoftKeywords.RULEFLOW, "-", DroolsSoftKeywords.GROUP} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.EFFECTIVE ) ) {
-                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
+                attribute = stringAttribute( as,
+                                             new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EFFECTIVE} );
                 attribute.setType( AttributeDescr.Type.DATE );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DATE ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
                         helper.validateLT( 3,
                                            DroolsSoftKeywords.EXPIRES ) ) {
-                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
+                attribute = stringAttribute( as,
+                                             new String[]{DroolsSoftKeywords.DATE, "-", DroolsSoftKeywords.EXPIRES} );
                 attribute.setType( AttributeDescr.Type.DATE );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DIALECT ) ) {
-                attribute = stringAttribute( as, new String[]{DroolsSoftKeywords.DIALECT} );
+                attribute = stringAttribute( as,
+                                             new String[]{DroolsSoftKeywords.DIALECT} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.CALENDARS ) ) {
-                attribute = stringListAttribute( as, new String[]{DroolsSoftKeywords.CALENDARS} );
+                attribute = stringListAttribute( as,
+                                                 new String[]{DroolsSoftKeywords.CALENDARS} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.TIMER ) ) {
-                attribute = intOrChunkAttribute( as, new String[]{DroolsSoftKeywords.TIMER} );
+                attribute = intOrChunkAttribute( as,
+                                                 new String[]{DroolsSoftKeywords.TIMER} );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.DURATION ) ) {
-                attribute = intOrChunkAttribute( as, new String[]{DroolsSoftKeywords.DURATION} );
+                attribute = intOrChunkAttribute( as,
+                                                 new String[]{DroolsSoftKeywords.DURATION} );
             }
         } catch ( RecognitionException re ) {
             reportError( re );
@@ -1105,7 +1118,7 @@ public class DRLParser {
      * salience := SALIENCE conditionalExpression
      * @throws RecognitionException
      */
-    private AttributeDescr salience( AttributeSupportBuilder<?> as ) throws RecognitionException {
+    private AttributeDescr salience( AttributeSupportBuilder< ? > as ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             // 'salience'
@@ -1165,7 +1178,7 @@ public class DRLParser {
      * enabled := ENABLED conditionalExpression
      * @throws RecognitionException
      */
-    private AttributeDescr enabled( AttributeSupportBuilder<?> as ) throws RecognitionException {
+    private AttributeDescr enabled( AttributeSupportBuilder< ? > as ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             // 'enabled'
@@ -1226,7 +1239,8 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr booleanAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
+    private AttributeDescr booleanAttribute( AttributeSupportBuilder< ? > as,
+                                             String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1282,7 +1296,8 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr stringAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
+    private AttributeDescr stringAttribute( AttributeSupportBuilder< ? > as,
+                                            String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1334,7 +1349,8 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr stringListAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
+    private AttributeDescr stringListAttribute( AttributeSupportBuilder< ? > as,
+                                                String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -1407,7 +1423,8 @@ public class DRLParser {
      * @param key
      * @throws RecognitionException
      */
-    private AttributeDescr intOrChunkAttribute( AttributeSupportBuilder<?> as, String[] key ) throws RecognitionException {
+    private AttributeDescr intOrChunkAttribute( AttributeSupportBuilder< ? > as,
+                                                String[] key ) throws RecognitionException {
         AttributeDescrBuilder attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
@@ -2270,7 +2287,7 @@ public class DRLParser {
 
     /**
      * lhsAccumulate := ACCUMULATE LEFT_PAREN lhsAnd COMMA
-     *                      accumulateFunction (COMMA accumulateFunction)*
+     *                      accumulateFunctionBinding (COMMA accumulateFunctionBinding)*
      *                  RIGHT_PAREN SEMICOLON?
      *  
      * @param ce
@@ -2298,7 +2315,7 @@ public class DRLParser {
             AccumulateDescrBuilder< ? > accumulate = helper.start( pattern,
                                                                    AccumulateDescrBuilder.class,
                                                                    null );
-            if( state.backtracking == 0 ) {
+            if ( state.backtracking == 0 ) {
                 accumulate.multiFunction( true );
             }
             try {
@@ -2349,7 +2366,7 @@ public class DRLParser {
                 if ( state.failed ) return null;
 
                 // accumulate functions
-                accumulateFunction( accumulate );
+                accumulateFunctionBinding( accumulate );
                 if ( state.failed ) return null;
 
                 while ( input.LA( 1 ) == DRLLexer.COMMA ) {
@@ -2360,7 +2377,7 @@ public class DRLParser {
                            DroolsEditorType.SYMBOL );
                     if ( state.failed ) return null;
 
-                    accumulateFunction( accumulate );
+                    accumulateFunctionBinding( accumulate );
                     if ( state.failed ) return null;
                 }
 
@@ -2607,16 +2624,6 @@ public class DRLParser {
         if ( state.backtracking == 0 && !state.errorRecovery ) {
             helper.emit( Location.LOCATION_LHS_INSIDE_CONDITION_START );
         }
-        String bind = null;
-        boolean unification = false;
-        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON ) {
-            bind = label( DroolsEditorType.IDENTIFIER_VARIABLE );
-            if ( state.failed ) return;
-        } else if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.UNIFY ) {
-            bind = unif( DroolsEditorType.IDENTIFIER_VARIABLE );
-            if ( state.failed ) return;
-            unification = true;
-        }
 
         int first = input.index();
         exprParser.getHelper().setHasOperator( false ); // resetting
@@ -2632,16 +2639,8 @@ public class DRLParser {
             // expression consumed something
             String expr = input.toString( first,
                                           input.LT( -1 ).getTokenIndex() );
-            if ( bind == null ) {
-                // it is a constraint
-                pattern.constraint( expr,
-                                    positional );
-            } else {
-                // it is a bind
-                pattern.bind( bind,
-                              expr,
-                              unification );
-            }
+            pattern.constraint( expr,
+                                positional );
         }
     }
 
@@ -3043,7 +3042,7 @@ public class DRLParser {
                 if ( state.backtracking == 0 ) accumulate.result( result );
             } else {
                 // accumulate functions
-                accumulateFunction( accumulate );
+                accumulateFunction( accumulate, null );
                 if ( state.failed ) return;
             }
 
@@ -3063,17 +3062,21 @@ public class DRLParser {
     }
 
     /**
+     * accumulateFunctionBinding := label accumulateFunction
+     * @param accumulate
+     * @throws RecognitionException
+     */
+    private void accumulateFunctionBinding( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
+        String label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
+        accumulateFunction( accumulate, label );
+    }
+
+    /**
      * accumulateFunction := label? ID parameters
      * @param accumulate
      * @throws RecognitionException
      */
-    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
-        String label = null;
-        if ( input.LA( 1 ) == DRLLexer.ID && input.LA( 2 ) == DRLLexer.COLON && !helper.validateCEKeyword( 1 ) ) {
-            label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
-            if ( state.failed ) return;
-        }
-
+    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate, String label ) throws RecognitionException {
         Token function = match( input,
                                 DRLLexer.ID,
                                 null,
