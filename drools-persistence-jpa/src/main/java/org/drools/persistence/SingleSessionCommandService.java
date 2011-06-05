@@ -126,16 +126,13 @@ public class SingleSessionCommandService
 
             this.txm.commit();
 
+        } catch (RuntimeException re){
+            rollbackTransaction(re);
+            throw re;
         } catch ( Exception t1 ) {
-            try {
-                this.txm.rollback();
-            } catch ( Throwable t2 ) {
-                throw new RuntimeException( "Could not commit session or rollback",
-                                            t2 );
-            }
-            throw new RuntimeException( "Could not commit session",
-                                        t1 );
-        }
+            rollbackTransaction(t1);
+            throw new RuntimeException("Wrapped exception see cause", t1);
+        } 
 
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
