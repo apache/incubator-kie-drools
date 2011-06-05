@@ -59,6 +59,4 @@ public interface ResourceFactoryService extends Service {
     Resource newClassPathResource(String path,
                                   Class clazz);
 
-    Resource newURLClassPathResource(String path);
-    
 }
