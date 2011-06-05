@@ -111,10 +111,6 @@ public class ResourceFactory {
                                                            classLoader );
     }
     
-    public static Resource newURLClassPathResource(String path) {
-        return getFactoryService().newURLClassPathResource( path );
-    }
-
     private static synchronized void setFactoryService(ResourceFactoryService factoryService) {
         ResourceFactory.factoryService = factoryService;
     }
