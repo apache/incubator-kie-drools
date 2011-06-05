@@ -103,20 +103,10 @@ public class ClassPathResource extends BaseResource
      * @see java.lang.Class#getResourceAsStream(String)
      */
     public InputStream getInputStream() throws IOException {
-        InputStream is = null;
-        if ( this.clazz != null ) {
-            is = this.clazz.getResourceAsStream( this.path );
-        }
-
-        if ( is == null ) {
-            is = this.classLoader.getResourceAsStream( this.path );
-        }
-
-        if ( is == null ) {
-            throw new FileNotFoundException( "'" + this.path + "' cannot be opened because it does not exist" );
-        }
-        this.lastRead = getLastModified();
-        return is;
+        //Some ClassLoaders caches the result of getResourceAsStream() this is
+        //why we get the Input Stream from the URL of the resource
+        //@see JBRULES-2960
+        return this.getURL().openStream();
     }
 
     /**
