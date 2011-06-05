@@ -70,6 +70,8 @@ public class GreedyStepScope extends AbstractStepScope {
             planningVariableDescriptor.setValue(planningEntity, value);
         }
         workingMemory.update(factHandle, planningEntity);
+        // there is no need to recalculate the score, but we still need to set it
+        greedySolverScope.getWorkingSolution().setScore(score);
     }
 
 }
