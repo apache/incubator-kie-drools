@@ -123,4 +123,29 @@ public class SolutionDescriptor implements Serializable {
         return planningEntities;
     }
 
+    /**
+     * @param solution never null
+     * @return true if all the planning entities are initialized
+     */
+    public boolean isInitialized(Solution solution) {
+        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
+            Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+            PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+            if (entity == null || !planningEntityDescriptor.isInitialized(entity)) {
+                return false;
+            }
+        }
+        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+            Collection<? extends Object> entityCollection = (Collection<? extends Object>)
+                    DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+            for (Object entity : entityCollection) {
+                PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+                if (!planningEntityDescriptor.isInitialized(entity)) {
+                return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

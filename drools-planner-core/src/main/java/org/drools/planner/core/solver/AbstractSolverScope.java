@@ -203,6 +203,10 @@ public abstract class AbstractSolverScope {
         return solutionDescriptor.getPlanningEntities(workingSolution);
     }
 
+    public boolean isWorkingSolutionInitialized() {
+        return solutionDescriptor.isInitialized(workingSolution);
+    }
+
     /**
      * @param presumedScore never null
      */
