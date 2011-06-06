@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.BehaviorDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
+import org.drools.lang.api.SourceDescrBuilder;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.PatternDescr;

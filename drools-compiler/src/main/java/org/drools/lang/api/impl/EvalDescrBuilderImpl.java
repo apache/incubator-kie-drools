@@ -1,5 +1,7 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.descr.EvalDescr;
 
 public class EvalDescrBuilderImpl<P extends DescrBuilder<?>> extends BaseDescrBuilderImpl<EvalDescr>
