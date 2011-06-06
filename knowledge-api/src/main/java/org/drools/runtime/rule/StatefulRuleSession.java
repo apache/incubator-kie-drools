@@ -55,6 +55,18 @@ public interface StatefulRuleSession {
     int fireAllRules(AgendaFilter agendaFilter);
 
     /**
+     * Fire all Activations on the Agenda
+     * 
+     * @param agendaFilter
+     *      filters the activations that may fire
+     * @param max
+     *     the maximum number of rules that should be fired
+     * @return
+     *      returns the number of rules fired
+     */
+    int fireAllRules(AgendaFilter agendaFilter, int max);
+
+    /**
      * Keeps firing activations until a halt is called. If in a given moment,
      * there is no activation to fire, it will wait for an activation to be
      * added to an active agenda group or rule flow group. This blocks the thread
