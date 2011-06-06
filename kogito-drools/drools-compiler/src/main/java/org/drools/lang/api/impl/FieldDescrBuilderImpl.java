@@ -1,8 +1,8 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
-import org.drools.compiler.TypeDeclarationError;
+import org.drools.lang.api.AnnotationDescrBuilder;
+import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.rule.TypeDeclaration;
 

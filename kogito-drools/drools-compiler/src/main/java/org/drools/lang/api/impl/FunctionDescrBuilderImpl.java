@@ -1,5 +1,6 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.FunctionDescrBuilder;
 import org.drools.lang.descr.FunctionDescr;
 
 public class FunctionDescrBuilderImpl extends BaseDescrBuilderImpl<FunctionDescr>

@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AccumulateDescrBuilder;
+import org.drools.lang.api.CollectDescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
+import org.drools.lang.api.SourceDescrBuilder;
 import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.MVELExprDescr;

@@ -16,6 +16,8 @@
 
 package org.drools.lang.api;
 
+import org.drools.lang.api.impl.PackageDescrBuilderImpl;
+
 /**
  * A factory API for the *Descr classes 
  */

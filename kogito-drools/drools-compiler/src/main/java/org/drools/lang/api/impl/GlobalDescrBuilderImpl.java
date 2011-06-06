@@ -1,5 +1,6 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.GlobalDescrBuilder;
 import org.drools.lang.descr.GlobalDescr;
 
 public class GlobalDescrBuilderImpl extends BaseDescrBuilderImpl<GlobalDescr>

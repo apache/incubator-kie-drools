@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AnnotationDescrBuilder;
+import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.QueryDescr;
 

@@ -1,5 +1,13 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AttributeDescrBuilder;
+import org.drools.lang.api.DeclareDescrBuilder;
+import org.drools.lang.api.FunctionDescrBuilder;
+import org.drools.lang.api.GlobalDescrBuilder;
+import org.drools.lang.api.ImportDescrBuilder;
+import org.drools.lang.api.PackageDescrBuilder;
+import org.drools.lang.api.QueryDescrBuilder;
+import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.PackageDescr;
 

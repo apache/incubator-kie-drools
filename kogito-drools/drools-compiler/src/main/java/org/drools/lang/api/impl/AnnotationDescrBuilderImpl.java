@@ -1,5 +1,6 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.descr.AnnotationDescr;
 
 public class AnnotationDescrBuilderImpl extends BaseDescrBuilderImpl<AnnotationDescr>

@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.EvalDescrBuilder;
+import org.drools.lang.api.ForallDescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;

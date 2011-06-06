@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
 import java.util.List;
 
+import org.drools.lang.api.BehaviorDescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.descr.BehaviorDescr;
 
 /**
  * A descr builder implementation for pattern behaviors
  */
-public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends BaseDescrBuilderImpl<BehaviorDescr>
+public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder< ? >> extends BaseDescrBuilderImpl<BehaviorDescr>
     implements
     BehaviorDescrBuilder<P> {
 

@@ -1,5 +1,7 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.ImportDescrBuilder;
+import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.ImportDescr;
 
