@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.descr.BaseDescr;
 
 /**

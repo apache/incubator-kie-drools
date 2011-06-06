@@ -1,5 +1,6 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.AttributeDescr.Type;
 
