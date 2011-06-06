@@ -72,10 +72,6 @@ public class ResourceFactoryServiceImpl
                                       clazz );
     }
     
-    public Resource newURLClassPathResource(String path) {
-        return new URLClassPathResource( path );
-    }
-
     public Resource newFileSystemResource(File file) {
         return new FileSystemResource( file );
     }
