@@ -24,7 +24,7 @@ import org.drools.io.Resource;
 
 /**
  * <p>
- * The KnowledgeBuilder is responsible for taking source files, such as a .drl file or an xls file,
+ * The KnowledgeBuilder is responsible for taking source files, such as a .drl file, a .bpmn2 file or an .xls file,
  * and turning them into a KnowledgePackage of rule and process definitions which a KnowledgeBase
  * can consume. It uses the ResourceType enum to tell it the type of the resource it is being asked to build.
  * 
@@ -38,8 +38,14 @@ import org.drools.io.Resource;
  * 
  * <p>
  * It is best practice to always check the hasErrors() method after an addition, you should not add 
- * more resources or get the KnowledgePackages if there are errors. KnowledgePackages() will return 
+ * more resources or get the KnowledgePackages if there are errors. getKnowledgePackages() will return 
  * an empty list if there are errors.
+ * </p>
+ * 
+ * <p>
+ * You can create a new KnowledgeBase for all the resources that were added using this builder using
+ * the newKnowledgeBase() method.  This will throw an exception if there are errors for any of the
+ * resources.
  * </p>
  * 
  * <p>
@@ -69,14 +75,13 @@ import org.drools.io.Resource;
  * </pre>
  * 
  * <p>
- * Simple example showing how to build a KnowledgeBase from an DRF flow resource.
+ * Simple example showing how to build a KnowledgeBase from an BPMN2 process resource.
  * <p>
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
- * kbuilder.add( ResourceFactory.newUrlResource( "file://myflow.rf" ),
- *               ResourceType.DRF);
- * assertFalse( kbuilder.hasErrors() );
- * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+ * kbuilder.add( ResourceFactory.newUrlResource( "file://myProcess.bpmn2" ),
+ *               ResourceType.BPMN2 );
+ * KnowledgeBase kbase = kbuilder.newKnowledgeBase();
  * </pre>
  * <p>
  * If there are errors a simple toString can print the errors

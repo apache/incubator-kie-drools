@@ -16,14 +16,21 @@
 
 package org.drools.event.process;
 
-
 import org.drools.event.KnowledgeRuntimeEvent;
 import org.drools.runtime.process.ProcessInstance;
 
+/**
+ * A runtime event related to the execution of process instances.
+ */
 public interface ProcessEvent
     extends
     KnowledgeRuntimeEvent {
 
+	/**
+	 * The ProcessInstance this event relates to.
+	 * 
+	 * @return the process instance
+	 */
     ProcessInstance getProcessInstance();
 
 }

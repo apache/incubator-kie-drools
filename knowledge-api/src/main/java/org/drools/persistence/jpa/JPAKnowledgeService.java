@@ -25,8 +25,10 @@ import org.drools.util.ServiceRegistryImpl;
 
 /**
  * <p>
- * Long term out of the box persistence with JPA is possible with Drools. You will need to have JTA installed, for development purposes we recommend Bitronix as it's simple
- * to setup and works embedded, but for production use JBoss Transactions is recommended.
+ * Long term out of the box persistence of runtime state with JPA is possible with Drools & jBPM.
+ * You will need to configure a JPA entity manager (e.g. using hibernate) and have a JTA transaction
+ * manager (for development/testing purposes we recommend Bitronix as it's simple to setup and works
+ * embedded, but for production the use of JBoss Transactions is recommended).
  * </p>
  * 
  * <pre>
@@ -37,12 +39,9 @@ import org.drools.util.ServiceRegistryImpl;
  * StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env ); // KnowledgeSessionConfiguration may be null, and a default will be used
  * int sessionId = ksession.getId();
  * 
- * UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
- * ut.begin();
  * ksession.insert( data1 );
  * ksession.insert( data2 );
  * ksession.startProcess( "process1" );
- * ut.commit();
  * </pre>
  * 
  * <p>
@@ -55,17 +54,31 @@ import org.drools.util.ServiceRegistryImpl;
  * </pre>
  * 
  * <p>
+ * If you do not define any transaction boundaries, each command (i.e. each invocation of a method of
+ * the session) will be executed inside its own transaction.  You can define the transaction boundaries
+ * yourself using a JTA UserTransaction.
+ * </p>
+ * 
+ * <pre>
+ * UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+ * ut.begin();
+ * ksession.insert( data1 );
+ * ksession.insert( data2 );
+ * ksession.startProcess( "process1" );
+ * ut.commit();
+ * </pre>
+ * 
+ * <p>
  * To enable persistence the following classes must be added to your persistence.xml, as in the example below:
  * </p>
  * 
  * <pre>
- * &lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
+ * &lt;persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA"&gt;
  *    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
  *    &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;
- *    &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;
- *    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
- *    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;
- *    &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
+ *    &lt;class&gt;org.jbpm.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
+ *    &lt;class&gt;org.drools.persistence.info.ProcessInstanceInfo&lt;/class&gt;
+ *    &lt;class&gt;org.drools.persistence.info.WorkItemInfo&lt;/class&gt;
  *    &lt;properties&gt;
  *          &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
  *          &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;

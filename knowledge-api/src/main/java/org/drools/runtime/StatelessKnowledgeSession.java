@@ -25,7 +25,7 @@ import org.drools.runtime.rule.StatelessRuleSession;
 /**
  * StatelessKnowledgeSession provides a convenience API, wrapping StatefulKnowledgeSession. It avoids the need to
  * call dispose(). Stateless sessions do not support
- * iterative insertions and fireAllRules from Java code, the act of calling execute(...) is a single
+ * iterative invocations, the act of calling execute(...) is a single
  * shot method that will internally instantiate a StatefulKnowledgeSession, add all the user data and execute user commands, call fireAllRules, and then
  * call dispose(). While the main way to work with this class is via the BatchExecution Command as supported by the CommandExecutor interface, 
  * two convenience methods are provided for when simple object insertion is all that's required.

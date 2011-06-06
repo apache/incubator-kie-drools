@@ -19,6 +19,9 @@ package org.drools.event;
 import org.drools.event.process.ProcessEventManager;
 import org.drools.event.rule.WorkingMemoryEventManager;
 
+/**
+ * A manager for runtime events.
+ */
 public interface KnowledgeRuntimeEventManager
     extends
     WorkingMemoryEventManager,

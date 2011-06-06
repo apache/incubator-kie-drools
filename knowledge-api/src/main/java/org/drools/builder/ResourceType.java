@@ -75,9 +75,9 @@ public class ResourceType implements Serializable {
                                                                              "Drools Rule Flow Language",
                                                                              "rf" );
 
-    /** Drools BPMN2 Language */
+    /** jBPM BPMN2 Language */
     public static final ResourceType BPMN2      = addResourceTypeToRegistry( "BPMN2",
-                                                                             "Drools BPMN2 Language",
+                                                                             "jBPM BPMN2 Language",
                                                                              "bpmn" );
 
     /** Decision Table */

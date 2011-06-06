@@ -20,8 +20,8 @@ import org.drools.event.KnowledgeRuntimeEventManager;
 
 /**
  * <p>
- * The KnowledgeRuntimeLogger uses the comprehensive event system in Drools to create an audit log that can be used
- * log the execution of drools for later inspection, in tools such as the Eclipse audit viewer.
+ * The KnowledgeRuntimeLogger uses the comprehensive event system to create an audit log that can be used
+ * to log the execution of the session for later inspection, in tools such as the Eclipse audit viewer.
  * </p>
  * 
  * <pre>

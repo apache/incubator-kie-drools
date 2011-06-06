@@ -25,7 +25,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatelessKnowledgeSession;
 
 /**
- * The KnolwedgeAgentFactory provides detailed information on how to create and use the KnowledgeAgent.
+ * The KnowledgeAgentFactory provides detailed information on how to create and use the KnowledgeAgent.
  * 
  * @see org.drools.agent.KnowledgeAgentFactory
  * @see org.drools.agent.KnowledgeAgentConfiguration
