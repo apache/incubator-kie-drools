@@ -29,7 +29,7 @@
   you define a rule twice in the same DRL it produces an error while loading.
   If you add a DRL that includes a rule name already in the package, it
   replaces the previous rule. If a rule name is to have spaces, then it
-  will need to be enclosd in double quotes (it is best to always use double
+  will need to be enclosed in double quotes (it is best to always use double
   quotes).</para>
 
   <para>Attributes are optional, and are described below (they are best kept
