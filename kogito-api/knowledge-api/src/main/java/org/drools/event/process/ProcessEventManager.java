@@ -18,28 +18,29 @@ package org.drools.event.process;
 
 import java.util.Collection;
 
+/**
+ * A manager for process related events.
+ */
 public interface ProcessEventManager {
 
     /**
-     * Add an event listener.
+     * Add a process event listener.
      * 
-     * @param listener
-     *            The listener to add.
+     * @param listener the listener to add.
      */
     public void addEventListener(ProcessEventListener listener);
 
     /**
-     * Remove an event listener.
+     * Remove a process event listener.
      * 
-     * @param listener
-     *            The listener to remove.
+     * @param listener the listener to remove
      */
     public void removeEventListener(ProcessEventListener listener);
 
     /**
      * Returns all event listeners.
      * 
-     * @return listeners The listeners.
+     * @return listeners the listeners
      */
     public Collection<ProcessEventListener> getProcessEventListeners();
 

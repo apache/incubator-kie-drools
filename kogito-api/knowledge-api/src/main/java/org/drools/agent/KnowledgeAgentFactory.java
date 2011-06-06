@@ -26,7 +26,7 @@ import org.drools.io.ResourceFactory;
 /**
  * <p>
  * The KnowlegeAgent is created by the KnowlegeAgentFactory. The KnowlegeAgent provides automatic loading, caching and 
- * re-loading, of resources and is configured from a properties files. The KnowledgeAgent can update or rebuild this KnowlegeBase 
+ * re-loading of resources and is configured from a properties files. The KnowledgeAgent can update or rebuild this KnowlegeBase 
  * as the resources it uses are changed. The strategy for this is determined by the configuration given to the factory, but it is 
  * typically pull based using regular polling. We hope to add push based updates and rebuilds in future versions.
  * </p>
@@ -34,7 +34,7 @@ import org.drools.io.ResourceFactory;
  * <p>
  * The Following example constructs an agent that will build a new KnowledgeBase from the files specified in the path String.
  * It will poll those files every 60 seconds, which is the default when polling is enabled and the service started, to see if they are updated. 
- * If new files are found it will construct a new KnowledgeBase. If the change set specifies a resource that is a directory it's contents will be scanned for changes  too.
+ * If new files are found it will construct a new KnowledgeBase. If the change set specifies a resource that is a directory it's contents will be scanned for changes too.
  * </p>
  * 
  * <pre>

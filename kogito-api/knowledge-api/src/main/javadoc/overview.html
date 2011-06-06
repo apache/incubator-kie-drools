@@ -1,7 +1,7 @@
 <body>
 
 <p>
-Drools the Business Logic Integration Platform provides an knowledge centric api, where rules and processes are first class citizens.
+Drools & jBPM provide an knowledge-centric API, where rules and processes are first class citizens.
 </p>
 
 <p>
@@ -48,21 +48,14 @@ ksession.dispose();
 </p>
 
 <p>
-A Typical example to load a process resource. Notice the ResourceType is changed, in accordance with the Resource type.
+A Typical example to load a process resource. Notice the ResourceType is changed to BPMN2 in this example.
 <pre>
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 kbuilder.add( ResourceFactory.newUrlResource( url ),
-              ResourceType.DRF );
-if ( kbuilder.hasErrors() ) {
-    System.err.println( builder.getErrors().toString() );
-}                     
-
-KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-kbase.addKnowledgePackages( builder.getKnowledgePackages() );
-
+              ResourceType.BPMN2 );
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
 ksession.startProcess( "Buy Order Process" );
-
 ksession.dispose();
 </pre>
 </p>
@@ -80,7 +73,7 @@ It is also possible to configure a KnowledgeBase using configuration, via a xml 
            xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd' &gt;
   &lt;add&gt;
     &lt;resource source='classpath:org/domain/someRules.drl' type='DRL' /&gt;
-    &lt;resource source='classpath:org/domain/aFlow.drf' type='DRF' /&gt;
+    &lt;resource source='classpath:org/domain/myProcess.bpmn2' type='BPMN2' /&gt;
   &lt;/add&gt;
 &lt;/change-set&gt;
 </pre>
@@ -95,6 +88,6 @@ kbuilder.add( ResourceFactory.newUrlResource( url ),
 </pre>
 
 <p>
-The majority of Drools API is considered stable and should not change, experimental classes and API's will be marked as such.
+The majority of knowledge API is considered stable and should not change, experimental classes and API's will be marked as such.
 </p>
 </body>

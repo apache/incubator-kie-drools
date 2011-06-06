@@ -24,7 +24,7 @@ import org.drools.util.ServiceRegistryImpl;
 import com.sun.tools.xjc.Options;
 
 /**
- * This factory is used to build the knowledge base definitions that are held collectively in
+ * This factory is used to build the knowledge base resources that are held collectively in
  * KnowledgePackages. The KnowledgePackage also provides the role of 'namespacing'. An optional
  * KnowlegeBuilderConfiguration can be supplied. The KnowledgeBuilderConfiguration is itself
  * created from this factory. The KnowledgeBuilderConfiguration allows you to set the ClassLoader to be used

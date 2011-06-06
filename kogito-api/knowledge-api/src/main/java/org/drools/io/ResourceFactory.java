@@ -30,15 +30,15 @@ import org.drools.util.ServiceRegistryImpl;
  * 
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
- * kbuilder.add( ResourceFactory.newUrlResource( "htp://www.domain.org/myflow.drf" ),
- *                ResourceType.DRF );
- * </pre
+ * kbuilder.add( ResourceFactory.newUrlResource( "htp://www.domain.org/myProcess.bpmn2" ),
+ *               ResourceType.BPMN2 );
+ * </pre>
  * 
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newClassPathResource( "htp://www.domain.org/myrules.drl", getClass() ),
  *               ResourceType.DRL );
- * </pre
+ * </pre>
  */
 public class ResourceFactory {
     private static ResourceFactoryService factoryService;

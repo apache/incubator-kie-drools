@@ -44,7 +44,7 @@ public interface KnowledgePackage {
      * Return the process definitions for this package.
      * The collection is immutable.
      * 
-     * @return
+     * @return a Collection of Processes for this package.
      */
     Collection<Process> getProcesses();
 
