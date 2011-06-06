@@ -344,7 +344,7 @@ end</programlisting>
     </example>
   </section>
 
-  <section id="RuleLanguage-ConditionalElements">
+  <section>
     <title>Left Hand Side (when) Conditional Elements</title>
 
     <para>The Left Hand Side (LHS) is a common name for the conditional part of the rule. It consists of zero or more
@@ -515,15 +515,21 @@ Cheese( type == "stilton" || price &lt; 10, age == "mature" )</programlisting>
 
       <orderedlist>
         <listitem>
-          <para>&amp;&amp;</para>
+          <para>
+            <literal>&amp;&amp;</literal>
+          </para>
         </listitem>
 
         <listitem>
-          <para>||</para>
+          <para>
+            <literal>||</literal>
+          </para>
         </listitem>
 
         <listitem>
-          <para>,</para>
+          <para>
+            <literal>,</literal>
+          </para>
         </listitem>
       </orderedlist>
 
@@ -537,11 +543,12 @@ Cheese( type == "stilton" || price &lt; 10, age == "mature" )</programlisting>
 Cheese( type == "stilton" &amp;&amp; ( price &lt; 20 || age == "mature" ) ) </programlisting>
       </example>
 
-      <para>In the above example, the use of parentheses evaluates the connective '||' before the connective
-      '&amp;&amp;'.</para>
+      <para>In the above example, the use of parentheses evaluates the connective '<literal>||</literal>' before the
+      connective '<literal>&amp;&amp;</literal>'.</para>
 
-      <para>Also, it is important to note that besides having the same semantics, the connectives '&amp;&amp;' and ','
-      are resolved with different priorities, and ',' cannot be embedded in a composite constraint expression.</para>
+      <para>Also, it is important to note that besides having the same semantics, the connectives
+      '<literal>&amp;&amp;</literal>' and '<literal>,</literal>' are resolved with different priorities. Also,
+      '<literal>,</literal>' cannot be embedded in a composite constraint expression.</para>
 
       <example>
         <title>Not Equivalent connectives</title>
@@ -587,16 +594,17 @@ Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature")</prog
           <para>A field is derived from an accessible method of the object. If your model objects follow the Java Bean
           pattern, then fields are exposed using "getXXX" or "isXXX" methods, where these methods take no arguments, and
           return something. Within patterns, fields can be accessed using the bean naming convention, so that "getType"
-          would be accessed as "type". Drools uses the standard JDK Introspector class to do this mapping.</para>
+          would be accessed as "type". Drools uses the standard JDK <literal>Introspector</literal> class to do this
+          mapping.</para>
 
           <para>For example, referring to our Cheese class, the pattern <code>Cheese(type == "brie")</code> applies the
-          getType() method to a Cheese instance. If a field name cannot be found, the compiler will resort to using the
-          name as a method without arguments. Thus, the method <code>toString()</code> is called due to a constraint
-          <code>Cheese(toString == "cheddar")</code>. In this case, you use the full name of the method with correct
-          capitalization, but still without parentheses. Do please make sure that you are accessing methods that take no
-          parameters, and that are in fact <emphasis>accessors</emphasis> which don't change the state of the object in
-          a way that may effect the rules. Remember that the rule engine effectively caches the results of its matching
-          in between invocations to make it faster.</para>
+          <literal>getType()</literal> method to a Cheese instance. If a field name cannot be found, the compiler will
+          resort to using the name as a method without arguments. Thus, the method <code>toString()</code> is called due
+          to a constraint <code>Cheese(toString == "cheddar")</code>. In this case, you use the full name of the method
+          with correct capitalization, but still without parentheses. Do please make sure that you are accessing methods
+          that take no parameters, and that are in fact <emphasis>accessors</emphasis> which don't change the state of
+          the object in a way that may effect the rules. Remember that the rule engine effectively caches the results of
+          its matching in between invocations to make it faster.</para>
         </section>
 
         <section>
@@ -809,8 +817,7 @@ Cheese( name soundslike 'foobar' )</programlisting>
 
                   <programlisting>$m : Message( routingValue str[startsWith] "R1" )
                         $m : Message( routingValue str[endsWith] "R2" )
-                        $m : Message( routingValue str[length] 17 )
-                </programlisting>
+                        $m : Message( routingValue str[length] 17 )</programlisting>
                 </example></para>
             </simplesect>
           </section>
@@ -966,8 +973,7 @@ Cheesery( cheeses contains $stilton )</programlisting>
               <title>Return Value Restriction</title>
 
               <programlisting>Person( girlAge : age, sex == "F" )
-Person( age == ( girlAge + 2) ), sex == 'M' )
-</programlisting>
+Person( age == ( girlAge + 2) ), sex == 'M' )</programlisting>
             </example>
           </section>
         </section>
@@ -992,14 +998,11 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
             </mediaobject>
           </figure>
 
-          <para />
-
           <example>
             <title>Compound Restriction using "in"</title>
 
             <programlisting>Person( $cheese : favouriteCheese )
-Cheese( type in ( "stilton", "cheddar", $cheese )
-</programlisting>
+Cheese( type in ( "stilton", "cheddar", $cheese )</programlisting>
           </example>
         </section>
 
@@ -1031,8 +1034,6 @@ Cheese( type in ( "stilton", "cheddar", $cheese )
               </imageobject>
             </mediaobject>
           </figure>
-
-          <para />
 
           <example>
             <title>Multi Restriction</title>
@@ -1109,8 +1110,10 @@ $p : Person( )
 Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) </programlisting>
         </example>
 
-        <remark><emphasis role="bold">Note: </emphasis>Nested accessors have a much greater performance cost than direct
-        field accesses, so use them carefully.</remark>
+        <note>
+          <para>Nested accessors have a much greater performance cost than direct
+          field accesses, so use them carefully.</para>
+        </note>
       </section>
     </section>
 
@@ -1131,8 +1134,6 @@ Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) </programlisting>
           </imageobject>
         </mediaobject>
       </figure>
-
-      <para />
 
       <example>
         <title>prefixAnd</title>
