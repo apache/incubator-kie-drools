@@ -8723,6 +8723,41 @@ public class MiscTest {
     }
 
     @Test
+    public void testMapModel() {
+        String str = "package org.drools\n" +
+        		     "import java.util.Map\n" +
+                     "rule \"test\"\n" +
+                     "when\n" +
+                     "    Map( type == \"Person\", name == \"Bob\" );\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        Map<String, String> mark = new HashMap<String, String>();
+        mark.put( "type", "Person" );
+        mark.put( "name", "Mark" );
+
+        ksession.insert( mark );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 0,
+                      rules );
+        
+        Map<String, String> bob = new HashMap<String, String>();
+        bob.put( "type", "Person" );
+        bob.put( "name", "Bob" );
+
+        ksession.insert( bob );
+
+        rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+        
+    }
+
+    @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
