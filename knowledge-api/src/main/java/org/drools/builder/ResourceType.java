@@ -105,13 +105,15 @@ public class ResourceType implements Serializable {
                                                                              "XSD",
                                                                              "xsd" );
 
-
-
-
     /** PMML */
     public static final ResourceType PMML       = addResourceTypeToRegistry( "PMML",
                                                                              "Predictive Model Markup Language",
                                                                              "pmml" );
+
+    /** DESCR */
+    public static final ResourceType DESCR      = addResourceTypeToRegistry( "DESCR",
+                                                                             "Knowledge Descriptor",
+                                                                             "descr" );
 
 
 
