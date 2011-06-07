@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.definition.KnowledgeDescr;
 import org.drools.rule.Namespaceable;
 
 public class PackageDescr extends BaseDescr
     implements
-    Namespaceable {
+    Namespaceable,
+    KnowledgeDescr {
     private static final long          serialVersionUID = 510l;
     private String                     namespace;
     private String                     documentation;
