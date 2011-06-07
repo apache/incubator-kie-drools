@@ -22,6 +22,7 @@ import org.drools.lang.api.CEDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
 
 /**
@@ -31,23 +32,25 @@ public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuild
     implements
     RuleDescrBuilder {
 
-    protected RuleDescrBuilderImpl( PackageDescrBuilder parent ) {
-        super( parent, new RuleDescr() );
+    protected RuleDescrBuilderImpl(PackageDescrBuilder parent) {
+        super( parent,
+               new RuleDescr() );
     }
 
-
     public AnnotationDescrBuilder<RuleDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<RuleDescrBuilder> annotation = new AnnotationDescrBuilderImpl<RuleDescrBuilder>( this, name );
+        AnnotationDescrBuilder<RuleDescrBuilder> annotation = new AnnotationDescrBuilderImpl<RuleDescrBuilder>( this,
+                                                                                                                name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }
 
     public AttributeDescrBuilder<RuleDescrBuilder> attribute( String name ) {
-        AttributeDescrBuilder<RuleDescrBuilder> attribute = new AttributeDescrBuilderImpl<RuleDescrBuilder>( this, name );
+        AttributeDescrBuilder<RuleDescrBuilder> attribute = new AttributeDescrBuilderImpl<RuleDescrBuilder>( this,
+                                                                                                             name );
         descr.addAttribute( attribute.getDescr() );
         return attribute;
     }
-    
+
     public RuleDescrBuilder name( String name ) {
         descr.setName( name );
         return this;
@@ -64,10 +67,26 @@ public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuild
     }
 
     public CEDescrBuilder<RuleDescrBuilder, AndDescr> lhs() {
-        CEDescrBuilder<RuleDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<RuleDescrBuilder, AndDescr>( this, new AndDescr() );
+        CEDescrBuilder<RuleDescrBuilder, AndDescr> ce = new CEDescrBuilderImpl<RuleDescrBuilder, AndDescr>( this,
+                                                                                                            new AndDescr() );
         descr.setLhs( ce.getDescr() );
         return ce;
     }
 
+    public RuleDescrBuilder attribute( String name,
+                                       String value ) {
+        descr.addAttribute( new AttributeDescr( name,
+                                                value ) );
+        return this;
+    }
+
+    public RuleDescrBuilder attribute( String name,
+                                       String value,
+                                       AttributeDescr.Type type ) {
+        descr.addAttribute( new AttributeDescr( name,
+                                                value,
+                                                type ) );
+        return this;
+    }
 
 }
