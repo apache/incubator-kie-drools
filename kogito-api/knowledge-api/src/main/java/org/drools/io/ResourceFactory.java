@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.drools.definition.KnowledgeDescr;
 import org.drools.util.ServiceRegistryImpl;
 
 /**
@@ -109,6 +110,10 @@ public class ResourceFactory {
                                                 ClassLoader classLoader) {
         return getFactoryService().newClassPathResource( path,
                                                            classLoader );
+    }
+    
+    public static Resource newDescrResource( KnowledgeDescr descr ) {
+        return getFactoryService().newDescrResource( descr );
     }
     
     private static synchronized void setFactoryService(ResourceFactoryService factoryService) {

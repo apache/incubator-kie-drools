@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.net.URL;
 
 import org.drools.Service;
+import org.drools.definition.KnowledgeDescr;
 
 /**
  * ResourceFactoryService is used by the ResourceFactory to "provide" it's concrete implementation.
@@ -57,6 +58,7 @@ public interface ResourceFactoryService extends Service {
                                   ClassLoader classLoader);
 
     Resource newClassPathResource(String path,
-                                  Class clazz);
+                                  Class<?> clazz);
 
+    Resource newDescrResource( KnowledgeDescr descr );
 }
