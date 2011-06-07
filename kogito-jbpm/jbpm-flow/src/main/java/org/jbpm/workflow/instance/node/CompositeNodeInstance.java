@@ -102,9 +102,9 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         		if (node instanceof StartNode) {
         			StartNode startNode = (StartNode) node;
         			if (startNode.getTriggers() == null || startNode.getTriggers().isEmpty()) {
-    	                NodeInstance nodeInstance = getNodeInstance(startNode.getTo().getTo());
+    	                NodeInstance nodeInstance = getNodeInstance(startNode);
     	                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
-    	                	.trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+    	                	.trigger(null, null);
     	                found = true;
         			}
         		}
