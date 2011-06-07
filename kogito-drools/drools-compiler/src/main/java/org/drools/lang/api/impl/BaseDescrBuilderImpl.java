@@ -31,6 +31,7 @@ public class BaseDescrBuilderImpl<P extends DescrBuilder<?,?>, T extends BaseDes
 
     protected BaseDescrBuilderImpl(final P parent, 
                                    final T descr) {
+        this.parent = parent;
         this.descr = descr;
     }
 

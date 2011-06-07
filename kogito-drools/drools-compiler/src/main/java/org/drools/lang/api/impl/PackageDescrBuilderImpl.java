@@ -8,6 +8,7 @@ import org.drools.lang.api.ImportDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
+import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.FunctionImportDescr;
 import org.drools.lang.descr.PackageDescr;
 
@@ -19,7 +20,8 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     PackageDescrBuilder {
 
     private PackageDescrBuilderImpl() {
-        super( null, new PackageDescr() );
+        super( null,
+               new PackageDescr() );
     }
 
     public static PackageDescrBuilder newPackage() {
@@ -42,13 +44,15 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     }
 
     public ImportDescrBuilder newImport() {
-        ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, false );
+        ImportDescrBuilder impl = new ImportDescrBuilderImpl( this,
+                                                              false );
         descr.addImport( impl.getDescr() );
         return impl;
     }
 
     public ImportDescrBuilder newFunctionImport() {
-        ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, true );
+        ImportDescrBuilder impl = new ImportDescrBuilderImpl( this,
+                                                              true );
         descr.addFunctionImport( (FunctionImportDescr) impl.getDescr() );
         return impl;
     }
@@ -77,16 +81,36 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
         return query;
     }
 
-    public AttributeDescrBuilder<PackageDescrBuilder> attribute( String name ) {
-        AttributeDescrBuilder<PackageDescrBuilder> attribute = new AttributeDescrBuilderImpl<PackageDescrBuilder>( this, name );
-        descr.addAttribute( attribute.getDescr() );
-        return attribute;
-    }
-
     public FunctionDescrBuilder newFunction() {
         FunctionDescrBuilder function = new FunctionDescrBuilderImpl( this );
         descr.addFunction( function.getDescr() );
         return function;
     }
 
+    public AttributeDescrBuilder<PackageDescrBuilder> attribute( String name ) {
+        AttributeDescrBuilder<PackageDescrBuilder> attribute = new AttributeDescrBuilderImpl<PackageDescrBuilder>( this,
+                                                                                                                   name );
+        descr.addAttribute( attribute.getDescr() );
+        return attribute;
+    }
+
+    public PackageDescrBuilder attribute( String name,
+                                          String value ) {
+        descr.addAttribute( new AttributeDescr( name,
+                                                value ) );
+        return this;
+    }
+
+    public PackageDescrBuilder attribute( String name,
+                                          String value,
+                                          AttributeDescr.Type type ) {
+        descr.addAttribute( new AttributeDescr( name,
+                                                value,
+                                                type ) );
+        return this;
+    }
+
+    public PackageDescrBuilder end() {
+        return this;
+    }
 }
