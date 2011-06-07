@@ -21,12 +21,12 @@ import org.drools.lang.descr.AttributeDescr;
 /**
  *  A descriptor builder for attributes
  */
-public interface AttributeDescrBuilder
+public interface AttributeDescrBuilder<P extends DescrBuilder<?,?>>
     extends
-    DescrBuilder<AttributeDescr> {
+    DescrBuilder<P, AttributeDescr> {
 
-    public AttributeDescrBuilder value( String value );
+    public AttributeDescrBuilder<P> value( String value );
     
-    public AttributeDescrBuilder type( AttributeDescr.Type type );
+    public AttributeDescrBuilder<P> type( AttributeDescr.Type type );
 
 }

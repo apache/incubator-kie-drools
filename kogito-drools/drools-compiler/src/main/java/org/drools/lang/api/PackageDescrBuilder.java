@@ -4,7 +4,8 @@ import org.drools.lang.descr.PackageDescr;
 
 public interface PackageDescrBuilder
     extends
-    AttributeSupportBuilder<PackageDescr> {
+    AttributeSupportBuilder<PackageDescrBuilder>,
+    DescrBuilder<PackageDescrBuilder, PackageDescr> {
 
     /**
      * Sets the name of the package 
@@ -54,5 +55,13 @@ public interface PackageDescrBuilder
      * @return the QueryDescrBuilder to build the query
      */
     public QueryDescrBuilder newQuery();
+    
+    /**
+     * Returns itself, as there is no container for a package 
+     * descr builder.
+     * 
+     * {@inheritDoc}
+     */
+    public PackageDescrBuilder end();
 
 }

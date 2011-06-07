@@ -19,6 +19,7 @@ package org.drools.lang.api.impl;
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.AttributeDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.RuleDescr;
@@ -26,23 +27,23 @@ import org.drools.lang.descr.RuleDescr;
 /**
  * A descr builder for Rules
  */
-public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<RuleDescr>
+public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, RuleDescr>
     implements
     RuleDescrBuilder {
 
-    protected RuleDescrBuilderImpl() {
-        super( new RuleDescr() );
+    protected RuleDescrBuilderImpl( PackageDescrBuilder parent ) {
+        super( parent, new RuleDescr() );
     }
 
 
-    public AnnotationDescrBuilder newAnnotation( String name ) {
-        AnnotationDescrBuilder annotation = new AnnotationDescrBuilderImpl( name );
+    public AnnotationDescrBuilder<RuleDescrBuilder> newAnnotation( String name ) {
+        AnnotationDescrBuilder<RuleDescrBuilder> annotation = new AnnotationDescrBuilderImpl<RuleDescrBuilder>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }
 
-    public AttributeDescrBuilder attribute( String name ) {
-        AttributeDescrBuilder attribute = new AttributeDescrBuilderImpl( name );
+    public AttributeDescrBuilder<RuleDescrBuilder> attribute( String name ) {
+        AttributeDescrBuilder<RuleDescrBuilder> attribute = new AttributeDescrBuilderImpl<RuleDescrBuilder>( this, name );
         descr.addAttribute( attribute.getDescr() );
         return attribute;
     }

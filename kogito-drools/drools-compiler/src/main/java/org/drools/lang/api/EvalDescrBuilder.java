@@ -21,11 +21,10 @@ import org.drools.lang.descr.EvalDescr;
 /**
  *  A descriptor builder for evals
  */
-public interface EvalDescrBuilder<P extends DescrBuilder<?>>
+public interface EvalDescrBuilder<P extends DescrBuilder< ? , ? >>
     extends
-    DescrBuilder<EvalDescr> {
+    DescrBuilder<P, EvalDescr> {
 
     public EvalDescrBuilder<P> constraint( String expr );
-    
-    public P end();
+
 }

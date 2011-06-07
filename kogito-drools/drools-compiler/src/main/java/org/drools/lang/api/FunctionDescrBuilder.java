@@ -23,7 +23,7 @@ import org.drools.lang.descr.FunctionDescr;
  */
 public interface FunctionDescrBuilder
     extends
-    DescrBuilder<FunctionDescr>,
+    DescrBuilder<PackageDescrBuilder, FunctionDescr>,
     ParameterSupportBuilder<FunctionDescrBuilder> {
 
     public FunctionDescrBuilder namespace( String namespace );

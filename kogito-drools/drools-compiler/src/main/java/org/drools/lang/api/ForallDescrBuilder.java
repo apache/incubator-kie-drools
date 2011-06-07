@@ -21,9 +21,9 @@ import org.drools.lang.descr.ForallDescr;
 /**
  *  A descriptor builder for Forall
  */
-public interface ForallDescrBuilder<P extends DescrBuilder<?>>
+public interface ForallDescrBuilder<P extends DescrBuilder<?, ?>>
     extends
-    PatternContainerDescrBuilder<ForallDescrBuilder<P>,ForallDescr> {
+    PatternContainerDescrBuilder<ForallDescrBuilder<P>,ForallDescr>,
+    DescrBuilder<P, ForallDescr> {
 
-    public P end();
 }

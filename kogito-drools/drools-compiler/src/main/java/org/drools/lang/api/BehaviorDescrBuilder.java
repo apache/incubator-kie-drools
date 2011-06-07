@@ -23,13 +23,12 @@ import org.drools.lang.descr.BehaviorDescr;
 /**
  *  A descriptor builder for pattern behaviors
  */
-public interface BehaviorDescrBuilder<P extends DescrBuilder< ? >>
+public interface BehaviorDescrBuilder<P extends DescrBuilder< ?, ? >>
     extends
-    DescrBuilder<BehaviorDescr> {
+    DescrBuilder<P, BehaviorDescr> {
     
     public BehaviorDescrBuilder<P> type( String type, String subtype );
 
     public BehaviorDescrBuilder<P> parameters( List<String> params );
 
-    public P end();
 }

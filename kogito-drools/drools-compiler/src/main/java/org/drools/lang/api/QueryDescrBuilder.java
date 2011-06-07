@@ -24,11 +24,12 @@ import org.drools.lang.descr.QueryDescr;
  */
 public interface QueryDescrBuilder
     extends
-    AnnotatedDescrBuilder<QueryDescr>,
-    ParameterSupportBuilder<QueryDescrBuilder> {
+    AnnotatedDescrBuilder<QueryDescrBuilder>,
+    ParameterSupportBuilder<QueryDescrBuilder>,
+    DescrBuilder<PackageDescrBuilder, QueryDescr> {
 
     public QueryDescrBuilder name( String name );
-    
+
     public CEDescrBuilder<QueryDescrBuilder, AndDescr> lhs();
 
 }

@@ -16,15 +16,11 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.BaseDescr;
-
 /**
  * An interface for DescrBuilders that support annotations
  */
-public interface AnnotatedDescrBuilder<T extends BaseDescr>
-    extends
-    DescrBuilder<T> {
+public interface AnnotatedDescrBuilder<P extends DescrBuilder<?,?>> {
 
-    public AnnotationDescrBuilder newAnnotation( String name );
+    public AnnotationDescrBuilder<P> newAnnotation( String name );
 
 }

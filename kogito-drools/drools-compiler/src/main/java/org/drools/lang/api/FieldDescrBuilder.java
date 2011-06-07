@@ -23,7 +23,8 @@ import org.drools.lang.descr.TypeFieldDescr;
  */
 public interface FieldDescrBuilder
     extends
-    AnnotatedDescrBuilder<TypeFieldDescr> {
+    AnnotatedDescrBuilder<FieldDescrBuilder>,
+    DescrBuilder<DeclareDescrBuilder, TypeFieldDescr> {
 
     public FieldDescrBuilder index( int index );
 

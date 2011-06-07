@@ -18,6 +18,7 @@ package org.drools.lang.api.impl;
 
 import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.QueryDescr;
@@ -25,17 +26,17 @@ import org.drools.lang.descr.QueryDescr;
 /**
  * A descr builder for queries
  */
-public class QueryDescrBuilderImpl extends BaseDescrBuilderImpl<QueryDescr>
+public class QueryDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, QueryDescr>
     implements
     QueryDescrBuilder {
 
-    protected QueryDescrBuilderImpl() {
-        super( new QueryDescr() );
+    protected QueryDescrBuilderImpl( PackageDescrBuilder parent ) {
+        super( parent, new QueryDescr() );
     }
 
 
-    public AnnotationDescrBuilder newAnnotation( String name ) {
-        AnnotationDescrBuilder annotation = new AnnotationDescrBuilderImpl( name );
+    public AnnotationDescrBuilder<QueryDescrBuilder> newAnnotation( String name ) {
+        AnnotationDescrBuilder<QueryDescrBuilder> annotation = new AnnotationDescrBuilderImpl<QueryDescrBuilder>( this, name );
         descr.addAnnotation( annotation.getDescr() );
         return annotation;
     }

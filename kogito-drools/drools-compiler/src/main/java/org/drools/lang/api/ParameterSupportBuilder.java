@@ -4,8 +4,8 @@ package org.drools.lang.api;
  * An interface for objects that support parameters, like
  * functions and queries
  */
-public interface ParameterSupportBuilder<T extends DescrBuilder<?>> {
+public interface ParameterSupportBuilder<P extends DescrBuilder<?, ?>> {
 
-    public T parameter( String type, String variable );
+    public P parameter( String type, String variable );
 
 }

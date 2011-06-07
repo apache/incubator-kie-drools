@@ -1,11 +1,10 @@
 package org.drools.lang.api;
 
-import org.drools.lang.descr.BaseDescr;
 
 /**
  * An interface for all builders of statements that support attributes
  */
-public interface AttributeSupportBuilder<T extends BaseDescr> extends DescrBuilder<T> {
+public interface AttributeSupportBuilder<P extends DescrBuilder< ? , ? >> {
 
     /**
      * Adds a new attribute to the statement
@@ -13,6 +12,6 @@ public interface AttributeSupportBuilder<T extends BaseDescr> extends DescrBuild
      * @param name the attribute name
      * @return the AttributeDescrBuilder to set the attribute value
      */
-    public AttributeDescrBuilder attribute( String name );
+    public AttributeDescrBuilder<P> attribute( String name );
 
 }

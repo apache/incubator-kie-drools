@@ -24,7 +24,7 @@ import org.drools.lang.descr.PatternDescr;
  */
 public interface SourceDescrBuilder<P extends PatternDescrBuilder<?>>
     extends
-    DescrBuilder<PatternDescr> {
+    DescrBuilder<P, PatternDescr> {
     
     P expression( String expression );
     

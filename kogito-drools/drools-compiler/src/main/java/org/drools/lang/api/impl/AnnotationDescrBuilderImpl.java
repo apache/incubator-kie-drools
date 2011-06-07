@@ -1,23 +1,26 @@
 package org.drools.lang.api.impl;
 
 import org.drools.lang.api.AnnotationDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.descr.AnnotationDescr;
 
-public class AnnotationDescrBuilderImpl extends BaseDescrBuilderImpl<AnnotationDescr>
+public class AnnotationDescrBuilderImpl<P extends DescrBuilder< ? , ? >> extends BaseDescrBuilderImpl<P, AnnotationDescr>
     implements
-    AnnotationDescrBuilder {
+    AnnotationDescrBuilder<P> {
 
-    protected AnnotationDescrBuilderImpl(String name) {
-        super( new AnnotationDescr( name ) );
+    protected AnnotationDescrBuilderImpl(P parent,
+                                         String name) {
+        super( parent,
+               new AnnotationDescr( name ) );
     }
 
-    public AnnotationDescrBuilder value( String value ) {
+    public AnnotationDescrBuilder<P> value( String value ) {
         descr.setValue( value );
         return this;
     }
 
-    public AnnotationDescrBuilder keyValue( String key,
-                                            String value ) {
+    public AnnotationDescrBuilder<P> keyValue( String key,
+                                               String value ) {
         descr.setKeyValue( key,
                            value );
         return this;

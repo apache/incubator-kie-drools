@@ -25,9 +25,10 @@ import org.drools.lang.descr.OrDescr;
 /**
  *  A descriptor builder for Conditional Elements
  */
-public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
+public interface CEDescrBuilder<P extends DescrBuilder<?, ?>, T extends BaseDescr>
     extends
-    PatternContainerDescrBuilder<CEDescrBuilder<P,T>,T> {
+    PatternContainerDescrBuilder<CEDescrBuilder<P, T>, T>,
+    DescrBuilder< P, T > {
 
     public CEDescrBuilder<CEDescrBuilder<P, T>, AndDescr> and();
     public CEDescrBuilder<CEDescrBuilder<P, T>, OrDescr> or();
@@ -38,5 +39,4 @@ public interface CEDescrBuilder<P extends DescrBuilder<?>, T extends BaseDescr>
     
     public EvalDescrBuilder<CEDescrBuilder<P, T>> eval();
     
-    public P end();
 }
