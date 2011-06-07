@@ -23,14 +23,14 @@ import org.drools.lang.descr.ImportDescr;
  */
 public interface ImportDescrBuilder
     extends
-    DescrBuilder<ImportDescr> {
+    DescrBuilder<PackageDescrBuilder, ImportDescr> {
 
     /**
      * Sets the import target
      * 
      * @param target the class or package being imported
-     * @return the package descr builder
+     * @return itself
      */
-    public PackageDescrBuilder target( String target );
+    public ImportDescrBuilder target( String target );
 
 }

@@ -19,14 +19,14 @@ package org.drools.lang.api;
 import org.drools.lang.descr.AnnotationDescr;
 
 /**
- *  A descriptor builder for Globals
+ *  A descriptor builder for annotations
  */
-public interface AnnotationDescrBuilder
+public interface AnnotationDescrBuilder<P extends DescrBuilder< ? , ? >>
     extends
-    DescrBuilder<AnnotationDescr> {
+    DescrBuilder<P, AnnotationDescr> {
 
-    public AnnotationDescrBuilder value( String value );
+    public AnnotationDescrBuilder<P> value( String value );
 
-    public AnnotationDescrBuilder keyValue( String key,
-                                            String value );
+    public AnnotationDescrBuilder<P> keyValue( String key,
+                                               String value );
 }

@@ -25,15 +25,12 @@ import org.drools.lang.descr.BehaviorDescr;
 /**
  * A descr builder implementation for pattern behaviors
  */
-public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder< ? >> extends BaseDescrBuilderImpl<BehaviorDescr>
+public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder< ? >> extends BaseDescrBuilderImpl<P, BehaviorDescr>
     implements
     BehaviorDescrBuilder<P> {
 
-    private P parent;
-
     protected BehaviorDescrBuilderImpl(P parent) {
-        super( new BehaviorDescr() );
-        this.parent = parent;
+        super( parent, new BehaviorDescr() );
         this.parent.getDescr().addBehavior( descr );
     }
 
@@ -47,9 +44,5 @@ public class BehaviorDescrBuilderImpl<P extends PatternDescrBuilder< ? >> extend
     public BehaviorDescrBuilder<P> parameters( List<String> params ) {
         descr.setParameters( params );
         return this;
-    }
-
-    public P end() {
-        return parent;
     }
 }

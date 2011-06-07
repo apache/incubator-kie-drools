@@ -53,7 +53,6 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -1119,7 +1118,7 @@ public class DRLParser {
      * @throws RecognitionException
      */
     private AttributeDescr salience( AttributeSupportBuilder< ? > as ) throws RecognitionException {
-        AttributeDescrBuilder attribute = null;
+        AttributeDescrBuilder< ? > attribute = null;
         try {
             // 'salience'
             match( input,
@@ -1129,7 +1128,7 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( as,
+                attribute = helper.start( (DescrBuilder< ? , ? >) as,
                                           AttributeDescrBuilder.class,
                                           DroolsSoftKeywords.SALIENCE );
             }
@@ -1179,7 +1178,7 @@ public class DRLParser {
      * @throws RecognitionException
      */
     private AttributeDescr enabled( AttributeSupportBuilder< ? > as ) throws RecognitionException {
-        AttributeDescrBuilder attribute = null;
+        AttributeDescrBuilder< ? > attribute = null;
         try {
             // 'enabled'
             match( input,
@@ -1189,7 +1188,7 @@ public class DRLParser {
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( as,
+                attribute = helper.start( (DescrBuilder< ? , ? >) as,
                                           AttributeDescrBuilder.class,
                                           DroolsSoftKeywords.ENABLED );
             }
@@ -1241,7 +1240,7 @@ public class DRLParser {
      */
     private AttributeDescr booleanAttribute( AttributeSupportBuilder< ? > as,
                                              String[] key ) throws RecognitionException {
-        AttributeDescrBuilder attribute = null;
+        AttributeDescrBuilder< ? > attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
@@ -1263,7 +1262,7 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( as,
+                attribute = helper.start( (DescrBuilder< ? , ? >) as,
                                           AttributeDescrBuilder.class,
                                           builder.toString() );
             }
@@ -1298,7 +1297,7 @@ public class DRLParser {
      */
     private AttributeDescr stringAttribute( AttributeSupportBuilder< ? > as,
                                             String[] key ) throws RecognitionException {
-        AttributeDescrBuilder attribute = null;
+        AttributeDescrBuilder< ? > attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
@@ -1320,7 +1319,7 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( as,
+                attribute = helper.start( (DescrBuilder< ? , ? >) as,
                                           AttributeDescrBuilder.class,
                                           builder.toString() );
             }
@@ -1351,7 +1350,7 @@ public class DRLParser {
      */
     private AttributeDescr stringListAttribute( AttributeSupportBuilder< ? > as,
                                                 String[] key ) throws RecognitionException {
-        AttributeDescrBuilder attribute = null;
+        AttributeDescrBuilder< ? > attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
@@ -1373,7 +1372,7 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( as,
+                attribute = helper.start( (DescrBuilder< ? , ? >) as,
                                           AttributeDescrBuilder.class,
                                           builder.toString() );
             }
@@ -1425,7 +1424,7 @@ public class DRLParser {
      */
     private AttributeDescr intOrChunkAttribute( AttributeSupportBuilder< ? > as,
                                                 String[] key ) throws RecognitionException {
-        AttributeDescrBuilder attribute = null;
+        AttributeDescrBuilder< ? > attribute = null;
         try {
             StringBuilder builder = new StringBuilder();
             for ( String k : key ) {
@@ -1447,7 +1446,7 @@ public class DRLParser {
                 builder.append( k );
             }
             if ( state.backtracking == 0 ) {
-                attribute = helper.start( as,
+                attribute = helper.start( (DescrBuilder< ? , ? >) as,
                                           AttributeDescrBuilder.class,
                                           builder.toString() );
             }
@@ -2172,7 +2171,7 @@ public class DRLParser {
         BaseDescr result = null;
 
         Token first = input.LT( 1 );
-        pattern = helper.start( ce,
+        pattern = helper.start( (DescrBuilder< ? , ? >) ce,
                                 PatternDescrBuilder.class,
                                 null );
         if ( pattern != null ) {
@@ -2212,7 +2211,7 @@ public class DRLParser {
                 if ( allowOr && helper.validateIdentifierKey( DroolsSoftKeywords.OR ) && ce instanceof CEDescrBuilder ) {
                     if ( state.backtracking == 0 ) {
                         // this is necessary because of the crappy bind with multi-pattern OR syntax 
-                        or = ((CEDescrBuilder<DescrBuilder< ? >, OrDescr>) ce).or();
+                        or = ((CEDescrBuilder<DescrBuilder< ? , ? >, OrDescr>) ce).or();
                         result = or.getDescr();
 
                         helper.end( PatternDescrBuilder.class,
@@ -2298,7 +2297,7 @@ public class DRLParser {
         PatternDescrBuilder< ? > pattern = null;
         BaseDescr result = null;
 
-        pattern = helper.start( ce,
+        pattern = helper.start( (DescrBuilder< ? , ? >) ce,
                                 PatternDescrBuilder.class,
                                 null );
         if ( pattern != null ) {
@@ -2313,8 +2312,8 @@ public class DRLParser {
             }
 
             AccumulateDescrBuilder< ? > accumulate = helper.start( pattern,
-                                                                   AccumulateDescrBuilder.class,
-                                                                   null );
+                                                                       AccumulateDescrBuilder.class,
+                                                                       null );
             if ( state.backtracking == 0 ) {
                 accumulate.multiFunction( true );
             }
@@ -2839,8 +2838,8 @@ public class DRLParser {
      */
     private void fromCollect( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
         CollectDescrBuilder< ? > collect = helper.start( pattern,
-                                                         CollectDescrBuilder.class,
-                                                         null );
+                                                             CollectDescrBuilder.class,
+                                                             null );
         try {
             match( input,
                    DRLLexer.ID,
@@ -3042,7 +3041,8 @@ public class DRLParser {
                 if ( state.backtracking == 0 ) accumulate.result( result );
             } else {
                 // accumulate functions
-                accumulateFunction( accumulate, null );
+                accumulateFunction( accumulate,
+                                    null );
                 if ( state.failed ) return;
             }
 
@@ -3068,7 +3068,8 @@ public class DRLParser {
      */
     private void accumulateFunctionBinding( AccumulateDescrBuilder< ? > accumulate ) throws RecognitionException {
         String label = label( DroolsEditorType.IDENTIFIER_VARIABLE );
-        accumulateFunction( accumulate, label );
+        accumulateFunction( accumulate,
+                            label );
     }
 
     /**
@@ -3076,7 +3077,8 @@ public class DRLParser {
      * @param accumulate
      * @throws RecognitionException
      */
-    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate, String label ) throws RecognitionException {
+    private void accumulateFunction( AccumulateDescrBuilder< ? > accumulate,
+                                     String label ) throws RecognitionException {
         Token function = match( input,
                                 DRLLexer.ID,
                                 null,
@@ -3191,7 +3193,7 @@ public class DRLParser {
      * annotation := AT ID (elementValuePairs | parenChunk )?
      */
     private void annotation( AnnotatedDescrBuilder< ? > adb ) {
-        AnnotationDescrBuilder annotation = null;
+        AnnotationDescrBuilder< ? > annotation = null;
         try {
             // '@'
             Token at = match( input,
@@ -3272,7 +3274,7 @@ public class DRLParser {
      * elementValuePairs := LEFT_PAREN elementValuePair (COMMA elementValuePair)* RIGHT_PAREN
      * @param annotation
      */
-    private void elementValuePairs( AnnotationDescrBuilder annotation ) throws RecognitionException {
+    private void elementValuePairs( AnnotationDescrBuilder<?> annotation ) throws RecognitionException {
         try {
             match( input,
                    DRLLexer.LEFT_PAREN,
@@ -3312,7 +3314,7 @@ public class DRLParser {
      * elementValuePair := ID EQUALS elementValue
      * @param annotation
      */
-    private void elementValuePair( AnnotationDescrBuilder annotation ) {
+    private void elementValuePair( AnnotationDescrBuilder<?> annotation ) {
         try {
             Token id = match( input,
                               DRLLexer.ID,

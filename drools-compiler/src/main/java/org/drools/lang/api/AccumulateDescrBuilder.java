@@ -22,9 +22,9 @@ import org.drools.lang.descr.AndDescr;
 /**
  *  A descriptor builder for Accumulate
  */
-public interface AccumulateDescrBuilder<P extends DescrBuilder< ? >>
+public interface AccumulateDescrBuilder<P extends DescrBuilder< ?, ? >>
     extends
-    DescrBuilder<AccumulateDescr> {
+    DescrBuilder<P, AccumulateDescr> {
     
     /**
      * Defines the source CE for the Accumulate CE. It is always
