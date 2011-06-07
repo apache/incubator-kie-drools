@@ -14,12 +14,12 @@ import org.drools.lang.descr.PackageDescr;
 /**
  * A builder implementation for PackageDescrs using a fluent API.
  */
-public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescr>
+public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, PackageDescr>
     implements
     PackageDescrBuilder {
 
     private PackageDescrBuilderImpl() {
-        super( new PackageDescr() );
+        super( null, new PackageDescr() );
     }
 
     public static PackageDescrBuilder newPackage() {
@@ -54,37 +54,37 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescr>
     }
 
     public GlobalDescrBuilder newGlobal() {
-        GlobalDescrBuilder global = new GlobalDescrBuilderImpl();
+        GlobalDescrBuilder global = new GlobalDescrBuilderImpl( this );
         descr.addGlobal( global.getDescr() );
         return global;
     }
 
     public DeclareDescrBuilder newDeclare() {
-        DeclareDescrBuilder declare = new DeclareDescrBuilderImpl();
+        DeclareDescrBuilder declare = new DeclareDescrBuilderImpl( this );
         descr.addTypeDeclaration( declare.getDescr() );
         return declare;
     }
 
     public RuleDescrBuilder newRule() {
-        RuleDescrBuilder rule = new RuleDescrBuilderImpl();
+        RuleDescrBuilder rule = new RuleDescrBuilderImpl( this );
         descr.addRule( rule.getDescr() );
         return rule;
     }
 
     public QueryDescrBuilder newQuery() {
-        QueryDescrBuilder query = new QueryDescrBuilderImpl();
+        QueryDescrBuilder query = new QueryDescrBuilderImpl( this );
         descr.addRule( query.getDescr() );
         return query;
     }
 
-    public AttributeDescrBuilder attribute( String name ) {
-        AttributeDescrBuilder attribute = new AttributeDescrBuilderImpl( name );
+    public AttributeDescrBuilder<PackageDescrBuilder> attribute( String name ) {
+        AttributeDescrBuilder<PackageDescrBuilder> attribute = new AttributeDescrBuilderImpl<PackageDescrBuilder>( this, name );
         descr.addAttribute( attribute.getDescr() );
         return attribute;
     }
 
     public FunctionDescrBuilder newFunction() {
-        FunctionDescrBuilder function = new FunctionDescrBuilderImpl();
+        FunctionDescrBuilder function = new FunctionDescrBuilderImpl( this );
         descr.addFunction( function.getDescr() );
         return function;
     }

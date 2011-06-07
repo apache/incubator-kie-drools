@@ -28,15 +28,12 @@ import org.drools.lang.descr.PatternDescr;
 /**
  * A descr builder implementation for pattern sources
  */
-public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends BaseDescrBuilderImpl<PatternDescr>
+public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends BaseDescrBuilderImpl<P, PatternDescr>
     implements
     SourceDescrBuilder<P> {
 
-    private P parent;
-
     protected SourceDescrBuilderImpl(P parent) {
-        super( parent.getDescr() );
-        this.parent = parent;
+        super( parent, parent.getDescr() );
     }
 
     public P expression( String expression ) {

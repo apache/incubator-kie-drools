@@ -31,9 +31,9 @@ import org.drools.lang.descr.PatternDescr;
  *  .rhs( "System.out.println();" )
  *  .end()
  */
-public interface PatternDescrBuilder<P extends DescrBuilder<?>>
+public interface PatternDescrBuilder<P extends DescrBuilder<?, ?>>
     extends
-    DescrBuilder<PatternDescr> {
+    DescrBuilder<P, PatternDescr> {
 
     public PatternDescrBuilder<P> id( String id, boolean isUnification );
     public PatternDescrBuilder<P> type( String type );
@@ -46,5 +46,4 @@ public interface PatternDescrBuilder<P extends DescrBuilder<?>>
     
     public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior();
 
-    public P end();
 }
