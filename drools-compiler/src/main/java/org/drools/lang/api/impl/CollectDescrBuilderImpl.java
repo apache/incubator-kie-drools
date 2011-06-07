@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.CollectDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.descr.CollectDescr;
 
 /**
  * An implementation for the CollectDescrBuilder
  */
-public class CollectDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDescrBuilderImpl<CollectDescr>
+public class CollectDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends BaseDescrBuilderImpl<P, CollectDescr>
     implements
     CollectDescrBuilder<P> {
 
-    private P parent;
-
     public CollectDescrBuilderImpl(P parent) {
-        super( new CollectDescr() );
-        this.parent = parent;
+        super( parent, new CollectDescr() );
     }
 
     /**
@@ -49,10 +49,6 @@ public class CollectDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDe
         PatternDescrBuilder<CollectDescrBuilder<P>> pattern = new PatternDescrBuilderImpl<CollectDescrBuilder<P>>( this );
         descr.setInputPattern( pattern.getDescr() );
         return pattern;
-    }
-
-    public P end() {
-        return parent;
     }
 
 }

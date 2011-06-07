@@ -1,13 +1,15 @@
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.FunctionDescrBuilder;
+import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.descr.FunctionDescr;
 
-public class FunctionDescrBuilderImpl extends BaseDescrBuilderImpl<FunctionDescr>
+public class FunctionDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, FunctionDescr>
     implements
     FunctionDescrBuilder {
 
-    protected FunctionDescrBuilderImpl() {
-        super( new FunctionDescr() );
+    protected FunctionDescrBuilderImpl( PackageDescrBuilder parent ) {
+        super( parent, new FunctionDescr() );
     }
 
     public FunctionDescrBuilder namespace( String namespace ) {

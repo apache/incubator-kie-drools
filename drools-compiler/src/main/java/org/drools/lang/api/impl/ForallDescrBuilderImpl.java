@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.ForallDescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.descr.ForallDescr;
 
 /**
  * An implementation for the CEDescrBuilder
  */
-public class ForallDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDescrBuilderImpl<ForallDescr>
+public class ForallDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends BaseDescrBuilderImpl<P, ForallDescr>
     implements
     ForallDescrBuilder<P> {
 
-    private P parent;
-
     public ForallDescrBuilderImpl(P parent) {
-        super( new ForallDescr() );
-        this.parent = parent;
+        super( parent, new ForallDescr() );
     }
 
     /**

@@ -14,49 +14,57 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.descr.BaseDescr;
 
 /**
  * A base class for all DescrBuilders
  */
-public class BaseDescrBuilderImpl<T extends BaseDescr>
+public class BaseDescrBuilderImpl<P extends DescrBuilder<?,?>, T extends BaseDescr>
     implements
-    DescrBuilder<T> {
+    DescrBuilder<P, T> {
 
     protected T descr;
+    protected P parent;
 
-    protected BaseDescrBuilderImpl(final T descr) {
+    protected BaseDescrBuilderImpl(final P parent, 
+                                   final T descr) {
+        this.parent = parent;
         this.descr = descr;
     }
 
-    public DescrBuilder<T> startLocation( int line,
+    public DescrBuilder<P, T> startLocation( int line,
                                        int column ) {
         descr.setLocation( line,
                            column );
         return this;
     }
 
-    public DescrBuilder<T> endLocation( int line,
+    public DescrBuilder<P, T> endLocation( int line,
                                      int column ) {
         descr.setEndLocation( line,
                               column );
         return this;
     }
 
-    public DescrBuilder<T> startCharacter( int offset ) {
+    public DescrBuilder<P, T> startCharacter( int offset ) {
         descr.setStartCharacter( offset );
         return this;
     }
 
-    public DescrBuilder<T> endCharacter( int offset ) {
+    public DescrBuilder<P, T> endCharacter( int offset ) {
         descr.setEndCharacter( offset );
         return this;
     }
 
     public T getDescr() {
         return descr;
+    }
+    
+    public P end() {
+        return parent;
     }
 
 }

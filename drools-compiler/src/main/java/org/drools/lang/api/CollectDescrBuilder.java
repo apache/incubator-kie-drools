@@ -21,9 +21,9 @@ import org.drools.lang.descr.CollectDescr;
 /**
  *  A descriptor builder for Collect
  */
-public interface CollectDescrBuilder<P extends DescrBuilder< ? >>
+public interface CollectDescrBuilder<P extends DescrBuilder< ?, ? >>
     extends
-    PatternContainerDescrBuilder<CollectDescrBuilder<P>, CollectDescr> {
+    PatternContainerDescrBuilder<CollectDescrBuilder<P>, CollectDescr>,
+    DescrBuilder<P, CollectDescr> {
 
-    public P end();
 }

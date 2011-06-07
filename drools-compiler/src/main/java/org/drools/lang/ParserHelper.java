@@ -110,11 +110,11 @@ public class ParserHelper {
     public void disableEditorInterface() {
         isEditorInterfaceEnabled = false;
     }
-    
+
     public void setHasOperator( boolean hasOperator ) {
-        this.hasOperator = hasOperator; 
+        this.hasOperator = hasOperator;
     }
-    
+
     public boolean getHasOperator() {
         return hasOperator;
     }
@@ -560,12 +560,12 @@ public class ParserHelper {
         return isMember;
     }
 
-    void setStart( DescrBuilder< ? > db ) {
+    void setStart( DescrBuilder< ? , ? > db ) {
         setStart( db,
                   input.LT( 1 ) );
     }
 
-    void setStart( DescrBuilder< ? > db,
+    void setStart( DescrBuilder< ? , ? > db,
                    Token first ) {
         if ( db != null && first != null ) {
             db.startCharacter( ((CommonToken) first).getStartIndex() ).startLocation( first.getLine(),
@@ -581,7 +581,7 @@ public class ParserHelper {
             descr.setStartCharacter( ((CommonToken) first).getStartIndex() );
         }
     }
-    
+
     void setEnd( BaseDescr descr ) {
         Token last = input.LT( -1 );
         if ( descr != null && last != null ) {
@@ -592,7 +592,7 @@ public class ParserHelper {
         }
     }
 
-    void setEnd( DescrBuilder< ? > db ) {
+    void setEnd( DescrBuilder< ? , ? > db ) {
         Token last = input.LT( -1 );
         if ( db != null && last != null ) {
             int endLocation = last.getText() != null ? last.getCharPositionInLine() + last.getText().length() - 1 : last.getCharPositionInLine();
@@ -602,9 +602,9 @@ public class ParserHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder< ? >> T start( DescrBuilder< ? > ctxBuilder,
-                                                  Class<T> clazz,
-                                                  String param ) {
+    public <T extends DescrBuilder< ? , ? >> T start( DescrBuilder< ? , ? > ctxBuilder,
+                                                      Class<T> clazz,
+                                                      String param ) {
         if ( state.backtracking == 0 ) {
             if ( PackageDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 pushParaphrases( DroolsParaphraseTypes.PACKAGE );
@@ -612,8 +612,10 @@ public class ParserHelper {
                 setStart( ctxBuilder );
             } else if ( ImportDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 ImportDescrBuilder imp;
-                if ( validateLT( 2, DroolsSoftKeywords.FUNCTION ) ||
-                     validateLT( 2, DroolsSoftKeywords.STATIC ) ) {
+                if ( validateLT( 2,
+                                 DroolsSoftKeywords.FUNCTION ) ||
+                     validateLT( 2,
+                                 DroolsSoftKeywords.STATIC ) ) {
                     imp = ctxBuilder == null ?
                           DescrFactory.newPackage().newFunctionImport() :
                           ((PackageDescrBuilder) ctxBuilder).newFunctionImport();
@@ -679,7 +681,7 @@ public class ParserHelper {
                 setStart( query );
                 return (T) query;
             } else if ( AttributeDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                AttributeDescrBuilder attribute = ((AttributeSupportBuilder<?>) ctxBuilder).attribute( param );
+                AttributeDescrBuilder< ? > attribute = ((AttributeSupportBuilder< ? >) ctxBuilder).attribute( param );
                 setStart( attribute );
                 return (T) attribute;
             } else if ( EvalDescrBuilder.class.isAssignableFrom( clazz ) ) {
@@ -718,16 +720,15 @@ public class ParserHelper {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends DescrBuilder< ? >> T end( Class<T> clazz,
-                                                DescrBuilder< ? > builder ) {
+    public <T extends DescrBuilder< ? , ? >> T end( Class<T> clazz,
+                                                    DescrBuilder< ? , ? > builder ) {
         if ( state.backtracking == 0 ) {
             if ( !(FieldDescrBuilder.class.isAssignableFrom( clazz ) ||
                    AttributeDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
                    AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || 
-                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd( builder );
@@ -742,11 +743,11 @@ public class ParserHelper {
 
     public boolean validateKeyword( int i ) {
         String token = input.LT( i ).getText();
-        if( token != null ) {
-            for( Field field : DroolsSoftKeywords.class.getFields() ) {
-                if( Modifier.isStatic( field.getModifiers() ) && Modifier.isPublic( field.getModifiers() ) ) {
+        if ( token != null ) {
+            for ( Field field : DroolsSoftKeywords.class.getFields() ) {
+                if ( Modifier.isStatic( field.getModifiers() ) && Modifier.isPublic( field.getModifiers() ) ) {
                     try {
-                        if( token.equals( field.get( null ) ) ) {
+                        if ( token.equals( field.get( null ) ) ) {
                             return true;
                         }
                     } catch ( Exception e ) {

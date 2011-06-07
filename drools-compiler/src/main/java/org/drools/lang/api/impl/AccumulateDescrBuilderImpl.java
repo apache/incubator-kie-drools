@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.AccumulateDescrBuilder;
+import org.drools.lang.api.CEDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.descr.AccumulateDescr;
 import org.drools.lang.descr.AndDescr;
 
 /**
  * An implementation for the CollectDescrBuilder
  */
-public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDescrBuilderImpl<AccumulateDescr>
+public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends BaseDescrBuilderImpl<P, AccumulateDescr>
     implements
     AccumulateDescrBuilder<P> {
 
-    private P parent;
-
     public AccumulateDescrBuilderImpl(P parent) {
-        super( new AccumulateDescr() );
-        this.parent = parent;
+        super( parent,
+               new AccumulateDescr() );
     }
 
     /**
@@ -52,12 +54,9 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ? >> extends Bas
         return pattern;
     }
 
-    public P end() {
-        return parent;
-    }
-
-    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr > source() {
-        CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> and = new CEDescrBuilderImpl<AccumulateDescrBuilder<P>, AndDescr>( this, new AndDescr() );
+    public CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> source() {
+        CEDescrBuilder<AccumulateDescrBuilder<P>, AndDescr> and = new CEDescrBuilderImpl<AccumulateDescrBuilder<P>, AndDescr>( this,
+                                                                                                                               new AndDescr() );
         descr.setInput( and.getDescr() );
         return and;
     }
@@ -65,7 +64,9 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ? >> extends Bas
     public AccumulateDescrBuilder<P> function( String name,
                                                String bind,
                                                String[] parameters ) {
-        descr.addFunction( name, bind, parameters );
+        descr.addFunction( name,
+                           bind,
+                           parameters );
         return this;
     }
 
@@ -88,7 +89,7 @@ public class AccumulateDescrBuilderImpl<P extends DescrBuilder< ? >> extends Bas
         descr.setResultCode( expr );
         return this;
     }
-    
+
     public AccumulateDescrBuilder<P> multiFunction( boolean multifunct ) {
         descr.setMultiFunction( multifunct );
         return this;

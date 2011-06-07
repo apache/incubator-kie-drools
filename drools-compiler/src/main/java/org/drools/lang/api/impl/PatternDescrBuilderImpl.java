@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.lang.api;
+package org.drools.lang.api.impl;
 
+import org.drools.lang.api.BehaviorDescrBuilder;
+import org.drools.lang.api.DescrBuilder;
+import org.drools.lang.api.PatternDescrBuilder;
+import org.drools.lang.api.SourceDescrBuilder;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
@@ -23,11 +27,9 @@ import org.drools.lang.descr.PatternDescr;
 /**
  * A descr builder implementation for Patterns
  */
-public class PatternDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDescrBuilderImpl<PatternDescr>
+public class PatternDescrBuilderImpl<P extends DescrBuilder< ?, ? >> extends BaseDescrBuilderImpl<P, PatternDescr>
     implements
     PatternDescrBuilder<P> {
-
-    private P parent;
 
     protected PatternDescrBuilderImpl(P parent) {
         this( parent,
@@ -36,7 +38,7 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDe
 
     protected PatternDescrBuilderImpl(P parent,
                                       String type) {
-        super( new PatternDescr( type ) );
+        super( parent, new PatternDescr( type ) );
         this.parent = parent;
     }
 
@@ -89,10 +91,6 @@ public class PatternDescrBuilderImpl<P extends DescrBuilder< ? >> extends BaseDe
 
     public BehaviorDescrBuilder<PatternDescrBuilder<P>> behavior() {
         return new BehaviorDescrBuilderImpl<PatternDescrBuilder<P>>( this );
-    }
-
-    public P end() {
-        return parent;
     }
 
 }
