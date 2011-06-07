@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.net.URL;
 
+import org.drools.definition.KnowledgeDescr;
 import org.drools.io.Resource;
 import org.drools.io.ResourceChangeNotifier;
 import org.drools.io.ResourceChangeScanner;
@@ -67,7 +68,7 @@ public class ResourceFactoryServiceImpl
     }
 
     public Resource newClassPathResource(String path,
-                                         Class clazz) {
+                                         Class<?> clazz) {
         return new ClassPathResource( path,
                                       clazz );
     }
@@ -100,5 +101,9 @@ public class ResourceFactoryServiceImpl
 
     public Resource newUrlResource(String path) {
         return new UrlResource( path );
+    }
+
+    public Resource newDescrResource( KnowledgeDescr descr ) {
+        return new DescrResource( descr );
     }
 }

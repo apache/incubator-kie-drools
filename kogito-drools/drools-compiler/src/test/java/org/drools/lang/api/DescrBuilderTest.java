@@ -16,11 +16,24 @@
 
 package org.drools.lang.api;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * DescrBuilderTest
@@ -39,6 +52,11 @@ public class DescrBuilderTest {
         assertEquals( "mvel",
                       pkg.getAttribute( "dialect" ).getValue() );
         assertNull( pkg.getAttribute( "salience" ) );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+
+        assertEquals( "org.drools",
+                      kpkg.getName() );
     }
 
     @Test
@@ -69,6 +87,10 @@ public class DescrBuilderTest {
         assertEquals( AttributeDescr.Type.BOOLEAN,
                       pkg.getAttribute( "lock-on-active" ).getType() );
         assertNull( pkg.getAttribute( "no-loop" ) );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
     }
 
     @Test
@@ -86,7 +108,7 @@ public class DescrBuilderTest {
         assertEquals( "org.drools.examples.*",
                       pkg.getImports().get( 1 ).getTarget() );
     }
-    
+
     @Test
     public void testGlobals() {
         PackageDescr pkg = DescrFactory.newPackage()
@@ -105,7 +127,64 @@ public class DescrBuilderTest {
                       pkg.getGlobals().get( 1 ).getType() );
         assertEquals( "bob",
                       pkg.getGlobals().get( 1 ).getIdentifier() );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
     }
-    
+
+    @Test
+    public void testFunctions() {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                // functions
+                .newFunctionImport().target( "java.lang.Math.max" ).end()
+                .newFunction().returnType( "long" ).name( "myMax" )
+                    .parameter( "long",
+                                "v1" ).parameter( "long",
+                                                  "v2" )
+                    .body( "return max(v1, v2);" )
+                .end()
+                // rule
+                .newRule().name( "test" )
+                    .lhs()
+                        .eval().constraint( "myMax(5, 10) == 10" ).end()
+                    .end()
+                    .rhs( "// do nothing" )
+                .end()
+                .getDescr();
+
+        assertEquals( 1,
+                      pkg.getFunctionImports().size() );
+        assertEquals( 1,
+                      pkg.getFunctions().size() );
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+
+    private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newDescrResource( pkg ),
+                      ResourceType.DESCR );
+
+        assertFalse( kbuilder.hasErrors() );
+        Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
+        assertEquals( 1,
+                      kpkgs.size() );
+
+        return kpkgs.iterator().next();
+
+    }
 
 }

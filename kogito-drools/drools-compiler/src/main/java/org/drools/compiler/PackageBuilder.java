@@ -16,6 +16,27 @@
 
 package org.drools.compiler;
 
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -47,15 +68,33 @@ import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.Resource;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.DescrResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.internal.InternalResource;
-import org.drools.lang.descr.*;
+import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.*;
+import org.drools.rule.Function;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
@@ -66,11 +105,6 @@ import org.drools.type.DateFormatsImpl;
 import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
-
-import java.beans.IntrospectionException;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -307,13 +341,20 @@ public class PackageBuilder {
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                       IOException {
         this.resource = resource;
-        final DrlParser parser = new DrlParser();
-        final PackageDescr pkg = parser.parse( resource.getInputStream() );
-        this.results.addAll( parser.getErrors() );
-        if ( pkg == null ) {
-            this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
-        }        
-        if ( !parser.hasErrors() ) {
+        PackageDescr pkg = null;
+        boolean hasErrors = false;
+        if( resource instanceof DescrResource ) {
+            pkg = (PackageDescr) ((DescrResource) resource).getDescr();
+        } else {
+            final DrlParser parser = new DrlParser();
+            pkg = parser.parse( resource.getInputStream() );
+            this.results.addAll( parser.getErrors() );
+            if ( pkg == null ) {
+                this.results.add( new ParserError( "Parser returned a null Package", 0, 0 ) );
+            }        
+            hasErrors = parser.hasErrors();
+        }
+        if ( !hasErrors ) {
             addPackage( pkg );
         }
         this.resource = null;
@@ -491,6 +532,9 @@ public class PackageBuilder {
                                       ResourceConfiguration configuration) {
         try {
             if ( ResourceType.DRL.equals( type ) ) {
+                ((InternalResource) resource).setResourceType( type );
+                addPackageFromDrl( resource );
+            } else if ( ResourceType.DESCR.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromDrl( resource );
             } else if ( ResourceType.DSLR.equals( type ) ) {
