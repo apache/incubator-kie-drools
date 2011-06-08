@@ -28,25 +28,31 @@ public class ResourceType implements Serializable {
     private String                                 description;
     
     private String                                 defaultExtension;
+    
+    private String[]                               otherExtensions;
 
     private static final Map<String, ResourceType> CACHE = Collections.synchronizedMap( new HashMap<String, ResourceType>() );
 
     public ResourceType(String name,
                         String description,
-                        String defaultExtension ) {
+                        String defaultExtension,
+                        String... otherExtensions ) {
         this.name = name;
         this.description = description;
         this.defaultExtension = defaultExtension;
+        this.otherExtensions = otherExtensions;
     }
 
     public static ResourceType addResourceTypeToRegistry(final String resourceType,
                                                          final String description,
-                                                         final String defaultExtension ) {
-        ResourceType resource = new ResourceType( resourceType,
-                                                  description,
-                                                  defaultExtension );
-        CACHE.put( resourceType,
-                   resource );
+                                                         final String defaultExtension,
+                                                         final String ...otherExtensions) {
+    	
+    	ResourceType resource = new ResourceType( resourceType,
+                                                description,
+                                                defaultExtension,
+                                                otherExtensions);
+        CACHE.put( resourceType, resource );    	
         return resource;
     }
 
@@ -78,7 +84,7 @@ public class ResourceType implements Serializable {
     /** jBPM BPMN2 Language */
     public static final ResourceType BPMN2      = addResourceTypeToRegistry( "BPMN2",
                                                                              "jBPM BPMN2 Language",
-                                                                             "bpmn" );
+                                                                             "bpmn", "bpmn2" );
 
     /** Decision Table */
     public static final ResourceType DTABLE     = addResourceTypeToRegistry( "DTABLE",
@@ -136,8 +142,19 @@ public class ResourceType implements Serializable {
         return null;
     }
     
-    public boolean matchesExtension( String resourceName ) {
-        return resourceName != null && resourceName.endsWith( "."+defaultExtension );
+    public boolean matchesExtension( String resourceName ) {    	
+    	if (resourceName != null) {
+    		
+    		if (resourceName.endsWith( "." + defaultExtension)) {
+    			return true;
+    		}
+    		for (String extension: otherExtensions) {
+    			if (resourceName.endsWith( "." + extension )) {
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
     }
 
     public String getDefaultExtension() {
