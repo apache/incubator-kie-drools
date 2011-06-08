@@ -17,11 +17,13 @@
 package org.drools.planner.examples.nqueens.persistence;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
@@ -32,15 +34,23 @@ public class NQueensGenerator extends LoggingMain {
 
     private static final File outputDir = new File("data/nqueens/unsolved/");
 
+    protected SolutionDao solutionDao;
+
     public static void main(String[] args) {
         new NQueensGenerator().generate();
     }
 
     public void generate() {
-        String nString = JOptionPane.showInputDialog("For what n?");
-        int n = Integer.parseInt(nString.trim());
-        SolutionDao solutionDao = new NQueensDaoImpl();
-        String outputFileName = "unsolvedNQueens" + n + ".xml";
+        solutionDao = new NQueensDaoImpl();
+        writeNQueens(4);
+        writeNQueens(8);
+        writeNQueens(16);
+        writeNQueens(32);
+        writeNQueens(64);
+    }
+
+    private void writeNQueens(int n) {
+        String outputFileName = "unsolvedNQueens" + (n < 10 ? "0" : "") + n + ".xml";
         File outputFile = new File(outputDir, outputFileName);
         NQueens nQueens = createNQueens(n);
         solutionDao.writeSolution(nQueens, outputFile);
@@ -59,6 +69,11 @@ public class NQueensGenerator extends LoggingMain {
             queenList.add(queen);
         }
         nQueens.setQueenList(queenList);
+        logger.info("NQueens {} with {} queens.", nQueens.getN());
+        BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
+        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+        logger.info("NQueens with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                flooredPossibleSolutionSize, possibleSolutionSize);
         return nQueens;
     }
 
