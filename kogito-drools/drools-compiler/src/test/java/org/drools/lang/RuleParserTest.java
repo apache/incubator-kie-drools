@@ -144,7 +144,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getTarget() );
         assertEquals( source.indexOf( "import " + impdescr.getTarget() ),
                       impdescr.getStartCharacter() );
-        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length() + 1,
+        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length(),
                       impdescr.getEndCharacter() );
 
         impdescr = pkg.getImports().get( 1 );
@@ -152,7 +152,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getTarget() );
         assertEquals( source.indexOf( "import " + impdescr.getTarget() ),
                       impdescr.getStartCharacter() );
-        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length() + 1,
+        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length(),
                       impdescr.getEndCharacter() );
     }
 
@@ -202,7 +202,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getTarget() );
         assertEquals( source.indexOf( "import function " + impdescr.getTarget() ),
                       impdescr.getStartCharacter() );
-        assertEquals( source.indexOf( "import function " + impdescr.getTarget() ) + ("import function " + impdescr.getTarget()).length() + 1,
+        assertEquals( source.indexOf( "import function " + impdescr.getTarget() ) + ("import function " + impdescr.getTarget()).length(),
                       impdescr.getEndCharacter() );
 
     }
@@ -241,7 +241,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( source.indexOf( "global " + global.getType() ),
                       global.getStartCharacter() );
         assertEquals( source.indexOf( "global " + global.getType() + " " + global.getIdentifier() ) +
-                              ("global " + global.getType() + " " + global.getIdentifier()).length() + 1,
+                              ("global " + global.getType() + " " + global.getIdentifier()).length(),
                       global.getEndCharacter() );
 
         global = pkg.getGlobals().get( 1 );
