@@ -36,6 +36,7 @@ public class OperationHandler extends BaseAbstractHandler implements Handler {
 
 			this.validPeers = new HashSet();
 			this.validPeers.add(null);
+			this.validPeers.add(Operation.class);
 
 			this.allowNesting = false;
 		}
