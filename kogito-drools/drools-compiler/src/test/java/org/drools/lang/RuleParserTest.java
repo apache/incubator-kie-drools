@@ -3921,6 +3921,24 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
+    public void testInlineEval() throws Exception {
+        final String text = "rule \"inline eval\"\n" +
+                            "when\n" +
+                            "    Person( eval( name.startsWith(\"b\") && name.finishesWith(\"b\")) )\n" +
+                            "then\n" +
+                            "end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        assertEquals( "eval( name.startsWith(\"b\") && name.finishesWith(\"b\"))",
+                      constr.getText() );
+
+    }
+
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {
         return execParser( parserRuleName,
