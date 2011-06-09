@@ -533,8 +533,8 @@ Person( getAge() == 50 )</programlisting>
         </warning>
 
         <note>
-          <para>For backwards compatibility the following fallback applies: if the getter of a property cannot be found,
-          the compiler will resort to using the property name as a method name and without arguments:</para>
+          <para>The following fallback applies: if the getter of a property cannot be found, the compiler will resort to
+          using the property name as a method name and without arguments:</para>
 
           <programlisting>Person( age == 50 )
 
@@ -547,12 +547,12 @@ Person( age() == 50 )</programlisting>
         <programlisting>Person( address.houseNumber == 50 )
 
 // this is the same as:
-Person( getAdress().getHouseNumber() == 50 )</programlisting>
+Person( getAddress().getHouseNumber() == 50 )</programlisting>
 
         <para>Nested properties are also indexed.</para>
 
         <warning>
-          <para>In a statefull session, care should be taken when using nested accessors as the Working Memory is not
+          <para>In a stateful session, care should be taken when using nested accessors as the Working Memory is not
           aware of any of the nested values, and does not know when they change. Either consider them immutable while
           any of their parent references are inserted into the Working Memory. Or, instead, if you wish to modify a
           nested value you should mark all of the outer facts as updated. In the above example, when the
@@ -583,7 +583,7 @@ Person( getAdress().getHouseNumber() == 50 )</programlisting>
         <programlisting>Person( Math.round( weight / ( height * height ) ) &lt; 25.0 )</programlisting>
 
         <warning>
-          <para>As for property accessors, methods must not change the state of the object in a way that may effect the
+          <para>As for property accessors, methods must not change the state of the object in a way that may affect the
           rules. Any method executed on a fact in the LHS should be a <emphasis>read only</emphasis> method.</para>
 
           <programlisting>Person( incrementAndGetAge() == 10 ) // Do NOT do this</programlisting>
@@ -596,18 +596,22 @@ Person( getAdress().getHouseNumber() == 50 )</programlisting>
           <programlisting>Person( System.currentTimeMillis() % 1000 == 0 ) // Do NOT do this</programlisting>
         </warning>
 
-        <para>Normal Java operator precedence apply, see the operator precedence list below.</para>
+        <para>Normal Java operator precedence applies, see the operator precedence list below.</para>
 
         <important>
-          <para>All operators have normal Java semantics except for <literal>==</literal> and <literal>!=</literal>. The
-          <literal>==</literal> operator has null-safe <literal>equals()</literal> semantics. The <literal>!=</literal>
-          operator has null-safe <literal>!equals()</literal> semantics:</para>
+          <para>All operators have normal Java semantics except for <literal>==</literal> and
+          <literal>!=</literal>.</para>
 
-          <programlisting>// Similar to: ObjectUtils.equals(person.getFirstName(), "John")
-// so (because "John" is not null) similar to: person.getFirstName() != null &amp;&amp; person.getFirstName().equals("John")
+          <para>The <literal>==</literal> operator has null-safe <literal>equals()</literal> semantics:</para>
+
+          <programlisting>// Similar to: java.util.Objects.equals(person.getFirstName(), "John")
+// so (because "John" is not null) similar to:
+// "John".equals(person.getFirstName())
 Person( firstName == "John" )</programlisting>
 
-          <programlisting>// Similar to: !ObjectUtils.equals(person.getFirstName(), "John")
+          <para>The <literal>!=</literal> operator has null-safe <literal>!equals()</literal> semantics:</para>
+
+          <programlisting>// Similar to: !java.util.Objects.equals(person.getFirstName(), "John")
 Person( firstName != "John" )</programlisting>
         </important>
 
@@ -616,7 +620,7 @@ Person( firstName != "John" )</programlisting>
         exception is thrown, whereas "10" would coerce to a numeric 10. Coercion is always in favor of the field type
         and not the value type:</para>
 
-        <programlisting>Person( age == "10" ) // "10" is coercioned to 10</programlisting>
+        <programlisting>Person( age == "10" ) // "10" is coerced to 10</programlisting>
       </section>
 
       <section>
@@ -638,7 +642,7 @@ Person( age &gt; 50, weight &gt; 80, height &gt; 2 )</programlisting>
           precede the <literal>,</literal> operator. See the operator precedence list below.</para>
         </note>
 
-        <para>The <literal>,</literal> operator cannot be embedded in a composite constraint expression, such as
+        <para>The comma (<literal>,</literal>) operator cannot be embedded in a composite constraint expression, such as
         parentheses:</para>
 
         <programlisting>Person( ( age &gt; 50, weight &gt; 80 ) || height &gt; 2 ) // Do NOT do this: compile error
@@ -663,9 +667,11 @@ Person( age == $firstAge ) // constraint expression</programlisting>
           <para>For backwards compatibility reasons, It's allowed (but not recommended) to mix a constraint binding and
           constraint expressions as such:</para>
 
-          <programlisting>Person( $age : age * 2 &lt; 100 ) // Not recommended</programlisting>
+          <programlisting>// Not recommended
+Person( $age : age * 2 &lt; 100 )</programlisting>
 
-          <programlisting>Person( age * 2 &lt; 100, $age : age ) // Recommended (seperates bindings and constraint expressions)</programlisting>
+          <programlisting>// Recommended (seperates bindings and constraint expressions)
+Person( age * 2 &lt; 100, $age : age )</programlisting>
         </note>
 
         <para>Bound variable restrictions using the operator <literal>==</literal> provide for very fast execution as it
@@ -675,9 +681,9 @@ Person( age == $firstAge ) // constraint expression</programlisting>
       <section>
         <title>Special literal support</title>
 
-        <para>Besides normal Java literals (including Java 5 enums), these literals are also supported:</para>
+        <para>Besides normal Java literals (including Java 5 enums), this literal is also supported:</para>
 
-        <simplesect>
+        <section>
           <title>Date literal</title>
 
           <para>The date format <literal>dd-mmm-yyyy</literal> is supported by default. You can customize this by
@@ -689,7 +695,7 @@ Person( age == $firstAge ) // constraint expression</programlisting>
 
             <programlisting>Cheese( bestBefore &lt; "27-Oct-2009" )</programlisting>
           </example>
-        </simplesect>
+        </section>
       </section>
 
       <section>
@@ -757,8 +763,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
           </mediaobject>
         </figure>
 
-        <para>Coercion to the correct value for the evaluator and the field will be attempted, as mentioned in the
-        <emphasis>Values</emphasis> section.</para>
+        <para>Coercion to the correct value for the evaluator and the field will be attempted.</para>
 
         <section>
           <title>The operators <literal>&lt;</literal> <literal>&lt;=</literal> <literal>&gt;</literal>
@@ -781,15 +786,18 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
           <para>Matches a field against any valid Java <indexterm>
               <primary>regular expression</primary>
             </indexterm>Regular Expression. Typically that regexp is a string literal, but variables that resolve to a
-          valid regexp are also allowed. It is important to note that, <emphasis>different from Java</emphasis>, within
-          regular expressions written as string literals <emphasis>you don't need to escape
-          '<literal>\</literal></emphasis>'. Example:</para>
+          valid regexp are also allowed.</para>
 
           <example>
             <title>Regular Expression Constraint</title>
 
-            <programlisting>Cheese( type matches "(Buffalo)?\S*Mozarella" )</programlisting>
+            <programlisting>Cheese( type matches "(Buffalo)?\\S*Mozarella" )</programlisting>
           </example>
+
+          <note>
+            <para>Like in Java, regular expressions written as string literals <emphasis>need to escape
+            '<literal>\</literal></emphasis>'.</para>
+          </note>
 
           <para>Only applies on <literal>String</literal> properties.</para>
         </section>
@@ -803,7 +811,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
           <example>
             <title>Regular Expression Constraint</title>
 
-            <programlisting>Cheese( type not matches "(Buffulo)?\S*Mozarella" )</programlisting>
+            <programlisting>Cheese( type not matches "(Buffulo)?\\S*Mozarella" )</programlisting>
           </example>
 
           <para>Only applies on <literal>String</literal> properties.</para>
@@ -1127,38 +1135,7 @@ Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obselete i
         <title>Conditional Element <literal>and</literal></title>
 
         <para>The Conditional Element <literal>and</literal> is used to group other Conditional Elements into a logical
-        conjunction. The root element of the LHS is an implicit prefix <literal>and</literal> and doesn't need to be
-        specified. Drools supports both prefix <literal>and</literal> and infix <literal>and</literal>, but prefix is
-        the preferred option as its implicit grouping avoids confusion.</para>
-
-        <figure>
-          <title>prefixAnd</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixAnd.png" format="PNG" role=""></imagedata>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <example>
-          <title>prefixAnd</title>
-
-          <programlisting>(and Cheese( cheeseType : type )
-     Person( favouriteCheese == cheeseType ) )</programlisting>
-        </example>
-
-        <example>
-          <title>implicit root prefixAnd</title>
-
-          <programlisting>when
-     Cheese( cheeseType : type )
-     Person( favouriteCheese == cheeseType )</programlisting>
-        </example>
-
-        <para>Infix <literal>and</literal> is supported along with explicit grouping with parentheses, should it be
-        needed. The symbol <literal>&amp;&amp;</literal>, as an alternative to <literal>and</literal>, is deprecated
-        although it is still supported in the syntax for legacy support reasons.</para>
+        conjunction. Drools supports both prefix <literal>and</literal> and infix <literal>and</literal>.</para>
 
         <figure>
           <title>infixAnd</title>
@@ -1170,16 +1147,49 @@ Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obselete i
           </mediaobject>
         </figure>
 
-        <example>
-          <title>infixAnd</title>
+        <para>Traditional infix <literal>and</literal> is supported:</para>
 
-          <programlisting>//infixAnd
-Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )
+        <programlisting>//infixAnd
+Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )</programlisting>
 
-//infixAnd with grouping
+        <para>Explicit grouping with parentheses is also supported:</para>
+
+        <programlisting>//infixAnd with grouping
 ( Cheese( cheeseType : type ) and
   ( Person( favouriteCheese == cheeseType ) or 
     Person( favouriteCheese == cheeseType ) )</programlisting>
+
+        <note>
+          <para>The symbol <literal>&amp;&amp;</literal> (as an alternative to <literal>and</literal>) is deprecated.
+          But it is still supported in the syntax for backwards compatibility.</para>
+        </note>
+
+        <figure>
+          <title>prefixAnd</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixAnd.png" format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Prefix <literal>and</literal> is also supported:</para>
+
+        <programlisting>(and Cheese( cheeseType : type )
+     Person( favouriteCheese == cheeseType ) )</programlisting>
+
+        <para>The root element of the LHS is an implicit prefix <literal>and</literal> and doesn't need to be
+        specified:</para>
+
+        <example>
+          <title>implicit root prefixAnd</title>
+
+          <programlisting>when
+    Cheese( cheeseType : type )
+    Person( favouriteCheese == cheeseType )
+then
+    ...</programlisting>
         </example>
       </section>
 
@@ -1187,35 +1197,7 @@ Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )
         <title>Conditional Element <literal>or</literal></title>
 
         <para>The Conditional Element <literal>or</literal> is used to group other Conditional Elements into a logical
-        disjunction. Drools supports both prefix <literal>or</literal> and infix <literal>or</literal>, but prefix is
-        the preferred option as its implicit grouping avoids confusion. The behavior of the Conditional Element
-        <literal>or</literal> is different from the connective '||' for constraints and restrictions in field
-        constraints. The engine actually has no understanding of the Conditional Element <literal>or</literal>; instead,
-        via a number of different logic transformations, a rule with <literal>or</literal> is rewritten as a number of
-        subrules. This process ultimately results in a rule that has a single <literal>or</literal> as the root node and
-        one subrule for each of its CEs. Each subrule can activate and fire like any normal rule; there is no special
-        behavior or interaction between these subrules. - This can be most confusing to new rule authors.</para>
-
-        <figure>
-          <title>prefixOr</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixOr.png" format="PNG" role=""></imagedata>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <example>
-          <title>prefixOr</title>
-
-          <programlisting>(or Person( sex == "f", age &gt; 60 )
-    Person( sex == "m", age &gt; 65 )</programlisting>
-        </example>
-
-        <para>Infix <literal>or</literal> is supported along with explicit grouping with parentheses, should it be
-        needed. The symbol '||', as an alternative to <literal>or</literal>, is deprecated although it is still
-        supported in the syntax for legacy support reasons.</para>
+        disjunction. Drools supports both prefix <literal>or</literal> and infix <literal>or</literal>.</para>
 
         <figure>
           <title>infixOr</title>
@@ -1227,27 +1209,56 @@ Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )
           </mediaobject>
         </figure>
 
-        <example>
-          <title>infixOr</title>
+        <para>Traditional infix <literal>or</literal> is supported:</para>
 
-          <programlisting>//infixOr
-Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )
-//infixOr with grouping
+        <programlisting>//infixOr
+Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )</programlisting>
+
+        <para>Explicit grouping with parentheses is also supported:</para>
+
+        <programlisting>//infixOr with grouping
 ( Cheese( cheeseType : type ) or
   ( Person( favouriteCheese == cheeseType ) and
     Person( favouriteCheese == cheeseType ) )</programlisting>
-        </example>
+
+        <note>
+          <para>The symbol <literal>||</literal> (as an alternative to <literal>or</literal>) is deprecated. But it is
+          still supported in the syntax for backwards compatibility.</para>
+        </note>
+
+        <figure>
+          <title>prefixOr</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-Rule_Language/prefixOr.png" format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Prefix <literal>or</literal> is also supported:</para>
+
+        <programlisting>(or Person( sex == "f", age &gt; 60 )
+    Person( sex == "m", age &gt; 65 )</programlisting>
+
+        <note>
+          <para>The behavior of the Conditional Element <literal>or</literal> is different from the connective
+          <literal>||</literal> for constraints and restrictions in field constraints. The engine actually has no
+          understanding of the Conditional Element <literal>or</literal>. Instead, via a number of different logic
+          transformations, a rule with <literal>or</literal> is rewritten as a number of subrules. This process
+          ultimately results in a rule that has a single <literal>or</literal> as the root node and one subrule for each
+          of its CEs. Each subrule can activate and fire like any normal rule; there is no special behavior or
+          interaction between these subrules. - This can be most confusing to new rule authors.</para>
+        </note>
 
         <para>The Conditional Element <literal>or</literal> also allows for optional pattern binding. This means that
         each resulting subrule will bind its pattern to the pattern binding. Each pattern must be bound separately,
         using eponymous variables:</para>
 
-        <example>
-          <title>or with binding</title>
+        <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
 
-          <programlisting>(or pensioner : Person( sex == "f", age &gt; 60 ) 
+        <programlisting>(or pensioner : Person( sex == "f", age &gt; 60 ) 
     pensioner : Person( sex == "m", age &gt; 65 ) )</programlisting>
-        </example>
 
         <para>Since the conditional element <literal>or</literal> results in multiple subrule generation, one for each
         possible logically outcome, the example above would result in the internal generation of two rules. These two
