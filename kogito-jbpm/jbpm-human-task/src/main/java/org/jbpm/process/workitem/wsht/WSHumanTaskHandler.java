@@ -71,7 +71,6 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		client.registerForEvent(key, false, eventResponseHandler);
 		key = new TaskEventKey(TaskSkippedEvent.class, -1);           
 		client.registerForEvent(key, false, eventResponseHandler);
-		System.out.println("Registered human task listener");
 	}
 	
 	public void setManager(WorkItemManager manager) {
@@ -169,6 +168,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 
 		ContentData content = null;
 		Object contentObject = workItem.getParameter("Content");
+		if (contentObject == null) {
+			contentObject = workItem.getParameters();
+		}
 		if (contentObject != null) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream out;
@@ -183,24 +185,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 				e.printStackTrace();
 			}
 		}
-                // If the content is not set we will automatically copy all the input objects into 
-                // the task content
-                else {
-                    contentObject = workItem.getParameters();
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream out;
-			try {
-				out = new ObjectOutputStream(bos);
-				out.writeObject(contentObject);
-				out.close();
-				content = new ContentData();
-				content.setContent(bos.toByteArray());
-				content.setAccessType(AccessType.Inline);
-                                content.setType("java.util.map");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-                }
+
 		client.addTask(task, content, null);
 	}
 	
@@ -228,7 +213,6 @@ public class WSHumanTaskHandler implements WorkItemHandler {
         public void execute(Payload payload) {
             TaskEvent event = ( TaskEvent ) payload.get();
         	long taskId = event.getTaskId();
-            System.out.println("Task completed " + taskId);
         	GetTaskResponseHandler getTaskResponseHandler =
         		new GetCompletedTaskResponseHandler(manager, client);
         	client.getTask(taskId, getTaskResponseHandler);   
