@@ -4653,6 +4653,7 @@ public class MiscTest {
     }
 
     @Test
+    @Ignore
     public void testAlphaExpression() throws Exception {
         final String text = "package org.drools\n" +
                             "rule \"alpha\"\n" +
