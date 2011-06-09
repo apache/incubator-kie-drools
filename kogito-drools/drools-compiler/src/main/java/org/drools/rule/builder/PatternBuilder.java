@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -998,7 +999,8 @@ public class PatternBuilder
                                          final Set<String> unboundIdentifiers,
                                          final BoundIdentifiers boundIdentifiers,
                                          final List factDeclarations ) {
-        for ( String identifier : unboundIdentifiers ) {
+        for ( Iterator<String> it = unboundIdentifiers.iterator(); it.hasNext(); ) {
+            String identifier = it.next();
             Declaration declaration = createDeclarationObject( context,
                                                                identifier,
                                                                pattern );
@@ -1015,8 +1017,7 @@ public class PatternBuilder
                                                         declaration );
                 boundIdentifiers.getDeclrClasses().put( identifier,
                                                         declaration.getExtractor().getExtractToClass() );
-                unboundIdentifiers.remove( identifier );
-
+                it.remove();
             }
         }
     }

@@ -4604,7 +4604,7 @@ public class MiscTest {
                             "rule \"inline eval\"\n" +
                             "when\n" +
                             "    $str : String()\n" +
-                            "    Person( eval( name.startsWith($str) && name.endsWith($str)) )\n" +
+                            "    Person( eval( name.startsWith($str) && age == 18) )\n" +
                             "then\n" +
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
@@ -4621,6 +4621,51 @@ public class MiscTest {
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+
+    }
+
+    @Test
+    @Ignore( "Requires fixing of mvel regression reported at https://github.com/mvel/mvel/pull/4")
+    public void testMethodCalls() throws Exception {
+        final String text = "package org.drools\n" +
+                            "rule \"method calls\"\n" +
+                            "when\n" +
+                            "    Person( getName().substring(2) == 'b' )\n" +
+                            "then\n" +
+                            "end";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( new Person( "mark",
+                                     50 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 0,
+                      rules );
+        
+        ksession.insert( new Person( "bob",
+                                     18 ) );
+        rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+
+    }
+
+    @Test
+    public void testAlphaExpression() throws Exception {
+        final String text = "package org.drools\n" +
+                            "rule \"alpha\"\n" +
+                            "when\n" +
+                            "    Person( 5 < 6 )\n" +
+                            "then\n" +
+                            "end";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( new Person( "mark",
+                                     50 ) );
+        int rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
 
