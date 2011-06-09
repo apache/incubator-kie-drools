@@ -797,6 +797,9 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
           <note>
             <para>Like in Java, regular expressions written as string literals <emphasis>need to escape
             '<literal>\</literal></emphasis>'.</para>
+
+            <para>Up to Drools 5.1 there was a configuration to support non-escaped regexps from Drools 4.0 for
+            backwards compatilibity. From Drools 5.2 this is no longer supported.</para>
           </note>
 
           <para>Only applies on <literal>String</literal> properties.</para>
@@ -862,26 +865,30 @@ CheeseCounter( cheeses not contains $var ) // not contains with a variable</prog
           <title>The operator <literal>memberOf</literal></title>
 
           <para>The operator <literal>memberOf</literal> is used to check whether a field is a member of a collection or
-          array; that collection must be a variable.</para>
+          array.</para>
 
           <example>
             <title>Literal Constraint with Collections</title>
 
             <programlisting>CheeseCounter( cheese memberOf $matureCheeses )</programlisting>
           </example>
+
+          <programlisting>Person( father memberOf parents )</programlisting>
         </section>
 
         <section>
           <title>The operator <literal>not memberOf</literal></title>
 
           <para>The operator <literal>not memberOf</literal> is used to check whether a field is not a member of a
-          collection or array; that collection must be a variable.</para>
+          collection or array.</para>
 
           <example>
             <title>Literal Constraint with Collections</title>
 
             <programlisting>CheeseCounter( cheese not memberOf $matureCheeses )</programlisting>
           </example>
+
+          <programlisting>Person( father not memberOf childern )</programlisting>
         </section>
 
         <section>
@@ -960,10 +967,7 @@ Cheese( type in ( "stilton", "cheddar", $cheese ) )</programlisting>
             <primary>Predicate</primary>
           </indexterm>inline eval constraint can use any valid dialect expression as long as it results to a primitive
         boolean. The expression must be constant over time. Any previously bound variable, from the current or previous
-        pattern, can be used; autovivification is also used to auto-create field binding variables. When an identifier
-        is found that is not a current variable, the builder looks to see if the identifier is a field on the current
-        object type, if it is, the field binding is auto-created as a variable of the same name. This is called
-        autovivification of field variables inside of inline eval's.</para>
+        pattern, can be used.</para>
 
         <para>This example will find all male-female pairs where the male is 2 years older than the female; the variable
         <code>age</code> is auto-created in the second pattern by the autovivification process.</para>
