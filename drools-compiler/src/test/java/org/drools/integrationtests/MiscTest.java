@@ -4599,6 +4599,63 @@ public class MiscTest {
     }
 
     @Test
+    public void testEvalInline() throws Exception {
+        final String text = "package org.drools\n" +
+                            "rule \"inline eval\"\n" +
+                            "when\n" +
+                            "    $str : String()\n" +
+                            "    Person( eval( name.startsWith($str) && name.endsWith($str)) )\n" +
+                            "then\n" +
+                            "end";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( "b" );
+        
+        ksession.insert( new Person( "mark",
+                                     50 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 0,
+                      rules );
+        
+        ksession.insert( new Person( "bob",
+                                     18 ) );
+        rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+
+    }
+
+    @Test
+    public void testEvalCE() throws Exception {
+        final String text = "package org.drools\n" +
+                            "rule \"inline eval\"\n" +
+                            "when\n" +
+                            "    $str : String()\n" +
+                            "    $p   : Person()\n" +
+                            "    eval( $p.getName().startsWith($str) && $p.getName().endsWith($str) )" +
+                            "then\n" +
+                            "end";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.insert( "b" );
+        
+        ksession.insert( new Person( "mark",
+                                     50 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 0,
+                      rules );
+        
+        ksession.insert( new Person( "bob",
+                                     18 ) );
+        rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+
+    }
+
+    @Test
     public void testEvalRewrite() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_EvalRewrite.drl" ) ) );
@@ -8723,7 +8780,7 @@ public class MiscTest {
     @Test
     public void testMapModel() {
         String str = "package org.drools\n" +
-        		     "import java.util.Map\n" +
+                     "import java.util.Map\n" +
                      "rule \"test\"\n" +
                      "when\n" +
                      "    Map( type == \"Person\", name == \"Bob\" );\n" +
@@ -8732,27 +8789,31 @@ public class MiscTest {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         Map<String, String> mark = new HashMap<String, String>();
-        mark.put( "type", "Person" );
-        mark.put( "name", "Mark" );
+        mark.put( "type",
+                  "Person" );
+        mark.put( "name",
+                  "Mark" );
 
         ksession.insert( mark );
 
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         Map<String, String> bob = new HashMap<String, String>();
-        bob.put( "type", "Person" );
-        bob.put( "name", "Bob" );
+        bob.put( "type",
+                 "Person" );
+        bob.put( "name",
+                 "Bob" );
 
         ksession.insert( bob );
 
         rules = ksession.fireAllRules();
         assertEquals( 1,
                       rules );
-        
+
     }
 
     @Test
