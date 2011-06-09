@@ -5,7 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>API</title>
+  <title>Core Engine: API</title>
 
   <para>To interact with the process engine (to for example start a process), you need
   to set up a session.  This session will be used to communicate with the process engine.

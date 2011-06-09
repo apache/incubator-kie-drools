@@ -42,7 +42,7 @@
   install the latest version of the BPMN 2.0 editor in Eclipse. A screencast that shows
   all this in action can be found <ulink url="http://vimeo.com/22022128">here</ulink>.</para>
 
-  <para>Sources can be found here: <ulink url="http://github.com/imeikas/BPMN2-Editor-for-Eclipse">http://github.com/imeikas/BPMN2-Editor-for-Eclipse</ulink></para>
+  <para>Sources can be found here: <ulink url="https://github.com/droolsjbpm/bpmn2-eclipse-editor">https://github.com/droolsjbpm/bpmn2-eclipse-editor</ulink></para>
 
   </section>
   

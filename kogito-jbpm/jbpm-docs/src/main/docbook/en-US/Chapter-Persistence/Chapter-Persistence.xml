@@ -5,7 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>Persistence</title>
+  <title>Core Engine: Persistence and transactions</title>
 
   <para>jBPM allows the persistent storage of certain information,
   i.e., the process runtime state, the history information, etc.</para>

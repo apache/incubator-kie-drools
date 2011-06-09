@@ -6,228 +6,307 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Overview</title>
 
-  <para>This chapter will give an overview of the various components that are offered as part of the jBPM project.  It will walk through the different phases in the life cycle of a business process, from modeling and deployment to execution and monitoring.</para>
-
   <section>
-    <title>Modeling</title>
+    <title>What is jBPM?</title>
+    
+    <para>jBPM is a flexible Business Process Management (BPM) Suite.  It's light-weight,
+    fully open-source (distributed under Apache license) and written in Java.  It allows
+    you to model, execute and monitor business processes, throughout their life cycle.</para>
+    
+    <para>A business process allows you to model your business goals by describing the steps
+    that need to be executed to achieve that goal and the order, using a flow chart.  
+    This greatly improves the visibility and agility of your business logic.  jBPM focuses
+    on executable business process, which are business processes that contain enough detail
+    so they can actually be executed on a BPM engine.  Executable business processes bridge
+    the gap between business users and developers as they are higher-level and use 
+    domain-specific concepts that are understood by business users but can also be executed
+    directly.</para>
 
-    <para>jBPM currently allows users to create and modify business processes using graphical flow charts.  We target both developers and business users, using an Eclipse editors and a web-based editor respectively.  Currently, we offer three options to model your BPMN2 processes.</para>
-    <section>
-      <title>Drools Flow Eclipse Plugin for creating BPMN2 processes</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="PNG" role="" fileref="images/Chapter-Overview/Process.png"/>
+      </imageobject>
+    </mediaobject>
 
-      <para>This Eclipse plugin allows developers to create, test and debug BPMN2 processes.</para>
-      <figure>
-        <title>The Drools Flow editor for creating BPMN2 processes</title>
-        <mediaobject>
-          <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/EclipseFlow.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+    <para>The core of jBPM is a light-weight, extensible workflow engine written
+    in pure Java that allows you to execute business processes using the latest
+    BPMN 2.0 specification.  It can run in any Java environment, embedded in your
+    application or as a service.</para>
 
-    </section>
-
-    <section>
-      <title>New BPMN 2.0 Eclipse Plugin for creating BPMN2 processes</title>
-
-      <para>This new Eclipse plugin is being created to support the full BPMN 2.0 specification.  It is currently still
-      under development but can already be used to create executable BPMN2 processes.</para>
-      <figure>
-        <title>The BPMN 2.0 editor for creating BPMN2 processes</title>
-        <mediaobject>
-          <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/EclipseJBPM.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-    </section>
-
-    <section>
-      <title>Web-based process modeling using Oryx Designer</title>
-
-      <para>Web-based editing is possible using the Oryx Designer.  This designer is also integrated into Guvnor, 
-      the knowledge repository where you can store your processes.  The Designer can be used to view, update or
-      create BPMN2 processes.</para>
-      <figure>
-        <title>The web-based Oryx editor for creating BPMN2 processes</title>
-        <mediaobject>
-          <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/Designer.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-    </section>
-
-  </section>
-
-  <section>
-    <title>Deployment</title>
-
-    <para>Guvnor can be used as a knowledge repository, for storing your processes, domain model, business rules, etc.
-    Guvnor provides a web-based management console for inspecting, modifying and testing your knowledge.  The Oryx Designer
-    is integrated with the Guvnor console.  Guvnor also supports collaboration between different users, scenario testing,
-    packaging, etc.</para>
-  </section>
-
-  <section>
-    <title>Execution</title>
-
-    <section>
-      <title>Process engine</title>
-
-    <para>The core engine is a lightweight workflow engine in Java:
+    <para>On top of the core engine, a lot of features and tools are offered to 
+    support business processes throughout their entire life cycle:
       <itemizedlist>
-        <listitem>native BPMN2 process execution</listitem>
-        <listitem>pluggable persistence and transactions</listitem>
-        <listitem>audit and history logging</listitem>
-        <listitem>based on a generic process engine</listitem>
+        <listitem>Eclipse-based and web-based editor to support the graphical 
+        creation of your business processes (drag and drop)</listitem>
+        <listitem>Pluggable persistence and transactions based on JPA / JTA</listitem>
+        <listitem>Pluggable human task service based on WS-HumanTask for including 
+        tasks that need to be performed by human actors</listitem>
+        <listitem>Management console supporting process instance management, task 
+        lists and task form management, and reporting</listitem>
+        <listitem>Optional process repository to deploy your process (and other 
+        related knowledge)</listitem>
+        <listitem>History logging (for querying / monitoring / analysis)</listitem>
+        <listitem>Integration with Seam, Spring, OSGi, etc.</listitem>
       </itemizedlist>
     </para>
-  <para>We do yet implement all node types and attributes as defined in the BPMN 2.0 specification, but we already support a very significant
-  subset, which includes all common node types.  The following list gives an overview of the various elements that can already be
-  executed using the BPMN 2.0 XML format:</para>
 
-  <itemizedlist>
-    <listitem><emphasis>Flow objects</emphasis>
-      <itemizedlist>
-        <listitem>Events
-          <itemizedlist>
-            <listitem>Start Event (None, Conditional, Signal, Message, Timer)</listitem>
-            <listitem>End Event (None, Terminate, Error, Escalation, Signal, Message, Compensation)</listitem>
-            <listitem>Intermediate Catch Event (Signal, Timer, Conditional, Message)</listitem>
-            <listitem>Intermediate Throw Event (None, Signal, Escalation, Message, Compensation)</listitem>
-            <listitem>Non-interrupting Boundary Event (Escalation, Timer)</listitem>
-            <listitem>Interrupting Boundary Event (Escalation, Error, Timer, Compensation)</listitem>
-          </itemizedlist>
-        </listitem>
-        <listitem>Activities
-          <itemizedlist>
-            <listitem>Script Task (Java or MVEL expression language)</listitem>
-            <listitem>Task</listitem>
-            <listitem>Service Task</listitem>
-            <listitem>User Task</listitem>
-            <listitem>Business Rule Task</listitem>
-            <listitem>Manual Task</listitem>
-            <listitem>Send Task</listitem>
-            <listitem>Receive Task</listitem>
-            <listitem>Reusable Sub-Process (Call Activity)</listitem>
-            <listitem>Embedded Sub-Process</listitem>
-            <listitem>Ad-Hoc Sub-Process</listitem>
-            <listitem>Data-Object</listitem>
-          </itemizedlist>
-        </listitem>
-        <listitem>Gateways
-          <itemizedlist>
-            <listitem>Diverging
-              <itemizedlist>
-                <listitem>Exclusive (Java, MVEL or XPath expression language)</listitem>
-                <listitem>Inclusive (Java, MVEL or XPath expression language)</listitem>
-                <listitem>Parallel</listitem>
-                <listitem>Event-Based</listitem>
-              </itemizedlist>
-            </listitem>
-            <listitem>Converging
-              <itemizedlist>
-                <listitem>Exclusive</listitem>
-                <listitem>Parallel</listitem>
-              </itemizedlist>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-        <listitem>Lanes</listitem>
-      </itemizedlist>
-    </listitem>
-    <listitem><emphasis>Data</emphasis>
-      <itemizedlist>
-        <listitem>Java type language</listitem>
-        <listitem>Process properties</listitem>
-        <listitem>Embedded Sub-Process properties</listitem>
-        <listitem>Activity properties</listitem>
-      </itemizedlist>
-    </listitem>
-    <listitem><emphasis>Connecting objects</emphasis>
-      <itemizedlist>
-        <listitem>Sequence flow</listitem>
-      </itemizedlist>
-    </listitem>
-  </itemizedlist>
+    <para>BPM makes the bridge between business analysts, developers and end users, 
+    by offering process management features and tools in a way that both business 
+    users and developers like it.  Domain-specific nodes can be plugged into the 
+    palette, making the processes more easily understood by business users.</para>
 
-    </section>
+    <para>jBPM supports adaptive and dynamic processes that require flexibility to 
+    model complex, real-life situations that cannot easily be described using a rigid 
+    process.  We bring control back to the end users by allowing them to control which 
+    parts of the process should be executed, to dynamically deviate from the process, etc.</para>
 
-    <section>
-      <title>Human task service</title>
+    <para>jBPM is also not just an isolated process engine.  Complex business logic can
+    be modeled as a combination of business processes with business rules and complex
+    event processing.  jBPM can be combined with the Drools project to support one unified
+    environment that integrates these paradigms where you model your business logic as a 
+    combination of processes, rules and events.</para>
 
-    <para>Human tasks are an important part of a BPM solution. While some of the work performed in a process can be executed
-    automatically, some tasks need to be executed with the interaction of human actors. This includes task lists for users,
-    claiming and/or assigning tasks, etc.  The process engine itself is not tied to one specific, internal implementation but
-    allows for other implementations to be plugged in. By default jBPM currently supports a WS-HT service as the default
-    implementation. The life cycle as supported by the Human Task specification is shown below. Note that the WS-HT service
-    also includes features like group assignment, escalation, assignment rules, etc.</para>
-      <figure>
-        <title>The WS-HT human task life cycle</title>
+    <para>Apart from the core engine itself, there are quite a few additional (optional)
+    components that you can use, like an Eclipse-based or web-based designer and a 
+    management console.</para>
+    
+  </section>
+  
+  <section>
+    <title>Overview</title>
+
+      <figure>
         <mediaobject>
           <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/WS-HT.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-Overview/Overview.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    
+    <para>This figure gives an overview of the different components of the jBPM project.  jBPM can
+    integrate with a lot of other services as (and we've shown a few using grey bloxes on the figure)
+    but here we focus on the components that are part of the jBPM project itself.
+      <itemizedlist>
+        <listitem>The process engine is the core of the project and is required if you want to
+        execute business processes (all other components are optional, as indicated by the dashed
+        border).  Your application services typically invoke the core engine (to start processes or to
+        signal events) whenever necessary.
+          <itemizedlist>
+             <listitem>An optional core service is the history log, that will log all information
+        about the current and previous state of all your process instances.</listitem>
+             <listitem>Another optional core service is the human task service, that will take care of
+        the human task life cycle if human actors participate in the process.</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Two types of graphical editors are supported for defining your business processes:
+          <itemizedlist>
+            <listitem>The Eclipse plugin is an extension to the Eclipse IDE, targeted towards developers,
+            and allows you to create business processes using drag and drop, advanced debugging, etc.</listitem>
+            <listitem>The web-based designer allows business users to manage business processes in
+            a web-based environment.</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>The Guvnor repository is an optional component that can be used to store all your
+        business processes.  It supports collaboration, versioning, etc.  There is integration
+        with both the Eclipse plugin and web-based designer, supporting round-tripping between
+        the different tools.</listitem>
+        <listitem>The jBPM console is a web-based console that allows business users to manage
+        their business processes (start new processes, inspect running instances), their task list
+        and see reports.</listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>Each of the components are described in more detail below.</para>
+      
+  </section>
+
+  <section>
+    <title>Core Engine</title>
+
+    <para>The core jBPM engine is the heart of the project.  It's a light-weight workflow
+    engine that executes your business processes.  It can be embedded as part of your application
+    or deployed as a service (possibly on the cloud).  It's most important features are:
+      <itemizedlist>
+        <listitem>Solid, stable core engine for executing your process instances</listitem>
+        <listitem>Native support for the latest BPMN 2.0 specification for modeling and
+        executing business processes</listitem>
+        <listitem>Strong focus on performance and scalability</listitem>
+        <listitem>Light-weight (can be deployed on almost any device that supports
+        a simple Java Runtime Environment, does not require any web container at all)</listitem>
+        <listitem>(Optional) pluggable persistence with a default JPA implementation</listitem>
+        <listitem>Pluggable transaction support with a default JTA implementation</listitem>
+        <listitem>Implemented as a generic process engine, so it can be extended to support
+        new node types or other process languages</listitem>
+        <listitem>Listeners to be notified of various events</listitem>
+        <listitem>Ability to migrate running process instances to a new version of their
+        process definition</listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>The core engine can also be integrated with a few other (independent) core services:
+      <itemizedlist>
+        <listitem>The human task service can be used to manage human tasks when human
+        actors need to participate in the process.  It is fully pluggable and the default
+        implementation is based on the WS-HumanTask specification and manages the life
+        cycle of the tasks, task lists, task forms and some more advanced features like
+        escalation, delegation, rule-based assignments, etc.</listitem>
+        <listitem>The history log can store all information about the execution of all the
+        processes on the engine.  This is necessary if you need access to historic information
+        as runtime persistence only stores the current state of all active process instances.
+        The history log can be used to store all current and historic state of active and completed
+        process instances.  It can be used to query for any information related to the execution
+        of process instances, for monitoring, analysis, etc.</listitem>
+      </itemizedlist>
+    </para>
+    
+    </section>
+    
+    <section>
+      <title>Eclipse Editor</title>
+      
+    <para>The Eclipse editor is an plugin to the Eclipse IDE and allows you to integrate your 
+    business processes in your development environment.  It is targeted towards developers and
+    has some wizards to get started, a graphical editor for creating your business processes
+    (using drag and drop) and a lot of advanced testing and debugging capabilities.</para>
+      
+      <figure>
+        <title>Eclipse editor for creating BPMN2 processes</title>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Overview/EclipseFlow.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    
+    <para>It includes features like:
+      <itemizedlist>
+        <listitem>Wizard for creating a new jBPM project</listitem>
+        <listitem>A graphical editor for BPMN 2.0 processes</listitem>
+        <listitem>Plugging in your own domain-specific nodes</listitem>
+        <listitem>Validation</listitem>
+        <listitem>Runtime support (so you can select which version of jBPM you would like to use)</listitem>
+        <listitem>Graphical debugging, to see all running process instances of a selected session,
+        to visualize the current state of one specific process instance, etc.</listitem>
+        <listitem>Audit view to get an overview of what happened at runtime</listitem>
+        <listitem>Unit testing your processes</listitem>
+        <listitem>Integration with the knowledge repository</listitem>
+      </itemizedlist>
+    </para>
+      
+    </section>
+    
+    <section>
+      <title>Web-based Designer</title>
+      
+    <para>The web-based designer allows you to model your business processes in a web-based   
+    environment.  It is targeted towards more business users and offers a graphical editor
+    for viewing and editing your business processes (using drag and drop), similar to the
+    Eclipse plugin.  It supports round-tripping between the Eclipse editor and the
+    web-based designer.</para>
+      
+      <figure>
+        <title>Web-based designer for creating BPMN2 processes</title>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Overview/Designer.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
 
-    <para>User-defined human task forms are also supported using a template-based approach, while a other task form solutions
-    can easily be integrated.</para>
-
     </section>
-
-  </section>
-
-  <section>
-    <title>Monitoring</title>
-
-    <para>To monitoring your processes, you first need the ability to know what happening at runtime. Process listeners can be
-    used to listen to different kinds of events occuring at runtime, like process instances being started or node instances being
-    completed, etc. This information could then be used to create history logs (for reporting or static analysis purposes), or to
-    dymanically analyze and respond using Business Activity Monitoring (BAM).</para>
-
+    
+    <para>Optionally, you can use one or more knowledge repositories to store your business processes
+    (and other related artefacts).  The web-based designer is integrated in the Guvnor repository,
+    which is targeted towards business users and allows you to manage your processes separately 
+    from your application.  It supports:
+      <itemizedlist>
+        <listitem>A repository service to store your business processes and related artefacts,
+        using a JCR repository, which supports versioning, remotely accessing it as a file system
+        or using REST services, etc.</listitem>
+        <listitem>A web-based user interface to manage your business processes, targeted towards
+        business users, supporting the visualization (and editing) of your processes (the web-based
+        designer is integrated here), but also categorisation, scenario testing, deployment, etc.</listitem>
+        <listitem>Collaboration features to have multiple actors (for example business users and
+        developers) work together on the same process definition.</listitem>
+        <listitem>A knowledge agent to easily create new sessions based on the process definitions
+        in the repository.  This also supports (optionally) dynamically updating all sessions
+        if a new process has been deployed.</listitem>
+      </itemizedlist>
+    </para>
+      
     <section>
-      <title>Web-based management console</title>
-
-    <para>Processes can be managed through a web console. This includes features like managing your process instances
-    (starting/stopping/inspecting), ...</para>
-
+      <title>jBPM Console</title>
+    
+    <para>Business processes can be managed through a web console.  It is targeted towards
+    business users and its main features are:
+      <itemizedlist>
+        <listitem>Process instance management: the ability to start new process instances,
+        get a list of running process instances, visually inspect the state of a specific
+        process instances, etc.</listitem>
+        <listitem>Human task management: being able to get a list of all your current tasks
+        (either assigned to you or that you might be able to claim), completing tasks on
+        your task list (using customizable task forms), etc.</listitem>
+        <listitem>Reporting: get an overview of the state of your application and/or system
+        using dynamically generated (customizable) reports, that give you an overview of 
+        your key performance indicators (KPIs).</listitem>
+      </itemizedlist>
+    </para>
+      
       <figure>
         <title>Managing your process instances</title>
         <mediaobject>
           <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/ProcessInstanceDiagram.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-Overview/ProcessInstanceDiagram.png" format="PNG" role="" />
           </imageobject>
         </mediaobject>
       </figure>
-
-    <para>... inspecting your (human) task list and executing those tasks, ...</para>
-
-      <figure>
-        <title>Managing your tasks</title>
-        <mediaobject>
-          <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/TaskForm.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-    <para>... and generating reports.</para>
-
-      <figure>
-        <title>Generating reports</title>
-        <mediaobject>
-          <imageobject>
-	    <imagedata align="center" fileref="images/Chapter-Overview/ReportProcess.png" format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
+      
     </section>
-
-  </section>
-
+    
+    <section>
+      <title>Documentation</title>
+      
+      <para>The documentation is structured as follows:
+       <itemizedlist>
+         <listitem>Overview: the overview chapter gives an overview of the different components</listitem>
+         <listitem>Getting Started: the getting started chapter teaches you where to download 
+         the binaries and sources and contains a lot of useful links</listitem>
+         <listitem>Installer: the installer helps you getting a running demo setup including
+         most of the jBPM components and runs you through them using a simple example and some
+         10-minute tutorials including screencasts</listitem>
+         <listitem>Core engine: the next 4 chapters describe the core engine: the process engine API,
+         the process definition language (BPMN 2.0), persistence and transactions, and examples</listitem>
+         <listitem>Eclipse editor: the next 2 chapters describe the Eclipse plugin for developers,
+         both the old one and the new BPMN 2.0 tooling which is being developed</listitem>
+         <listitem>Designer: describes the web-based designer that allows business users to
+         edit business processes in a web-based context</listitem>
+         <listitem>Console: the jBPM console can be used for managing process instances, human task
+         lists and reports</listitem>
+         <listitem>Important features
+           <itemizedlist>
+             <listitem>Human tasks: When using human actors, you need a human task service to manage
+             the life cycle of the tasks, the task lists, etc.</listitem>
+             <listitem>Domain-specific processes: plug in your own higher-level, domain-specific
+             nodes in your processes</listitem>
+             <listitem>Testing and debugging: how to test and debug your processes</listitem>
+             <listitem>Process repository: a process repository could be used to manage your
+             business processes</listitem>
+           </itemizedlist>
+         </listitem>
+         <listitem>Advanced concepts
+           <itemizedlist>
+             <listitem>Business activity monitoring: event processing to monitor the state of
+             your systems</listitem>
+             <listitem>Flexible processes: model much more adaptive, flexible processes using
+             advanced process constructs and integration with business rules and event
+             processing</listitem>
+             <listitem>Integration: how to integrate with other technologies like maven, OSGi, 
+             etc.</listitem>
+           </itemizedlist>
+         </listitem>
+       </itemizedlist>
+      </para>
+      
+    </section>
+    
 </chapter>

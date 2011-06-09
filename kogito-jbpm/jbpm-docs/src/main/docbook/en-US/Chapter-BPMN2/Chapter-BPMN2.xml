@@ -5,7 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-  <title>BPMN 2.0</title>
+  <title>Core Engine: BPMN 2.0</title>
 
   <section>
     <title>Business Process Model and Notation (BPMN) 2.0 specification</title>
