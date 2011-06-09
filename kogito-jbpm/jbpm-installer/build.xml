@@ -209,7 +209,7 @@
   <target name="download.jBPM.eclipse" depends="download.jBPM.eclipse.check" if="jBPM.eclipse.not.available">
     <echo message="Getting jBPM Eclipse ..." />
     <mkdir dir="${install.home}/lib"/>
-    <get src="http://community.jboss.org/servlet/JiveServlet/download/15922-6-25925/jbpm-5.0.0-eclipse-all.zip" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip"  />
+    <get src="http://sourceforge.net/projects/jbpm/files/jBPM%205/jbpm-5.1.0/jbpm-5.1.0-eclipse-all.zip/download" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip"  />
   </target>
 
   <!-- Download Drools Eclipse plugins -->
