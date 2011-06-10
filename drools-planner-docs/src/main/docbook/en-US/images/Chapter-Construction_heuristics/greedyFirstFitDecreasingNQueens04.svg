@@ -48,7 +48,7 @@
        id="perspective4439" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="1000"
+     inkscape:window-height="974"
      inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1"
@@ -60,9 +60,9 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="1.2507933"
-     inkscape:cx="885.21618"
-     inkscape:cy="237.62719"
-     inkscape:window-x="0"
+     inkscape:cx="886.81517"
+     inkscape:cy="653.36335"
+     inkscape:window-x="1680"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -3213,43 +3213,26 @@
      transform="translate(426.32422,-231.43815)"><flowRegion
        id="flowRegion6720"><rect
          id="rect6722-7"
-         width="809.99963"
-         height="60.000122"
+         width="550"
+         height="110.00001"
          x="-66.324219"
-         y="271.43814"
+         y="261.43814"
          style="font-size:40px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-       id="flowPara3455">Greedy algorithm: first fit decreasing</flowPara></flowRoot>  <flowRoot
+       id="flowPara3455">Greedy algorithm</flowPara><flowPara
+       id="flowPara4643"> first fit decreasing</flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot6718-7"
      style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      transform="translate(426.32422,-171.43815)"><flowRegion
        id="flowRegion6720-2"><rect
          id="rect6722-2"
-         width="809.99988"
-         height="60.000057"
+         width="550"
+         height="60.000008"
          x="-66.324219"
-         y="261.43814"
+         y="301.43814"
          style="font-size:22px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
        id="flowPara3455-6">N queens</flowPara><flowPara
        id="flowPara15747">n = 4</flowPara></flowRoot>  <flowRoot
-     xml:space="preserve"
-     id="flowRoot15765"
-     style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(1026.3122,515.25657)"><flowRegion
-       id="flowRegion15767"><rect
-         id="rect15769"
-         width="220"
-         height="180.00018"
-         x="-76.312202"
-         y="-305.25656"
-         style="font-size:22px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
-       id="flowPara15773">&lt;= n*n solutions</flowPara><flowPara
-       id="flowPara15779">4*4 = 16</flowPara><flowPara
-       id="flowPara15783">8*8 = 64</flowPara><flowPara
-       id="flowPara15793">64*64 = 4096<flowSpan
-   style="font-size:65.00091553%;baseline-shift:super"
-   id="flowSpan15797" /></flowPara><flowPara
-       id="flowPara15785" /></flowRoot>  <flowRoot
      transform="translate(931.3125,748.16043)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#204a87;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot5100"
@@ -11560,4 +11543,27 @@
        d="m 59.702156,907.57715 c 0,0.91142 -4.498573,1.65027 -10.047844,1.65027 -5.549271,0 -10.047844,-0.73885 -10.047844,-1.65027 0,-0.91142 4.498573,-1.65027 10.047844,-1.65027 5.549271,0 10.047844,0.73885 10.047844,1.65027 z"
        transform="matrix(0.9454765,0,0,1.2119233,18.553015,-205.05171)" />
   </g>
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot15765-2"
+     style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+     transform="translate(916.3125,31.94407)"><flowRegion
+       id="flowRegion15767-5"><rect
+         id="rect15769-4"
+         width="230.00002"
+         height="129.99998"
+         x="13.6875"
+         y="8.055932"
+         style="font-size:22px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
+       id="flowPara15793-7">n: &lt;= n*n iterations</flowPara><flowPara
+       id="flowPara4638">4: 4*4 = 16</flowPara><flowPara
+       id="flowPara4640">8: 8*8 = 64</flowPara><flowPara
+       id="flowPara4642">64: 64*64 = 4096</flowPara><flowPara
+       id="flowPara15785-4" /></flowRoot>  <rect
+     style="fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="rect7804"
+     width="249"
+     height="149"
+     x="921"
+     y="30" />
 </svg>

@@ -59,9 +59,9 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="0.85555558"
-     inkscape:cx="816.21521"
-     inkscape:cy="459.54762"
+     inkscape:zoom="1.2099383"
+     inkscape:cx="685.7824"
+     inkscape:cy="582.58257"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
@@ -5428,7 +5428,7 @@
      transform="translate(426.32422,-231.43815)"><flowRegion
        id="flowRegion6720"><rect
          id="rect6722-7"
-         width="800"
+         width="730"
          height="60.000008"
          x="-246.32422"
          y="271.43814"
@@ -5440,7 +5440,7 @@
      transform="translate(426.32422,-171.43815)"><flowRegion
        id="flowRegion6720-2"><rect
          id="rect6722-2"
-         width="800"
+         width="730"
          height="50.000008"
          x="-246.32422"
          y="261.43814"
@@ -5473,17 +5473,14 @@
      transform="translate(916.3125,31.944068)"><flowRegion
        id="flowRegion15767"><rect
          id="rect15769"
-         width="180.00003"
-         height="129.99997"
-         x="73.6875"
-         y="28.055931"
+         width="230.00002"
+         height="129.99998"
+         x="13.6875"
+         y="8.055932"
          style="font-size:22px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
-       id="flowPara15779">&lt;= n<flowSpan
+       id="flowPara15793">n: &lt;= n<flowSpan
    style="font-size:65.00091553%;text-align:start;text-anchor:start;baseline-shift:super"
-   id="flowSpan15777">n-? scores</flowSpan></flowPara><flowPara
-       id="flowPara7764">4 has 27 scores</flowPara><flowPara
-       id="flowPara15783">8 has ? scores</flowPara><flowPara
-       id="flowPara15793">64 has ? scores</flowPara><flowPara
+   id="flowSpan7783">n-?</flowSpan> iterations</flowPara><flowPara
        id="flowPara15785" /></flowRoot>  <flowRoot
      transform="translate(1026.3125,693.60032)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
@@ -12759,4 +12756,11 @@
          x="169.18761"
          y="82.683319"
          style="font-size:14px;text-align:end;text-anchor:end;fill:#204a87" /></flowRegion><flowPara
-       id="flowPara7762">36</flowPara></flowRoot></svg>
+       id="flowPara7762">36</flowPara></flowRoot>  <rect
+     style="fill:none;stroke:#ce5c00;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+     id="rect7804"
+     width="249"
+     height="149"
+     x="921"
+     y="30" />
+</svg>
