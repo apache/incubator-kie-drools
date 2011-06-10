@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:46:29 src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-01-18 19:45:17
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-06-09 17:38:12
 
     package org.drools.lang.dsl;
     import java.util.List;
@@ -74,7 +74,7 @@ public class DSLMapParser extends Parser {
     }
 
     public String[] getTokenNames() { return DSLMapParser.tokenNames; }
-    public String getGrammarFileName() { return "src/main/resources/org/drools/lang/dsl/DSLMap.g"; }
+    public String getGrammarFileName() { return "/home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g"; }
 
 
         private List<ParserError> errors = new ArrayList<ParserError>();
@@ -127,7 +127,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "mapping_file"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:106:1: mapping_file : ( statement )* -> ^( VT_DSL_GRAMMAR ( statement )* ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:106:1: mapping_file : ( statement )* -> ^( VT_DSL_GRAMMAR ( statement )* ) ;
     public final DSLMapParser.mapping_file_return mapping_file() throws RecognitionException {
         DSLMapParser.mapping_file_return retval = new DSLMapParser.mapping_file_return();
         retval.start = input.LT(1);
@@ -139,10 +139,10 @@ public class DSLMapParser extends Parser {
 
         RewriteRuleSubtreeStream stream_statement=new RewriteRuleSubtreeStream(adaptor,"rule statement");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:107:2: ( ( statement )* -> ^( VT_DSL_GRAMMAR ( statement )* ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:107:4: ( statement )*
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:107:5: ( ( statement )* -> ^( VT_DSL_GRAMMAR ( statement )* ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:107:7: ( statement )*
             {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:107:4: ( statement )*
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:107:7: ( statement )*
             loop1:
             do {
                 int alt1=2;
@@ -154,21 +154,21 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt1) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: statement
-                    {
-                    pushFollow(FOLLOW_statement_in_mapping_file272);
-                    statement1=statement();
+            	case 1 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: statement
+            	    {
+            	    pushFollow(FOLLOW_statement_in_mapping_file275);
+            	    statement1=statement();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_statement.add(statement1.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) stream_statement.add(statement1.getTree());
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    break loop1;
+            	default :
+            	    break loop1;
                 }
             } while (true);
 
@@ -186,14 +186,14 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 108:2: -> ^( VT_DSL_GRAMMAR ( statement )* )
+            // 108:5: -> ^( VT_DSL_GRAMMAR ( statement )* )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:108:5: ^( VT_DSL_GRAMMAR ( statement )* )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:108:8: ^( VT_DSL_GRAMMAR ( statement )* )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_DSL_GRAMMAR, "VT_DSL_GRAMMAR"), root_1);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:108:22: ( statement )*
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:108:25: ( statement )*
                 while ( stream_statement.hasNext() ) {
                     adaptor.addChild(root_1, stream_statement.nextTree());
 
@@ -219,7 +219,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -234,7 +234,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "statement"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:111:1: statement : ( entry | EOL );
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:111:1: statement : ( entry | EOL );
     public final DSLMapParser.statement_return statement() throws RecognitionException {
         DSLMapParser.statement_return retval = new DSLMapParser.statement_return();
         retval.start = input.LT(1);
@@ -248,7 +248,7 @@ public class DSLMapParser extends Parser {
         Object EOL3_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:112:2: ( entry | EOL )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:112:5: ( entry | EOL )
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -267,11 +267,11 @@ public class DSLMapParser extends Parser {
             }
             switch (alt2) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:112:4: entry
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:112:7: entry
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_entry_in_statement295);
+                    pushFollow(FOLLOW_entry_in_statement306);
                     entry2=entry();
 
                     state._fsp--;
@@ -281,11 +281,11 @@ public class DSLMapParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:113:4: EOL
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:113:7: EOL
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    EOL3=(Token)match(input,EOL,FOLLOW_EOL_in_statement302); if (state.failed) return retval;
+                    EOL3=(Token)match(input,EOL,FOLLOW_EOL_in_statement314); if (state.failed) return retval;
 
                     }
                     break;
@@ -302,7 +302,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -317,7 +317,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "entry"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:1: entry : scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:1: entry : scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) ;
     public final DSLMapParser.entry_return entry() throws RecognitionException {
         DSLMapParser.entry_return retval = new DSLMapParser.entry_return();
         retval.start = input.LT(1);
@@ -347,16 +347,16 @@ public class DSLMapParser extends Parser {
         RewriteRuleSubtreeStream stream_scope_section=new RewriteRuleSubtreeStream(adaptor,"rule scope_section");
         RewriteRuleSubtreeStream stream_value_section=new RewriteRuleSubtreeStream(adaptor,"rule value_section");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:8: ( scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:10: scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:8: ( scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:10: scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF )
             {
-            pushFollow(FOLLOW_scope_section_in_entry320);
+            pushFollow(FOLLOW_scope_section_in_entry336);
             scope_section4=scope_section();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_scope_section.add(scope_section4.getTree());
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: ( meta_section )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: ( meta_section )?
             int alt3=2;
             int LA3_0 = input.LA(1);
 
@@ -384,9 +384,9 @@ public class DSLMapParser extends Parser {
             }
             switch (alt3) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: meta_section
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: meta_section
                     {
-                    pushFollow(FOLLOW_meta_section_in_entry322);
+                    pushFollow(FOLLOW_meta_section_in_entry338);
                     meta_section5=meta_section();
 
                     state._fsp--;
@@ -398,16 +398,16 @@ public class DSLMapParser extends Parser {
 
             }
 
-            pushFollow(FOLLOW_key_section_in_entry325);
+            pushFollow(FOLLOW_key_section_in_entry341);
             key_section6=key_section();
 
             state._fsp--;
             if (state.failed) return retval;
             if ( state.backtracking==0 ) stream_key_section.add(key_section6.getTree());
-            EQUALS7=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_entry327); if (state.failed) return retval;
+            EQUALS7=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_entry343); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_EQUALS.add(EQUALS7);
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:57: ( value_section )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:57: ( value_section )?
             int alt4=2;
             int LA4_0 = input.LA(1);
 
@@ -416,9 +416,9 @@ public class DSLMapParser extends Parser {
             }
             switch (alt4) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: value_section
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: value_section
                     {
-                    pushFollow(FOLLOW_value_section_in_entry329);
+                    pushFollow(FOLLOW_value_section_in_entry345);
                     value_section8=value_section();
 
                     state._fsp--;
@@ -430,7 +430,7 @@ public class DSLMapParser extends Parser {
 
             }
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:72: ( EOL | EOF )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:72: ( EOL | EOF )
             int alt5=2;
             int LA5_0 = input.LA(1);
 
@@ -449,18 +449,18 @@ public class DSLMapParser extends Parser {
             }
             switch (alt5) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:73: EOL
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:73: EOL
                     {
-                    EOL9=(Token)match(input,EOL,FOLLOW_EOL_in_entry333); if (state.failed) return retval;
+                    EOL9=(Token)match(input,EOL,FOLLOW_EOL_in_entry349); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_EOL.add(EOL9);
 
 
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:77: EOF
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:77: EOF
                     {
-                    EOF10=(Token)match(input,EOF,FOLLOW_EOF_in_entry335); if (state.failed) return retval;
+                    EOF10=(Token)match(input,EOF,FOLLOW_EOF_in_entry351); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_EOF.add(EOF10);
 
 
@@ -472,7 +472,7 @@ public class DSLMapParser extends Parser {
 
 
             // AST REWRITE
-            // elements: value_section, key_section, meta_section, scope_section
+            // elements: scope_section, key_section, value_section, meta_section
             // token labels: 
             // rule labels: retval
             // token list labels: 
@@ -483,22 +483,22 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 120:2: -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? )
+            // 120:5: -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:120:5: ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:120:8: ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_ENTRY, "VT_ENTRY"), root_1);
 
                 adaptor.addChild(root_1, stream_scope_section.nextTree());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:120:30: ( meta_section )?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:120:33: ( meta_section )?
                 if ( stream_meta_section.hasNext() ) {
                     adaptor.addChild(root_1, stream_meta_section.nextTree());
 
                 }
                 stream_meta_section.reset();
                 adaptor.addChild(root_1, stream_key_section.nextTree());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:120:56: ( value_section )?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:120:59: ( value_section )?
                 if ( stream_value_section.hasNext() ) {
                     adaptor.addChild(root_1, stream_value_section.nextTree());
 
@@ -524,11 +524,11 @@ public class DSLMapParser extends Parser {
         catch ( RecognitionException e ) {
 
                     reportError( e );
-
+                
         }
         catch ( RewriteEmptyStreamException e ) {
 
-
+                
         }
         finally {
         }
@@ -542,7 +542,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "scope_section"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:130:1: scope_section : LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:130:1: scope_section : LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) ;
     public final DSLMapParser.scope_section_return scope_section() throws RecognitionException {
         DSLMapParser.scope_section_return retval = new DSLMapParser.scope_section_return();
         retval.start = input.LT(1);
@@ -569,13 +569,13 @@ public class DSLMapParser extends Parser {
         RewriteRuleSubtreeStream stream_keyword_key=new RewriteRuleSubtreeStream(adaptor,"rule keyword_key");
         RewriteRuleSubtreeStream stream_consequence_key=new RewriteRuleSubtreeStream(adaptor,"rule consequence_key");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:131:2: ( LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:131:4: LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:131:5: ( LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:131:7: LEFT_SQUARE (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key ) RIGHT_SQUARE
             {
-            LEFT_SQUARE11=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_scope_section382); if (state.failed) return retval;
+            LEFT_SQUARE11=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_scope_section412); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LEFT_SQUARE.add(LEFT_SQUARE11);
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:132:3: (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:132:9: (value1= condition_key | value2= consequence_key | value3= keyword_key | value4= any_key )
             int alt6=4;
             int LA6_0 = input.LA(1);
 
@@ -611,9 +611,9 @@ public class DSLMapParser extends Parser {
             }
             switch (alt6) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:132:4: value1= condition_key
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:132:10: value1= condition_key
                     {
-                    pushFollow(FOLLOW_condition_key_in_scope_section390);
+                    pushFollow(FOLLOW_condition_key_in_scope_section425);
                     value1=condition_key();
 
                     state._fsp--;
@@ -623,9 +623,9 @@ public class DSLMapParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:133:5: value2= consequence_key
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:133:11: value2= consequence_key
                     {
-                    pushFollow(FOLLOW_consequence_key_in_scope_section399);
+                    pushFollow(FOLLOW_consequence_key_in_scope_section439);
                     value2=consequence_key();
 
                     state._fsp--;
@@ -635,9 +635,9 @@ public class DSLMapParser extends Parser {
                     }
                     break;
                 case 3 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:134:5: value3= keyword_key
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:134:11: value3= keyword_key
                     {
-                    pushFollow(FOLLOW_keyword_key_in_scope_section407);
+                    pushFollow(FOLLOW_keyword_key_in_scope_section453);
                     value3=keyword_key();
 
                     state._fsp--;
@@ -647,9 +647,9 @@ public class DSLMapParser extends Parser {
                     }
                     break;
                 case 4 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:135:5: value4= any_key
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:135:11: value4= any_key
                     {
-                    pushFollow(FOLLOW_any_key_in_scope_section415);
+                    pushFollow(FOLLOW_any_key_in_scope_section467);
                     value4=any_key();
 
                     state._fsp--;
@@ -661,13 +661,13 @@ public class DSLMapParser extends Parser {
 
             }
 
-            RIGHT_SQUARE12=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_scope_section423); if (state.failed) return retval;
+            RIGHT_SQUARE12=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_scope_section483); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE12);
 
 
 
             // AST REWRITE
-            // elements: value4, value2, value1, value3
+            // elements: value1, value3, value4, value2
             // token labels: 
             // rule labels: retval, value3, value4, value1, value2
             // token list labels: 
@@ -682,32 +682,32 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_value2=new RewriteRuleSubtreeStream(adaptor,"rule value2",value2!=null?value2.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 138:2: -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? )
+            // 138:5: -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:138:5: ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:138:8: ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_SCOPE, LEFT_SQUARE11, "SCOPE SECTION"), root_1);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:138:47: ( $value1)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:138:50: ( $value1)?
                 if ( stream_value1.hasNext() ) {
                     adaptor.addChild(root_1, stream_value1.nextTree());
 
                 }
                 stream_value1.reset();
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:138:56: ( $value2)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:138:59: ( $value2)?
                 if ( stream_value2.hasNext() ) {
                     adaptor.addChild(root_1, stream_value2.nextTree());
 
                 }
                 stream_value2.reset();
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:138:65: ( $value3)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:138:68: ( $value3)?
                 if ( stream_value3.hasNext() ) {
                     adaptor.addChild(root_1, stream_value3.nextTree());
 
                 }
                 stream_value3.reset();
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:138:74: ( $value4)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:138:77: ( $value4)?
                 if ( stream_value4.hasNext() ) {
                     adaptor.addChild(root_1, stream_value4.nextTree());
 
@@ -733,7 +733,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -748,7 +748,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "meta_section"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:144:1: meta_section : LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:144:1: meta_section : LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) ;
     public final DSLMapParser.meta_section_return meta_section() throws RecognitionException {
         DSLMapParser.meta_section_return retval = new DSLMapParser.meta_section_return();
         retval.start = input.LT(1);
@@ -767,13 +767,13 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LEFT_SQUARE=new RewriteRuleTokenStream(adaptor,"token LEFT_SQUARE");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:145:2: ( LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:145:4: LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:145:5: ( LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:145:7: LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE
             {
-            LEFT_SQUARE13=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_meta_section463); if (state.failed) return retval;
+            LEFT_SQUARE13=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_meta_section530); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LEFT_SQUARE.add(LEFT_SQUARE13);
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:145:16: ( LITERAL )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:145:19: ( LITERAL )?
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -782,9 +782,9 @@ public class DSLMapParser extends Parser {
             }
             switch (alt7) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: LITERAL
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: LITERAL
                     {
-                    LITERAL14=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_meta_section465); if (state.failed) return retval;
+                    LITERAL14=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_meta_section532); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_LITERAL.add(LITERAL14);
 
 
@@ -793,7 +793,7 @@ public class DSLMapParser extends Parser {
 
             }
 
-            RIGHT_SQUARE15=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_meta_section468); if (state.failed) return retval;
+            RIGHT_SQUARE15=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_meta_section535); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE15);
 
 
@@ -810,14 +810,14 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 146:2: -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? )
+            // 146:5: -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:146:5: ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:146:8: ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_META, LEFT_SQUARE13, "META SECTION"), root_1);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:146:45: ( LITERAL )?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:146:48: ( LITERAL )?
                 if ( stream_LITERAL.hasNext() ) {
                     adaptor.addChild(root_1, stream_LITERAL.nextNode());
 
@@ -843,7 +843,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -858,7 +858,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "key_section"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:149:1: key_section : (ks= key_sentence )+ -> ^( VT_ENTRY_KEY ( key_sentence )+ ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:149:1: key_section : (ks= key_sentence )+ -> ^( VT_ENTRY_KEY ( key_sentence )+ ) ;
     public final DSLMapParser.key_section_return key_section() throws RecognitionException {
         DSLMapParser.key_section_return retval = new DSLMapParser.key_section_return();
         retval.start = input.LT(1);
@@ -870,10 +870,10 @@ public class DSLMapParser extends Parser {
 
         RewriteRuleSubtreeStream stream_key_sentence=new RewriteRuleSubtreeStream(adaptor,"rule key_sentence");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:150:2: ( (ks= key_sentence )+ -> ^( VT_ENTRY_KEY ( key_sentence )+ ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:150:4: (ks= key_sentence )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:150:5: ( (ks= key_sentence )+ -> ^( VT_ENTRY_KEY ( key_sentence )+ ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:150:7: (ks= key_sentence )+
             {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:150:6: (ks= key_sentence )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:150:9: (ks= key_sentence )+
             int cnt8=0;
             loop8:
             do {
@@ -886,22 +886,22 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt8) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: ks= key_sentence
-                    {
-                    pushFollow(FOLLOW_key_sentence_in_key_section492);
-                    ks=key_sentence();
+            	case 1 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: ks= key_sentence
+            	    {
+            	    pushFollow(FOLLOW_key_sentence_in_key_section568);
+            	    ks=key_sentence();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_key_sentence.add(ks.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) stream_key_sentence.add(ks.getTree());
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt8 >= 1 ) break loop8;
-                    if (state.backtracking>0) {state.failed=true; return retval;}
+            	default :
+            	    if ( cnt8 >= 1 ) break loop8;
+            	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(8, input);
                         throw eee;
@@ -923,9 +923,9 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 151:2: -> ^( VT_ENTRY_KEY ( key_sentence )+ )
+            // 151:5: -> ^( VT_ENTRY_KEY ( key_sentence )+ )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:151:5: ^( VT_ENTRY_KEY ( key_sentence )+ )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:151:8: ^( VT_ENTRY_KEY ( key_sentence )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_ENTRY_KEY, "VT_ENTRY_KEY"), root_1);
@@ -958,7 +958,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -973,7 +973,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "key_sentence"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:154:1: key_sentence : ( variable_definition | cb= key_chunk -> VT_LITERAL[$cb.start, text] );
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:154:1: key_sentence : ( variable_definition | cb= key_chunk -> VT_LITERAL[$cb.start, text] );
     public final DSLMapParser.key_sentence_return key_sentence() throws RecognitionException {
         DSLMapParser.key_sentence_return retval = new DSLMapParser.key_sentence_return();
         retval.start = input.LT(1);
@@ -990,7 +990,7 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:158:2: ( variable_definition | cb= key_chunk -> VT_LITERAL[$cb.start, text] )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:158:5: ( variable_definition | cb= key_chunk -> VT_LITERAL[$cb.start, text] )
             int alt9=2;
             int LA9_0 = input.LA(1);
 
@@ -1009,11 +1009,11 @@ public class DSLMapParser extends Parser {
             }
             switch (alt9) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:158:4: variable_definition
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:158:7: variable_definition
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_variable_definition_in_key_sentence523);
+                    pushFollow(FOLLOW_variable_definition_in_key_sentence608);
                     variable_definition16=variable_definition();
 
                     state._fsp--;
@@ -1023,16 +1023,16 @@ public class DSLMapParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:159:4: cb= key_chunk
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:159:7: cb= key_chunk
                     {
-                    pushFollow(FOLLOW_key_chunk_in_key_sentence530);
+                    pushFollow(FOLLOW_key_chunk_in_key_sentence618);
                     cb=key_chunk();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_key_chunk.add(cb.getTree());
                     if ( state.backtracking==0 ) {
-                       text = (cb!=null?input.toString(cb.start,cb.stop):null);
+                       text = (cb!=null?input.toString(cb.start,cb.stop):null); 
                     }
 
 
@@ -1048,7 +1048,7 @@ public class DSLMapParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 160:2: -> VT_LITERAL[$cb.start, text]
+                    // 160:5: -> VT_LITERAL[$cb.start, text]
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(VT_LITERAL, (cb!=null?((Token)cb.start):null), text));
 
@@ -1070,7 +1070,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1085,7 +1085,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "key_chunk"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:163:1: key_chunk : ( literal )+ ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:163:1: key_chunk : ( literal )+ ;
     public final DSLMapParser.key_chunk_return key_chunk() throws RecognitionException {
         DSLMapParser.key_chunk_return retval = new DSLMapParser.key_chunk_return();
         retval.start = input.LT(1);
@@ -1097,12 +1097,12 @@ public class DSLMapParser extends Parser {
 
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:2: ( ( literal )+ )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:4: ( literal )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:164:5: ( ( literal )+ )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:164:7: ( literal )+
             {
             root_0 = (Object)adaptor.nil();
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:4: ( literal )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:164:7: ( literal )+
             int cnt10=0;
             loop10:
             do {
@@ -1121,22 +1121,22 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt10) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: literal
-                    {
-                    pushFollow(FOLLOW_literal_in_key_chunk551);
-                    literal17=literal();
+            	case 1 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: literal
+            	    {
+            	    pushFollow(FOLLOW_literal_in_key_chunk646);
+            	    literal17=literal();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal17.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal17.getTree());
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt10 >= 1 ) break loop10;
-                    if (state.backtracking>0) {state.failed=true; return retval;}
+            	default :
+            	    if ( cnt10 >= 1 ) break loop10;
+            	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(10, input);
                         throw eee;
@@ -1158,7 +1158,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1173,7 +1173,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "value_section"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:167:1: value_section : ( value_sentence )+ -> ^( VT_ENTRY_VAL ( value_sentence )+ ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:167:1: value_section : ( value_sentence )+ -> ^( VT_ENTRY_VAL ( value_sentence )+ ) ;
     public final DSLMapParser.value_section_return value_section() throws RecognitionException {
         DSLMapParser.value_section_return retval = new DSLMapParser.value_section_return();
         retval.start = input.LT(1);
@@ -1185,10 +1185,10 @@ public class DSLMapParser extends Parser {
 
         RewriteRuleSubtreeStream stream_value_sentence=new RewriteRuleSubtreeStream(adaptor,"rule value_sentence");
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:168:2: ( ( value_sentence )+ -> ^( VT_ENTRY_VAL ( value_sentence )+ ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:168:4: ( value_sentence )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:168:5: ( ( value_sentence )+ -> ^( VT_ENTRY_VAL ( value_sentence )+ ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:168:7: ( value_sentence )+
             {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:168:4: ( value_sentence )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:168:7: ( value_sentence )+
             int cnt11=0;
             loop11:
             do {
@@ -1201,22 +1201,22 @@ public class DSLMapParser extends Parser {
 
 
                 switch (alt11) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: value_sentence
-                    {
-                    pushFollow(FOLLOW_value_sentence_in_value_section566);
-                    value_sentence18=value_sentence();
+            	case 1 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:0:0: value_sentence
+            	    {
+            	    pushFollow(FOLLOW_value_sentence_in_value_section664);
+            	    value_sentence18=value_sentence();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) stream_value_sentence.add(value_sentence18.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) stream_value_sentence.add(value_sentence18.getTree());
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt11 >= 1 ) break loop11;
-                    if (state.backtracking>0) {state.failed=true; return retval;}
+            	default :
+            	    if ( cnt11 >= 1 ) break loop11;
+            	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(11, input);
                         throw eee;
@@ -1238,9 +1238,9 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 169:2: -> ^( VT_ENTRY_VAL ( value_sentence )+ )
+            // 169:5: -> ^( VT_ENTRY_VAL ( value_sentence )+ )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:169:5: ^( VT_ENTRY_VAL ( value_sentence )+ )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:169:8: ^( VT_ENTRY_VAL ( value_sentence )+ )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_ENTRY_VAL, "VT_ENTRY_VAL"), root_1);
@@ -1273,7 +1273,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1288,7 +1288,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "value_sentence"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:172:1: value_sentence : ( variable_reference | vc= value_chunk -> VT_LITERAL[$vc.start, text] );
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:172:1: value_sentence : ( variable_reference | vc= value_chunk -> VT_LITERAL[$vc.start, text] );
     public final DSLMapParser.value_sentence_return value_sentence() throws RecognitionException {
         DSLMapParser.value_sentence_return retval = new DSLMapParser.value_sentence_return();
         retval.start = input.LT(1);
@@ -1305,7 +1305,7 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:176:2: ( variable_reference | vc= value_chunk -> VT_LITERAL[$vc.start, text] )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:176:5: ( variable_reference | vc= value_chunk -> VT_LITERAL[$vc.start, text] )
             int alt12=2;
             int LA12_0 = input.LA(1);
 
@@ -1324,11 +1324,11 @@ public class DSLMapParser extends Parser {
             }
             switch (alt12) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:176:4: variable_reference
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:176:7: variable_reference
                     {
                     root_0 = (Object)adaptor.nil();
 
-                    pushFollow(FOLLOW_variable_reference_in_value_sentence597);
+                    pushFollow(FOLLOW_variable_reference_in_value_sentence703);
                     variable_reference19=variable_reference();
 
                     state._fsp--;
@@ -1338,16 +1338,16 @@ public class DSLMapParser extends Parser {
                     }
                     break;
                 case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:177:4: vc= value_chunk
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:177:7: vc= value_chunk
                     {
-                    pushFollow(FOLLOW_value_chunk_in_value_sentence604);
+                    pushFollow(FOLLOW_value_chunk_in_value_sentence713);
                     vc=value_chunk();
 
                     state._fsp--;
                     if (state.failed) return retval;
                     if ( state.backtracking==0 ) stream_value_chunk.add(vc.getTree());
                     if ( state.backtracking==0 ) {
-                       text = (vc!=null?input.toString(vc.start,vc.stop):null);
+                       text = (vc!=null?input.toString(vc.start,vc.stop):null); 
                     }
 
 
@@ -1363,7 +1363,7 @@ public class DSLMapParser extends Parser {
                     RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
                     root_0 = (Object)adaptor.nil();
-                    // 178:2: -> VT_LITERAL[$vc.start, text]
+                    // 178:5: -> VT_LITERAL[$vc.start, text]
                     {
                         adaptor.addChild(root_0, (Object)adaptor.create(VT_LITERAL, (vc!=null?((Token)vc.start):null), text));
 
@@ -1385,7 +1385,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1400,7 +1400,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "value_chunk"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:181:1: value_chunk : ( literal | EQUALS | COMMA )+ ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:181:1: value_chunk : ( literal | EQUALS | COMMA )+ ;
     public final DSLMapParser.value_chunk_return value_chunk() throws RecognitionException {
         DSLMapParser.value_chunk_return retval = new DSLMapParser.value_chunk_return();
         retval.start = input.LT(1);
@@ -1416,12 +1416,12 @@ public class DSLMapParser extends Parser {
         Object COMMA22_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:2: ( ( literal | EQUALS | COMMA )+ )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:4: ( literal | EQUALS | COMMA )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: ( ( literal | EQUALS | COMMA )+ )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:7: ( literal | EQUALS | COMMA )+
             {
             root_0 = (Object)adaptor.nil();
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:4: ( literal | EQUALS | COMMA )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:7: ( literal | EQUALS | COMMA )+
             int cnt13=0;
             loop13:
             do {
@@ -1467,44 +1467,44 @@ public class DSLMapParser extends Parser {
                 }
 
                 switch (alt13) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: literal
-                    {
-                    pushFollow(FOLLOW_literal_in_value_chunk626);
-                    literal20=literal();
+            	case 1 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:8: literal
+            	    {
+            	    pushFollow(FOLLOW_literal_in_value_chunk742);
+            	    literal20=literal();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal20.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal20.getTree());
 
-                    }
-                    break;
-                case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: EQUALS
-                    {
-                    EQUALS21=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_value_chunk628); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    EQUALS21_tree = (Object)adaptor.create(EQUALS21);
-                    adaptor.addChild(root_0, EQUALS21_tree);
-                    }
+            	    }
+            	    break;
+            	case 2 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:16: EQUALS
+            	    {
+            	    EQUALS21=(Token)match(input,EQUALS,FOLLOW_EQUALS_in_value_chunk744); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    EQUALS21_tree = (Object)adaptor.create(EQUALS21);
+            	    adaptor.addChild(root_0, EQUALS21_tree);
+            	    }
 
-                    }
-                    break;
-                case 3 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: COMMA
-                    {
-                    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_value_chunk630); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    COMMA22_tree = (Object)adaptor.create(COMMA22);
-                    adaptor.addChild(root_0, COMMA22_tree);
-                    }
+            	    }
+            	    break;
+            	case 3 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:23: COMMA
+            	    {
+            	    COMMA22=(Token)match(input,COMMA,FOLLOW_COMMA_in_value_chunk746); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    COMMA22_tree = (Object)adaptor.create(COMMA22);
+            	    adaptor.addChild(root_0, COMMA22_tree);
+            	    }
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt13 >= 1 ) break loop13;
-                    if (state.backtracking>0) {state.failed=true; return retval;}
+            	default :
+            	    if ( cnt13 >= 1 ) break loop13;
+            	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(13, input);
                         throw eee;
@@ -1526,7 +1526,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1541,7 +1541,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "literal"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:185:1: literal : ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:185:1: literal : ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) ;
     public final DSLMapParser.literal_return literal() throws RecognitionException {
         DSLMapParser.literal_return retval = new DSLMapParser.literal_return();
         retval.start = input.LT(1);
@@ -1553,8 +1553,8 @@ public class DSLMapParser extends Parser {
         Object set23_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:186:2: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:186:4: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:186:5: ( ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:186:7: ( LITERAL | COLON | LEFT_SQUARE | RIGHT_SQUARE )
             {
             root_0 = (Object)adaptor.nil();
 
@@ -1584,7 +1584,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -1599,7 +1599,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "variable_definition"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:190:1: variable_definition : lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:190:1: variable_definition : lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) ;
     public final DSLMapParser.variable_definition_return variable_definition() throws RecognitionException {
         DSLMapParser.variable_definition_return retval = new DSLMapParser.variable_definition_return();
         retval.start = input.LT(1);
@@ -1632,22 +1632,22 @@ public class DSLMapParser extends Parser {
                 boolean hasSpaceAfter = false;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:196:2: (lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:196:4: lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:196:5: (lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:196:7: lc= LEFT_CURLY name= LITERAL ( ( COLON q= LITERAL )? COLON pat= pattern )? rc= RIGHT_CURLY
             {
-            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition682); if (state.failed) return retval;
+            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_definition807); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
             if ( state.backtracking==0 ) {
-               
+
                       CommonToken back2 =  (CommonToken)input.LT(-2);
                       if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
-
+                      
             }
-            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition693); if (state.failed) return retval;
+            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition825); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LITERAL.add(name);
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:15: ( ( COLON q= LITERAL )? COLON pat= pattern )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:201:18: ( ( COLON q= LITERAL )? COLON pat= pattern )?
             int alt15=2;
             int LA15_0 = input.LA(1);
 
@@ -1656,9 +1656,9 @@ public class DSLMapParser extends Parser {
             }
             switch (alt15) {
                 case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:17: ( COLON q= LITERAL )? COLON pat= pattern
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:201:20: ( COLON q= LITERAL )? COLON pat= pattern
                     {
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:17: ( COLON q= LITERAL )?
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:201:20: ( COLON q= LITERAL )?
                     int alt14=2;
                     int LA14_0 = input.LA(1);
 
@@ -1679,12 +1679,12 @@ public class DSLMapParser extends Parser {
                     }
                     switch (alt14) {
                         case 1 :
-                            // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:18: COLON q= LITERAL
+                            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:201:21: COLON q= LITERAL
                             {
-                            COLON24=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition698); if (state.failed) return retval;
+                            COLON24=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition830); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_COLON.add(COLON24);
 
-                            q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition702); if (state.failed) return retval;
+                            q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_definition834); if (state.failed) return retval; 
                             if ( state.backtracking==0 ) stream_LITERAL.add(q);
 
 
@@ -1693,10 +1693,10 @@ public class DSLMapParser extends Parser {
 
                     }
 
-                    COLON25=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition706); if (state.failed) return retval;
+                    COLON25=(Token)match(input,COLON,FOLLOW_COLON_in_variable_definition838); if (state.failed) return retval; 
                     if ( state.backtracking==0 ) stream_COLON.add(COLON25);
 
-                    pushFollow(FOLLOW_pattern_in_variable_definition710);
+                    pushFollow(FOLLOW_pattern_in_variable_definition842);
                     pat=pattern();
 
                     state._fsp--;
@@ -1711,7 +1711,7 @@ public class DSLMapParser extends Parser {
 
             }
 
-            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition719); if (state.failed) return retval;
+            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_definition851); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
             if ( state.backtracking==0 ) {
@@ -1719,12 +1719,12 @@ public class DSLMapParser extends Parser {
                     CommonToken rc1 = (CommonToken)input.LT(1);
                     if(!"=".equals(rc1.getText()) && ((CommonToken)rc).getStopIndex() < rc1.getStartIndex() - 1) hasSpaceAfter = true;
                     isIdentifier( name );
-
+                  
             }
 
 
             // AST REWRITE
-            // elements: q, name, name, name, q, name, q, name, name, q, name, name, name, q, q, q, q, q
+            // elements: q, q, name, q, q, name, name, name, q, name, q, name, name, name, q, name, q, q
             // token labels: q, name
             // rule labels: retval
             // token list labels: 
@@ -1737,21 +1737,21 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 208:2: -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
+            // 208:5: -> { hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
             if ( hasSpaceBefore && !"".equals(text) && !hasSpaceAfter) {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:208:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:208:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:208:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:208:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:208:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:208:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1766,20 +1766,20 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 209:2: -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
+            else // 209:5: -> {!hasSpaceBefore && !\"\".equals(text) && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
             if (!hasSpaceBefore && !"".equals(text) && !hasSpaceAfter) {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:209:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:209:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:209:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:209:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:209:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:209:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1794,21 +1794,21 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 210:2: -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+            else // 210:5: -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
             if ( hasSpaceBefore                     && !hasSpaceAfter) {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:210:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:210:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:210:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:210:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:210:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:210:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1822,20 +1822,20 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 211:2: -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+            else // 211:5: -> {!hasSpaceBefore && !hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
             if (!hasSpaceBefore                     && !hasSpaceAfter) {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:211:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:211:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:211:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:211:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:211:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:211:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1849,21 +1849,21 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 212:2: -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE
+            else // 212:5: -> { hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE
             if ( hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter) {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:212:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:212:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:212:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:212:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:212:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:212:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1879,20 +1879,20 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 213:2: -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE
+            else // 213:5: -> {!hasSpaceBefore && !\"\".equals(text) && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] ) VT_SPACE
             if (!hasSpaceBefore && !"".equals(text) &&  hasSpaceAfter) {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:213:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:213:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) VT_PATTERN[$pat.start, text] )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:213:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:213:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:213:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:213:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1908,21 +1908,21 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 214:2: -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE
+            else // 214:5: -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE
             if ( hasSpaceBefore &&                      hasSpaceAfter) {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:214:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:214:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:214:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:214:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:214:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:214:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1937,20 +1937,20 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 215:2: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE
+            else // 215:5: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) ) VT_SPACE
             if (!hasSpaceBefore &&                      hasSpaceAfter) {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:215:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:215:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:215:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:215:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:215:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:215:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -1965,20 +1965,20 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 216:2: -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+            else // 216:5: -> ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:216:71: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:216:74: ^( VT_VAR_DEF $name ^( VT_QUAL ( $q)? ) )
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_DEF, "VT_VAR_DEF"), root_1);
 
                 adaptor.addChild(root_1, stream_name.nextNode());
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:216:90: ^( VT_QUAL ( $q)? )
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:216:93: ^( VT_QUAL ( $q)? )
                 {
                 Object root_2 = (Object)adaptor.nil();
                 root_2 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_QUAL, "VT_QUAL"), root_2);
 
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:216:100: ( $q)?
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:216:103: ( $q)?
                 if ( stream_q.hasNext() ) {
                     adaptor.addChild(root_2, stream_q.nextNode());
 
@@ -2007,7 +2007,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2022,7 +2022,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "pattern"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:219:1: pattern : ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:219:1: pattern : ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ ;
     public final DSLMapParser.pattern_return pattern() throws RecognitionException {
         DSLMapParser.pattern_return retval = new DSLMapParser.pattern_return();
         retval.start = input.LT(1);
@@ -2046,12 +2046,12 @@ public class DSLMapParser extends Parser {
         Object RIGHT_SQUARE32_tree=null;
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:9: ( ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:220:9: ( ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+ )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:220:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
             {
             root_0 = (Object)adaptor.nil();
 
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:220:11: ( literal | LEFT_CURLY literal RIGHT_CURLY | LEFT_SQUARE pattern RIGHT_SQUARE )+
             int cnt16=0;
             loop16:
             do {
@@ -2097,66 +2097,66 @@ public class DSLMapParser extends Parser {
                 }
 
                 switch (alt16) {
-                case 1 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
-                    {
-                    pushFollow(FOLLOW_literal_in_pattern1126);
-                    literal26=literal();
+            	case 1 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
+            	    {
+            	    pushFollow(FOLLOW_literal_in_pattern1288);
+            	    literal26=literal();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal26.getTree());
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal26.getTree());
 
-                    }
-                    break;
-                case 2 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:221:13: LEFT_CURLY literal RIGHT_CURLY
-                    {
-                    LEFT_CURLY27=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern1140); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    LEFT_CURLY27_tree = (Object)adaptor.create(LEFT_CURLY27);
-                    adaptor.addChild(root_0, LEFT_CURLY27_tree);
-                    }
-                    pushFollow(FOLLOW_literal_in_pattern1142);
-                    literal28=literal();
+            	    }
+            	    break;
+            	case 2 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:221:13: LEFT_CURLY literal RIGHT_CURLY
+            	    {
+            	    LEFT_CURLY27=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_pattern1302); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    LEFT_CURLY27_tree = (Object)adaptor.create(LEFT_CURLY27);
+            	    adaptor.addChild(root_0, LEFT_CURLY27_tree);
+            	    }
+            	    pushFollow(FOLLOW_literal_in_pattern1304);
+            	    literal28=literal();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal28.getTree());
-                    RIGHT_CURLY29=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern1144); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    RIGHT_CURLY29_tree = (Object)adaptor.create(RIGHT_CURLY29);
-                    adaptor.addChild(root_0, RIGHT_CURLY29_tree);
-                    }
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, literal28.getTree());
+            	    RIGHT_CURLY29=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_pattern1306); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    RIGHT_CURLY29_tree = (Object)adaptor.create(RIGHT_CURLY29);
+            	    adaptor.addChild(root_0, RIGHT_CURLY29_tree);
+            	    }
 
-                    }
-                    break;
-                case 3 :
-                    // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
-                    {
-                    LEFT_SQUARE30=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1158); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    LEFT_SQUARE30_tree = (Object)adaptor.create(LEFT_SQUARE30);
-                    adaptor.addChild(root_0, LEFT_SQUARE30_tree);
-                    }
-                    pushFollow(FOLLOW_pattern_in_pattern1160);
-                    pattern31=pattern();
+            	    }
+            	    break;
+            	case 3 :
+            	    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
+            	    {
+            	    LEFT_SQUARE30=(Token)match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_pattern1320); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    LEFT_SQUARE30_tree = (Object)adaptor.create(LEFT_SQUARE30);
+            	    adaptor.addChild(root_0, LEFT_SQUARE30_tree);
+            	    }
+            	    pushFollow(FOLLOW_pattern_in_pattern1322);
+            	    pattern31=pattern();
 
-                    state._fsp--;
-                    if (state.failed) return retval;
-                    if ( state.backtracking==0 ) adaptor.addChild(root_0, pattern31.getTree());
-                    RIGHT_SQUARE32=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1162); if (state.failed) return retval;
-                    if ( state.backtracking==0 ) {
-                    RIGHT_SQUARE32_tree = (Object)adaptor.create(RIGHT_SQUARE32);
-                    adaptor.addChild(root_0, RIGHT_SQUARE32_tree);
-                    }
+            	    state._fsp--;
+            	    if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) adaptor.addChild(root_0, pattern31.getTree());
+            	    RIGHT_SQUARE32=(Token)match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_pattern1324); if (state.failed) return retval;
+            	    if ( state.backtracking==0 ) {
+            	    RIGHT_SQUARE32_tree = (Object)adaptor.create(RIGHT_SQUARE32);
+            	    adaptor.addChild(root_0, RIGHT_SQUARE32_tree);
+            	    }
 
-                    }
-                    break;
+            	    }
+            	    break;
 
-                default :
-                    if ( cnt16 >= 1 ) break loop16;
-                    if (state.backtracking>0) {state.failed=true; return retval;}
+            	default :
+            	    if ( cnt16 >= 1 ) break loop16;
+            	    if (state.backtracking>0) {state.failed=true; return retval;}
                         EarlyExitException eee =
                             new EarlyExitException(16, input);
                         throw eee;
@@ -2178,7 +2178,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2193,7 +2193,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "variable_reference"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:226:1: variable_reference : lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:226:1: variable_reference : lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) ;
     public final DSLMapParser.variable_reference_return variable_reference() throws RecognitionException {
         DSLMapParser.variable_reference_return retval = new DSLMapParser.variable_reference_return();
         retval.start = input.LT(1);
@@ -2217,22 +2217,22 @@ public class DSLMapParser extends Parser {
                 String text = "";
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:232:2: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:232:4: lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:232:5: (lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE -> ^( VT_VAR_REF $name) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:232:7: lc= LEFT_CURLY name= LITERAL rc= RIGHT_CURLY
             {
-            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1194); if (state.failed) return retval;
+            lc=(Token)match(input,LEFT_CURLY,FOLLOW_LEFT_CURLY_in_variable_reference1359); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LEFT_CURLY.add(lc);
 
             if ( state.backtracking==0 ) {
 
                       CommonToken back2 =  (CommonToken)input.LT(-2);
                       if( back2!=null && back2.getStopIndex() < ((CommonToken)lc).getStartIndex() -1 ) hasSpaceBefore = true;
-
+                      
             }
-            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1205); if (state.failed) return retval;
+            name=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_variable_reference1377); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LITERAL.add(name);
 
-            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1209); if (state.failed) return retval;
+            rc=(Token)match(input,RIGHT_CURLY,FOLLOW_RIGHT_CURLY_in_variable_reference1381); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_RIGHT_CURLY.add(rc);
 
             if ( state.backtracking==0 ) {
@@ -2253,10 +2253,10 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 239:2: -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE
+            // 239:5: -> { hasSpaceBefore && hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name) VT_SPACE
             if ( hasSpaceBefore &&  hasSpaceAfter) {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:239:51: ^( VT_VAR_REF $name)
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:239:54: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2268,10 +2268,10 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 240:2: -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name)
+            else // 240:5: -> { hasSpaceBefore && !hasSpaceAfter}? VT_SPACE ^( VT_VAR_REF $name)
             if ( hasSpaceBefore && !hasSpaceAfter) {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:240:51: ^( VT_VAR_REF $name)
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:240:54: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2282,9 +2282,9 @@ public class DSLMapParser extends Parser {
                 }
 
             }
-            else // 241:2: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE
+            else // 241:5: -> {!hasSpaceBefore && hasSpaceAfter}? ^( VT_VAR_REF $name) VT_SPACE
             if (!hasSpaceBefore &&  hasSpaceAfter) {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:241:51: ^( VT_VAR_REF $name)
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:241:54: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2296,9 +2296,9 @@ public class DSLMapParser extends Parser {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_SPACE, "VT_SPACE"));
 
             }
-            else // 242:2: -> ^( VT_VAR_REF $name)
+            else // 242:5: -> ^( VT_VAR_REF $name)
             {
-                // src/main/resources/org/drools/lang/dsl/DSLMap.g:242:51: ^( VT_VAR_REF $name)
+                // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:242:54: ^( VT_VAR_REF $name)
                 {
                 Object root_1 = (Object)adaptor.nil();
                 root_1 = (Object)adaptor.becomeRoot((Object)adaptor.create(VT_VAR_REF, "VT_VAR_REF"), root_1);
@@ -2324,7 +2324,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2339,7 +2339,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "condition_key"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:245:1: condition_key : {...}?value= LITERAL -> VT_CONDITION[$value] ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:245:1: condition_key : {...}?value= LITERAL -> VT_CONDITION[$value] ;
     public final DSLMapParser.condition_key_return condition_key() throws RecognitionException {
         DSLMapParser.condition_key_return retval = new DSLMapParser.condition_key_return();
         retval.start = input.LT(1);
@@ -2352,14 +2352,14 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:246:2: ({...}?value= LITERAL -> VT_CONDITION[$value] )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:246:4: {...}?value= LITERAL
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:246:5: ({...}?value= LITERAL -> VT_CONDITION[$value] )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:246:7: {...}?value= LITERAL
             {
             if ( !((validateIdentifierKey("condition")||validateIdentifierKey("when"))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "condition_key", "validateIdentifierKey(\"condition\")||validateIdentifierKey(\"when\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1342); if (state.failed) return retval;
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_condition_key1534); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2376,7 +2376,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 247:2: -> VT_CONDITION[$value]
+            // 247:5: -> VT_CONDITION[$value]
             {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_CONDITION, value));
 
@@ -2396,7 +2396,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2411,7 +2411,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "consequence_key"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:250:1: consequence_key : {...}?value= LITERAL -> VT_CONSEQUENCE[$value] ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:250:1: consequence_key : {...}?value= LITERAL -> VT_CONSEQUENCE[$value] ;
     public final DSLMapParser.consequence_key_return consequence_key() throws RecognitionException {
         DSLMapParser.consequence_key_return retval = new DSLMapParser.consequence_key_return();
         retval.start = input.LT(1);
@@ -2424,14 +2424,14 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:251:2: ({...}?value= LITERAL -> VT_CONSEQUENCE[$value] )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:251:4: {...}?value= LITERAL
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:251:5: ({...}?value= LITERAL -> VT_CONSEQUENCE[$value] )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:251:7: {...}?value= LITERAL
             {
             if ( !((validateIdentifierKey("consequence")||validateIdentifierKey("then"))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "consequence_key", "validateIdentifierKey(\"consequence\")||validateIdentifierKey(\"then\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1365); if (state.failed) return retval;
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_consequence_key1566); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2448,7 +2448,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 252:2: -> VT_CONSEQUENCE[$value]
+            // 252:5: -> VT_CONSEQUENCE[$value]
             {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_CONSEQUENCE, value));
 
@@ -2468,7 +2468,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2483,7 +2483,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "keyword_key"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:255:1: keyword_key : {...}?value= LITERAL -> VT_KEYWORD[$value] ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:255:1: keyword_key : {...}?value= LITERAL -> VT_KEYWORD[$value] ;
     public final DSLMapParser.keyword_key_return keyword_key() throws RecognitionException {
         DSLMapParser.keyword_key_return retval = new DSLMapParser.keyword_key_return();
         retval.start = input.LT(1);
@@ -2496,14 +2496,14 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:256:2: ({...}?value= LITERAL -> VT_KEYWORD[$value] )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:256:4: {...}?value= LITERAL
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:256:5: ({...}?value= LITERAL -> VT_KEYWORD[$value] )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:256:7: {...}?value= LITERAL
             {
             if ( !((validateIdentifierKey("keyword"))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "keyword_key", "validateIdentifierKey(\"keyword\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1388); if (state.failed) return retval;
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_keyword_key1598); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2520,7 +2520,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 257:2: -> VT_KEYWORD[$value]
+            // 257:5: -> VT_KEYWORD[$value]
             {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_KEYWORD, value));
 
@@ -2540,7 +2540,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2555,7 +2555,7 @@ public class DSLMapParser extends Parser {
     };
 
     // $ANTLR start "any_key"
-    // src/main/resources/org/drools/lang/dsl/DSLMap.g:260:1: any_key : {...}?value= LITERAL -> VT_ANY[$value] ;
+    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:260:1: any_key : {...}?value= LITERAL -> VT_ANY[$value] ;
     public final DSLMapParser.any_key_return any_key() throws RecognitionException {
         DSLMapParser.any_key_return retval = new DSLMapParser.any_key_return();
         retval.start = input.LT(1);
@@ -2568,14 +2568,14 @@ public class DSLMapParser extends Parser {
         RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 
         try {
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:261:2: ({...}?value= LITERAL -> VT_ANY[$value] )
-            // src/main/resources/org/drools/lang/dsl/DSLMap.g:261:4: {...}?value= LITERAL
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:261:5: ({...}?value= LITERAL -> VT_ANY[$value] )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:261:7: {...}?value= LITERAL
             {
             if ( !((validateIdentifierKey("*"))) ) {
                 if (state.backtracking>0) {state.failed=true; return retval;}
                 throw new FailedPredicateException(input, "any_key", "validateIdentifierKey(\"*\")");
             }
-            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_any_key1411); if (state.failed) return retval;
+            value=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_any_key1630); if (state.failed) return retval; 
             if ( state.backtracking==0 ) stream_LITERAL.add(value);
 
 
@@ -2592,7 +2592,7 @@ public class DSLMapParser extends Parser {
             RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.tree:null);
 
             root_0 = (Object)adaptor.nil();
-            // 262:2: -> VT_ANY[$value]
+            // 262:5: -> VT_ANY[$value]
             {
                 adaptor.addChild(root_0, (Object)adaptor.create(VT_ANY, value));
 
@@ -2612,7 +2612,7 @@ public class DSLMapParser extends Parser {
         catch (RecognitionException re) {
             reportError(re);
             recover(input,re);
-        retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
+    	retval.tree = (Object)adaptor.errorNode(input, retval.start, input.LT(-1), re);
 
         }
         finally {
@@ -2622,11 +2622,11 @@ public class DSLMapParser extends Parser {
     // $ANTLR end "any_key"
 
     // $ANTLR start synpred3_DSLMap
-    public final void synpred3_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: ( meta_section )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: meta_section
+    public final void synpred3_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: ( meta_section )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:119:24: meta_section
         {
-        pushFollow(FOLLOW_meta_section_in_synpred3_DSLMap322);
+        pushFollow(FOLLOW_meta_section_in_synpred3_DSLMap338);
         meta_section();
 
         state._fsp--;
@@ -2637,14 +2637,14 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred3_DSLMap
 
     // $ANTLR start synpred6_DSLMap
-    public final void synpred6_DSLMap_fragment() throws RecognitionException {
+    public final void synpred6_DSLMap_fragment() throws RecognitionException {   
         DSLMapParser.condition_key_return value1 = null;
 
 
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:132:4: (value1= condition_key )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:132:4: value1= condition_key
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:132:10: (value1= condition_key )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:132:10: value1= condition_key
         {
-        pushFollow(FOLLOW_condition_key_in_synpred6_DSLMap390);
+        pushFollow(FOLLOW_condition_key_in_synpred6_DSLMap425);
         value1=condition_key();
 
         state._fsp--;
@@ -2655,14 +2655,14 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred6_DSLMap
 
     // $ANTLR start synpred7_DSLMap
-    public final void synpred7_DSLMap_fragment() throws RecognitionException {
+    public final void synpred7_DSLMap_fragment() throws RecognitionException {   
         DSLMapParser.consequence_key_return value2 = null;
 
 
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:133:5: (value2= consequence_key )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:133:5: value2= consequence_key
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:133:11: (value2= consequence_key )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:133:11: value2= consequence_key
         {
-        pushFollow(FOLLOW_consequence_key_in_synpred7_DSLMap399);
+        pushFollow(FOLLOW_consequence_key_in_synpred7_DSLMap439);
         value2=consequence_key();
 
         state._fsp--;
@@ -2673,14 +2673,14 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred7_DSLMap
 
     // $ANTLR start synpred8_DSLMap
-    public final void synpred8_DSLMap_fragment() throws RecognitionException {
+    public final void synpred8_DSLMap_fragment() throws RecognitionException {   
         DSLMapParser.keyword_key_return value3 = null;
 
 
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:134:5: (value3= keyword_key )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:134:5: value3= keyword_key
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:134:11: (value3= keyword_key )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:134:11: value3= keyword_key
         {
-        pushFollow(FOLLOW_keyword_key_in_synpred8_DSLMap407);
+        pushFollow(FOLLOW_keyword_key_in_synpred8_DSLMap453);
         value3=keyword_key();
 
         state._fsp--;
@@ -2691,11 +2691,11 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred8_DSLMap
 
     // $ANTLR start synpred12_DSLMap
-    public final void synpred12_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:4: ( literal )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:164:4: literal
+    public final void synpred12_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:164:7: ( literal )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:164:7: literal
         {
-        pushFollow(FOLLOW_literal_in_synpred12_DSLMap551);
+        pushFollow(FOLLOW_literal_in_synpred12_DSLMap646);
         literal();
 
         state._fsp--;
@@ -2706,11 +2706,11 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred12_DSLMap
 
     // $ANTLR start synpred15_DSLMap
-    public final void synpred15_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: ( literal )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:5: literal
+    public final void synpred15_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:8: ( literal )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:8: literal
         {
-        pushFollow(FOLLOW_literal_in_synpred15_DSLMap626);
+        pushFollow(FOLLOW_literal_in_synpred15_DSLMap742);
         literal();
 
         state._fsp--;
@@ -2721,47 +2721,47 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred15_DSLMap
 
     // $ANTLR start synpred16_DSLMap
-    public final void synpred16_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: ( EQUALS )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:13: EQUALS
+    public final void synpred16_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:16: ( EQUALS )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:16: EQUALS
         {
-        match(input,EQUALS,FOLLOW_EQUALS_in_synpred16_DSLMap628); if (state.failed) return ;
+        match(input,EQUALS,FOLLOW_EQUALS_in_synpred16_DSLMap744); if (state.failed) return ;
 
         }
     }
     // $ANTLR end synpred16_DSLMap
 
     // $ANTLR start synpred17_DSLMap
-    public final void synpred17_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: ( COMMA )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:182:20: COMMA
+    public final void synpred17_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:23: ( COMMA )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:182:23: COMMA
         {
-        match(input,COMMA,FOLLOW_COMMA_in_synpred17_DSLMap630); if (state.failed) return ;
+        match(input,COMMA,FOLLOW_COMMA_in_synpred17_DSLMap746); if (state.failed) return ;
 
         }
     }
     // $ANTLR end synpred17_DSLMap
 
     // $ANTLR start synpred21_DSLMap
-    public final void synpred21_DSLMap_fragment() throws RecognitionException {
+    public final void synpred21_DSLMap_fragment() throws RecognitionException {   
         Token q=null;
 
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:18: ( COLON q= LITERAL )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:201:18: COLON q= LITERAL
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:201:21: ( COLON q= LITERAL )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:201:21: COLON q= LITERAL
         {
-        match(input,COLON,FOLLOW_COLON_in_synpred21_DSLMap698); if (state.failed) return ;
-        q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_synpred21_DSLMap702); if (state.failed) return ;
+        match(input,COLON,FOLLOW_COLON_in_synpred21_DSLMap830); if (state.failed) return ;
+        q=(Token)match(input,LITERAL,FOLLOW_LITERAL_in_synpred21_DSLMap834); if (state.failed) return ;
 
         }
     }
     // $ANTLR end synpred21_DSLMap
 
     // $ANTLR start synpred23_DSLMap
-    public final void synpred23_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: ( literal )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
+    public final void synpred23_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: ( literal )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:220:13: literal
         {
-        pushFollow(FOLLOW_literal_in_synpred23_DSLMap1126);
+        pushFollow(FOLLOW_literal_in_synpred23_DSLMap1288);
         literal();
 
         state._fsp--;
@@ -2772,17 +2772,17 @@ public class DSLMapParser extends Parser {
     // $ANTLR end synpred23_DSLMap
 
     // $ANTLR start synpred25_DSLMap
-    public final void synpred25_DSLMap_fragment() throws RecognitionException {
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: ( LEFT_SQUARE pattern RIGHT_SQUARE )
-        // src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
+    public final void synpred25_DSLMap_fragment() throws RecognitionException {   
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: ( LEFT_SQUARE pattern RIGHT_SQUARE )
+        // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g:222:13: LEFT_SQUARE pattern RIGHT_SQUARE
         {
-        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred25_DSLMap1158); if (state.failed) return ;
-        pushFollow(FOLLOW_pattern_in_synpred25_DSLMap1160);
+        match(input,LEFT_SQUARE,FOLLOW_LEFT_SQUARE_in_synpred25_DSLMap1320); if (state.failed) return ;
+        pushFollow(FOLLOW_pattern_in_synpred25_DSLMap1322);
         pattern();
 
         state._fsp--;
         if (state.failed) return ;
-        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred25_DSLMap1162); if (state.failed) return ;
+        match(input,RIGHT_SQUARE,FOLLOW_RIGHT_SQUARE_in_synpred25_DSLMap1324); if (state.failed) return ;
 
         }
     }
@@ -2948,70 +2948,70 @@ public class DSLMapParser extends Parser {
 
  
 
-    public static final BitSet FOLLOW_statement_in_mapping_file272 = new BitSet(new long[]{0x0000000000500002L});
-    public static final BitSet FOLLOW_entry_in_statement295 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EOL_in_statement302 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_scope_section_in_entry320 = new BitSet(new long[]{0x000000000DC00000L});
-    public static final BitSet FOLLOW_meta_section_in_entry322 = new BitSet(new long[]{0x000000000DC00000L});
-    public static final BitSet FOLLOW_key_section_in_entry325 = new BitSet(new long[]{0x0000000000200000L});
-    public static final BitSet FOLLOW_EQUALS_in_entry327 = new BitSet(new long[]{0x000000000FF00000L});
-    public static final BitSet FOLLOW_value_section_in_entry329 = new BitSet(new long[]{0x0000000000100000L});
-    public static final BitSet FOLLOW_EOL_in_entry333 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EOF_in_entry335 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_scope_section382 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_condition_key_in_scope_section390 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_consequence_key_in_scope_section399 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_keyword_key_in_scope_section407 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_any_key_in_scope_section415 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_scope_section423 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_meta_section463 = new BitSet(new long[]{0x0000000001800000L});
-    public static final BitSet FOLLOW_LITERAL_in_meta_section465 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_meta_section468 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_key_sentence_in_key_section492 = new BitSet(new long[]{0x000000000DC00002L});
-    public static final BitSet FOLLOW_variable_definition_in_key_sentence523 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_key_chunk_in_key_sentence530 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_key_chunk551 = new BitSet(new long[]{0x000000000DC00002L});
-    public static final BitSet FOLLOW_value_sentence_in_value_section566 = new BitSet(new long[]{0x000000000FE00002L});
-    public static final BitSet FOLLOW_variable_reference_in_value_sentence597 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_value_chunk_in_value_sentence604 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_value_chunk626 = new BitSet(new long[]{0x000000000FE00002L});
-    public static final BitSet FOLLOW_EQUALS_in_value_chunk628 = new BitSet(new long[]{0x000000000FE00002L});
-    public static final BitSet FOLLOW_COMMA_in_value_chunk630 = new BitSet(new long[]{0x000000000FE00002L});
-    public static final BitSet FOLLOW_set_in_literal646 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition682 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_definition693 = new BitSet(new long[]{0x0000000014000000L});
-    public static final BitSet FOLLOW_COLON_in_variable_definition698 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_definition702 = new BitSet(new long[]{0x0000000004000000L});
-    public static final BitSet FOLLOW_COLON_in_variable_definition706 = new BitSet(new long[]{0x000000000DC00000L});
-    public static final BitSet FOLLOW_pattern_in_variable_definition710 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition719 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_pattern1126 = new BitSet(new long[]{0x000000000DC00002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_pattern1140 = new BitSet(new long[]{0x000000000DC00000L});
-    public static final BitSet FOLLOW_literal_in_pattern1142 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_pattern1144 = new BitSet(new long[]{0x000000000DC00002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern1158 = new BitSet(new long[]{0x000000000DC00000L});
-    public static final BitSet FOLLOW_pattern_in_pattern1160 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern1162 = new BitSet(new long[]{0x000000000DC00002L});
-    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference1194 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_LITERAL_in_variable_reference1205 = new BitSet(new long[]{0x0000000010000000L});
-    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference1209 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_condition_key1342 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_consequence_key1365 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_keyword_key1388 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LITERAL_in_any_key1411 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_meta_section_in_synpred3_DSLMap322 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_condition_key_in_synpred6_DSLMap390 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_consequence_key_in_synpred7_DSLMap399 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_keyword_key_in_synpred8_DSLMap407 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_synpred12_DSLMap551 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_synpred15_DSLMap626 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_EQUALS_in_synpred16_DSLMap628 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COMMA_in_synpred17_DSLMap630 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_COLON_in_synpred21_DSLMap698 = new BitSet(new long[]{0x0000000001000000L});
-    public static final BitSet FOLLOW_LITERAL_in_synpred21_DSLMap702 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_literal_in_synpred23_DSLMap1126 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred25_DSLMap1158 = new BitSet(new long[]{0x000000000DC00000L});
-    public static final BitSet FOLLOW_pattern_in_synpred25_DSLMap1160 = new BitSet(new long[]{0x0000000000800000L});
-    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred25_DSLMap1162 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_statement_in_mapping_file275 = new BitSet(new long[]{0x0000000000500002L});
+    public static final BitSet FOLLOW_entry_in_statement306 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EOL_in_statement314 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_scope_section_in_entry336 = new BitSet(new long[]{0x000000000DC00000L});
+    public static final BitSet FOLLOW_meta_section_in_entry338 = new BitSet(new long[]{0x000000000DC00000L});
+    public static final BitSet FOLLOW_key_section_in_entry341 = new BitSet(new long[]{0x0000000000200000L});
+    public static final BitSet FOLLOW_EQUALS_in_entry343 = new BitSet(new long[]{0x000000000FF00000L});
+    public static final BitSet FOLLOW_value_section_in_entry345 = new BitSet(new long[]{0x0000000000100000L});
+    public static final BitSet FOLLOW_EOL_in_entry349 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EOF_in_entry351 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_scope_section412 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_condition_key_in_scope_section425 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_consequence_key_in_scope_section439 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_keyword_key_in_scope_section453 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_any_key_in_scope_section467 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_scope_section483 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_meta_section530 = new BitSet(new long[]{0x0000000001800000L});
+    public static final BitSet FOLLOW_LITERAL_in_meta_section532 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_meta_section535 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_key_sentence_in_key_section568 = new BitSet(new long[]{0x000000000DC00002L});
+    public static final BitSet FOLLOW_variable_definition_in_key_sentence608 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_key_chunk_in_key_sentence618 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_key_chunk646 = new BitSet(new long[]{0x000000000DC00002L});
+    public static final BitSet FOLLOW_value_sentence_in_value_section664 = new BitSet(new long[]{0x000000000FE00002L});
+    public static final BitSet FOLLOW_variable_reference_in_value_sentence703 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_value_chunk_in_value_sentence713 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_value_chunk742 = new BitSet(new long[]{0x000000000FE00002L});
+    public static final BitSet FOLLOW_EQUALS_in_value_chunk744 = new BitSet(new long[]{0x000000000FE00002L});
+    public static final BitSet FOLLOW_COMMA_in_value_chunk746 = new BitSet(new long[]{0x000000000FE00002L});
+    public static final BitSet FOLLOW_set_in_literal766 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_definition807 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_definition825 = new BitSet(new long[]{0x0000000014000000L});
+    public static final BitSet FOLLOW_COLON_in_variable_definition830 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_definition834 = new BitSet(new long[]{0x0000000004000000L});
+    public static final BitSet FOLLOW_COLON_in_variable_definition838 = new BitSet(new long[]{0x000000000DC00000L});
+    public static final BitSet FOLLOW_pattern_in_variable_definition842 = new BitSet(new long[]{0x0000000010000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_definition851 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_pattern1288 = new BitSet(new long[]{0x000000000DC00002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_pattern1302 = new BitSet(new long[]{0x000000000DC00000L});
+    public static final BitSet FOLLOW_literal_in_pattern1304 = new BitSet(new long[]{0x0000000010000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_pattern1306 = new BitSet(new long[]{0x000000000DC00002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_pattern1320 = new BitSet(new long[]{0x000000000DC00000L});
+    public static final BitSet FOLLOW_pattern_in_pattern1322 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_pattern1324 = new BitSet(new long[]{0x000000000DC00002L});
+    public static final BitSet FOLLOW_LEFT_CURLY_in_variable_reference1359 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_LITERAL_in_variable_reference1377 = new BitSet(new long[]{0x0000000010000000L});
+    public static final BitSet FOLLOW_RIGHT_CURLY_in_variable_reference1381 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_condition_key1534 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_consequence_key1566 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_keyword_key1598 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LITERAL_in_any_key1630 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_meta_section_in_synpred3_DSLMap338 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_condition_key_in_synpred6_DSLMap425 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_consequence_key_in_synpred7_DSLMap439 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_keyword_key_in_synpred8_DSLMap453 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_synpred12_DSLMap646 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_synpred15_DSLMap742 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_EQUALS_in_synpred16_DSLMap744 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COMMA_in_synpred17_DSLMap746 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_COLON_in_synpred21_DSLMap830 = new BitSet(new long[]{0x0000000001000000L});
+    public static final BitSet FOLLOW_LITERAL_in_synpred21_DSLMap834 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_literal_in_synpred23_DSLMap1288 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_LEFT_SQUARE_in_synpred25_DSLMap1320 = new BitSet(new long[]{0x000000000DC00000L});
+    public static final BitSet FOLLOW_pattern_in_synpred25_DSLMap1322 = new BitSet(new long[]{0x0000000000800000L});
+    public static final BitSet FOLLOW_RIGHT_SQUARE_in_synpred25_DSLMap1324 = new BitSet(new long[]{0x0000000000000002L});
 
 }

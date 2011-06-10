@@ -227,4 +227,16 @@ public class DSLMappingEntryTest {
         }
     }
     
+    @Test
+    public void testCreateWithTilde() throws IOException {
+    	//If the statement parses it passes. To test expressions in dsl with a ~
+    	try{
+        DSLMappingEntry entry1 = this.createEntry( "the benefit HAS an EXACT message of {ALLMSG}", 
+        											"$benefit :Map(this['ALLMSG'] matches \"(?i).*~{ALLMSG}~.*\") from $benefits");
+    	}catch(Exception e){
+    		fail(e.getMessage());
+    	}
+
+
+    }
 }
