@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.drools.definition.process.Node;
 import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
@@ -36,11 +37,13 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.impl.factory.CreateNewNodeFactory;
 import org.jbpm.workflow.instance.impl.factory.ReuseNodeFactory;
 import org.jbpm.workflow.instance.node.ActionNodeInstance;
+import org.jbpm.workflow.instance.node.CatchLinkNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
@@ -56,6 +59,7 @@ import org.jbpm.workflow.instance.node.SplitInstance;
 import org.jbpm.workflow.instance.node.StartNodeInstance;
 import org.jbpm.workflow.instance.node.StateNodeInstance;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
+import org.jbpm.workflow.instance.node.ThrowLinkNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 
@@ -105,6 +109,11 @@ public class NodeInstanceFactoryRegistry {
                   new CreateNewNodeFactory( StateNodeInstance.class ) );
         register( DynamicNode.class,
                   new CreateNewNodeFactory( DynamicNodeInstance.class ) );
+        
+        register(CatchLinkNode.class, new CreateNewNodeFactory(
+				CatchLinkNodeInstance.class));
+		register(ThrowLinkNode.class, new CreateNewNodeFactory(
+				ThrowLinkNodeInstance.class));
     }
 
     public void register(Class< ? extends Node> cls,

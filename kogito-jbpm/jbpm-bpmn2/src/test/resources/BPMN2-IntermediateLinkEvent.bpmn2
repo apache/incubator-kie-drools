@@ -1,0 +1,78 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:tns="http://www.jboss.org/drools">
+ 
+  <process id='linkEventProcessExample' name="link event process example" >
+    
+    
+    <startEvent id='_A176EE94-8688-46D3-8C3F-B7C01CA73782' name='start jump'/>
+    
+    <sequenceFlow id='_EE84FA5C-6CF8-4FA0-AD6C-2F40E8D07824' sourceRef='_A176EE94-8688-46D3-8C3F-B7C01CA73782' targetRef="_seqid123" name="" />
+    
+    
+    <scriptTask id="_seqid123" name="task before link">
+      <script>System.out.println("about to jump");</script>
+    </scriptTask>
+    
+     <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A80' sourceRef="_seqid123" targetRef='_id_1' name="" />
+          
+     <intermediateThrowEvent id="_id_1" name="" >
+	     <linkEventDefinition  name="nextPage">
+	     </linkEventDefinition>
+     </intermediateThrowEvent>
+     
+     <intermediateCatchEvent id="_id_2" name="" >
+	     <linkEventDefinition name="nextPage">
+	     </linkEventDefinition>  
+     </intermediateCatchEvent> 
+     
+     
+     <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A81' sourceRef='_id_2' targetRef='_6381BCBA-B49A-4BC1-AC3D-AEA745D9738E' name=""  />
+  
+  
+  
+  <scriptTask id="_6381BCBA-B49A-4BC1-AC3D-AEA745D9738E" name="task after link">
+      <script>System.out.println("jumped");</script>
+    </scriptTask>
+    
+  
+        <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A80' sourceRef="_6381BCBA-B49A-4BC1-AC3D-AEA745D9738E" targetRef='_id_3' name="" />
+          
+     <intermediateThrowEvent id="_id_3" name="" >
+	     <linkEventDefinition  name="2ndPage">
+	     </linkEventDefinition>
+     </intermediateThrowEvent>
+     
+     <intermediateCatchEvent id="_id_4" name="" >
+	     <linkEventDefinition  name="2ndPage">
+	     </linkEventDefinition>  
+     </intermediateCatchEvent> 
+     
+     
+     <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A81' sourceRef='_id_4' targetRef='_6381BCBA-B49A-4BC1-AC3D-AEA745D97999' name=""  />
+    
+    
+    
+     <scriptTask id="_6381BCBA-B49A-4BC1-AC3D-AEA745D97999" name=" 2nd TASK AFTER LINK">
+      <script>System.out.println("jumped 2");</script>
+    </scriptTask>
+    
+    
+    
+        <sequenceFlow name="" id='_325E4E04-60D2-4E0A-89FC-CBFA2304D401' sourceRef='_6381BCBA-B49A-4BC1-AC3D-AEA745D97999' targetRef='_8E0F0FAD-6087-4FA2-80BE-6976C87A4CE1'/>
+    
+    
+    
+    <endEvent id='_8E0F0FAD-6087-4FA2-80BE-6976C87A4CE1' name='stop doing'/>
+    
+  </process>
+
+</definitions>
+
