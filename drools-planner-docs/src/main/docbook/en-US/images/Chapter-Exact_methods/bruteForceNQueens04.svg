@@ -33,7 +33,7 @@
             <dc:title>Geoffrey De Smet</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -48,7 +48,7 @@
        id="perspective4439" />
   </defs>
   <sodipodi:namedview
-     inkscape:window-height="974"
+     inkscape:window-height="1000"
      inkscape:window-width="1680"
      inkscape:pageshadow="2"
      inkscape:pageopacity="1"
@@ -60,9 +60,9 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:zoom="1.2099383"
-     inkscape:cx="576.28072"
+     inkscape:cx="577.9337"
      inkscape:cy="646.88917"
-     inkscape:window-x="1680"
+     inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:current-layer="svg2"
      inkscape:grid-points="true"
@@ -13811,34 +13811,6 @@
          id="rect15755" /></flowRegion><flowPara
        id="flowPara15759">64 infeasible</flowPara><flowPara
        id="flowPara15763">solutions</flowPara></flowRoot>  <flowRoot
-     xml:space="preserve"
-     id="flowRoot15765"
-     style="font-size:22px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
-     transform="translate(146.3125,493.60032)"><flowRegion
-       id="flowRegion15767"><rect
-         id="rect15769"
-         width="220"
-         height="129.99998"
-         x="103.6878"
-         y="-465.25656"
-         style="font-size:22px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
-       id="flowPara15773">n<flowSpan
-   style="font-size:65.00091553%;text-align:start;text-anchor:start;baseline-shift:super"
-   id="flowSpan15777">n scores</flowSpan></flowPara><flowPara
-       id="flowPara15779">4<flowSpan
-   style="font-size:65.00091553%;text-align:start;text-anchor:start;baseline-shift:super"
-   id="flowSpan15781">4</flowSpan> = 256</flowPara><flowPara
-       id="flowPara15783">8<flowSpan
-   style="font-size:65.00091553%;text-align:start;text-anchor:start;baseline-shift:super"
-   id="flowSpan15791">8</flowSpan> = 16.777.216 ~ 10<flowSpan
-   style="font-size:65.00091553%;baseline-shift:super"
-   id="flowSpan15799">7</flowSpan></flowPara><flowPara
-       id="flowPara15793">64<flowSpan
-   style="font-size:65.00091553%;baseline-shift:super"
-   id="flowSpan15795">64</flowSpan> ~ 10<flowSpan
-   style="font-size:65.00091553%;baseline-shift:super"
-   id="flowSpan15797">115</flowSpan></flowPara><flowPara
-       id="flowPara15785" /></flowRoot>  <flowRoot
      transform="translate(876.3125,693.60032)"
      style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:end;line-height:125%;writing-mode:lr-tb;text-anchor:end;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
      id="flowRoot15805"
