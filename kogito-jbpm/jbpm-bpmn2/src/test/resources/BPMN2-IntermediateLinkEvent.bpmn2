@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="Definition"
              targetNamespace="http://www.example.org/MinimalExample"
@@ -43,7 +42,7 @@
     </scriptTask>
     
   
-        <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A80' sourceRef="_6381BCBA-B49A-4BC1-AC3D-AEA745D9738E" targetRef='_id_3' name="" />
+        <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A82' sourceRef="_6381BCBA-B49A-4BC1-AC3D-AEA745D9738E" targetRef='_id_3' name="" />
           
      <intermediateThrowEvent id="_id_3" name="" >
 	     <linkEventDefinition  name="2ndPage">
@@ -56,7 +55,7 @@
      </intermediateCatchEvent> 
      
      
-     <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A81' sourceRef='_id_4' targetRef='_6381BCBA-B49A-4BC1-AC3D-AEA745D97999' name=""  />
+     <sequenceFlow id='_481A2782-FC17-41CB-BC28-5799B6866A83' sourceRef='_id_4' targetRef='_6381BCBA-B49A-4BC1-AC3D-AEA745D97999' name=""  />
     
     
     
