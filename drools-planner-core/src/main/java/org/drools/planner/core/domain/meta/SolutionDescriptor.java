@@ -95,6 +95,10 @@ public class SolutionDescriptor implements Serializable {
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
             Collection<? extends Object> entityCollection = (Collection<? extends Object>)
                     DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+            if (entityCollection == null) {
+                throw new IllegalArgumentException("The entity collection property ("
+                        + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
+            }
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
                 if (planningEntityDescriptor.isInitialized(entity)) {
@@ -116,6 +120,10 @@ public class SolutionDescriptor implements Serializable {
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
             Collection<? extends Object> entityCollection = (Collection<? extends Object>)
                     DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+            if (entityCollection == null) {
+                throw new IllegalArgumentException("The entity collection property ("
+                        + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
+            }
             for (Object entity : entityCollection) {
                 planningEntities.add(entity);
             }
