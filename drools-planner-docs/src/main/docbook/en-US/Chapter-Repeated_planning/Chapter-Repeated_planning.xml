@@ -14,58 +14,60 @@
 
     <itemizedlist>
       <listitem>
-        <para><emphasis>Unforseen fact changes</emphasis>: For example: an employee assigned to a shift calls in sick, a
-        planed scheduled to take off has a technical delay, one of the machines or vehicles breaks down, ... Use
+        <para><emphasis>Unforeseen fact changes</emphasis>: For example: an employee assigned to a shift calls in sick,
+        an airplane scheduled to take off has a technical delay, one of the machines or vehicles break down, ... Use
         <emphasis role="bold">backup planning</emphasis>.</para>
       </listitem>
 
       <listitem>
         <para><emphasis>Unknown long term future facts</emphasis>: For example: The hospital admissions for the next 2
-        weeks are reliable, those for week 3 and 4 are less reliable and for week 5 and beyond are not worth planning
-        yet. Use <emphasis role="bold">continious planning</emphasis>.</para>
+        weeks are reliable, but those for week 3 and 4 are less reliable and for week 5 and beyond are not worth
+        planning yet. Use <emphasis role="bold">continuous planning</emphasis>.</para>
       </listitem>
 
       <listitem>
-        <para><emphasis>Constantly changing facts</emphasis>: Use <emphasis role="bold">real-time
+        <para><emphasis>Constantly changing planning facts</emphasis>: Use <emphasis role="bold">real-time
         planning</emphasis>.</para>
       </listitem>
     </itemizedlist>
 
-    <para>Waiting to start planning - to lower the risk of planning facts changing - ussually isn't a good way to deal
-    with that. More time means a better planning solution. A incomplete plan is better then no plan.</para>
+    <para>Waiting to start planning - to lower the risk of planning facts changing - usually isn't a good way to deal
+    with that. More CPU time means a better planning solution. A incomplete plan is better then no plan.</para>
 
-    <para>Luckily, the Drools Planner algorithms support planning a solution that's already (partially) planned.</para>
+    <para>Luckily, the Drools Planner algorithms support planning a solution that's already (partially) planned, known
+    as repeated planning.</para>
   </section>
 
   <section>
     <title>Backup planning</title>
 
-    <para>Backup planning is the technique of adding extra score constraints to create room in the planning for when
-    things go wrong. Create a backup plan in the plan. For example, for every 10 shifts at the same time, try to assign
-    an employee as the spare employee.</para>
+    <para>Backup planning is the technique of adding extra score constraints to create space in the planning for when
+    things go wrong. Create a backup plan in the plan. For example: try to assign an employee as the spare employee
+    (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...</para>
 
     <para>Then, when things go wrong (one of the employees calls in sick), change the planning facts on the original
     solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from
     that solution, which has a different score now. The construction heuristics will fill in the newly created gaps
-    (probably with the spare employees) and the metaheuristics will even improve it further.</para>
+    (probably with the spare employee) and the metaheuristics will even improve it further.</para>
   </section>
 
   <section>
     <title>Continuous planning (windowed planning)</title>
 
     <para>Continuous planning is the technique of planning one or more upcoming planning windows. The first upcoming
-    planning windows is considered stable (unlikely to change), while later upcoming planning windows are considered
+    planning window is considered stable (unlikely to change), while later upcoming planning windows are considered
     draft (likely to change during the next planning effort). Distant future planning windows are not planned at
     all.</para>
 
     <para>Past planning windows have locked planning entities: the planning entities can no longer be changed (they are
-    locked in place), but are sometimes still needed as they might affect some of the score constraints that apply on
-    the upcoming planning entities. For example: an employee should not work more than 5 days in a row, even if he just
-    worked 4 days in a row up to today.</para>
+    locked in place), but some of them are still needed in the working memory, as they might affect some of the score
+    constraints that apply on the upcoming planning entities. For example: when an employee should not work more than 5
+    days in a row, he shouldn't work today and tomorrow if he worked the past 4 days already.</para>
 
     <para>Sometimes some planning entities are semi-locked: they can be changed, but occur a certain score penalty if
     they differ from their original place. For example: avoid rescheduling hospital beds less than 2 days before the
-    patient arrives, unless it's really worth it.</para>
+    patient arrives (unless it's really worth it), avoid changing the airplane gate (or worse, the terminal) during the
+    2 hours before boarding, ...</para>
 
     <figure>
       <title>Continuous planning diagram</title>
@@ -82,8 +84,12 @@
   <section>
     <title>Real-time planning (event based planning)</title>
 
-    <para>To do real-time planning, combine backup planning and continuous planning with short planning windows.
-    Terminate the planning thread early when an event with a planning fact change arrives. More tricks and tips are
-    coming in future versions.</para>
+    <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows
+    to lower the burden of real-time planning.</para>
+
+    <para>While the planner is running, an outside event might want to change one of the planning facts, for example
+    an airplane is delayed and needs the runway at a later time. Do not change the planning fact instances used by the
+    planner while the planner is running. Instead, just terminate the planner early, then change its planning fact
+    instances and restart the planner again.</para>
   </section>
 </chapter>
