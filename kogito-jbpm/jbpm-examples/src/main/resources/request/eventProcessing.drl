@@ -1,0 +1,10 @@
+package com.sample
+
+import org.drools.event.process.ProcessStartedEvent
+
+rule "CheckProcessStart"
+    when
+        nb: Long ( intValue > 3 ) from accumulate (e: ProcessStartedEvent(), count(e))
+    then
+        System.out.println("Unexpected large amount of processes started: " + nb);
+end

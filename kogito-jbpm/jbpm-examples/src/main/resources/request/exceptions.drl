@@ -1,0 +1,13 @@
+package org.jbpm.examples.request
+
+import org.drools.runtime.process.WorkflowProcessInstance
+
+rule "Cancellation of request"
+    when
+    	r: Request( canceled == true )
+        p: WorkflowProcessInstance()
+        String( this == r.id ) from p.getVariable("request")
+    then
+        System.out.println("Detected cancelation of request");
+        kcontext.getKnowledgeRuntime().signalEvent("Failure", null, p.getId());
+end

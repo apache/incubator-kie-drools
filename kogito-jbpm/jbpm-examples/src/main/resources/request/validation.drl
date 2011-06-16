@@ -1,0 +1,17 @@
+package org.jbpm.examples.request
+
+rule "Unknown Customer" ruleflow-group "Validation"
+    when
+        r: Request()
+        not Person(id == r.personId)
+    then
+        r.setInvalid("Unknown customer");
+end
+
+rule "Underage Customer" ruleflow-group "Validation"
+    when
+        r: Request()
+        Person(id == r.personId, age < 18)
+    then
+        r.setInvalid("Underage customer");
+end
