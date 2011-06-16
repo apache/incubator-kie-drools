@@ -1552,7 +1552,12 @@ public class PackageBuilder {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if ( reg != null ) {
-                reg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                Class<?> resolvedType = reg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                if( resolvedType != null && typeDescr.getFields().size() > 1 ) {
+                    this.results.add( new TypeDeclarationError("Duplicate type definition. A class with the name '"+resolvedType.getName()+"' was found in the classpath while trying to " +
+                    		                                   "redefine the fields in the declare statement. Fields can only be defined for non-existing classes.",
+                                                               typeDescr.getLine()) );
+                }
                 return false;
             } else {
                 return false;
