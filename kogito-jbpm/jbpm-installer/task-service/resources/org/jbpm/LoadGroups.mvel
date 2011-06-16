@@ -1,5 +1,7 @@
 groups = [ 'knightsTempler' : new Group( "Knights Templer" ),
-           'crusaders' : new Group( "Crusaders" )
+           'crusaders' : new Group( "Crusaders" ),
+           'HR' : new Group( "HR" ),
+           'PM' : new Group( "PM" )
          ];
 
 return groups;

@@ -6,13 +6,23 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>Core Engine: API</title>
+  
+  <para>This chapter introduces the API you need to load processes and execute them.  For
+  more detail on how to define the processes themselves, check out the chapter on BPMN 2.0.
+  </para>
 
   <para>To interact with the process engine (to for example start a process), you need
   to set up a session.  This session will be used to communicate with the process engine.
-  A session also needs to have a reference to a knowledge base.  This knowledge base is
-  used to look up the process definitions whenever necessary.  Whenever a process is
-  started, a new process instance is created (for that process definition) that maintains
-  the state of that specific instance of the process.</para>
+  A session needs to have a reference to a knowledge base, which contains a reference
+  to all the relevant process definitions.  This knowledge base is used to look up 
+  the process definitions whenever necessary.  To create a session, you first need to create
+  a knowledge base, load all the necessary process definition (this can be from various
+  sources, like from classpath, file system or process repository) and then instantiate a
+  session.</para>
+  
+  <para>Once you have set up a session, you can use it to start executing processes.
+  Whenever a process is started, a new process instance is created (for that process
+  definition) that maintains the state of that specific instance of the process.</para>
 
     <mediaobject>
       <imageobject>
@@ -26,7 +36,8 @@
   processed.  When starting up your application, you first need to create a knowledge base
   that contains those process definitions.  You can then create a session based on this
   knowledge base so that, whenever a new sales order then comes in, a new process instance
-  is started for that sales order.</para>
+  is started for that sales order.  That process instance contains the state of the process
+  for that specific sales request.</para>
   
   <para>A knowledge base can be shared across sessions and usually is only created once,
   at the start of the application (as creating a knowledge base can be rather heavy-weight
@@ -35,9 +46,9 @@
   
   <para>Sessions can be created based on a knowledge base and are used to execute processes
   and interact with the engine.  You can create as much independent session as you want and
-  creating a session is considered relatively lightweight.  How much sessions you create is
-  up to you, but in general you could for example create one session and direct all calls
-  in your application to that one session.  You could decide to create multiple sessions
+  creating a session is considered relatively lightweight.  How many sessions you create is
+  up to you.  In general, most simple cases start out with creating one session that is then
+  called from various places in your application.  You could decide to create multiple sessions
   if for example you want to have multiple independent processing units (for example, you want
   all processes from one customer be completely independent of processes of another customer
   so you could create an independent session for each customer), or if you need multiple
@@ -48,7 +59,7 @@
   <section>
     <title>The jBPM API</title>
     
-  <para>The project has a clear separation between the API the users should be interacting
+  <para>The jBPM project has a clear separation between the API the users should be interacting
   with and the actual implementation classes.  The public API exposes most of the features
   we believe "normal" users can safely use and should remain rather stable across releases.
   Expert users can still access internal classes but should be aware that they should know
@@ -63,9 +74,11 @@
 
     <para>The jBPM API allows you to first create a knowledge base.  This
     knowledge base should include all your process definitions that might need to
-    be executed.  The following code snippet shows how to create a
-    knowledge base consisting of only one process definition (using a knowledge
-    builder, in this case to add a resource from the classpath).</para>
+    be executed by that session.  To create a knowlegde base, use a knowledge builder
+    to load processes from various resources (for example from the classpath or from
+    file system), and then create a new knowledge base from that builder. The following
+    code snippet shows how to create a knowledge base consisting of only one process 
+    definition (using in this case a resource from the classpath).</para>
 
 <programlisting language="java">
 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -73,14 +86,18 @@ kbuilder.add(ResourceFactory.newClassPathResource("MyProcess.bpmn"), ResourceTyp
 KnowledgeBase kbase = kbuilder.newKnowledgeBase();
 </programlisting>
 
+    <para>The ResourceFactory has similar methods to load files from file system, from
+    URL, InputStream, Reader, etc.</para>
+
   </section>
 
   <section>
     <title>Session</title>
 
-    <para>Next, you should create a session to interact with the engine.  The following
-    code snippet shows how easy it is to create a session based on the earlier created
-    knowledge base, and to start a process (by id).</para>
+    <para>Once you've loaded your knowledge base, you should create a session to 
+    interact with the engine.  This session can then be used to start new processes,
+    signal events, etc.  The following code snippet shows how easy it is to create
+    a session based on the earlier created knowledge base, and to start a process (by id).</para>
 
 <programlisting language="java">
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -195,7 +212,8 @@ ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
     like starting or completing a process, entering and leaving a node, etc.  Below,
     the different methods of the <code>ProcessEventListener</code> class are shown.
     An event object provides access to related information, like the process instance
-    and node instance linked to the event.</para>
+    and node instance linked to the event.  You can use this API to register your own
+    event listeners.</para>
 
 <programlisting language="java">
 public interface ProcessEventListener {
@@ -208,11 +226,16 @@ public interface ProcessEventListener {
   void afterNodeTriggered( ProcessNodeTriggeredEvent event );
   void beforeNodeLeft( ProcessNodeLeftEvent event );
   void afterNodeLeft( ProcessNodeLeftEvent event );
+  void beforeVariableChanged(ProcessVariableChangedEvent event);
+  void afterVariableChanged(ProcessVariableChangedEvent event);
 
 }</programlisting>
 
-    <para>An audit log can be created based on the information provided by these process
-    listeners.  We provide various default logger implementations:</para>
+    <para>jBPM out-of-the-box provides a listener that can be used to create an audit log (either
+    to the console or the a file on the file system).  This audit log contains all the different events
+    that occurred at runtime so it's easy to figure out what happened. Note that these loggers should
+    only be used for debugging purposes.  The following logger implementations
+    are supported by default:</para>
     <orderedlist>
       <listitem><para>Console logger: This logger writes out all the events to the console.</para></listitem>
 
@@ -232,7 +255,8 @@ public interface ProcessEventListener {
     your session, as shown below.  When creating a console logger, the knowledge session
     for which the logger needs to be created must be passed as an argument. The file
     logger also requires the name of the log file to be created, and the threaded file
-    logger requires the interval (in milliseconds) after which the events should be saved.</para>
+    logger requires the interval (in milliseconds) after which the events should be saved.
+    You should always close the logger at the end of your application.</para>
 
 <programlisting language="java">
 KnowledgeRuntimeLogger logger =
@@ -242,8 +266,10 @@ KnowledgeRuntimeLogger logger =
 ...
 logger.close();</programlisting>
 
-    <para>The log file can be opened in Eclipse, using the Audit View in the Drools
-    Eclipse plugin, where the events are visualized as a tree. Events that occur
+    <para>The log file that is created by the file-based loggers contains an XML-based
+    overview of all the events that occurred at runtime.  It can be opened in Eclipse, 
+    using the Audit View in the Drools Eclipse plugin, where the events are visualized
+    as a tree. Events that occur
     between the before and after event are shown as children of that event.  The
     following screenshot shows a simple example, where a process is started,
     resulting in the activation of the Start node, an Action node and an End node,

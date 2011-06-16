@@ -20,9 +20,24 @@ business people who will manage and monitor those processes."</programlisting>
   a business process (like BPMN 1.x), but now also includes execution semantics for the elements defined, and an XML format on how to 
   store (and share) process definitions.</para>
 
-  <para>jBPM5 allows you to execute processes defined using the BPMN 2.0 XML format.  That means that you can all the different jBPM5 components to model, execute,
+  <para>jBPM5 allows you to execute processes defined using the BPMN 2.0 XML format.  That means that you can use all the different jBPM5 tooling to model, execute,
   manage and monitor your business processes using the BPMN 2.0 format for specifying your executable business processes.  Actually, the full BPMN 2.0 specification
   also includes details on how to represent things like choreographies and and collaboration.  The jBPM project however focuses on that part of the specification that can be used to specify executable processes.</para>
+
+  <para>Executable processes in BPMN consist of a different types of nodes being connected to each other using sequence flows.
+  The BPMN 2.0 specification defines three main types of nodes:</para>
+  <itemizedlist>
+    <listitem><emphasis>Events</emphasis>: They are used to model the occurrence of a particular
+    event.  This could be a start event (that is used to indicate the start of the process), end
+    events (that define the end of the process, or of that subflow) and intermediate events (that
+    indicate events that might occur during the execution of the process).</listitem>
+    <listitem><emphasis>Activities</emphasis>: These define the different actions that need to be
+    performed during the execution of the process.  Different types of tasks exist, depending on 
+    the type of activity you are trying to model (e.g. human task, service task, etc.) and actvities
+    could also be nested (using different types of sub-processes).</listitem>
+    <listitem><emphasis>Gateways</emphasis>: Can be used to define multiple paths in the process.
+    Depending on the type of gateway, these might indicate parallel execution, choice, etc.</listitem>
+  </itemizedlist>
 
   <para>jBPM5 does not implement all elements and attributes as defined in the BPMN 2.0 specification.  We do however support a significant subset, including the
   most common node types that can be used inside executable processes.  This includes (almost) all elements and attributes as defined in the "Common Executable" 
@@ -169,8 +184,8 @@ business people who will manage and monitor those processes."</programlisting>
           execution engine.</para>
         </listitem>
         <listitem>
-          <para>Oryx is an open-source web-based editor that supports the BPMN 2.0 format.  We have embedded it into
-          Guvnor for BPMN 2.0 process visualization and editing.  You could use the Oryx editor (either standalone or
+          <para>The Designer is an open-source web-based editor that supports the BPMN 2.0 format.  We have embedded it into
+          Guvnor for BPMN 2.0 process visualization and editing.  You could use the Designer (either standalone or
           integrated) to create / edit BPMN 2.0 processes and then export them to BPMN 2.0 format or save them into
           Guvnor and import them so they can be executed.</para>
         </listitem>
@@ -179,10 +194,13 @@ business people who will manage and monitor those processes."</programlisting>
           under development and only supports a limited number of constructs and attributes, but can already be used to
           create simple BPMN2 processes.  To create a new BPMN2 file for this editor, use the wizard (under Examples) to create
           a new BPMN2 file, which will generate a .bpmn2 file and a .prd file containing the graphical information.  Double-click
-          the .prd file to edit the file using the graphical editor.</para>
+          the .prd file to edit the file using the graphical editor.  For more detail, check out the chapter
+          on the new BPMN2 Eclipse plugin.</para>
         </listitem>
         <listitem>
-          <para>You can always manually create your BPMN 2.0 process files by writing the XML directly.</para>
+          <para>You can always manually create your BPMN 2.0 process files by writing the XML directly.
+          You can validate the syntax of your processes against the BPMN 2.0 XSD, or use the validator
+          in the Eclipse plugin to check both syntax and completeness of your model.</para>
         </listitem>
       </itemizedlist>
   </para>
@@ -200,6 +218,8 @@ business people who will manage and monitor those processes."</programlisting>
   <programlisting language="java">KnowledgeBase kbase = createKnowledgeBase();
 StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 ksession.startProcess("com.sample.HelloWorld");</programlisting>
+
+  <para>For more detail, check out the chapter on the API and the basics.</para>
 
   </section>
 
@@ -223,13 +243,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
 
   <table>
     <title>Keywords</title>
-    <tgroup cols="4">BPMN 2.0 supported elements and attributes
+    <tgroup cols="5">BPMN 2.0 supported elements and attributes
       <thead>
         <row>
           <entry>Element</entry>
           <entry>Supported attributes</entry>
           <entry>Supported elements</entry>
           <entry>Extension attributes</entry>
+          <entry>Extension elements</entry>
         </row>
       </thead>
       <tbody>
@@ -238,6 +259,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>rootElement BPMNDiagram</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -245,7 +267,8 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>process</entry>
           <entry>processType isExecutable name id</entry>
           <entry>property laneSet flowElement</entry>
-          <entry>packageName</entry>
+          <entry>packageName adHoc version</entry>
+          <entry>import global</entry>
         </row>
       </tbody>
       <tbody>
@@ -253,7 +276,8 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>sequenceFlow</entry>
           <entry>sourceRef targetRef isImmediate name id</entry>
           <entry>conditionExpression</entry>
-          <entry>bendpoints</entry>
+          <entry>priority bendpoints</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -261,6 +285,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>interface</entry>
           <entry>name id</entry>
           <entry>operation</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -270,6 +295,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>inMessageRef</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -277,6 +303,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>laneSet</entry>
           <entry></entry>
           <entry>lane</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -286,10 +313,30 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>flowNodeRef</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
+          <entry>import*</entry>
+          <entry></entry>
+          <entry>name</entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>global*</entry>
+          <entry></entry>
+          <entry>identifier type</entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -302,6 +349,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -310,6 +358,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>dataOutput dataOutputAssociation outputSet eventDefinition</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -318,6 +367,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>dataInput dataInputAssociation inputSet eventDefinition</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -326,6 +376,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>dataOutput dataOutputAssociation outputSet eventDefinition</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -334,6 +385,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>dataInput dataInputAssociation inputSet eventDefinition</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -342,11 +394,13 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>cancelActivity attachedToRef name id</entry>
           <entry>eventDefinition</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>terminateEventDefinition</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -358,6 +412,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>activityRef</entry>
           <entry>documentation extensionElements</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -366,12 +421,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>condition</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>errorEventDefinition</entry>
           <entry>errorRef</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -382,12 +439,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>errorCode id</entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>escalationEventDefinition</entry>
           <entry>escalationRef</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -398,12 +457,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>escalationCode id</entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>messageEventDefinition</entry>
           <entry>messageRef</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -414,6 +475,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>itemRef id</entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -422,18 +484,21 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>signalRef</entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>timerEventDefinition</entry>
           <entry></entry>
-          <entry>timeCycle</entry>
+          <entry>timeCycle timeDuration</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -446,6 +511,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -454,6 +520,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>ioSpecification dataInputAssociation dataOutputAssociation</entry>
           <entry>taskName x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -462,6 +529,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>scriptFormat name id</entry>
           <entry>script</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -469,6 +537,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>script</entry>
           <entry></entry>
           <entry>text[mixed content]</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -478,6 +547,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>ioSpecification dataInputAssociation dataOutputAssociation resourceRole</entry>
           <entry>x y width height</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -485,6 +555,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>potentialOwner</entry>
           <entry></entry>
           <entry>resourceAssignmentExpression</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -494,6 +565,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>expression</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -502,6 +574,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry></entry>
           <entry>x y width height ruleFlowGroup</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -510,6 +583,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry></entry>
           <entry>x y width height</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -518,6 +592,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>messageRef name id</entry>
           <entry>ioSpecification dataInputAssociation</entry>
           <entry>x y width height</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -526,6 +601,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>messageRef name id</entry>
           <entry>ioSpecification dataOutputAssociation</entry>
           <entry>x y width height</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -534,6 +610,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>operationRef name id</entry>
           <entry>ioSpecification dataInputAssociation dataOutputAssociation</entry>
           <entry>x y width height</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -542,6 +619,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>name id</entry>
           <entry>flowElement property loopCharacteristics</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -550,6 +628,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>cancelRemainingInstances name id</entry>
           <entry>completionCondition flowElement property</entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -558,6 +637,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>calledElement name id</entry>
           <entry>ioSpecification dataInputAssociation dataOutputAssociation</entry>
           <entry>x y width height waitForCompletion independent</entry>
+          <entry>onEntry-script onExit-script</entry>
         </row>
       </tbody>
       <tbody>
@@ -566,10 +646,30 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>loopDataInputRef inputDataItem</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
+          <entry>onEntry-script*</entry>
+          <entry>scriptFormat</entry>
+          <entry></entry>
+          <entry>script</entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>onExit-script*</entry>
+          <entry>scriptFormat</entry>
+          <entry></entry>
+          <entry>script</entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -582,6 +682,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -590,6 +691,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>gatewayDirection name id</entry>
           <entry></entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -598,6 +700,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>gatewayDirection name id</entry>
           <entry></entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -606,6 +709,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>default gatewayDirection name id</entry>
           <entry></entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -614,10 +718,12 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>default gatewayDirection name id</entry>
           <entry></entry>
           <entry>x y width height</entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -630,12 +736,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>property</entry>
           <entry>itemSubjectRef id</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -646,12 +754,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>itemSubjectRef id</entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>itemDefinition</entry>
           <entry>structureRef id</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -662,12 +772,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>dataInput dataOutput inputSet outputSet</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>dataInput</entry>
           <entry>name id</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -678,12 +790,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>sourceRef targetRef assignment</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>dataOutput</entry>
           <entry>name id</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>
@@ -694,6 +808,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>sourceRef targetRef assignment</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -701,6 +816,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>inputSet</entry>
           <entry></entry>
           <entry>dataInputRefs</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -710,6 +826,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry>dataOutputRefs</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -717,6 +834,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>assignment</entry>
           <entry></entry>
           <entry>from to</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -726,10 +844,12 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>language</entry>
           <entry>text[mixed content]</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
           <entry></entry>
@@ -742,6 +862,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry></entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -749,6 +870,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>BPMNDiagram</entry>
           <entry></entry>
           <entry>BPMNPlane</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -758,6 +880,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>bpmnElement</entry>
           <entry>BPMNEdge BPMNShape</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -765,6 +888,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>BPMNShape</entry>
           <entry>bpmnElement</entry>
           <entry>Bounds</entry>
+          <entry></entry>
           <entry></entry>
         </row>
       </tbody>
@@ -774,6 +898,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>bpmnElement</entry>
           <entry>waypoint</entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
@@ -782,12 +907,14 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>x y width height</entry>
           <entry></entry>
           <entry></entry>
+          <entry></entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>waypoint</entry>
           <entry>x y</entry>
+          <entry></entry>
           <entry></entry>
           <entry></entry>
         </row>

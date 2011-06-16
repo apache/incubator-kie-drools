@@ -32,6 +32,32 @@
   </section>
   
   <section>
+    <title>Examples</title>
+    
+    <para>The examples module contains a number of examples, from basic to advanced:
+      <itemizedlist>
+        <listitem>Looping: An example that shows how you can use exclusive gateways to
+        loop a part your process until the loop condition is no longer valid.  The process
+        takes the 'count' (the number of times the loop needs to be repeated) as input and
+        simply prints out a statement during every loop until the process is completed.</listitem>
+        <listitem>MultiInstance: This example shows how to execute a sub-process for each
+        element in a collection.  The process takes a collection of names as input and
+        creates a review task for a sales representative for each person in that list.  The
+        process completes if the task has been executed for every person on that list.</listitem>
+        <listitem>Evaluation: A performance evaluation process that shows how to integrate
+        human actors in the process.  While the basic example simply shows tasks assigned
+        to predefined users, the more advanced version shows data passing from the process
+        to the task and back, group assignment, task delegation, etc.</listitem>
+        <listitem>Request: An advanced example that shows various ways in which processes
+        and rules can work together, like a rule task for invoking validation rules, rules
+        as expression language for constraints inside the process, rules for exception handling,
+        event processing for monitoring, ad hoc rules for more flexible processes, etc.</listitem>
+      </itemizedlist>
+    </para>
+    
+  </section>
+  
+  <section>
     <title>Unit tests</title>
     
     <para>The examples project contains a large number of simple BPMN2 processes for each
