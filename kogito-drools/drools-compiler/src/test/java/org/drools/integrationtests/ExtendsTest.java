@@ -162,7 +162,7 @@ public class ExtendsTest extends TestCase {
      @Test
     public void testIllegalExtendsLegacy() throws Exception {
         //Test Base Fact Type
-        genSession("test_ExtLegacyIllegal.drl",1);
+        genSession("test_ExtLegacyIllegal.drl",2);
 
     }
 

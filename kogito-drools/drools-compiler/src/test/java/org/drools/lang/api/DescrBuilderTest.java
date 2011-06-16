@@ -16,6 +16,7 @@
 
 package org.drools.lang.api;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -29,6 +30,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.definition.KnowledgePackage;
+import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -150,7 +152,7 @@ public class DescrBuilderTest {
                     .lhs()
                         .eval().constraint( "myMax(5, 10) == 10" ).end()
                     .end()
-                    .rhs( "// do nothing" )
+                    .rhs( "// do something\n" )
                 .end()
                 .getDescr();
 
@@ -173,12 +175,56 @@ public class DescrBuilderTest {
                       rules );
     }
 
+    @Test
+    public void testDeclare() throws InstantiationException,
+                             IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.beans" )
+                // declare
+                .newDeclare().type( "StockTick" )
+                    .newAnnotation( "role" ).value( "event" ).end()
+                    .newAnnotation( "author" ).value( "bob" ).end()
+                    .newField( "symbol" ).type( "String" ).end()
+                    .newField( "price" ).type( "double" ).end()
+                .end()
+                .getDescr();
+
+        assertEquals( 1,
+                      pkg.getTypeDeclarations().size() );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.beans",
+                      kpkg.getName() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+
+        FactType stType = kbase.getFactType( "org.beans",
+                                             "StockTick" );
+        assertNotNull( stType );
+        Object st = stType.newInstance();
+        stType.set( st,
+                    "symbol",
+                    "RHT" );
+        stType.set( st,
+                    "price",
+                    10 );
+
+        assertEquals( "RHT",
+                      stType.get( st,
+                                  "symbol" ) );
+        
+        //stType.getAnnotation("author"); TODO: implement support for this
+
+    }
+
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),
                       ResourceType.DESCR );
 
-        assertFalse( kbuilder.hasErrors() );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
         Collection<KnowledgePackage> kpkgs = kbuilder.getKnowledgePackages();
         assertEquals( 1,
                       kpkgs.size() );

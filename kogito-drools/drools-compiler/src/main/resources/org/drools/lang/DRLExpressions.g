@@ -272,7 +272,8 @@ inExpression returns [BaseDescr result]
   ;
 
 relationalExpression returns [BaseDescr result]
-scope { BaseDescr lsd = null; }
+scope { BaseDescr lsd; }
+@init { $relationalExpression::lsd = null; }
   : left=shiftExpression 
     { if( buildDescr  ) { 
           $result = ( $left.result != null && 
