@@ -77,6 +77,7 @@ literal
     |	BOOL          {	helper.emit($BOOL, DroolsEditorType.BOOLEAN_CONST);	}
     |	NULL          {	helper.emit($NULL, DroolsEditorType.NULL_CONST);	}
     |   TIME_INTERVAL {	helper.emit($TIME_INTERVAL, DroolsEditorType.NULL_CONST); }
+    |   STAR          { helper.emit($STAR, DroolsEditorType.NUMERIC_CONST); } // this means "infinity" in Drools
     ;
 
 operator returns [boolean negated, String opr, java.util.List<String> params]
