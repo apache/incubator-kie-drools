@@ -125,7 +125,8 @@ public class CloudBalancingPanel extends SolutionPanel {
             networkBandwidthBar.addProcessValue(cloudAssignment.getMinimalNetworkBandwidth());
             colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
         }
-        addTotals(usedCpuPower, usedMemory, usedNetworkBandwidth);
+        addTotals(usedCpuPower, cloudComputer.getCpuPower(), usedMemory, cloudComputer.getMemory(),
+                usedNetworkBandwidth, cloudComputer.getNetworkBandwidth());
         addBars(cpuPowerBar, memoryBar, networkBandwidthBar);
     }
 
@@ -161,7 +162,7 @@ public class CloudBalancingPanel extends SolutionPanel {
             usedNetworkBandwidth += cloudAssignment.getMinimalNetworkBandwidth();
             colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
         }
-        addTotals(usedCpuPower, usedMemory, usedNetworkBandwidth);
+        addTotals(usedCpuPower, 0, usedMemory, 0, usedNetworkBandwidth, 0);
     }
 
     private void addUnassignedHeaders() {
@@ -190,18 +191,29 @@ public class CloudBalancingPanel extends SolutionPanel {
         add(button);
     }
 
-    private void addTotals(int usedCpuPower, int usedMemory, int usedNetworkBandwidth) {
+    private void addTotals(int usedCpuPower, int availableCpuPower, int usedMemory, int availableMemory,
+            int usedNetworkBandwidth, int availableNetworkBandwidth) {
         JLabel totalLabel = new JLabel("    " + "Total");
         add(totalLabel);
-        JTextField usedCpuPowerField = new JTextField(usedCpuPower + " GHz");
-        usedCpuPowerField.setEditable(false);
-        add(usedCpuPowerField);
-        JTextField usedMemoryField = new JTextField(usedMemory + " GB");
-        usedMemoryField.setEditable(false);
-        add(usedMemoryField);
-        JTextField usedNetworkBandwidthField = new JTextField(usedNetworkBandwidth + " GB");
-        usedNetworkBandwidthField.setEditable(false);
-        add(usedNetworkBandwidthField);
+        JTextField cpuPowerField = new JTextField(usedCpuPower + " GHz / " + availableCpuPower + " GHz");
+        if (usedCpuPower > availableCpuPower) {
+            cpuPowerField.setForeground(Color.RED);
+        }
+        cpuPowerField.setEditable(false);
+        add(cpuPowerField);
+        JTextField memoryField = new JTextField(usedMemory + " GB / " + availableMemory + " GB");
+        if (usedMemory > availableMemory) {
+            memoryField.setForeground(Color.RED);
+        }
+        memoryField.setEditable(false);
+        add(memoryField);
+        JTextField networkBandwidthField = new JTextField(usedNetworkBandwidth + " GB / "
+                + availableNetworkBandwidth + " GB");
+        if (usedNetworkBandwidth > availableNetworkBandwidth) {
+            networkBandwidthField.setForeground(Color.RED);
+        }
+        networkBandwidthField.setEditable(false);
+        add(networkBandwidthField);
         add(new JLabel(""));
     }
 
