@@ -2053,6 +2053,49 @@ public class CepEspTest {
     }
 
     @Test
+    public void testTemporalOperatorsInfinity() throws Exception {
+        // read in the source
+        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
+        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators3.drl",
+                                                 kbconf,
+                                                 true );
+
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
+
+        clock.advanceTime( 1000,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 1,
+                                  "A",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 2,
+                                  "B",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 3,
+                                  "B",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        int rules = ksession.fireAllRules();
+        assertEquals( 3,
+                      rules );
+    }
+
+    @Test
     public void testMultipleSlidingWindows() throws IOException,
                                             ClassNotFoundException {
         String str = "declare A\n" +

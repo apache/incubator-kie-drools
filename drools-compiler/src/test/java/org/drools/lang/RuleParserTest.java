@@ -3939,6 +3939,24 @@ public class RuleParserTest extends TestCase {
 
     }
 
+    @Test
+    public void testInfinityLiteral() throws Exception {
+        final String text = "rule \"infinity\"\n" +
+                            "when\n" +
+                            "    StockTick( this after[-*,*] $another )\n" +
+                            "then\n" +
+                            "end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( "StockTick",
+                      pattern.getObjectType() );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        assertEquals( "this after[-*,*] $another",
+                      constr.getText() );
+
+    }
+
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {
         return execParser( parserRuleName,
