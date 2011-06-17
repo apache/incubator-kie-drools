@@ -85,19 +85,24 @@ public class MVELDumper extends ReflectiveVisitor {
                 sbuilder.append( "( " );
             }
             for ( BaseDescr constr : ccd.getDescrs() ) {
-                if ( first ) {
-                    first = false;
-                } else {
-                    sbuilder.append( " " );
-                    sbuilder.append( ccd.getConnective().toString() );
-                    sbuilder.append( " " );
+                if ( !( constr instanceof BindingDescr ) ) {
+                    if ( first ) {
+                        first = false;
+                    } else {
+                        sbuilder.append( " " );
+                        sbuilder.append( ccd.getConnective().toString() );
+                        sbuilder.append( " " );
+                    }
                 }
-                //sbuilder.append( "(" );
                 dump( sbuilder,
                       constr,
                       ccd.getConnective().getPrecedence(),
                       isInsideRelCons,
                       context );
+            }
+            if( first == true ) { 
+                // means all children were actually only bindings, replace by just true
+                sbuilder.append( "true" );
             }
             if ( wrapParenthesis ) {
                 sbuilder.append( " )" );
@@ -118,8 +123,6 @@ public class MVELDumper extends ReflectiveVisitor {
                 BindingDescr bind = (BindingDescr) base;
                 String expr = bind.getExpression().trim();
                 sbuilder.append( expr );
-            } else {
-                sbuilder.append( "true" );
             }
         } else if ( base instanceof RelationalExprDescr ) {
             RelationalExprDescr red = (RelationalExprDescr) base;
