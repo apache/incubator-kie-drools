@@ -61,7 +61,7 @@ public class CloudComputer extends AbstractPersistable implements Comparable<Clo
     }
 
     public String getLabel() {
-        return "Computer " + id + ", hardware:\nCPU: " + cpuPower + " GHz\nRAM: " + memory + " GB\nNetwork: " + networkBandwidth + " GB";
+        return "Computer " + id;
     }
 
     public int compareTo(CloudComputer other) {
