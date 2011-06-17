@@ -1,4 +1,4 @@
-// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-05-02 00:15:21
+// $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g 2011-06-16 09:38:00
 
     package org.drools.lang;
 
@@ -3040,8 +3040,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = SH_STYLE_SINGLE_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:5: ( '#' (~ ( '\\r' | '\\n' ) )* ( EOL )? )
-            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:7: '#' (~ ( '\\r' | '\\n' ) )* ( EOL )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:5: ( '#' (~ ( '\\r' | '\\n' ) )* ( EOF | EOL ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:7: '#' (~ ( '\\r' | '\\n' ) )* ( EOF | EOL )
             {
             match('#'); if (state.failed) return ;
             // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:11: (~ ( '\\r' | '\\n' ) )*
@@ -3078,16 +3078,25 @@ public class DRLLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:27: ( EOL )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:27: ( EOF | EOL )
             int alt58=2;
             int LA58_0 = input.LA(1);
 
             if ( (LA58_0=='\n'||LA58_0=='\r') ) {
-                alt58=1;
+                alt58=2;
             }
+            else {
+                alt58=1;}
             switch (alt58) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:27: EOL
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:28: EOF
+                    {
+                    match(EOF); if (state.failed) return ;
+
+                    }
+                    break;
+                case 2 :
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:299:32: EOL
                     {
                     mEOL(); if (state.failed) return ;
 
@@ -3115,8 +3124,8 @@ public class DRLLexer extends Lexer {
         try {
             int _type = C_STYLE_SINGLE_LINE_COMMENT;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:5: ( '//' (~ ( '\\r' | '\\n' ) )* ( EOL )? )
-            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:7: '//' (~ ( '\\r' | '\\n' ) )* ( EOL )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:5: ( '//' (~ ( '\\r' | '\\n' ) )* ( EOF | EOL ) )
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:7: '//' (~ ( '\\r' | '\\n' ) )* ( EOF | EOL )
             {
             match("//"); if (state.failed) return ;
 
@@ -3154,16 +3163,25 @@ public class DRLLexer extends Lexer {
                 }
             } while (true);
 
-            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:28: ( EOL )?
+            // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:28: ( EOF | EOL )
             int alt60=2;
             int LA60_0 = input.LA(1);
 
             if ( (LA60_0=='\n'||LA60_0=='\r') ) {
-                alt60=1;
+                alt60=2;
             }
+            else {
+                alt60=1;}
             switch (alt60) {
                 case 1 :
-                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:28: EOL
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:29: EOF
+                    {
+                    match(EOF); if (state.failed) return ;
+
+                    }
+                    break;
+                case 2 :
+                    // /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLLexer.g:305:33: EOL
                     {
                     mEOL(); if (state.failed) return ;
 
