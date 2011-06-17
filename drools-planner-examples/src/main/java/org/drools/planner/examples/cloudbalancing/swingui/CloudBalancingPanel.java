@@ -24,6 +24,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +70,8 @@ public class CloudBalancingPanel extends SolutionPanel {
 
         List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
         Map<CloudComputer, List<CloudAssignment>> computerToAssignmentMap
-                = new HashMap<CloudComputer, List<CloudAssignment>>(cloudComputerList.size());
+                = new LinkedHashMap<CloudComputer, List<CloudAssignment>>(cloudComputerList.size());
+        List<CloudAssignment> unassignedCloudAssignmentList = new ArrayList<CloudAssignment>();
         for (CloudComputer cloudComputer : cloudComputerList) {
             List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>();
             computerToAssignmentMap.put(cloudComputer, cloudAssignmentList);
@@ -79,11 +81,14 @@ public class CloudBalancingPanel extends SolutionPanel {
             if (cloudComputer != null) {
                 List<CloudAssignment> cloudAssignmentList = computerToAssignmentMap.get(cloudComputer);
                 cloudAssignmentList.add(cloudAssignment);
+            } else {
+                unassignedCloudAssignmentList.add(cloudAssignment);
             }
         }
         for (Map.Entry<CloudComputer, List<CloudAssignment>> entry : computerToAssignmentMap.entrySet()) {
             addCloudComputer(entry.getKey(), entry.getValue());
         }
+        addUnassignedCloudAssignmentList(unassignedCloudAssignmentList);
     }
 
     private void addHeaders() {
@@ -120,7 +125,6 @@ public class CloudBalancingPanel extends SolutionPanel {
             networkBandwidthBar.addProcessValue(cloudAssignment.getMinimalNetworkBandwidth());
             colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
         }
-
         addTotals(usedCpuPower, usedMemory, usedNetworkBandwidth);
         addBars(cpuPowerBar, memoryBar, networkBandwidthBar);
     }
@@ -141,6 +145,31 @@ public class CloudBalancingPanel extends SolutionPanel {
         costField.setEditable(false);
         costField.setEnabled(costUsed);
         add(costField);
+    }
+
+    private void addUnassignedCloudAssignmentList(List<CloudAssignment> unassignedCloudAssignmentList) {
+        addUnassignedHeaders();
+
+        int usedCpuPower = 0;
+        int usedMemory = 0;
+        int usedNetworkBandwidth = 0;
+        int colorIndex = 0;
+        for (CloudAssignment cloudAssignment : unassignedCloudAssignmentList) {
+            addCloudAssignment(cloudAssignment, PROCESS_COLORS[colorIndex]);
+            usedCpuPower += cloudAssignment.getMinimalCpuPower();
+            usedMemory += cloudAssignment.getMinimalMemory();
+            usedNetworkBandwidth += cloudAssignment.getMinimalNetworkBandwidth();
+            colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
+        }
+        addTotals(usedCpuPower, usedMemory, usedNetworkBandwidth);
+    }
+
+    private void addUnassignedHeaders() {
+        add(new JLabel("Unassigned"));
+        add(new JLabel(""));
+        add(new JLabel(""));
+        add(new JLabel(""));
+        add(new JLabel(""));
     }
 
     private void addCloudAssignment(CloudAssignment cloudAssignment, Color color) {
@@ -221,41 +250,6 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
 
     }
-
-//    private class CloudComputerPanel extends JPanel {
-//
-//        private final CloudComputer cloudComputer;
-//
-//        public CloudComputerPanel(CloudComputer cloudComputer) {
-//            setLayout(new FlowLayout(FlowLayout.LEFT));
-//            this.cloudComputer = cloudComputer;
-//            setBorder(BorderFactory.createCompoundBorder(
-//                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-//                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-//            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel(), TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
-//            cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
-//                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-//                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-//            cloudComputerLabel.setBackground(HEADER_COLOR);
-//            cloudComputerLabel.setEditable(false);
-//            add(cloudComputerLabel);
-//        }
-//
-//        public void addCloudAssignment(CloudAssignment cloudAssignment) {
-//            JPanel cloudAssignmentPanel = new JPanel();
-//            cloudAssignmentPanel.setLayout(new BoxLayout(cloudAssignmentPanel, BoxLayout.X_AXIS));
-//            cloudAssignmentPanel.setBorder(BorderFactory.createCompoundBorder(
-//                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-//                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-//            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel(), TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
-//            cloudAssignmentLabel.setEditable(false);
-//            cloudAssignmentPanel.add(cloudAssignmentLabel);
-//            JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
-//            cloudAssignmentPanel.add(button);
-//            add(cloudAssignmentPanel);
-//        }
-//
-//    }
 
     private class CloudAssignmentAction extends AbstractAction {
 
