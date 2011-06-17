@@ -86,6 +86,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                          KnowledgeHelper.class );
         
         String consequenceStr = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
+        consequenceStr = consequenceStr + "\n";
         
         JavaAnalysisResult analysis = ( JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                              ruleDescr,
