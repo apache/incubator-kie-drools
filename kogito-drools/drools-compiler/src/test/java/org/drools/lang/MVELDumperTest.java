@@ -202,7 +202,7 @@ public class MVELDumperTest {
     @Test
     public void testDumpBindings3() throws Exception {
         String input = "( $a : a > $b : b[10].prop || 10 != 20 ) && $x : someMethod(10)";
-        String expected = "( a > b[10].prop || 10 != 20 ) && true";
+        String expected = "( a > b[10].prop || 10 != 20 )";
 
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
@@ -214,7 +214,7 @@ public class MVELDumperTest {
     @Test
     public void testDumpBindings4() throws Exception {
         String input = "( $a : a > $b : b[10].prop || $x : someMethod(10) ) && 10 != 20";
-        String expected = "( a > b[10].prop || true ) && 10 != 20";
+        String expected = "( a > b[10].prop ) && 10 != 20";
 
         ConstraintConnectiveDescr descr = parse( input );
         String result = dumper.dump( descr );
@@ -227,6 +227,27 @@ public class MVELDumperTest {
     public void testDumpBindingsWithRestriction() throws Exception {
         String input = "$x : age > 10 && < 20 || > 30";
         String expected = "( age > 10 && age < 20 || age > 30 )";
+
+        ConstraintConnectiveDescr descr = parse( input );
+        MVELDumperContext ctx = new MVELDumperContext();
+        String result = dumper.dump( descr,
+                                     ctx );
+
+        assertEquals( expected,
+                      result );
+        assertEquals( 1,
+                      ctx.getBindings().size() );
+        BindingDescr bind = ctx.getBindings().get( 0 );
+        assertEquals( "$x",
+                      bind.getVariable() );
+        assertEquals( "age",
+                      bind.getExpression() );
+    }
+
+    @Test
+    public void testDumpBindingsComplexOp() throws Exception {
+        String input = "$x : age in (10, 20, $someVal)";
+        String expected = "( age == 10 || age == 20 || age == $someVal )";
 
         ConstraintConnectiveDescr descr = parse( input );
         MVELDumperContext ctx = new MVELDumperContext();
