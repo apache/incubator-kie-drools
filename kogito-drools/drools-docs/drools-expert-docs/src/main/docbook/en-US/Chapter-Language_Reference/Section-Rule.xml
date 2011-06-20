@@ -713,40 +713,40 @@ Person( credentialMap["jsmith"].valid )</programlisting>
       </section>
 
       <section>
-        <title>Multi Restriction syntax</title>
+        <title>Abbreviated combined relation condition</title>
 
-        <para>Multi restriction allows you to place more than one restriction on a field using the restriction
+        <para>This allows you to place more than one restriction on a field using the restriction
         connectives <literal>&amp;&amp;</literal> or <literal>||</literal>. Grouping via parentheses is permitted,
         resulting in a recursive syntax pattern.</para>
 
         <figure>
-          <title>Multi restriction</title>
+          <title>Abbreviated combined relation condition</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Rule_Language/multiRestriction.png" format="PNG" role=""></imagedata>
+              <imagedata align="center" fileref="images/Chapter-Rule_Language/abbreviatedCombinedRelationCondition.png" format="PNG" role=""></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
 
         <figure>
-          <title>restrictionGroup</title>
+          <title>Abbreviated combined relation condition with parentheses</title>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/Chapter-Rule_Language/restrictionGroup.png" format="PNG" role=""></imagedata>
+              <imagedata align="center" fileref="images/Chapter-Rule_Language/abbreviatedCombinedRelationConditionGroup.png" format="PNG" role=""></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
 
-        <programlisting>// Simple multi restriction using a single &amp;&amp;
+        <programlisting>// Simple abbreviated combined relation condition using a single &amp;&amp;
 Person( age &gt; 30 &amp;&amp; &lt; 40 )</programlisting>
 
-        <programlisting>// Complex multi restriction using groupings of multi restrictions
+        <programlisting>// Complex abbreviated combined relation using groupings
 Person( age ( (&gt; 30 &amp;&amp; &lt; 40) ||
               (&gt; 20 &amp;&amp; &lt; 25) ) )</programlisting>
 
-        <programlisting>// Mixing muti restrictions with constraint connectives
+        <programlisting>// Mixing abbreviated combined relation with constraint connectives
 Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting>
       </section>
 
