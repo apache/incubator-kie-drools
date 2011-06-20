@@ -16,9 +16,9 @@
 
 package org.drools.lang.api;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Collection;
@@ -152,7 +152,7 @@ public class DescrBuilderTest {
                     .lhs()
                         .eval().constraint( "myMax(5, 10) == 10" ).end()
                     .end()
-                    .rhs( "// do something\n" )
+                    .rhs( "// do something" )
                 .end()
                 .getDescr();
 
