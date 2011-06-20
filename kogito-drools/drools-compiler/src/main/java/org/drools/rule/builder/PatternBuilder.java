@@ -754,6 +754,8 @@ public class PatternBuilder
         pctx.setStrongTyping( false );
         pctx.addInput( "this",
                        thisClass );
+        pctx.addInput( "empty",
+                       boolean.class ); // overrides the mvel empty label
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         MVEL.analysisCompile( expr,
                               pctx );
@@ -762,6 +764,8 @@ public class PatternBuilder
             for ( String v : pctx.getInputs().keySet() ) {
                 if ( "this".equals( v ) || PropertyTools.getFieldOrAccessor( thisClass, v ) != null ) {
                     descrBranch.getFieldAccessors().add( v );
+                } else if ( "empty".equals( v ) ) {
+                    // do nothing
                 } else if ( !context.getPkg().getGlobals().containsKey( v ) ) {
                     descrBranch.getRuleBindings().add( v );
                 } else {
