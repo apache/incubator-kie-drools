@@ -161,7 +161,6 @@ public class XmlBPMNProcessDumper {
         }
         // TODO: package, version
         xmlDump.append(">" + EOL + EOL);
-        visitLanes(process, xmlDump);
         visitHeader(process, xmlDump, metaDataType);
         visitNodes(process, xmlDump, metaDataType);
         visitConnections(process.getNodes(), xmlDump, metaDataType);
@@ -288,13 +287,13 @@ public class XmlBPMNProcessDumper {
     		xmlDump.append("    </extensionElements>" + EOL);
     	}
     	// TODO: function imports
-        // TODO: swimlanes
     	// TODO: exception handlers
         VariableScope variableScope = (VariableScope)
         	((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
         if (variableScope != null) {
             visitVariables(variableScope.getVariables(), xmlDump);
         }
+        visitLanes(process, xmlDump);
     }
     
     public static void visitVariables(List<Variable> variables, StringBuilder xmlDump) {

@@ -48,6 +48,10 @@
         human actors in the process.  While the basic example simply shows tasks assigned
         to predefined users, the more advanced version shows data passing from the process
         to the task and back, group assignment, task delegation, etc.</listitem>
+        <listitem>HumanTask: An advanced example when using human tasks.  It shows how
+        to do data passing between tasks, task forms, swimlanes, etc.  This example can also
+        be deployed to the Guvnor repository (including all the forms etc.) and executed
+        on the jBPM console out-of-the-box.</listitem>
         <listitem>Request: An advanced example that shows various ways in which processes
         and rules can work together, like a rule task for invoking validation rules, rules
         as expression language for constraints inside the process, rules for exception handling,
