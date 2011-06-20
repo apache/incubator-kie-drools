@@ -60,7 +60,7 @@ public class ProcessTest {
 			ksession.signalEvent("Investigate", null, processInstance.getId());
 			// dynamically adding a new rule that automatically signals the ad-hoc sub-process
 			KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-			kbuilder.add(ResourceFactory.newClassPathResource("adhoc.drl"), ResourceType.DRL);
+			kbuilder.add(ResourceFactory.newClassPathResource("request/adhoc.drl"), ResourceType.DRL);
 			kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 			ksession.fireAllRules();
 			// dynamically adding a new sub-process
@@ -95,11 +95,11 @@ public class ProcessTest {
 
 	private static KnowledgeBase readKnowledgeBase() throws Exception {
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("requestHandling.bpmn"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("contactCustomer.bpmn"), ResourceType.BPMN2);
-		kbuilder.add(ResourceFactory.newClassPathResource("validation.drl"), ResourceType.DRL);
-		kbuilder.add(ResourceFactory.newClassPathResource("eventProcessing.drl"), ResourceType.DRL);
-		kbuilder.add(ResourceFactory.newClassPathResource("exceptions.drl"), ResourceType.DRL);
+		kbuilder.add(ResourceFactory.newClassPathResource("request/requestHandling.bpmn"), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newClassPathResource("request/contactCustomer.bpmn"), ResourceType.BPMN2);
+		kbuilder.add(ResourceFactory.newClassPathResource("request/validation.drl"), ResourceType.DRL);
+		kbuilder.add(ResourceFactory.newClassPathResource("request/eventProcessing.drl"), ResourceType.DRL);
+		kbuilder.add(ResourceFactory.newClassPathResource("request/exceptions.drl"), ResourceType.DRL);
 		return kbuilder.newKnowledgeBase();
 	}
 	

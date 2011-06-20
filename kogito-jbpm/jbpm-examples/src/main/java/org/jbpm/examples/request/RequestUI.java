@@ -220,7 +220,7 @@ public class RequestUI extends JFrame {
     
     private void addRules() {
     	KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(ResourceFactory.newClassPathResource("adhoc.drl"), ResourceType.DRL);
+		kbuilder.add(ResourceFactory.newClassPathResource("request/adhoc.drl"), ResourceType.DRL);
 		ksession.getKnowledgeBase().addKnowledgePackages(kbuilder.getKnowledgePackages());
 		ksession.fireAllRules();
     }
