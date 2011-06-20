@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="415" height="50"
+     viewBox="0 0 415 52">
+<title>Field</title>
+<rect x='10.5' y='34.5' width='44.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Identifier.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='33.98' x='16' y='43.83'>Identifier</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 55.48 41.5 L 60.48 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 58.48 39.5 L 60.48 41.5 L 58.48 43.5'/>
+<rect x='60.98' y='34.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.89999999999998' x='66.48' y='44.43'>:</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 77.88 41.5 L 82.88 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 80.88 39.5 L 82.88 41.5 L 80.88 43.5'/>
+<rect x='83.38' y='34.5' width='66.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='QualifiedName.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='55.98' x='88.88' y='43.83'>QualifiedName</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 150.36 41.5 L 155.36 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.36 39.5 L 155.36 41.5 L 153.36 43.5'/>
+<rect x='170.86' y='21.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='176.36' y='31.43'>=</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 187.76 28.5 L 192.76 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 190.76 26.5 L 192.76 28.5 L 190.76 30.5'/>
+<rect x='193.26' y='21.5' width='71.5' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='ConditionalExpr.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='60.5' x='198.76' y='30.83'>ConditionalExpr</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 168.36 26.5 L 170.36 28.5 L 168.36 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 155.36 41.5 L 279.76 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 155.36 41.5 A 5 5 0 0 0 160.36 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 160.36 33.5 A 5 5 0 0 1 165.36 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 165.36 28.5 L 170.36 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 279.76 41.5 A 5 5 0 0 1 274.76 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 274.76 33.5 A 5 5 0 0 0 269.76 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 264.76 28.5 L 269.76 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 160.36 36.5 L 160.36 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 274.76 36.5 L 274.76 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 279.76 41.5 L 284.76 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 282.76 39.5 L 284.76 41.5 L 282.76 43.5'/>
+<rect x='295.26' y='21.5' width='52' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Annotation.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='41' x='300.76' y='30.83'>Annotation</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 349.26 26.5 L 347.26 28.5 L 349.26 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 284.76 41.5 L 357.26 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 294.76 41.5 A 5 5 0 0 1 289.76 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 289.76 33.5 A 5 5 0 0 1 294.76 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 347.26 41.5 A 5 5 0 0 0 352.26 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 352.26 33.5 A 5 5 0 0 0 347.26 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 289.76 36.5 L 289.76 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 352.26 36.5 L 352.26 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 357.26 41.5 L 362.26 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 360.26 39.5 L 362.26 41.5 L 360.26 43.5'/>
+<rect x='377.76' y='21.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='383.26' y='31.43'>;</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 375.26 26.5 L 377.26 28.5 L 375.26 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 362.26 41.5 L 409.66 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 362.26 41.5 A 5 5 0 0 0 367.26 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 367.26 33.5 A 5 5 0 0 1 372.26 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 372.26 28.5 L 377.26 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 409.66 41.5 A 5 5 0 0 1 404.66 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 404.66 33.5 A 5 5 0 0 0 399.66 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 394.66 28.5 L 399.66 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 367.26 36.5 L 367.26 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 404.66 36.5 L 404.66 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 409.66 41.5 L 414.66 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 412.66 39.5 L 414.66 41.5 L 412.66 43.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='Field' x='0' y='8.33'>Field</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 41.5 L 10 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 39.5 L 10 41.5 L 8 43.5'/>
+</svg>
