@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="139" height="121"
+     viewBox="0 0 139 123">
+<title>UnaryExpr</title>
+<rect x='30.5' y='21.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='36' y='31.43'>+</text>
+<rect x='30.5' y='42.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='36' y='52.43'>-</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 39 L 25 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 39 L 57.4 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 33.5 A 5 5 0 0 1 30 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 49.5 A 5 5 0 0 1 25 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 44.5 L 25 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 33.5 A 5 5 0 0 0 47.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 49.5 A 5 5 0 0 0 52.40 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 44.5 L 52.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 28.5 L 47.4 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 49.5 L 47.4 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 39 L 62.4 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 60.40 37 L 62.4 39 L 60.4 41'/>
+<rect x='62.9' y='32' width='51.48' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='UnaryExpr.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='40.48' x='68.40' y='41.33'>UnaryExpr</text>
+</a>
+<rect x='30.5' y='63.5' rx='7.75' ry='7.75' width='22.3' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='11.3' x='36' y='73.43'>++</text>
+<rect x='30.5' y='84.5' rx='7.75' ry='7.75' width='22.3' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='11.3' x='36' y='94.43'>--</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 81 L 25 81'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.80 81 L 62.8 81'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 75.5 A 5 5 0 0 1 30 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30 91.5 A 5 5 0 0 1 25 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 25 86.5 L 25 75.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.80 75.5 A 5 5 0 0 0 52.80 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.80 91.5 A 5 5 0 0 0 57.80 86.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.80 86.5 L 57.8 75.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.80 70.5 L 52.8 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.80 91.5 L 52.8 91.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 62.80 81 L 67.8 81'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 65.80 79 L 67.8 81 L 65.8 83'/>
+<rect x='68.3' y='74' width='40.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Primary.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='29.49' x='73.80' y='83.33'>Primary</text>
+</a>
+<rect x='20.5' y='105.5' width='103.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='UnaryExprNotPlusMinus.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='92.49' x='26' y='114.83'>UnaryExprNotPlusMinus</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 10 75.75 L 15 75.75'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 128.99 75.75 L 133.99 75.75'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 44 A 5 5 0 0 1 20 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 20 112.5 A 5 5 0 0 1 15 107.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 107.5 L 15 44'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 128.99 44 A 5 5 0 0 0 123.99 39 L 123.99 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 123.99 112.5 L 123.99 112.5 A 5 5 0 0 0 128.99 107.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 128.99 107.5 L 128.99 44'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 15 81 L 20 81'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 123.99 81 L 128.99 81'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 114.38 39 L 123.99 39'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 108.79 81 L 123.99 81'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 123.99 112.5 L 123.99 112.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 133.99 75.75 L 138.99 75.75'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 136.99 73.75 L 138.99 75.75 L 136.99 77.75'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='UnaryExpr' x='0' y='8.33'>UnaryExpr</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 75.75 L 10 75.75'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 73.75 L 10 75.75 L 8 77.75'/>
+</svg>

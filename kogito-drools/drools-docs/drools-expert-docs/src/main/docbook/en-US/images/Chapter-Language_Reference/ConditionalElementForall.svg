@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="196" height="42"
+     viewBox="0 0 196 44">
+<title>ConditionalElementForall</title>
+<rect x='10.5' y='26.5' rx='7.75' ry='7.75' width='43.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='forall.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='32.9' x='16' y='36.43'>forall</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 54.40 33.5 L 59.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 31.5 L 59.4 33.5 L 57.4 35.5'/>
+<rect x='59.9' y='26.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.89999999999998' x='65.40' y='36.43'>(</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 76.80 33.5 L 81.8 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 79.80 31.5 L 81.8 33.5 L 79.8 35.5'/>
+<rect x='92.3' y='26.5' width='66' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='BindingPattern.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='55' x='97.80' y='35.83'>BindingPattern</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 81.80 33.5 L 91.8 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 158.30 33.5 L 168.3 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 91.80 33.5 A 5 5 0 0 1 86.80 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 86.80 25.5 A 5 5 0 0 1 91.80 20.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 158.30 33.5 A 5 5 0 0 0 163.30 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 163.30 25.5 A 5 5 0 0 0 158.30 20.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 86.80 28.5 L 86.8 25.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 163.30 28.5 L 163.3 25.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 91.80 20.5 L 158.3 20.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 127.05 18.5 L 125.05 20.5 L 127.05 22.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 168.30 33.5 L 173.3 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 171.30 31.5 L 173.3 33.5 L 171.3 35.5'/>
+<rect x='173.8' y='26.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='179.30' y='36.43'>)</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 190.70 33.5 L 195.7 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 193.70 31.5 L 195.7 33.5 L 193.7 35.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='ConditionalElementForall' x='0' y='8.33'>ConditionalElementForall</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 33.5 L 10 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 31.5 L 10 33.5 L 8 35.5'/>
+</svg>
