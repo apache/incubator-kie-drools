@@ -8863,6 +8863,46 @@ public class MiscTest {
     }
 
     @Test
+    public void testConstraintExpression() {
+        String str = "package org.drools\n" +
+                     "rule \"test\"\n" +
+                     "when\n" +
+                     "    Person( 5*2 > 3 );\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Person( "Bob" ) );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+    
+    @Test
+    public void testMethodConstraint() {
+        String str = "package org.drools\n" +
+                     "rule \"test\"\n" +
+                     "when\n" +
+                     "    Person( isAlive() );\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person person = new Person( "Bob" );
+        person.setAlive( true );
+        ksession.insert( person );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+    
+    @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
