@@ -543,8 +543,8 @@ public class PatternBuilder
                 }
             }
 
-            if ( leftValue.indexOf( '.' ) >= 0 || leftValue.indexOf( '[' ) >= 0 || leftValue.indexOf( '(' ) >= 0  ||
-                 leftExpr.getFieldAccessors().size() > 2 || !leftExpr.getRuleBindings().isEmpty() || !leftExpr.getRuleBindings().isEmpty() ) {
+            if ( ( leftValue.indexOf( '.' ) >= 0 || leftValue.indexOf( '[' ) >= 0 || leftValue.indexOf( '(' ) >= 0 ) &&
+                 ( leftExpr.getFieldAccessors().size() > 2 || !leftExpr.getRuleBindings().isEmpty() || !leftExpr.getGlobalBindings().isEmpty() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
                                          expr,
