@@ -91,18 +91,43 @@ end </programlisting>
     </section>
 
     <section>
+      <title>Support to parameterized constructor on declared types</title>
+
+      <para>Generate constructors with parameters for declared types.</para>
+
+      <para>Example: for a declare type like the following:</para>
+
+      <programlisting>declare Person
+    firstName : String @key
+    lastName : String @key
+    age : int
+end
+</programlisting>
+
+      <para>The compiler will implicitly generate 3 constructors: one without
+      parameters, one with the @key fields, and one with all fields.</para>
+
+      <programlisting>Person() // parameterless constructor
+Person( String firstName, String lastName )
+Person( String firstName, String lastName, int age )</programlisting>
+    </section>
+
+    <section>
       <title>Type Declaration 'extends'</title>
 
       <para>Type declarations now support 'extends' keyword for
       inheritence</para>
 
-      <programlisting>declare Student extends Person
-    school : String @key
+      <programlisting>declare Person
+    name : String
 end
 
+declare Student extends Person
+    school : String
+end
 
 declare LongTermStudent extends Student
-    years : int @key
+    years : int
     course : String
 end</programlisting>
     </section>
@@ -147,18 +172,17 @@ Person( isAdult() ) // boolean expression without relational operator</programli
       creation.</para>
 
       <programlisting>PackageDescr pkg = DescrFactory.newPackage()
-                   .name("org.drools.example")
-                   .newRule().name("Xyz")
-                       .attribute("ruleflow-grou","bla")
-                   .lhs()
-                       .and()
-                           .pattern("Foo").id("$foo").constraint("bar==baz").constraint("x&gt;y").end()
-                           .not().pattern("Bar").constraint("a+b==c").end()
-                       .end()
-                   .end()
-                   .rhs( "System.out.println();" )
-                   .end();
-</programlisting>
+       .name("org.drools.example")
+       .newRule().name("Xyz")
+           .attribute("ruleflow-grou","bla")
+       .lhs()
+           .and()
+               .pattern("Foo").id( "$foo", false ).constraint("bar==baz").constraint("x&gt;y").end()
+               .not().pattern("Bar").constraint("a+b==c").end().end()
+           .end()
+       .end()
+       .rhs( "System.out.println();" ).end()
+       .getDescr();</programlisting>
     </section>
 
     <section>
@@ -169,12 +193,12 @@ Person( isAdult() ) // boolean expression without relational operator</programli
 
       <para>Positional arguments are ones where you don't need to specify the
       field name, as the position maps to a known named field. i.e. Person(
-      name == "mark" ) can be rewritten as Person( "mark"; ). The semi colon
+      name == "mark" ) can be rewritten as Person( "mark"; ). The semicolon
       ';' is important so that the engine knows that everything before it is a
       positional argument. Otherwise we might assume it was a boolean
-      expression, which is how it could be interpretted after the semi colon.
+      expression, which is how it could be interpretted after the semicolon.
       You can mix positional and named arguments on a pattern by using the
-      semi colon ';' to separate them. Any variables used in a positional that
+      semicolon ';' to separate them. Any variables used in a positional that
       have not yet been bound will be bound to the field that maps to that
       position.</para>
 
@@ -186,7 +210,7 @@ end
 </programlisting>
 
       <para>Example patterns, with two constraints and a binding. Remember
-      semi colon ';' is used to differentiate the positional section from the
+      semicolon ';' is used to differentiate the positional section from the
       named argument section.</para>
 
       <programlisting>
@@ -310,28 +334,6 @@ StatefulKnowledgeSessionInfo info = inspector.getSessionInfo();
 // Generate a report using the "simple" report template
 String report = SessionReporter.generateReport( "simple", info, null );
 </programlisting>
-    </section>
-
-    <section>
-      <title>Support to parameterized constructor on declared types</title>
-
-      <para>Generate constructors with parameters for declared types.</para>
-
-      <para>Example: for a declare type like the following:</para>
-
-      <programlisting>declare Person
-    firstName : String @key
-    lastName : String @key
-    age : int
-end
-</programlisting>
-
-      <para>The compiler will implicitly generate 3 constructors: one without
-      parameters, one with the @key fields, and one with all fields.</para>
-
-      <programlisting>Person() // parameterless constructor
-Person( String firstName, String lastName )
-Person( String firstName, String lastName, int age )</programlisting>
     </section>
   </section>
 
