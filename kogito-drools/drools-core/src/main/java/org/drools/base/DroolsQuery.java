@@ -24,7 +24,7 @@ import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.Query;
-import org.drools.rule.Variable;
+import org.drools.runtime.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
     private final String                      name;

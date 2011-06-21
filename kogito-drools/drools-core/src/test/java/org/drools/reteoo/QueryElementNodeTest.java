@@ -33,7 +33,7 @@ import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
-import org.drools.rule.Variable;
+import org.drools.runtime.rule.Variable;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
 

@@ -16,15 +16,15 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
-import org.drools.rule.Variable;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
+import org.drools.runtime.rule.Variable;
 import org.junit.Test;
 
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-import static org.drools.rule.Variable.v;
+import static org.drools.runtime.rule.Variable.v;
 
 
 public class BackwardChainingTest {
