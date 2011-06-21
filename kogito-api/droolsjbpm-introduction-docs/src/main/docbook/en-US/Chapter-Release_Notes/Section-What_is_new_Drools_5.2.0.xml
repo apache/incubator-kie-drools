@@ -91,11 +91,11 @@ end </programlisting>
     </section>
 
     <section>
-      <title>Support to parameterized constructor on declared types</title>
+      <title>Parameterized constructors for declared types</title>
 
       <para>Generate constructors with parameters for declared types.</para>
 
-      <para>Example: for a declare type like the following:</para>
+      <para>Example: for a declared type like the following:</para>
 
       <programlisting>declare Person
     firstName : String @key
@@ -116,7 +116,7 @@ Person( String firstName, String lastName, int age )</programlisting>
       <title>Type Declaration 'extends'</title>
 
       <para>Type declarations now support 'extends' keyword for
-      inheritence</para>
+      inheritance</para>
 
       <programlisting>declare Person
     name : String
@@ -167,8 +167,8 @@ Person( isAdult() ) // boolean expression without relational operator</programli
     <section>
       <title>Rule API</title>
 
-      <para>A fluent API was created to allow programatic creation of rules as
-      an alternative to the previously suggested method of template
+      <para>A fluent API was created to allow programmatic creation of rules
+      as an alternative to the previously suggested method of template
       creation.</para>
 
       <programlisting>PackageDescr pkg = DescrFactory.newPackage()
@@ -365,7 +365,7 @@ from( "direct:test-exchange" ).to( "drools://node/ksession1?action=insertExchang
 
     <para>The Drools Flow project and the jBPM project have been merged into
     the the newest version of the jBPM project, called jBPM5. jBPM5 combines
-    the best of both worlds: merging the experience that was build up with the
+    the best of both worlds: merging the experience that was built up with the
     jBPM project over several years in supporting stable, long-living business
     processes together with the improvements that were prototyped as part of
     Drools Flow to support more flexible and adaptive processes. Now that jBPM
