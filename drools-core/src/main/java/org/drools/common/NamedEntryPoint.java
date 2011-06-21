@@ -35,7 +35,7 @@ import org.drools.base.ClassObjectType;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.Rete;
@@ -323,7 +323,7 @@ public class NamedEntryPoint
         final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                   PropagationContext.ASSERTION,
                                                                                   rule,
-                                                                                  (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                  (activation == null) ? null : activation.getTuple(),
                                                                                   handle,
                                                                                   this.wm.agenda.getActiveActivations(),
                                                                                   this.wm.agenda.getDormantActivations(),
@@ -333,13 +333,15 @@ public class NamedEntryPoint
                                           propagationContext,
                                           typeConf,
                                           this.wm );
-
-        this.wm.executeQueuedActions();
+        
+        propagationContext.evaluateActionQueue( this.wm );
 
         this.wm.workingMemoryEventSupport.fireObjectInserted( propagationContext,
                                                               handle,
                                                               object,
                                                               this.wm );
+
+        this.wm.executeQueuedActions();        
     }
 
     public void update(final org.drools.runtime.rule.FactHandle handle,
@@ -444,7 +446,7 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.MODIFICATION,
                                                                                       rule,
-                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
                                                                                       this.wm.agenda.getActiveActivations(),
                                                                                       this.wm.agenda.getDormantActivations(),
@@ -454,6 +456,8 @@ public class NamedEntryPoint
                                               propagationContext,
                                               typeConf,
                                               this.wm );
+            
+            propagationContext.evaluateActionQueue( this.wm );
 
             this.wm.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
                                                               (org.drools.FactHandle) factHandle,
@@ -515,7 +519,7 @@ public class NamedEntryPoint
             final PropagationContext propagationContext = new PropagationContextImpl( this.wm.getNextPropagationIdCounter(),
                                                                                       PropagationContext.RETRACTION,
                                                                                       rule,
-                                                                                      (activation == null) ? null : (LeftTuple) activation.getTuple(),
+                                                                                      (activation == null) ? null : activation.getTuple(),
                                                                                       handle,
                                                                                       this.wm.agenda.getActiveActivations(),
                                                                                       this.wm.agenda.getDormantActivations(),
@@ -552,6 +556,8 @@ public class NamedEntryPoint
                     this.wm.tms.remove( key );
                 }
             }
+
+            propagationContext.evaluateActionQueue( this.wm );
             
 
             this.wm.workingMemoryEventSupport.fireObjectRetracted( propagationContext,

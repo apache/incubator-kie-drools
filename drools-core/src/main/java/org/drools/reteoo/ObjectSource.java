@@ -107,6 +107,10 @@ public abstract class ObjectSource extends BaseNode
         out.writeObject( source );
         out.writeInt( alphaNodeHashingThreshold );
     }
+    
+    public ObjectSource getParentObjectSource() {
+        return this.source;
+    }
 
     /**
      * Adds the <code>ObjectSink</code> so that it may receive

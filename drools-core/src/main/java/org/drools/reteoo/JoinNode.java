@@ -69,29 +69,18 @@ public class JoinNode extends BetaNode {
                            workingMemory,
                            memory ) ) {
             return;
-        }
-
-        memory.setOpen( true );
+        }        
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
         ContextEntry[] contextEntry = memory.getContext();
-
-        boolean useLeftMemory = true;
-        if ( this.tupleMemoryEnabled ) {
-            memory.getLeftTupleMemory().add( leftTuple );
-        } else {
-            if ( memory.isOpen() ) {
-                // we are re-entrant to force new ContextEntry
-                contextEntry = this.constraints.createContext();
-            }
+        boolean useLeftMemory = true;       
+    
+        if ( !this.tupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
-            if ( object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
-            } else if ( memory.getLeftTupleMemory() != null ) {
-                // LeftMemory will be null for sequential (still created for queries).
-                memory.getLeftTupleMemory().add( leftTuple );
             }
         }
 
@@ -117,9 +106,12 @@ public class JoinNode extends BetaNode {
                                                     useLeftMemory );
             }
         }
+        
+        if ( this.tupleMemoryEnabled || ( useLeftMemory && memory.getLeftTupleMemory() != null ) ) {
+            memory.getLeftTupleMemory().add( leftTuple );
+        }         
 
         this.constraints.resetTuple( contextEntry );
-        memory.setOpen( false );
     }
 
     public void assertObject( final InternalFactHandle factHandle,
@@ -206,7 +198,7 @@ public class JoinNode extends BetaNode {
         }
 
         memory.getLeftTupleMemory().remove( leftTuple );
-        if ( leftTuple.firstChild != null ) {
+        if ( leftTuple.getFirstChild() != null ) {
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory );
@@ -313,15 +305,17 @@ public class JoinNode extends BetaNode {
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        ContextEntry[] contextEntry = memory.getContext();
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
         memory.getLeftTupleMemory().removeAdd( leftTuple );
 
-        this.constraints.updateFromTuple( memory.getContext(),
+        this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
-        LeftTuple childLeftTuple = leftTuple.firstChild;
+        LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
@@ -347,7 +341,7 @@ public class JoinNode extends BetaNode {
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
                 for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
-                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                    if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                                handle ) ) {
                         this.sink.propagateAssertLeftTuple( leftTuple,
                                                             rightTuple,
@@ -363,7 +357,7 @@ public class JoinNode extends BetaNode {
                 for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
 
-                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                    if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                                handle ) ) {
                         if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
                             this.sink.propagateAssertLeftTuple( leftTuple,
@@ -391,7 +385,7 @@ public class JoinNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( memory.getContext() );
+        this.constraints.resetTuple( contextEntry );
     }
 
     /* (non-Javadoc)
@@ -414,12 +408,12 @@ public class JoinNode extends BetaNode {
                                                                                  (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            rightTuple.getFactHandle() ) ) {
-                    sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                         rightTuple,
-                                                         null,
-                                                         null,
-                                                         sink,
-                                                         true ),
+                    sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
+                                                             rightTuple,
+                                                             null,
+                                                             null,
+                                                             sink,
+                                                             true ),
                                           context,
                                           workingMemory );
                 }

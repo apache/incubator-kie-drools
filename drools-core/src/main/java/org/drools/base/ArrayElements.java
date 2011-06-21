@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 
 public class ArrayElements {
-    private final Object[] elements;
+    private Object[] elements;
     
     private static final Object[] EMPTY_ELEMENTS = new Object[0];
     
@@ -38,6 +38,10 @@ public class ArrayElements {
     
     public Object[] getElements() {
         return this.elements;
+    }
+
+    public void setElements(Object[] elements) {
+        this.elements = elements;
     }
 
     @Override

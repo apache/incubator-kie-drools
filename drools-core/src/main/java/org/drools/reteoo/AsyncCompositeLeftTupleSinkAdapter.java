@@ -45,7 +45,7 @@ public class AsyncCompositeLeftTupleSinkAdapter extends CompositeLeftTupleSinkAd
     }
 
     protected void doPropagateRetractLeftTuple( PropagationContext context, InternalWorkingMemory workingMemory,
-                                                LeftTuple leftTuple, LeftTupleSink sink ) {
+                                                LeftTupleImpl leftTuple, LeftTupleSink sink ) {
         // composite propagators need to check each node to decide if the propagation
         // must be asynchronous or may eventually be synchronous
         if( this.partitionId.equals( sink.getPartitionId() )) {

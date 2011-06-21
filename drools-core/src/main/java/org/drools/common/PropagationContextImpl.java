@@ -19,11 +19,14 @@ package org.drools.common;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.LinkedList;
 
 import org.drools.FactHandle;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooWorkingMemory.QueryInsertModifyAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryEvaluationAction;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -57,6 +60,10 @@ public class PropagationContextImpl
     private ObjectTypeNode     currentPropagatingOTN;
     
     private boolean            shouldPropagateAll;
+    
+    private LinkedList<WorkingMemoryAction> queue1; // for inserts
+    
+    private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
 
 
     public PropagationContextImpl() {
@@ -229,9 +236,47 @@ public class PropagationContextImpl
 
     public boolean shouldPropagateAll() {
         return this.shouldPropagateAll;
+    }          
+    
+    public LinkedList<WorkingMemoryAction> getQueue1() {
+        if ( this.queue1 == null ) {
+            this.queue1 = new LinkedList<WorkingMemoryAction>();
+        }
+        return this.queue1; 
+    }
+
+    public LinkedList<WorkingMemoryAction> getQueue2() {
+        if ( this.queue2 == null ) {
+            this.queue2 = new LinkedList<WorkingMemoryAction>();
+        }
+        return this.queue2; 
     }
     
-    
+    public void evaluateActionQueue(InternalWorkingMemory workingMemory) {                
+        boolean repeat = true;
+        while(repeat) {
+            if ( this.queue1 != null ) {
+                WorkingMemoryAction action = null;                
+                while ( (action = (!queue1.isEmpty()) ? queue1.removeFirst() : null ) != null ) {
+                    action.execute( workingMemory );
+                }
+            }
+            
+            repeat = false;
+            if ( this.queue2 != null ) {
+                WorkingMemoryAction action = null;
+                
+                while ( (action = (!queue2.isEmpty()) ? queue2.removeFirst() : null ) != null ) {
+                    action.execute( workingMemory );
+                    if ( this.queue1 != null && !this.queue1.isEmpty() ) {
+                        // Queue1 always takes priority and it's contents should be evaluated first
+                        repeat = true;
+                        break;
+                    }
+                }
+            }              
+        }
+    }
 
 
     @Override

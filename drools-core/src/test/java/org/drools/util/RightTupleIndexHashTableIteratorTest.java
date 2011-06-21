@@ -55,7 +55,7 @@ import org.drools.core.util.RightTupleIndexHashTable;
 import org.drools.core.util.RightTupleList;
 import org.drools.core.util.RightTupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
@@ -167,7 +167,7 @@ public class RightTupleIndexHashTableIteratorTest {
         
         //System.out.println( entries );
 
-        list = new ArrayList<LeftTuple>();
+        list = new ArrayList<LeftTupleImpl>();
         Iterator it = betaMemory.getRightTupleMemory().iterator();
         for ( RightTuple rightTuple = ( RightTuple ) it.next(); rightTuple != null; rightTuple = ( RightTuple ) it.next() ) {
             list.add( rightTuple );

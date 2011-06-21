@@ -79,7 +79,7 @@ public class Rule
     private Map<String, Declaration> declarations;
     private String[]                 requiredDeclarations = new String[0];
 
-    private GroupElement             lhsRoot;
+    private GroupElement             lhsRoot;    
 
     private String                   dialect;
 
@@ -545,7 +545,7 @@ public class Rule
         //Moved to getExtendedLhs --final GroupElement cloned = (GroupElement) this.lhsRoot.clone();
         return LogicTransformer.getInstance().transform( getExtendedLhs( this,
                                                                          null ) );
-    }
+    }    
 
     public int getSpecifity() {
         return getSpecifity( this.lhsRoot );

@@ -27,6 +27,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
@@ -102,6 +103,8 @@ public class BuildContext {
 
     /** the calculate temporal distance matrix */
     private TemporalDependencyMatrix         temporal;
+
+    private ObjectTypeNode rootObjectTypeNode;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -483,6 +486,14 @@ public class BuildContext {
      */
     public void pushRuleComponent( RuleComponent ruleComponent ) {
         this.ruleComponent.push( ruleComponent );
+    }
+
+    public void setRootObjectTypeNode(ObjectTypeNode source) {
+        rootObjectTypeNode = source;        
+    }
+    
+    public ObjectTypeNode getRootObjectTypeNode() {
+        return rootObjectTypeNode;
     }
 
 }

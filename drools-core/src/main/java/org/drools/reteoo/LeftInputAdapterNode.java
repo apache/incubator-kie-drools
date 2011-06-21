@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -46,6 +47,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
     private ObjectSinkNode    nextRightTupleSinkNode;
 
     private boolean           leftTupleMemoryEnabled;
+    
+    protected boolean         rootQueryNode;
+    
+    
 
     public LeftInputAdapterNode() {
 
@@ -68,19 +73,31 @@ public class LeftInputAdapterNode extends LeftTupleSource
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
-    }
+        ObjectSource current = source;
+        while ( !(current instanceof ObjectTypeNode) ) {
+               current = current.getParentObjectSource();
+        }
+        ObjectTypeNode otn = ( ObjectTypeNode ) current;
+        rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( otn.getObjectType() );
+    }    
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
         objectSource = (ObjectSource) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
+        rootQueryNode = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( objectSource );
         out.writeBoolean( leftTupleMemoryEnabled );
+        out.writeBoolean(  rootQueryNode );
+    }
+    
+    public boolean isRootQueryNode() {
+        return this.rootQueryNode;
     }
 
     /* (non-Javadoc)
@@ -137,7 +154,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             this.sink.createAndPropagateAssertLeftTuple( factHandle,
                                                          context,
                                                          workingMemory,
-                                                         useLeftMemory );
+                                                         useLeftMemory, 
+                                                         this );
         } else {
             workingMemory.addLIANodePropagation( new LIANodePropagation( this,
                                                                          factHandle,
@@ -252,9 +270,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            final LeftTuple tuple = new LeftTuple( factHandle,
-                                                   this.sink,
-                                                   this.leftTupleMemoryEnabled );
+            final LeftTuple tuple = new LeftTupleImpl( factHandle,
+                                                       this.sink,
+                                                       this.leftTupleMemoryEnabled );
             this.sink.assertLeftTuple( tuple,
                                        context,
                                        workingMemory );

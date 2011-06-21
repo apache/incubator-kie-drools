@@ -41,14 +41,14 @@ public class Pattern
     RuleConditionElement,
     AcceptsClassObjectType,
     Externalizable {
-    private static final long serialVersionUID = 510l;
-    private ObjectType        objectType;
-    private List              constraints      = Collections.EMPTY_LIST;
-    private Declaration       declaration;
-    private Map               declarations;
-    private int               index;
-    private PatternSource     source;
-    private List<Behavior>    behaviors;
+    private static final long        serialVersionUID = 510l;
+    private ObjectType               objectType;
+    private List                     constraints      = Collections.EMPTY_LIST;
+    private Declaration              declaration;
+    private Map<String, Declaration> declarations;
+    private int                      index;
+    private PatternSource            source;
+    private List<Behavior>           behaviors;
 
     // this is the offset of the related fact inside a tuple. i.e:
     // the position of the related fact inside the tuple;
@@ -233,13 +233,17 @@ public class Pattern
                                            null,
                                            this,                                           
                                            true );
-            if ( this.declarations == null ) {
-                this.declarations = new HashMap( 2 ); // default to avoid immediate resize
-            }
-            this.declarations.put( declaration.getIdentifier(),
-                                   declaration );
+            addDeclaration(declaration);
         }
         return declaration;
+    }
+    
+    public void addDeclaration(final Declaration decl) {
+        if ( this.declarations == null ) {
+            this.declarations = new HashMap( 2 ); // default to avoid immediate resize
+        }        
+        this.declarations.put( decl.getIdentifier(),
+                               decl );        
     }
 
     public boolean isBound() {
@@ -268,11 +272,11 @@ public class Pattern
         this.offset = offset;
     }
 
-    public Map getInnerDeclarations() {
+    public Map<String, Declaration> getInnerDeclarations() {
         return (this.declarations != null) ? this.declarations : Collections.EMPTY_MAP;
     }
 
-    public Map getOuterDeclarations() {
+    public Map<String, Declaration>  getOuterDeclarations() {
         return (this.declarations != null) ? this.declarations : Collections.EMPTY_MAP;
     }
 

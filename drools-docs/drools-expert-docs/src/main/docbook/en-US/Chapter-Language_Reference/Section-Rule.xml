@@ -23,10 +23,10 @@
 
   <para>A rule specifies that <emphasis>when</emphasis> a particular set of
   conditions occur, specified in the Left Hand Side (LHS),
-  <emphasis>then</emphasis> do what is specified as a list of actions in the
-  Right Hand Side (RHS). A common question from users is "Why use when instead
-  of if?" "When" was chosen over "if" because "if" is normally part of a
-  procedural execution flow, where, at a specific point in time, a condition
+  <emphasis>then</emphasis> do what queryis specified as a list of actions in
+  the Right Hand Side (RHS). A common question from users is "Why use when
+  instead of if?" "When" was chosen over "if" because "if" is normally part of
+  a procedural execution flow, where, at a specific point in time, a condition
   is to be checked. In contrast, "when" indicates that the condition
   evaluation is not tied to a specific evaluation sequence or point in time,
   but that it happens continually, at any time during the life time of the
@@ -770,6 +770,24 @@ Person( age * 2 &lt; 100, $age : age )</programlisting>
       </section>
 
       <section>
+        <title>Unification</title>
+
+        <para>Drools does not allow bindings to the same declaration. However
+        this is an important aspect to derivation query unification. While
+        positional arguments are always processed with unification a special
+        unification symbol, ':=', was introduced for named arguments named
+        arguments. The following "unifies" the age argument across two
+        people.</para>
+
+        <programlisting>Person( $age := age ) 
+Person( $age := age) </programlisting>
+
+        <para>In essence unification will declare a binding for the first
+        occurance, and constrain to the same value of the bound field for
+        sequence occurances.</para>
+      </section>
+
+      <section>
         <title>Special literal support</title>
 
         <para>Besides normal Java literals (including Java 5 enums), this
@@ -1268,6 +1286,49 @@ Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obselete i
           </tgroup>
         </table>
       </section>
+    </section>
+
+    <section>
+      <title>Positional Arguments</title>
+
+      <para>Patterns now support positional arguments on type
+      declarations.</para>
+
+      <para>Positional arguments are ones where you don't need to specify the
+      field name, as the position maps to a known named field. i.e. Person(
+      name == "mark" ) can be rewritten as Person( "mark"; ). The semicolon
+      ';' is important so that the engine knows that everything before it is a
+      positional argument. Otherwise we might assume it was a boolean
+      expression, which is how it could be interpretted after the semicolon.
+      You can mix positional and named arguments on a pattern by using the
+      semicolon ';' to separate them. Any variables used in a positional that
+      have not yet been bound will be bound to the field that maps to that
+      position.</para>
+
+      <programlisting>declare Cheese
+    name : String
+    shop : String
+    price : int
+end
+</programlisting>
+
+      <para>Example patterns, with two constraints and a binding. Remember
+      semicolon ';' is used to differentiate the positional section from the
+      named argument section. Variables and literals and expressions using
+      just literals are supported in posional arguments, but not variables.
+      Positional arguments are always resolved using unification.</para>
+
+      <programlisting>Cheese( "stilton", "Cheese Shop", p; )
+Cheese( "stilton", "Cheese Shop"; p : price )
+Cheese( "stilton"; shop == "Cheese Shop", p : price )
+Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
+</programlisting>
+
+      <para>Positional arguments that are given a previously declared binding
+      will consrain against that using unification; these are referred to as
+      input arguments. If the binding does not yet exist, it will create the
+      declaration binding it to the field represented by the position
+      argument; these are referred to as output arguments.</para>
     </section>
 
     <section>
@@ -2318,6 +2379,26 @@ then
     // do something
 end</programlisting>
         </section>
+
+        <section>
+          <title>Multi-function Accumulates</title>
+
+          <para>The accumulate CE now supports multiple functions. For
+          instance, if one needs to find the minimum, maximum and average
+          value for the same set of data, instead of having to repeat the
+          accumulate statement 3 times, a single accumulate can be
+          used.</para>
+
+          <programlisting>rule "Max, min and average" 
+    when
+        accumulate( Cheese( $price : price ),
+                    $max : max( $price ),
+                    $min : min( $price ),
+                    $avg : average( $price ) )
+    then
+        // do something
+end </programlisting>
+        </section>
       </section>
     </section>
 
@@ -2362,6 +2443,472 @@ eval( p1.getList().containsKey( p2.getItem() ) )</programlisting>
 p2 : Parameter()
 // call function isValid in the LHS
 eval( isValid( p1, p2 ) )</programlisting>
+    </section>
+
+    <section>
+      <title>Railroad diagrams</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateAction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateFunction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateInit.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateResult.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateReverse.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateSteps.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Accumulations.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AdditiveExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Annotation.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Arguments.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayCreatorRest.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayInitializer.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AssignmentOperator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/BindingPattern.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Block.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/BooleanLiteral.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/CompilationUnit.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalAnd.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementAccumulate.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementEval.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementExists.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementForall.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementNot.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElement.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOrExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Constraints.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/CreatedName.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Creator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Definition.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Digit.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocationSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocation.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Exponent.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExpressionList.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Expression.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Field.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Fraction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromAccumulateClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromCollectClause.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FunctionDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/GlobalDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/IdentifierSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ImportDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineListExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineMapExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InnerCreator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InstanceOfExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/IntLiteral.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Literal.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ModifyStatement.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/NonWildcardTypeArguments.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/OrRestriction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/OverClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Parameters.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Pattern.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Placeholders.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Primary.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/PrimitiveType.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QualifiedName.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryOptions.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RealLiteral.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RealTypeSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalOperator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RhsStatement.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttributes.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttribute.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleOptions.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Selector.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ShiftExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SingleRestriction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SourcePattern.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/StringId.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SuperSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ThenPart.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArguments.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArgument.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeOptions.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Type.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExprNotPlusMinus.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Value.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/VariableInitializer.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/WhenPart.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+
     </section>
   </section>
 

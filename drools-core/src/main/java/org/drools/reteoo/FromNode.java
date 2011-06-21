@@ -174,9 +174,9 @@ public class FromNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( new LeftTupleImpl( factHandle,
+                                                this,
+                                                true ),
                              context,
                              workingMemory );
         }
@@ -406,12 +406,12 @@ public class FromNode extends LeftTupleSource
             Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
-                    sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                         rightTuple,
-                                                         null,
-                                                         null,
-                                                         sink,
-                                                         this.tupleMemoryEnabled ),
+                    sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
+                                                             rightTuple,
+                                                             null,
+                                                             null,
+                                                             sink,
+                                                             this.tupleMemoryEnabled ),
                                           context,
                                           workingMemory );
                 }

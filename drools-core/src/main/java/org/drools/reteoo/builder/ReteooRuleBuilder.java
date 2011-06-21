@@ -124,6 +124,7 @@ public class ReteooRuleBuilder {
             // adds subrule
             final TerminalNode node = this.addSubRule( context,
                                                        subrules[i],
+                                                       i,
                                                        rule );
 
             // adds the terminal node to the list of terminal nodes
@@ -136,6 +137,7 @@ public class ReteooRuleBuilder {
 
     private TerminalNode addSubRule(final BuildContext context,
                                     final GroupElement subrule,
+                                    final int subruleIndex,
                                     final Rule rule) throws InvalidPatternException {
         // gets the appropriate builder
         final ReteooComponentBuilder builder = this.utils.getBuilderFor( subrule );
@@ -158,6 +160,7 @@ public class ReteooRuleBuilder {
                                                                   context.getTupleSource(),
                                                                   rule,
                                                                   subrule,
+                                                                  subruleIndex,
                                                                   context );
         
         if ( context.getWorkingMemories().length == 0 ) {
@@ -190,7 +193,7 @@ public class ReteooRuleBuilder {
         
         // creates a pattern for initial fact
         final Pattern pattern = new Pattern( 0,
-                                             new ClassObjectType( InitialFact.class ) );
+                                             ClassObjectType.InitialFact_ObjectType );
 
         // adds the pattern as the first child of the given AND group element
         subrule.addChild( 0,
