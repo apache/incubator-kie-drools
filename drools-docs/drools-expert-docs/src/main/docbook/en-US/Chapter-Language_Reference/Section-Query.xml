@@ -108,7 +108,7 @@ rule look when
     Person( $l : likes ) 
     isContainedIn( $l, 'office'; )
 then
-   insertLogical( $l 'is in the office' );
+   insertLogical( $l + 'is in the office' );
 end 
 </programlisting>
 
