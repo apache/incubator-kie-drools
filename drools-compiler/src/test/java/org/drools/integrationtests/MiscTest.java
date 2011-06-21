@@ -5501,6 +5501,40 @@ public class MiscTest {
     }
 
     @Test
+    public void testEmptyAfterRetractInIndexedMemory() {
+        String str = "";
+        str += "package org.simple \n";
+        str += "import org.drools.Person\n";
+        str += "global java.util.List list \n";
+        str += "rule xxx dialect 'mvel' \n";
+        str += "when \n";
+        str += "  Person( $name : name ) \n";
+        str += "  $s : String( this == $name) \n";
+        str += "then \n";
+        str += "  list.add($s); \n";
+        str += "end  \n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list",
+                            list );
+
+        Person p = new Person( "ackbar");
+        org.drools.runtime.rule.FactHandle ph = ksession.insert( p );
+        org.drools.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );        
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "ackbar",
+                      list.get( 0 ) );
+        ksession.retract( ph );
+    }    
+    
+    @Test
     public void testRuleReplacement() throws Exception {
         // test rule replacement
         final PackageBuilder builder1 = new PackageBuilder();
@@ -7866,12 +7900,14 @@ public class MiscTest {
                                                                                       LeftTupleSource source,
                                                                                       org.drools.rule.Rule rule,
                                                                                       GroupElement subrule,
+                                                                                      int subruleIndex,
                                                                                       BuildContext context,
                                                                                       Object... args ) {
                                             return new RuleTerminalNode( id,
                                                                          source,
                                                                          rule,
                                                                          subrule,
+                                                                         0,
                                                                          context ) {
                                                 @Override
                                                 public void assertLeftTuple( LeftTuple tuple,

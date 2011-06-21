@@ -22,7 +22,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.EvalCondition;
@@ -89,7 +89,7 @@ public class MVELEvalBuilderTest {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0, sink, true );
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0, sink, true );
         
         Object evalContext = eval.createContext();
 

@@ -23,6 +23,10 @@ import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.QueryTerminalNode;
+import org.drools.rule.Declaration;
+import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.Variable;
 import org.drools.spi.PropagationContext;
@@ -48,8 +52,8 @@ public class StandardQueryViewChangedEventListener
         InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex() + 1];
         LeftTuple entry = tuple;
 
-        // Add all the FactHandles except the root DroolQuery object
-        while ( entry.getIndex() > 0 ) {
+        // Add all the FactHandles
+        while ( entry != null) {
             InternalFactHandle handle = entry.getLastHandle();
             handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
                                                                ( handle.getEntryPoint() != null ) ?  handle.getEntryPoint().getEntryPointId() : null,
@@ -59,40 +63,21 @@ public class StandardQueryViewChangedEventListener
                                                                handle.getObject() );
             entry = entry.getParent();
         }
-
-        // Get the Query object
-        InternalFactHandle handle = entry.getLastHandle();
-        DroolsQuery query = (DroolsQuery) handle.getObject();
-
-        // Copy of it's arguments for unification variables.
-        Object[] args = query.getElements();
-        Object[] newArgs = new Object[args.length];
-        for ( int i = 0, length = args.length; i < length; i++ ) {
-            if ( args[i] instanceof Variable ) {
-                newArgs[i] = ((Variable) args[i]).getValue();
-            } else {
-                newArgs[i] = args[i];
-            }
-        }
-        handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
-                                                           handle.getEntryPoint().getEntryPointId(),
-                                                           handle.getIdentityHashCode(),
-                                                           handle.getObjectHashCode(),
-                                                           handle.getRecency(),
-                                                           new ArrayElements( newArgs ) );
-
-        this.results.add( handles );
+        
+        QueryTerminalNode node = ( QueryTerminalNode ) tuple.getLeftTupleSink();                 
+                              
+        this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
     
     public void rowRemoved(final Rule rule,
                            final LeftTuple tuple,
-            final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
     }
     
     public void rowUpdated(final Rule rule,
                            final LeftTuple tuple,
-            final PropagationContext context,
+                               final PropagationContext context,
             final InternalWorkingMemory workingMemory) {
     }
 

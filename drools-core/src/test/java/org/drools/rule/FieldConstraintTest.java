@@ -40,7 +40,7 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
@@ -251,7 +251,7 @@ public class FieldConstraintTest {
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
         final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
-        LeftTuple tuple = new LeftTuple( f0,
+        LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                          null,
                                          true );
 
@@ -259,7 +259,7 @@ public class FieldConstraintTest {
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
 
-        tuple = new LeftTuple( tuple,
+        tuple = new LeftTupleImpl( tuple,
                                new RightTuple( f1,
                                                null ),
                                null,
@@ -362,14 +362,14 @@ public class FieldConstraintTest {
                                             5 );
         final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
 
-        LeftTuple tuple = new LeftTuple( f0,
+        LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                          null,
                                          true );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
-        tuple = new LeftTuple( tuple,
+        tuple = new LeftTupleImpl( tuple,
                                new RightTuple( f1,
                                                null ),
                                null,

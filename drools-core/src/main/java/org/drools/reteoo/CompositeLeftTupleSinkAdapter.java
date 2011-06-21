@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
@@ -48,15 +50,27 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     
     public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
                                               final RightTuple rightTuple,
-                                              boolean leftTupleMemoryEnabled) {
+                                              boolean leftTupleMemoryEnabled,
+                                              boolean linkRightTuple) {
         // this must be in reverse order to ensure that there is correct child tuple iteration
         // for QueryElementNode. This is important for Accumulate now where it must propate to the right before the left input
         for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {
-            LeftTuple child = new LeftTuple( leftTuple,
-                                             rightTuple.getFactHandle(),
-                                             sink,
-                                             leftTupleMemoryEnabled );
+            LeftTuple child = new LeftTupleImpl( leftTuple,
+                                                 rightTuple,
+                                                 sink );
         }
+    }
+    
+    public void modifyChildLeftTuplesforQuery(final RightTuple rightTuple,
+                                              final PropagationContext context,
+                                              final InternalWorkingMemory workingMemory) {
+        LeftTuple childLeftTuple = rightTuple.firstChild;
+        while ( childLeftTuple != null ) {
+            childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
+                                                               context,
+                                                               workingMemory );            
+            childLeftTuple = childLeftTuple.getRightParentNext();
+        }        
     }
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
@@ -68,12 +82,12 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                          final boolean leftTupleMemoryEnabled) {
 
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            LeftTuple newLeftTuple = new LeftTuple( leftTuple,
-                                                    rightTuple,
-                                                    currentLeftChild,
-                                                    currentRightChild,
-                                                    sink,
-                                                    leftTupleMemoryEnabled );
+            LeftTuple newLeftTuple = new LeftTupleImpl( leftTuple,
+                                                        rightTuple,
+                                                        currentLeftChild,
+                                                        currentRightChild,
+                                                        sink,
+                                                        leftTupleMemoryEnabled );
             doPropagateAssertLeftTuple( context,
                                         workingMemory,
                                         sink,
@@ -89,30 +103,31 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
             doPropagateAssertLeftTuple( context,
                                         workingMemory,
                                         sink,
-                                        new LeftTuple( tuple,
-                                                       sink,
-                                                       leftTupleMemoryEnabled ) );
+                                        new LeftTupleImpl( tuple,
+                                                           sink,
+                                                           leftTupleMemoryEnabled ) );
         }
     }
 
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
                                                   final PropagationContext context,
                                                   final InternalWorkingMemory workingMemory,
-                                                  final boolean leftTupleMemoryEnabled) {
+                                                  final boolean leftTupleMemoryEnabled,
+                                                  LeftInputAdapterNode liaNode) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
             doPropagateAssertLeftTuple( context,
                                         workingMemory,
                                         sink,
-                                        new LeftTuple( factHandle,
-                                                       sink,
-                                                       leftTupleMemoryEnabled ) );
+                                        new LeftTupleImpl( factHandle,
+                                                           sink,
+                                                           leftTupleMemoryEnabled ) );
         }
     }
 
     public void propagateRetractLeftTuple(final LeftTuple leftTuple,
                                           final PropagationContext context,
                                           final InternalWorkingMemory workingMemory) {
-        LeftTuple child = leftTuple.firstChild;
+        LeftTuple child = leftTuple.getFirstChild();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
             doPropagateRetractLeftTuple( context,
@@ -128,7 +143,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     public void propagateRetractLeftTupleDestroyRightTuple(final LeftTuple leftTuple,
                                                            final PropagationContext context,
                                                            final InternalWorkingMemory workingMemory) {
-        LeftTuple child = leftTuple.firstChild;
+        LeftTuple child = leftTuple.getFirstChild();
         InternalFactHandle rightParent = child.getRightParent().getFactHandle();
         while ( child != null ) {
             LeftTuple temp = child.getLeftParentNext();
@@ -311,7 +326,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory,
                                               boolean tupleMemoryEnabled) {
-        for ( LeftTuple childLeftTuple = leftTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
+        for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
             childLeftTuple.getLeftTupleSink().modifyLeftTuple( childLeftTuple,
                                                                context,
                                                                workingMemory );

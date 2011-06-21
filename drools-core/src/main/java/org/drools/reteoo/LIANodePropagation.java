@@ -63,7 +63,8 @@ public class LIANodePropagation
         node.getSinkPropagator().createAndPropagateAssertLeftTuple( handle,
                                                                     context,
                                                                     workingMemory,
-                                                                    false  );
+                                                                    false, 
+                                                                    node );
     }
 
 }

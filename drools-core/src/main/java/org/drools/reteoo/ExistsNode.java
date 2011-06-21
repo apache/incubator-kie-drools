@@ -98,7 +98,6 @@ public class ExistsNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.setOpen( true );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         ContextEntry[] contextEntry = memory.getContext();
@@ -106,11 +105,6 @@ public class ExistsNode extends BetaNode {
 
         boolean useLeftMemory = true;
         if ( !this.tupleMemoryEnabled ) {
-            if ( memory.isOpen() ) {
-                // we are re-entrant to force new ContextEntry
-                contextEntry = this.constraints.createContext();
-            }
-            
             // This is a hack, to not add closed DroolsQuery objects
             Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
             if ( memory.getLeftTupleMemory() == null || object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
@@ -118,7 +112,6 @@ public class ExistsNode extends BetaNode {
             }
         }
 
-        
         this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
@@ -150,7 +143,6 @@ public class ExistsNode extends BetaNode {
             // LeftTuple is not blocked, so add to memory so other RightTuples can match
             memory.getLeftTupleMemory().add( leftTuple );
         }
-        memory.setOpen( false );
     }
 
     /**
@@ -371,14 +363,14 @@ public class ExistsNode extends BetaNode {
             // not blocked
             memory.getLeftTupleMemory().add( leftTuple ); // add to memory so other fact handles can attempt to match                    
 
-            if ( leftTuple.firstChild != null ) {
+            if ( leftTuple.getFirstChild() != null ) {
                 // with previous children, retract
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      context,
                                                      workingMemory );
             }
             // with no previous children. do nothing.
-        } else if ( leftTuple.firstChild == null ) {
+        } else if ( leftTuple.getFirstChild() == null ) {
             // blocked, with no previous children, assert
             this.sink.propagateAssertLeftTuple( leftTuple,
                                                 context,
@@ -529,9 +521,9 @@ public class ExistsNode extends BetaNode {
         for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
             LeftTuple leftTuple = rightTuple.getBlocked();
             while ( leftTuple != null ) {
-                sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                     sink,
-                                                     true ),
+                sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
+                                                         sink,
+                                                         true ),
                                       context,
                                       workingMemory );
                 leftTuple = leftTuple.getBlockedNext();

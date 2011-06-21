@@ -26,7 +26,7 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.PredicateDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -133,7 +133,7 @@ public class MVELPredicateBuilderTest {
         
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
-        final LeftTuple tuple = new LeftTuple( f0, sink, true );
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0, sink, true );
 
         final PredicateContextEntry predicateContext = (PredicateContextEntry) predicate.createContextEntry();
         predicateContext.leftTuple = tuple;

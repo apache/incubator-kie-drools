@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.ShadowProxy;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -69,6 +70,8 @@ public class EntryPointNode extends ObjectSource
      * The object type nodes under this node
      */
     private Map<ObjectType, ObjectTypeNode> objectTypeNodes;
+    
+    private ObjectTypeNode queryNode;    
 
     // ------------------------------------------------------------
     // Constructors
@@ -124,7 +127,52 @@ public class EntryPointNode extends ObjectSource
      */
     public EntryPoint getEntryPoint() {
         return entryPoint;
+    }        
+    
+    public void assertQuery(final InternalFactHandle factHandle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+        if ( queryNode == null ) {
+            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
+        }
+        
+        if ( queryNode != null ) {
+            // There may be no queries defined
+            this.queryNode.assertObject( factHandle, context, workingMemory );
+        }       
     }
+    
+    public void retractQuery(final InternalFactHandle factHandle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+        if ( queryNode == null ) {
+            this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
+        }
+        
+        if ( queryNode != null ) {
+            // There may be no queries defined
+            this.queryNode.retractObject( factHandle, context, workingMemory );
+        }       
+    }    
+    
+    public void modifyQuery(final InternalFactHandle factHandle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+         if ( queryNode == null ) {
+             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );
+         }
+         
+         if ( queryNode != null ) {
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple() );
+             factHandle.setFirstLeftTuple( null );
+             factHandle.setFirstRightTuple( null );
+             factHandle.setLastLeftTuple( null );
+             factHandle.setLastRightTuple( null );
+             
+             // There may be no queries defined
+             this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+         }       
+     }     
 
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,

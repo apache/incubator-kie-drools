@@ -25,7 +25,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.AgendaGroup;
@@ -100,7 +100,7 @@ public class BaseQueueable
         return null;
     }
 
-    public LeftTuple getTuple() {
+    public LeftTupleImpl getTuple() {
         // TODO Auto-generated method stub
         return null;
     }

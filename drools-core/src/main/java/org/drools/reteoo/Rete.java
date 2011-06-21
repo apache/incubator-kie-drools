@@ -108,6 +108,7 @@ public class Rete extends ObjectSource
                            context,
                            typeConf,
                            workingMemory );
+        context.evaluateActionQueue( workingMemory );
     }
 
     /**

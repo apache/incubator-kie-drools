@@ -34,6 +34,7 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSink;
@@ -228,32 +229,32 @@ public class BuildUtils {
      */
     public void checkUnboundDeclarations(final BuildContext context,
                                          final Declaration[] declarations) throws InvalidPatternException {
-        final List<String> list = new ArrayList<String>();
-        for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            boolean resolved = false;
-            for ( final ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
-                final RuleConditionElement rce = it.previous();
-                final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
-                if ( decl != null && decl.getPattern().getOffset() <= declarations[i].getPattern().getOffset() ) {
-                    resolved = true;
-                    break;
-                }
-            }
-            if( ! resolved ) {
-                list.add( declarations[i].getIdentifier() );
-            }
-        }
-
-        // Make sure the required declarations
-        if ( list.size() != 0 ) {
-            final StringBuilder buffer = new StringBuilder();
-            buffer.append( list.get( 0 ) );
-            for ( int i = 1, size = list.size(); i < size; i++ ) {
-                buffer.append( ", " + list.get( i ) );
-            }
-
-            throw new InvalidPatternException( "Required Declarations not bound: '" + buffer + "'");
-        }
+//        final List<String> list = new ArrayList<String>();
+//        for ( int i = 0, length = declarations.length; i < length; i++ ) {
+//            boolean resolved = false;
+//            for ( final ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
+//                final RuleConditionElement rce = it.previous();
+//                final Declaration decl = rce.resolveDeclaration( declarations[i].getIdentifier() );
+//                if ( decl != null && decl.getPattern().getOffset() <= declarations[i].getPattern().getOffset() ) {
+//                    resolved = true;
+//                    break;
+//                }
+//            }
+//            if( ! resolved ) {
+//                list.add( declarations[i].getIdentifier() );
+//            }
+//        }
+//
+//        // Make sure the required declarations
+//        if ( list.size() != 0 ) {
+//            final StringBuilder buffer = new StringBuilder();
+//            buffer.append( list.get( 0 ) );
+//            for ( int i = 1, size = list.size(); i < size; i++ ) {
+//                buffer.append( ", " + list.get( i ) );
+//            }
+//
+//            throw new InvalidPatternException( "Rule: " + context.getRule().getName() + " - required Declarations not bound: '" + buffer + "'");
+//        }
     }
 
     /**

@@ -36,6 +36,7 @@ public class QueryElement extends ConditionalElement
     private Object[]      argTemplate;
     private int[]         declIndexes;
     private int[]         variableIndexes;
+    private boolean       openQuery;
 
     private Declaration[] requiredDeclarations;
 
@@ -48,13 +49,15 @@ public class QueryElement extends ConditionalElement
                         Object[] argTemplate,
                         Declaration[] requiredDeclarations,
                         int[] declIndexes,
-                        int[] variableIndexes) {
+                        int[] variableIndexes, 
+                        boolean openQuery) {
         this.resultPattern = resultPattern;
         this.queryName = queryName;
         this.argTemplate = argTemplate;
         this.requiredDeclarations = requiredDeclarations;
         this.declIndexes = declIndexes;
         this.variableIndexes = variableIndexes;
+        this.openQuery = openQuery;
     }     
     
     
@@ -65,6 +68,7 @@ public class QueryElement extends ConditionalElement
        out.writeObject( this.requiredDeclarations );
        out.writeObject( this.declIndexes );
        out.writeObject( this.variableIndexes );
+       out.writeBoolean( this.openQuery );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -74,12 +78,13 @@ public class QueryElement extends ConditionalElement
         this.argTemplate = (Object[]) in.readObject();
         for ( int i = 0; i < argTemplate.length; i++ ) {
             if ( argTemplate[i] instanceof Variable ) {
-                argTemplate[i] = Variable.variable; // we need to reset this as we do == checks later in DroolsQuery
+                argTemplate[i] = Variable.v; // we need to reset this as we do == checks later in DroolsQuery
             }
         }
         this.requiredDeclarations = ( Declaration[] ) in.readObject();
         this.declIndexes = ( int[] ) in.readObject();
         this.variableIndexes = ( int[] ) in.readObject();
+        this.openQuery = in.readBoolean();
     }
     
 
@@ -93,6 +98,10 @@ public class QueryElement extends ConditionalElement
 
     public int[] getDeclIndexes() {
         return declIndexes;
+    }
+    
+    public void setVariableIndexes(int[] varIndexes) {
+        variableIndexes = varIndexes;
     }
 
     public int[] getVariableIndexes() {
@@ -121,6 +130,10 @@ public class QueryElement extends ConditionalElement
     
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
+    }    
+    
+    public boolean isOpenQuery() {
+        return openQuery;
     }
 
     /**
@@ -130,20 +143,20 @@ public class QueryElement extends ConditionalElement
         return this.resultPattern.resolveDeclaration( identifier );
     }
 
-    public void replaceDeclaration(Declaration declaration,
-                                   Declaration resolved) {
-        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
-            if ( this.requiredDeclarations[i].equals( declaration ) ) {
-                this.requiredDeclarations[i] = resolved;
-            }
-        }
-    }
-
-
     @Override
     public Object clone() {
-        return new QueryElement( resultPattern, queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes );
+        return new QueryElement( resultPattern, queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery );
     }
+
+    @Override
+    public String toString() {
+        return "QueryElement [resultPattern=" + resultPattern + 
+                   ", queryName=" + queryName + ", argTemplate=" + Arrays.toString( argTemplate ) + 
+                   ", declIndexes=" + Arrays.toString( declIndexes ) + ", variableIndexes="+ Arrays.toString( variableIndexes ) + 
+                   ", openQuery=" + openQuery + 
+                   ", requiredDeclarations=" + Arrays.toString( requiredDeclarations ) + "]";
+    }
+
 
 
 

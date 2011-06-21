@@ -291,6 +291,7 @@ public class PatternBuilder
         boolean alphaMemory = context.isAlphaMemoryAllowed();
 
         ObjectType objectType = pattern.getObjectType();
+        
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             // Is this the query node, if so we don't want any memory
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
@@ -351,7 +352,7 @@ public class PatternBuilder
                                                                                      context.getObjectSource(),
                                                                                      context ) ) );
             context.popRuleComponent();
-        }
+        }        
 
         // now restore back to original values
         context.setObjectTypeNodeMemoryEnabled( objectMemory );
