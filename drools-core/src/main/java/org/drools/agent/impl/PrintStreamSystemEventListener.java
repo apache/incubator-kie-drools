@@ -26,7 +26,7 @@ public class PrintStreamSystemEventListener
     implements
     SystemEventListener {
     
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss,SSS");
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss,SSS");
     
     private PrintStream print = System.out;
     
@@ -39,7 +39,9 @@ public class PrintStreamSystemEventListener
     }
     
     private String time() {
-        return dateFormat.format( new Date() );
+        synchronized (dateFormat){
+            return dateFormat.format( new Date() );
+        }
     }
 
     public void debug(String message) {
