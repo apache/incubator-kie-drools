@@ -291,12 +291,12 @@ end
 
 query look(String place, List things, List food, List exits) 
     Here(place;)
-    things : List() from accumulate( Location(thing, place;),
+    things := List() from accumulate( Location(thing, place;),
+                                      collectList( thing ) )
+    food := List() from accumulate( ?whereFood(thing, place;) ,                                    
                                     collectList( thing ) )
-    food : List() from accumulate( ?whereFood(thing, place;) ,                                    
-                                   collectList( thing ) )
-    exits : List() from accumulate( ?connect(place, exit;),
-                                    collectList( exit ) )
+    exits := List() from accumulate( ?connect(place, exit;),
+                                     collectList( exit ) )
 end
 
 rule reactiveLook when
@@ -325,7 +325,7 @@ rule look when
     Person( $l : likes ) 
     isContainedIn( $l, 'office'; )
 then
-   insertLogical( $l 'is in the office' );
+   insertLogical( $l + 'is in the office' );
 end 
 </programlisting>
 
