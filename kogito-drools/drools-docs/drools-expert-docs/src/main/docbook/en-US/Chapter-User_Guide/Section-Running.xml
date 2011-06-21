@@ -1653,7 +1653,8 @@ ds.init();
     <title>Drools Clips</title>
 
     <para>Drools Clips is an alpha level research project to provide a Clips
-    like front end ot Drools.</para>
+    like front end ot Drools. As of Drools 5.2 this module as stopped working,
+    we will try and fix for 5.3.</para>
 
     <para>Deftemplates are working, the knowledge base handles multiple name
     spaces and you can attach the knoweldge base to the session for interative

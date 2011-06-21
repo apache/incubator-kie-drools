@@ -191,9 +191,9 @@ when
   ap : AccountPeriod()
   acc : Account( $accountNo : accountNo )
   CashFlow( type == CREDIT,
-    accountNo == $accountNo,
-    date &gt;= ap.start &amp;&amp; &lt;= ap.end,
-    $amount : amount )
+            accountNo == $accountNo,
+            date &gt;= ap.start &amp;&amp; &lt;= ap.end,
+            $amount : amount )
 then
   acc.balance  += $amount;
 end</programlisting></td>
@@ -203,9 +203,9 @@ when
   ap : AccountPeriod() 
   acc : Account( $accountNo : accountNo ) 
   CashFlow( type == DEBIT, 
-    accountNo == $accountNo,
-    date &gt;= ap.start &amp;&amp; &lt;= ap.end, 
-    $amount : amount ) 
+            accountNo == $accountNo,
+            date &gt;= ap.start &amp;&amp; &lt;= ap.end, 
+            $amount : amount ) 
 then 
   acc.balance -= $amount; 
 end</programlisting></td>
@@ -428,7 +428,7 @@ end</programlisting>
     than this, correct use of inference can crate more agile and less error
     prone businesses with easier to maintain software.</para>
 
-    <para> So what is inference? Something is inferred when we gain knowledge
+    <para>So what is inference? Something is inferred when we gain knowledge
     of something from using previous knowledge. For example given a Person
     fact with an age field and a rule that provides age policy control, we can
     infer whether a Person is an adult or a child and act on this.</para>
@@ -516,7 +516,7 @@ IsAdult( person == $p )</programlisting>
     IsAdult also gave a semantic abstraction to the previously arbitrary logic
     "age &gt;= 18".</para>
 
-    <para> So a general rule or thumb when doing your knowledge engineering
+    <para>So a general rule or thumb when doing your knowledge engineering
     is:</para>
 
     <para></para>
@@ -601,13 +601,13 @@ end</programlisting>
     16 it inserts an IsChild fact, once the person is 16 or over the IsChild
     fact is automatically retracted and the IsAdult fact inserted.</para>
 
-    <para> We can now bring back in the code to issue the passes, these two
-    can also be logically inserted, as the TMS supports chaining of logical
+    <para>We can now bring back in the code to issue the passes, these two can
+    also be logically inserted, as the TMS supports chaining of logical
     insertions for a cascading set of retracts.</para>
 
     <programlisting>rule "Issue Child Bus Pass" when
   $p : Person( )
-       IsChild( person =$p )
+       IsChild( person == $p )
 then
   logicalInsert(new ChildBusPass( $p ) );
 end

@@ -1013,116 +1013,116 @@ public class BackwardChainingTest {
         
         QueryResults results = null;
         
-//        //System.out.println("woman");         
-//        list.clear();
-//        results = ksession.getQueryResults( "woman", new Object[] { v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( (String) result.get( "name" ) );
-//        } 
-//        assertEquals( 5, list.size());
-//        assertContains( new String[] { "janet", "mary", "tina", "eve", "jill"}, list);
-//        
-//        list.clear();
-//        //System.out.println("\nman");        
-//        results = ksession.getQueryResults( "man", new Object[] { v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( (String) result.get( "name" ) );
-//        }   
-//        assertEquals( 6, list.size());
-//        assertContains( new String[] { "stan", "john", "peter", "carl", "adam", "paul"}, list);
-//        
-//        list.clear();
-//        //System.out.println("\nfather");
-//        results = ksession.getQueryResults( "father", new Object[] {v,  v  } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "father" ) + ", " + result.get( "child" ) );
-//        }       
-//        assertEquals( 7, list.size());
-//        assertContains( new String[] { "john, adam", "john, stan", 
-//                                       "carl, eve", "carl, mary", 
-//                                       "adam, peter", "adam, paul",
-//                                       "adam, jill"}, list);
-//        
-//        list.clear();
-//        //System.out.println("\nmother");
-//        results = ksession.getQueryResults( "mother", new Object[] { v,  v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "mother" ) + ", " + result.get( "child" ) );
-//        }    
-//        assertEquals( 7, list.size());
-//        assertContains( new String[] { "janet, adam", "janet, stan", 
-//                                       "mary, paul", "tina, eve", 
-//                                       "tina, mary", "eve, peter",
-//                                       "eve, jill"}, list);        
-//        
-//        
-//        list.clear();
-//        //System.out.println("\nson");
-//        results = ksession.getQueryResults( "son", new Object[] { v,  v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "son" ) + ", " + result.get( "parent" ) );
-//        }  
-//        assertEquals( 8, list.size());
-//        assertContains( new String[] { "stan, john", "stan, janet", 
-//                                       "peter, adam", "peter, eve", 
-//                                       "adam, john", "adam, janet",
-//                                       "paul, mary", "paul, adam"}, list); 
-//        
-//        list.clear();
-//        //System.out.println("\ndaughter");
-//        results = ksession.getQueryResults( "daughter", new Object[] { v,  v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "daughter" ) + ", " + result.get( "parent" ) );
-//        }         
-//        assertEquals( 6, list.size());
-//        assertContains( new String[] { "mary, carl", "mary, tina", 
-//                                       "eve, carl", "eve, tina", 
-//                                       "jill, adam", "jill, eve"}, list);        
-//        
-//        list.clear();
-//        //System.out.println("\nsiblings");
-//        results = ksession.getQueryResults( "siblings", new Object[] { v,  v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "c1" ) + ", " + result.get( "c2" ) );
-//        } 
-//        assertEquals( 16, list.size());
-//        assertContains( new String[] { "eve, mary",  "mary, eve", 
-//                                       "adam, stan", "stan, adam", 
-//                                       "adam, stan", "stan, adam", 
-//                                       "peter, paul", "peter, jill", 
-//                                       "paul, peter", "paul, jill", 
-//                                       "jill, peter", "jill, paul", 
-//                                       "peter, jill", "jill, peter", 
-//                                       "eve, mary",  "mary, eve"}, list);             
-//        
-//        list.clear();
-//        //System.out.println("\nfullSiblings");
-//        results = ksession.getQueryResults( "fullSiblings", new Object[] { v,  v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "c1" ) + ", " + result.get( "c2" ) );
-//        }        
-//        assertEquals( 12, list.size());
-//        assertContains( new String[] { "eve, mary", "mary, eve", 
-//                                       "adam, stan", "stan, adam", 
-//                                       "adam, stan", "stan, adam", 
-//                                       "peter, jill", "jill, peter", 
-//                                       "peter, jill", "jill, peter", 
-//                                       "eve, mary", "mary, eve" }, list);         
-//
-//        list.clear();
-//        //System.out.println("\nfullSiblings2");
-//        results = ksession.getQueryResults( "fullSiblings", new Object[] { v,  v } );
-//        for ( QueryResultsRow result : results ) {
-//            list.add( result.get( "c1" ) + ", " + result.get( "c2" ) );
-//        }  
-//        assertEquals( 12, list.size());
-//        assertContains( new String[] { "eve, mary", "mary, eve", 
-//                                       "adam, stan", "stan, adam", 
-//                                       "adam, stan", "stan, adam", 
-//                                       "peter, jill", "jill, peter", 
-//                                       "peter, jill", "jill, peter", 
-//                                       "eve, mary", "mary, eve" }, list);          
-//        
+        //System.out.println("woman");         
+        list.clear();
+        results = ksession.getQueryResults( "woman", new Object[] { v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( (String) result.get( "name" ) );
+        } 
+        assertEquals( 5, list.size());
+        assertContains( new String[] { "janet", "mary", "tina", "eve", "jill"}, list);
+        
+        list.clear();
+        //System.out.println("\nman");        
+        results = ksession.getQueryResults( "man", new Object[] { v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( (String) result.get( "name" ) );
+        }   
+        assertEquals( 6, list.size());
+        assertContains( new String[] { "stan", "john", "peter", "carl", "adam", "paul"}, list);
+        
+        list.clear();
+        //System.out.println("\nfather");
+        results = ksession.getQueryResults( "father", new Object[] {v,  v  } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "father" ) + ", " + result.get( "child" ) );
+        }       
+        assertEquals( 7, list.size());
+        assertContains( new String[] { "john, adam", "john, stan", 
+                                       "carl, eve", "carl, mary", 
+                                       "adam, peter", "adam, paul",
+                                       "adam, jill"}, list);
+        
+        list.clear();
+        //System.out.println("\nmother");
+        results = ksession.getQueryResults( "mother", new Object[] { v,  v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "mother" ) + ", " + result.get( "child" ) );
+        }    
+        assertEquals( 7, list.size());
+        assertContains( new String[] { "janet, adam", "janet, stan", 
+                                       "mary, paul", "tina, eve", 
+                                       "tina, mary", "eve, peter",
+                                       "eve, jill"}, list);        
+        
+        
+        list.clear();
+        //System.out.println("\nson");
+        results = ksession.getQueryResults( "son", new Object[] { v,  v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "son" ) + ", " + result.get( "parent" ) );
+        }  
+        assertEquals( 8, list.size());
+        assertContains( new String[] { "stan, john", "stan, janet", 
+                                       "peter, adam", "peter, eve", 
+                                       "adam, john", "adam, janet",
+                                       "paul, mary", "paul, adam"}, list); 
+        
+        list.clear();
+        //System.out.println("\ndaughter");
+        results = ksession.getQueryResults( "daughter", new Object[] { v,  v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "daughter" ) + ", " + result.get( "parent" ) );
+        }         
+        assertEquals( 6, list.size());
+        assertContains( new String[] { "mary, carl", "mary, tina", 
+                                       "eve, carl", "eve, tina", 
+                                       "jill, adam", "jill, eve"}, list);        
+        
+        list.clear();
+        //System.out.println("\nsiblings");
+        results = ksession.getQueryResults( "siblings", new Object[] { v,  v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "c1" ) + ", " + result.get( "c2" ) );
+        } 
+        assertEquals( 16, list.size());
+        assertContains( new String[] { "eve, mary",  "mary, eve", 
+                                       "adam, stan", "stan, adam", 
+                                       "adam, stan", "stan, adam", 
+                                       "peter, paul", "peter, jill", 
+                                       "paul, peter", "paul, jill", 
+                                       "jill, peter", "jill, paul", 
+                                       "peter, jill", "jill, peter", 
+                                       "eve, mary",  "mary, eve"}, list);             
+        
+        list.clear();
+        //System.out.println("\nfullSiblings");
+        results = ksession.getQueryResults( "fullSiblings", new Object[] { v,  v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "c1" ) + ", " + result.get( "c2" ) );
+        }        
+        assertEquals( 12, list.size());
+        assertContains( new String[] { "eve, mary", "mary, eve", 
+                                       "adam, stan", "stan, adam", 
+                                       "adam, stan", "stan, adam", 
+                                       "peter, jill", "jill, peter", 
+                                       "peter, jill", "jill, peter", 
+                                       "eve, mary", "mary, eve" }, list);         
+
+        list.clear();
+        //System.out.println("\nfullSiblings2");
+        results = ksession.getQueryResults( "fullSiblings", new Object[] { v,  v } );
+        for ( QueryResultsRow result : results ) {
+            list.add( result.get( "c1" ) + ", " + result.get( "c2" ) );
+        }  
+        assertEquals( 12, list.size());
+        assertContains( new String[] { "eve, mary", "mary, eve", 
+                                       "adam, stan", "stan, adam", 
+                                       "adam, stan", "stan, adam", 
+                                       "peter, jill", "jill, peter", 
+                                       "peter, jill", "jill, peter", 
+                                       "eve, mary", "mary, eve" }, list);          
+        
         list.clear();
         //System.out.println("\nuncle");
         results = ksession.getQueryResults( "uncle", new Object[] { v,  v } );
@@ -1539,8 +1539,6 @@ public class BackwardChainingTest {
             "end\n" +             
             "\n"            
             ;   
-        
-        System.out.println( str );
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
