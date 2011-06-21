@@ -244,7 +244,11 @@ public class QueryElementBuilder
                           params );
             if ( pos < 0 ) {
                 // error this must be a binding on a slot
-                throw new RuntimeException( "named argument does not exist" );
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "named argument does not exist:\n" + bind.getExpression() ) );
+                return;                
             }
 
             // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.

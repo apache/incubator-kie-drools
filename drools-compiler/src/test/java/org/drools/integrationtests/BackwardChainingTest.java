@@ -16,6 +16,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
@@ -1609,7 +1610,31 @@ public class BackwardChainingTest {
         ksession.retract( fh );
         assertEquals( "go7", list.get(12));
         assertEquals( "exists blah", list.get(13));                          
-    }        
+    }
+    
+    @Test
+    public void testCompile() {
+        String drl = "";
+        
+        drl = "declare Location\n"
+              + "thing : String\n"
+              + "location : String\n"
+              + "end\n\n";
+ 
+        drl = drl + "query isContainedIn( String x, String y )\n"
+              + "Location( x := thing, y := location)\n"
+              + "or \n"
+              + "( Location(z := thing, y := location) and ?isContainedIn( x := x, z := y ) )\n"
+              + "end\n"; 
+ 
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( drl.getBytes() ),
+                      ResourceType.DRL );
+ 
+        if ( kbuilder.hasErrors() ) {
+           fail( kbuilder.getErrors().toString() );
+        }      
+    }
     
     public void assertContains( Object[] objects, List list) {
         for ( Object object : objects ) {
