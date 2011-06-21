@@ -44,7 +44,7 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.EvalCondition;
 import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
-import org.drools.rule.Variable;
+import org.drools.runtime.rule.Variable;
 import org.drools.spi.PropagationContext;
 
 import com.sun.xml.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
