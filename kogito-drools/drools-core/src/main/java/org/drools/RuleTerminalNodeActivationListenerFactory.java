@@ -15,9 +15,10 @@ public class RuleTerminalNodeActivationListenerFactory implements ActivationList
                                                  LeftTupleSource source,
                                                  Rule rule,
                                                  GroupElement subrule,
+                                                 int subruleIndex,                                                 
                                                  BuildContext context,
                                                  Object... args) {
-        return new RuleTerminalNode( id, source, rule, subrule, context );
+        return new RuleTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
 }

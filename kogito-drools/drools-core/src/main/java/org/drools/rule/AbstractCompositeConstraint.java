@@ -233,8 +233,8 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
         private static final long    serialVersionUID = 510l;
 
-        public ContextEntry[]  alphas;
-        public ContextEntry[]  betas;
+        public ContextEntry[]        alphas;
+        public ContextEntry[]        betas;
         public ContextEntry          next;
         public InternalWorkingMemory workingMemory;
         public InternalFactHandle    handle;

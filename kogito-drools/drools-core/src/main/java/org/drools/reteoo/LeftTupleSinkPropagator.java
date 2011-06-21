@@ -29,7 +29,11 @@ public interface LeftTupleSinkPropagator
     
     public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
                                               final RightTuple rightTuple,
-                                              boolean leftTupleMemoryEnabled);
+                                              boolean leftTupleMemoryEnabled, boolean linkRightTuple);
+    
+    public void modifyChildLeftTuplesforQuery(final RightTuple rightTuple,
+                                              final PropagationContext context,
+                                              final InternalWorkingMemory workingMemory);    
     
     public void propagateAssertLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
@@ -47,7 +51,8 @@ public interface LeftTupleSinkPropagator
     public void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
                                                   PropagationContext context,
                                                   InternalWorkingMemory workingMemory,
-                                                  boolean leftTupleWorkingMemoryEnabled);
+                                                  boolean leftTupleWorkingMemoryEnabled, 
+                                                  LeftInputAdapterNode liaNode);
 
     public void propagateRetractLeftTuple(LeftTuple tuple,
                                           PropagationContext context,

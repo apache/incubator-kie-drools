@@ -139,6 +139,9 @@ public class RightInputAdapterNode extends ObjectSource
     public void retractLeftTuple(final LeftTuple tuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
+        if ( !this.tupleMemoryEnabled ) {
+            return;
+        }
 
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
         // retrieve handle from memory

@@ -68,6 +68,10 @@ public class QueryElementFactHandle
         }
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
+    
+    public void setObject(Object object) {
+        this.object = object;
+    }    
 
     public WorkingMemoryEntryPoint getEntryPoint() {
         return null;
@@ -105,20 +109,16 @@ public class QueryElementFactHandle
     public void setFirstLeftTuple(LeftTuple leftTuple) {
     }
 
-    public void setObject(Object object) {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
-    }
-
     public void setRecency(long recency) {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+        this.recency = recency;
     }
 
     public void setRightTuple(RightTuple rightTuple) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public DefaultFactHandle clone() {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    public InternalFactHandle clone() {
+        return new QueryElementFactHandle( object, id, recency );
     }
 
     public String toExternalForm() {

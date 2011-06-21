@@ -35,7 +35,7 @@ import org.drools.compiler.PackageRegistry;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.builder.BuildContext;
@@ -109,7 +109,7 @@ public class MVELConsequenceBuilderTest {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0,
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                sink,
                                                true );
         
@@ -122,7 +122,7 @@ public class MVELConsequenceBuilderTest {
                                                                             null,
                                                                             tuple,
                                                                             null ),
-                                                new RuleTerminalNode(0, null, context.getRule(), subrule, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
+                                                new RuleTerminalNode(0, null, context.getRule(), subrule, 0, new BuildContext( (InternalRuleBase) ruleBase, null ))  );
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );
         ((MVELConsequence) context.getRule().getConsequence()).compile(  (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ));
@@ -184,7 +184,7 @@ public class MVELConsequenceBuilderTest {
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTuple tuple = new LeftTuple( f0,
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                null,
                                                true );
 

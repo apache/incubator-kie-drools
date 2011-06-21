@@ -27,7 +27,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.base.ValueType;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.Declaration;
-import org.drools.reteoo.LeftTuple;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;

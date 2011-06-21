@@ -13,6 +13,8 @@ query "assertedobjquery" ( String $value )
     assertedobj : InsertedObject( value == $value )
 end 
 
+
 query "assertedobjquery2" ( String $value1, String $value2 )
     assertedobj : InsertedObject( value == $value2 )
-end 
+end
+ 

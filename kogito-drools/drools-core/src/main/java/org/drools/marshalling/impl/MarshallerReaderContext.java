@@ -49,7 +49,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final Map<RightTupleKey, RightTuple>     rightTuples;
     public final Map<Integer, LeftTuple>            terminalTupleMap;
 
-    public final ObjectMarshallingStrategyStore resolverStrategyFactory;
+    public final ObjectMarshallingStrategyStore     resolverStrategyFactory;
     public final Map<String, EntryPoint>            entryPoints;
 
     public final Map<Long, PropagationContext>      propagationContexts;

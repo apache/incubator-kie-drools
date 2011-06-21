@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
 
@@ -41,8 +42,8 @@ public class NonCloningQueryViewListener
 
     public void rowAdded(final Rule rule,
                          final LeftTuple tuple,
-                    final PropagationContext context,
-                    final InternalWorkingMemory workingMemory) {
+                         final PropagationContext context,
+                         final InternalWorkingMemory workingMemory) {
         InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex() + 1];
         LeftTuple entry = tuple;
 
@@ -55,7 +56,8 @@ public class NonCloningQueryViewListener
 
         InternalFactHandle handle = entry.getLastHandle();
         handles[entry.getIndex()] = handle;
-        this.results.add( handles );
+        QueryTerminalNode node = ( QueryTerminalNode ) tuple.getLeftTupleSink();     
+        this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
     
     public void rowRemoved(final Rule rule,

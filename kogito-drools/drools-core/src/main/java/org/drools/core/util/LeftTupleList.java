@@ -18,6 +18,7 @@ package org.drools.core.util;
 
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.RightTuple;
 

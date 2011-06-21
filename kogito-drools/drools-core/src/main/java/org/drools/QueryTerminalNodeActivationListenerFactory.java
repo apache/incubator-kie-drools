@@ -14,9 +14,10 @@ public class QueryTerminalNodeActivationListenerFactory implements ActivationLis
                                                  LeftTupleSource source,
                                                  Rule rule,
                                                  GroupElement subrule,
+                                                 int subruleIndex,
                                                  BuildContext context,
                                                  Object... args) {
-        return new QueryTerminalNode( id, source, rule, subrule, context );
+        return new QueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
 }

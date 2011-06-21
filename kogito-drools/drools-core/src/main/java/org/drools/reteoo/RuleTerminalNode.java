@@ -71,6 +71,7 @@ public class RuleTerminalNode extends BaseNode
      * because declarations may have different offsets in each subrule
      */
     private GroupElement      subrule;
+    private int               subruleIndex;
     private LeftTupleSource   tupleSource;
     private Declaration[]     declarations;
 
@@ -93,11 +94,13 @@ public class RuleTerminalNode extends BaseNode
      *            The parent tuple source.
      * @param rule
      *            The rule.
+     * @param subruleIndex 
      */
     public RuleTerminalNode(final int id,
                             final LeftTupleSource source,
                             final Rule rule,
                             final GroupElement subrule,
+                            final int subruleIndex, 
                             final BuildContext context) {
         super( id,
                context.getPartitionId(),
@@ -105,6 +108,7 @@ public class RuleTerminalNode extends BaseNode
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;
+        this.subruleIndex = subruleIndex;
         this.tupleMemoryEnabled = context.isTerminalNodeMemoryEnabled();
         
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
@@ -125,6 +129,7 @@ public class RuleTerminalNode extends BaseNode
         sequence = in.readInt();
         rule = (Rule) in.readObject();
         subrule = (GroupElement) in.readObject();
+        subruleIndex = in.readInt();
         tupleSource = (LeftTupleSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
@@ -136,6 +141,7 @@ public class RuleTerminalNode extends BaseNode
         out.writeInt( sequence );
         out.writeObject( rule );
         out.writeObject( subrule );
+        out.writeInt( subruleIndex );
         out.writeObject( tupleSource );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
@@ -289,9 +295,9 @@ public class RuleTerminalNode extends BaseNode
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( new LeftTupleImpl( factHandle,
+                                                this,
+                                                true ),
                              context,
                              workingMemory );
         }

@@ -66,6 +66,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
         final List data = new ArrayList();
 
@@ -98,7 +99,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                        null,
                                                                        null );
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ), null,
                                                                       true  );
 
@@ -129,6 +130,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
         final List data = new ArrayList();
 
@@ -143,9 +145,9 @@ public class SchedulerTest extends DroolsTestCase {
                     final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                                     0,
                                                                                     rule,
-                                                                                    ( LeftTuple ) knowledgeHelper.getTuple(),
+                                                                                    ( LeftTupleImpl ) knowledgeHelper.getTuple(),
                                                                                     null );
-                    final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 2,
+                    final LeftTupleImpl tuple2 = new LeftTupleImpl( new DefaultFactHandle( 2,
                                                                                    "cheese" ), null,
                                                                                    true  );
                     node.assertLeftTuple( tuple2,
@@ -173,7 +175,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
         rule.setTimer( new DurationTimer(50) );
@@ -209,6 +211,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
 
         rule.setTimer( new DurationTimer(100) );
@@ -225,9 +228,9 @@ public class SchedulerTest extends DroolsTestCase {
                     final PropagationContext context2 = new PropagationContextImpl( 0,
                                                                                     0,
                                                                                     rule,
-                                                                                    ( LeftTuple ) knowledgeHelper.getTuple(),
+                                                                                    ( LeftTupleImpl ) knowledgeHelper.getTuple(),
                                                                                     null );
-                    final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 2,
+                    final LeftTupleImpl tuple2 = new LeftTupleImpl( new DefaultFactHandle( 2,
                                                                                    "cheese" ), null,
                                                                                    true  );
                     node.assertLeftTuple( tuple2,
@@ -255,7 +258,7 @@ public class SchedulerTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ), null,
                                                                        true  );
         node.assertLeftTuple( tuple1,

@@ -323,7 +323,7 @@ public abstract class BetaNode extends LeftTupleSource
                 Iterator it = memory.getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
                     if( context.getCleanupAdapter() != null ) {
-                        for( LeftTuple child = leftTuple.firstChild; child != null; child = child.getLeftParentNext() ) {
+                        for( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext() ) {
                             if( child.getLeftTupleSink() == this ) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
                                 leftTuple.unlinkFromLeftParent();
@@ -407,9 +407,9 @@ public abstract class BetaNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( new LeftTupleImpl( factHandle,
+                                                this,
+                                                true ),
                              context,
                              workingMemory );
         }

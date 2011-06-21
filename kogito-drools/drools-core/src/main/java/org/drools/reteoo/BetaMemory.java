@@ -35,7 +35,6 @@ public class BetaMemory
     private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
     private Object            behaviorContext;
-    private boolean           open;
     
     /* Let's start with only right unlinked. */
     private boolean           isLeftUnlinked = false;
@@ -59,7 +58,6 @@ public class BetaMemory
         createdHandles = (ObjectHashMap) in.readObject();
         context = (ContextEntry[]) in.readObject();
         behaviorContext = (Object) in.readObject();
-        open = ( boolean ) in.readBoolean();
         isLeftUnlinked = in.readBoolean();
         isRightUnlinked = in.readBoolean();
     }
@@ -70,7 +68,6 @@ public class BetaMemory
         out.writeObject( createdHandles );
         out.writeObject( context );
         out.writeObject( behaviorContext );
-        out.writeBoolean(  open  );
         out.writeBoolean( isLeftUnlinked );
         out.writeBoolean( isRightUnlinked );
     }
@@ -103,14 +100,6 @@ public class BetaMemory
 
     public void setBehaviorContext(Object behaviorContext) {
         this.behaviorContext = behaviorContext;
-    }
-
-    public boolean isOpen() {
-        return open;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
     }
     
     public boolean isLeftUnlinked() {

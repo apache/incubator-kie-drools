@@ -829,9 +829,9 @@ public class PatternBuilder
                                     final Pattern pattern,
                                     final BindingDescr fieldBindingDescr,
                                     final AbstractCompositeConstraint container ) {
-
+        
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                            fieldBindingDescr.getVariable() ) ) {
+                                                            fieldBindingDescr.getVariable() ) ) {          
             if ( fieldBindingDescr.isUnification() ) {
                 // rewrite existing bindings into == constraints, so it unifies
                 build( context,
@@ -849,7 +849,6 @@ public class PatternBuilder
         }
 
         Declaration declr = pattern.addDeclaration( fieldBindingDescr.getVariable() );
-        context.addDeclaration( declr );
 
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      fieldBindingDescr,

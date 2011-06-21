@@ -32,6 +32,8 @@ import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.NotNode;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
@@ -127,6 +129,14 @@ public class GroupElementBuilder
 
                 // if a previous object source was bound, but no tuple source
                 if ( context.getObjectSource() != null && context.getTupleSource() == null ) {
+                    // we know this is the root OTN, so record it
+                    ObjectSource source = context.getObjectSource();
+                    while ( !(source instanceof ObjectTypeNode ) ) {
+                        source = source.getParentObjectSource();
+                    }
+                    context.setRootObjectTypeNode( (ObjectTypeNode) source );
+                    
+                    
                     // adapt it to a Tuple source                    
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                                 new LeftInputAdapterNode( context.getNextId(),
@@ -210,6 +220,7 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
+            boolean existSubNetwort = false;
             final GroupElement not = (GroupElement) rce;
 
             // NOT must save some context info to restore it later
@@ -244,8 +255,14 @@ public class GroupElementBuilder
                 final List<TupleStartEqualsConstraint> predicates = new ArrayList<TupleStartEqualsConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
+                existSubNetwort = true;
 
             }
+            
+            if ( !context.isTupleMemoryEnabled() && existSubNetwort ) {
+                // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
+                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
+            }              
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
@@ -292,6 +309,7 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
+            boolean existSubNetwort = false;            
             final GroupElement exists = (GroupElement) rce;
 
             // EXISTS must save some context info to restore it later
@@ -326,8 +344,14 @@ public class GroupElementBuilder
                 final List<TupleStartEqualsConstraint> predicates = new ArrayList<TupleStartEqualsConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
+                existSubNetwort = true;                
 
             }
+            
+            if ( !context.isTupleMemoryEnabled() && existSubNetwort ) {
+                // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
+                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
+            }             
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),

@@ -59,7 +59,7 @@ public class SequentialAgendaTest {
                                                 null,
                                                 0,
                                                 null,
-                                                new RuleTerminalNode(0, null, rule, new GroupElement(), new BuildContext( new ReteooRuleBase("x"), null )  ) );
+                                                new RuleTerminalNode(0, null, rule, new GroupElement(), 0, new BuildContext( new ReteooRuleBase("x"), null )  ) );
         return item;
     }
 }

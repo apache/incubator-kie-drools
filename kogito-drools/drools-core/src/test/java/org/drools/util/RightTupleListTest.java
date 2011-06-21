@@ -25,7 +25,7 @@ import org.drools.Cheese;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.RightTupleList;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 
 public class RightTupleListTest {
     @Test
@@ -36,7 +36,7 @@ public class RightTupleListTest {
         final InternalFactHandle h1 = new DefaultFactHandle( 1,
                                                              stilton1 );
         
-        assertNull( map.getFirst( new LeftTuple( h1, null,
+        assertNull( map.getFirst( new LeftTupleImpl( h1, null,
                                                  true ), null ) );
     }
 }

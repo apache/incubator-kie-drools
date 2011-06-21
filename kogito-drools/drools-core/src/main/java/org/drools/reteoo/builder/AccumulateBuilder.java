@@ -25,6 +25,7 @@ import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
@@ -62,22 +63,22 @@ public class AccumulateBuilder
         final ReteooComponentBuilder builder = utils.getBuilderFor( source );
 
         // save tuple source and current pattern offset for later if needed
-        final LeftTupleSource tupleSource = context.getTupleSource();
+        LeftTupleSource tupleSource = context.getTupleSource();
         final int currentPatternIndex = context.getCurrentPatternOffset();
         
         // builds the source pattern
         builder.build( context,
                        utils,
-                       source );
-
+                       source );                 
+        
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
-
             // attach right input adapter node to convert tuple source into an object source
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                       new RightInputAdapterNode( context.getNextId(),
                                                                                                  context.getTupleSource(),
                                                                                                  context ) ) );
+                
 
             // restore tuple source from before the start of the sub network
             context.setTupleSource( tupleSource );
@@ -90,6 +91,11 @@ public class AccumulateBuilder
             existSubNetwort = true;
         }
         
+        if ( !context.isTupleMemoryEnabled() && existSubNetwort ) {
+            // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
+            context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
+        }          
+        
         final BetaConstraints resultsBinder = utils.createBetaNodeConstraint( context,
                                                                               resultBetaConstraints,
                                                                               true );
@@ -100,19 +106,20 @@ public class AccumulateBuilder
         Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
         if( ! context.getBehaviors().isEmpty() ) {
             behaviors = (Behavior[]) context.getBehaviors().toArray( new Behavior[ context.getBehaviors().size() ]);
-        }
+        }              
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                new AccumulateNode( context.getNextId(),
-                                                                                    context.getTupleSource(),
-                                                                                    context.getObjectSource(),
-                                                                                    (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
-                                                                                    sourceBinder,
-                                                                                    resultsBinder,
-                                                                                    behaviors,
-                                                                                    accumulate,
-                                                                                    existSubNetwort,
-                                                                                    context ) ) );
+                                                                    new AccumulateNode( context.getNextId(),
+                                                                                        context.getTupleSource(),
+                                                                                        context.getObjectSource(),
+                                                                                        (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
+                                                                                        sourceBinder,
+                                                                                        resultsBinder,
+                                                                                        behaviors,
+                                                                                        accumulate,
+                                                                                        existSubNetwort,
+                                                                                        context ) ) );
+        
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );

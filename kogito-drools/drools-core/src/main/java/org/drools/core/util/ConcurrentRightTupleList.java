@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 

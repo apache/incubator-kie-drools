@@ -26,6 +26,7 @@ import org.drools.WorkingMemory;
 import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.WorkingMemoryEventSupport;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
@@ -76,6 +77,8 @@ public interface InternalWorkingMemory
     public FactHandleFactory getFactHandleFactory();
     
     public EntryPoint getEntryPoint();
+    
+    public EntryPointNode getEntryPointNode();
     
     public void insert(final InternalFactHandle handle,
                        final Object object,

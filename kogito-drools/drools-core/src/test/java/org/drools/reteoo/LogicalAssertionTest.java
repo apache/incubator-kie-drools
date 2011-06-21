@@ -83,6 +83,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -113,7 +114,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         rule1.setConsequence( consequence );
 
         final DefaultFactHandle handle1 = (DefaultFactHandle) workingMemory.insert( "o1" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true );
 
@@ -204,6 +205,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -235,7 +237,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 
@@ -308,6 +310,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -339,7 +342,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 
@@ -471,6 +474,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -501,7 +505,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 
@@ -574,6 +578,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -605,7 +610,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 
@@ -633,12 +638,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                              new MockTupleSource( 3 ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final LeftTuple tuple2 = new LeftTuple( handle2,
+        final LeftTupleImpl tuple2 = new LeftTupleImpl( handle2,
                                                 null,
                                                 true  );
 
@@ -692,6 +698,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -724,7 +731,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 
@@ -744,12 +751,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                              new MockTupleSource( idGenerator.getNextId() ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
         rule2.setConsequence( consequence );
 
         final DefaultFactHandle handle2 = new DefaultFactHandle( 2,
                                                                  "cheese" );
-        final LeftTuple tuple2 = new LeftTuple( handle2,
+        final LeftTupleImpl tuple2 = new LeftTupleImpl( handle2,
                                                 null,
                                                 true  );
 
@@ -844,6 +852,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
@@ -875,7 +884,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 
@@ -960,6 +969,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                             new MockTupleSource( idGenerator.getNextId() ),
                                                             rule1,
                                                             rule1.getLhs(),
+                                                            0,
                                                             buildContext );
         final ReteooWorkingMemory workingMemory = (ReteooWorkingMemory) ruleBase.newStatefulSession();
 
@@ -990,7 +1000,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final DefaultFactHandle handle1 = new DefaultFactHandle( 1,
                                                                  "cheese" );
-        final LeftTuple tuple1 = new LeftTuple( handle1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( handle1,
                                                 null,
                                                 true  );
 

@@ -38,7 +38,7 @@ public class VariableConstraint extends MutableTypeConstraint
     private static final long    serialVersionUID = 510l;
 
     private InternalReadAccessor fieldExtractor;
-    private Restriction  restriction;
+    private Restriction          restriction;
 
     public VariableConstraint() {
     }
@@ -69,6 +69,10 @@ public class VariableConstraint extends MutableTypeConstraint
         super.writeExternal( out );
         out.writeObject( fieldExtractor );
         out.writeObject( restriction );
+    }
+    
+    public void setRestriction(Restriction restriction) {
+        this.restriction = restriction;
     }
     
     public void setReadAccessor(InternalReadAccessor readAccessor) {

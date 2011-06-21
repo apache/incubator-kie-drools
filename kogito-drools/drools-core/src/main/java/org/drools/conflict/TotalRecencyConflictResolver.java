@@ -16,7 +16,6 @@
 
 package org.drools.conflict;
 
-import org.drools.reteoo.LeftTuple;
 import org.drools.spi.Activation;
 import org.drools.spi.ConflictResolver;
 

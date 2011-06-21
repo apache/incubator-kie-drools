@@ -25,6 +25,7 @@ import org.drools.base.ValueType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
@@ -80,6 +81,10 @@ public class VariableRestriction
 
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
+    }
+    
+    public InternalReadAccessor getReadAccessor() {
+        return this.readAccessor;
     }
 
     public void replaceDeclaration(Declaration oldDecl,

@@ -123,7 +123,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              0,
                              this.sink.getAsserted().size() );
 
-        this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
+        this.node.assertLeftTuple( new LeftTupleImpl( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                            null,
                                                                                                            null,
                                                                                                            workingMemory ),
@@ -131,7 +131,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                   true ),
                                    this.context,
                                    this.workingMemory );
-        this.node.assertLeftTuple( new LeftTuple( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
+        this.node.assertLeftTuple( new LeftTupleImpl( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
                                                                                                            null,
                                                                                                            null,
                                                                                                            workingMemory ),
@@ -157,7 +157,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTupleImpl, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     @Test
     public void testAssertTuple() {
@@ -165,7 +165,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null,
                                                                                                                   null,
                                                                                                                   workingMemory );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 null,
                                                 true );
 
@@ -187,7 +187,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null,
                                                                                                                   workingMemory );
 
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
@@ -208,7 +208,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#assertLeftTuple(org.drools.reteoo.LeftTupleImpl, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     @Test
     public void testAssertTupleWithObjects() {
@@ -221,7 +221,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null,
                                                                                                                   workingMemory);
 
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 null,
                                                 true );
 
@@ -246,7 +246,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.accumulator.getMatchingObjects().size() );
 
         // assert tuple, should add left memory 
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
@@ -268,7 +268,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     /**
-     * Test method for {@link org.drools.reteoo.AccumulateNode#retractLeftTuple(org.drools.reteoo.LeftTuple, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
+     * Test method for {@link org.drools.reteoo.AccumulateNode#retractLeftTuple(org.drools.reteoo.LeftTupleImpl, org.drools.spi.PropagationContext, org.drools.reteoo.ReteooWorkingMemory)}.
      */
     @Test
     public void testRetractTuple() {
@@ -277,7 +277,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null,
                                                                                                                   null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 null,
                                                 true );
 
@@ -373,7 +373,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                                                                   null,
                                                                                                                   null );
 
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 null,
                                                 true );
 
@@ -401,7 +401,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.accumulator.getMatchingObjects().size() );
 
         // assert tuple, should not add left memory 
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,

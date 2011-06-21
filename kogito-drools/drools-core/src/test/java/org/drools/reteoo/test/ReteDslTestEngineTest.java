@@ -42,6 +42,7 @@ import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -341,7 +342,7 @@ public class ReteDslTestEngineTest {
 
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             0 );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 join1,
                                                 true );
 
@@ -358,7 +359,7 @@ public class ReteDslTestEngineTest {
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             0 );
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 join1,
                                                 true );
         join1.assertLeftTuple( tuple1,

@@ -69,7 +69,7 @@ public class FlatQueryResults
     }
     
     public FlatQueryResults(org.drools.QueryResults results) {
-        Declaration[] declrs = results.getDeclarations().values().toArray( new Declaration[results.getDeclarations().size()] );
+        Declaration[] declrs = results.getDeclarations(0).values().toArray( new Declaration[results.getDeclarations(0).size()] );
         this.results = new ArrayList<ArrayList<Object>>( results.size() );
         this.factHandles = new ArrayList<ArrayList<FactHandle>> ( results.size() );
 

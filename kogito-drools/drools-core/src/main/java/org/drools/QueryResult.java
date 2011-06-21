@@ -18,22 +18,27 @@ package org.drools;
 
 import java.util.Map;
 
+import org.drools.base.QueryRowWithSubruleIndex;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.Declaration;
 
 public class QueryResult {
 
-    protected FactHandle[] factHandles;
+    protected QueryRowWithSubruleIndex row;
     private WorkingMemory workingMemory;
     private QueryResults  queryResults;
 
-    public QueryResult(final FactHandle[] factHandles,
+    public QueryResult(final QueryRowWithSubruleIndex row,
                        final WorkingMemory workingMemory,
                        final QueryResults queryResults) {
-        this.factHandles = factHandles;
+        this.row = row;
         this.workingMemory = workingMemory;
         this.queryResults = queryResults;
+    }
+    
+    public int getSubruleIndex() {
+        return this.row.getSubruleIndex();
     }
 
     /**
@@ -43,8 +48,8 @@ public class QueryResult {
      * @return
      *      The Map of Declarations.
      */    
-    public Map getDeclarations() {
-        return this.queryResults.getDeclarations();
+    public Map<String, Declaration> getDeclarations() {
+        return this.queryResults.getDeclarations(row.getSubruleIndex());
     }
 
     /**
@@ -55,7 +60,7 @@ public class QueryResult {
      *     The Object
      */
     public Object get(final int i) {
-        return getObject( this.factHandles[ i + 1]); // Add one, as we hide root DroolsQuery
+        return getObject( this.row.getHandles()[ i + 1]); // Add one, as we hide root DroolsQuery
     }
 
     /** 
@@ -65,7 +70,7 @@ public class QueryResult {
      *      The Object
      */
     public Object get(final String identifier) {
-        Declaration decl = this.queryResults.getDeclarations().get( identifier );
+        Declaration decl = getDeclarations().get( identifier );
         if ( decl == null ) {
             throw new IllegalArgumentException( "identifier '" + identifier + "' cannot be found" );
         }
@@ -83,16 +88,15 @@ public class QueryResult {
     }
     
     public FactHandle getFactHandle(String identifier) {
-        return getFactHandle( this.queryResults.getDeclarations().get( identifier ) );
+        return getFactHandle( getDeclarations().get( identifier ) );
     }
     
     public FactHandle getFactHandle(Declaration declr) {
-        return this.factHandles[  declr.getPattern().getOffset() ]; // -1 because we shifted the array left
-                                                                       // when removing the query object
+        return this.row.getHandles()[  declr.getPattern().getOffset() ];
     }
     
     public FactHandle getFactHandle(int i) {
-        return this.factHandles[ i + 1 ];
+        return this.row.getHandles()[ i + 1 ];
     }
 
     /**
@@ -103,7 +107,7 @@ public class QueryResult {
         int size = size();
         FactHandle[] subArray = new FactHandle[ size];
         
-        System.arraycopy( this.factHandles, 1, subArray, 0, size );
+        System.arraycopy( this.row.getHandles(), 1, subArray, 0, size );
         return subArray;
     }
 
@@ -112,7 +116,7 @@ public class QueryResult {
      * @return
      */
     public int size() {
-        return this.factHandles.length -1;
+        return this.row.getHandles().length -1;
     }
     
     /**

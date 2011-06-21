@@ -35,6 +35,8 @@ import org.drools.rule.EvalCondition;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
 
+import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
+
 /**
  * Node which filters <code>ReteTuple</code>s.
  *
@@ -43,35 +45,34 @@ import org.drools.spi.RuleComponent;
  * <code>Tuples</code> to proceed further through the Rete-OO network.
  * </p>
  *
- * @see EvalConditionNode
+ * @see QueryRiaFixerNode
  * @see Eval
  * @see LeftTuple
  */
-public class EvalConditionNode extends LeftTupleSource
+public class QueryRiaFixerNode extends LeftTupleSource
     implements
-    LeftTupleSinkNode,
-    NodeMemory {
+    LeftTupleSinkNode {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
 
     private static final long serialVersionUID = 510l;
 
-    /** The semantic <code>Test</code>. */
-    private EvalCondition     condition;
-
     /** The source of incoming <code>Tuples</code>. */
     private LeftTupleSource   tupleSource;
 
     protected boolean         tupleMemoryEnabled;
 
+    private AccumulateNode    accumulateNode;
+    
     private LeftTupleSinkNode previousTupleSinkNode;
-    private LeftTupleSinkNode nextTupleSinkNode;
-
+    
+    private LeftTupleSinkNode nextTupleSinkNode;    
+    
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public EvalConditionNode() {
+    public QueryRiaFixerNode() {
 
     }
 
@@ -84,14 +85,12 @@ public class EvalConditionNode extends LeftTupleSource
      *            The source of incoming <code>Tuples</code>.
      * @param eval
      */
-    public EvalConditionNode(final int id,
+    public QueryRiaFixerNode(final int id,
                              final LeftTupleSource tupleSource,
-                             final EvalCondition eval,
                              final BuildContext context) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
-        this.condition = eval;
         this.tupleSource = tupleSource;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
     }
@@ -99,23 +98,31 @@ public class EvalConditionNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        condition = (EvalCondition) in.readObject();
+        accumulateNode = (AccumulateNode) in.readObject();
         tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( condition );
+        out.writeObject(   accumulateNode  );
         out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
     }
 
+    public AccumulateNode getAccumulateNode() {
+        return accumulateNode;
+    }
     /**
      * Attaches this node into the network.
      */
     public void attach() {
         this.tupleSource.addTupleSink( this );
+    }
+    
+    @Override
+    public void addTupleSink(LeftTupleSink tupleSink) {
+        this.accumulateNode = (AccumulateNode) tupleSink;
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -142,15 +149,6 @@ public class EvalConditionNode extends LeftTupleSource
     // Instance methods
     // ------------------------------------------------------------
 
-    /**
-     * Retrieve the <code>Test</code> associated with this node.
-     *
-     * @return The <code>Test</code>.
-     */
-    public EvalCondition getCondition() {
-        return this.condition;
-    }
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.reteoo.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,28 +166,13 @@ public class EvalConditionNode extends LeftTupleSource
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
-
-        final boolean allowed = this.condition.isAllowed( leftTuple,
-                                                          workingMemory,
-                                                          memory.context );
-
-        if ( allowed ) {
-            this.sink.propagateAssertLeftTuple( leftTuple,
-                                                context,
-                                                workingMemory,
-                                                this.tupleMemoryEnabled );
-        }
+        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, accumulateNode)  );
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        if ( leftTuple.getFirstChild() != null ) {
-            this.sink.propagateRetractLeftTuple( leftTuple,
-                                                 context,
-                                                 workingMemory );
-        }
+        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, true, accumulateNode)  );
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -215,37 +198,8 @@ public class EvalConditionNode extends LeftTupleSource
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
-        boolean wasPropagated = leftTuple.getFirstChild() != null;
-
-        final boolean allowed = this.condition.isAllowed( leftTuple,
-                                                          workingMemory,
-                                                          memory.context );
-
-        if ( allowed ) {
-            if ( wasPropagated ) {
-                // modify
-                this.sink.propagateModifyChildLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory,
-                                                         this.tupleMemoryEnabled );
-            } else {
-                // assert
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
-            }
-        } else {
-            if ( wasPropagated ) {
-                // retract
-                this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     context,
-                                                     workingMemory );
-            }
-            // else do nothing
-        }
+                                InternalWorkingMemory workingMemory) {        
+        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, accumulateNode)  );
     }
 
     /**
@@ -254,29 +208,19 @@ public class EvalConditionNode extends LeftTupleSource
      * @return The debug string.
      */
     public String toString() {
-        return "[EvalConditionNode: cond=" + this.condition + "]";
+        return "[RiaQueryFixerNode: ]";
     }
 
     public int hashCode() {
-        return this.tupleSource.hashCode() ^ this.condition.hashCode();
+        return this.tupleSource.hashCode();
     }
 
     public boolean equals(final Object object) {
+        // we never node share, so only return true if we are instance equal
         if ( this == object ) {
             return true;
         }
-
-        if ( object == null || object.getClass() != EvalConditionNode.class ) {
-            return false;
-        }
-
-        final EvalConditionNode other = (EvalConditionNode) object;
-
-        return this.tupleSource.equals( other.tupleSource ) && this.condition.equals( other.condition );
-    }
-
-    public Object createMemory(final RuleBaseConfiguration config) {
-        return new EvalMemory( this.condition.createContext() );
+        return false; 
     }
 
     /* (non-Javadoc)
@@ -285,9 +229,8 @@ public class EvalConditionNode extends LeftTupleSource
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final LeftTupleSinkUpdateAdapter adapter = new LeftTupleSinkUpdateAdapter( this,
-                                                                                   sink,
-                                                                                   condition );
+        final RiaQueryFixerNodeAdapter adapter = new RiaQueryFixerNodeAdapter( this,
+                                                                                   sink );
         this.tupleSource.updateSink( adapter,
                                      context,
                                      workingMemory );
@@ -297,21 +240,6 @@ public class EvalConditionNode extends LeftTupleSource
                             final ReteooBuilder builder,
                             final BaseNode node,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !node.isInUse() ) {
-            removeTupleSink( (LeftTupleSink) node );
-        }
-
-        if ( !this.isInUse() ) {
-            for( InternalWorkingMemory workingMemory : workingMemories ) {
-                workingMemory.clearNodeMemory( this );
-            }
-        } else {
-            // need to re-wire eval expression to the same one from another rule 
-            // that is sharing this node
-            Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
-            this.condition = (EvalCondition) next.getValue();
-        }
-
         this.tupleSource.remove( context,
                                  builder,
                                  this,
@@ -366,72 +294,28 @@ public class EvalConditionNode extends LeftTupleSource
         return NodeTypeEnums.EvalConditionNode;
     }
 
-    public static class EvalMemory
-        implements
-        Externalizable {
-
-        private static final long serialVersionUID = 510l;
-
-        public Object             context;
-
-        public EvalMemory() {
-
-        }
-
-        public EvalMemory(final Object context) {
-            this.context = context;
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            context = in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( context );
-        }
-    }
-
     /**
      * Used with the updateSink method, so that the parent LeftTupleSource
      * can  update the  TupleSink
      */
-    private static class LeftTupleSinkUpdateAdapter
+    private static class RiaQueryFixerNodeAdapter
         implements
         LeftTupleSink, LeftTupleSinkAdapter {
-        private final EvalConditionNode node;
+        private final QueryRiaFixerNode node;
         private final LeftTupleSink     sink;
-        private final EvalCondition     constraint;
 
-        public LeftTupleSinkUpdateAdapter(final EvalConditionNode node,
-                                          final LeftTupleSink sink,
-                                          final EvalCondition constraint) {
+        public RiaQueryFixerNodeAdapter(final QueryRiaFixerNode node,
+                                          final LeftTupleSink sink) {
             this.node = node;
             this.sink = sink;
-            this.constraint = constraint;
         }
 
         public void assertLeftTuple(final LeftTuple leftTuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory) {
-
-            final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( node );
-            // need to be overridden, because it was pointing to the adapter instead
-            leftTuple.setLeftTupleSink( this.node );
-
-            final boolean allowed = this.constraint.isAllowed( leftTuple,
-                                                               workingMemory,
-                                                               memory.context );
-
-            if ( allowed ) {
-                final LeftTuple tuple = new LeftTupleImpl( leftTuple,
-                                                           this.sink,
-                                                           false );
-                this.sink.assertLeftTuple( tuple,
-                                           context,
-                                           workingMemory );
-            }
         }
+        
+        
 
         public short getType() {
             return 0;
@@ -483,6 +367,11 @@ public class EvalConditionNode extends LeftTupleSource
             return this.node;
         }
 
+    }
+
+    @Override
+    public boolean isInUse() {
+        return this.accumulateNode != null;
     }
 
 }

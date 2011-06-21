@@ -104,7 +104,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testAttach() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         final Field objectFfield = ObjectSource.class.getDeclaredField("sink");
         objectFfield.setAccessible(true);
@@ -138,7 +138,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testMemory() {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(1,
                 (ReteooRuleBase) RuleBaseFactory.newRuleBase());
@@ -168,10 +168,10 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testAssertTuple() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         final DefaultFactHandle f0 = new DefaultFactHandle(0, "cheese");
-        final LeftTuple tuple0 = new LeftTuple(f0, this.node, true);
+        final LeftTupleImpl tuple0 = new LeftTupleImpl(f0, this.node, true);
 
         // assert tuple, should add one to left memory
         this.node.assertLeftTuple(tuple0, this.context, this.workingMemory);
@@ -181,7 +181,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle(1, "cheese");
-        final LeftTuple tuple1 = new LeftTuple(f1, this.node, true);
+        final LeftTupleImpl tuple1 = new LeftTupleImpl(f1, this.node, true);
         this.node.assertLeftTuple(tuple1, this.context, this.workingMemory);
         assertEquals(2, this.memory.getLeftTupleMemory().size());
 
@@ -199,7 +199,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testAssertTupleSequentialMode() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential(true);
@@ -228,7 +228,7 @@ public class JoinNodeTest extends DroolsTestCase {
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory(this.node);
 
         final DefaultFactHandle f0 = new DefaultFactHandle(0, "cheese");
-        final LeftTuple tuple0 = new LeftTuple(f0, this.node, true);
+        final LeftTupleImpl tuple0 = new LeftTupleImpl(f0, this.node, true);
 
         this.node.assertObject(f0, new PropagationContextImpl(0,
                                                               PropagationContext.ASSERTION, null, null, f0), this.workingMemory);
@@ -243,7 +243,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         assertEquals(1, this.memory.getRightTupleMemory().size());
 
-        assertEquals(new LeftTuple(tuple0, f0.getFirstRightTuple(), this.sink,
+        assertEquals(new LeftTupleImpl(tuple0, f0.getFirstRightTuple(), this.sink,
                 true), ((Object[]) this.sink.getAsserted().get(0))[0]);
     }
 
@@ -255,7 +255,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testAssertObject() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
                 .insert("test0");
@@ -272,7 +272,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals(2, this.memory.getRightTupleMemory().size());
 
         RightTuple rightTuple = this.memory.getRightTupleMemory().getFirst(
-                new LeftTuple(f0, this.node, true), null);
+                new LeftTupleImpl(f0, this.node, true), null);
 
         final InternalFactHandle rf0 = rightTuple.getFactHandle();
         final InternalFactHandle rf1 = ((RightTuple) rightTuple.getNext())
@@ -290,7 +290,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testAssertPropagations() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         // assert first right object
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
@@ -299,20 +299,20 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle(1, "cheese");
-        final LeftTuple tuple1 = new LeftTuple(f1, this.node, true);
+        final LeftTupleImpl tuple1 = new LeftTupleImpl(f1, this.node, true);
         this.node.assertLeftTuple(tuple1, this.context, this.workingMemory);
 
         assertEquals(1, this.sink.getAsserted().size());
 
-        assertEquals(new LeftTuple(tuple1, f0.getFirstRightTuple(), this.sink,
+        assertEquals(new LeftTupleImpl(tuple1, f0.getFirstRightTuple(), this.sink,
                 true), ((Object[]) this.sink.getAsserted().get(0))[0]);
 
         final DefaultFactHandle f2 = new DefaultFactHandle(2, "cheese");
-        final LeftTuple tuple2 = new LeftTuple(f2, this.node, true);
+        final LeftTupleImpl tuple2 = new LeftTupleImpl(f2, this.node, true);
         this.node.assertLeftTuple(tuple2, this.context, this.workingMemory);
 
         assertEquals(2, this.sink.getAsserted().size());
-        assertEquals(new LeftTuple(tuple2, f0.getFirstRightTuple(), this.sink,
+        assertEquals(new LeftTupleImpl(tuple2, f0.getFirstRightTuple(), this.sink,
                 true), ((Object[]) this.sink.getAsserted().get(1))[0]);
 
         final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory
@@ -325,9 +325,9 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add(((Object[]) this.sink.getAsserted().get(2))[0]);
         tuples.add(((Object[]) this.sink.getAsserted().get(3))[0]);
 
-        assertTrue(tuples.contains(new LeftTuple(tuple1, f3
+        assertTrue(tuples.contains(new LeftTupleImpl(tuple1, f3
                 .getFirstRightTuple(), this.sink, true)));
-        assertTrue(tuples.contains(new LeftTuple(tuple2, f3
+        assertTrue(tuples.contains(new LeftTupleImpl(tuple2, f3
                 .getFirstRightTuple(), this.sink, true)));
     }
 
@@ -340,7 +340,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testRetractTuple() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         // setup 2 tuples 3 fact handles
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
@@ -349,12 +349,12 @@ public class JoinNodeTest extends DroolsTestCase {
 
         final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory
                 .insert("test1");
-        final LeftTuple tuple1 = new LeftTuple(f1, this.node, true);
+        final LeftTupleImpl tuple1 = new LeftTupleImpl(f1, this.node, true);
         this.node.assertLeftTuple(tuple1, this.context, this.workingMemory);
 
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory
                 .insert("test2");
-        final LeftTuple tuple2 = new LeftTuple(f2, this.node, true);
+        final LeftTupleImpl tuple2 = new LeftTupleImpl(f2, this.node, true);
         this.node.assertLeftTuple(tuple2, this.context, this.workingMemory);
 
         final DefaultFactHandle f3 = (DefaultFactHandle) this.workingMemory
@@ -382,9 +382,9 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add(((Object[]) this.sink.getRetracted().get(0))[0]);
         tuples.add(((Object[]) this.sink.getRetracted().get(1))[0]);
 
-        assertTrue(tuples.contains(new LeftTuple(tuple1, f0
+        assertTrue(tuples.contains(new LeftTupleImpl(tuple1, f0
                 .getFirstRightTuple(), this.sink, true)));
-        assertTrue(tuples.contains(new LeftTuple(tuple1, f0
+        assertTrue(tuples.contains(new LeftTupleImpl(tuple1, f0
                 .getFirstRightTuple(), this.sink, true)));
 
         // Now check the item is no longer in memory
@@ -398,16 +398,16 @@ public class JoinNodeTest extends DroolsTestCase {
         tuples.add(((Object[]) this.sink.getRetracted().get(2))[0]);
         tuples.add(((Object[]) this.sink.getRetracted().get(3))[0]);
 
-        assertTrue(tuples.contains(new LeftTuple(tuple2, f3
+        assertTrue(tuples.contains(new LeftTupleImpl(tuple2, f3
                 .getFirstRightTuple(), this.sink, true)));
-        assertTrue(tuples.contains(new LeftTuple(tuple2, f4
+        assertTrue(tuples.contains(new LeftTupleImpl(tuple2, f4
                 .getFirstRightTuple(), this.sink, true)));
     }
 
     @Test
     public void testConstraintPropagations() throws Exception {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(false);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(false);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(false);
 
         // assert first right object
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory
@@ -416,7 +416,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle(1, "cheese");
-        final LeftTuple tuple1 = new LeftTuple(f1, this.node, true);
+        final LeftTupleImpl tuple1 = new LeftTupleImpl(f1, this.node, true);
         this.node.assertLeftTuple(tuple1, this.context, this.workingMemory);
 
         // Should be no assertions
@@ -430,7 +430,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testUpdateSink() {
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
-        when( constraint.isAllowedCachedRight(any(LeftTuple.class), any(ContextEntry.class))).thenReturn(true);
+        when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
 
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory(1,
                 (ReteooRuleBase) RuleBaseFactory.newRuleBase());
@@ -451,7 +451,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         final DefaultFactHandle f0 = new DefaultFactHandle(0, "string0");
 
-        final LeftTuple tuple1 = new LeftTuple(f0, this.node, true);
+        final LeftTupleImpl tuple1 = new LeftTupleImpl(f0, this.node, true);
 
         joinNode.assertLeftTuple(tuple1, this.context, workingMemory);
 

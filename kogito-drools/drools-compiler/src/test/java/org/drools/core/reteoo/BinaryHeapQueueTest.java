@@ -19,7 +19,7 @@ import org.drools.core.reteoo.*;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queueable;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.rule.FactHandle;
@@ -314,7 +314,7 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public LeftTuple getTuple() {
+        public LeftTupleImpl getTuple() {
             // TODO Auto-generated method stub
             return null;
         }

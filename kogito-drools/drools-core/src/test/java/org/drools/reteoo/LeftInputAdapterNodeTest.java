@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.DroolsTestCase;
 import org.drools.RuleBaseFactory;
+import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
@@ -46,49 +47,34 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
     }
     
     @Test
+    
     public void testLeftInputAdapterNode() {
-        final MockObjectSource source = new MockObjectSource( 15 );
+        BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        final EntryPointNode entryPoint = new EntryPointNode( -1,
+                                                              ruleBase.getRete(),
+                                                              context );
+        entryPoint.attach();
+                        
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+                                                                  entryPoint,
+                                                                  new ClassObjectType( Object.class ),
+                                                                  context );
+        
+        objectTypeNode.attach();
+        
         final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
-                                                                       source,
+                                                                       objectTypeNode,
+                 
                                                                        buildContext );
+        
         assertEquals( 23,
                       liaNode.getId() );
 
         assertEquals( 0,
-                      source.getAttached() );
-        source.attach();
-        assertEquals( 1,
-                      source.getAttached() );
-    }
-
-    /**
-     * Tests the attaching of the LeftInputAdapterNode to an ObjectSource
-     * @throws Exception
-     */
-    @Test
-    public void testAttach() throws Exception {
-        final MockObjectSource source = new MockObjectSource( 15 );
-
-        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
-                                                                       source,
-                                                                       buildContext );
-        final Field field = ObjectSource.class.getDeclaredField( "sink" );
-        field.setAccessible( true );
-        ObjectSinkPropagator sink = (ObjectSinkPropagator) field.get( source );
-
-        assertEquals( 1,
-                      liaNode.getId() );
-        assertNotNull( sink );
-
+                      objectTypeNode.getSinkPropagator().getSinks().length );
         liaNode.attach();
-
-        sink = (ObjectSinkPropagator) field.get( source );
-
         assertEquals( 1,
-                      sink.getSinks().length );
-
-        assertSame( liaNode,
-                    sink.getSinks()[0] );
+                      objectTypeNode.getSinkPropagator().getSinks().length );
     }
 
     /**
@@ -98,27 +84,42 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
      */
     @Test
     public void testAssertObjectWithoutMemory() throws Exception {
-        final PropagationContext context = new PropagationContextImpl( 0,
+        final PropagationContext pcontext = new PropagationContextImpl( 0,
                                                                        PropagationContext.ASSERTION,
                                                                        null,
                                                                        null,
                                                                        null );
-
+        
+        BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
+        final EntryPointNode entryPoint = new EntryPointNode( -1,
+                                                              ruleBase.getRete(),
+                                                              context );
+        entryPoint.attach();
+                        
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
+                                                                  entryPoint,
+                                                                  new ClassObjectType( Object.class ),
+                                                                  context );
+        
+        objectTypeNode.attach();
+        
+        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 23,
+                                                                       objectTypeNode,                 
+                                                                       buildContext );
+        liaNode.attach();
+        
         final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
 
-        final LeftInputAdapterNode liaNode = new LeftInputAdapterNode( 1,
-                                                                       new MockObjectSource( 15 ),
-                                                                       buildContext );
         final MockLeftTupleSink sink = new MockLeftTupleSink();
         liaNode.addTupleSink( sink );
-
+        
         final Object string1 = "cheese";
 
         // assert object
         final DefaultFactHandle f0 = (DefaultFactHandle) workingMemory.insert( string1 );
         liaNode.assertObject( f0,
-                              context,
+                              pcontext,
                               workingMemory );
 
         final List asserted = sink.getAsserted();

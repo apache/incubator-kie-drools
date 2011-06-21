@@ -141,6 +141,7 @@ public class QueryTerminalNodeTest {
                                                                    joinNode,
                                                                    query,
                                                                    query.getLhs(),
+                                                                   0,
                                                                    buildContext );
 
         queryNode.attach();

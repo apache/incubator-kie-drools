@@ -31,37 +31,37 @@ import static org.junit.Assert.*;
 public class TupleIterationTest {
     @Test
     public void testRootTraversal() {
-        LeftTuple t0 = new LeftTuple();
-        LeftTuple t1 = new LeftTuple(t0, null, true);
-        LeftTuple t2 = new LeftTuple(t0, null, true);
-        LeftTuple t3 = new LeftTuple(t0, null, true);
+        LeftTupleImpl t0 = new LeftTupleImpl();
+        LeftTupleImpl t1 = new LeftTupleImpl(t0, null, true);
+        LeftTupleImpl t2 = new LeftTupleImpl(t0, null, true);
+        LeftTupleImpl t3 = new LeftTupleImpl(t0, null, true);
         
-        LeftTuple t1_1 = new LeftTuple(t1, null, true);
-        LeftTuple t1_2 = new LeftTuple(t1, null, true);
+        LeftTupleImpl t1_1 = new LeftTupleImpl(t1, null, true);
+        LeftTupleImpl t1_2 = new LeftTupleImpl(t1, null, true);
         
-        LeftTuple t1_1_1 = new LeftTuple(t1_1, null, true);
-        LeftTuple t1_1_1_1 = new LeftTuple(t1_1_1, null, true);
-        LeftTuple t1_1_1_2 = new LeftTuple(t1_1_1, null, true);
-        LeftTuple t1_1_1_3 = new LeftTuple(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1 = new LeftTupleImpl(t1_1, null, true);
+        LeftTupleImpl t1_1_1_1 = new LeftTupleImpl(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1_2 = new LeftTupleImpl(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1_3 = new LeftTupleImpl(t1_1_1, null, true);
         
-        LeftTuple t1_2_1 = new LeftTuple(t1_2, null, true);
+        LeftTupleImpl t1_2_1 = new LeftTupleImpl(t1_2, null, true);
         
-        LeftTuple t1_2_2 = new LeftTuple(t1_2, null, true);
-        LeftTuple t1_2_2_1 = new LeftTuple(t1_2_2, null, true);
+        LeftTupleImpl t1_2_2 = new LeftTupleImpl(t1_2, null, true);
+        LeftTupleImpl t1_2_2_1 = new LeftTupleImpl(t1_2_2, null, true);
 
-        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, true);
+        LeftTupleImpl t1_2_3 = new LeftTupleImpl(t1_2, null, true);
 
-        LeftTuple t2_1 = new LeftTuple(t2, null, true);
-        LeftTuple t2_2 = new LeftTuple(t2, null, true);
-        LeftTuple t2_3 = new LeftTuple(t2, null, true);
+        LeftTupleImpl t2_1 = new LeftTupleImpl(t2, null, true);
+        LeftTupleImpl t2_2 = new LeftTupleImpl(t2, null, true);
+        LeftTupleImpl t2_3 = new LeftTupleImpl(t2, null, true);
         
-        LeftTuple t2_3_1 = new LeftTuple(t2_3, null, true);
-        LeftTuple t2_3_1_1 = new LeftTuple(t2_3_1, null, true);
+        LeftTupleImpl t2_3_1 = new LeftTupleImpl(t2_3, null, true);
+        LeftTupleImpl t2_3_1_1 = new LeftTupleImpl(t2_3_1, null, true);
         
-        LeftTuple t2_3_2 = new LeftTuple(t2_3, null, true);
+        LeftTupleImpl t2_3_2 = new LeftTupleImpl(t2_3, null, true);
 
         
-        LeftTuple[] leafs = new LeftTuple[] {
+        LeftTupleImpl[] leafs = new LeftTupleImpl[] {
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 
@@ -84,43 +84,43 @@ t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t
     
     @Test
     public void testMidTraversal() {
-        LeftTuple tm2 = new LeftTuple();
-        LeftTuple tm1 = new LeftTuple(tm2, null, true);
-        LeftTuple tm1_1 = new LeftTuple(tm1, null, true); // this leaf will not be included
+        LeftTupleImpl tm2 = new LeftTupleImpl();
+        LeftTupleImpl tm1 = new LeftTupleImpl(tm2, null, true);
+        LeftTuple tm1_1 = new LeftTupleImpl(tm1, null, true); // this leaf will not be included
         
-        LeftTuple t0 = new LeftTuple(tm1, null, true); // insert two nodes before our root traversal position
+        LeftTupleImpl t0 = new LeftTupleImpl(tm1, null, true); // insert two nodes before our root traversal position
         
         
-        LeftTuple t1 = new LeftTuple(t0, null, true);
-        LeftTuple t2 = new LeftTuple(t0, null, true);
-        LeftTuple t3 = new LeftTuple(t0, null, true);
+        LeftTupleImpl t1 = new LeftTupleImpl(t0, null, true);
+        LeftTupleImpl t2 = new LeftTupleImpl(t0, null, true);
+        LeftTupleImpl t3 = new LeftTupleImpl(t0, null, true);
         
-        LeftTuple t1_1 = new LeftTuple(t1, null, true);
-        LeftTuple t1_2 = new LeftTuple(t1, null, true);
+        LeftTupleImpl t1_1 = new LeftTupleImpl(t1, null, true);
+        LeftTupleImpl t1_2 = new LeftTupleImpl(t1, null, true);
         
-        LeftTuple t1_1_1 = new LeftTuple(t1_1, null, true);
-        LeftTuple t1_1_1_1 = new LeftTuple(t1_1_1, null, true);
-        LeftTuple t1_1_1_2 = new LeftTuple(t1_1_1, null, true);
-        LeftTuple t1_1_1_3 = new LeftTuple(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1 = new LeftTupleImpl(t1_1, null, true);
+        LeftTupleImpl t1_1_1_1 = new LeftTupleImpl(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1_2 = new LeftTupleImpl(t1_1_1, null, true);
+        LeftTupleImpl t1_1_1_3 = new LeftTupleImpl(t1_1_1, null, true);
         
-        LeftTuple t1_2_1 = new LeftTuple(t1_2, null, true);
+        LeftTupleImpl t1_2_1 = new LeftTupleImpl(t1_2, null, true);
         
-        LeftTuple t1_2_2 = new LeftTuple(t1_2, null, true);
-        LeftTuple t1_2_2_1 = new LeftTuple(t1_2_2, null, true);
+        LeftTupleImpl t1_2_2 = new LeftTupleImpl(t1_2, null, true);
+        LeftTupleImpl t1_2_2_1 = new LeftTupleImpl(t1_2_2, null, true);
 
-        LeftTuple t1_2_3 = new LeftTuple(t1_2, null, true);
+        LeftTupleImpl t1_2_3 = new LeftTupleImpl(t1_2, null, true);
 
-        LeftTuple t2_1 = new LeftTuple(t2, null, true);
-        LeftTuple t2_2 = new LeftTuple(t2, null, true);
-        LeftTuple t2_3 = new LeftTuple(t2, null, true);
+        LeftTupleImpl t2_1 = new LeftTupleImpl(t2, null, true);
+        LeftTupleImpl t2_2 = new LeftTupleImpl(t2, null, true);
+        LeftTupleImpl t2_3 = new LeftTupleImpl(t2, null, true);
         
-        LeftTuple t2_3_1 = new LeftTuple(t2_3, null, true);
-        LeftTuple t2_3_1_1 = new LeftTuple(t2_3_1, null, true);
+        LeftTupleImpl t2_3_1 = new LeftTupleImpl(t2_3, null, true);
+        LeftTupleImpl t2_3_1_1 = new LeftTupleImpl(t2_3_1, null, true);
         
-        LeftTuple t2_3_2 = new LeftTuple(t2_3, null, true);
+        LeftTupleImpl t2_3_2 = new LeftTupleImpl(t2_3, null, true);
 
         
-        LeftTuple[] leafs = new LeftTuple[] {
+        LeftTupleImpl[] leafs = new LeftTupleImpl[] {
 t1_1_1_1,  t1_1_1_2, t1_1_1_3, t1_2_1, t1_2_2_1, t1_2_3, t2_1, t2_2, t2_3_1_1, t2_3_2, t3                  
         };
 

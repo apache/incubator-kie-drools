@@ -55,7 +55,7 @@ import org.drools.core.util.LeftTupleIndexHashTable;
 import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
@@ -122,49 +122,49 @@ public class LeftTupleIndexHashTableIteratorTest {
         InternalFactHandle fh13 = (InternalFactHandle) ss.insert( new Foo( "snicker",
                                                                            0 ) );
 
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh1,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh1,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh2,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh2,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh3,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh3,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh4,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh4,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh5,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh5,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh6,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh6,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh7,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh7,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh8,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh8,
                                                             null,
                                                             true ) );
-        betaMemory.getLeftTupleMemory().add( new LeftTuple( fh9,
+        betaMemory.getLeftTupleMemory().add( new LeftTupleImpl( fh9,
                                                             null,
                                                             true ) );
 
         LeftTupleIndexHashTable hashTable = (LeftTupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
         LeftTupleList leftTupleList = new LeftTupleList();
-        leftTupleList.add( new LeftTuple( fh10,
+        leftTupleList.add( new LeftTupleImpl( fh10,
                                           null,
                                           true ) );
         hashTable.getTable()[0] = leftTupleList;
         leftTupleList = new LeftTupleList();
-        leftTupleList.add( new LeftTuple( fh11,
+        leftTupleList.add( new LeftTupleImpl( fh11,
                                           null,
                                           true ) );
-        leftTupleList.add( new LeftTuple( fh12,
+        leftTupleList.add( new LeftTupleImpl( fh12,
                                           null,
                                           true ) );
-        leftTupleList.add( new LeftTuple( fh13,
+        leftTupleList.add( new LeftTupleImpl( fh13,
                                           null,
                                           true ) );
         ((LeftTupleList) hashTable.getTable()[0]).setNext( leftTupleList );
@@ -218,9 +218,9 @@ public class LeftTupleIndexHashTableIteratorTest {
 
         //System.out.println( entries );
 
-        list = new ArrayList<LeftTuple>();
+        list = new ArrayList<LeftTupleImpl>();
         Iterator it = betaMemory.getLeftTupleMemory().iterator();
-        for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+        for ( LeftTupleImpl leftTuple = (LeftTupleImpl) it.next(); leftTuple != null; leftTuple = (LeftTupleImpl) it.next() ) {
             list.add( leftTuple );
         }
 
@@ -239,7 +239,7 @@ public class LeftTupleIndexHashTableIteratorTest {
         entries[5] = mock( LeftTupleList.class );
         entries[9] = mock( LeftTupleList.class );
 
-        LeftTuple[] tuples = new LeftTuple[]{mock( LeftTuple.class ), mock( LeftTuple.class ), mock( LeftTuple.class )};
+        LeftTupleImpl[] tuples = new LeftTupleImpl[]{mock( LeftTupleImpl.class ), mock( LeftTupleImpl.class ), mock( LeftTupleImpl.class )};
 
         // set return values for methods
         when( entries[0].getNext() ).thenReturn( null );

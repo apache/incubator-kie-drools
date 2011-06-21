@@ -89,15 +89,17 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final RuleTerminalNode node2 = new RuleTerminalNode( 5,
                                                              new MockTupleSource( 4 ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -209,6 +211,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final Map results = new HashMap();
@@ -236,7 +239,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         } );
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                node,
                                                true );
@@ -337,7 +340,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -348,6 +351,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -362,6 +366,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 4 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
@@ -376,6 +381,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 6 ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
@@ -390,6 +396,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 8 ),
                                                              rule3,
                                                              rule3.getLhs(),
+                                                             0,
                                                              buildContext );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
@@ -587,7 +594,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -599,6 +606,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
         rule.setConsequence( consequence );
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -657,7 +665,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                                 ruleBase );
         agenda.addAgendaGroup( agendaGroup );
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -669,6 +677,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -738,7 +747,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -750,6 +759,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
         rule0.setConsequence( consequence );
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -764,6 +774,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 4 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
         rule1.setConsequence( consequence );
         final PropagationContext context1 = new PropagationContextImpl( 0,
@@ -778,6 +789,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 6 ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
         rule2.setConsequence( consequence );
         final PropagationContext context2 = new PropagationContextImpl( 0,
@@ -794,6 +806,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 8 ),
                                                              rule3,
                                                              rule3.getLhs(),
+                                                             0,
                                                              buildContext );
         rule3.setConsequence( consequence );
         final PropagationContext context3 = new PropagationContextImpl( 0,
@@ -956,6 +969,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final Rule rule1 = new Rule( "test-rule1" );
@@ -966,6 +980,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final Rule rule2 = new Rule( "test-rule2" );
@@ -977,6 +992,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final PropagationContext context0 = new PropagationContextImpl( 0,
@@ -989,7 +1005,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleFlowGroup ruleFlowGroup1 = agenda.getRuleFlowGroup( "rule-flow-group-1" );
         final RuleFlowGroup ruleFlowGroup2 = agenda.getRuleFlowGroup( "rule-flow-group-2" );
 
-        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -997,7 +1013,7 @@ public class AgendaTest extends DroolsTestCase {
                                context0,
                                workingMemory );
 
-        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1005,7 +1021,7 @@ public class AgendaTest extends DroolsTestCase {
                                context0,
                                workingMemory );
 
-        final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple2 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1013,7 +1029,7 @@ public class AgendaTest extends DroolsTestCase {
                                context0,
                                workingMemory );
 
-        final LeftTuple tuple3 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple3 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1128,6 +1144,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
 
         // create context
@@ -1144,7 +1161,7 @@ public class AgendaTest extends DroolsTestCase {
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory w) {
                 // activate rule1
-                final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+                final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                                "cheese" ),
                                                         null,
                                                         true );
@@ -1175,12 +1192,13 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
         // Create one activation for rule0 only
-        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1259,6 +1277,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
 
         // create context
@@ -1268,7 +1287,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null,
                                                                         null );
 
-        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1308,12 +1327,13 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
         // Create an activation for both rules
-        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1392,6 +1412,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -1404,14 +1425,14 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null );
 
         // Create two activation for this rule
-        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
-        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1500,6 +1521,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( idGenerator.getNextId() ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
 
         final RuleFlowGroup ruleFlowGroup0 = agenda.getRuleFlowGroup( "rule-flow-group-0" );
@@ -1515,7 +1537,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                         null );
 
         // Create an activation for this rule
-        final LeftTuple tuple0 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1551,7 +1573,7 @@ public class AgendaTest extends DroolsTestCase {
         assertFalse( ruleFlowGroup0.isActive() );
 
         // Add another activation and activate RuleFlowGroup again
-        final LeftTuple tuple1 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1575,7 +1597,7 @@ public class AgendaTest extends DroolsTestCase {
         assertFalse( ruleFlowGroup0.isActive() );
 
         // A new activation should now be added to the RuleFlowGroup but not to the agenda
-        final LeftTuple tuple2 = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple2 = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                        "cheese" ),
                                                 null,
                                                 true );
@@ -1660,7 +1682,7 @@ public class AgendaTest extends DroolsTestCase {
 
         final RuleFlowGroupImpl ruleFlowGroup = (RuleFlowGroupImpl) agenda.getRuleFlowGroup( "rule-flow-group-0" );
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -1672,6 +1694,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             new MockTupleSource( 2 ),
                                                             rule,
                                                             rule.getLhs(),
+                                                            0,
                                                             buildContext );
 
         final PropagationContext context = new PropagationContextImpl( 0,
@@ -1738,7 +1761,7 @@ public class AgendaTest extends DroolsTestCase {
             }
         };
 
-        final LeftTuple tuple = new LeftTuple( new DefaultFactHandle( 1,
+        final LeftTupleImpl tuple = new LeftTupleImpl( new DefaultFactHandle( 1,
                                                                       "cheese" ),
                                                null,
                                                true );
@@ -1749,6 +1772,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 2 ),
                                                              rule0,
                                                              rule0.getLhs(),
+                                                             0,
                                                              buildContext );
         node0.setSequence( 72 );
         rule0.setConsequence( consequence );
@@ -1764,6 +1788,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 4 ),
                                                              rule1,
                                                              rule1.getLhs(),
+                                                             0,
                                                              buildContext );
         node1.setSequence( 10 );
         rule1.setConsequence( consequence );
@@ -1779,6 +1804,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 6 ),
                                                              rule2,
                                                              rule2.getLhs(),
+                                                             0,
                                                              buildContext );
         node2.setSequence( 7 );
         rule2.setConsequence( consequence );
@@ -1794,6 +1820,7 @@ public class AgendaTest extends DroolsTestCase {
                                                              new MockTupleSource( 8 ),
                                                              rule3,
                                                              rule3.getLhs(),
+                                                             0,
                                                              buildContext );
         node3.setSequence( 0 );
         rule3.setConsequence( consequence );

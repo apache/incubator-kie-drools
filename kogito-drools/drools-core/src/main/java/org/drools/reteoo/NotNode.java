@@ -58,21 +58,15 @@ public class NotNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.setOpen( true );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         ContextEntry[] contextEntry = memory.getContext();
         
         boolean useLeftMemory = true;
         if ( !this.tupleMemoryEnabled ) {
-            if ( memory.isOpen() ) {
-                // we are re-entrant to force new ContextEntry
-                contextEntry = this.constraints.createContext();
-            }
-            
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle)context.getFactHandle()).getObject();
-            if (  memory.getLeftTupleMemory() == null || object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
             }
         }
@@ -108,7 +102,6 @@ public class NotNode extends BetaNode {
                                                 workingMemory,
                                                 useLeftMemory );
         }
-        memory.setOpen( false );
     }
 
     public void assertObject(final InternalFactHandle factHandle,
@@ -297,7 +290,7 @@ public class NotNode extends BetaNode {
             if ( leftTuple.getBlocker() != null ) {
                 // blocked
 
-                if ( leftTuple.firstChild != null ) {
+                if ( leftTuple.getFirstChild() != null ) {
                     // blocked, with previous children, so must have not been previously blocked, so retract
                     // no need to remove, as we removed at the start
                     // to be matched against, as it's now blocked
@@ -305,7 +298,7 @@ public class NotNode extends BetaNode {
                                                workingMemory,
                                                leftTuple );
                 } // else: it's blocked now and no children so blocked before, thus do nothing             
-            } else if ( leftTuple.firstChild == null ) {
+            } else if ( leftTuple.getFirstChild() == null ) {
                 // not blocked, with no children, must have been previously blocked so assert
                 memory.getLeftTupleMemory().add( leftTuple ); // add to memory so other fact handles can attempt to match
                 propagateAssertLeftTuple( context,
@@ -478,7 +471,7 @@ public class NotNode extends BetaNode {
         
         final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            sink.assertLeftTuple( new LeftTuple( leftTuple,
+            sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
                                                  sink,
                                                  true ),
                                   context,
