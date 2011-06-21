@@ -26,6 +26,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
+import org.drools.runtime.rule.Variable;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Evaluator;
 import org.drools.spi.InternalReadAccessor;
