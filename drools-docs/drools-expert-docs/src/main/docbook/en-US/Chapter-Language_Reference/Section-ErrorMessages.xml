@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>Error Messages</title>
-
-  <note>
-    <para><replaceable>(updated to Drools 5.0)</replaceable></para>
-  </note>
 
   <para>Drools 5 introduces standardized error messages. This standardization
   aims to help users to find and resolve problems in a easier and faster way.
@@ -58,7 +57,7 @@
       <title>101: No viable alternative</title>
 
       <para>Indicates the most common errors, where the parser came to a
-      decision point but  couldn't identify an alternative. Here are some
+      decision point but couldn't identify an alternative. Here are some
       examples:</para>
 
       <example>
@@ -80,8 +79,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>At first glance this seems to be valid syntax, but it is not (exits
-      != exists). Let's take a look at next example:</para>
+      <para>At first glance this seems to be valid syntax, but it is not
+      (exits != exists). Let's take a look at next example:</para>
 
       <example>
         <programlisting>1: package org.drools;
@@ -103,12 +102,12 @@
         </listitem>
       </itemizedlist>
 
-      <para>This message means that the parser encountered the token
-      <emphasis role="bold">WHEN</emphasis>, actually a hard keyword, but
-      it's in the wrong place since the the rule name is missing.</para>
+      <para>This message means that the parser encountered the token <emphasis
+      role="bold">WHEN</emphasis>, actually a hard keyword, but it's in the
+      wrong place since the the rule name is missing.</para>
 
-      <para>The error "no viable alternative" also occurs when you make
-      a simple lexical mistake. Here is a sample of a lexical problem:</para>
+      <para>The error "no viable alternative" also occurs when you make a
+      simple lexical mistake. Here is a sample of a lexical problem:</para>
 
       <example>
         <programlisting>1: rule simple_rule
@@ -117,7 +116,9 @@
 4:   then
 5: end
 </programlisting>
-      </example><!-- " close the quote, restore editor sanity -->
+      </example>
+
+      <!-- " close the quote, restore editor sanity -->
 
       <para>The above code misses to close the quotes and because of this the
       parser generates this error message:</para>
@@ -132,8 +133,8 @@
       <note>
         <para>Usually the Line and Column information are accurate, but in
         some cases (like unclosed quotes), the parser generates a 0:-1
-        position. In this case you should check whether you didn't forget to close
-        quotes, apostrophes or parentheses.</para>
+        position. In this case you should check whether you didn't forget to
+        close quotes, apostrophes or parentheses.</para>
       </note>
     </section>
 
@@ -205,8 +206,8 @@
       just replace the commas (',') by AND operator ('&amp;&amp;').</para>
 
       <note>
-        <para>In some situations you can get more than one error message. Try to
-        fix one by one, starting at the first one. Some error messages are
+        <para>In some situations you can get more than one error message. Try
+        to fix one by one, starting at the first one. Some error messages are
         generated merely as consequences of other errors.</para>
       </note>
     </section>
@@ -247,7 +248,8 @@
       </itemizedlist>
 
       <para>The <emphasis role="bold">fdsfdsfds</emphasis> text is invalid and
-      the parser couldn’t identify it as the soft keyword <literal>rule</literal>.</para>
+      the parser couldn’t identify it as the soft keyword
+      <literal>rule</literal>.</para>
 
       <note>
         <para>This error is very similar to 102: Mismatched input, but usually
@@ -258,9 +260,9 @@
     <section>
       <title>104: Trailing semi-colon not allowed</title>
 
-      <para>This error is associated with the <literal>eval</literal> clause, where its
-      expression may not be terminated with a semicolon. Check this
-  example:</para>
+      <para>This error is associated with the <literal>eval</literal> clause,
+      where its expression may not be terminated with a semicolon. Check this
+      example:</para>
 
       <example>
         <programlisting>1: rule simple_rule
@@ -281,8 +283,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>This problem is simple to fix: just remove the
-      semi-colon.</para>
+      <para>This problem is simple to fix: just remove the semi-colon.</para>
     </section>
 
     <section>
@@ -290,8 +291,8 @@
 
       <para>The recognizer came to a subrule in the grammar that must match an
       alternative at least once, but the subrule did not match anything.
-      Simply put: the parser has entered a branch from where there is no
-      way out. This example illustrates it:</para>
+      Simply put: the parser has entered a branch from where there is no way
+      out. This example illustrates it:</para>
 
       <example>
         <programlisting>1: template test_error
@@ -309,16 +310,16 @@
         </listitem>
       </itemizedlist>
 
-      <para>To fix this problem it is necessary to remove the numeric value
-      as it is neither a valid data type which might begin a new template
-      slot nor a possible start for any other rule file construct.</para>
+      <para>To fix this problem it is necessary to remove the numeric value as
+      it is neither a valid data type which might begin a new template slot
+      nor a possible start for any other rule file construct.</para>
     </section>
   </section>
 
   <section>
     <title>Other Messages</title>
 
-    <para>Any other message means that something bad has happened, so
-    please contact the development team.</para>
+    <para>Any other message means that something bad has happened, so please
+    contact the development team.</para>
   </section>
 </section>
