@@ -42,14 +42,7 @@ public class QueryElementBuilder
                                        BaseDescr descr,
                                        Pattern prefixPattern ) {
         PatternDescr patternDescr = (PatternDescr) descr;
-        if ( !patternDescr.isQuery() ) {
-            // error, can't have non binding slots.
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          null,
-                                                          "Query's must ? as they are pull only:\n" ) );
-            return null;
-        }
+
         Query query = (Query) context.getPkg().getRule( patternDescr.getObjectType() );
         if ( query == null ) {
             // we already checked this before, so we know it's either in the package or recursive on itself
@@ -175,7 +168,8 @@ public class QueryElementBuilder
                                  arguments.toArray( new Object[arguments.size()] ),
                                  declrsArray,
                                  declrIndexArray,
-                                 varIndexesArray );
+                                 varIndexesArray,
+                                 !patternDescr.isQuery() );
     }
 
     @SuppressWarnings("unchecked")
@@ -255,14 +249,14 @@ public class QueryElementBuilder
 
             // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
             ArrayElementReader reader = new ArrayElementReader( arrayReader,
-                                                                varIndexes.size(),
+                                                                pos,
                                                                 params[pos].getExtractor().getExtractToClass() );
 
             declr.setReadAccessor( reader );
 
             varIndexes.add( pos );
             arguments.set( pos,
-                           Variable.variable );
+                           Variable.v );
         }
     }
 
@@ -290,19 +284,20 @@ public class QueryElementBuilder
                 declrIndexes.add( position );
                 requiredDeclarations.add( declr );
             } else {
-                // it doesn't exist, so it's an output                    
+                // it doesn't exist, so it's an output
+                arguments.set( position,
+                               Variable.v );
+                
+                varIndexes.add( position );
+                               
                 declr = pattern.addDeclaration( expression );
 
                 // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
                 ArrayElementReader reader = new ArrayElementReader( arrayReader,
-                                                                    varIndexes.size(),
+                                                                    position,
                                                                     params[position].getExtractor().getExtractToClass() );
 
                 declr.setReadAccessor( reader );
-
-                varIndexes.add( position );
-                arguments.set( position,
-                               Variable.variable );
             }
         } else {
             // it's an expression and thus an input

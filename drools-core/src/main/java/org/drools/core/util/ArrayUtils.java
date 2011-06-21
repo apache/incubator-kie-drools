@@ -17,6 +17,8 @@
 package org.drools.core.util;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -240,4 +242,19 @@ public class ArrayUtils {
                                         a2 );
     }
 
+    public static List<Integer> asList(int[] ints) {
+        List<Integer> list = new ArrayList<Integer>(ints.length);
+        for ( int i : ints ) {
+            list.add( i );
+        }
+        return list;
+    }
+    
+    public static int[] toIntArray(List<Integer> list) {
+        int[] ints = new int[list.size()];
+        for ( int i = 0; i < list.size(); i++ ) {
+            ints[i] = list.get( i );
+        }
+        return ints;        
+    }
 }

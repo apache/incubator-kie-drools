@@ -2792,7 +2792,7 @@ public class MarshallingTest {
                 .getReteooBuilder().getIdGenerator());
         //simple rule that fires after 10 seconds
         final Rule rule = new Rule("test-rule");
-        new RuleTerminalNode(1,new MockTupleSource(2), rule, rule.getLhs(), buildContext);
+        new RuleTerminalNode(1,new MockTupleSource(2), rule, rule.getLhs(), 0, buildContext);
         
         final List<String> fired = new ArrayList<String>();
         

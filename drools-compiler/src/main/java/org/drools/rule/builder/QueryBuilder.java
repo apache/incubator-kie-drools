@@ -20,7 +20,7 @@ import org.drools.spi.ObjectType;
 public class QueryBuilder implements EngineElementBuilder {
     public Pattern build(final RuleBuildContext context,
                          final QueryDescr queryDescr) {
-        ObjectType queryObjectType = new ClassObjectType( DroolsQuery.class );
+        ObjectType queryObjectType = ClassObjectType.DroolsQuery_ObjectType;
         final Pattern pattern = new Pattern( context.getNextPatternId(),
                                              0, // offset is 0 by default
                                              queryObjectType,

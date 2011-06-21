@@ -33,6 +33,7 @@ import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
@@ -136,7 +137,7 @@ public class AccumulateNode extends BetaNode {
         } else {
             // this is a hack, to not add closed DroolsQuery objects
             Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
-            if ( memory.betaMemory.getLeftTupleMemory() != null && !(object instanceof DroolsQuery && !((DroolsQuery) object).isOpen()) ) {
+            if ( memory.betaMemory.getLeftTupleMemory() != null && (object instanceof DroolsQuery) && !(object instanceof DroolsQuery && !((DroolsQuery) object).isOpen()) ) {
                 memory.betaMemory.getLeftTupleMemory().add( leftTuple );
                 memory.betaMemory.getCreatedHandles().put( leftTuple,
                                                            accresult,
@@ -198,7 +199,11 @@ public class AccumulateNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
+        if ( leftTuple.getMemory() != null ) {
+            memory.betaMemory.getLeftTupleMemory().remove( leftTuple );            
+        } else {
+            return;
+        }
         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().remove( leftTuple );
 
         removePreviousMatchesForLeftTuple( leftTuple,
@@ -481,7 +486,7 @@ public class AccumulateNode extends BetaNode {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
+                for ( ; leftTuple != null; leftTuple = ( LeftTuple ) leftIt.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
                         final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
@@ -637,13 +642,13 @@ public class AccumulateNode extends BetaNode {
             if ( isAllowed ) {
                 // modify 
                 if ( ActivitySource.LEFT.equals( source ) ) {
-                    this.sink.propagateModifyChildLeftTuple( leftTuple.firstChild,
+                    this.sink.propagateModifyChildLeftTuple( leftTuple.getFirstChild(),
                                                              leftTuple,
                                                              context,
                                                              workingMemory,
                                                              useLeftMemory );
                 } else {
-                    this.sink.propagateModifyChildLeftTuple( leftTuple.firstChild,
+                    this.sink.propagateModifyChildLeftTuple( leftTuple.getFirstChild(),
                                                              accctx.result,
                                                              context,
                                                              workingMemory,
@@ -693,12 +698,12 @@ public class AccumulateNode extends BetaNode {
                 LeftTuple[] matchings = splitList( leftTuple,
                                                    accctx,
                                                    true );
-                sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                     accctx.result,
-                                                     null,
-                                                     null,
-                                                     sink,
-                                                     true ),
+                sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
+                                                         accctx.result,
+                                                         null,
+                                                         null,
+                                                         sink,
+                                                         true ),
                                       context,
                                       workingMemory );
                 restoreList( leftTuple,
@@ -789,12 +794,12 @@ public class AccumulateNode extends BetaNode {
         // in sequential mode, we don't need to keep record of matched tuples
         if ( useLeftMemory ) {
             // linking left and right by creating a new left tuple
-            new LeftTuple( leftTuple,
-                           rightTuple,
-                           currentLeftChild,
-                           currentRightChild,
-                           this,
-                           true );
+            new LeftTupleImpl( leftTuple,
+                               rightTuple,
+                               currentLeftChild,
+                               currentRightChild,
+                               this,
+                               true );
         }
     }
 
@@ -926,16 +931,16 @@ public class AccumulateNode extends BetaNode {
         matchings[0] = getFirstMatch( parent,
                                       accctx,
                                       isUpdatingSink );
-        matchings[1] = matchings[0] != null ? parent.lastChild : null;
+        matchings[1] = matchings[0] != null ? parent.getLastChild() : null;
 
         // update the tuple for the actual propagations
         if ( matchings[0] != null ) {
-            if ( parent.firstChild == matchings[0] ) {
-                parent.firstChild = null;
+            if ( parent.getFirstChild() == matchings[0] ) {
+                parent.setFirstChild( null );
             }
-            parent.lastChild = matchings[0].getLeftParentPrevious();
-            if ( parent.lastChild != null ) {
-                parent.lastChild.setLeftParentNext( null );
+            parent.setLastChild( matchings[0].getLeftParentPrevious() );
+            if ( parent.getLastChild() != null ) {
+                parent.getLastChild().setLeftParentNext( null );
                 matchings[0].setLeftParentPrevious( null );
             }
         }
@@ -946,13 +951,13 @@ public class AccumulateNode extends BetaNode {
     private void restoreList( final LeftTuple parent,
                               final LeftTuple[] matchings ) {
         // concatenate matchings list at the end of the children list
-        if ( parent.firstChild == null ) {
-            parent.firstChild = matchings[0];
-            parent.lastChild = matchings[1];
+        if ( parent.getFirstChild() == null ) {
+            parent.setFirstChild( matchings[0] );
+            parent.setLastChild( matchings[1] );
         } else if ( matchings[0] != null ) {
-            parent.lastChild.setLeftParentNext( matchings[0] );
-            matchings[0].setLeftParentPrevious( parent.lastChild );
-            parent.lastChild = matchings[1];
+            parent.getLastChild().setLeftParentNext( matchings[0] );
+            matchings[0].setLeftParentPrevious( parent.getLastChild() );
+            parent.setLastChild( matchings[1] );
         }
     }
 
@@ -968,7 +973,7 @@ public class AccumulateNode extends BetaNode {
                                      final AccumulateContext accctx,
                                      final boolean isUpdatingSink ) {
         // unlink all right matches 
-        LeftTuple child = leftTuple.firstChild;
+        LeftTuple child = leftTuple.getFirstChild();
 
         if ( accctx.propagated ) {
             // To do that, we need to skip the first N children that are in fact

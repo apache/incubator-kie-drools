@@ -55,6 +55,8 @@ import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.ModifyPreviousTuples;
@@ -386,14 +388,14 @@ public class ReteDslTestEngine {
 
                     // we always lookup from the first element, in case it's indexed
                     List<InternalFactHandle> first = (List<InternalFactHandle>) expectedLeftTuples.get( 0 );
-                    LeftTuple firstTuple = new LeftTuple( first.get( 0 ),
-                                                          null,
-                                                          false);
+                    LeftTuple firstTuple = new LeftTupleImpl( first.get( 0 ),
+                                                              null,
+                                                              false);
                     for ( int i = 1; i < first.size(); i++ ) {
-                        firstTuple = new LeftTuple( firstTuple,
-                                                    new RightTuple( first.get( i )),
-                                                    null,
-                                                    false );
+                        firstTuple = new LeftTupleImpl( firstTuple,
+                                                        new RightTuple( first.get( i )),
+                                                        null,
+                                                        false );
                     }
 
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
@@ -596,11 +598,11 @@ public class ReteDslTestEngine {
                     // create expected tuples
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
                     for ( List<InternalFactHandle> tlist : (List<List<InternalFactHandle>>) expectedLeftTuples ) {
-                        LeftTuple tuple = new LeftTuple( tlist.get( 0 ),
+                        LeftTuple tuple = new LeftTupleImpl( tlist.get( 0 ),
                                                          null,
                                                          false );
                         for ( int i = 1; i < tlist.size(); i++ ) {
-                            tuple = new LeftTuple( tuple,
+                            tuple = new LeftTupleImpl( tuple,
                                                    new RightTuple( tlist.get( i ) ),
                                                    null,
                                                    false );
@@ -727,14 +729,14 @@ public class ReteDslTestEngine {
         String id = getTupleId( tlist );
         for ( InternalFactHandle handle : tlist ) {
             if ( tuple == null ) {
-                tuple = new LeftTuple( handle,
-                                       null,
-                                       false ); // do not keep generated tuples on the handle list
+                tuple = new LeftTupleImpl( handle,
+                                           null,
+                                           false ); // do not keep generated tuples on the handle list
             } else {
-                tuple = new LeftTuple( tuple,
-                                       new RightTuple( handle ),
-                                       null,
-                                       true );
+                tuple = new LeftTupleImpl( tuple,
+                                           new RightTuple( handle ),
+                                           null,
+                                           true );
             }
         }
         context.put( id,

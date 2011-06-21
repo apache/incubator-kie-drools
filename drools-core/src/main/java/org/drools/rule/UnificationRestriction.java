@@ -68,17 +68,22 @@ public class UnificationRestriction
                                        InternalFactHandle handle) {
         if ( ((UnificationContextEntry)context).getVariable() == null ) {
             return this.vr.isAllowedCachedLeft( ((UnificationContextEntry)context).getContextEntry(), handle );
-        } else {
-            VariableContextEntry vContext =  (VariableContextEntry) ((UnificationContextEntry)context).getContextEntry();
-            ((UnificationContextEntry)context).getVariable().setValue( vContext.getFieldExtractor().getValue(handle.getObject() ) );
-            return true;
         }
+        return true;
     }
 
     public boolean isAllowedCachedRight(LeftTuple tuple,
                                         ContextEntry context) {
         return this.vr.isAllowedCachedRight( tuple, ((UnificationContextEntry)context).getContextEntry() );
     }
+    
+    public VariableRestriction getVariableRestriction() {
+        return this.vr;
+    }
+    
+    public InternalReadAccessor getReadAccessor() {
+        return this.vr.getReadAccessor();
+    }    
     
     public Evaluator getEvaluator() {
         return this.vr.getEvaluator();
@@ -163,8 +168,8 @@ public class UnificationRestriction
                                     LeftTuple tuple) {
             DroolsQuery query = ( DroolsQuery ) tuple.get( 0 ).getObject(); 
             Variable v = query.getVariables()[ this.reader.getIndex() ];
-            if ( v == null || v.isSet() ) {
-                // if there is no Variable or the Variable is set, handle it as a normal constraint
+            if ( v == null ) {
+                // if there is no Variable, handle it as a normal constraint
                 this.variable = null;
                 this.contextEntry.updateFromTuple( workingMemory, tuple );
             } else {

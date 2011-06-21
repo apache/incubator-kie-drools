@@ -615,7 +615,7 @@ public class QueryTest {
         ksession.insert( p4 );
 
         org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{Variable.variable, Variable.variable, Variable.variable} );
+                                                                                 new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 4,
                           results.size() );
         List names = new ArrayList();
@@ -630,7 +630,7 @@ public class QueryTest {
         assertTrue( names.contains( "darth" ) );
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.variable, Variable.variable, 300} );
+                                            new Object[]{Variable.v, Variable.v, 300} );
         assertEquals( 3,
                           results.size() );
         names = new ArrayList();
@@ -644,7 +644,7 @@ public class QueryTest {
         assertTrue( names.contains( "bobba" ) );
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.variable, "stilton", 300} );
+                                            new Object[]{Variable.v, "stilton", 300} );
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
@@ -656,7 +656,7 @@ public class QueryTest {
         assertTrue( names.contains( "yoda" ) );
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.variable, "stilton", Variable.variable} );
+                                            new Object[]{Variable.v, "stilton", Variable.v} );
         assertEquals( 2,
                           results.size() );
         names = new ArrayList();
@@ -669,7 +669,7 @@ public class QueryTest {
         assertTrue( names.contains( "darth" ) );
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{"darth", Variable.variable, Variable.variable} );
+                                            new Object[]{"darth", Variable.v, Variable.v} );
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
@@ -723,7 +723,7 @@ public class QueryTest {
         ksession.insert( p4 );
 
         org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{Variable.variable, Variable.variable, Variable.variable, Variable.variable} );
+                                                                                 new Object[]{Variable.v, Variable.v, Variable.v, Variable.v} );
         assertEquals( 4,
                           results.size() );
         List names = new ArrayList();
@@ -738,7 +738,7 @@ public class QueryTest {
         assertTrue( names.contains( "darth" ) );
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{p1, Variable.variable, Variable.variable, Variable.variable} );
+                                            new Object[]{p1, Variable.v, Variable.v, Variable.v} );
         assertEquals( 1,
                           results.size() );
         names = new ArrayList();
@@ -787,7 +787,7 @@ public class QueryTest {
         ksession.insert( p2 );
 
         org.drools.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{Variable.variable, Variable.variable, Variable.variable} );
+                                                                                 new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 2,
                           results.size() );
         List names = new ArrayList();
@@ -798,7 +798,7 @@ public class QueryTest {
         assertTrue( names.contains( "darth" ) );
 
         results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.variable, Variable.variable, "s1"} );
+                                            new Object[]{Variable.v, Variable.v, "s1"} );
         assertEquals( 1,
                       results.size() );
         names = new ArrayList();

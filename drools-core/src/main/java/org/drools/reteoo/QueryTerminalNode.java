@@ -19,6 +19,7 @@ package org.drools.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map;
 
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
@@ -26,6 +27,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
@@ -50,9 +52,11 @@ public final class QueryTerminalNode extends BaseNode
     public static final short type             = 8;
 
     /** The rule to invoke upon match. */
-    private Rule              rule;
+    private Query             query;
     private GroupElement      subrule;
+    private int               subruleIndex;    
     private LeftTupleSource   tupleSource;
+    private Declaration[]     declarations; 
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -76,13 +80,15 @@ public final class QueryTerminalNode extends BaseNode
                              final LeftTupleSource source,
                              final Rule rule,
                              final GroupElement subrule,
+                             final int subruleIndex,                              
                              final BuildContext context) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
-        this.rule = rule;
+        this.query = (Query) rule;
         this.subrule = subrule;
         this.tupleSource = source;
+        this.subruleIndex = subruleIndex;        
     }
 
     // ------------------------------------------------------------
@@ -91,25 +97,22 @@ public final class QueryTerminalNode extends BaseNode
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        rule = (Rule) in.readObject();
+        query = (Query) in.readObject();
         subrule = (GroupElement) in.readObject();
+        subruleIndex = in.readInt();        
         tupleSource = (LeftTupleSource) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject( rule );
+        out.writeObject( query );
         out.writeObject( subrule );
+        out.writeInt(subruleIndex);
         out.writeObject( tupleSource );
     }
 
-    /**
-     * Retrieve the <code>Action</code> associated with this node.
-     *
-     * @return The <code>Action</code> associated with this node.
-     */
     public Rule getRule() {
-        return this.rule;
+        return this.query;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,10 +141,10 @@ public final class QueryTerminalNode extends BaseNode
         
         
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
-        query.setQuery( (Query) this.rule );
+        query.setQuery( this.query );
 
         // Add results to the adapter
-        query.getQueryResultCollector().rowAdded( this.rule,
+        query.getQueryResultCollector().rowAdded( this.query,
                                                   leftTuple,
                                                   context,
                                                   workingMemory );
@@ -157,10 +160,10 @@ public final class QueryTerminalNode extends BaseNode
             entry = entry.getParent();
         }
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
-        query.setQuery( (Query) this.rule );
+        query.setQuery( this.query );
 
         // Add results to the adapter
-        query.getQueryResultCollector().rowRemoved( this.rule,
+        query.getQueryResultCollector().rowRemoved( this.query,
                                                     leftTuple,
                                                     context,
                                                     workingMemory );
@@ -179,9 +182,9 @@ public final class QueryTerminalNode extends BaseNode
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( new LeftTupleImpl( factHandle,
+                                                this,
+                                                true ),
                              context,
                              workingMemory );
         }
@@ -197,17 +200,17 @@ public final class QueryTerminalNode extends BaseNode
             entry = entry.getParent();
         }
         DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
-        query.setQuery( (Query) this.rule );
+        query.setQuery( this.query );
 
         // Add results to the adapter
-        query.getQueryResultCollector().rowUpdated( this.rule,
+        query.getQueryResultCollector().rowUpdated( this.query,
                                                     leftTuple,
                                                     context,
                                                     workingMemory );
     }
 
     public String toString() {
-        return "[QueryTerminalNode(" + this.getId() + "): query=" + this.rule.getName() + "]";
+        return "[QueryTerminalNode(" + this.getId() + "): query=" + this.query.getName() + "]";
     }
 
     public void ruleAttached() {
@@ -270,6 +273,22 @@ public final class QueryTerminalNode extends BaseNode
      */
     public GroupElement getSubrule() {
         return this.subrule;
+    }
+    
+    public Declaration[] getDeclarations() {     
+        if ( declarations == null ) {
+            declarations = new Declaration[ query.getParameters().length ];
+            Map<String, Declaration> declMap = subrule.getOuterDeclarations();
+            int i = 0;
+            for ( Declaration declr : query.getParameters() ) {
+                declarations[i++] =  declMap.get( declr.getIdentifier() );
+            }
+        }
+        return declarations;
+    }
+    
+    public int getSubruleIndex() {
+        return this.subruleIndex;
     }
 
     /**

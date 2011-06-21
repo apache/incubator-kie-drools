@@ -46,7 +46,7 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
             long handles = 0;
             org.drools.core.util.Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
             for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                LeftTuple child = leftTuple.firstChild;
+                LeftTuple child = leftTuple.getFirstChild();
                 while( child != null ) {
                     handles++;
                     child = child.getLeftParentNext();

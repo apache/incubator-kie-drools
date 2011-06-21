@@ -131,6 +131,14 @@ public class RightTuple
     public void nullBlocked() {
         this.blocked = null;
     }
+    
+    public void setLeftTuple(LeftTuple leftTuple) {
+        this.blocked = leftTuple;
+    }
+    
+    public LeftTuple getLeftTuple() {
+        return this.blocked;
+    }
 
     public void addBlocked(LeftTuple leftTuple) {
         if ( this.blocked != null && leftTuple != null ) {
@@ -141,8 +149,8 @@ public class RightTuple
     }
 
     public void removeBlocked(LeftTuple leftTuple) {
-        LeftTuple previous = (LeftTuple) leftTuple.getBlockedPrevious();
-        LeftTuple next = (LeftTuple) leftTuple.getBlockedNext();
+        LeftTuple previous =  leftTuple.getBlockedPrevious();
+        LeftTuple next =  leftTuple.getBlockedNext();
         if ( previous != null && next != null ) {
             //remove  from middle
             previous.setBlockedNext( next );

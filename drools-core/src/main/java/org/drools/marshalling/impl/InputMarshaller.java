@@ -57,6 +57,7 @@ import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectTypeConf;
@@ -366,9 +367,9 @@ public class InputMarshaller {
         InternalFactHandle handle = wm.getInitialFactHandle();
         while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
             LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
-            LeftTuple leftTuple = new LeftTuple( handle,
-                                                 sink,
-                                                 true );
+            LeftTuple leftTuple = new LeftTupleImpl( handle,
+                                                     sink,
+                                                     true );
             readLeftTuple( leftTuple,
                            context );
         }
@@ -467,9 +468,9 @@ public class InputMarshaller {
             int nodeId = stream.readInt();
             LeftTupleSink sink = (LeftTupleSink) context.sinks.get( nodeId );
             int factHandleId = stream.readInt();
-            LeftTuple leftTuple = new LeftTuple( context.handles.get( factHandleId ),
-                                                 sink,
-                                                 true );
+            LeftTuple leftTuple = new LeftTupleImpl( context.handles.get( factHandleId ),
+                                                     sink,
+                                                     true );
             readLeftTuple( leftTuple,
                            context );
         }
@@ -494,10 +495,10 @@ public class InputMarshaller {
                     RightTupleKey key = new RightTupleKey( factHandleId,
                                                            sink );
                     RightTuple rightTuple = context.rightTuples.get( key );
-                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                              rightTuple,
-                                                              childSink,
-                                                              true );
+                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                  rightTuple,
+                                                                  childSink,
+                                                                  true );
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -507,9 +508,9 @@ public class InputMarshaller {
             case NodeTypeEnums.EvalConditionNode : {
                 while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                     LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                              childSink,
-                                                              true );
+                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                  childSink,
+                                                                  true );
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -524,9 +525,9 @@ public class InputMarshaller {
 
                     while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                        LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                                  childSink,
-                                                                  true );
+                        LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                      childSink,
+                                                                      true );
                         readLeftTuple( childLeftTuple,
                                        context );
                     }
@@ -558,9 +559,9 @@ public class InputMarshaller {
 
                     while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                        LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                                  childSink,
-                                                                  true );
+                        LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                      childSink,
+                                                                      true );
                         readLeftTuple( childLeftTuple,
                                        context );
                     }
@@ -596,7 +597,7 @@ public class InputMarshaller {
                                                                    sink );
                             RightTuple rightTuple = context.rightTuples.get( key );
                             // just wiring up the match record
-                            new LeftTuple( parentLeftTuple,
+                            new LeftTupleImpl( parentLeftTuple,
                                            rightTuple,
                                            sink,
                                            true );
@@ -604,10 +605,10 @@ public class InputMarshaller {
                         }
                         case PersisterEnums.LEFT_TUPLE : {
                             LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                            LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                                      accctx.result,
-                                                                      childSink,
-                                                                      true );
+                            LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                          accctx.result,
+                                                                          childSink,
+                                                                          true );
                             readLeftTuple( childLeftTuple,
                                            context );
                             break;
@@ -660,10 +661,10 @@ public class InputMarshaller {
                     RightTupleKey key = new RightTupleKey( factHandleId,
                                                            null ); // created tuples in from node always use null sink
                     RightTuple rightTuple = context.rightTuples.get( key );
-                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                              rightTuple,
-                                                              childSink,
-                                                              true );
+                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                  rightTuple,
+                                                                  childSink,
+                                                                  true );
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -676,11 +677,13 @@ public class InputMarshaller {
                     // we de-serialize the generated fact handle ID
                     InternalFactHandle handle = readFactHandle( context );
                     context.handles.put( handle.getId(),
-                                         handle );                    
-                    LeftTuple childLeftTuple = new LeftTuple( parentLeftTuple,
-                                                              handle,
-                                                              childSink,
-                                                              true );
+                                         handle );  
+                    RightTuple rightTuple = new RightTuple( handle );
+                    // @TODO check if open query
+                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                  rightTuple,
+                                                                  childSink,
+                                                                  true );
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -807,7 +810,7 @@ public class InputMarshaller {
         LeftTuple leftTuple = null;
         if ( stream.readBoolean() ) {
             int tuplePos = stream.readInt();
-            leftTuple = (LeftTuple) context.terminalTupleMap.get( tuplePos );
+            leftTuple = context.terminalTupleMap.get( tuplePos );
         }
 
         long propagationNumber = stream.readLong();

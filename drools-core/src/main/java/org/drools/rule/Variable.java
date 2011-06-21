@@ -22,67 +22,16 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 public class Variable implements Externalizable {
-    public static final Variable variable = new Variable(null, -1);
-    
-    private Object[] values;
-    
-    private int index;
-    private boolean set;  
+    public static final Variable v = new Variable();
     
     public Variable() {
         // for serialization
     }
-
-    public Variable(Object[] values, 
-                    int position) {
-        this.values = values;
-        this.index = position;
-    }
-    
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( values );
-        out.writeInt(  index );
-        out.writeBoolean( set );
     }
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.values = ( Object[] ) in.readObject();
-        this.index = in.readInt();
-        this.set = in.readBoolean();
     }
-
-    public Object getValue() {
-        return this.values[this.index];
-    }
-
-    public void setValue(Object value) {
-        this.set = true;
-        this.values[this.index] = value;
-    }
-    
-    public String toString() {
-        if ( values != null ) {
-            Object o = getValue();
-            if ( o != null ) {
-                return "var = " + o.toString();    
-            } 
-        }
-
-        return "var = null";
-    }
-
-    public boolean isSet() {
-        return set;
-    }
-
-    public void unSet() {
-        this.set = false;
-        this.values[this.index] = null;
-    }
-
-    public int getIndex() {
-        return index;
-    }       
     
 }

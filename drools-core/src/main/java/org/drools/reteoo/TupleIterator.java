@@ -25,8 +25,8 @@ public class TupleIterator {
         while ( leftTuple != null ) {
             while ( down ) {
                 // iterate to next leaf
-                if ( leftTuple.firstChild != null ) {
-                    leftTuple = leftTuple.firstChild;
+                if ( leftTuple.getFirstChild() != null ) {
+                    leftTuple = leftTuple.getFirstChild();
                 } else {
                     down = false;
                 }
@@ -39,7 +39,7 @@ public class TupleIterator {
                 // iterate to next peer
                 leftTuple = leftTuple.getLeftParentNext();
                 // attempt to traverse that peer's children
-                if ( leftTuple.firstChild != null ) {
+                if ( leftTuple.getFirstChild() != null ) {
                     down = true;
                 }
             } else {
