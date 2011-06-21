@@ -118,8 +118,13 @@ Person( String firstName, String lastName, int age )</programlisting>
       <para>Type declarations now support 'extends' keyword for
       inheritance</para>
 
-      <programlisting>declare Person
-    name : String
+      <para>In order to extend a type declared in Java by a DRL declared
+      subtype, repeat the supertype in a declare statement without any
+      fields.</para>
+
+      <programlisting>import org.people.Person
+
+declare Person
 end
 
 declare Student extends Person
