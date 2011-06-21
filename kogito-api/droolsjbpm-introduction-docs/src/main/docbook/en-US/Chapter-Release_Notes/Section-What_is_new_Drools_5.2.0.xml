@@ -261,7 +261,7 @@ end
 query isContainedIn( String x, String y ) 
     Location( x := thing, y := location)
     or 
-    ( Location(z := thing, y := location) and ?isContainedIn( thing := x, location := z) )
+    ( Location(z := thing, y := location) and ?isContainedIn( x := x, z := y ) )
 end
 </programlisting>
 
