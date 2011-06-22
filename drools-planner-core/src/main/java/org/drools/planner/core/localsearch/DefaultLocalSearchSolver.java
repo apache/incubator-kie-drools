@@ -16,7 +16,6 @@
 
 package org.drools.planner.core.localsearch;
 
-import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleSupport;

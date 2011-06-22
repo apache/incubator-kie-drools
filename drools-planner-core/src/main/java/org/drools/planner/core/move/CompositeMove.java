@@ -16,13 +16,11 @@
 
 package org.drools.planner.core.move;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Collections;
-import java.util.ArrayList;
 import java.util.Set;
 
 import org.drools.WorkingMemory;

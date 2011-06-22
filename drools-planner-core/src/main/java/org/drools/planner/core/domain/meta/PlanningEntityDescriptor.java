@@ -11,7 +11,6 @@ import java.util.Map;
 
 import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.PlanningVariable;
-import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 
 public class PlanningEntityDescriptor {
 

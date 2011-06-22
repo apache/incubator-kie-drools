@@ -19,7 +19,6 @@ package org.drools.planner.benchmark.statistic.memoryuse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatisticPoint;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListenerAdapter;
 

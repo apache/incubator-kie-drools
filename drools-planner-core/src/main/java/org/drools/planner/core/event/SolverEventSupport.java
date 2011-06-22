@@ -18,9 +18,9 @@ package org.drools.planner.core.event;
 
 import java.util.Iterator;
 
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.Solver;
 import org.drools.event.AbstractEventSupport;
+import org.drools.planner.core.Solver;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * Internal API.

@@ -20,9 +20,9 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.event.SolverLifecycleListener;
 import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.event.SolverLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

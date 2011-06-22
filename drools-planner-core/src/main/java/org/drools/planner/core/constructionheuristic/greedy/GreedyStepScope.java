@@ -18,11 +18,11 @@ package org.drools.planner.core.constructionheuristic.greedy;
 
 import java.util.Map;
 
+import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
 import org.drools.planner.core.solver.AbstractSolverScope;
 import org.drools.planner.core.solver.AbstractStepScope;
-import org.drools.FactHandle;
 
 public class GreedyStepScope extends AbstractStepScope {
 

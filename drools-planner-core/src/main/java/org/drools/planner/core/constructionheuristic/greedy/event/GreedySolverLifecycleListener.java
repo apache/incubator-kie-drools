@@ -19,8 +19,6 @@ package org.drools.planner.core.constructionheuristic.greedy.event;
 import java.util.EventListener;
 
 import org.drools.planner.core.constructionheuristic.greedy.GreedySolverScope;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
 public interface GreedySolverLifecycleListener extends EventListener {
 

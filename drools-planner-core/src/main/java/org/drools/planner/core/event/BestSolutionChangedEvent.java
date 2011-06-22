@@ -18,8 +18,8 @@ package org.drools.planner.core.event;
 
 import java.util.EventObject;
 
-import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.solution.Solution;
 
 /**
  * Delivered when the best solution changes during solving.

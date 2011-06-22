@@ -18,8 +18,8 @@ package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
 import java.util.Comparator;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
+import org.drools.planner.core.score.Score;
 
 /**
  * Compares 2 HardAndSoftScore based on the calculation the hard multiplied by a weight to the soft.

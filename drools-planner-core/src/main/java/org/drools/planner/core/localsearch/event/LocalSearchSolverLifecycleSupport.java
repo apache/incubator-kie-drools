@@ -19,12 +19,8 @@ package org.drools.planner.core.localsearch.event;
 import java.util.Iterator;
 
 import org.drools.event.AbstractEventSupport;
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.event.BestSolutionChangedEvent;
-import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.localsearch.LocalSearchSolverScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.solution.Solution;
 
 /**
  * Internal API.

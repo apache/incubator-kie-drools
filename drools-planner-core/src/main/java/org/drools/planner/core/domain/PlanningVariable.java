@@ -19,8 +19,6 @@ package org.drools.planner.core.domain;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.drools.planner.core.domain.valuerange.ValueRange;
-
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 

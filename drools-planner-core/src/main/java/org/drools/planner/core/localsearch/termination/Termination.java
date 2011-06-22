@@ -17,8 +17,8 @@
 package org.drools.planner.core.localsearch.termination;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverAware;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 
 /**
  * A Termination determines when the LocalSearchSolver should stop.

@@ -18,8 +18,6 @@ package org.drools.planner.core.constructionheuristic.greedy;
 
 import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
-import org.drools.planner.core.domain.PlanningEntity;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solver.AbstractSolver;
 import org.drools.planner.core.solver.AbstractSolverScope;
 

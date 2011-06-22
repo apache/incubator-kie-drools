@@ -18,8 +18,8 @@ package org.drools.planner.core.solution;
 
 import java.util.Collection;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.

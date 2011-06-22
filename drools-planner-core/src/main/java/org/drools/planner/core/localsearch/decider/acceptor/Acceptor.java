@@ -16,10 +16,10 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor;
 
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 
 /**
  * An Acceptor accepts or rejects a selected move for the {@link Decider}.

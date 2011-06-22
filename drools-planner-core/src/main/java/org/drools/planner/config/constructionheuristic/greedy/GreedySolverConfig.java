@@ -26,7 +26,6 @@ import org.drools.planner.core.constructionheuristic.greedy.decider.DefaultGreed
 import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedy.decider.PickEarlyFitType;
 import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
-import org.drools.planner.core.localsearch.decider.forager.PickEarlyType;
 
 @XStreamAlias("greedySolver")
 public class GreedySolverConfig extends AbstractSolverConfig {

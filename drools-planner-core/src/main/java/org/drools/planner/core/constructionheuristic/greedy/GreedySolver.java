@@ -17,7 +17,6 @@
 package org.drools.planner.core.constructionheuristic.greedy;
 
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.bruteforce.DefaultBruteForceSolver;
 
 /**
  * A GreedySolver is a Solver which uses the greedy algorithm, which is a construction heuristic.

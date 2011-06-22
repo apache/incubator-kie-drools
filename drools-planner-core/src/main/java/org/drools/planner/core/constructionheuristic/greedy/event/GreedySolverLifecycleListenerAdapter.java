@@ -17,10 +17,6 @@
 package org.drools.planner.core.constructionheuristic.greedy.event;
 
 import org.drools.planner.core.constructionheuristic.greedy.GreedySolverScope;
-import org.drools.planner.core.constructionheuristic.greedy.event.GreedySolverLifecycleListener;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 
 public abstract class GreedySolverLifecycleListenerAdapter implements GreedySolverLifecycleListener {
 

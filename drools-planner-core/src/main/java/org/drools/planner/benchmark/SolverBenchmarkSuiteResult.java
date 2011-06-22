@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.drools.planner.core.score.Score;
 
 @XStreamAlias("solverBenchmarkSuiteResult")
 public class SolverBenchmarkSuiteResult {

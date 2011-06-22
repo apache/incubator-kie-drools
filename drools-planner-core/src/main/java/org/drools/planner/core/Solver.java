@@ -18,9 +18,9 @@ package org.drools.planner.core;
 
 import java.util.concurrent.Future;
 
+import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.event.SolverEventListener;
 
 /**
  * A Solver solves planning problems.
