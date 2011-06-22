@@ -144,6 +144,7 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.InputStreamResource;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -161,10 +162,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
-import org.drools.runtime.Globals;
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.*;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
@@ -1469,7 +1467,7 @@ public class MiscTest {
         //System.out.println(((List) session.getGlobal( "list" )).toString());
         assertTrue( ((List) session.getGlobal( "list" )).size() == 0 );
 
-        //Test 3 levels of inheritance, 2nd only 
+        //Test 3 levels of inheritance, 2nd only
         list = new ArrayList();
         session.setGlobal( "list",
                            list );
@@ -1919,6 +1917,35 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.fireAllRules();
+    }
+
+    @Ignore("22-JUN-2011 -Toni Rikkola-")
+    @Test()
+    public void testImport() throws Exception {
+        // Same package as this test
+        String rule = "";
+        rule += "package org.drools.integrationtests;\n";
+        rule += "import java.lang.Math;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "  dialect \"mvel\"\n";
+        rule += "  when\n";
+        rule += "  then\n";
+        // Can't handle the TestFact.TEST
+        rule += "    new TestFact(TestFact.TEST);\n";
+        rule += "end";
+
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        try {
+            knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Should execute with out exceptions");
+        }
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
     }
 
     @Test
