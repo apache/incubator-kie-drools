@@ -16,6 +16,8 @@
 
 package org.drools.examples.pacman
 
+import org.drools.examples.pacman.Direction;
+
 declare Direction
    @role(event)
 end 

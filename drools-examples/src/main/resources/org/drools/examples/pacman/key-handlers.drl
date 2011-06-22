@@ -17,6 +17,7 @@
 package org.drools.examples.pacman
 
 import java.awt.event.KeyEvent;
+import org.drools.examples.pacman.Direction;
 
 declare KeyEvent
     @role(event)

@@ -17,7 +17,7 @@
 package org.drools.examples.pacman
 
 import java.lang.Math;
-
+import org.drools.examples.pacman.Direction;
 
 rule determineDistance dialect "mvel" when
     $pac    : Character( name == "Pacman" )
