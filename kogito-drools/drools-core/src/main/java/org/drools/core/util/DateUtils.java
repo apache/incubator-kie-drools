@@ -78,6 +78,11 @@ public class DateUtils {
         }
     }
 
+    /** Use the simple date formatter to convert the Date into a String */
+    public static String format(final Date input) {
+        return df.get().format( input );
+    }
+    
     /** Converts the right hand side date as appropriate */
     public static Date getRightDate(final Object object2, DateFormats dateFormats) {
         if (object2 == null) {
