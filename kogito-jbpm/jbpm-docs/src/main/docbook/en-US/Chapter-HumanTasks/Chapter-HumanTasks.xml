@@ -336,7 +336,7 @@ thread.start();</programlisting>
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns="http://java.sun.com/xml/ns/persistence"&gt;
 
-  &lt;persistence-unit name="org.drools.task"&gt;
+  &lt;persistence-unit name="org.jbpm.task"&gt;
     &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
     &lt;class&gt;org.jbpm.task.Attachment&lt;/class&gt;
     &lt;class&gt;org.jbpm.task.Content&lt;/class&gt;

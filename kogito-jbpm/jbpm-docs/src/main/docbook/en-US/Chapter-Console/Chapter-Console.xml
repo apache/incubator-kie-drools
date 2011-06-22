@@ -186,7 +186,7 @@ Please fill in your username: &lt;input type="text" name="employee" /&gt;&lt;/BR
   with the name {taskName}.ftl.  The form has access to a "task" parameter that represents
   the current human task, so it allows you to dynamically adjust the task form based on
   the task input.  The task parameter is a Task model object as defined in the
-  drools-process-task module.  This for example allows you to customize the task form based
+  jbpm-human-task module.  This for example allows you to customize the task form based
   on the description or input data related to that task.  For example, the evaluation form
   shown earlier uses the task parameter to access the description of the task and show that
   in the task form:</para>
