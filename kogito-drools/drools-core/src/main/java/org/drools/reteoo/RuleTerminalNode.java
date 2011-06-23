@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
@@ -532,7 +533,14 @@ public class RuleTerminalNode extends BaseNode
             }
 
             final Activation activation = (Activation) leftTuple.getObject();
-
+            
+            // this is to catch a race condition as activations are activated and unactivated on timers
+            if ( activation instanceof ScheduledAgendaItem ) {                
+                ScheduledAgendaItem scheduled = ( ScheduledAgendaItem ) activation;
+                workingMemory.getTimerService().removeJob( scheduled.getJobHandle() );
+                scheduled.getJobHandle().setCancel( true );
+            }
+            
             if ( activation.isActivated() ) {
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,

@@ -21,6 +21,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -100,6 +101,7 @@ public class JDKTimerService
     }
 
     public boolean removeJob(JobHandle jobHandle) {
+        jobHandle.setCancel( true );
         return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
     }
 
@@ -143,7 +145,13 @@ public class JDKTimerService
         }
 
         public Void call() throws Exception {
-            this.job.execute( this.ctx );
+            if ( handle.isCancel() ) {
+                return null;
+            }            
+            this.job.execute( this.ctx );            
+            if ( handle.isCancel() ) {
+                return null;
+            }
 
             // our triggers allow for flexible rescheduling
             Date date = this.trigger.nextFireTime();
@@ -163,10 +171,20 @@ public class JDKTimerService
         JobHandle{
 
         private static final long serialVersionUID = 510l;
+
+        private AtomicBoolean cancel = new AtomicBoolean(false);
         
         private ScheduledFuture<Void> future;
 
         public JDKJobHandle() {
+        }
+
+        public void setCancel(boolean cancel) {
+            this.cancel.set( cancel );
+        }
+        
+        public boolean isCancel() {
+            return cancel.get();
         }
 
         public ScheduledFuture<Void> getFuture() {
