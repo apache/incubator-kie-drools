@@ -26,7 +26,8 @@ public class PackageRegistry {
         this.dialectRuntimeRegistry = pkg.getDialectRuntimeRegistry();
 
         this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
-                                                   packageBuilder.getRootClassLoader() );
+                                                   packageBuilder.getRootClassLoader(),
+                                                   this.pkg.getName() );
 
         this.typeResolver.addImport( pkg.getName() + ".*" );
     }
