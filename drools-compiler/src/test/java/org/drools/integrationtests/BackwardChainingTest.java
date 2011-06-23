@@ -885,7 +885,7 @@ public class BackwardChainingTest {
         // from http://kti.mff.cuni.cz/~bartak/prolog/genealogy.html
             
         String str = "" +
-            "package org.drools.test  \n" +
+            "package org.drools.test2  \n" +
             "global java.util.List list\n" +
             "dialect \"mvel\"\n" +                   
                                     
