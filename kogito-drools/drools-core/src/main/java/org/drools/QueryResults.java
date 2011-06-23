@@ -16,6 +16,8 @@
 
 package org.drools;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,11 @@ public class QueryResults
     }
     
     public Map<String, Declaration> getDeclarations(int subruleIndex) {
-        return this.declarations[subruleIndex];
+        if ( this.declarations == null || this.declarations.length == 0 ) {
+            return Collections.<String, Declaration>emptyMap();
+        } else {
+            return this.declarations[subruleIndex];
+        }
     }
 
     public QueryResult get(final int i) {
