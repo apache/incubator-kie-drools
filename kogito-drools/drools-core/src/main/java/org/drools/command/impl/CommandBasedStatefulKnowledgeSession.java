@@ -478,7 +478,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public <T> T execute(Command<T> command) {
-        return (T) this.commandService.execute( new ExecuteCommand( command ) );
+        return (T) this.commandService.execute( command );
     }
 
     public QueryResults getQueryResults(String query,
