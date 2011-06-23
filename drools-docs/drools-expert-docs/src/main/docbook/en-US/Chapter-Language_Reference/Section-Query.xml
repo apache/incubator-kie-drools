@@ -73,6 +73,23 @@ for ( QueryResultsRow row : results ) {
     System.out.println( person.getName() + "\n" );
 }</programlisting>
 
+    <para>Support for positional syntax has been added for more compact code.
+    By default the the declared type order in the type declaration matches the
+    argument position. But it possible to override these using the @position
+    annotation.</para>
+
+    <programlisting>declare Cheese
+    name : String @position(1)
+    shop : String @position(2)
+    price : int @position(0)
+end
+</programlisting>
+
+    <para>The @Position annotation, in the org.drools.definition.type package,
+    can be used to annotate original pojos on the classpath. Currently only
+    fields on classes can be annotated. Inheritence of classes is supported,
+    but not interfaces of methods yet.</para>
+
     <para>Queries can now call other queries, this combined with optional
     query arguments provides deriviation query style backward chaining.
     Positional and mixed positional/named type is supported. Literal
