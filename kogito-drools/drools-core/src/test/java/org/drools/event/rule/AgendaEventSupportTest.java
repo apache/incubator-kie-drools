@@ -164,6 +164,8 @@ public class AgendaEventSupportTest {
             }
         };
         ksession.addEventListener( agendaEventListener );
+        
+        assertEquals( 1, ksession.getAgendaEventListeners().size() );
 
         // assert the cheese fact
         final Cheese cheddar = new Cheese( "cheddar",
