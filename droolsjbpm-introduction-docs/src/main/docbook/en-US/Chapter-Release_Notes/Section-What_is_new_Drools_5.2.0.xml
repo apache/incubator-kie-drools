@@ -214,6 +214,21 @@ Person( isAdult() ) // boolean expression without relational operator</programli
 end
 </programlisting>
 
+      <para>The default order is the declared order, but this can be overiden
+      using @Position</para>
+
+      <programlisting>declare Cheese
+    name : String @position(1)
+    shop : String @position(2)
+    price : int @position(0)
+end
+</programlisting>
+
+      <para>The @Position annotation, in the org.drools.definition.type
+      package, can be used to annotate original pojos on the classpath.
+      Currently only fields on classes can be annotated. Inheritence of
+      classes is supported, but not interfaces of methods yet.</para>
+
       <para>Example patterns, with two constraints and a binding. Remember
       semicolon ';' is used to differentiate the positional section from the
       named argument section. Variables and literals and expressions using
