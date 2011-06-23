@@ -36,7 +36,7 @@ public class ActivationCancelledEventImpl extends ActivationEventImpl implements
 
     @Override
     public String toString() {
-        return "==>[ActivationCancelledEventImpl: getCause()=" + getCause() + ", getActivation()=" + getActivation()
+        return "==>[ActivationCancelledEvent: getCause()=" + getCause() + ", getActivation()=" + getActivation()
                 + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
     }
 

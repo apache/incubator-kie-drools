@@ -26,4 +26,10 @@ public class AfterActivationFiredEventImpl  extends ActivationEventImpl implemen
         super( activation, kruntime );
     }
 
+    @Override
+    public String toString() {
+        return "==>[AfterActivationFiredEvent: getActivation()=" + getActivation()
+                + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
+    }        
+    
 }
