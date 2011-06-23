@@ -158,11 +158,11 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
         List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
-        for ( WorkingMemoryEventListener listener : ((List<WorkingMemoryEventListener>) this.session.getWorkingMemoryEventListeners()) ) {
+        for ( Object  listener : this.session.getWorkingMemoryEventListeners() ) {
             if ( listener instanceof WorkingMemoryEventListenerWrapper ) {
                 listeners.add( ((WorkingMemoryEventListenerWrapper) listener).unWrap() );
             } else {
-                listeners.add( listener );
+                listeners.add( ( WorkingMemoryEventListener ) listener );
             }
         }
         return Collections.unmodifiableCollection( listeners );
@@ -175,11 +175,11 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
-        for ( AgendaEventListener listener : ((List<AgendaEventListener>) this.session.getAgendaEventListeners()) ) {
+        for ( Object listener :  this.session.getAgendaEventListeners() ) {
             if ( listener instanceof AgendaEventListenerWrapper ) {
                 listeners.add( ((AgendaEventListenerWrapper) listener).unWrap() );
             } else {
-                listeners.add( listener );
+                listeners.add( (AgendaEventListener) listener );
             }
         }
         return Collections.unmodifiableCollection( listeners );
