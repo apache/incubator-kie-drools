@@ -14,23 +14,39 @@
  * limitations under the License.
  */
 
-package org.drools.impl;
+package org.drools.agent.impl;
 
 import org.drools.SystemEventListener;
-import org.drools.SystemEventListenerService;
-import org.drools.agent.impl.DoNothingSystemEventListener;
-import org.drools.core.util.DelegatingSystemEventListener;
 
-public class SystemEventListenerServiceImpl implements SystemEventListenerService{
+public class DoNothingSystemEventListener
+    implements
+    SystemEventListener {
     
-    private DelegatingSystemEventListener    listener = new DelegatingSystemEventListener( new DoNothingSystemEventListener() );
+    public void debug(String message) {
+    }
     
-    public SystemEventListener getSystemEventListener() {
-        return this.listener;
+    public void debug(String message,
+                      Object object) {
     }
 
-    public void setSystemEventListener(SystemEventListener listener) {
-        this.listener.setSystemEventListener( listener );
+    public void exception(String message, Throwable e) {
+    }
+
+    public void exception(Throwable e) {
+    }
+
+    public void info(String message) {
+    }
+    
+    public void info(String message,
+                     Object object) {
+    }
+
+    public void warning(String message) {
+    }
+
+    public void warning(String message,
+                        Object object) {
     }
 
 }
