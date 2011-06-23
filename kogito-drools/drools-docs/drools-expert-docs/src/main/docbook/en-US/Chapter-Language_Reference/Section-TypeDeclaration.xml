@@ -220,7 +220,20 @@
     two more defined for the name attribute (<code>@key</code> and
     <code>@maxLength</code>). Please note that the <code>@key</code> metadata
     has no required value, and so the parentheses and the value were
-    omitted.</para>
+    omitted.:</para>
+
+    <para>@position can be used to declare the position of a field, overriding
+    the default declared order. This is used for positional constraints in
+    patterns.</para>
+
+    <programlisting>declare Cheese
+    name : String @position(1)
+    shop : String @position(2)
+    price : int @position(0)
+end
+</programlisting>
+
+    <para></para>
   </section>
 
   <section>
