@@ -16,6 +16,8 @@
 
 package org.drools.time.impl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.time.Job;
 import org.drools.time.JobHandle;
 import org.drools.time.impl.PseudoClockScheduler.ScheduledJob;
@@ -29,11 +31,21 @@ public class DefaultJobHandle
     
     private static final long serialVersionUID = 510l;
     
+    private AtomicBoolean cancel = new AtomicBoolean(false);    
+    
     private final ScheduledJob     scheduledJob;
 
     public DefaultJobHandle(ScheduledJob scheduledJob) {
         this.scheduledJob = scheduledJob;
     }
+    
+    public void setCancel(boolean cancel) {
+        this.cancel.set( cancel );
+    }
+    
+    public boolean isCancel() {
+        return cancel.get();
+    }    
 
     public Object getJob() {
         return scheduledJob.getJob();
