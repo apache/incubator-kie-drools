@@ -22,4 +22,7 @@ package org.drools.time;
  */
 public interface JobHandle {
 
+    public void setCancel(boolean cancel);
+    
+    public boolean isCancel();
 }

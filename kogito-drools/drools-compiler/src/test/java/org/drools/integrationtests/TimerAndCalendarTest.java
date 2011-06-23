@@ -5,9 +5,14 @@ import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +33,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
+import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -987,6 +993,58 @@ public class TimerAndCalendarTest {
         assertEquals( 2, workingMemory.getFactCount() );
     }
 
+    @Test
+    public void testTimerRemoval() {
+        try {
+            String str = "package org.drools.test\n" +
+                    "import " + TimeUnit.class.getName() + "\n" +
+            		"global java.util.List list \n" +
+            		"global " + CountDownLatch.class.getName() + " latch\n" + 
+                    "rule TimerRule \n" + 
+                    "   timer (int:0 50) \n" + 
+                    "when \n" + 
+                    "then \n" +
+                    "        //forces it to pause until main thread is ready\n" +
+                    "        latch.await(10, TimeUnit.MINUTES); \n" +
+                    "        list.add(list.size()); \n" +  
+                    " end";
+            
+            final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            // this will parse and compile in one step
+            kbuilder.add(ResourceFactory.newByteArrayResource( str.getBytes()), ResourceType.DRL);
+
+            // Check the builder for errors
+            if (kbuilder.hasErrors()) {
+                System.out.println(kbuilder.getErrors().toString());
+                throw new RuntimeException("Unable to compile \"TimerRule.drl\".");
+            }            
+
+            // get the compiled packages (which are serializable)
+            final Collection<KnowledgePackage> pkgs = kbuilder.getKnowledgePackages();
+
+            // add the packages to a knowledgebase (deploy the knowledge packages).
+            final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+            kbase.addKnowledgePackages(pkgs);
+
+            CountDownLatch latch = new CountDownLatch(1);
+            final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            List list = Collections.synchronizedList( new ArrayList() );
+            ksession.setGlobal( "list", list );
+            ksession.setGlobal( "latch", latch );            
+            
+            ksession.fireAllRules();           
+            Thread.sleep(200); // this makes sure it actually enters a rule
+            kbase.removeRule("org.drools.test", "TimerRule");
+            latch.countDown();
+            Thread.sleep(100); // allow the last rule, if we were in the middle of one to actually fire, before clearing
+            list.clear();
+            Thread.sleep(500); // now wait to see if any more fire, they shouldn't
+            assertEquals( 0, list.size() );
+            ksession.dispose();
+        } catch (InterruptedException e) {
+            throw new RuntimeException( e );
+        }
+    }    
     
     
     
