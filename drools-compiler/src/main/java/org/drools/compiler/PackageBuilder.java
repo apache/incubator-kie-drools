@@ -1078,7 +1078,10 @@ public class PackageBuilder {
                     }
                 }
                 for (FieldDefinition fld : orderedFields) {
-                    clsDef.addField(fld);
+                    if ( fld != null ) {
+                        // it's null if there is no @Position
+                        clsDef.addField(fld);
+                    }
                 }
 
                 tdecl.setTypeClassDef(clsDef);
