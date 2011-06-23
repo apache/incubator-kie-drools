@@ -26,4 +26,9 @@ public class ActivationCreatedEventImpl extends ActivationEventImpl implements A
         super( activation, kruntime );
     }
 
+    @Override
+    public String toString() {
+        return "==>[ActivationCreatedEvent: getActivation()=" + getActivation()
+                + ", getKnowledgeRuntime()=" + getKnowledgeRuntime() + "]";
+    }    
 }
