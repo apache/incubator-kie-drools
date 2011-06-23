@@ -297,33 +297,62 @@ end
       <para>Here is an example of query element inside of a rule using mixed
       positional/named arguments.</para>
 
-      <programlisting>query whereFood( String x, String y )
-    ( Location(x, y;) and
-    Edible(x;) ) 
-    or 
-    ( Location(z, y;) and ?whereFood(x, z;) )
+      <programlisting>package org.drools.test
+
+import java.util.List
+import java.util.ArrayList
+
+dialect "mvel"
+
+declare Here
+   place : String
 end
 
-query look(String place, List things, List food, List exits) 
-    Here(place;)
-    things := List() from accumulate( Location(thing, place;),
-                                      collectList( thing ) )
-    food := List() from accumulate( ?whereFood(thing, place;) ,                                    
-                                    collectList( thing ) )
-    exits := List() from accumulate( ?connect(place, exit;),
-                                     collectList( exit ) )
+declare Door
+   fromLocation : String
+   toLocation : String
 end
 
-rule reactiveLook when
-    Here( $place : place) 
-    ?look($place, $things; $food := food, $exits := exits)
-then
-    System.out.println( "You are in the " + $place);
-    System.out.println( "  You can see " + $things );
-    System.out.println( "  You can eat " + $food );
-    System.out.println( "  You can go to " + $exits );
+declare Location
+   thing : String
+   location : String
 end
-</programlisting>
+
+declare Edible
+   thing : String
+end
+
+query connect( String x, String y )
+   Door(x, y;)
+   or 
+   Door(y, x;)
+end
+
+query whereFood( String x, String y )
+   ( Location(x, y;) and
+      Edible(x;) )
+   or 
+   ( Location(z, y;) and
+      whereFood(x, z;) )
+end
+
+query look(String place, List things, List food, List exits)
+   Here(place;)
+   things := List() from accumulate( Location(thing, place;), collectList( thing ) )
+   food := List() from accumulate( ?whereFood(thing, place;), collectList( thing ) )
+   exits := List() from accumulate( ?connect(place, exit;), collectList( exit ) )
+end
+
+rule reactiveLook 
+   when
+      Here( $place : place)
+      ?look($place, $things; $food := food, $exits := exits)
+   then
+      System.out.println( \"You are in the \" + $place);
+      System.out.println( \"  You can see \" + $things );
+      System.out.println( \"  You can eat \" + $food );
+      System.out.println( \"  You can go to \" + $exits );
+end</programlisting>
 
       <para>As previously mentioned you can use live "open" queries to
       reactively receive changes over time from the query results, as the
