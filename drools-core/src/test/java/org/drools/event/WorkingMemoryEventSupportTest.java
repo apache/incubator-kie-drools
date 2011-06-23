@@ -63,6 +63,7 @@ public class WorkingMemoryEventSupportTest {
         };
 
         wm.addEventListener( workingMemoryListener );
+        assertEquals(1, wm.getWorkingMemoryEventListeners().size() );
 
         final Cheese stilton = new Cheese( "stilton",
                                            15 );
