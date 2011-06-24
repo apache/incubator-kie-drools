@@ -42,7 +42,7 @@ public class QueryBuilder implements EngineElementBuilder {
         // adds appropriate constraint to the pattern
         pattern.addConstraint( constraint );
 
-        ObjectType argsObjectType = new ClassObjectType( ArrayElements.class );
+        ObjectType argsObjectType = ClassObjectType.DroolsQuery_ObjectType;
         
         InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
 
