@@ -501,7 +501,7 @@ public class PatternBuilder
 
             // Either it's a complex expression, so do as predicate
             // Or it's a Map and we have to treat it as a special case
-            if ( !simple || new ClassObjectType( Map.class ).isAssignableFrom( pattern.getObjectType() ) ) {
+            if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
                                          d, 
