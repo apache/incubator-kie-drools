@@ -94,6 +94,7 @@ public class JoinNode extends BetaNode {
                                                           rightMemory,
                                                           context,
                                                           it ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
+            
             final InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        handle ) ) {
