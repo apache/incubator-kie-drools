@@ -1636,6 +1636,122 @@ public class BackwardChainingTest {
         }      
     }
     
+    @Test
+    public void testInsertionOrder() throws Exception {
+        // http://www.amzi.com/AdventureInProlog/advtop.php
+
+        String str = "" +
+            "package org.test  \n" +
+
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+
+            "global List list\n" +
+
+            "dialect \"mvel\"\n" +
+
+            "declare Person\n" +
+            "   name : String\n" +
+            "   likes : String\n" +
+            "end\n" +
+            "\n" +
+            "declare Location\n" +
+            "    thing : String \n" +
+            "    location : String \n" +
+            "end\n" +
+            "\n" +
+            "declare Edible\n" +
+            "   thing : String\n" +
+            "end\n" +
+            "\n" +
+            "\n" +
+            "query hasFood( String x, String y ) \n" +
+            "    Location(x, y;) " +
+            "     or \n " +
+            "    ( Location(z, y;) and hasFood(x, z;) )\n"+
+            "end\n" +
+            "\n" +
+            "rule look when \n" +
+            "    Person( $l : likes ) \n" +
+            "    hasFood( $l, 'kitchen'; )\n" +
+            "then\n" +
+            "   list.add( 'kitchen has ' + $l );" +
+            "end\n" +
+            "rule go1 when\n" +
+            "    String( this == 'go1') \n" +
+            "then\n" +
+            "        insert( new Person('zool', 'peach') );\n" +            
+            "        insert( new Location(\"table\", \"kitchen\") );\n" +
+            "        insert( new Location(\"peach\", \"table\") );\n" +
+            "end\n"  +
+            "rule go2 when\n" +
+            "    String( this == 'go2') \n" +
+            "then\n" +
+            "        insert( new Person('zool', 'peach') );\n" +         
+            "        insert( new Location(\"peach\", \"table\") );\n" +            
+            "        insert( new Location(\"table\", \"kitchen\") );\n" +            
+            "end\n"  +            
+            "\n" +
+            "rule go3 when\n" +
+            "    String( this == 'go3') \n" +
+            "then\n" +
+            "        insert( new Location(\"table\", \"kitchen\") );\n" +
+            "        insert( new Location(\"peach\", \"table\") );\n" +
+            "        insert( new Person('zool', 'peach') );\n" +            
+            "end\n"  +
+            "\n" +
+            "rule go4 when\n" +
+            "    String( this == 'go4') \n" +
+            "then\n" +
+            "        insert( new Location(\"peach\", \"table\") );\n" +            
+            "        insert( new Location(\"table\", \"kitchen\") );\n" +
+            "        insert( new Person('zool', 'peach') );\n" +            
+            "end\n"  +
+            "rule go5 when\n" +
+            "    String( this == 'go5') \n" +
+            "then\n" +
+            "        insert( new Location(\"peach\", \"table\") );\n" +  
+            "        insert( new Person('zool', 'peach') );\n" +            
+            "        insert( new Location(\"table\", \"kitchen\") );\n" +            
+            "end\n"  +
+            "rule go6 when\n" +
+            "    String( this == 'go6') \n" +
+            "then\n" +
+            "        insert( new Location(\"table\", \"kitchen\") );\n" +
+            "        insert( new Person('zool', 'peach') );\n" +            
+            "        insert( new Location(\"peach\", \"table\") );\n" +                          
+            "end\n"  +                        
+            "\n" +            
+            "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        for ( int i = 1; i <= 6; i++) {
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );            
+            ksession.fireAllRules();
+            list.clear();
+            FactHandle fh = ksession.insert( "go" + i );
+            ksession.fireAllRules();
+            ksession.retract( fh );
+            assertEquals( 1, list.size() );
+            assertEquals( "kitchen has peach", list.get( 0  ) );
+            ksession.dispose();
+        }
+    }    
+    
     public void assertContains( Object[] objects, List list) {
         for ( Object object : objects ) {
             if ( !list.contains( object ) ) {
