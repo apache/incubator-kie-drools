@@ -285,9 +285,9 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         final LeftTupleImpl parentTuple = new LeftTupleImpl( f0,
                                                      null,
                                                      true );
-        final LeftTupleImpl tuple0 = new LeftTupleImpl( parentTuple,
-                                                sink,
-                                                true );
+        final LeftTuple tuple0 = sink.createLeftTuple( parentTuple,
+                                                       sink,
+                                                       true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple0,

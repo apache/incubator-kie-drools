@@ -283,9 +283,9 @@ public class QueryElementNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTupleImpl( factHandle,
-                                                this,
-                                                true ),
+            assertLeftTuple( createLeftTuple( factHandle,
+                                              this,
+                                              true ),
                              context,
                              workingMemory );
         }
@@ -390,7 +390,7 @@ public class QueryElementNode extends LeftTupleSource
             RightTuple rightTuple = new RightTuple( resultHandle );
             if ( query.isOpen() ) {
                 rightTuple.setLeftTuple( resultLeftTuple );
-                resultLeftTuple.setBlocker( rightTuple );
+                resultLeftTuple.setObject( rightTuple );
 
             }                        
 
@@ -418,9 +418,9 @@ public class QueryElementNode extends LeftTupleSource
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
-            RightTuple rightTuple = resultLeftTuple.getBlocker();
+            RightTuple rightTuple = ( RightTuple ) resultLeftTuple.getObject();
             rightTuple.setLeftTuple( null );
-            resultLeftTuple.setBlocker( null );    
+            resultLeftTuple.setObject( null );    
             
             DroolsQuery query = (DroolsQuery) this.factHandle.getObject();
             
@@ -496,4 +496,30 @@ public class QueryElementNode extends LeftTupleSource
         }
     }
     
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new QueryElementNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new QueryElementNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new QueryElementNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new QueryElementNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }       
 }

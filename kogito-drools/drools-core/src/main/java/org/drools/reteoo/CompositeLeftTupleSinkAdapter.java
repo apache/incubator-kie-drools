@@ -55,9 +55,9 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         // this must be in reverse order to ensure that there is correct child tuple iteration
         // for QueryElementNode. This is important for Accumulate now where it must propate to the right before the left input
         for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {
-            LeftTuple child = new LeftTupleImpl( leftTuple,
-                                                 rightTuple,
-                                                 sink );
+            LeftTuple child = sink.createLeftTuple( leftTuple,
+                                                    rightTuple,
+                                                    sink );
         }
     }
     
@@ -82,12 +82,12 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                          final boolean leftTupleMemoryEnabled) {
 
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            LeftTuple newLeftTuple = new LeftTupleImpl( leftTuple,
-                                                        rightTuple,
-                                                        currentLeftChild,
-                                                        currentRightChild,
-                                                        sink,
-                                                        leftTupleMemoryEnabled );
+            LeftTuple newLeftTuple = sink.createLeftTuple( leftTuple,
+                                                           rightTuple,
+                                                           currentLeftChild,
+                                                           currentRightChild,
+                                                           sink,
+                                                           leftTupleMemoryEnabled );
             doPropagateAssertLeftTuple( context,
                                         workingMemory,
                                         sink,
@@ -103,9 +103,9 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
             doPropagateAssertLeftTuple( context,
                                         workingMemory,
                                         sink,
-                                        new LeftTupleImpl( tuple,
-                                                           sink,
-                                                           leftTupleMemoryEnabled ) );
+                                        sink.createLeftTuple( tuple,
+                                                              sink,
+                                                              leftTupleMemoryEnabled ) );
         }
     }
 
@@ -118,9 +118,9 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
             doPropagateAssertLeftTuple( context,
                                         workingMemory,
                                         sink,
-                                        new LeftTupleImpl( factHandle,
-                                                           sink,
-                                                           leftTupleMemoryEnabled ) );
+                                        sink.createLeftTuple( factHandle,
+                                                              sink,
+                                                              leftTupleMemoryEnabled ) );
         }
     }
 

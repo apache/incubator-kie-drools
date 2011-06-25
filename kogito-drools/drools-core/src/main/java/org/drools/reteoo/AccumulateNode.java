@@ -698,12 +698,12 @@ public class AccumulateNode extends BetaNode {
                 LeftTuple[] matchings = splitList( leftTuple,
                                                    accctx,
                                                    true );
-                sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
-                                                         accctx.result,
-                                                         null,
-                                                         null,
-                                                         sink,
-                                                         true ),
+                sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                            accctx.result,
+                                                            null,
+                                                            null,
+                                                            sink,
+                                                            true ),
                                       context,
                                       workingMemory );
                 restoreList( leftTuple,
@@ -794,12 +794,12 @@ public class AccumulateNode extends BetaNode {
         // in sequential mode, we don't need to keep record of matched tuples
         if ( useLeftMemory ) {
             // linking left and right by creating a new left tuple
-            new LeftTupleImpl( leftTuple,
-                               rightTuple,
-                               currentLeftChild,
-                               currentRightChild,
-                               this,
-                               true );
+            createLeftTuple( leftTuple,
+                             rightTuple,
+                             currentLeftChild,
+                             currentRightChild,
+                             this,
+                             true );
         }
     }
 
@@ -1034,9 +1034,38 @@ public class AccumulateNode extends BetaNode {
         }
 
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }         
 
     private static enum ActivitySource {
         LEFT, RIGHT
     }
+
+
 
 }

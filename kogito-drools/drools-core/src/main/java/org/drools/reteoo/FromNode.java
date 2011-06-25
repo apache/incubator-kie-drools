@@ -174,9 +174,9 @@ public class FromNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTupleImpl( factHandle,
-                                                this,
-                                                true ),
+            assertLeftTuple( createLeftTuple( factHandle,
+                                              this,
+                                              true ),
                              context,
                              workingMemory );
         }
@@ -406,12 +406,12 @@ public class FromNode extends LeftTupleSource
             Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
-                    sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
-                                                             rightTuple,
-                                                             null,
-                                                             null,
-                                                             sink,
-                                                             this.tupleMemoryEnabled ),
+                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                                rightTuple,
+                                                                null,
+                                                                null,
+                                                                sink,
+                                                                this.tupleMemoryEnabled ),
                                           context,
                                           workingMemory );
                 }
@@ -474,7 +474,7 @@ public class FromNode extends LeftTupleSource
 
     public short getType() {
         return NodeTypeEnums.FromNode;
-    }
+    } 
 
     public static class FromMemory
         implements
@@ -496,5 +496,31 @@ public class FromNode extends LeftTupleSource
             }
         }
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, sink, leftTupleMemoryEnabled );
+    }
 
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }      
 }

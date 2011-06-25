@@ -521,16 +521,16 @@ public class ExistsNode extends BetaNode {
         for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
             LeftTuple leftTuple = rightTuple.getBlocked();
             while ( leftTuple != null ) {
-                sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
-                                                         sink,
-                                                         true ),
+                sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                            sink,
+                                                            true ),
                                       context,
                                       workingMemory );
                 leftTuple = leftTuple.getBlockedNext();
             }
         }
-    }
-
+    }  
+    
     public String toString() {
         ObjectSource source = this.rightInput;
         while ( source != null && source.getClass() != ObjectTypeNode.class ) {
@@ -542,5 +542,32 @@ public class ExistsNode extends BetaNode {
     public short getType() {
         return NodeTypeEnums.ExistsNode;
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }            
 
 }

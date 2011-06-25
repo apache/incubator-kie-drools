@@ -205,9 +205,9 @@ public class EvalConditionNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTupleImpl( factHandle,
-                                                this,
-                                                true ),
+            assertLeftTuple( createLeftTuple( factHandle,
+                                              this,
+                                              true ),
                              context,
                              workingMemory );
         }
@@ -365,6 +365,33 @@ public class EvalConditionNode extends LeftTupleSource
     public short getType() {
         return NodeTypeEnums.EvalConditionNode;
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new EvalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new EvalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new EvalNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }            
 
     public static class EvalMemory
         implements
@@ -424,9 +451,9 @@ public class EvalConditionNode extends LeftTupleSource
                                                                memory.context );
 
             if ( allowed ) {
-                final LeftTuple tuple = new LeftTupleImpl( leftTuple,
-                                                           this.sink,
-                                                           false );
+                final LeftTuple tuple = sink.createLeftTuple( leftTuple,
+                                                              this.sink,
+                                                              false );
                 this.sink.assertLeftTuple( tuple,
                                            context,
                                            workingMemory );
@@ -482,7 +509,33 @@ public class EvalConditionNode extends LeftTupleSource
         public LeftTupleSink getRealSink() {
             return this.node;
         }
+        
+        public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new EvalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        }    
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new EvalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        }
 
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTupleSink sink) {
+            return new EvalNodeLeftTuple(leftTuple, rightTuple, sink );
+        }   
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTuple currentLeftChild,
+                                         LeftTuple currentRightChild,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        }      
     }
 
 }

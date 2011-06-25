@@ -95,8 +95,8 @@ public class LeftTupleImpl
     }
 
     public LeftTupleImpl(final LeftTuple leftTuple,
-                     LeftTupleSink sink,
-                     boolean leftTupleMemoryEnabled) {
+                         LeftTupleSink sink,
+                         boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
         this.parent = leftTuple.getParent();
         this.handle = leftTuple.getHandle();
