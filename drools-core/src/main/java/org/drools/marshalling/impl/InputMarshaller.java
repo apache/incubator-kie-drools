@@ -372,9 +372,9 @@ public class InputMarshaller {
         InternalFactHandle handle = wm.getInitialFactHandle();
         while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
             LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
-            LeftTuple leftTuple = new LeftTupleImpl( handle,
-                                                     sink,
-                                                     true );
+            LeftTuple leftTuple = sink.createLeftTuple( handle,
+                                                        sink,
+                                                        true );
             readLeftTuple( leftTuple,
                            context );
         }
@@ -473,9 +473,9 @@ public class InputMarshaller {
             int nodeId = stream.readInt();
             LeftTupleSink sink = (LeftTupleSink) context.sinks.get( nodeId );
             int factHandleId = stream.readInt();
-            LeftTuple leftTuple = new LeftTupleImpl( context.handles.get( factHandleId ),
-                                                     sink,
-                                                     true );
+            LeftTuple leftTuple = sink.createLeftTuple( context.handles.get( factHandleId ),
+                                                        sink,
+                                                        true );
             readLeftTuple( leftTuple,
                            context );
         }
@@ -500,10 +500,12 @@ public class InputMarshaller {
                     RightTupleKey key = new RightTupleKey( factHandleId,
                                                            sink );
                     RightTuple rightTuple = context.rightTuples.get( key );
-                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
-                                                                  rightTuple,
-                                                                  childSink,
-                                                                  true );
+                    LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
+                                                                          rightTuple,
+                                                                          null,
+                                                                          null,
+                                                                          childSink,
+                                                                          true );
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -513,9 +515,9 @@ public class InputMarshaller {
             case NodeTypeEnums.EvalConditionNode : {
                 while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                     LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
-                                                                  childSink,
-                                                                  true );
+                    LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
+                                                                          childSink,
+                                                                          true );
                     readLeftTuple( childLeftTuple,
                                    context );
                 }
@@ -530,9 +532,9 @@ public class InputMarshaller {
 
                     while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                        LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
-                                                                      childSink,
-                                                                      true );
+                        LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
+                                                                              childSink,
+                                                                              true );
                         readLeftTuple( childLeftTuple,
                                        context );
                     }
@@ -564,9 +566,9 @@ public class InputMarshaller {
 
                     while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
                         LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                        LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
-                                                                      childSink,
-                                                                      true );
+                        LeftTuple childLeftTuple = childSink.createLeftTuple( parentLeftTuple,
+                                                                              childSink,
+                                                                              true );
                         readLeftTuple( childLeftTuple,
                                        context );
                     }
@@ -602,10 +604,12 @@ public class InputMarshaller {
                                                                    sink );
                             RightTuple rightTuple = context.rightTuples.get( key );
                             // just wiring up the match record
-                            new LeftTupleImpl( parentLeftTuple,
-                                           rightTuple,
-                                           sink,
-                                           true );
+                            sink.createLeftTuple( parentLeftTuple,
+                                                  rightTuple,
+                                                  null,
+                                                  null,
+                                                  sink,
+                                                  true );
                             break;
                         }
                         case PersisterEnums.LEFT_TUPLE : {

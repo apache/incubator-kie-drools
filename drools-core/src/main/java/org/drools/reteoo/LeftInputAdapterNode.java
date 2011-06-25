@@ -270,9 +270,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            final LeftTuple tuple = new LeftTupleImpl( factHandle,
-                                                       this.sink,
-                                                       this.leftTupleMemoryEnabled );
+            final LeftTuple tuple = this.sink.createLeftTuple( factHandle,
+                                                               this.sink,
+                                                               this.leftTupleMemoryEnabled );
             this.sink.assertLeftTuple( tuple,
                                        context,
                                        workingMemory );
