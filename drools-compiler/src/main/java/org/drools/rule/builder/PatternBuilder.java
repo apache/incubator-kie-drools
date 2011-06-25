@@ -46,6 +46,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
+import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateFieldExtractor;
@@ -370,12 +371,21 @@ public class PatternBuilder
                 return;
             }
 
-            FieldDefinition field = tDecl.getTypeClassDef().getField( descr.getPosition() );
+            ClassDefinition clsDef = tDecl.getTypeClassDef();            
+            if ( clsDef == null ) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" ) );
+                return;                
+            }
+            
+            FieldDefinition field = clsDef.getField( descr.getPosition() );
             if ( field == null ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               descr,
                                                               null,
-                                                              "Unable to find @positional field " + descr.getPosition() ) + "\n" );
+                                                              "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" ) );
                 return;
             }
 
@@ -474,7 +484,7 @@ public class PatternBuilder
 
             // Either it's a complex expression, so do as predicate
             // Or it's a Map and we have to treat it as a special case
-            if ( !simple || new ClassObjectType( Map.class ).isAssignableFrom( pattern.getObjectType() ) ) {
+            if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
                                          expr,

@@ -471,9 +471,9 @@ public class NotNode extends BetaNode {
         
         final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
-                                                 sink,
-                                                 true ),
+            sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                        sink,
+                                                        true ),
                                   context,
                                   workingMemory );
         }
@@ -482,6 +482,33 @@ public class NotNode extends BetaNode {
     public short getType() {
         return NodeTypeEnums.NotNode;
     }
+
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }       
 
     public String toString() {
         ObjectSource source = this.rightInput;

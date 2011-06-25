@@ -27,7 +27,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
-public class LeftTupleImpl
+public class NotNodeLeftTuple
     implements
     Tuple,
     Entry, LeftTuple {
@@ -38,8 +38,6 @@ public class LeftTupleImpl
     private InternalFactHandle handle;
 
     private LeftTuple          parent;
-
-    private Object             object;
 
     private RightTuple         blocker;
 
@@ -67,14 +65,14 @@ public class LeftTupleImpl
 
     private LeftTupleSink      sink;
 
-    public LeftTupleImpl() {
+    public NotNodeLeftTuple() {
         // constructor needed for serialisation
     }
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public LeftTupleImpl(final InternalFactHandle factHandle,
+    public NotNodeLeftTuple(final InternalFactHandle factHandle,
                          LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
@@ -94,7 +92,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }
 
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                          LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
@@ -115,7 +113,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }
     
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                          RightTuple rightTuple,
                          LeftTupleSink sink) {
         this.index = leftTuple.getIndex() + 1;
@@ -143,7 +141,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }    
 
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,
                      final LeftTupleSink sink,
                      final boolean leftTupleMemoryEnabled) {
@@ -155,7 +153,7 @@ public class LeftTupleImpl
               leftTupleMemoryEnabled );
     }
     
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public NotNodeLeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,
                      final LeftTuple currentLeftChild,
                      final LeftTuple currentRightChild,
@@ -627,14 +625,14 @@ public class LeftTupleImpl
      * @see org.drools.reteoo.LeftTuple#getObject()
      */
     public Object getObject() {
-        return this.object;
+        throw new UnsupportedOperationException();
     }
     
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setObject(java.lang.Object)
      */
     public void setObject(final Object object) {
-        this.object = object;
+        throw new UnsupportedOperationException();
     }
 
 //    public int hashCode() {
@@ -819,7 +817,6 @@ public class LeftTupleImpl
         }
         builder.append( Arrays.toString( ids ) )
                .append( " activation=" )
-               .append( this.object != null ? this.object : "null" )
                .append( " sink=" )
                .append( this.sink.getClass().getSimpleName() )
                .append( "(" ).append( sink.getId() ).append( ")" );

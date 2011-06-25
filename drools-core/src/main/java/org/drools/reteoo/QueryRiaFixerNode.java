@@ -293,6 +293,33 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public short getType() {
         return NodeTypeEnums.EvalConditionNode;
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new LeftTupleImpl(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new LeftTupleImpl(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }      
 
     /**
      * Used with the updateSink method, so that the parent LeftTupleSource
@@ -366,6 +393,33 @@ public class QueryRiaFixerNode extends LeftTupleSource
         public LeftTupleSink getRealSink() {
             return this.node;
         }
+        
+        public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new QueryRiaFixerNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        }    
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new QueryRiaFixerNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        }
+
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTupleSink sink) {
+            return new QueryRiaFixerNodeLeftTuple(leftTuple, rightTuple, sink );
+        }   
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTuple currentLeftChild,
+                                         LeftTuple currentRightChild,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new QueryRiaFixerNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        }               
 
     }
 

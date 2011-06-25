@@ -27,7 +27,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
-public class LeftTupleImpl
+public class RuleTerminalNodeLeftTuple
     implements
     Tuple,
     Entry, LeftTuple {
@@ -41,12 +41,6 @@ public class LeftTupleImpl
 
     private Object             object;
 
-    private RightTuple         blocker;
-
-    private LeftTuple          blockedPrevious;
-
-    private LeftTuple          blockedNext;
-
     // left and right tuples in parent
     private LeftTuple          leftParent;
     private LeftTuple          leftParentPrevious;
@@ -56,25 +50,16 @@ public class LeftTupleImpl
     private LeftTuple          rightParentPrevious;
     private LeftTuple          rightParentNext;
 
-    // node memory
-    private LeftTupleList      memory;
-    private Entry              next;
-    private Entry              previous;
-
-    // children
-    private LeftTuple          firstChild;
-    private LeftTuple          lastChild;
-
     private LeftTupleSink      sink;
 
-    public LeftTupleImpl() {
+    public RuleTerminalNodeLeftTuple() {
         // constructor needed for serialisation
     }
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public LeftTupleImpl(final InternalFactHandle factHandle,
+    public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
                          LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
@@ -94,7 +79,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }
 
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                          LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
@@ -115,7 +100,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }
     
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                          RightTuple rightTuple,
                          LeftTupleSink sink) {
         this.index = leftTuple.getIndex() + 1;
@@ -143,7 +128,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }    
 
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,
                      final LeftTupleSink sink,
                      final boolean leftTupleMemoryEnabled) {
@@ -155,7 +140,7 @@ public class LeftTupleImpl
               leftTupleMemoryEnabled );
     }
     
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                      final RightTuple rightTuple,
                      final LeftTuple currentLeftChild,
                      final LeftTuple currentRightChild,
@@ -326,8 +311,6 @@ public class LeftTupleImpl
         this.leftParent = null;
         this.leftParentPrevious = null;
         this.leftParentNext = null;
-        //
-        this.blocker = null;
     }
 
     /* (non-Javadoc)
@@ -359,8 +342,6 @@ public class LeftTupleImpl
             this.rightParent.firstChild = null;
             this.rightParent.lastChild = null;
         }
-
-        this.blocker = null;
 
         this.rightParent = null;
         this.rightParentPrevious = null;
@@ -502,42 +483,42 @@ public class LeftTupleImpl
      * @see org.drools.reteoo.LeftTuple#getMemory()
      */
     public LeftTupleList getMemory() {
-        return this.memory;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
-        this.memory = memory;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getPrevious()
      */
     public Entry getPrevious() {
-        return previous;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
      */
     public void setPrevious(Entry previous) {
-        this.previous = previous;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
      */
     public void setNext(final Entry next) {
-        this.next = next;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getNext()
      */
     public Entry getNext() {
-        return this.next;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
@@ -585,42 +566,42 @@ public class LeftTupleImpl
      * @see org.drools.reteoo.LeftTuple#setBlocker(org.drools.reteoo.RightTuple)
      */
     public void setBlocker(RightTuple blocker) {
-        this.blocker = blocker;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getBlocker()
      */
     public RightTuple getBlocker() {
-        return this.blocker;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getBlockedPrevious()
      */
     public LeftTuple getBlockedPrevious() {
-        return this.blockedPrevious;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setBlockedPrevious(org.drools.reteoo.LeftTuple)
      */
     public void setBlockedPrevious(LeftTuple blockerPrevious) {
-        this.blockedPrevious = blockerPrevious;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getBlockedNext()
      */
     public LeftTuple getBlockedNext() {
-        return this.blockedNext;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setBlockedNext(org.drools.reteoo.LeftTuple)
      */
     public void setBlockedNext(LeftTuple blockerNext) {
-        this.blockedNext = blockerNext;
+        throw new UnsupportedOperationException();
     }
     
     /* (non-Javadoc)
@@ -724,19 +705,19 @@ public class LeftTupleImpl
     }
 
     public LeftTuple getFirstChild() {
-        return firstChild;
+        throw new UnsupportedOperationException();
     }
 
     public void setFirstChild(LeftTuple firstChild) {
-        this.firstChild = firstChild;
+        throw new UnsupportedOperationException();
     }
 
     public LeftTuple getLastChild() {
-        return lastChild;
+        throw new UnsupportedOperationException();
     }
 
     public void setLastChild(LeftTuple lastChild) {
-        this.lastChild = lastChild;
+        throw new UnsupportedOperationException();
     }
 
     public LeftTupleSink getSink() {
@@ -802,9 +783,6 @@ public class LeftTupleImpl
         buf.append( istr );
         buf.append( this.toExternalString() );
         buf.append( "\n" );
-        for( LeftTuple leftTuple = this.firstChild; leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
-            buf.append( leftTuple.toTupleTree( indent+4 ) );
-        }
         return buf.toString();
     }
 
@@ -847,5 +825,4 @@ public class LeftTupleImpl
             }
         }
     }
-    
 }

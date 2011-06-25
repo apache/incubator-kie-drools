@@ -27,7 +27,7 @@ import org.drools.rule.Declaration;
 import org.drools.spi.Activation;
 import org.drools.spi.Tuple;
 
-public class LeftTupleImpl
+public class EvalNodeLeftTuple
     implements
     Tuple,
     Entry, LeftTuple {
@@ -56,27 +56,22 @@ public class LeftTupleImpl
     private LeftTuple          rightParentPrevious;
     private LeftTuple          rightParentNext;
 
-    // node memory
-    private LeftTupleList      memory;
-    private Entry              next;
-    private Entry              previous;
-
     // children
     private LeftTuple          firstChild;
     private LeftTuple          lastChild;
 
     private LeftTupleSink      sink;
 
-    public LeftTupleImpl() {
+    public EvalNodeLeftTuple() {
         // constructor needed for serialisation
     }
 
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public LeftTupleImpl(final InternalFactHandle factHandle,
-                         LeftTupleSink sink,
-                         boolean leftTupleMemoryEnabled) {
+    public EvalNodeLeftTuple(final InternalFactHandle factHandle,
+                             LeftTupleSink sink,
+                             boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
 
         if ( leftTupleMemoryEnabled ) {
@@ -94,7 +89,7 @@ public class LeftTupleImpl
         this.sink = sink;
     }
 
-    public LeftTupleImpl(final LeftTuple leftTuple,
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
                          LeftTupleSink sink,
                          boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
@@ -115,9 +110,9 @@ public class LeftTupleImpl
         this.sink = sink;
     }
     
-    public LeftTupleImpl(final LeftTuple leftTuple,
-                         RightTuple rightTuple,
-                         LeftTupleSink sink) {
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+                             RightTuple rightTuple,
+                             LeftTupleSink sink) {
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
         this.handle = rightTuple.getFactHandle();
@@ -143,10 +138,10 @@ public class LeftTupleImpl
         this.sink = sink;
     }    
 
-    public LeftTupleImpl(final LeftTuple leftTuple,
-                     final RightTuple rightTuple,
-                     final LeftTupleSink sink,
-                     final boolean leftTupleMemoryEnabled) {
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+                             final RightTuple rightTuple,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
         this( leftTuple,
               rightTuple,
               null,
@@ -155,12 +150,12 @@ public class LeftTupleImpl
               leftTupleMemoryEnabled );
     }
     
-    public LeftTupleImpl(final LeftTuple leftTuple,
-                     final RightTuple rightTuple,
-                     final LeftTuple currentLeftChild,
-                     final LeftTuple currentRightChild,
-                     final LeftTupleSink sink,
-                     final boolean leftTupleMemoryEnabled) {
+    public EvalNodeLeftTuple(final LeftTuple leftTuple,
+                             final RightTuple rightTuple,
+                             final LeftTuple currentLeftChild,
+                             final LeftTuple currentRightChild,
+                             final LeftTupleSink sink,
+                             final boolean leftTupleMemoryEnabled) {
         this.handle = rightTuple.getFactHandle();
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
@@ -502,42 +497,42 @@ public class LeftTupleImpl
      * @see org.drools.reteoo.LeftTuple#getMemory()
      */
     public LeftTupleList getMemory() {
-        return this.memory;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setMemory(org.drools.core.util.LeftTupleList)
      */
     public void setMemory(LeftTupleList memory) {
-        this.memory = memory;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getPrevious()
      */
     public Entry getPrevious() {
-        return previous;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setPrevious(org.drools.core.util.Entry)
      */
     public void setPrevious(Entry previous) {
-        this.previous = previous;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setNext(org.drools.core.util.Entry)
      */
     public void setNext(final Entry next) {
-        this.next = next;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#getNext()
      */
     public Entry getNext() {
-        return this.next;
+        throw new UnsupportedOperationException();
     }
 
     /* (non-Javadoc)
@@ -846,6 +841,5 @@ public class LeftTupleImpl
                 ((EventFactHandle)entry.getLastHandle()).decreaseActivationsCount();
             }
         }
-    }
-    
+    }    
 }

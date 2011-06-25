@@ -61,7 +61,7 @@ public class QueryElementBuilder
         }
         List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
 
-        ObjectType argsObjectType = new ClassObjectType( Object[].class );
+        ObjectType argsObjectType = ClassObjectType.ObjectArray_ObjectType;
         InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class,
                                                                               "this" );
         Pattern pattern = new Pattern( context.getNextPatternId(),

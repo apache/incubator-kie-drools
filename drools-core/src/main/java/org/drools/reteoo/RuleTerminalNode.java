@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
@@ -295,7 +296,7 @@ public class RuleTerminalNode extends BaseNode
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTupleImpl( factHandle,
+            assertLeftTuple( createLeftTuple( factHandle,
                                                 this,
                                                 true ),
                              context,
@@ -532,7 +533,14 @@ public class RuleTerminalNode extends BaseNode
             }
 
             final Activation activation = (Activation) leftTuple.getObject();
-
+            
+            // this is to catch a race condition as activations are activated and unactivated on timers
+            if ( activation instanceof ScheduledAgendaItem ) {                
+                ScheduledAgendaItem scheduled = ( ScheduledAgendaItem ) activation;
+                workingMemory.getTimerService().removeJob( scheduled.getJobHandle() );
+                scheduled.getJobHandle().setCancel( true );
+            }
+            
             if ( activation.isActivated() ) {
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
@@ -552,4 +560,31 @@ public class RuleTerminalNode extends BaseNode
             leftTuple.unlinkFromRightParent();
         }
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new RuleTerminalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new RuleTerminalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }            
 }

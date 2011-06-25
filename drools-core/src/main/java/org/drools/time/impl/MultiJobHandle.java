@@ -17,6 +17,8 @@
 package org.drools.time.impl;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.time.JobHandle;
 
 
@@ -29,6 +31,8 @@ public class MultiJobHandle
     
     private static final long serialVersionUID = 510l;
     
+    private AtomicBoolean cancel = new AtomicBoolean(false);    
+    
     private final List<JobHandle>     jobHandles;
 
     public MultiJobHandle(List<JobHandle>   jobHandles) {
@@ -38,6 +42,17 @@ public class MultiJobHandle
     public Object getJobHandles() {
         return jobHandles;
     }
+    
+    public void setCancel(boolean cancel) {
+        for (JobHandle handle : jobHandles ) {
+            handle.setCancel( cancel );
+        }
+        this.cancel.set( cancel );
+    }
+    
+    public boolean isCancel() {
+        return cancel.get();
+    }        
 
     
 }

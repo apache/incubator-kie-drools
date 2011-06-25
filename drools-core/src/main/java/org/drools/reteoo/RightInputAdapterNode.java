@@ -334,6 +334,31 @@ public class RightInputAdapterNode extends ObjectSource
                + source + ", associations=" + associations.keySet() + ", partitionId=" + partitionId + "]";
     }
     
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
     
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }           
 
 }

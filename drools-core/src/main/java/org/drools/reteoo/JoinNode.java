@@ -94,6 +94,7 @@ public class JoinNode extends BetaNode {
                                                           rightMemory,
                                                           context,
                                                           it ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
+            
             final InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        handle ) ) {
@@ -408,12 +409,12 @@ public class JoinNode extends BetaNode {
                                                                                  (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            rightTuple.getFactHandle() ) ) {
-                    sink.assertLeftTuple( new LeftTupleImpl( leftTuple,
-                                                             rightTuple,
-                                                             null,
-                                                             null,
-                                                             sink,
-                                                             true ),
+                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                                rightTuple,
+                                                                null,
+                                                                null,
+                                                                sink,
+                                                                true ),
                                           context,
                                           workingMemory );
                 }
@@ -461,6 +462,8 @@ public class JoinNode extends BetaNode {
         return NodeTypeEnums.JoinNode;
     }
 
+  
+    
     public String toString() {
         ObjectSource source = this.rightInput;
         while ( !(source instanceof ObjectTypeNode) ) {
@@ -469,4 +472,31 @@ public class JoinNode extends BetaNode {
 
         return "[JoinNode(" + this.getId() + ") - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }      
 }
