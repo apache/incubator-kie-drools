@@ -1637,6 +1637,111 @@ public class BackwardChainingTest {
     }
     
     @Test
+    public void testInsertionOrderTwo() throws Exception {
+        String str = "" +
+            "package org.test " +
+            "import java.util.List " +
+            "global List list " +
+            "declare Thing " +
+            "    thing : String @key " +
+            "end " +
+            "declare Edible extends Thing " +
+            "end " +
+            "declare Location extends Thing " +
+            "    location : String  @key " +
+            "end " +
+            "declare Here " +
+            "    place : String " +
+            "end " +
+            "rule kickOff " +
+            "when " +
+            "    Integer( $i: intValue ) " +
+            "then " +
+            "    switch( $i ){ " +
+            "    case 1: " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        break; " +
+            "    case 2: " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        break; " +
+            "    case 3: " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        break; " +
+            "    case 4: " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        break; " +
+            "    case 5: " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        break; " +
+            "    case 6: " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        break; " +
+            "    } " +
+            "end " +
+            "query whereFood( String x, String y ) " +
+            "    ( Location(x, y;) and " +
+            "    Edible(x;) )  " +
+            "    or  " +
+            "    ( Location(z, y;) and /*?*/whereFood(x, z;) ) " +
+            "end " +
+            "query look(String place, List things, List food)  " +
+            "    Here(place;) " +
+            "    things := List() from accumulate( Location(thing, place;), " +
+            "                                      collectList( thing ) ) " +
+            "    food := List() from accumulate( /*?*/whereFood(thing, place;), " +
+            "                                    collectList( thing ) ) " +
+            "end " +
+            "rule reactiveLook " +
+            "when " +
+            "    Here( $place : place)  " +
+            "    /*?*/look($place, $things; $food := food) " +
+            "then " +
+            "    list.addAll( $things ); " +
+            "    list.addAll( $food   ); " +
+            "end " +
+             "";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        for ( int i = 1; i <= 6; i++) {
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );            
+            ksession.fireAllRules();
+            list.clear();
+            FactHandle fh = ksession.insert( Integer.valueOf( i ) );
+            ksession.fireAllRules();
+            ksession.retract( fh );
+            assertEquals( 2, list.size() );
+            assertEquals( "peach", list.get( 0 ) );
+            assertEquals( "peach", list.get( 1 ) );
+            ksession.dispose();
+        }
+    }    
+
+    @Test
     public void testInsertionOrder() throws Exception {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
