@@ -45,9 +45,9 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                               final RightTuple rightTuple,
                                               boolean leftTupleMemoryEnabled,
                                               boolean linkRightTuple) {        
-        LeftTuple child = new LeftTupleImpl( leftTuple,
-                                             rightTuple,
-                                             this.sink );                 
+        LeftTuple child = this.sink.createLeftTuple( leftTuple,
+                                                     rightTuple,
+                                                     this.sink );                 
     }  
     
     public void modifyChildLeftTuplesforQuery(final RightTuple rightTuple,
@@ -71,12 +71,12 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                          boolean leftTupleMemoryEnabled) {
         doPropagateAssertLeftTuple( context,
                                     workingMemory,
-                                    new LeftTupleImpl( leftTuple,
-                                                   rightTuple,
-                                                   currentLeftChild,
-                                                   currentRightChild,
-                                                   this.sink,
-                                                   leftTupleMemoryEnabled ) );
+                                    sink.createLeftTuple( leftTuple,
+                                                          rightTuple,
+                                                          currentLeftChild,
+                                                          currentRightChild,
+                                                          this.sink,
+                                                          leftTupleMemoryEnabled ) );
     }
 
     public void propagateAssertLeftTuple(final LeftTuple tuple,
@@ -85,9 +85,9 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                          boolean leftTupleMemoryEnabled) {
         doPropagateAssertLeftTuple( context,
                                     workingMemory,
-                                    new LeftTupleImpl( tuple,
-                                                   this.sink,
-                                                   leftTupleMemoryEnabled ) );
+                                    sink.createLeftTuple( tuple,
+                                                          this.sink,
+                                                          leftTupleMemoryEnabled ) );
     }
 
     public void propagateRetractLeftTuple(final LeftTuple leftTuple,
@@ -145,9 +145,9 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                   boolean leftTupleMemoryEnabled, LeftInputAdapterNode liaNode) {        
         doPropagateAssertLeftTuple( context,
                                     workingMemory,
-                                    new LeftTupleImpl( factHandle,
-                                                       this.sink,
-                                                       leftTupleMemoryEnabled ) );
+                                    sink.createLeftTuple( factHandle,
+                                                          this.sink,
+                                                          leftTupleMemoryEnabled ) );
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
