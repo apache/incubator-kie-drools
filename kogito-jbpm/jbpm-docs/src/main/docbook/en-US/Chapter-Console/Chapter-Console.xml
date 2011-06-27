@@ -66,6 +66,55 @@
        
     </section>
 
+    <section>
+      <title>Registering your own service handlers</title>
+      
+      <para>As explained in the chapter on domain-specific services, jBPM allows you to
+      register your own domain-specific services as custom service tasks.  The process
+      only contains a high-level description of the service that needs to be executed, and
+      a handler is responsible for the actual implementation, i.e. invoking the
+      service.</para>
+      
+      <para>You must register your handlers to be able to execute domain-specific services.
+      You can register your handlers by dropping a configuration file in the classpath that
+      specifies the implementation class for each of the handlers.  You can specify which
+      configuration files must be loaded in the drools.session.conf file, using the
+      drools.workItemHandlers property (as a list of space-separated file names).  These
+      file names should contain a Map of entries, the name and the corresponding 
+      WorkItemHandler instance that should be used to execute the service.  The 
+      configuration file is using the MVEL script language to specify a map of type
+      Map&lt;String,WorkItemHandler&gt;.</para>
+      
+      <para>You should also make sure that the implementation classes (and dependencies) are also
+      available on the classpath of the server war, for example by dropping the necessary
+      wars in the server/{profile}/lib directory of your JBossAS installation.</para>
+      
+      <para>For example, suggest you want to use the "Email" service task (that is provided
+      out-of-the-box as an example in the jbpm-workitems module).  You should put the
+      jbpm-workitems, javax.mail and javax.activation jars in the lib folder of the AS and
+      the include the following two configuration files in the META-INF folder in the
+      WEB-INF/classes folder of the server war. The drools.session.conf simply refers to
+      the CustomWorkItemHandlers.conf file that contains the actual handlers:</para>
+      
+      <programlisting language="java">drools.workItemHandlers = CustomWorkItemHandlers.conf</programlisting>
+      
+      <para>This configuration file then specifies which handler to register for each of
+      the domain-specific services that are being used, using MVEL to specify a
+      Map&lt;String,WorkItemHandler&gt; (with host, port, username and password replaced
+      by a meaningful value of course):</para>
+      
+      <programlisting language="java">[
+  "Email": new org.jbpm.process.workitem.email.EmailWorkItemHandler(
+             "host", "port", "username", "password"),  
+]</programlisting>
+      
+      <para>The installer simplifies registering your own work item handlers significantly
+      by offering these configuration files in the jbpm-installer/conf folder already
+      and automatically copying them to the right location when installing the demo.  Simply
+      update these files with your own entries before running ant install.demo.</para>
+      
+    </section>
+
   </section>
 
   <section>
@@ -212,8 +261,7 @@
   code to model the form.  For example, the form to start the evaluation process shown
   above is defined in the com.sample.evaluation.ftl file:</para>
 
-  <programlisting language="html">
-&lt;html&gt;
+  <programlisting language="html">&lt;html&gt;
 &lt;body&gt;
 &lt;h2&gt;Start Performance Evaluation&lt;/h2&gt;
 &lt;hr&gt;
