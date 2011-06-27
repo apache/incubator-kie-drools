@@ -7,23 +7,23 @@
 
   <title id="ch.Human_Tasks.title">Human Tasks</title>
 
-  <para>An important aspect of work flow and BPM is human task management.
-  While some of the work performed in a process can be executed
-  automatically, some tasks need to be executed
-  with the interaction of human actors.  jBPM supports the use
-  of human tasks inside processes using a
-  special user task node that will represent this interaction.  This
-  node allows process designers to define
-  the type of task, the actor(s), the data associated with the task, etc.
-  We also have implemented a task service
-  that can be used to manage these user tasks.  Users are however open to integrate any
-  other solution if they want to, as this is fully pluggable.</para>
+  <para>An important aspect of business processes is human task management.  While some of
+  the work performed in a process can be executed automatically, some tasks need to be 
+  executed by human actors.  jBPM supports a special human task node inside processes for
+  modeling this interaction with human users.  This human task node allows process designers
+  to define the properties related to the task that the human actor needs to execute, like
+  for example the type of task, the actor(s), the data associated with the task, etc.
+  jBPM also includes a so-called human task service, a back-end service that manages the
+  life cycle of these tasks at runtime.  This implementation is based on the WS-HumanTask
+  specification.  Note however that this implementation is fully pluggable, meaning that
+  users can integrate their own human task solution if necessary.</para>
 
-  <para>To start using human tasks inside your processes, you first need to (1) include user
-  task nodes inside your process, (2) integrate a task management component of your choice (e.g.
-  the WS-HT implementation provided by us) and (3) have end users interact with the human task
-  management component using some kind of user interface.  These elements will be discussed in
-  more detail in the next sections.</para>
+  <para>To have human actors participate in your processes, you first need to (1) include 
+  human task nodes inside your process to model the interaction with human actors, 
+  (2) integrate a task management component (like for example the WS-HumanTask based
+  implementation provided by jBPM) and (3) have end users interact with a human task
+  client to request their task list and claim and complete the tasks assigned to them.
+  Each of these three elements will be discussed in more detail in the next sections.</para>
 
   <section>
     <title>Human tasks inside processes</title>
@@ -36,54 +36,81 @@
     </mediaobject>
 
     <para>jBPM supports the use of human tasks inside processes using a special user task
-    node (as shown in the figure above).  A user task node represents an atomic task that needs to be
-    executed by a human actor.  Although jBPM has a special user task node for including human
-    tasks inside a process, human tasks are simply considered as any other kind of external service that
-    needs to be invoked and  are therefore simply implemented as a special kind of work item.  The only
-    thing that is special about the user task node is that we have added support for swimlanes, making it
-    easier to assign tasks to users (see below). A user task node contains the following properties:
+    node (as shown in the figure above).  A user task node represents an atomic task that
+    needs to be executed by a human actor.  [Although jBPM has a special user task node for
+    including human tasks inside a process, human tasks are considered the same as any other
+    kind of external service that needs to be invoked and are therefore simply implemented
+    as a domain-specific service.  Check out the chapter on domain-specific services to
+    learn more about how to register your own domain-specific services.]</para>
+
+    <para>A user task node contains the following properties:
     <itemizedlist>
-      <listitem><emphasis>Id</emphasis>: The id of the node (which is unique within one node
-      container).</listitem>
-      <listitem><emphasis>Name</emphasis>: The display name of the node.</listitem>
-      <listitem><emphasis>TaskName</emphasis>: The name of the human task.</listitem>
-      <listitem><emphasis>Priority</emphasis>: An integer indicating the priority of the human task.</listitem>
-      <listitem><emphasis>Comment</emphasis>: A comment associated with the human task.</listitem>
-      <listitem><emphasis>ActorId</emphasis>: The actor id that is responsible for executing
-      the human task.  A list of actor id's can be specified using a comma (',') as separator.</listitem>
-      <listitem><emphasis>Skippable</emphasis>: Specifies whether the human task can
-      be skipped (i.e. the actor decides not to execute the human task).</listitem>
-      <listitem><emphasis>Content</emphasis>: The data associated with this task.</listitem>
-      <listitem><emphasis>Swimlane</emphasis>: The swimlane this human task node is part of.
-      Swimlanes make it easy to assign multiple human tasks to the same actor.  See below for
-      more detail on how to use swimlanes.
-      </listitem>
-      <listitem><emphasis>Wait for completion</emphasis>: If this property is true,
-      the human task node will only continue if the human task has been terminated
-      (i.e. completed or any other terminal state); otherwise it will continue 
-      immediately after creating the human task.</listitem>
-      <listitem><emphasis>On-entry and on-exit actions</emphasis>: Actions that are executed
-      upon entry and exit of this node.</listitem>
-      <listitem><emphasis>Parameter mapping</emphasis>: Allows copying the value of process
-      variables to parameters of the human task.  Upon creation of the human tasks, the
-      values will be copied.</listitem>
-      <listitem><emphasis>Result mapping</emphasis>: Allows copying the value of result
-      parameters of the human task to a process variable.  Upon completion of the human
-      task, the values will be copied.  Note that can only use result mappings when
-      "Wait for completion" is set to true.  A human task has a result variable "Result"
-      that contains the data returned by the human actor.  The variable "ActorId" contains
-      the id of the actor that actually executed the task.</listitem>
-      <listitem><emphasis>Timers</emphasis>: Timers that are linked to this node (see
-      the 'timers' section for more details).</listitem>
-      <listitem><emphasis>ParentId</emphasis>: Allows to specify the parent task id, in
-      the case that this task is a sub task of another. (see the 'sub task' section for
-      more details)</listitem>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>TaskName</emphasis>: The name of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Priority</emphasis>: An integer indicating the priority
+            of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Comment</emphasis>: A comment associated with the human
+            task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ActorId</emphasis>: The actor id that is responsible for
+             executing the human task.  A list of actor id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>GroupId</emphasis>: The group id that is responsible for
+             executing the human task.  A list of group id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+             <para><emphasis>Skippable</emphasis>: Specifies whether the human task
+             can be skipped, i.e., whether the actor may decide not to execute the
+             task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Content</emphasis>: The data associated with this task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Swimlane</emphasis>: The swimlane this human task node
+            is part of.  Swimlanes make it easy to assign multiple human tasks to
+            the same actor.  See the human tasks chapter for more detail on how to
+            use swimlanes.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On entry and on exit actions</emphasis>: Action scripts
+            that are executed upon entry and exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the value
+            of process variables to parameters of the human task.  Upon creation of
+            the human tasks, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value 
+            of result parameters of the human task to a process variable.  Upon
+            completion of the human task, the values will be copied.  A human task
+            has a result variable "Result" that contains
+            the data returned by the human actor.  The variable "ActorId" contains
+            the id of the actor that actually executed the task.</para>
+          </listitem>
     </itemizedlist>
     </para>
 
-    <para>You can edit these variables in the properties view (see below) when selecting the user task
-    node, or the most important properties can also be edited by double-clicking the user task node, after
-    which a custom user task node editor is opened, as shown below as well.</para>
+    <para>You can edit these variables in the properties view (see below) when selecting
+    the user task node, or the most important properties can also be edited by 
+    double-clicking the user task node, after which a custom user task node editor is 
+    opened, as shown below as well.</para>
 
     <mediaobject>
       <imageobject>
@@ -97,32 +124,129 @@
       </imageobject>
     </mediaobject>
 
-    <para>Note that you could either specify the values of the different
-    parameters (actorId, priority, content, etc.)
-    directly (in which case they will be the same for each execution of this
-    process), or make them context-specific,
-    based on the data inside the process instance.  For example, parameters 
-    of type String can use #{expression} to
-    embed a value in the String.  The value will be retrieved when creating
-    the work item and the #{...} will be
-    replaced by the toString() value of the variable.  The expression could
-    simply be the name of a variable (in which
-    case it will be resolved to the value of the variable), but more advanced
-    MVEL expressions are possible as well,
-    like #{person.name.firstname}.  For example, when sending an email, the
-    body of the email could contain something
-    like "Dear #{customer.name}, ...".  For other types of variables, it is
-    possible to map the value of a variable
-    to a parameter using the parameter mapping.</para>
+    <para>In many cases, the parameters of a user task (like for example the task name, 
+    actorId, priority, etc.) can be defined when creating the process.  You simply fill in
+    value of these properties in the property editor.  It is however likely that some
+    of the properties of the human task are dependent on some data related to the process
+    instance this task is being requested in.  For example, if a business process is used
+    to model how to handle incoming sales requests, tasks that are assigned to a sales
+    representative could include information related to that specific sales request, like
+    its unique id, the name of the customer that requested it, etc.  You can make your
+    human task properties dynamic in two ways:
+      <itemizedlist>
+        <listitem>#{expression}: Task parameters of type String can use #{expression} to embed the value of 
+        the given expression in the String.  For example, the comment related to a task
+        might be "Please review this request from user #{user}", where user is a variable
+        in the process.  At runtime, #{user} will be replaced by the actual user name for
+        that specific process instance.  The value of #{expression} will be resolved when
+        creating human task and the #{...} will be replaced by the toString() value of the
+        value it resolves to.  The expression could simply be the name of a variable (in
+        which case it will be resolved to the value of the variable), but more advanced
+        MVEL expressions are possible as well, like for example #{person.name.firstname}.
+        Note that this approach can only be used for String parameters.  Other parameters
+        should use parameter mapping to map a value to that parameter.</listitem>
+        <listitem>Parameter mapping: You can map the value of a process variable (or a 
+        value derived from a variable) to a task parameter.  For example, if you need to
+        assign a task to a user whose id is a variable in your process, you can do so
+        by mapping that variable to the parameter ActorId, as shown in the following
+        screenshot.  [Note that, for parameters of type String, this would be identical
+        to specifying the ActorId using #{userVariable}, so it would probably be easier
+        to use #{expression} in this case, but parameter mapping also allow you to assign
+        a value to properties that are not of type String.]</listitem>
+      </itemizedlist>  
+    </para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/ParameterMapping.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+    
+    <section>
+      <title>User and group assignment</title>
+      
+      <para>Tasks can be assigned to one specific user.  In that case, the task will show
+      up on the task list of that specific user only.  If a task is assigned to more than
+      one user, any of those users can claim and execute this task.</para>
+      
+      <para>Tasks can also be assigned to one or more groups.  This means that any user
+      that is part of the group can claim and execute the task.  For more information on
+      how user and group management is handled in the default human task service, check
+      out the user and group assignment.</para>
+      
+    </section>
+
+    <section>
+      <title>Data mapping</title>
+      
+      <para>Human tasks typically present some data related to the task that needs to be
+      performed to the actor that is executing the task and usually also request the actor
+      to provide some result data related to the execution of the task.  Task forms are
+      typically used to present this data to the actor and request results.</para>
+      
+      <section>
+        <title>Task parameters</title>
+      
+      <para>Data that needs to be displayed in a task form should be passed to the task,
+      using parameter mapping.  Parameter mapping allows you to copy the value of a
+      process variable to a task parameter (as described above).  This could for example
+      be the customer name that needs to be displayed in the task form, the actual request,
+      etc.  To copy data to the task, simply map the variable to a task parameter.  This
+      parameter will then be accessible in the task form (as shown later, when describing
+      how to create task forms).</para>
+      
+      <para>For example, the following human task (as part of the humantask example in 
+      jbpm-examples) is assigned to a sales representative that needs to decide whether
+      to accept or reject a request from a customer.  Therefore, it copies the following
+      process variables to the task as task parameters: the userId (of the customer doing
+      the request), the description (of the request), and the date (of the request).</para>
+      
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/TaskDataParameterMapping.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+    
+      </section>
+      
+      <section>
+        <title>Task results</title>
+        
+        <para>Data that needs to be returned to the process should be mapped from the
+        task back into process variables, using result mapping.  Result mapping allows you
+        to copy the value of a task result to a process variable (as described above).
+        This could for example be some data that the actor filled in.  To copy a task
+        result to a process variable, simply map the task result parameter to the variable
+        in the result mapping.  The value of the task result will then be copied after
+        completion of the task so it can be used in the remainder of the process.</para>
+        
+        <para>For example, the following human task (as part of the humantask example in 
+      jbpm-examples) is assigned to a sales representative that needs to decide whether
+      to accept or reject a request from a customer.  Therefore, it copies the following
+      task results back to the process: the outcome (the decision that the sales 
+      representative has made regarding this request, in this case "Accept" or "Reject")
+      and the comment (the justification why).</para>
+        
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-HumanTasks/TaskDataResultMapping.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+    
+      </section>
+      
+    </section>
 
     <section>
       <title>Swimlanes</title>
 
-      <para>User task nodes can be used in combination with swimlanes to assign multiple human tasks
-      to the similar actors.  Tasks in the same swimlane will be assigned to the same actor.  Whenever
-      the first task in a swimlane is created, and that task has an actorId specified, that actorId will
-      be assigned to the swimlane as well.  All other tasks that will be created in that swimlane will use
-      that actorId as well, even if an actorId has been specified for the task as well.</para>
+      <para>User tasks can be used in combination with swimlanes to assign multiple human tasks
+      to the same actor.  Whenever the first task in a swimlane is created, and that task
+      has an actorId specified, that actorId will be assigned to (all other tasks of) that
+      swimlane as well.  Note that this would override the actorId of subsequent tasks in
+      that swimlane (if specified), so only the actorId of the first human task in a swimlane
+      will be taken into account, all others will then take the actorId as assigned in the
+      first one.</para>
 
       <para>Whenever a human task that is part of a swimlane is completed, the actorId of that swimlane is
       set to the actorId that executed that human task.  This allows for example to assign a human task to
@@ -134,33 +258,49 @@
       "Swimlane" parameter of the user task node.  A process must also define all the swimlanes that it contains.
       To do so, open the process properties by clicking on the background of the process and click on the
       "Swimlanes" property.  You can add new swimlanes there.</para>
+      
+      <para>The new BPMN2 Eclipse editor will support a visual representation of swimlanes
+      (as horizontal lanes), so that it will be possible to define a human task as part of
+      a swimlane simply by dropping the task in that lane on the process model.</para>
+    </section>
+    
+    <section>
+      <title>Examples</title>
+      
+      <para>The jbpm-examples module has some examples that show human tasks in action, like
+      the evaluation example and the humantask example.  These examples show some of the
+      more advanced features in action, like for example group assignment, data passing in
+      and out of human tasks, swimlanes, etc.  Be sure to take a look at them for more
+      details and a working example.</para>
+    
     </section>
 
   </section>
 
   <section>
-    <title>Human task management component</title>
+    <title>Human task service</title>
 
     <para>As far as the jBPM engine is concerned, human tasks are similar to any other external
-    service that needs to be invoked and are implemented as an extension of normal work items.  As a result,
-    the process itself only contains an abstract description of the human tasks that need to be executed, and
-    a work item handler is responsible for binding this abstract tasks to a specific implementation.  Using
-    our pluggable work item handler approach (see the chapter on domain-specific processes for more details),
-    users can plug in any back-end implementation.</para>
+    service that needs to be invoked and are implemented as a domain-specific service.  Check
+    out the chapter on domain-specific services for more detail on how to include a domain-
+    specific service in your process.  Because a human task is an example of such a domain-
+    specific service, the process itself contains a high-level, abstract description of the
+    human task that need to be executed, and a work item handler is responsible for binding
+    this abstract tasks to a specific implementation.  Using our pluggable work item handler
+    approach, users can plug in the human task service that is provided by jBPM, as descrived
+    below, or they may register their own implementation.</para>
 
-    <para>We do however provide an implementation of such a human task management component  based on the
-    WS-HumanTask specification.  If you do not have the requirement to integrate a specific human task
-    component yourself, you can use this service.  It manages the task life cycle of the tasks (creation,
-    claiming, completion, etc.) and stores the state of the task persistently.  It also supports features
-    like internationalization, calendar integration, different types of assignments, delegation, deadlines,
-    etc.</para>
+    <para>The jBPM project provide a default implementation of a human task service based on the
+    WS-HumanTask specification.  If you do not have the requirement to integrate an existing human
+    task service, you can use this service.  It manages the life cycle of the tasks (creation,
+    claiming, completion, etc.) and stores the state of all the tasks, task lists, etc.  It also
+    supports features like internationalization, calendar integration, different types of
+    assignments, delegation, deadlines, etc.  It is implemented as part of the jbpm-human-task
+    module.</para>
 
-    <para>Because we did not want to implement a custom solution when a standard
-    is available, we chose to
-    implement our service based on the WS-HumanTask (WS-HT) specification.  This
-    specification defines in detail
-    the model of the tasks, the life cycle, and a lot of other features as the
-    ones mentioned above. It is pretty comprehensive and can be found
+    <para>The task service implementation is based on the WS-HumanTask (WS-HT) specification.
+    This specification defines (in detail) the model of the tasks, the life cycle, and a lot
+    of other features as the ones mentioned above. It is pretty comprehensive and can be found
     <ulink url="http://download.boulder.ibm.com/ibmdl/pub/software/dw/specs/ws-bpel4people/WS-HumanTask_v1.pdf">
     here</ulink>.</para>
 
@@ -168,16 +308,13 @@
       <title>Task life cycle</title>
     
       <para>Looking from the perspective of the process, whenever a user task node
-      is triggered during the
-      execution of a process instance, a human task is created.  The process will
-      only continue from that point
-      when that human task has been completed or aborted (unless of course you specify
-      that the process does not
-      need to wait for the human task to complete, by setting the "Wait for completion"
-      property to true).  However,
-      the human task usually has a separate life cycle itself. We will now shortly 
-      introduce this life cycle, as shown
-      in the figure below. For more details, check out the WS-HumanTask specification.</para>
+      is triggered during the execution of a process instance, a human task is created.
+      The process will only leave that node when that human task has been completed
+      or aborted.</para>
+      
+      <para>The human task itself usually has a complete life cycle itself as well. We
+      will now shortly introduce this life cycle, as shown in the figure below. For more
+      details, check out the WS-HumanTask specification.</para>
 
       <mediaobject>
         <imageobject>
@@ -224,30 +361,28 @@
     </section>
 
     <section>
-      <title>Linking the task component to the jBPM engine</title>
+      <title>Linking the human task service to the jBPM engine</title>
 
-      <para>The task management component needs to be integrated with the
-      jBPM engine just like any other external
-      service, by registering a work item handler that is responsible for
-      translating the abstract work item (in this case
-      a human task) to a specific invocation.  We have implemented such a
-      work item handler
-      (org.jbpm.process.workitem.wsht.WSHumanTaskHandler in the 
-      jbpm-human-task module) so you can easily link this
-      work item handler like this:</para>
+      <para>The human task service needs to be integrated with the jBPM engine just like
+      any other external service, by registering a work item handler that is responsible
+      for translating the abstract work item (in this case a human task) to a specific
+      invocation of a service.  We have implemented this work item handler
+      (org.jbpm.process.workitem.wsht.WSHumanTaskHandler in the jbpm-human-task module),
+      so you can register this work item handler like this:</para>
       <programlisting language="java">StatefulKnowledgeSession ksession = ...;
 ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanTaskHandler());</programlisting>
-      <para>By default, this handler will connect to the human task management component
-      on the local machine on port 9123,
-      but you can easily change that by invoking the setConnection(ipAddress, port)
+
+      <para>If you are using persistence, you should use the CommandBasedWSHumanTaskHandler
+      instead (org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler in the 
+      jbpm-human-task module), like this:</para>
+      <programlisting language="java">StatefulKnowledgeSession ksession = ...;
+ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new CommandBasedWSHumanTaskHandler());</programlisting>
+
+      <para>By default, this handler will connect to the human task service on the local
+      machine on port 9123.  You can easily change the address and port of the human task
+      service that should be used by by invoking the setConnection(ipAddress, port)
       method on the WSHumanTaskHandler.</para>
       
-      <para>If you are using persistence for the session (check out the chapter on
-      persistence for more information), you should use the 
-      org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler as that makes
-      sure that the state of the process instances is persisted correctly after
-      interacting with the process engine.</para>
-
       <para>The communication between the human task service and the process engine,
       or any task client, is done using messages being sent between the client and the
       server.  The implementation allows different transport mechanisms being plugged
@@ -256,8 +391,22 @@ ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new WSHumanT
       for client/server communication. An alternative implementation using HornetQ
       is also available.</para>
 
-      <para>A task client offers the following methods for managing the life cycle of
-      human tasks:</para>
+    </section>
+
+    <section>
+      <title>Interacting with the human task service</title>
+
+      <para>The human task service exposes various methods to manage the life cycle of
+      the tasks through a Java API.  This allows clients to integrate (at a low level) 
+      with the human task service.  Note that end users should probably will not interact
+      with this low-level API directly but rather use one of the more user-friendly task
+      clients (see below) that offer a graphical user interface to request task lists,
+      claim and complete tasks, etc.  These task clients internally interact with the 
+      human task service using this API as well.  But the low-level API is also available
+      for developers to interact with the human task service directly.</para>
+      
+      <para>A task client (class org.jbpm.task.service.TaskClient) offers the following
+      methods for managing the life cycle of human tasks:</para>
 
       <programlisting language="java">public void start( long taskId, String userId, TaskOperationResponseHandler responseHandler )
 public void stop( long taskId, String userId, TaskOperationResponseHandler responseHandler )
@@ -271,15 +420,13 @@ public void complete( long taskId, String userId, ContentData outputData,
                       TaskOperationResponseHandler responseHandler )
 ...</programlisting>
 
-      <para>You can either use these methods directly, or probably use some kind of GUI
-      that the end user will use to lookup and execute the tasks that are assigned to them.
-      If you take a look a the method signatures you will notice that almost all of this method
-      takes the following arguments:</para>
+      <para>If you take a look a the method signatures you will notice that almost all of
+      these methods take the following arguments:</para>
 
       <itemizedlist>
         <listitem>
           <para><emphasis role="bold">taskId</emphasis>:
-          The id of the task that we are working with. This is usually extract from the
+          The id of the task that we are working with. This is usually extracted from the
           currently selected task in the user task list in the user interface.</para>
         </listitem>
 
@@ -291,21 +438,109 @@ public void complete( long taskId, String userId, ContentData outputData,
 
         <listitem>
           <para><emphasis role="bold">responseHandler</emphasis>: Communication with
-          the task service is usually asynchronous, so you should use a response handler
+          the task service is asynchronous, so you should use a response handler
           that will be notified when the results are available.</para>
         </listitem>
       </itemizedlist>
 
-      <para>As you can imagine all the methods create a message that will be
-      sent to the server, and the server will execute the logic that
+      <para>When you invoke a message on the TaskClient, a message is created that
+      will be sent to the server, and the server will execute the logic that
       implements the correct action.</para>
 
+      <para>The following code sample shows how to create a task client and interact with
+      the task service to create, start and complete a task.</para>
+
+      <programlisting language="java">TaskClient client = new TaskClient(new MinaTaskClientConnector("client 1",
+    new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+client.connect("127.0.0.1", 9123);
+
+// adding a task
+BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+Task task = ...;
+client.addTask( task, null, addTaskResponseHandler );
+long taskId = addTaskResponseHandler.getTaskId();
+        
+// getting tasks for user "bobba"
+BlockingTaskSummaryResponseHandler taskSummaryResponseHandler =
+    new BlockingTaskSummaryResponseHandler();
+client.getTasksAssignedAsPotentialOwner("bobba", "en-UK", taskSummaryResponseHandler);
+List&lt;TaskSummary&gt; tasks = taskSummaryResponseHandler.getResults();
+
+// starting a task
+BlockingTaskOperationResponseHandler responseHandler =
+    new BlockingTaskOperationResponseHandler();
+client.start( taskId, "bobba", responseHandler );
+responseHandler.waitTillDone(1000); 
+
+// completing a task
+responseHandler = new BlockingTaskOperationResponseHandler();
+client.complete( taskId, "bobba".getId(), null, responseHandler );
+responseHandler.waitTillDone(1000);
+</programlisting>
+
+    </section>
+    
+    <section>
+      <title>User and group assignment</title>
+      
+      <para>Tasks can be assigned to one specific user.  In that case, the task will show
+      up on the task list of that specific user only.  If a task is assigned to more than
+      one user, any of those users can claim and execute this task.  Tasks can also be 
+      assigned to one or more groups.  This means that any user that is part of the group
+      can claim and execute the task.</para>
+      
+      <para>The human task service needs to know what all the possible valid user and group
+      ids are (to make sure tasks are assigned to existing users and/or groups to avoid
+      errors and tasks that end up assigned to non-existing users).  You need to make sure
+      to register all users and groups before tasks can be assigned to them.  This can be
+      done dynamically.</para>
+      
+<programlisting language="java">EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+TaskServiceSession taskSession = taskService.createSession();
+// now register new users and groups
+taskSession.addUser(new User("krisv"));
+taskSession.addGroup(new Group("developers"));</programlisting>
+
+      <para>The human task service itself does not maintain the relationship between users
+      and groups.  This is considered outside the scope of the human task service, as in
+      general businesses already have existing services that contain this information (like
+      for example an LDAP service).  Therefore, the human task service also offers you
+      to specify the list of groups that a user is part of, so this information can also
+      be taken into account when for example requesting the task list or claiming a task.
+      </para>
+      
+      <para>For example, if a task is assigned to the group "sales" and the user "sales-rep"
+      that is part of that group wants to claim that task, he should pass the fact that he
+      is part of that group when requesting the list of tasks that he is assigned to as
+      potential owner:</para>
+      
+<programlisting language="java">List&lt;String&gt; groups = new ArrayList&lt;String&gt;();
+groups.add("sales");
+taskClient.getTasksAssignedAsPotentialOwner("sales-rep", groups, "en-UK", taskSummaryHandler);</programlisting>
+      
+      <para>The WS-HumanTask specification also introduces the role of an administrator.
+      An administrator can manipulate the life cycle of the task, even though he might not
+      be assigned as a potential owner of that task.  By default, jBPM registers a special
+      user with userId "Administrator" as the administrator of each task.  You should 
+      therefor make sure that you always define at least a user "Adminstrator" when
+      registering the list of valid users at the task service.</para>
+      
+      <para>Future versions of jBPM will provide a callback interface that will simplify
+      the user and group management.  This interface will allow you to validate users
+      and groups without having to register them all at the task service, and provide
+      a method that you can implement to dynamically resolve the groups a user is part
+      of (for example by contacting an existing service like LDAP).  Users will then be
+      able to simply register their implementation of this callback interface without
+      having to provide the list of groupIds the user is part of for all relevent method
+      invocations.</para>
+      
     </section>
 
     <section>
-      <title>Starting the Task Management Component</title>
+      <title>Starting the human task service</title>
 
-      <para>The task management component is a completely independent service
+      <para>The human task service is a completely independent service
       that the process engine communicates with.  We therefore recommend to
       start it as a separate service as well.  The installer contains a command
       to start the task server (in this case using Mina as transport protocol),
@@ -389,58 +624,23 @@ thread.start();</programlisting>
       class in the src/test/java source folder that can be used to start a task server.
       It automatically adds users and groups as defined in LoadUsers.mvel and
       LoadGroups.mvel configuration files.</para>
-    </section>
-
-    <section>
-      <title>Interacting With the Task Management Component</title>
-
-      <para>The task management component exposes various methods to manage the
-      life cycle of the tasks through a Java API.
-      This allows clients to integrate (at a low level) with the task management
-      component.  Note that end users should probably
-      not interact with this low-level API directly but rather use one of the
-      task list clients (see below).  These clients interact with
-      the task management component using this API.  The following code sample
-      shows how to create a task client and interact with the task service
-      to create, start and complete a task.</para>
-
-      <programlisting language="java">TaskClient client = new TaskClient(new MinaTaskClientConnector("client 1",
-    new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-client.connect("127.0.0.1", 9123);
-
-// adding a task
-BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-Task task = ...;
-client.addTask( task, null, addTaskResponseHandler );
-long taskId = addTaskResponseHandler.getTaskId();
-        
-// getting tasks for user "bobba"
-BlockingTaskSummaryResponseHandler taskSummaryResponseHandler =
-    new BlockingTaskSummaryResponseHandler();
-client.getTasksAssignedAsPotentialOwner("bobba", "en-UK", taskSummaryResponseHandler);
-List&lt;TaskSummary&gt; tasks = taskSummaryResponseHandler.getResults();
-
-// starting a task
-BlockingTaskOperationResponseHandler responseHandler =
-    new BlockingTaskOperationResponseHandler();
-client.start( taskId, "bobba", responseHandler );  
-
-// completing a task
-responseHandler = new BlockingTaskOperationResponseHandler();
-client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );
-</programlisting>
-
+      
+      <para>The jBPM installer automatically starts a human task service (using an
+      in-memory H2 database) as a separate Java application.  This task service is defined
+      in the task-service directory in the jbpm-installer folder.  You can register
+      new users and task by modifying the LoadUsers.mvel and LoadGroups.mvel scripts
+      in the resources directory.</para>
     </section>
 
   </section>
 
   <section>
-    <title>Human Task Management Interface</title>
+    <title>Human task clients</title>
 
     <para></para>
 
     <section>
-      <title>Eclipse integration</title>
+      <title>Eclipse demo task client</title>
 
       <para>The Drools IDE contains a org.drools.eclipse.task plugin that allows you to test and/or debug
       processes using human tasks.  In contains a Human Task View that can connect to a running task
@@ -458,13 +658,18 @@ client.complete( taskId, users.get( "bobba" ).getId(), null, responseHandler );
                      fileref="images/Chapter-HumanTasks/human_task_view.png" format="PNG" role="" />
         </imageobject>
       </mediaobject>
+      
+      <para>Notice that this task client only supports a (small) sub-set of the features
+      provided the human task service.  But in general this is sufficient to do some
+      initial testing and debugging or demoing inside the Eclipse IDE.</para>
     </section>
 
     <section>
-      <title>Web-based Task View</title>
+      <title>Web-based task client in jBPM Console</title>
 
       <para>The jBPM console also contains a task view for looking up task lists and managing
-      the life cycle of tasks.  See the chapter on the jBPM console for more information.</para>
+      the life cycle of tasks, task forms to complete the tasks, etc.  See the chapter on the
+      jBPM console for more information.</para>
     </section>
 
   </section>
