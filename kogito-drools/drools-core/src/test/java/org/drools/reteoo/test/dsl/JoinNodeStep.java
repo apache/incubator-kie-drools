@@ -20,12 +20,14 @@ import java.beans.IntrospectionException;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.MockObjectSource;
 import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.Declaration;
@@ -65,6 +67,12 @@ public class JoinNodeStep
                 rightObjectSource = (ObjectSource) context.get( rightInput );
             }
 
+            ObjectSource otn = rightObjectSource;
+            while ( !( otn instanceof ObjectTypeNode ) ) {
+                otn = otn.getParentObjectSource();
+            }
+            ClassObjectType cob = (ClassObjectType)((ObjectTypeNode)otn).getObjectType();
+            
             a = args.get( 1 );
             String fieldName = a[0].trim();
             String operator = a[1].trim();
@@ -73,11 +81,12 @@ public class JoinNodeStep
             Declaration declr = (Declaration) context.get( var );
 
             BetaNodeFieldConstraint betaConstraint;
+            
             try {
-                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( declr.getPattern(),
-                                                                                   fieldName,
-                                                                                   declr,
-                                                                                   operator );
+                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint(cob.getClassType(),
+                                                                                  fieldName,
+                                                                                  declr,
+                                                                                  operator );
             } catch ( IntrospectionException e ) {
                 throw new IllegalArgumentException();
             }
