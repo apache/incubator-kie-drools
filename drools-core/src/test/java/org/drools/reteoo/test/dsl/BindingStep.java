@@ -67,7 +67,7 @@ public class BindingStep
 
         try {
             Pattern pattern = reteTesterHelper.getPattern( Integer.parseInt( index ),
-                                                           "java.lang.Object" );
+                                                           type );
 //
 //            final Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
             
