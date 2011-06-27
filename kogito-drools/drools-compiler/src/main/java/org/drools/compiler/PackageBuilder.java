@@ -45,6 +45,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceConfiguration;
@@ -60,6 +61,7 @@ import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.Position;
+import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
@@ -615,11 +617,16 @@ public class PackageBuilder {
                 }
             } else if ( ResourceType.PMML.equals( type ) ) {
                 PMMLCompiler compiler = getPMMLCompiler();
-                String theory = compiler.compile( resource.getInputStream() );
+                if (compiler != null) {
 
-                addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
+                    String theory = compiler.compile( resource.getInputStream(), getPackageRegistry() );
+
+                    addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
                                       ResourceType.DRL,
                                       configuration );
+                } else {
+                    throw new RuntimeException( "Unknown resource type: " + type );
+                }
 
             } else {
                 ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
@@ -1610,8 +1617,29 @@ public class PackageBuilder {
         }
     }
 
+
     /**
-     * 
+     * Tries to determine whether a given annotation is properly
+     * defined using a java.lang.Annotation and can be resolved
+     *
+     * Proper annotations will be wired to dynamically generated beans
+     * @param annotation
+     * @param resolver
+     * @return
+     */
+     private Class resolveAnnotation(String annotation, TypeResolver resolver) {
+         try {
+             Class ann = resolver.resolveType(annotation);
+             return ann;
+         } catch (ClassNotFoundException e) {
+             // internal annotation, or annotation which can't be resolved.
+             return null;
+         }
+    }
+
+
+    /**
+     *
      * @param pkgRegistry
      * @throws SecurityException
      * @throws IllegalArgumentException
@@ -1665,7 +1693,23 @@ public class PackageBuilder {
         // prepares a class definition
         ClassDefinition def = new ClassDefinition( fullName,
                                                    fullSuperType,
-                                                   interfaces );
+                                                   interfaces);
+
+            for ( String annotationName : typeDescr.getAnnotationNames() ) {
+                Class annotation = resolveAnnotation(annotationName, pkgRegistry.getTypeResolver());
+                if ( annotation != null ) {
+                    try {
+                        AnnotationDefinition annotationDefinition = AnnotationDefinition.build(
+                                                                    annotation,
+                                                                    typeDescr.getAnnotations().get(annotationName).getValueMap(),
+                                                                    pkgRegistry.getTypeResolver());
+                        def.addAnnotation(annotationDefinition);
+                    } catch (NoSuchMethodException nsme) {
+                        this.results.add( new TypeDeclarationError( "Annotated type " + fullName +"  - wrong property in annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                                                            typeDescr.getLine() ) );
+                    }
+                }
+            }
 
         // fields definitions are created. will be used by subclasses, if any.
         // Fields are SORTED in the process
@@ -1739,6 +1783,21 @@ public class PackageBuilder {
                 fieldDef.setIndex( field.getIndex() );
                 fieldDef.setInherited( field.isInherited() );
                 fieldDef.setInitExpr( field.getInitExpr() );
+
+                for ( String annotationName : field.getAnnotationNames() ) {
+                        Class annotation = resolveAnnotation(annotationName, pkgRegistry.getTypeResolver());
+                        if ( annotation != null ) {
+                            try {
+                                AnnotationDefinition annotationDefinition = AnnotationDefinition.build(annotation,
+                                                                                                   field.getAnnotations().get(annotationName).getValueMap(),
+                                                                                                   pkgRegistry.getTypeResolver());
+                                fieldDef.addAnnotation(annotationDefinition);
+                            } catch (NoSuchMethodException nsme) {
+                                this.results.add( new TypeDeclarationError( "Annotated field " + field.getFieldName() +"  - wrong property in annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                                                            field.getLine() ) );
+                            }
+                        }
+                    }
 
                 queue.add( fieldDef );
             } catch ( ClassNotFoundException cnfe ) {

@@ -19,6 +19,8 @@ package org.drools.factmodel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.drools.base.ClassFieldAccessor;
 import org.drools.definition.type.FactField;
@@ -37,6 +39,8 @@ public class FieldDefinition
     private boolean            inherited  = false;
     private int                index      = -1;
     private String             initExpr   = null;
+
+    private List<AnnotationDefinition> annotations;
 
     private ClassFieldAccessor accessor   = null;
 
@@ -80,6 +84,7 @@ public class FieldDefinition
         this.type = (String) in.readObject();
         this.key = in.readBoolean();
         this.accessor = (ClassFieldAccessor) in.readObject();
+        this.annotations = (List<AnnotationDefinition>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -87,6 +92,7 @@ public class FieldDefinition
         out.writeObject( this.type );
         out.writeBoolean( this.key );
         out.writeObject( this.accessor );
+        out.writeObject( this.annotations );
     }
 
     /**
@@ -244,6 +250,20 @@ public class FieldDefinition
     public int compareTo(FieldDefinition other) {
         return (this.index - other.index);
     }
+
+
+
+    public void addAnnotation(AnnotationDefinition annotationDefinition) {
+        if (this.annotations == null) {
+            this.annotations = new ArrayList<AnnotationDefinition>();
+        }
+        this.annotations.add(annotationDefinition);
+    }
+
+    public List<AnnotationDefinition> getAnnotations() {
+        return annotations;
+    }
+
 
 
     public String getDefaultValueAsString() {
