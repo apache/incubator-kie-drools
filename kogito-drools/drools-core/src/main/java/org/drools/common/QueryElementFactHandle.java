@@ -171,4 +171,8 @@ public class QueryElementFactHandle
         return "results: " + Arrays.asList( (Object[]) this.object ).toString();
     }
 
+    public void disconnect() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
 }

@@ -83,4 +83,6 @@ public interface InternalFactHandle
     
     public String toTupleTree( int indent );
     
+    public void disconnect();
+    
 }

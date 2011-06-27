@@ -19,7 +19,7 @@ package org.drools.command.runtime.rule;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
-import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
@@ -42,11 +42,13 @@ public class GetFactHandleCommand
 
     public FactHandle execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        FactHandle factHandle = ksession.getFactHandle( object );
-        if ( factHandle != null && disconnected ){
-            ((DefaultFactHandle)factHandle).disconnect();
+        InternalFactHandle factHandle = (InternalFactHandle) ksession.getFactHandle( object );
+        if ( factHandle != null && disconnected){
+            InternalFactHandle handle = factHandle.clone();
+            handle.disconnect();
+            return handle;
         }
-        return factHandle;
+        return null;
     }
 
     public String toString() {
