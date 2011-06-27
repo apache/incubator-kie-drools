@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.tool.Rule;
+import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.base.accumulators.SumAccumulateFunction;
@@ -112,7 +113,7 @@ public class AccumulateNodeStep
                 if ( "source".equals( type ) ) {
                     Declaration declr = (Declaration) context.get( val );
                     try {
-                        BetaNodeFieldConstraint sourceBetaConstraint = this.reteTesterHelper.getBoundVariableConstraint( sourcePattern,
+                        BetaNodeFieldConstraint sourceBetaConstraint = this.reteTesterHelper.getBoundVariableConstraint( ((ClassObjectType)sourcePattern.getObjectType()).getClassType(),
                                                                                                                          fieldName,
                                                                                                                          declr,
                                                                                                                          operator );
