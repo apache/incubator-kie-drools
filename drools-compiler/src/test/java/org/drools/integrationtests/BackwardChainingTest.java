@@ -3,6 +3,7 @@ package org.drools.integrationtests;
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -1856,6 +1857,94 @@ public class BackwardChainingTest {
             ksession.dispose();
         }
     }    
+    
+    
+    @Test
+    public void testQueryFindAll() throws Exception {
+        Object[] objects = new Object[]{Integer.valueOf( 42 ), "a String", Integer.valueOf( 100 )  };
+        int oCount = objects.length + 1; // +1 for InitialFact
+        
+        List<Object> queryList = new ArrayList<Object>();
+        List<Object> ruleList = new ArrayList<Object>();
+        // expect all inserted objects + InitialFact
+        runTestQueryFindAll( 0, queryList, ruleList, objects );
+        System.out.println( queryList.size() + " - " + ruleList.size() );
+        assertEquals( oCount, queryList.size() );
+        assertContains( objects, queryList );
+                
+        // expect inserted objects + InitialFact
+        queryList.clear();
+        ruleList.clear();
+        runTestQueryFindAll( 1, queryList, ruleList, objects );
+        assertEquals( oCount*oCount, queryList.size() );
+
+        queryList.clear();
+        ruleList.clear();
+        runTestQueryFindAll( 2, queryList, ruleList, objects );
+        assertEquals( oCount*oCount, queryList.size() );
+    }
+        
+    private void runTestQueryFindAll( int iCase, List<Object> queryList, List<Object> ruleList,
+            Object[] objects ) throws Exception, Exception{
+        String str = "" +
+            "package org.test " +
+            "global java.util.List queryList " +
+            "global java.util.List ruleList " +
+            "query object( Object o ) " +
+            "    o := Object() " +
+            "end " +
+            "rule findObjectByQuery " +
+            "when ";
+        switch( iCase ){
+        case 0:
+            // omit Object()
+            str += "    object( $a ; ) ";
+            break;
+        case 1:
+            str += "    Object() ";
+            str += "    object( $a ; ) ";
+            break;
+        case 2:
+            str += "    object( $a ; ) ";
+            str += "    Object() ";
+            break;
+        }
+        str += 
+            "then " +
+            "#   System.out.println( \"Object by query: \" + $a );\n" +
+            "    queryList.add( $a ); " +
+            "end " +
+            "rule findObject " +
+            "salience 10 " +
+            "when " +
+            "    $o: Object() " +
+            "then " +
+            "#   System.out.println( \"Object: \" + $o );\n" +
+            "    ruleList.add( $o ); " +
+            "end " +
+            "";
+                    
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+    
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "queryList", queryList );            
+        ksession.setGlobal( "ruleList", ruleList );
+        for( Object o: objects ){
+            ksession.insert( o );
+        }
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
     
     public void assertContains( Object[] objects, List list) {
         for ( Object object : objects ) {
