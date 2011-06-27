@@ -20,8 +20,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ArrayElements;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
+import org.drools.base.extractors.ArrayElementReader;
+import org.drools.base.extractors.MVELClassFieldReader;
+import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.rule.Declaration;
 import org.drools.rule.Pattern;
 import org.drools.spi.InternalReadAccessor;
@@ -58,17 +63,33 @@ public class BindingStep
         String index = bind[1];
         String type = bind[2];
         String field = bind[3];
+        
 
         try {
             Pattern pattern = reteTesterHelper.getPattern( Integer.parseInt( index ),
-                                                           type );
-
-            final Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
+                                                           "java.lang.Object" );
+//
+//            final Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
+            
+//            reteTesterHelper.getTypeResolver().resolveType( className )
+            
+            
             ClassFieldAccessorStore store = (ClassFieldAccessorStore) context.get( "ClassFieldAccessorStore" );
 
-            final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                    field,
-                                                                    getClass().getClassLoader() );
+            InternalReadAccessor extractor = null;
+            if ( field.startsWith( "[" ) ) {
+                extractor = store.getReader( ArrayElements.class,
+                                             "elements",
+                                             getClass().getClassLoader() );
+                
+                extractor = new ArrayElementReader( extractor,
+                                                    Integer.parseInt( field.substring( 1, field.length() -1 ) ),
+                                                    reteTesterHelper.getTypeResolver().resolveType( type ) );                
+            } else {
+                extractor = store.getReader( reteTesterHelper.getTypeResolver().resolveType( type ),
+                                             field,
+                                             getClass().getClassLoader() );
+            }            
 
             Declaration declr = new Declaration( name,
                                                  extractor,
