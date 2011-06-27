@@ -29,6 +29,42 @@
     on SVN <ulink url="http://anonsvn.jboss.org/repos/soag/bpm-console/tags/bpm-console-2.1/">here</ulink>.
     The latest version of the console has been moved to Git and can be found 
     <ulink url="https://github.com/bpmc">here</ulink>.</para>
+    
+    <section>
+      <title>Authorization</title>
+      
+       <para>The console requires users to log in before being to use the application.
+       The console uses normal username / password authentication.  When using JBossAS
+       for example, this can be specified in the users.properties file in the
+       server/{profile}/conf folder.  There you can specify the combination of users that
+       can log into the console and their password.</para>
+       
+       <para>When using the jBPM installer, a predefined users.properties file (located in
+       the auth folder) is copied to the jbossas/server/default/conf folder automatically.
+       This file can be edited and contains a few predefined users: admin, krisv, john,
+       mary, and sales-rep (as these are commonly used in examples).  The password
+       associated with these users is the same as their username.</para>
+       
+    </section>
+
+    <section>
+      <title>User and group management</title>
+      
+       <para>The human task service requires you to define which groups a user is
+       part of, so that he can then claim the tasks that are assigned to one of the
+       groups he is part of.  The console uses username / group association for that.
+       When using JBossAS for example, this can be specified in the roles.properties
+       file in the server/{profile}/conf folder.  There you can specify the combination
+       of users and the groups they are part of.</para>
+       
+       <para>When using the jBPM installer, a predefined roles.properties file (located in
+       the auth folder) is copied to the jbossas/server/default/conf folder automatically.
+       This file can be edited and contains the groups the predefined users are part of
+       (as these are commonly used in examples): all users are part of the admin, manager
+       and user group but john is also part of the PM (project management) group, mary is
+       part of HR (human resources) and sales-rep is part of sales.</para>
+       
+    </section>
 
   </section>
 
@@ -154,6 +190,13 @@
     process etc.  But custom reports could be generated to show the information your
     company thinks is important, by replacing the report templates in the report
     directory.</para>
+    
+    <para>The jBPM installer by default does not install the reporting engine (to limit
+    the size of the download).  If you want to try out persistence, make sure to put the
+    jBPM.birt.download property in the build.properties file to true before running the
+    installer. If you get an exception that the report engine was not initialized
+    correctly, please run the installer again after making sure that reporting is 
+    enabled.</para>
 
     </section>
 
@@ -218,14 +261,45 @@ Check any that apply:&lt;br/&gt;
 &lt;/html&gt;
 </programlisting>
 
-  <para>Data that is provided by the user when filling in the task form will be
-  added as parameters when completing the task.  For example, when completing the
-  task above, the Map of outcome parameters will include result variables called
-  "performance", "initiative", "change" and "communication".  The result parameters
-  can be accessed in the related process by mapping these parameters to process
-  variables.</para>
+  <para>Task forms also have access to the additional task parameters that might
+  be mapped in the user task node from process variable using parameter mapping.
+  Check out the chapter on human tasks for more details.  These task parameters
+  are also directly accessible inside the task form.  For example, imagine that
+  you want to make a task form for review customer requests.  The user task node
+  copies the userId (of the customer that performed the request), the comment (the
+  description of the request) and the date (the actual date and time of the request)
+  from the process into the task as task parameters.  In that case, these parameters
+  will then be accessible directly in the task form, as shown below:</para>
 
-  <para>Forms should be included in the jbpm-gwt-form.jar in the server war.</para>
+<programlisting>&lt;html&gt;
+&lt;body&gt;
+&lt;h2&gt;Request Review&lt;/h2&gt;
+&lt;hr&gt;
+UserId: ${userId} &lt;br/&gt;
+Description: ${description} &lt;br/&gt;
+Date: ${date?date} ${date?time}
+&lt;form action="complete" method="POST" enctype="multipart/form-data"&gt;
+Comment:&lt;BR/&gt;
+&lt;textarea cols="50" rows="5" name="comment"&gt;&lt;/textarea&gt;&lt;/BR&gt;
+&lt;input type="submit" name="outcome" value="Accept"&gt;
+&lt;input type="submit" name="outcome" value="Reject"&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</programlisting>
+
+  <para>Data that is provided by the user when filling in the task form will be
+  added as result parameters when completing the task.  The name of the data element
+  will be used as the name of the result parameter. For example, when completing the
+  first task above, the Map of outcome parameters will include result variables called
+  "performance", "initiative", "change" and "communication".  The result parameters
+  can be accessed in the related process by mapping these result parameters to process
+  variables using result mapping.</para>
+
+  <para>Forms should either be available on the classpath (for example inside a jar in the
+  jbossas/server/default/lib folder or added to the set of sample forms in the
+  jbpm-gwt-form.jar in the jbpm console server war), or you could use the Guvnor
+  process repository to store your forms as well.  Check out the chapter on the
+  process repository to get more information on how to do that.</para>
 
   </section>
   
