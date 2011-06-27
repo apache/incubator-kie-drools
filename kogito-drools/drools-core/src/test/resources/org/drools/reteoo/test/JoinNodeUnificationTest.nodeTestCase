@@ -47,13 +47,13 @@ Test "Assert left then right"
     assert:
         otnLeft1, [h0];
     join1:
-        leftMemory, [[h0]];
-    join2:
-        leftMemory, [[h0, h1]];  
+        leftMemory, [[h0]];  
    /**
      * Insert Person
      */
     assert:
         otnRight1, [h1];
     join1:
-        rightMemory, [h1];            
+        rightMemory, [h1]; 
+                       join2:
+    leftMemory, [[h0, h1]];

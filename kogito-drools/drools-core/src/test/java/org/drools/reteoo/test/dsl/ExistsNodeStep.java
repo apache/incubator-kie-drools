@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.reteoo.ExistsNode;
 import org.drools.reteoo.LeftTupleSource;
@@ -86,7 +87,7 @@ public class ExistsNodeStep
 
             BetaNodeFieldConstraint betaConstraint;
             try {
-                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( rightSidePattern,
+                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( ((ClassObjectType)rightSidePattern.getObjectType()).getClassType(),
                                                                                    fieldName,
                                                                                    declr,
                                                                                    operator );

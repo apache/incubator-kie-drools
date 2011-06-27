@@ -20,6 +20,7 @@ import java.beans.IntrospectionException;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.ClassObjectType;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
@@ -79,7 +80,7 @@ public class NotNodeStep
 
                 BetaNodeFieldConstraint betaConstraint;
                 try {
-                    betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( declr.getPattern(),
+                    betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( ((ClassObjectType)declr.getPattern().getObjectType()).getClassType(),
                                                                                        fieldName,
                                                                                        declr,
                                                                                        operator );
