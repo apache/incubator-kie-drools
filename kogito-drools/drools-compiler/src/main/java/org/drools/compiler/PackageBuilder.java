@@ -1693,7 +1693,7 @@ public class PackageBuilder {
         // prepares a class definition
         ClassDefinition def = new ClassDefinition( fullName,
                                                    fullSuperType,
-                                                   interfaces);
+                                                   interfaces );
 
             for ( String annotationName : typeDescr.getAnnotationNames() ) {
                 Class annotation = resolveAnnotation(annotationName, pkgRegistry.getTypeResolver());
@@ -1705,7 +1705,7 @@ public class PackageBuilder {
                                                                     pkgRegistry.getTypeResolver());
                         def.addAnnotation(annotationDefinition);
                     } catch (NoSuchMethodException nsme) {
-                        this.results.add( new TypeDeclarationError( "Annotated type " + fullName +"  - wrong property in annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                        this.results.add( new TypeDeclarationError( "Annotated type " + fullName +"  - undefined property in @annotation " + annotationName + ": " + nsme.getMessage() + ";",
                                                             typeDescr.getLine() ) );
                     }
                 }
@@ -1793,7 +1793,7 @@ public class PackageBuilder {
                                                                                                    pkgRegistry.getTypeResolver());
                                 fieldDef.addAnnotation(annotationDefinition);
                             } catch (NoSuchMethodException nsme) {
-                                this.results.add( new TypeDeclarationError( "Annotated field " + field.getFieldName() +"  - wrong property in annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                                this.results.add( new TypeDeclarationError( "Annotated field " + field.getFieldName() +"  - undefined property in @annotation " + annotationName + ": " + nsme.getMessage() + ";",
                                                             field.getLine() ) );
                             }
                         }

@@ -42,7 +42,6 @@ public class AnnotationDefinition {
     }
 
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -55,7 +54,6 @@ public class AnnotationDefinition {
         return true;
     }
 
-    @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (values != null ? values.hashCode() : 0);
@@ -73,11 +71,9 @@ public class AnnotationDefinition {
 
     public static AnnotationDefinition build(Class annotationClass, Map<String, String> valueMap, TypeResolver resolver) throws NoSuchMethodException {
         AnnotationDefinition annotationDefinition = new AnnotationDefinition(annotationClass.getName());
-//        System.err.println("Buiding annotation of tyoe " + annotationClass.getName());
         HashMap<String,AnnotationPropertyVal> values = new HashMap<String,AnnotationPropertyVal>();
         for (String key : valueMap.keySet()) {
             AnnotationPropertyVal value = rebuild(key, annotationClass, valueMap.get(key), resolver);
-//            System.err.println("\t Property " + value);
             if (value != null) {
                 values.put(key,value);
             }
