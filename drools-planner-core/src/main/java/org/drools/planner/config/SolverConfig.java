@@ -246,10 +246,16 @@ public class SolverConfig {
         if (randomSeed == null) {
             randomSeed = inheritedConfig.getRandomSeed();
         }
+        if (solutionClass == null) {
+            solutionClass = inheritedConfig.getSolutionClass();
+        }
         if (planningEntityClassSet == null) {
             planningEntityClassSet = inheritedConfig.getPlanningEntityClassSet();
         } else if (inheritedConfig.getPlanningEntityClassSet() != null) {
             planningEntityClassSet.addAll(inheritedConfig.getPlanningEntityClassSet());
+        }
+        if (ruleBase == null) {
+            ruleBase = inheritedConfig.getRuleBase();
         }
         if (scoreDrlList == null) {
             scoreDrlList = inheritedConfig.getScoreDrlList();

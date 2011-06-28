@@ -36,17 +36,22 @@ import org.drools.planner.core.Solver;
  */
 public class XmlSolverConfigurer {
 
-    private XStream xStream;
-    private SolverConfig config = null;
-
-    public XmlSolverConfigurer() {
+    public static XStream buildXstream() {
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
-        xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
+        XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(SolverConfig.class);
         xStream.processAnnotations(BruteForceSolverPhaseConfig.class);
         xStream.processAnnotations(GreedySolverPhaseConfig.class);
         xStream.processAnnotations(LocalSearchSolverPhaseConfig.class);
+        return xStream;
+    }
+
+    private XStream xStream;
+    private SolverConfig config = null;
+
+    public XmlSolverConfigurer() {
+        xStream = buildXstream();
     }
 
     public XmlSolverConfigurer(String resource) {

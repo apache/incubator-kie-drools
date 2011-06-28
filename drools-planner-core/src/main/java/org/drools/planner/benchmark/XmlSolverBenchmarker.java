@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.config.XmlSolverConfigurer;
 
 public class XmlSolverBenchmarker {
 
@@ -33,12 +34,8 @@ public class XmlSolverBenchmarker {
     private SolverBenchmarkSuite suite = null;
 
     public XmlSolverBenchmarker() {
-        // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
-        xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
-        xStream.setMode(XStream.ID_REFERENCES);
+        xStream = XmlSolverConfigurer.buildXstream();
         xStream.processAnnotations(SolverBenchmarkSuite.class);
-        // It doesn't pick up the annotations of the @XStreamImplicit in xstream 1.2.2
-        xStream.processAnnotations(SolverBenchmark.class);
     }
 
     public void addXstreamAnnotations(Class... xstreamAnnotations) {
