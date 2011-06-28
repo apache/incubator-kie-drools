@@ -28,7 +28,7 @@ public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleList
     public void phaseStarted(GreedySolverPhaseScope greedySolverPhaseScope) {
         Collection<Object> planningEntities = greedySolverPhaseScope.getWorkingPlanningEntities();
         if (fitOrderPlanningEntityComparator == null) {
-            // Return them in the order as defined on the
+            // Return them in the order as defined on the solution
             fitOrderPlanningEntities = planningEntities;
         } else {
             List<Object> fitOrderPlanningEntityList = new ArrayList<Object>(planningEntities);
