@@ -26,7 +26,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
@@ -36,15 +36,15 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
 public class NurseRosteringStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
-        NurseRoster nurseRoster = (NurseRoster) abstractSolverScope.getWorkingSolution();
-        initializeAssignmentList(abstractSolverScope, nurseRoster);
+    public void initializeSolution(DefaultSolverScope solverScope) {
+        NurseRoster nurseRoster = (NurseRoster) solverScope.getWorkingSolution();
+        initializeAssignmentList(solverScope, nurseRoster);
     }
 
-    private void initializeAssignmentList(AbstractSolverScope abstractSolverScope,
+    private void initializeAssignmentList(DefaultSolverScope solverScope,
             NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
-        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solverScope.getWorkingMemory();
 
         List<Assignment> assignmentList = createAssignmentList(nurseRoster);
         for (Assignment assignment : assignmentList) {
@@ -58,7 +58,7 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
                 } else {
                     workingMemory.update(assignmentHandle, assignment);
                 }
-                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
+                Score score = solverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
                     bestEmployee = employee;

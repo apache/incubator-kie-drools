@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.termination;
 
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
 public class AndCompositeTermination extends AbstractCompositeTermination {
 
@@ -25,12 +25,12 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     // ************************************************************************
 
     /**
-     * @param localSearchStepScope never null
+     * @param stepScope never null
      * @return true if all the Terminations are terminated.
      */
-    public boolean isTerminated(LocalSearchStepScope localSearchStepScope) {
+    public boolean isTerminated(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            if (!termination.isTerminated(localSearchStepScope)) {
+            if (!termination.isTerminated(stepScope)) {
                 return false;
             }
         }
@@ -40,13 +40,13 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
-     * @param localSearchStepScope never null
+     * @param stepScope never null
      * @return the minimum timeGradient of the Terminations.
      */
-    public double calculateTimeGradient(LocalSearchStepScope localSearchStepScope) {
+    public double calculateTimeGradient(AbstractStepScope stepScope) {
         double timeGradient = 1.0;
         for (Termination termination : terminationList) {
-            double nextTimeGradient = termination.calculateTimeGradient(localSearchStepScope);
+            double nextTimeGradient = termination.calculateTimeGradient(stepScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.min(timeGradient, nextTimeGradient);
             }

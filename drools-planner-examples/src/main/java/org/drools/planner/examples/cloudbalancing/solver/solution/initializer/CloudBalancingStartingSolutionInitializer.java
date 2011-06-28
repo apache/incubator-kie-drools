@@ -26,7 +26,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -35,15 +35,15 @@ import org.drools.planner.examples.common.domain.PersistableIdComparator;
 
 public class CloudBalancingStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
-        CloudBalance cloudBalance = (CloudBalance) abstractSolverScope.getWorkingSolution();
-        initializeCloudAssignmentList(abstractSolverScope, cloudBalance);
+    public void initializeSolution(DefaultSolverScope solverScope) {
+        CloudBalance cloudBalance = (CloudBalance) solverScope.getWorkingSolution();
+        initializeCloudAssignmentList(solverScope, cloudBalance);
     }
 
-    private void initializeCloudAssignmentList(AbstractSolverScope abstractSolverScope,
+    private void initializeCloudAssignmentList(DefaultSolverScope solverScope,
             CloudBalance cloudBalance) {
         List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
-        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solverScope.getWorkingMemory();
 
         List<CloudAssignment> cloudAssignmentList = createCloudAssignmentList(cloudBalance);
         for (CloudAssignment cloudAssignment : cloudAssignmentList) {
@@ -57,7 +57,7 @@ public class CloudBalancingStartingSolutionInitializer extends AbstractStartingS
                 } else {
                     workingMemory.update(cloudAssignmentHandle, cloudAssignment);
                 }
-                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
+                Score score = solverScope.calculateScoreFromWorkingMemory();
                 if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
                     bestCloudComputer = cloudComputer;

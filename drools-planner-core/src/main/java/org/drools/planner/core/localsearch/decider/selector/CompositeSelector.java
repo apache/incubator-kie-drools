@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.move.Move;
@@ -50,9 +50,9 @@ public class CompositeSelector extends AbstractSelector {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         for (Selector selector : selectorList) {
-            selector.solvingStarted(localSearchSolverScope);
+            selector.phaseStarted(localSearchSolverPhaseScope);
         }
     }
 
@@ -90,9 +90,9 @@ public class CompositeSelector extends AbstractSelector {
     }
 
     @Override
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         for (Selector selector : selectorList) {
-            selector.solvingEnded(localSearchSolverScope);
+            selector.phaseEnded(localSearchSolverPhaseScope);
         }
     }
 

@@ -16,14 +16,19 @@
 
 package org.drools.planner.core.bruteforce;
 
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class BruteForceSolverScope extends AbstractSolverScope {
+public class BruteForceSolverPhaseScope extends AbstractSolverPhaseScope {
 
     private BruteForceStepScope lastCompletedBruteForceStepScope;
 
-    public AbstractStepScope getLastCompletedAbstractStepScope() {
+    public BruteForceSolverPhaseScope(DefaultSolverScope solverScope) {
+        super(solverScope);
+    }
+
+    public AbstractStepScope getLastCompletedStepScope() {
         return lastCompletedBruteForceStepScope;
     }
 

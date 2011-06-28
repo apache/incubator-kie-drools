@@ -16,14 +16,19 @@
 
 package org.drools.planner.core.localsearch;
 
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class LocalSearchSolverScope extends AbstractSolverScope {
+public class LocalSearchSolverPhaseScope extends AbstractSolverPhaseScope {
 
     private LocalSearchStepScope lastCompletedLocalSearchStepScope;
 
-    public AbstractStepScope getLastCompletedAbstractStepScope() {
+    public LocalSearchSolverPhaseScope(DefaultSolverScope solverScope) {
+        super(solverScope);
+    }
+
+    public AbstractStepScope getLastCompletedStepScope() {
         return lastCompletedLocalSearchStepScope;
     }
 

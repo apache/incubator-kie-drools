@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
+import org.drools.planner.config.SolverConfig;
 import org.drools.planner.core.score.Score;
 
 @XStreamAlias("solverBenchmark")
@@ -30,8 +30,8 @@ public class SolverBenchmark {
 
     private String name = null;
 
-    @XStreamAlias("localSearchSolver")
-    private LocalSearchSolverConfig localSearchSolverConfig = null;
+    @XStreamAlias("solver")
+    private SolverConfig solverConfig = null;
     @XStreamImplicit(itemFieldName = "unsolvedSolutionFile")
     private List<File> unsolvedSolutionFileList = null;
 
@@ -49,12 +49,12 @@ public class SolverBenchmark {
         this.name = name;
     }
 
-    public LocalSearchSolverConfig getLocalSearchSolverConfig() {
-        return localSearchSolverConfig;
+    public SolverConfig getSolverConfig() {
+        return solverConfig;
     }
 
-    public void setLocalSearchSolverConfig(LocalSearchSolverConfig localSearchSolverConfig) {
-        this.localSearchSolverConfig = localSearchSolverConfig;
+    public void setSolverConfig(SolverConfig solverConfig) {
+        this.solverConfig = solverConfig;
     }
 
     public List<File> getUnsolvedSolutionFileList() {
@@ -86,10 +86,10 @@ public class SolverBenchmark {
     // ************************************************************************
 
     public void inherit(SolverBenchmark inheritedSolverBenchmark) {
-        if (localSearchSolverConfig == null) {
-            localSearchSolverConfig = inheritedSolverBenchmark.getLocalSearchSolverConfig();
-        } else if (inheritedSolverBenchmark.getLocalSearchSolverConfig() != null) {
-            localSearchSolverConfig.inherit(inheritedSolverBenchmark.getLocalSearchSolverConfig());
+        if (solverConfig == null) {
+            solverConfig = inheritedSolverBenchmark.getSolverConfig();
+        } else if (inheritedSolverBenchmark.getSolverConfig() != null) {
+            solverConfig.inherit(inheritedSolverBenchmark.getSolverConfig());
         }
         if (unsolvedSolutionFileList == null) {
             unsolvedSolutionFileList = inheritedSolverBenchmark.getUnsolvedSolutionFileList();

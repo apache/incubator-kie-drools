@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public abstract class AbstractDeciderScoreComparatorFactory implements DeciderSc
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
@@ -49,7 +49,7 @@ public abstract class AbstractDeciderScoreComparatorFactory implements DeciderSc
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 

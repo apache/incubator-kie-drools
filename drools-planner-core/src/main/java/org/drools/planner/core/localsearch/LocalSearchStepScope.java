@@ -20,29 +20,30 @@ import java.util.Comparator;
 
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public class LocalSearchStepScope extends AbstractStepScope {
 
-    private final LocalSearchSolverScope localSearchSolverScope;
+    private final LocalSearchSolverPhaseScope localSearchSolverPhaseScope;
 
     private double timeGradient = Double.NaN;
     private Comparator<Score> deciderScoreComparator;
     private Move step = null;
+    private String stepString = null;
     private Move undoStep = null;
 
-    public LocalSearchStepScope(LocalSearchSolverScope localSearchSolverScope) {
-        this.localSearchSolverScope = localSearchSolverScope;
+    public LocalSearchStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        this.localSearchSolverPhaseScope = localSearchSolverPhaseScope;
     }
 
-    public LocalSearchSolverScope getLocalSearchSolverScope() {
-        return localSearchSolverScope;
+    public LocalSearchSolverPhaseScope getLocalSearchSolverPhaseScope() {
+        return localSearchSolverPhaseScope;
     }
 
     @Override
-    public AbstractSolverScope getAbstractSolverScope() {
-        return localSearchSolverScope;
+    public AbstractSolverPhaseScope getSolverPhaseScope() {
+        return localSearchSolverPhaseScope;
     }
 
     public double getTimeGradient() {
@@ -67,6 +68,17 @@ public class LocalSearchStepScope extends AbstractStepScope {
 
     public void setStep(Move step) {
         this.step = step;
+    }
+
+    /**
+     * @return null if logging level is to high
+     */
+    public String getStepString() {
+        return stepString;
+    }
+
+    public void setStepString(String stepString) {
+        this.stepString = stepString;
     }
 
     public Move getUndoStep() {

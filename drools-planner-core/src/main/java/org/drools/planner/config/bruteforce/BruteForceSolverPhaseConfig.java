@@ -17,12 +17,14 @@
 package org.drools.planner.config.bruteforce;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.AbstractSolverConfig;
-import org.drools.planner.core.bruteforce.BruteForceSolver;
-import org.drools.planner.core.bruteforce.DefaultBruteForceSolver;
+import org.drools.planner.config.SolverPhaseConfig;
+import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
+import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
-@XStreamAlias("bruteForceSolver")
-public class BruteForceSolverConfig extends AbstractSolverConfig {
+@XStreamAlias("bruteForce")
+public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -31,13 +33,12 @@ public class BruteForceSolverConfig extends AbstractSolverConfig {
     // Builder methods
     // ************************************************************************
 
-    public BruteForceSolver buildSolver() {
-        DefaultBruteForceSolver bruteForceSolver = new DefaultBruteForceSolver();
-        configureAbstractSolver(bruteForceSolver);
-        return bruteForceSolver;
+    public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+        DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
+        return bruteForceSolverPhase;
     }
 
-    public void inherit(BruteForceSolverConfig inheritedConfig) {
+    public void inherit(BruteForceSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
     }
 

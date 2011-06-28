@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy;
+package org.drools.planner.core.solver;
 
-import org.drools.planner.core.Solver;
+import org.drools.planner.core.solver.event.SolverPhaseLifecycleListener;
 
 /**
- * A GreedySolver is a Solver which uses the greedy algorithm, which is a construction heuristic.
- * @see Solver
- * @see DefaultGreedySolver
+ * A SolverPhase
+ * @see AbstractSolverPhase
  */
-public interface GreedySolver extends Solver {
+public interface SolverPhase {
+
+    void solve(DefaultSolverScope solverScope);
+
+    void addSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener);
+
+    void removeSolverPhaseLifecycleListener(SolverPhaseLifecycleListener lifecycleListener);
 
 }

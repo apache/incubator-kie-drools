@@ -206,7 +206,7 @@ public class SolverBenchmarkSuite {
         // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
         Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, List<SolverStatistic>>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            Solver solver = solverBenchmark.getLocalSearchSolverConfig().buildSolver();
+            Solver solver = solverBenchmark.getSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
@@ -320,7 +320,7 @@ public class SolverBenchmarkSuite {
     private CharSequence writeBestScoreSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 Score score = result.getScore();

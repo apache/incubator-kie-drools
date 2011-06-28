@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
 import java.util.Random;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
@@ -26,6 +26,7 @@ import org.drools.planner.core.move.DummyMove;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.SimpleScoreDefinition;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -36,9 +37,9 @@ public class GreatDelugeAcceptorTest {
     public void testCalculateAcceptChance() {
         // Setup
         Acceptor acceptor = new GreatDelugeAcceptor(1.20, 0.01);
-        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-        acceptor.solvingStarted(localSearchSolverScope);
-        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverScope);
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
+        acceptor.phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         localSearchStepScope.setStepIndex(0);
         acceptor.beforeDeciding(localSearchStepScope);
         // Pre conditions
@@ -63,22 +64,23 @@ public class GreatDelugeAcceptorTest {
 //        assertEquals(1.0, acceptor.calculateAcceptChance(c2));
 //        acceptor.stepTaken(localSearchStepScope);
 //        // Post conditions
-//        acceptor.solvingEnded(localSearchSolverScope);
+//        acceptor.phaseEnded(localSearchSolverPhaseScope);
     }
 
-    private LocalSearchSolverScope createLocalSearchSolverScope() {
-        LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
-        localSearchSolverScope.setScoreDefinition(new SimpleScoreDefinition());
-        localSearchSolverScope.setWorkingRandom(new Random() {
+    private LocalSearchSolverPhaseScope createLocalSearchSolverPhaseScope() {
+        DefaultSolverScope solverScope = new DefaultSolverScope();
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        solverScope.setScoreDefinition(new SimpleScoreDefinition());
+        solverScope.setWorkingRandom(new Random() {
             public double nextDouble() {
                 return 0.2;
             }
         });
-        localSearchSolverScope.setBestScore(DefaultSimpleScore.valueOf(-1000));
-        LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverScope);
+        solverScope.setBestScore(DefaultSimpleScore.valueOf(-1000));
+        LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         lastLocalSearchStepScope.setScore(DefaultSimpleScore.valueOf(-1000));
-        localSearchSolverScope.setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
-        return localSearchSolverScope;
+        localSearchSolverPhaseScope.setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
+        return localSearchSolverPhaseScope;
     }
 
     public MoveScope createMoveScope(LocalSearchStepScope localSearchStepScope, Score score) {

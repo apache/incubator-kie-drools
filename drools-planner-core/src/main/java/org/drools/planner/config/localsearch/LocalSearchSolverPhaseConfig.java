@@ -17,28 +17,26 @@
 package org.drools.planner.config.localsearch;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.AbstractSolverConfig;
+import org.drools.planner.config.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
 import org.drools.planner.config.localsearch.termination.TerminationConfig;
-import org.drools.planner.core.localsearch.DefaultLocalSearchSolver;
-import org.drools.planner.core.localsearch.LocalSearchSolver;
+import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
-@XStreamAlias("localSearchSolver")
-public class LocalSearchSolverConfig extends AbstractSolverConfig {
+@XStreamAlias("localSearch")
+public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
     @XStreamAlias("termination")
-    // TODO this new TerminationConfig is pointless due to xstream
-    // TODO but maybe we should be able to use the config API directly too
     private TerminationConfig terminationConfig = new TerminationConfig();
 
     @XStreamAlias("deciderScoreComparatorFactory")
@@ -96,18 +94,17 @@ public class LocalSearchSolverConfig extends AbstractSolverConfig {
     // Builder methods
     // ************************************************************************
 
-    public LocalSearchSolver buildSolver() {
-        DefaultLocalSearchSolver localSearchSolver = new DefaultLocalSearchSolver();
-        configureAbstractSolver(localSearchSolver);
-        localSearchSolver.setTermination(terminationConfig.buildTermination(localSearchSolver.getScoreDefinition()));
-        localSearchSolver.setDecider(buildDecider(localSearchSolver.getScoreDefinition()));
+    public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+        DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
+        localSearchSolverPhase.setTermination(terminationConfig.buildTermination(scoreDefinition));
+        localSearchSolverPhase.setDecider(buildDecider(environmentMode, scoreDefinition));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
-            localSearchSolver.setAssertStepScoreIsUncorrupted(true);
+            localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);
         }
-        return localSearchSolver;
+        return localSearchSolverPhase;
     }
 
-    private Decider buildDecider(ScoreDefinition scoreDefinition) {
+    private Decider buildDecider(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         DefaultDecider decider = new DefaultDecider();
         decider.setDeciderScoreComparator(deciderScoreComparatorFactoryConfig.buildDeciderScoreComparatorFactory());
         decider.setSelector(selectorConfig.buildSelector(scoreDefinition));
@@ -122,7 +119,7 @@ public class LocalSearchSolverConfig extends AbstractSolverConfig {
         return decider;
     }
 
-    public void inherit(LocalSearchSolverConfig inheritedConfig) {
+    public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         if (terminationConfig == null) {
             terminationConfig = inheritedConfig.getTerminationConfig();

@@ -25,7 +25,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
@@ -37,20 +37,20 @@ import org.drools.FactHandle;
 
 public class CurriculumCourseStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
-        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) abstractSolverScope.getWorkingSolution();
-        initializeLectureList(abstractSolverScope, schedule);
+    public void initializeSolution(DefaultSolverScope solverScope) {
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solverScope.getWorkingSolution();
+        initializeLectureList(solverScope, schedule);
     }
 
-    private void initializeLectureList(AbstractSolverScope abstractSolverScope,
+    private void initializeLectureList(DefaultSolverScope solverScope,
             CurriculumCourseSchedule schedule) {
         List<Period> periodList = schedule.getPeriodList();
         List<Room> roomList = schedule.getRoomList();
-        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solverScope.getWorkingMemory();
 
         List<Lecture> lectureList = createLectureList(schedule);
         for (Lecture lecture : lectureList) {
-            Score unscheduledScore = abstractSolverScope.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = solverScope.calculateScoreFromWorkingMemory();
             FactHandle lectureHandle = null;
 
             List<PeriodScoring> periodScoringList = new ArrayList<PeriodScoring>(periodList.size());
@@ -61,7 +61,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                 } else {
                     workingMemory.update(lectureHandle, lecture);
                 }
-                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
+                Score score = solverScope.calculateScoreFromWorkingMemory();
                 periodScoringList.add(new PeriodScoring(period, score));
             }
             Collections.sort(periodScoringList);
@@ -81,7 +81,7 @@ public class CurriculumCourseStartingSolutionInitializer extends AbstractStartin
                 for (Room room : roomList) {
                     lecture.setRoom(room);
                     workingMemory.update(lectureHandle, lecture);
-                    Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
+                    Score score = solverScope.calculateScoreFromWorkingMemory();
                     if (score.compareTo(unscheduledScore) < 0) {
                         if (score.compareTo(bestScore) > 0) {
                             bestScore = score;

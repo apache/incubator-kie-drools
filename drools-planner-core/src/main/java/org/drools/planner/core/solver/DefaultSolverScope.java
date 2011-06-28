@@ -38,7 +38,7 @@ import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractSolverScope {
+public class DefaultSolverScope {
 
     public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";
 
@@ -59,7 +59,6 @@ public abstract class AbstractSolverScope {
     protected Score startingScore; // TODO after initialization => ambiguous with setStartingSolution
     protected long calculateCount;
 
-    protected int bestSolutionStepIndex;
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me
 
@@ -136,14 +135,6 @@ public abstract class AbstractSolverScope {
         return calculateCount;
     }
 
-    public int getBestSolutionStepIndex() {
-        return bestSolutionStepIndex;
-    }
-
-    public void setBestSolutionStepIndex(int bestSolutionStepIndex) {
-        this.bestSolutionStepIndex = bestSolutionStepIndex;
-    }
-
     public Solution getBestSolution() {
         return bestSolution;
     }
@@ -160,8 +151,6 @@ public abstract class AbstractSolverScope {
         this.bestScore = bestScore;
     }
 
-    public abstract AbstractStepScope getLastCompletedAbstractStepScope();
-
     // ************************************************************************
     // Calculated methods
     // ************************************************************************
@@ -171,28 +160,9 @@ public abstract class AbstractSolverScope {
         calculateCount = 0L;
     }
 
-    public Score calculateScoreFromWorkingMemory() {
-        workingMemory.fireAllRules();
-        Score score = workingScoreCalculator.calculateScore();
-        workingSolution.setScore(score);
-        calculateCount++;
-        return score;
-    }
-
     public long calculateTimeMillisSpend() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
-    }
-
-    private void resetWorkingMemory() {
-        if (workingMemory != null) {
-            workingMemory.dispose();
-        }
-        workingMemory = ruleBase.newStatefulSession();
-        workingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, workingScoreCalculator);
-        for (Object fact : getWorkingFacts()) {
-            workingMemory.insert(fact);
-        }
     }
 
     public Collection<Object> getWorkingFacts() {
@@ -205,6 +175,25 @@ public abstract class AbstractSolverScope {
 
     public boolean isWorkingSolutionInitialized() {
         return solutionDescriptor.isInitialized(workingSolution);
+    }
+
+    public Score calculateScoreFromWorkingMemory() {
+        workingMemory.fireAllRules();
+        Score score = workingScoreCalculator.calculateScore();
+        workingSolution.setScore(score);
+        calculateCount++;
+        return score;
+    }
+
+    private void resetWorkingMemory() {
+        if (workingMemory != null) {
+            workingMemory.dispose();
+        }
+        workingMemory = ruleBase.newStatefulSession();
+        workingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, workingScoreCalculator);
+        for (Object fact : getWorkingFacts()) {
+            workingMemory.insert(fact);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 package org.drools.planner.core.constructionheuristic.greedy.decider;
 
 import org.drools.planner.core.bruteforce.BruteForcePlanningEntityIterator;
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverScope;
+import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedy.GreedyStepScope;
 import org.drools.planner.core.score.Score;
 
@@ -14,15 +14,15 @@ public class DefaultGreedyDecider implements GreedyDecider {
     }
 
     public void decideNextStep(GreedyStepScope greedyStepScope) {
-        GreedySolverScope greedySolverScope = greedyStepScope.getGreedySolverScope();
-        // TODO use greedySolverScope.getLastCompletedStepScope()
-        Score lastStepScore = greedySolverScope.calculateScoreFromWorkingMemory();
+        GreedySolverPhaseScope greedySolverPhaseScope = greedyStepScope.getGreedySolverPhaseScope();
+        // TODO use greedySolverPhaseScope.getLastCompletedStepScope()
+        Score lastStepScore = greedySolverPhaseScope.calculateScoreFromWorkingMemory();
         BruteForcePlanningEntityIterator bruteForcePlanningEntityIterator = new BruteForcePlanningEntityIterator(
-                greedySolverScope, greedyStepScope.getPlanningEntity());
-        Score maxScore = greedySolverScope.getScoreDefinition().getPerfectMinimumScore();
+                greedySolverPhaseScope, greedyStepScope.getPlanningEntity());
+        Score maxScore = greedySolverPhaseScope.getScoreDefinition().getPerfectMinimumScore();
         while (bruteForcePlanningEntityIterator.hasNext()) {
             bruteForcePlanningEntityIterator.next();
-            Score score = greedySolverScope.calculateScoreFromWorkingMemory();
+            Score score = greedySolverPhaseScope.calculateScoreFromWorkingMemory();
             if (score.compareTo(maxScore) > 0) {
                 greedyStepScope.setVariableToValueMap(bruteForcePlanningEntityIterator.getVariableToValueMap());
                 maxScore = score;

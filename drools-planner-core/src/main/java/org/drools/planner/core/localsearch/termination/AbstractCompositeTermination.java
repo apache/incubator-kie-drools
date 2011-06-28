@@ -18,9 +18,8 @@ package org.drools.planner.core.localsearch.termination;
 
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchSolver;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
 /**
  * Abstract superclass for CompositeTermination classes that combine multiple Terminations.
@@ -33,50 +32,42 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
         this.terminationList = terminationList;
     }
 
-    @Override
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        super.setLocalSearchSolver(localSearchSolver);
-        for (Termination termination : terminationList) {
-            termination.setLocalSearchSolver(localSearchSolver);
-        }
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         for (Termination termination : terminationList) {
-            termination.solvingStarted(localSearchSolverScope);
+            termination.phaseStarted(solverPhaseScope);
         }
     }
 
     @Override
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+    public void beforeDeciding(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            termination.beforeDeciding(localSearchStepScope);
+            termination.beforeDeciding(stepScope);
         }
     }
 
     @Override
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+    public void stepDecided(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            termination.stepDecided(localSearchStepScope);
+            termination.stepDecided(stepScope);
         }
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepTaken(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            termination.stepTaken(localSearchStepScope);
+            termination.stepTaken(stepScope);
         }
     }
 
     @Override
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         for (Termination termination : terminationList) {
-            termination.solvingEnded(localSearchSolverScope);
+            termination.phaseEnded(solverPhaseScope);
         }
     }
 

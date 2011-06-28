@@ -26,9 +26,9 @@ import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
 import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
-import org.drools.planner.config.bruteforce.BruteForceSolverConfig;
-import org.drools.planner.config.constructionheuristic.greedy.GreedySolverConfig;
-import org.drools.planner.config.localsearch.LocalSearchSolverConfig;
+import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
+import org.drools.planner.config.constructionheuristic.greedy.GreedySolverPhaseConfig;
+import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.core.Solver;
 
 /**
@@ -37,15 +37,16 @@ import org.drools.planner.core.Solver;
 public class XmlSolverConfigurer {
 
     private XStream xStream;
-    private AbstractSolverConfig config = null;
+    private SolverConfig config = null;
 
     public XmlSolverConfigurer() {
         // TODO From Xstream 1.3.3 that KeySorter will be the default. See http://jira.codehaus.org/browse/XSTR-363
         xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
-        xStream.processAnnotations(GreedySolverConfig.class);
-        xStream.processAnnotations(BruteForceSolverConfig.class);
-        xStream.processAnnotations(LocalSearchSolverConfig.class);
+        xStream.processAnnotations(SolverConfig.class);
+        xStream.processAnnotations(BruteForceSolverPhaseConfig.class);
+        xStream.processAnnotations(GreedySolverPhaseConfig.class);
+        xStream.processAnnotations(LocalSearchSolverPhaseConfig.class);
     }
 
     public XmlSolverConfigurer(String resource) {
@@ -57,7 +58,7 @@ public class XmlSolverConfigurer {
         xStream.processAnnotations(aliasClass);
     }
 
-    public AbstractSolverConfig getConfig() {
+    public SolverConfig getConfig() {
         return config;
     }
 
@@ -86,7 +87,7 @@ public class XmlSolverConfigurer {
     }
 
     public XmlSolverConfigurer configure(Reader reader) {
-        config = (AbstractSolverConfig) xStream.fromXML(reader);
+        config = (SolverConfig) xStream.fromXML(reader);
         return this;
     }
 

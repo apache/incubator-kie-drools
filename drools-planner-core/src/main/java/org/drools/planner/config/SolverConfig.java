@@ -19,8 +19,10 @@ package org.drools.planner.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -31,6 +33,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.planner.config.localsearch.termination.TerminationConfig;
 import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
@@ -38,10 +41,12 @@ import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
-import org.drools.planner.core.solver.AbstractSolver;
+import org.drools.planner.core.solver.AbstractSolverPhase;
+import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.solver.SolverPhase;
 
-public abstract class AbstractSolverConfig {
+@XStreamAlias("solver")
+public class SolverConfig {
 
     protected static final long DEFAULT_RANDOM_SEED = 0L;
 
@@ -62,8 +67,11 @@ public abstract class AbstractSolverConfig {
     @XStreamAlias("scoreDefinition")
     protected ScoreDefinitionConfig scoreDefinitionConfig = new ScoreDefinitionConfig();
 
-    protected StartingSolutionInitializer startingSolutionInitializer = null; // TODO must be @XStreamOmitField too?
-    protected Class<StartingSolutionInitializer> startingSolutionInitializerClass = null;
+    @XStreamAlias("termination")
+    private TerminationConfig terminationConfig = new TerminationConfig();
+
+    @XStreamImplicit()
+    protected List<SolverPhaseConfig> solverPhaseConfigList = null;
 
     public EnvironmentMode getEnvironmentMode() {
         return environmentMode;
@@ -121,45 +129,61 @@ public abstract class AbstractSolverConfig {
         this.scoreDefinitionConfig = scoreDefinitionConfig;
     }
 
-    public StartingSolutionInitializer getStartingSolutionInitializer() {
-        return startingSolutionInitializer;
+    public TerminationConfig getTerminationConfig() {
+        return terminationConfig;
     }
 
-    public void setStartingSolutionInitializer(StartingSolutionInitializer startingSolutionInitializer) {
-        this.startingSolutionInitializer = startingSolutionInitializer;
+    public void setTerminationConfig(TerminationConfig terminationConfig) {
+        this.terminationConfig = terminationConfig;
     }
 
-    public Class<StartingSolutionInitializer> getStartingSolutionInitializerClass() {
-        return startingSolutionInitializerClass;
+    public List<SolverPhaseConfig> getSolverPhaseConfigList() {
+        return solverPhaseConfigList;
     }
 
-    public void setStartingSolutionInitializerClass(Class<StartingSolutionInitializer> startingSolutionInitializerClass) {
-        this.startingSolutionInitializerClass = startingSolutionInitializerClass;
+    public void setSolverPhaseConfigList(List<SolverPhaseConfig> solverPhaseConfigList) {
+        this.solverPhaseConfigList = solverPhaseConfigList;
     }
 
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
-    public abstract Solver buildSolver();
-
-    protected ScoreDefinition configureAbstractSolver(AbstractSolver abstractSolver) {
+    public Solver buildSolver() {
+        DefaultSolver solver = new DefaultSolver();
+        AtomicBoolean terminatedEarlyHolder = new AtomicBoolean(false);
+        solver.setTerminatedEarlyHolder(terminatedEarlyHolder);
         if (environmentMode != EnvironmentMode.PRODUCTION) {
             if (randomSeed != null) {
-                abstractSolver.setRandomSeed(randomSeed);
+                solver.setRandomSeed(randomSeed);
             } else {
-                abstractSolver.setRandomSeed(DEFAULT_RANDOM_SEED);
+                solver.setRandomSeed(DEFAULT_RANDOM_SEED);
             }
         }
-        abstractSolver.setSolutionDescriptor(buildSolutionDescriptor());
-        abstractSolver.setRuleBase(buildRuleBase());
+        solver.setSolutionDescriptor(buildSolutionDescriptor());
+        solver.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
-        abstractSolver.setScoreDefinition(scoreDefinition);
+        solver.setScoreDefinition(scoreDefinition);
         // remove when score-in-solution is refactored
-        abstractSolver.setScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
-        abstractSolver.setStartingSolutionInitializer(buildStartingSolutionInitializer());
-        abstractSolver.setBestSolutionRecaller(new BestSolutionRecaller());
-        return scoreDefinition;
+        solver.setScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
+        BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
+        solver.setBestSolutionRecaller(bestSolutionRecaller);
+
+        // TODO solver.setTermination(terminationConfig.buildTermination(scoreDefinition));
+
+        if (solverPhaseConfigList == null) {
+            throw new IllegalArgumentException(
+                    "Configure <phases> in the solver configuration.");
+        }
+        List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
+        for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
+            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(environmentMode, scoreDefinition);
+            ((AbstractSolverPhase) solverPhase).setTerminatedEarlyHolder(terminatedEarlyHolder);
+            ((AbstractSolverPhase) solverPhase).setBestSolutionRecaller(bestSolutionRecaller);
+            solverPhaseList.add(solverPhase);
+        }
+        solver.setSolverPhaseList(solverPhaseList);
+        return solver;
     }
 
     private SolutionDescriptor buildSolutionDescriptor() {
@@ -215,27 +239,7 @@ public abstract class AbstractSolverConfig {
         }
     }
 
-    public StartingSolutionInitializer buildStartingSolutionInitializer() {
-        if (startingSolutionInitializer != null) {
-            return startingSolutionInitializer;
-        } else if (startingSolutionInitializerClass != null) {
-            try {
-                return startingSolutionInitializerClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("startingSolutionInitializerClass ("
-                        + startingSolutionInitializerClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("startingSolutionInitializerClass ("
-                        + startingSolutionInitializerClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    public void inherit(AbstractSolverConfig inheritedConfig) {
+    public void inherit(SolverConfig inheritedConfig) {
         if (environmentMode == null) {
             environmentMode = inheritedConfig.getEnvironmentMode();
         }
@@ -264,9 +268,19 @@ public abstract class AbstractSolverConfig {
         } else if (inheritedConfig.getScoreDefinitionConfig() != null) {
             scoreDefinitionConfig.inherit(inheritedConfig.getScoreDefinitionConfig());
         }
-        if (startingSolutionInitializer == null && startingSolutionInitializerClass == null) {
-            startingSolutionInitializer = inheritedConfig.getStartingSolutionInitializer();
-            startingSolutionInitializerClass = inheritedConfig.getStartingSolutionInitializerClass();
+        if (terminationConfig == null) {
+            terminationConfig = inheritedConfig.getTerminationConfig();
+        } else if (inheritedConfig.getTerminationConfig() != null) {
+            terminationConfig.inherit(inheritedConfig.getTerminationConfig());
+        }
+        if (solverPhaseConfigList == null) {
+            solverPhaseConfigList = inheritedConfig.getSolverPhaseConfigList();
+        } else if (inheritedConfig.getSolverPhaseConfigList() != null) {
+            // The inherited solverPhaseConfigList should be before the non-inherited solverPhaseConfigList.
+            List<SolverPhaseConfig> mergedList
+                    = new ArrayList<SolverPhaseConfig>(inheritedConfig.getSolverPhaseConfigList());
+            mergedList.addAll(solverPhaseConfigList);
+            solverPhaseConfigList = mergedList;
         }
     }
 

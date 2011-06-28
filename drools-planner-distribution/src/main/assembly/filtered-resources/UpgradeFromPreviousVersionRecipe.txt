@@ -9,6 +9,7 @@ on how likely your code is going to be affected by this change:
 - [MAJOR] Very likely affects your code.
 - [MINOR] Probably does not affect your code (especially if you followed the examples), unless you have hacks.
 - [RECOMMENDED] Not a backward incompatible change, but you probably want to do this.
+- [README] Read this to better understand why the following MAJOR change was made.
 
 From 5.0.0-m2 to 5.0.0
 ----------------------
@@ -667,7 +668,7 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
         <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
         <scoreDrl>...</scoreDrl>
 
-[RECOMMENDED] Understand the concept of a "planning entity" class.
+[README] Understand the concept of a "planning entity" class.
 The class (or classes) that change during planning (and do not implement Solution) are a planning entity.
 For example: ShiftAssignment, BedDesignation, Queen, CloudAssignment, ...
 The other domain classes are considered normal planning facts,
@@ -697,7 +698,7 @@ After in *.java:
         ...
     }
 
-[RECOMMENDED] Understand the concept of a "planning variable" property.
+[README] Understand the concept of a "planning variable" property.
 The property (or properties) on a planning entity class that are changed (through their setter) during planning
 are planning variables.
 For example: ShiftAssignment.getEmployee(), BedDesignation.getBed(), Queen.getY(), ...
@@ -847,7 +848,7 @@ After in *.java:
 
     }
 
-[RECOMMEND] A planning entity is considered uninitialized if one if at least on of its planning variables is null.
+[README] A planning entity is considered uninitialized if one if at least on of its planning variables is null.
 Therefor it's now possible to start planning from a partially initialized starting solution,
 for example during real-time re-planning after facts change.
 
@@ -935,3 +936,66 @@ After in *.java:
         ...
 
     }
+
+[MAJOR] TODO phasing changes
+
+[README] The StartingSolutionInitializer interface has been removed.
+Instead, there's now out-of-the-box support for several greedy construction heuristics.
+These implementations are fast, scalable and configurable.
+They also support features like terminateEarly, logging, partially initialized starting solutions, ...
+Alternatively, you can also replace it with your own construction heuristic,
+which is similar to how writing your own StartingSolutionInitializer was.
+
+[MAJOR] Replacing the StartingSolutionInitializer by a greedy construction heuristics (recommended)
+TODO
+
+[MINOR] Replacing the StartingSolutionInitializer by a custom construction heuristic
+TODO
+
+[MINOR] The AbstractMoveFactory lifecycle methods have changed signature.
+If you overwrote them (which is unlikely as most implements use CachedMoveFactory), you'll need to adjust them.
+Before in *MoveFactory.java:
+    public class ...MoveFactory extends AbstractMoveFactory {
+
+        @Override
+        public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+            ...
+        }
+
+        ...
+    }
+After in *MoveFactory.java:
+    public class ... extends AbstractMoveFactory {
+
+        @Override
+        public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+            ...
+        }
+
+        ...
+    }
+Similar for solvingEnded(LocalSearchSolverScope), which is now phaseEnded(LocalSearchSolverPhaseScope)
+
+[MINOR] The Selector, Acceptor and Forager method have changed signature.
+If you implemented a custom Selector, Acceptor or Forager, you 'll need to adjust them.
+Before in *Selector.java, *Acceptor.java or *Forager.java:
+    public class ...Selector extends AbstractSelector {
+
+        @Override
+        public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+            ...
+        }
+
+        ...
+    }
+After in *Selector.java, *Acceptor.java or *Forager.java:
+    public class ...Selector extends AbstractSelector {
+
+        @Override
+        public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+            ...
+        }
+
+        ...
+    }
+Similar for solvingEnded(LocalSearchSolverScope), which is now phaseEnded(LocalSearchSolverPhaseScope)

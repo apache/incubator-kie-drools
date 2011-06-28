@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.decider.selector;
+package org.drools.planner.core.localsearch.event;
 
-import java.util.Iterator;
+import java.util.EventListener;
 
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.decider.DeciderAware;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.drools.planner.core.move.Move;
 
-/**
- * A Selector selects or generates moves for the Decider.
- * @see AbstractSelector
- */
-public interface Selector extends DeciderAware, LocalSearchSolverPhaseLifecycleListener {
+public interface LocalSearchSolverPhaseLifecycleListener extends EventListener {
 
-    Iterator<Move> moveIterator(LocalSearchStepScope localSearchStepScope);
+    void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope);
+
+    void beforeDeciding(LocalSearchStepScope localSearchStepScope);
+
+    void stepDecided(LocalSearchStepScope localSearchStepScope);
+
+    void stepTaken(LocalSearchStepScope localSearchStepScope);
+
+    void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope);
 
 }

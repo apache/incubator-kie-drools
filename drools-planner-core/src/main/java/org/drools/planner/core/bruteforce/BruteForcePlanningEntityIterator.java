@@ -24,7 +24,7 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 
 public class BruteForcePlanningEntityIterator {
 
@@ -36,15 +36,15 @@ public class BruteForcePlanningEntityIterator {
     private List<BruteForcePlanningVariableIterator> planningVariableIteratorList
             = new ArrayList<BruteForcePlanningVariableIterator>();
 
-    public BruteForcePlanningEntityIterator(AbstractSolverScope solverScope, Object planningEntity) {
+    public BruteForcePlanningEntityIterator(AbstractSolverPhaseScope solverPhaseScope, Object planningEntity) {
         this.planningEntity = planningEntity;
-        planningEntityFactHandle = solverScope.getWorkingMemory().insert(planningEntity);
-        PlanningEntityDescriptor planningEntityDescriptor = solverScope.getSolutionDescriptor()
+        planningEntityFactHandle = solverPhaseScope.getWorkingMemory().insert(planningEntity);
+        PlanningEntityDescriptor planningEntityDescriptor = solverPhaseScope.getSolutionDescriptor()
                 .getPlanningEntityDescriptor(planningEntity.getClass());
         for (PlanningVariableDescriptor planningVariableDescriptor
                 : planningEntityDescriptor.getPlanningVariableDescriptors()) {
             BruteForcePlanningVariableIterator planningVariableIterator = new BruteForcePlanningVariableIterator(
-                    solverScope, planningEntity, planningEntityFactHandle, planningVariableDescriptor);
+                    solverPhaseScope, planningEntity, planningEntityFactHandle, planningVariableDescriptor);
             planningVariableIteratorList.add(planningVariableIterator);
         }
         reset();

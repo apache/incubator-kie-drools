@@ -19,16 +19,18 @@ package org.drools.planner.config.constructionheuristic.greedy;
 import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.AbstractSolverConfig;
-import org.drools.planner.core.constructionheuristic.greedy.DefaultGreedySolver;
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolver;
+import org.drools.planner.config.SolverPhaseConfig;
+import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.core.constructionheuristic.greedy.DefaultGreedySolverPhase;
+import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhase;
 import org.drools.planner.core.constructionheuristic.greedy.decider.DefaultGreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedy.decider.PickEarlyFitType;
 import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
+import org.drools.planner.core.score.definition.ScoreDefinition;
 
-@XStreamAlias("greedySolver")
-public class GreedySolverConfig extends AbstractSolverConfig {
+@XStreamAlias("greedy")
+public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -58,12 +60,11 @@ public class GreedySolverConfig extends AbstractSolverConfig {
     // Builder methods
     // ************************************************************************
 
-    public GreedySolver buildSolver() {
-        DefaultGreedySolver greedySolver = new DefaultGreedySolver();
-        configureAbstractSolver(greedySolver);
-        greedySolver.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
-        greedySolver.setGreedyDecider(buildGreedyDecider());
-        return greedySolver;
+    public GreedySolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+        DefaultGreedySolverPhase greedySolverPhase = new DefaultGreedySolverPhase();
+        greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
+        greedySolverPhase.setGreedyDecider(buildGreedyDecider());
+        return greedySolverPhase;
     }
 
     private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector() {
@@ -94,7 +95,7 @@ public class GreedySolverConfig extends AbstractSolverConfig {
         return greedyDecider;
     }
 
-    public void inherit(GreedySolverConfig inheritedConfig) {
+    public void inherit(GreedySolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         if (fitOrderPlanningEntityComparatorClass == null) {
             fitOrderPlanningEntityComparatorClass = inheritedConfig.getFitOrderPlanningEntityComparatorClass();

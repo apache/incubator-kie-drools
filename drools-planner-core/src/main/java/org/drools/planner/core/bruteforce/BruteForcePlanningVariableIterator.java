@@ -22,11 +22,11 @@ import java.util.Iterator;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 
 public class BruteForcePlanningVariableIterator {
 
-    private final AbstractSolverScope solverScope;
+    private final AbstractSolverPhaseScope solverPhaseScope;
     private final Object planningEntity;
     private final FactHandle planningEntityFactHandle;
     private final PlanningVariableDescriptor planningVariableDescriptor;
@@ -36,14 +36,15 @@ public class BruteForcePlanningVariableIterator {
 
     private Object workingValue;
 
-    public BruteForcePlanningVariableIterator(AbstractSolverScope solverScope, Object planningEntity,
-            FactHandle planningEntityFactHandle, PlanningVariableDescriptor planningVariableDescriptor) {
-        this.solverScope = solverScope;
+    public BruteForcePlanningVariableIterator(AbstractSolverPhaseScope solverPhaseScope,
+            Object planningEntity, FactHandle planningEntityFactHandle,
+            PlanningVariableDescriptor planningVariableDescriptor) {
+        this.solverPhaseScope = solverPhaseScope;
         this.planningEntity = planningEntity;
         this.planningEntityFactHandle = planningEntityFactHandle;
         this.planningVariableDescriptor = planningVariableDescriptor;
 
-        planningValues = planningVariableDescriptor.getRangeValues(solverScope.getWorkingSolution());
+        planningValues = planningVariableDescriptor.getRangeValues(solverPhaseScope.getWorkingSolution());
         planningValueIterator = planningValues.iterator();
     }
 
@@ -71,7 +72,7 @@ public class BruteForcePlanningVariableIterator {
     }
 
     private void changeWorkingValue(Object value) {
-        WorkingMemory workingMemory = solverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solverPhaseScope.getWorkingMemory();
         planningVariableDescriptor.setValue(planningEntity, value);
         workingMemory.update(planningEntityFactHandle, planningEntity);
         workingValue = value;

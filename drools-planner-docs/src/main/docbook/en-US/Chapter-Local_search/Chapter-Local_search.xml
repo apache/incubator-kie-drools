@@ -363,7 +363,7 @@ INFO  Starting with time spend (0), score (-6), new best score (-6).
 INFO  Step index (0), time spend (4), score (-3), new best score (-3), accepted move size (12) for picked step ([Queen-1] 1 @ 0 =&gt; 3).
 INFO  Step index (1), time spend (7), score (-1), new best score (-1), accepted move size (12) for picked step ([Queen-0] 0 @ 0 =&gt; 1).
 INFO  Step index (2), time spend (10), score (0), new best score (0), accepted move size (12) for picked step ([Queen-3] 3 @ 0 =&gt; 2).
-INFO  Solved at step index (2) with time spend (10) for best score (0) with average calculate count per second (7300).</programlisting>
+INFO  Solved with time spend (10) for best score (0) with average calculate count per second (7300).</programlisting>
 
     <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>
     implementation: <literal>[Queen-1] 1 @ 0 =&gt; 3</literal>.</para>

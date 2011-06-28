@@ -19,8 +19,8 @@ package org.drools.planner.core.localsearch.decider;
 import java.util.Iterator;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.localsearch.LocalSearchSolver;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
@@ -38,7 +38,7 @@ public class DefaultDecider implements Decider {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected LocalSearchSolver localSearchSolver;
+    protected LocalSearchSolverPhase localSearchSolverPhase;
 
     protected DeciderScoreComparatorFactory deciderScoreComparatorFactory;
     protected Selector selector;
@@ -48,8 +48,8 @@ public class DefaultDecider implements Decider {
     protected boolean assertMoveScoreIsUncorrupted = false;
     protected boolean assertUndoMoveIsUncorrupted = false;
 
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        this.localSearchSolver = localSearchSolver;
+    public void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase) {
+        this.localSearchSolverPhase = localSearchSolverPhase;
     }
 
     public DeciderScoreComparatorFactory getDeciderScoreComparator() {
@@ -89,11 +89,11 @@ public class DefaultDecider implements Decider {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        deciderScoreComparatorFactory.solvingStarted(localSearchSolverScope);
-        selector.solvingStarted(localSearchSolverScope);
-        acceptor.solvingStarted(localSearchSolverScope);
-        forager.solvingStarted(localSearchSolverScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        deciderScoreComparatorFactory.phaseStarted(localSearchSolverPhaseScope);
+        selector.phaseStarted(localSearchSolverPhaseScope);
+        acceptor.phaseStarted(localSearchSolverPhaseScope);
+        forager.phaseStarted(localSearchSolverPhaseScope);
     }
 
     public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
@@ -125,6 +125,9 @@ public class DefaultDecider implements Decider {
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();
             localSearchStepScope.setStep(step);
+            if (logger.isInfoEnabled()) {
+                localSearchStepScope.setStepString(step.toString());
+            }
             localSearchStepScope.setUndoStep(step.createUndoMove(workingMemory));
             localSearchStepScope.setScore(pickedMoveScope.getScore());
         }
@@ -139,15 +142,16 @@ public class DefaultDecider implements Decider {
         processMove(moveScope);
         undoMove.doMove(workingMemory);
         if (assertUndoMoveIsUncorrupted) {
-            Score undoScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
-            Score lastCompletedStepScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope()
+            Score undoScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().calculateScoreFromWorkingMemory();
+            Score lastCompletedStepScore = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope()
                     .getLastCompletedLocalSearchStepScope().getScore();
             if (!undoScore.equals(lastCompletedStepScore)) {
                 throw new IllegalStateException(
                         "Corrupted undo move (" + undoMove + ") received from move (" + move + ").\n"
                                 + "Unequal lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
                                 + undoScore + ").\n"
-                                + moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().buildConstraintOccurrenceSummary());
+                                + moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getSolverScope()
+                                        .buildConstraintOccurrenceSummary());
             }
         }
         logger.debug("    Move score ({}), accept chance ({}) for move ({}).",
@@ -155,9 +159,9 @@ public class DefaultDecider implements Decider {
     }
 
     private void processMove(MoveScope moveScope) {
-        Score score = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().calculateScoreFromWorkingMemory();
+        Score score = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().calculateScoreFromWorkingMemory();
         if (assertMoveScoreIsUncorrupted) {
-            moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().assertWorkingScore(score);
+            moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().assertWorkingScore(score);
         }
         moveScope.setScore(score);
         double acceptChance = acceptor.calculateAcceptChance(moveScope);
@@ -179,11 +183,11 @@ public class DefaultDecider implements Decider {
         forager.stepTaken(localSearchStepScope);
     }
 
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
-        deciderScoreComparatorFactory.solvingEnded(localSearchSolverScope);
-        selector.solvingEnded(localSearchSolverScope);
-        acceptor.solvingEnded(localSearchSolverScope);
-        forager.solvingEnded(localSearchSolverScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        deciderScoreComparatorFactory.phaseEnded(localSearchSolverPhaseScope);
+        selector.phaseEnded(localSearchSolverPhaseScope);
+        acceptor.phaseEnded(localSearchSolverPhaseScope);
+        forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
 }

@@ -16,19 +16,17 @@
 
 package org.drools.planner.core.localsearch;
 
-import org.drools.planner.core.Solver;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.drools.planner.core.solver.AbstractSolverPhase;
+import org.drools.planner.core.solver.SolverPhase;
 
 /**
- * A LocalSearchSolver is a Solver which uses a local search algorithm,
+ * A LocalSearchSolverPhase is a SolverPhase which uses a local search algorithm,
  * such as tabu search, simulated annealing, ...
- * @see Solver
- * @see DefaultLocalSearchSolver
+ * @see SolverPhase
+ * @see AbstractSolverPhase
+ * @see DefaultLocalSearchSolverPhase
  */
-public interface LocalSearchSolver extends Solver {
-
-    void addLocalSearchSolverLifecycleListener(LocalSearchSolverLifecycleListener lifecycleListener);
-
-    void removeLocalSearchSolverLifecycleListener(LocalSearchSolverLifecycleListener lifecycleListener);
+public interface LocalSearchSolverPhase extends SolverPhase {
 
 }

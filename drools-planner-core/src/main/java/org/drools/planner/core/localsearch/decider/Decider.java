@@ -20,13 +20,13 @@ import org.drools.planner.core.localsearch.LocalSearchSolverAware;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
 /**
  * A decider decides the next step.
  * @see DefaultDecider
  */
-public interface Decider extends LocalSearchSolverAware, LocalSearchSolverLifecycleListener {
+public interface Decider extends LocalSearchSolverAware, LocalSearchSolverPhaseLifecycleListener {
 
     /**
      * Decides the next step

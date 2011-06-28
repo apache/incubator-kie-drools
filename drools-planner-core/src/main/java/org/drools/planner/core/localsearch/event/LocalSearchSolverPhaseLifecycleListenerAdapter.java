@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy.event;
+package org.drools.planner.core.localsearch.event;
 
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
+import org.drools.planner.core.localsearch.LocalSearchStepScope;
 
-public abstract class GreedySolverLifecycleListenerAdapter implements GreedySolverLifecycleListener {
+public abstract class LocalSearchSolverPhaseLifecycleListenerAdapter implements LocalSearchSolverPhaseLifecycleListener {
 
-    public void solvingStarted(GreedySolverScope greedySolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook method
     }
 
-    public void beforeDeciding(GreedySolverScope greedySolverScope) {
+    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
         // Hook method
     }
 
-    public void stepDecided(GreedySolverScope greedySolverScope) {
+    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
         // Hook method
     }
 
-    public void stepTaken(GreedySolverScope greedySolverScope) {
+    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
         // Hook method
     }
 
-    public void solvingEnded(GreedySolverScope greedySolverScope) {
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook method
     }
 

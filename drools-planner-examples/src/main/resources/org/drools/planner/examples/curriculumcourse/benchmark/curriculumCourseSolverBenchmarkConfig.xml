@@ -19,11 +19,13 @@
       <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp13.xml</unsolvedSolutionFile>
       <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp14.xml</unsolvedSolutionFile>
 
-      <localSearchSolver>
+      <solver>
           <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
           <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
           <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-          <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
+          <scoreDefinition>
+              <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+          </scoreDefinition>
           <termination>
               <!--
                   Official benchmark maximumSecondsSpend allowed on:
@@ -32,34 +34,36 @@
               -->
               <maximumSecondsSpend>429</maximumSecondsSpend>
           </termination>
-      </localSearchSolver>
+      </solver>
     </inheritedSolverBenchmark>
 
     <solverBenchmark>
         <name>propertyTabu10</name>
-        <localSearchSolver>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <selector>
+        <solver>
+            <greedy>
+                <fitOrderPlanningEntityComparatorClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseFitOrderPlanningEntityComparator</fitOrderPlanningEntityComparatorClass>
+            </greedy>
+            <localSearch>
                 <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    <selector>
+                        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    </selector>
+                    <selector>
+                        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+                    </selector>
+                    <selector>
+                        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+                    </selector>
                 </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-                <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-            </forager>
-        </localSearchSolver>
+                <acceptor>
+                    <completePropertyTabuSize>10</completePropertyTabuSize>
+                    <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+                </acceptor>
+                <forager>
+                    <pickEarlyType>NEVER</pickEarlyType>
+                    <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+                </forager>
+            </localSearch>
+        </solver>
     </solverBenchmark>
 </solverBenchmarkSuite>

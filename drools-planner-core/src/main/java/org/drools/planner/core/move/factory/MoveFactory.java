@@ -19,11 +19,11 @@ package org.drools.planner.core.move.factory;
 import java.util.List;
 
 import org.drools.planner.core.localsearch.decider.DeciderAware;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
-public interface MoveFactory extends DeciderAware, LocalSearchSolverLifecycleListener {
+public interface MoveFactory extends DeciderAware, LocalSearchSolverPhaseLifecycleListener {
 
     List<Move> createMoveList(Solution solution);
 

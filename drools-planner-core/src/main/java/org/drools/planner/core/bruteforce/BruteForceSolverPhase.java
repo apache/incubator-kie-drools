@@ -16,13 +16,15 @@
 
 package org.drools.planner.core.bruteforce;
 
-import org.drools.planner.core.Solver;
+import org.drools.planner.core.solver.AbstractSolverPhase;
+import org.drools.planner.core.solver.SolverPhase;
 
 /**
- * A BruteForceSolver is a Solver which uses the brute force algorithm
- * @see Solver
- * @see DefaultBruteForceSolver
+ * A BruteForceSolverPhase is a SolverPhase which uses the brute force algorithm
+ * @see SolverPhase
+ * @see AbstractSolverPhase
+ * @see DefaultBruteForceSolverPhase
  */
-public interface BruteForceSolver extends Solver {
+public interface BruteForceSolverPhase extends SolverPhase {
 
 }

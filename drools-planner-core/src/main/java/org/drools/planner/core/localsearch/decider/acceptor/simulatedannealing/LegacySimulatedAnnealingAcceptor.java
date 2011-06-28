@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
@@ -45,7 +45,7 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         if (startingTemperature <= 0.0) {
             throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
                     + ") cannot be negative or zero.");
@@ -58,15 +58,15 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
-        LocalSearchSolverScope localSearchSolverScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope();
-        Score lastStepScore = localSearchSolverScope.getLastCompletedLocalSearchStepScope().getScore();
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope();
+        Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) > 0) {
             return 1.0;
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         // TODO don't abuse translateScoreToGraphValue
-        Double diff = localSearchSolverScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
+        Double diff = localSearchSolverPhaseScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
         if (diff == null) {
             // more hard constraints broken, ignore it for now
             return 0.0;

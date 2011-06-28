@@ -34,7 +34,8 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.localsearch.LocalSearchSolver;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
+import org.drools.planner.core.solver.DefaultSolver;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -58,13 +59,13 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         }
         configNameList.add(configName);
         CalculateCountStatisticListener statisticListener = new CalculateCountStatisticListener();
-        ((LocalSearchSolver) solver).addLocalSearchSolverLifecycleListener(statisticListener);
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(statisticListener);
         statisticListenerMap.put(configName, statisticListener);
     }
 
     public void removeListener(Solver solver, String configName) {
         CalculateCountStatisticListener statisticListener = statisticListenerMap.get(configName);
-        ((LocalSearchSolver) solver).removeLocalSearchSolverLifecycleListener(statisticListener);
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(statisticListener);
     }
 
     // ************************************************************************

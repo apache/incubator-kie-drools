@@ -149,7 +149,7 @@ public class SolutionDescriptor implements Serializable {
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
                 if (!planningEntityDescriptor.isInitialized(entity)) {
-                return false;
+                    return false;
                 }
             }
         }

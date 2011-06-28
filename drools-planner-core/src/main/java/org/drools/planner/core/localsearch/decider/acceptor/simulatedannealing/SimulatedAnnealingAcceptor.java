@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
@@ -45,7 +45,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         for (double startingTemperaturePart : startingTemperature.toDoubleArray()) {
             if (startingTemperaturePart < 0.0) {
                 throw new IllegalArgumentException("The startingTemperature (" + startingTemperature
@@ -58,8 +58,8 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
-        LocalSearchSolverScope localSearchSolverScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverScope();
-        Score lastStepScore = localSearchSolverScope.getLastCompletedLocalSearchStepScope().getScore();
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope();
+        Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) >= 0) {
             return 1.0;

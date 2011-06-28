@@ -5,42 +5,43 @@
     <inheritedSolverBenchmark>
       <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp01_initialized.xml</unsolvedSolutionFile>
 
-      <localSearchSolver>
+      <solver>
           <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
           <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
           <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-          <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-          <termination>
-              <maximumStepCount>2000</maximumStepCount>
-          </termination>
-      </localSearchSolver>
+          <scoreDefinition>
+              <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+          </scoreDefinition>
+      </solver>
     </inheritedSolverBenchmark>
 
     <solverBenchmark>
-        <localSearchSolver>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <selector>
+        <solver>
+            <localSearch>
+                <termination>
+                    <maximumStepCount>2000</maximumStepCount>
+                </termination>
                 <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    <selector>
+                        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+                    </selector>
+                    <selector>
+                        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+                    </selector>
+                    <selector>
+                        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+                    </selector>
                 </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-                <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
-                <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-            </forager>
-        </localSearchSolver>
+                <acceptor>
+                    <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+                    <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
+                    <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+                </acceptor>
+                <forager>
+                    <pickEarlyType>NEVER</pickEarlyType>
+                    <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+                </forager>
+            </localSearch>
+        </solver>
     </solverBenchmark>
 </solverBenchmarkSuite>

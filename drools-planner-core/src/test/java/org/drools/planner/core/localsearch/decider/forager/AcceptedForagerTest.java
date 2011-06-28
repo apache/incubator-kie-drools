@@ -19,7 +19,7 @@ package org.drools.planner.core.localsearch.decider.forager;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.move.DummyMove;
@@ -28,6 +28,7 @@ import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.definition.SimpleScoreDefinition;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -39,9 +40,9 @@ public class AcceptedForagerTest {
     public void testPickMoveMaxScoreOfAll() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, Integer.MAX_VALUE);
-        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-        forager.solvingStarted(localSearchSolverScope);
-        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverScope);
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
+        forager.phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.beforeDeciding(localSearchStepScope);
         // Pre conditions
         MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), 30.0);
@@ -69,16 +70,16 @@ public class AcceptedForagerTest {
         assertFalse(topList.contains(c.getMove()));
         assertFalse(topList.contains(d.getMove()));
         assertTrue(topList.contains(e.getMove()));
-        forager.solvingEnded(localSearchSolverScope);
+        forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
     @Test
     public void testPickMoveFirstBestScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_BEST_SCORE_IMPROVING, Integer.MAX_VALUE);
-        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-        forager.solvingStarted(localSearchSolverScope);
-        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverScope);
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
+        forager.phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.beforeDeciding(localSearchStepScope);
         // Pre conditions
         MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), 0.0);
@@ -100,16 +101,16 @@ public class AcceptedForagerTest {
         List<Move> topList = forager.getTopList(2);
         assertTrue(topList.contains(b.getMove()));
         assertTrue(topList.contains(d.getMove()));
-        forager.solvingEnded(localSearchSolverScope);
+        forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
     @Test
     public void testPickMoveFirstLastStepScoreImproving() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.FIRST_LAST_STEP_SCORE_IMPROVING, Integer.MAX_VALUE);
-        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-        forager.solvingStarted(localSearchSolverScope);
-        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverScope);
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
+        forager.phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.beforeDeciding(localSearchStepScope);
         // Pre conditions
         MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1), 0.0);
@@ -131,16 +132,16 @@ public class AcceptedForagerTest {
         List<Move> topList = forager.getTopList(2);
         assertTrue(topList.contains(b.getMove()));
         assertTrue(topList.contains(d.getMove()));
-        forager.solvingEnded(localSearchSolverScope);
+        forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
     @Test @Ignore
     public void testPickMoveRandomly() {
         // Setup
         Forager forager = new AcceptedForager(PickEarlyType.NEVER, 1);
-        LocalSearchSolverScope localSearchSolverScope = createLocalSearchSolverScope();
-        forager.solvingStarted(localSearchSolverScope);
-        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverScope);
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
+        forager.phaseStarted(localSearchSolverPhaseScope);
+        LocalSearchStepScope localSearchStepScope = createStepScope(localSearchSolverPhaseScope);
         forager.beforeDeciding(localSearchStepScope);
         // Pre conditions
         MoveScope a = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-20), 0.0);
@@ -162,26 +163,27 @@ public class AcceptedForagerTest {
         List<Move> topList = forager.getTopList(2);
         assertTrue(topList.contains(b.getMove()));
         assertTrue(topList.contains(d.getMove()));
-        forager.solvingEnded(localSearchSolverScope);
+        forager.phaseEnded(localSearchSolverPhaseScope);
     }
 
-    private LocalSearchSolverScope createLocalSearchSolverScope() {
-        LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
-        localSearchSolverScope.setScoreDefinition(new SimpleScoreDefinition());
-        localSearchSolverScope.setWorkingRandom(new Random() {
+    private LocalSearchSolverPhaseScope createLocalSearchSolverPhaseScope() {
+        DefaultSolverScope solverScope = new DefaultSolverScope();
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        solverScope.setScoreDefinition(new SimpleScoreDefinition());
+        solverScope.setWorkingRandom(new Random() {
             public double nextDouble() {
                 return 0.2;
             }
         });
-        localSearchSolverScope.setBestScore(DefaultSimpleScore.valueOf(-10));
-        LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverScope);
+        solverScope.setBestScore(DefaultSimpleScore.valueOf(-10));
+        LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         lastLocalSearchStepScope.setScore(DefaultSimpleScore.valueOf(-100));
-        localSearchSolverScope.setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
-        return localSearchSolverScope;
+        localSearchSolverPhaseScope.setLastCompletedLocalSearchStepScope(lastLocalSearchStepScope);
+        return localSearchSolverPhaseScope;
     }
 
-    private LocalSearchStepScope createStepScope(LocalSearchSolverScope localSearchSolverScope) {
-        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverScope);
+    private LocalSearchStepScope createStepScope(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        LocalSearchStepScope localSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);
         localSearchStepScope.setDeciderScoreComparator(new NaturalScoreComparator());
         return localSearchStepScope;
     }

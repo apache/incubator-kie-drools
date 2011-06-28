@@ -7,13 +7,13 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverScope;
-import org.drools.planner.core.constructionheuristic.greedy.event.GreedySolverLifecycleListenerAdapter;
+import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedy.event.GreedySolverPhaseLifecycleListenerAdapter;
 
 /**
  * Determines the order in which the planning entities are fit into the planning
  */
-public class GreedyPlanningEntitySelector extends GreedySolverLifecycleListenerAdapter
+public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleListenerAdapter
         implements Iterable<Object> {
 
     private Comparator<Object> fitOrderPlanningEntityComparator = null;
@@ -25,8 +25,8 @@ public class GreedyPlanningEntitySelector extends GreedySolverLifecycleListenerA
     }
 
     @Override
-    public void solvingStarted(GreedySolverScope greedySolverScope) {
-        Collection<Object> planningEntities = greedySolverScope.getWorkingPlanningEntities();
+    public void phaseStarted(GreedySolverPhaseScope greedySolverPhaseScope) {
+        Collection<Object> planningEntities = greedySolverPhaseScope.getWorkingPlanningEntities();
         if (fitOrderPlanningEntityComparator == null) {
             // Return them in the order as defined on the
             fitOrderPlanningEntities = planningEntities;

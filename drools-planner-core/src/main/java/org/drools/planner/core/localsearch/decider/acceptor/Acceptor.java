@@ -19,14 +19,14 @@ package org.drools.planner.core.localsearch.decider.acceptor;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.forager.Forager;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
 /**
  * An Acceptor accepts or rejects a selected move for the {@link Decider}.
  * Note that the {@link Forager} can still ignore the advice of the Acceptor.
  * @see AbstractAcceptor
  */
-public interface Acceptor extends LocalSearchSolverLifecycleListener {
+public interface Acceptor extends LocalSearchSolverPhaseLifecycleListener {
 
     /**
      * TODO the use for an acceptChance between 0.0 and 1.0 is unproven. A boolean instead of a double is sufficient?

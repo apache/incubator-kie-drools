@@ -23,11 +23,11 @@ public class BruteForceSolutionIterator {
 
     private List<BruteForcePlanningEntityIterator> planningEntityIteratorList;
 
-    public void solvingStarted(BruteForceSolverScope bruteForceSolverScope) {
+    public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
         planningEntityIteratorList = new ArrayList<BruteForcePlanningEntityIterator>();
-        for (Object planningEntity : bruteForceSolverScope.getWorkingPlanningEntities()) {
+        for (Object planningEntity : bruteForceSolverPhaseScope.getWorkingPlanningEntities()) {
             BruteForcePlanningEntityIterator planningEntityIterator = new BruteForcePlanningEntityIterator(
-                    bruteForceSolverScope, planningEntity);
+                    bruteForceSolverPhaseScope, planningEntity);
             planningEntityIteratorList.add(planningEntityIterator);
         }
     }
@@ -57,7 +57,7 @@ public class BruteForceSolutionIterator {
         }
     }
 
-    public void solvingEnded(BruteForceSolverScope bruteForceSolverScope) {
+    public void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
         planningEntityIteratorList = null;
     }
 

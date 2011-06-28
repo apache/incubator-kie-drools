@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy.event;
+package org.drools.planner.core.solver.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
-public interface GreedySolverLifecycleListener extends EventListener {
+public interface SolverPhaseLifecycleListener extends EventListener {
 
-    void solvingStarted(GreedySolverScope greedySolverScope);
+    void phaseStarted(AbstractSolverPhaseScope solverPhaseScope);
 
-    void beforeDeciding(GreedySolverScope greedySolverScope);
+    void beforeDeciding(AbstractStepScope stepScope);
 
-    void stepDecided(GreedySolverScope greedySolverScope);
+    void stepDecided(AbstractStepScope stepScope);
 
-    void stepTaken(GreedySolverScope greedySolverScope);
+    void stepTaken(AbstractStepScope stepScope);
 
-    void solvingEnded(GreedySolverScope greedySolverScope);
+    void phaseEnded(AbstractSolverPhaseScope solverPhaseScope);
 
 }

@@ -26,12 +26,13 @@ public abstract class AbstractStepScope {
 
     protected int stepIndex = -1;
 
+    protected boolean solutionInitialized = false;
     protected Score score = null;
     protected Boolean bestScoreImproved;
     // Stays null if there is no need to clone it
     protected Solution clonedSolution = null;
 
-    public abstract AbstractSolverScope getAbstractSolverScope();
+    public abstract AbstractSolverPhaseScope getSolverPhaseScope();
 
     public int getStepIndex() {
         return stepIndex;
@@ -39,6 +40,14 @@ public abstract class AbstractStepScope {
 
     public void setStepIndex(int stepIndex) {
         this.stepIndex = stepIndex;
+    }
+
+    public boolean isSolutionInitialized() {
+        return solutionInitialized;
+    }
+
+    public void setSolutionInitialized(boolean solutionInitialized) {
+        this.solutionInitialized = solutionInitialized;
     }
 
     public Score getScore() {
@@ -70,15 +79,15 @@ public abstract class AbstractStepScope {
     // ************************************************************************
 
     public Solution getWorkingSolution() {
-        return getAbstractSolverScope().getWorkingSolution();
+        return getSolverPhaseScope().getWorkingSolution();
     }
 
     public WorkingMemory getWorkingMemory() {
-        return getAbstractSolverScope().getWorkingMemory();
+        return getSolverPhaseScope().getWorkingMemory();
     }
 
     public Random getWorkingRandom() {
-        return getAbstractSolverScope().getWorkingRandom();
+        return getSolverPhaseScope().getWorkingRandom();
     }
 
     public Solution createOrGetClonedSolution() {

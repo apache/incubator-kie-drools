@@ -16,10 +16,10 @@
 
 package org.drools.planner.core.solution.initializer;
 
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 public interface StartingSolutionInitializer {
 
-    void initializeSolution(AbstractSolverScope abstractSolverScope);
+    void initializeSolution(DefaultSolverScope solverScope);
 
 }

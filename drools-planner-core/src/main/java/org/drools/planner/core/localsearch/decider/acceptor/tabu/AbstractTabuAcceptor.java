@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
@@ -69,7 +69,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         if (completeTabuSize < 0) {
             throw new IllegalArgumentException("The completeTabuSize (" + completeTabuSize
                     + ") cannot be negative.");
@@ -115,7 +115,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         if (aspirationEnabled) {
             // Doesn't use the deciderScoreComparator because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
-                    moveScope.getLocalSearchStepScope().getLocalSearchSolverScope().getBestScore()) > 0) {
+                    moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getBestScore()) > 0) {
                 logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
                 return 1.0;
             }

@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.event;
+package org.drools.planner.core.constructionheuristic.greedy.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedy.GreedyStepScope;
 
-public interface LocalSearchSolverLifecycleListener extends EventListener {
+public interface GreedySolverPhaseLifecycleListener extends EventListener {
 
-    void solvingStarted(LocalSearchSolverScope localSearchSolverScope);
+    void phaseStarted(GreedySolverPhaseScope greedySolverPhaseScope);
 
-    void beforeDeciding(LocalSearchStepScope localSearchStepScope);
+    void beforeDeciding(GreedyStepScope greedyStepScope);
 
-    void stepDecided(LocalSearchStepScope localSearchStepScope);
+    void stepDecided(GreedyStepScope greedyStepScope);
 
-    void stepTaken(LocalSearchStepScope localSearchStepScope);
+    void stepTaken(GreedyStepScope greedyStepScope);
 
-    void solvingEnded(LocalSearchSolverScope localSearchSolverScope);
+    void phaseEnded(GreedySolverPhaseScope greedySolverPhaseScope);
 
 }

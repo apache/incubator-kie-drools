@@ -14,30 +14,33 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.event;
+package org.drools.planner.core.solver.event;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 
-public abstract class LocalSearchSolverLifecycleListenerAdapter implements LocalSearchSolverLifecycleListener {
+public abstract class SolverPhaseLifecycleListenerAdapter implements SolverPhaseLifecycleListener {
 
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         // Hook method
     }
 
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+    public void beforeDeciding(AbstractStepScope stepScope) {
         // Hook method
     }
 
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+    public void stepDecided(AbstractStepScope stepScope) {
         // Hook method
     }
 
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepTaken(AbstractStepScope stepScope) {
         // Hook method
     }
 
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         // Hook method
     }
 

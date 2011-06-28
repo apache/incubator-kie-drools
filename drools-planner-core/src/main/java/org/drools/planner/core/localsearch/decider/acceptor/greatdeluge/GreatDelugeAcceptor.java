@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.localsearch.decider.acceptor.greatdeluge;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
 import org.drools.planner.core.localsearch.decider.acceptor.AbstractAcceptor;
@@ -44,7 +44,7 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         if (waterLevelUpperBoundRate < 1.0) {
             throw new IllegalArgumentException("The greatDelugeWaterLevelUpperBoundRate (" + waterLevelUpperBoundRate
                     + ") should be 1.0 or higher.");
@@ -53,8 +53,8 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
             throw new IllegalArgumentException("The greatDelugeWaterRisingRate (" + waterRisingRate
                     + ") should be between 0.0 and 1.0 (preferably very close to 0.0).");
         }
-        waterLevelScore = localSearchSolverScope.getBestScore().multiply(waterLevelUpperBoundRate);
-        Score perfectMaximumScore = localSearchSolverScope.getScoreDefinition().getPerfectMaximumScore();
+        waterLevelScore = localSearchSolverPhaseScope.getBestScore().multiply(waterLevelUpperBoundRate);
+        Score perfectMaximumScore = localSearchSolverPhaseScope.getScoreDefinition().getPerfectMaximumScore();
         if (waterLevelScore.compareTo(perfectMaximumScore) > 0) {
             throw new IllegalArgumentException("The waterLevelScore (" + waterLevelScore
                     + ") should not be higher than the perfectMaximumScore(" + perfectMaximumScore + ").");
@@ -71,11 +71,11 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
 
     @Override
     public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        if (localSearchStepScope.getStepIndex() == localSearchStepScope.getLocalSearchSolverScope().getBestSolutionStepIndex()) {
+        if (localSearchStepScope.getStepIndex() == localSearchStepScope.getLocalSearchSolverPhaseScope().getBestSolutionStepIndex()) {
             // New best score
-            waterLevelScore = localSearchStepScope.getLocalSearchSolverScope().getBestScore().multiply(waterLevelUpperBoundRate);
+            waterLevelScore = localSearchStepScope.getLocalSearchSolverPhaseScope().getBestScore().multiply(waterLevelUpperBoundRate);
         } else {
-            Score perfectMaximumScore = localSearchStepScope.getLocalSearchSolverScope().getScoreDefinition()
+            Score perfectMaximumScore = localSearchStepScope.getLocalSearchSolverPhaseScope().getScoreDefinition()
                     .getPerfectMaximumScore();
             Score waterLevelAugend = perfectMaximumScore.subtract(waterLevelScore).multiply(waterRisingRate);
             waterLevelScore = waterLevelScore.add(waterLevelAugend);

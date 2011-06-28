@@ -25,7 +25,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.manners2009.domain.Guest;
 import org.drools.planner.examples.manners2009.domain.Manners2009;
@@ -34,13 +34,13 @@ import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 
 public class Manners2009StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
-    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
-        Manners2009 manners2009 = (Manners2009) abstractSolverScope.getWorkingSolution();
-        initializeSeatDesignationList(abstractSolverScope, manners2009);
+    public void initializeSolution(DefaultSolverScope solverScope) {
+        Manners2009 manners2009 = (Manners2009) solverScope.getWorkingSolution();
+        initializeSeatDesignationList(solverScope, manners2009);
     }
 
-    private void initializeSeatDesignationList(AbstractSolverScope abstractSolverScope, Manners2009 manners2009) {
-        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
+    private void initializeSeatDesignationList(DefaultSolverScope solverScope, Manners2009 manners2009) {
+        WorkingMemory workingMemory = solverScope.getWorkingMemory();
         List<SeatDesignation> seatDesignationList = createSeatDesignationList(manners2009);
         // Assign one guest at a time
         List<Seat> undesignatedSeatList = manners2009.getSeatList();
@@ -60,7 +60,7 @@ public class Manners2009StartingSolutionInitializer extends AbstractStartingSolu
                     } else {
                         workingMemory.update(seatDesignationHandle, seatDesignation);
                     }
-                    Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
+                    Score score = solverScope.calculateScoreFromWorkingMemory();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
                         bestSeat = seat;

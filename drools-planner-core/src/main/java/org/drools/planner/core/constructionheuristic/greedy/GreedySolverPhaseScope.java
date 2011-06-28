@@ -16,14 +16,19 @@
 
 package org.drools.planner.core.constructionheuristic.greedy;
 
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class GreedySolverScope extends AbstractSolverScope {
+public class GreedySolverPhaseScope extends AbstractSolverPhaseScope {
 
     private GreedyStepScope lastCompletedGreedyStepScope;
 
-    public AbstractStepScope getLastCompletedAbstractStepScope() {
+    public GreedySolverPhaseScope(DefaultSolverScope solverScope) {
+        super(solverScope);
+    }
+
+    public AbstractStepScope getLastCompletedStepScope() {
         return lastCompletedGreedyStepScope;
     }
 

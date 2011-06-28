@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver.event;
+package org.drools.planner.core.constructionheuristic.greedy;
 
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhase;
+import org.drools.planner.core.solver.SolverPhase;
 
-public interface SolverLifecycleListener {
-
-    void solvingStarted(DefaultSolverScope solverScope);
-
-    void solvingEnded(DefaultSolverScope solverScope);
+/**
+ * A GreedySolverPhase is a SolverPhase which uses the greedy algorithm, which is a construction heuristic.
+ * @see SolverPhase
+ * @see AbstractSolverPhase
+ * @see DefaultGreedySolverPhase
+ */
+public interface GreedySolverPhase extends SolverPhase {
 
 }

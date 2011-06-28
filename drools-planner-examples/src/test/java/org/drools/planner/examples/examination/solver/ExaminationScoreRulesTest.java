@@ -27,9 +27,10 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.app.LoggingTest;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
@@ -38,27 +39,26 @@ import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.drools.planner.examples.examination.solver.move.ExaminationMoveHelper;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class ExaminationScoreRulesTest extends LoggingTest {
 
     @Test
     public void moveRoom() {
-        LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
-        localSearchSolverScope.setRuleBase(buildRuleBase());
-        localSearchSolverScope.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());
+        DefaultSolverScope solverScope = new DefaultSolverScope();
+        LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
+        solverScope.setRuleBase(buildRuleBase());
+        solverScope.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());
         Examination examination = (Examination) new ExaminationDaoImpl().readSolution(getClass().getResourceAsStream(
                 "/org/drools/planner/examples/examination/data/testExaminationScoreRules.xml"));
-        localSearchSolverScope.setWorkingSolution(examination);
-        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        solverScope.setWorkingSolution(examination);
+        WorkingMemory workingMemory = localSearchSolverPhaseScope.getWorkingMemory();
 
-        localSearchSolverScope.calculateScoreFromWorkingMemory();
+        localSearchSolverPhaseScope.calculateScoreFromWorkingMemory();
         // do RoomChangeMove
         Exam exam = findExamById(examination, 123L);
         Room room = findRoomById(examination, 0L);
         ExaminationMoveHelper.moveRoom(workingMemory, exam, room);
-        Score score = localSearchSolverScope.calculateScoreFromWorkingMemory();
-        localSearchSolverScope.assertWorkingScore(score);
+        Score score = localSearchSolverPhaseScope.calculateScoreFromWorkingMemory();
+        localSearchSolverPhaseScope.assertWorkingScore(score);
     }
 
     private RuleBase buildRuleBase() {

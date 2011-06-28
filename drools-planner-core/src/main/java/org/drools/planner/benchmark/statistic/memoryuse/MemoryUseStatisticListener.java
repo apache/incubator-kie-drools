@@ -19,10 +19,10 @@ package org.drools.planner.benchmark.statistic.memoryuse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListenerAdapter;
+import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.event.SolverPhaseLifecycleListenerAdapter;
 
-public class MemoryUseStatisticListener extends LocalSearchSolverLifecycleListenerAdapter {
+public class MemoryUseStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
@@ -47,8 +47,8 @@ public class MemoryUseStatisticListener extends LocalSearchSolverLifecycleListen
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
+    public void stepTaken(AbstractStepScope stepScope) {
+        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
 
             statisticPointList.add(new MemoryUseStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));

@@ -21,28 +21,28 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public class GreedyStepScope extends AbstractStepScope {
 
-    private final GreedySolverScope greedySolverScope;
+    private final GreedySolverPhaseScope greedySolverPhaseScope;
 
     private Object planningEntity;
 
     private Map<PlanningVariableDescriptor, Object> variableToValueMap;
 
-    public GreedyStepScope(GreedySolverScope greedySolverScope) {
-        this.greedySolverScope = greedySolverScope;
+    public GreedyStepScope(GreedySolverPhaseScope greedySolverPhaseScope) {
+        this.greedySolverPhaseScope = greedySolverPhaseScope;
     }
 
-    public GreedySolverScope getGreedySolverScope() {
-        return greedySolverScope;
+    public GreedySolverPhaseScope getGreedySolverPhaseScope() {
+        return greedySolverPhaseScope;
     }
 
     @Override
-    public AbstractSolverScope getAbstractSolverScope() {
-        return greedySolverScope;
+    public AbstractSolverPhaseScope getSolverPhaseScope() {
+        return greedySolverPhaseScope;
     }
 
     public Object getPlanningEntity() {
@@ -62,7 +62,7 @@ public class GreedyStepScope extends AbstractStepScope {
     // ************************************************************************
 
     public void doStep() {
-        WorkingMemory workingMemory = greedySolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = greedySolverPhaseScope.getWorkingMemory();
         FactHandle factHandle = workingMemory.getFactHandle(planningEntity);
         for (Map.Entry<PlanningVariableDescriptor, Object> entry : variableToValueMap.entrySet()) {
             PlanningVariableDescriptor planningVariableDescriptor = entry.getKey();
@@ -71,7 +71,7 @@ public class GreedyStepScope extends AbstractStepScope {
         }
         workingMemory.update(factHandle, planningEntity);
         // there is no need to recalculate the score, but we still need to set it
-        greedySolverScope.getWorkingSolution().setScore(score);
+        greedySolverPhaseScope.getWorkingSolution().setScore(score);
     }
 
 }

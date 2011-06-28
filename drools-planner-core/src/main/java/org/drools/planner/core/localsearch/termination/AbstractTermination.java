@@ -16,9 +16,8 @@
 
 package org.drools.planner.core.localsearch.termination;
 
-import org.drools.planner.core.localsearch.LocalSearchSolver;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
+import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.solver.AbstractStepScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,33 +28,27 @@ public abstract class AbstractTermination implements Termination {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected LocalSearchSolver localSearchSolver;
-
-    public void setLocalSearchSolver(LocalSearchSolver localSearchSolver) {
-        this.localSearchSolver = localSearchSolver;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
+    public void beforeDeciding(AbstractStepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
+    public void stepDecided(AbstractStepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
+    public void stepTaken(AbstractStepScope stepScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
