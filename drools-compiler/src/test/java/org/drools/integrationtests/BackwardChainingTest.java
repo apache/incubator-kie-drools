@@ -3,6 +3,7 @@ package org.drools.integrationtests;
 import static org.junit.Assert.*;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Variable;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
@@ -1637,6 +1639,112 @@ public class BackwardChainingTest {
     }
     
     @Test
+    @Ignore
+    public void testInsertionOrderTwo() throws Exception {
+        String str = "" +
+            "package org.test " +
+            "import java.util.List " +
+            "global List list " +
+            "declare Thing " +
+            "    thing : String @key " +
+            "end " +
+            "declare Edible extends Thing " +
+            "end " +
+            "declare Location extends Thing " +
+            "    location : String  @key " +
+            "end " +
+            "declare Here " +
+            "    place : String " +
+            "end " +
+            "rule kickOff " +
+            "when " +
+            "    Integer( $i: intValue ) " +
+            "then " +
+            "    switch( $i ){ " +
+            "    case 1: " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        break; " +
+            "    case 2: " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        break; " +
+            "    case 3: " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        break; " +
+            "    case 4: " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        break; " +
+            "    case 5: " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        break; " +
+            "    case 6: " +
+            "        insert( new Here( 'table' ) ); " +
+            "        insert( new Location( 'peach', 'table' ) ); " +
+            "        insert( new Edible( 'peach' ) ); " +
+            "        break; " +
+            "    } " +
+            "end " +
+            "query whereFood( String x, String y ) " +
+            "    ( Location(x, y;) and " +
+            "    Edible(x;) )  " +
+            "    or  " +
+            "    ( Location(z, y;) and /*?*/whereFood(x, z;) ) " +
+            "end " +
+            "query look(String place, List things, List food)  " +
+            "    Here(place;) " +
+            "    things := List() from accumulate( Location(thing, place;), " +
+            "                                      collectList( thing ) ) " +
+            "    food := List() from accumulate( /*?*/whereFood(thing, place;), " +
+            "                                    collectList( thing ) ) " +
+            "end " +
+            "rule reactiveLook " +
+            "when " +
+            "    Here( $place : place)  " +
+            "    /*?*/look($place, $things; $food := food) " +
+            "then " +
+            "    list.addAll( $things ); " +
+            "    list.addAll( $food   ); " +
+            "end " +
+             "";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        for ( int i = 1; i <= 6; i++) {
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );            
+            ksession.fireAllRules();
+            list.clear();
+            FactHandle fh = ksession.insert( Integer.valueOf( i ) );
+            ksession.fireAllRules();
+            ksession.retract( fh );
+            assertEquals( 2, list.size() );
+            assertEquals( "peach", list.get( 0 ) );
+            assertEquals( "peach", list.get( 1 ) );
+            ksession.dispose();
+        }
+    }    
+
+    @Test
     public void testInsertionOrder() throws Exception {
         // http://www.amzi.com/AdventureInProlog/advtop.php
 
@@ -1751,6 +1859,184 @@ public class BackwardChainingTest {
             ksession.dispose();
         }
     }    
+    
+    
+    @Test
+    @Ignore
+    public void testQueryFindAll() throws Exception {
+        Object[] objects = new Object[]{Integer.valueOf( 42 ), "a String", Integer.valueOf( 100 )  };
+        int oCount = objects.length + 1; // +1 for InitialFact
+        
+        List<Object> queryList = new ArrayList<Object>();
+        List<Object> ruleList = new ArrayList<Object>();
+        // expect all inserted objects + InitialFact
+        runTestQueryFindAll( 0, queryList, ruleList, objects );
+        System.out.println( queryList.size() + " - " + ruleList.size() );
+        assertEquals( oCount, queryList.size() );
+        assertContains( objects, queryList );
+                
+        // expect inserted objects + InitialFact
+        queryList.clear();
+        ruleList.clear();
+        runTestQueryFindAll( 1, queryList, ruleList, objects );
+        assertEquals( oCount*oCount, queryList.size() );
+
+        queryList.clear();
+        ruleList.clear();
+        runTestQueryFindAll( 2, queryList, ruleList, objects );
+        assertEquals( oCount*oCount, queryList.size() );
+    }
+        
+    private void runTestQueryFindAll( int iCase, List<Object> queryList, List<Object> ruleList,
+            Object[] objects ) throws Exception, Exception{
+        String str = "" +
+            "package org.test " +
+            "global java.util.List queryList " +
+            "global java.util.List ruleList " +
+            "query object( Object o ) " +
+            "    o := Object() " +
+            "end " +
+            "rule findObjectByQuery " +
+            "when ";
+        switch( iCase ){
+        case 0:
+            // omit Object()
+            str += "    object( $a ; ) ";
+            break;
+        case 1:
+            str += "    Object() ";
+            str += "    object( $a ; ) ";
+            break;
+        case 2:
+            str += "    object( $a ; ) ";
+            str += "    Object() ";
+            break;
+        }
+        str += 
+            "then " +
+            "#   System.out.println( \"Object by query: \" + $a );\n" +
+            "    queryList.add( $a ); " +
+            "end " +
+            "rule findObject " +
+            "salience 10 " +
+            "when " +
+            "    $o: Object() " +
+            "then " +
+            "#   System.out.println( \"Object: \" + $o );\n" +
+            "    ruleList.add( $o ); " +
+            "end " +
+            "";
+                    
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+    
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal( "queryList", queryList );            
+        ksession.setGlobal( "ruleList", ruleList );
+        for( Object o: objects ){
+            ksession.insert( o );
+        }
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
+    
+    @Test
+    @Ignore
+    public void testQueryWithObject() throws Exception {
+        String str = "" +
+            "package org.drools.test  \n" +
+           
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+           
+            "global List list\n" +
+           
+            "dialect \"mvel\"\n" +           
+            "\n" +
+           
+            "import org.drools.integrationtests.BackwardChainingTest.Q\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.R\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.S\n" +                                
+           
+            "query object(Object o)\n" +
+            "    o := Object() \n" + 
+            "end\n" +
+           
+            "rule collectObjects when\n" +
+            "   String( this == 'go1' )\n" +
+            "   object( o; )\n" +
+            "then\n" +
+            "   list.add( o );\n" +
+            "end\n" +
+           
+           
+            "rule init when\n" +
+            "   String( this == 'init' )\n" +
+            "then\n" +
+            " insert( new Q(1) );\n " +
+            " insert( new Q(5) );\n " +
+            " insert( new Q(6) );\n " +
+            " insert( new R(1) );\n " +
+            " insert( new R(4) );\n " +
+            " insert( new R(6) );\n " +
+            " insert( new R(2) );\n " +
+            " insert( new S(2) );\n " +
+            " insert( new S(3) );\n " +
+            " insert( new S(6) );\n " +
+            "end\n" +             
+            "";       
+       
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+       
+        ksession.insert( "init" );
+        ksession.fireAllRules();
+        
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+
+        assertEquals( 13, list.size() );
+        assertContains( new Object[] { "go1", "init",
+                                      new Q(6), new R(6), new S(3), new R(2), new R(1), new R(4), new S(2), new S(6), new Q(1), new Q(5) }, list );
+        
+        // now reverse the go1 and init order
+        ksession = kbase.newStatefulKnowledgeSession();
+        list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+       
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+        
+        ksession.insert( "init" );
+        ksession.fireAllRules();        
+
+        assertEquals( 13, list.size() );
+        assertContains( new Object[] { "go1", "init",
+                                      new Q(6), new R(6), new S(3), new R(2), new R(1), new R(4), new S(2), new S(6), new Q(1), new Q(5) }, list );        
+    }     
     
     public void assertContains( Object[] objects, List list) {
         for ( Object object : objects ) {
@@ -1972,7 +2258,27 @@ public class BackwardChainingTest {
         }
         public String toString() {
             return "Q" + value;
-        }        
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + value;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            Q other = (Q) obj;
+            if ( value != other.value ) return false;
+            return true;
+        }  
+        
+        
     }
     
     public static class R {
@@ -1992,6 +2298,24 @@ public class BackwardChainingTest {
         public String toString() {
             return "R" + value;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + value;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            R other = (R) obj;
+            if ( value != other.value ) return false;
+            return true;
+        }               
     }    
     
     public static class S {
@@ -2011,6 +2335,25 @@ public class BackwardChainingTest {
         public String toString() {
             return "S" + value;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + value;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            S other = (S) obj;
+            if ( value != other.value ) return false;
+            return true;
+        }
+
     }    
                
 }
