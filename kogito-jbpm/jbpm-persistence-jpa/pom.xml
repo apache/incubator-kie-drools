@@ -16,6 +16,13 @@
   <description>jBPM JPA Persistence</description>
 
   <build>
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
+  
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -110,5 +117,51 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
+  
+  
+  <properties>
+    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+    <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
+    <maven.jdbc.url>jdbc:h2:mem:mydb</maven.jdbc.url>
+    <maven.jdbc.username>sa</maven.jdbc.username>
+    <maven.jdbc.password>sasa</maven.jdbc.password>
+  </properties>
+  
+  <profiles>
+    <profile>
+        <id>postgresql</id>
+        <properties>
+          <maven.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</maven.hibernate.dialect>
+          <maven.datasource.classname>org.postgresql.xa.PGXADataSource</maven.datasource.classname>
+          
+          <maven.jdbc.server>localhost</maven.jdbc.server>
+          <maven.jdbc.port>5432</maven.jdbc.port>
+          <maven.jdbc.database>jbpm3</maven.jdbc.database>
+          <maven.jdbc.driver>org.postgresql.Driver</maven.jdbc.driver>
+         
+          <maven.jdbc.username>jbpm3</maven.jdbc.username>
+          <maven.jdbc.password>jbpm3</maven.jdbc.password>
+          <maven.jdbc.url>jdbc:postgresql://localhost:5432/jbpm3</maven.jdbc.url>
+        </properties>
+    </profile>
+    <profile>
+        <id>H2</id>
+        <properties>
+          <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
+          <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+         
+          <!-- Not used
+          <jdbc.server>localhost</jdbc.server>
+          <jdbc.port>5432</jdbc.port>
+          <jdbc.database>mydb</jdbc.database>
+          <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+           --> 
+           
+          <maven.jdbc.username>sa</maven.jdbc.username>
+          <maven.jdbc.password>sasa</maven.jdbc.password>
+          <maven.jdbc.url>jdbc:h2:mem:mymydb</maven.jdbc.url>
+        </properties>
+    </profile>
+  </profiles>
+  
 </project>

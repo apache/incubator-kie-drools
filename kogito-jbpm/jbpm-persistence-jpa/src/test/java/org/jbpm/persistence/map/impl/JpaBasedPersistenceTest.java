@@ -1,5 +1,8 @@
 package org.jbpm.persistence.map.impl;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -11,9 +14,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -27,16 +28,17 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     public void setUp() throws Exception {
         ds1 = new PoolingDataSource();
         ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        
+        Properties btmProps = getBitronixProperties();
+        
+        ds1.setClassName( btmProps.getProperty("className") );
+        ds1.setMaxPoolSize( Integer.parseInt(btmProps.getProperty("maxPoolSize")) );
+        ds1.setAllowLocalTransactions( Boolean.parseBoolean(btmProps.getProperty("allowLocalTransactions")));
+        for( String propertyName : new String [] { "user", "password", "URL" } ) { 
+            ds1.getDriverProperties().put( propertyName, btmProps.getProperty(propertyName));
+        }
         ds1.init();
+        
         emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
     }
     

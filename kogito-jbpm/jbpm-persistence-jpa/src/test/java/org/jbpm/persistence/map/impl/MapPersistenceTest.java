@@ -1,5 +1,9 @@
 package org.jbpm.persistence.map.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.common.AbstractRuleBase;
@@ -269,6 +273,24 @@ public abstract class MapPersistenceTest {
     protected abstract int getProcessInstancesCount();
 
     protected abstract int getKnowledgeSessionsCount();
+   
+    protected final String BITRONIX_PROPERTIES_PROJECT_RELATIVE_PATH = "/bitronix.properties";
+    protected Properties getBitronixProperties() {
+        Properties props = new Properties();
+        String propertiesNotFound = "Unable to load bitronix properties [" + BITRONIX_PROPERTIES_PROJECT_RELATIVE_PATH + "]";
+        
+        InputStream propsInputStream = this.getClass().getResourceAsStream(BITRONIX_PROPERTIES_PROJECT_RELATIVE_PATH);
+        Assert.assertNotNull(propertiesNotFound, propsInputStream);
+        try { 
+            props.load(propsInputStream);
+        }
+        catch(IOException ioe) { 
+            Assert.fail(propertiesNotFound + ": " + ioe.getMessage() );
+            ioe.printStackTrace();
+        }
+        
+        return props;
+    }
 
     private static class DummyWorkItemHandler
         implements
