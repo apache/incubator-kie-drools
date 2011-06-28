@@ -41,7 +41,7 @@
         <name>propertyTabu10</name>
         <solver>
             <greedy>
-                <fitOrderPlanningEntityComparatorClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseFitOrderPlanningEntityComparator</fitOrderPlanningEntityComparatorClass>
+                <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
             </greedy>
             <localSearch>
                 <selector>

@@ -27,6 +27,7 @@ import org.drools.planner.core.constructionheuristic.greedy.decider.DefaultGreed
 import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedy.decider.PickEarlyFitType;
 import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
+import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("greedy")
@@ -38,6 +39,7 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
     // private Boolean resetInitializedPlanningEntities;
 
     private Class<? extends Comparator<Object>> fitOrderPlanningEntityComparatorClass = null;
+    private Class<? extends PlanningEntityDifficultyWeightFactory> planningEntityDifficultyWeightFactoryClass = null;
     private PickEarlyFitType pickEarlyFitType = null;
 
     public Class<? extends Comparator<Object>> getFitOrderPlanningEntityComparatorClass() {
@@ -69,6 +71,12 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector() {
         GreedyPlanningEntitySelector greedyPlanningEntitySelector = new GreedyPlanningEntitySelector();
+        if (fitOrderPlanningEntityComparatorClass != null && planningEntityDifficultyWeightFactoryClass != null) {
+            throw new IllegalArgumentException("Cannot configure fitOrderPlanningEntityComparatorClass ("
+                    + fitOrderPlanningEntityComparatorClass
+                    + ") and planningEntityDifficultyWeightFactoryClass (" + planningEntityDifficultyWeightFactoryClass
+                    + ") at the same time.");
+        }
         if (fitOrderPlanningEntityComparatorClass != null) {
             Comparator<Object> fitOrderPlanningEntityComparator;
             try {
@@ -83,6 +91,22 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
                         + ") does not have a public no-arg constructor", e);
             }
             greedyPlanningEntitySelector.setFitOrderPlanningEntityComparator(fitOrderPlanningEntityComparator);
+        }
+        if (planningEntityDifficultyWeightFactoryClass != null) {
+            PlanningEntityDifficultyWeightFactory planningEntityDifficultyWeightFactory;
+            try {
+                planningEntityDifficultyWeightFactory = planningEntityDifficultyWeightFactoryClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("The planningEntityDifficultyWeightFactoryClass ("
+                        + planningEntityDifficultyWeightFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("The planningEntityDifficultyWeightFactoryClass ("
+                        + planningEntityDifficultyWeightFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            greedyPlanningEntitySelector.setPlanningEntityDifficultyWeightFactory(
+                    planningEntityDifficultyWeightFactory);
         }
         return greedyPlanningEntitySelector;
     }

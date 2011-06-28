@@ -70,6 +70,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        validateConfiguration();
+        tabuToStepIndexMap = new HashMap<Object, Integer>(completeTabuSize + partialTabuSize);
+        tabuSequenceList = new LinkedList<Object>();
+    }
+
+    private void validateConfiguration() {
         if (completeTabuSize < 0) {
             throw new IllegalArgumentException("The completeTabuSize (" + completeTabuSize
                     + ") cannot be negative.");
@@ -81,8 +87,6 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         if (completeTabuSize + partialTabuSize == 0) {
             throw new IllegalArgumentException("The sum of completeTabuSize and partialTabuSize should be at least 1.");
         }
-        tabuToStepIndexMap = new HashMap<Object, Integer>(completeTabuSize + partialTabuSize);
-        tabuSequenceList = new LinkedList<Object>();
     }
 
     public double calculateAcceptChance(MoveScope moveScope) {
