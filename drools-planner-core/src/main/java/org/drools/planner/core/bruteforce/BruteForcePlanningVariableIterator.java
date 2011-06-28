@@ -28,7 +28,7 @@ public class BruteForcePlanningVariableIterator {
 
     private final AbstractSolverPhaseScope solverPhaseScope;
     private final Object planningEntity;
-    private final FactHandle planningEntityFactHandle;
+    private FactHandle planningEntityFactHandle;
     private final PlanningVariableDescriptor planningVariableDescriptor;
 
     private Collection<?> planningValues;
@@ -37,15 +37,17 @@ public class BruteForcePlanningVariableIterator {
     private Object workingValue;
 
     public BruteForcePlanningVariableIterator(AbstractSolverPhaseScope solverPhaseScope,
-            Object planningEntity, FactHandle planningEntityFactHandle,
-            PlanningVariableDescriptor planningVariableDescriptor) {
+            Object planningEntity, PlanningVariableDescriptor planningVariableDescriptor) {
         this.solverPhaseScope = solverPhaseScope;
         this.planningEntity = planningEntity;
-        this.planningEntityFactHandle = planningEntityFactHandle;
         this.planningVariableDescriptor = planningVariableDescriptor;
 
         planningValues = planningVariableDescriptor.getRangeValues(solverPhaseScope.getWorkingSolution());
         planningValueIterator = planningValues.iterator();
+    }
+
+    public void setPlanningEntityFactHandle(FactHandle planningEntityFactHandle) {
+        this.planningEntityFactHandle = planningEntityFactHandle;
     }
 
     public PlanningVariableDescriptor getPlanningVariableDescriptor() {
@@ -56,17 +58,25 @@ public class BruteForcePlanningVariableIterator {
         return workingValue;
     }
 
+    public void initialize() {
+        planningValueIterator = planningValues.iterator();
+        Object value = planningValueIterator.next();
+        planningVariableDescriptor.setValue(planningEntity, value);
+        workingValue = value;
+    }
+
+    public void reset() {
+        planningValueIterator = planningValues.iterator();
+        Object value = planningValueIterator.next();
+        changeWorkingValue(value);
+        workingValue = value;
+    }
+
     public boolean hasNext() {
         return planningValueIterator.hasNext();
     }
 
     public void next() {
-        Object value = planningValueIterator.next();
-        changeWorkingValue(value);
-    }
-
-    public void reset() {
-        planningValueIterator = planningValues.iterator();
         Object value = planningValueIterator.next();
         changeWorkingValue(value);
     }

@@ -38,17 +38,29 @@ public class BruteForcePlanningEntityIterator {
 
     public BruteForcePlanningEntityIterator(AbstractSolverPhaseScope solverPhaseScope, Object planningEntity) {
         this.planningEntity = planningEntity;
-        planningEntityFactHandle = solverPhaseScope.getWorkingMemory().insert(planningEntity);
         PlanningEntityDescriptor planningEntityDescriptor = solverPhaseScope.getSolutionDescriptor()
                 .getPlanningEntityDescriptor(planningEntity.getClass());
         for (PlanningVariableDescriptor planningVariableDescriptor
                 : planningEntityDescriptor.getPlanningVariableDescriptors()) {
             BruteForcePlanningVariableIterator planningVariableIterator = new BruteForcePlanningVariableIterator(
-                    solverPhaseScope, planningEntity, planningEntityFactHandle, planningVariableDescriptor);
+                    solverPhaseScope, planningEntity, planningVariableDescriptor);
             planningVariableIteratorList.add(planningVariableIterator);
+            planningVariableIterator.initialize();
         }
-        reset();
+        // Insert must happen after planningVariableIterator.initialize() to avoid a NullPointerException, for example:
+        // Rules use Lecture.getDay(), which is implemented as return period.getDay()
+        // so the planning variable period cannot be null when the planning entity is inserted.
+        planningEntityFactHandle = solverPhaseScope.getWorkingMemory().insert(planningEntity);
+        for (BruteForcePlanningVariableIterator planningVariableIterator : planningVariableIteratorList) {
+            planningVariableIterator.setPlanningEntityFactHandle(planningEntityFactHandle);
+        }
         isFirst = true;
+    }
+
+    public void reset() {
+        for (BruteForcePlanningVariableIterator planningVariableIterator : planningVariableIteratorList) {
+            planningVariableIterator.reset();
+        }
     }
 
     public boolean hasNext() {
@@ -77,12 +89,6 @@ public class BruteForcePlanningEntityIterator {
                 // Reset the lower levels (for example each 9 in 115999)
                 planningVariableIterator.reset();
             }
-        }
-    }
-
-    public void reset() {
-        for (BruteForcePlanningVariableIterator planningVariableIterator : planningVariableIteratorList) {
-            planningVariableIterator.reset();
         }
     }
 
