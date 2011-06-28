@@ -25,7 +25,6 @@ import org.drools.definition.type.Position;
 import org.drools.io.impl.ByteArrayResource;
 import org.junit.Test;
 
-import javax.persistence.*;
 import java.lang.annotation.*;
 import java.lang.reflect.Field;
 
@@ -100,7 +99,7 @@ public class AnnotationsTest {
                 "declare SecondBean \n " +
                 " @NonexistingAnnotation" +
                 "  \n" +
-                " field : String @Annot( ) \n" +
+                " field : String @Annot \n" +
                 "end \n";
 
 
@@ -208,64 +207,6 @@ public class AnnotationsTest {
 
 
 
-    @Test
-    public void jpaAnnotationTest() {
-
-        String drl ="package org.drools.test;\n " +
-                " " +
-                "import javax.persistence.CascadeType;\n" +
-                "import javax.persistence.Column;\n" +
-                "import javax.persistence.Entity;\n" +
-                "import javax.persistence.FetchType;\n" +
-                "import javax.persistence.GeneratedValue;\n" +
-                "import javax.persistence.SequenceGenerator;\n" +
-                "import javax.persistence.GenerationType;\n" +
-                "import javax.persistence.Id;\n" +
-                "import javax.persistence.OneToMany;\n" +
-                "import javax.persistence.JoinColumn;\n" +
-                "import javax.persistence.Table;" +
-                "" +
-                "declare JPABean \n " +
-                "@Entity\n" +
-                "@Table(name=\"myTable\")\n" +
-                "@SequenceGenerator(sequenceName=\"mySwq\",name=\"mySeqName\")" +
-                " " +
-                " id : String @Id @GeneratedValue(generator=\"...\",strategy=GenerationType.SEQUENCE) " +
-                " " +
-                " name : String " +
-                "    @OneToMany(fetch =  FetchType.LAZY)\n" +
-                "    @JoinColumn(name = \"TOPIC_ID\", nullable = false)  \n" +
-                " " +
-                " end \n ";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-            assertEquals(0, kbuilder.getErrors().size());
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        Class clazz = kbase.getFactType("org.drools.test", "JPABean").getFactClass();
-            assertNotNull(clazz);
-            assertEquals(3, clazz.getAnnotations().length);
-            assertNotNull(clazz.getAnnotation(Entity.class));
-            assertNotNull(clazz.getAnnotation(Table.class));
-            assertNotNull(clazz.getAnnotation(SequenceGenerator.class));
-        try {
-            Field fld = clazz.getDeclaredField("name");
-                assertEquals(2,fld.getAnnotations().length);
-                assertNotNull(fld.getAnnotation(OneToMany.class));
-                assertNotNull(fld.getAnnotation(JoinColumn.class));
-
-            Field fld2 = clazz.getDeclaredField("id");
-                assertEquals(2,fld2.getAnnotations().length);
-                assertNotNull(fld2.getAnnotation(Id.class));
-                assertNotNull(fld2.getAnnotation(GeneratedValue.class));
-
-        } catch (NoSuchFieldException nsfe) {
-            fail("field name has not been generated correctly : " + nsfe.getMessage());
-        }
-    }
 
 
 }
