@@ -1,5 +1,6 @@
 package org.jbpm.persistence.map.impl;
 
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -18,6 +19,7 @@ import org.junit.Before;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import bitronix.tm.utils.PropertyException;
 
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
@@ -26,17 +28,8 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @Before
     public void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        
-        Properties btmProps = getBitronixProperties();
-        
-        ds1.setClassName( btmProps.getProperty("className") );
-        ds1.setMaxPoolSize( Integer.parseInt(btmProps.getProperty("maxPoolSize")) );
-        ds1.setAllowLocalTransactions( Boolean.parseBoolean(btmProps.getProperty("allowLocalTransactions")));
-        for( String propertyName : new String [] { "user", "password", "URL" } ) { 
-            ds1.getDriverProperties().put( propertyName, btmProps.getProperty(propertyName));
-        }
+        Properties btmProps = getBitronixProperties(this);
+        ds1 = setupPoolingDataSource(btmProps);
         ds1.init();
         
         emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );

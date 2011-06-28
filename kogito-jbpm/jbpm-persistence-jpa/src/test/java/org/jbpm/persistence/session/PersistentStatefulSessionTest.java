@@ -1,9 +1,11 @@
 package org.jbpm.persistence.session;
 
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
@@ -44,19 +46,10 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        Properties btmProps = getBitronixProperties(this);
+        ds1 = setupPoolingDataSource(btmProps);
+        
         ds1.init();
-
     }
 
     @Override

@@ -122,9 +122,13 @@
   <properties>
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
-    <maven.jdbc.url>jdbc:h2:mem:mydb</maven.jdbc.url>
+    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+          
+    <maven.jdbc.db.name>mydb</maven.jdbc.db.name>
+          
     <maven.jdbc.username>sa</maven.jdbc.username>
     <maven.jdbc.password>sasa</maven.jdbc.password>
+    <maven.jdbc.url>jdbc:h2:mem:mydb</maven.jdbc.url>
   </properties>
   
   <profiles>
@@ -133,34 +137,32 @@
         <properties>
           <maven.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</maven.hibernate.dialect>
           <maven.datasource.classname>org.postgresql.xa.PGXADataSource</maven.datasource.classname>
+          <maven.jdbc.driver.class>org.postgresql.Driver</maven.jdbc.driver.class>
           
-          <maven.jdbc.server>localhost</maven.jdbc.server>
-          <maven.jdbc.port>5432</maven.jdbc.port>
-          <maven.jdbc.database>jbpm3</maven.jdbc.database>
-          <maven.jdbc.driver>org.postgresql.Driver</maven.jdbc.driver>
+          <maven.jdbc.db.server>localhost</maven.jdbc.db.server>
+          <maven.jdbc.db.port>5432</maven.jdbc.db.port>
+          <maven.jdbc.db.name>jbpm3</maven.jdbc.db.name>
+          
+          <maven.jdbc.driver.dir>/opt/bin/jenkins-1.409.1/jobs/jbpm5-db/workspace/database/postgresql84</maven.jdbc.driver.dir>
+          <maven.jdbc.driver.jar>postgresql-8.4-702.jdbc3.jar</maven.jdbc.driver.jar>
          
           <maven.jdbc.username>jbpm3</maven.jdbc.username>
           <maven.jdbc.password>jbpm3</maven.jdbc.password>
           <maven.jdbc.url>jdbc:postgresql://localhost:5432/jbpm3</maven.jdbc.url>
         </properties>
-    </profile>
-    <profile>
-        <id>H2</id>
-        <properties>
-          <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname>
-          <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-         
-          <!-- Not used
-          <jdbc.server>localhost</jdbc.server>
-          <jdbc.port>5432</jdbc.port>
-          <jdbc.database>mydb</jdbc.database>
-          <jdbc.driver>org.postgresql.Driver</jdbc.driver>
-           --> 
-           
-          <maven.jdbc.username>sa</maven.jdbc.username>
-          <maven.jdbc.password>sasa</maven.jdbc.password>
-          <maven.jdbc.url>jdbc:h2:mem:mymydb</maven.jdbc.url>
-        </properties>
+        
+        <!--  Add the downloaded jdbc driver jar for the database to the classpath
+              !: Both <groupId> and <artifactId> are just placeholders and DO NOT MATTER!
+         -->
+        <dependencies>
+          <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>downloaded-jdbc-driver-jar</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${maven.jdbc.driver.dir}/${maven.jdbc.driver.jar}</systemPath>
+          </dependency>
+        </dependencies>
     </profile>
   </profiles>
   
