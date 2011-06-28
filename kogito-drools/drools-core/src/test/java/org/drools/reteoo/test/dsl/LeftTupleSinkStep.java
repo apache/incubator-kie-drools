@@ -19,9 +19,17 @@ package org.drools.reteoo.test.dsl;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.RightTuple;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import static org.mockito.Mockito.*;
 
 public class LeftTupleSinkStep
     implements
@@ -42,6 +50,40 @@ public class LeftTupleSinkStep
             LeftTupleSink mockedSink = Mockito.mock( LeftTupleSink.class,
                                                      Mockito.withSettings().extraInterfaces( DSLMock.class ) );
 
+            Mockito.when( mockedSink.createLeftTuple( (InternalFactHandle) anyObject(), (LeftTupleSink) anyObject(), anyBoolean() ) ).thenAnswer( new Answer() {
+
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    Object[] args = invocation.getArguments();                   
+                    return new LeftTupleImpl((InternalFactHandle)args[0], (LeftTupleSink)args[1], ((Boolean)args[2]).booleanValue()  );
+                }
+            });
+                        
+            
+            Mockito.when( mockedSink.createLeftTuple( (LeftTuple) anyObject(), (LeftTupleSink) anyObject(), anyBoolean() ) ).thenAnswer( new Answer() {
+
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    Object[] args = invocation.getArguments();                   
+                    return new LeftTupleImpl((LeftTuple)args[0], (LeftTupleSink)args[1], ((Boolean)args[2]).booleanValue()  );
+                }
+            });      
+            
+            Mockito.when( mockedSink.createLeftTuple( (LeftTuple) anyObject(), (RightTuple) anyObject(), (LeftTupleSink) anyObject()) ).thenAnswer( new Answer() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    Object[] args = invocation.getArguments();                   
+                    return new LeftTupleImpl((LeftTuple)args[0], (RightTuple)args[1], (LeftTupleSink) args[2] );
+                }
+            });              
+            
+            Mockito.when( mockedSink.createLeftTuple( (LeftTuple) anyObject(), (RightTuple) anyObject(),  (LeftTuple) anyObject(), (LeftTuple) anyObject(), (LeftTupleSink) anyObject(), anyBoolean()) ).thenAnswer( new Answer() {
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    Object[] args = invocation.getArguments();                   
+                    return new LeftTupleImpl((LeftTuple)args[0], (RightTuple)args[1], (LeftTuple)args[2], (LeftTuple)args[3], (LeftTupleSink)args[4], ((Boolean)args[5]).booleanValue() );
+                }
+            });             
+            
+            
+                          //Mockito.doCallRealMethod().when( mockedSink ).createLeftTuple( (LeftTuple) null, null, null);
+            
             leftTupleSource.addTupleSink( mockedSink );
 
             context.put( name,

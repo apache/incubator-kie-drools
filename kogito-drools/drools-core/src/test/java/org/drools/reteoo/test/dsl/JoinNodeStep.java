@@ -66,12 +66,6 @@ public class JoinNodeStep
             } else {
                 rightObjectSource = (ObjectSource) context.get( rightInput );
             }
-
-            ObjectSource otn = rightObjectSource;
-            while ( !( otn instanceof ObjectTypeNode ) ) {
-                otn = otn.getParentObjectSource();
-            }
-            ClassObjectType cob = (ClassObjectType)((ObjectTypeNode)otn).getObjectType();
             
             a = args.get( 1 );
             String fieldName = a[0].trim();
@@ -83,7 +77,7 @@ public class JoinNodeStep
             BetaNodeFieldConstraint betaConstraint;
             
             try {
-                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint(cob.getClassType(),
+                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( ((ClassObjectType) declr.getPattern().getObjectType()).getClassType(),
                                                                                   fieldName,
                                                                                   declr,
                                                                                   operator );

@@ -206,4 +206,8 @@ public class Person {
         this.likes = likes;
     }
     
+    public String toString() {
+        return "[Person name='" + name + "' age=" + age + "]";
+    }    
+    
 }

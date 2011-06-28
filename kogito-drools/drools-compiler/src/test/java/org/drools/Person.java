@@ -328,7 +328,6 @@ public class Person
 
     public void setObject(Object object) {
         this.object = object;
-    }
-
+    }    
 
 }

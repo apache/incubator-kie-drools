@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.common.BaseNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.spi.PropagationContext;
@@ -154,4 +155,5 @@ public abstract class LeftTupleSource extends BaseNode
     public boolean isInUse() {
         return this.sink.size() > 0;
     }
+    
 }
