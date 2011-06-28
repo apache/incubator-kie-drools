@@ -63,18 +63,20 @@ public class BindingStep
         String index = bind[1];
         String type = bind[2];
         String field = bind[3];
+        String cast = null;
+        
+        if ( bind.length == 5 ) {
+            cast = bind[4];
+        }
         
 
         try {
             Pattern pattern = reteTesterHelper.getPattern( Integer.parseInt( index ),
-                                                           type );
-//
-//            final Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            
-//            reteTesterHelper.getTypeResolver().resolveType( className )
-            
+                                                           type );            
             
             ClassFieldAccessorStore store = (ClassFieldAccessorStore) context.get( "ClassFieldAccessorStore" );
+            
+            
 
             InternalReadAccessor extractor = null;
             if ( field.startsWith( "[" ) ) {
@@ -84,7 +86,7 @@ public class BindingStep
                 
                 extractor = new ArrayElementReader( extractor,
                                                     Integer.parseInt( field.substring( 1, field.length() -1 ) ),
-                                                    reteTesterHelper.getTypeResolver().resolveType( type ) );                
+                                                    reteTesterHelper.getTypeResolver().resolveType( cast ) );                
             } else {
                 extractor = store.getReader( reteTesterHelper.getTypeResolver().resolveType( type ),
                                              field,

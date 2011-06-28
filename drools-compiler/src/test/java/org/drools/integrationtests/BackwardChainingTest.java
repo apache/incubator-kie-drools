@@ -23,6 +23,7 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Variable;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
@@ -1638,6 +1639,7 @@ public class BackwardChainingTest {
     }
     
     @Test
+    @Ignore
     public void testInsertionOrderTwo() throws Exception {
         String str = "" +
             "package org.test " +
@@ -1860,6 +1862,7 @@ public class BackwardChainingTest {
     
     
     @Test
+    @Ignore
     public void testQueryFindAll() throws Exception {
         Object[] objects = new Object[]{Integer.valueOf( 42 ), "a String", Integer.valueOf( 100 )  };
         int oCount = objects.length + 1; // +1 for InitialFact
@@ -1945,6 +1948,95 @@ public class BackwardChainingTest {
         ksession.fireAllRules();
         ksession.dispose();
     }
+    
+    @Test
+    @Ignore
+    public void testQueryWithObject() throws Exception {
+        String str = "" +
+            "package org.drools.test  \n" +
+           
+            "import java.util.List\n" +
+            "import java.util.ArrayList\n" +
+           
+            "global List list\n" +
+           
+            "dialect \"mvel\"\n" +           
+            "\n" +
+           
+            "import org.drools.integrationtests.BackwardChainingTest.Q\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.R\n" +
+            "import org.drools.integrationtests.BackwardChainingTest.S\n" +                                
+           
+            "query object(Object o)\n" +
+            "    o := Object() \n" + 
+            "end\n" +
+           
+            "rule collectObjects when\n" +
+            "   String( this == 'go1' )\n" +
+            "   object( o; )\n" +
+            "then\n" +
+            "   list.add( o );\n" +
+            "end\n" +
+           
+           
+            "rule init when\n" +
+            "   String( this == 'init' )\n" +
+            "then\n" +
+            " insert( new Q(1) );\n " +
+            " insert( new Q(5) );\n " +
+            " insert( new Q(6) );\n " +
+            " insert( new R(1) );\n " +
+            " insert( new R(4) );\n " +
+            " insert( new R(6) );\n " +
+            " insert( new R(2) );\n " +
+            " insert( new S(2) );\n " +
+            " insert( new S(3) );\n " +
+            " insert( new S(6) );\n " +
+            "end\n" +             
+            "";       
+       
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                          ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        kbase = SerializationHelper.serializeObject( kbase );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+       
+        ksession.insert( "init" );
+        ksession.fireAllRules();
+        
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+
+        assertEquals( 13, list.size() );
+        assertContains( new Object[] { "go1", "init",
+                                      new Q(6), new R(6), new S(3), new R(2), new R(1), new R(4), new S(2), new S(6), new Q(1), new Q(5) }, list );
+        
+        // now reverse the go1 and init order
+        ksession = kbase.newStatefulKnowledgeSession();
+        list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+       
+        ksession.insert( "go1" );
+        ksession.fireAllRules();
+        
+        ksession.insert( "init" );
+        ksession.fireAllRules();        
+
+        assertEquals( 13, list.size() );
+        assertContains( new Object[] { "go1", "init",
+                                      new Q(6), new R(6), new S(3), new R(2), new R(1), new R(4), new S(2), new S(6), new Q(1), new Q(5) }, list );        
+    }     
     
     public void assertContains( Object[] objects, List list) {
         for ( Object object : objects ) {
@@ -2166,7 +2258,27 @@ public class BackwardChainingTest {
         }
         public String toString() {
             return "Q" + value;
-        }        
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + value;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            Q other = (Q) obj;
+            if ( value != other.value ) return false;
+            return true;
+        }  
+        
+        
     }
     
     public static class R {
@@ -2186,6 +2298,24 @@ public class BackwardChainingTest {
         public String toString() {
             return "R" + value;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + value;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            R other = (R) obj;
+            if ( value != other.value ) return false;
+            return true;
+        }               
     }    
     
     public static class S {
@@ -2205,6 +2335,25 @@ public class BackwardChainingTest {
         public String toString() {
             return "S" + value;
         }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + value;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if ( this == obj ) return true;
+            if ( obj == null ) return false;
+            if ( getClass() != obj.getClass() ) return false;
+            S other = (S) obj;
+            if ( value != other.value ) return false;
+            return true;
+        }
+
     }    
                
 }
