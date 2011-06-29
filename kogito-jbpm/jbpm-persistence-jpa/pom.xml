@@ -141,9 +141,24 @@
     <maven.jdbc.url>jdbc:h2:mem:mydb</maven.jdbc.url>
   </properties>
   
-  
-  <!--  
   <profiles>
+    <profile>
+       <id>database</id>
+       
+       <dependencies>
+         <!--  Add the downloaded jdbc driver jar for the database to the classpath.
+               !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
+         <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>downloaded-jdbc-driver-jar</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${maven.jdbc.driver.jar}</systemPath>
+         </dependency>  
+       </dependencies>
+    </profile>
+    
+    <!--  
     The following is an example of how to test with a particular database:
     
     <profile>
