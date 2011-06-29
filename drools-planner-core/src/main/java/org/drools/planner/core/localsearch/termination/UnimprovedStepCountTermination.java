@@ -34,12 +34,6 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    private int calculateUnimprovedStepCount(AbstractStepScope stepScope) {
-        int bestStepIndex = stepScope.getSolverPhaseScope().getBestSolutionStepIndex();
-        int stepIndex = stepScope.getStepIndex();
-        return stepIndex - bestStepIndex;
-    }
-
     public boolean isTerminated(AbstractStepScope stepScope) {
         int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
         return unimprovedStepCount >= maximumUnimprovedStepCount;
@@ -49,6 +43,12 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
         return Math.min(timeGradient, 1.0);
+    }
+
+    private int calculateUnimprovedStepCount(AbstractStepScope stepScope) {
+        int bestStepIndex = stepScope.getSolverPhaseScope().getBestSolutionStepIndex();
+        int stepIndex = stepScope.getStepIndex();
+        return stepIndex - bestStepIndex;
     }
 
 }

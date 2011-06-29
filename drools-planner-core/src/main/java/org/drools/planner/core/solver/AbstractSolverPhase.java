@@ -62,9 +62,7 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
     // ************************************************************************
 
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
-        solverPhaseScope.setStartingSystemTimeMillis(System.currentTimeMillis());
-        solverPhaseScope.setBestSolutionStepIndex(-1);
-        solverPhaseScope.setStartingScore(solverPhaseScope.getBestScore());
+        solverPhaseScope.reset();
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
     }
 

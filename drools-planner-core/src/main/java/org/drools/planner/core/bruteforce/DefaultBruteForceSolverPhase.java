@@ -68,7 +68,8 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase implements
         bestSolutionRecaller.extractBestSolution(bruteForceStepScope);
         BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getBruteForceSolverPhaseScope();
         logger.debug("Step index ({}), time spend ({}), score ({}), {} best score ({}).",
-                new Object[]{bruteForceStepScope.getStepIndex(), bruteForceSolverPhaseScope.calculateTimeMillisSpend(),
+                new Object[]{bruteForceStepScope.getStepIndex(),
+                        bruteForceSolverPhaseScope.calculateSolverTimeMillisSpend(),
                         bruteForceStepScope.getScore(), (bruteForceStepScope.getBestScoreImproved() ? "new" : "   "),
                         bruteForceSolverPhaseScope.getBestScore()});
     }

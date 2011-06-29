@@ -122,7 +122,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         logger.info("Step index ({}), time spend ({}), score ({}), {} best score ({}), accepted move size ({})" +
                 " for picked step ({}).",
                 new Object[]{localSearchStepScope.getStepIndex(),
-                        localSearchSolverPhaseScope.calculateTimeMillisSpend(),
+                        localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),
                         localSearchStepScope.getScore(),
                         (localSearchStepScope.getBestScoreImproved() ? "new" : "   "),
                         localSearchSolverPhaseScope.getBestScore(),

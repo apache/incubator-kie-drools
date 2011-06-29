@@ -52,7 +52,7 @@ public class CalculateCountStatisticListener extends SolverPhaseLifecycleListene
 
     @Override
     public void stepTaken(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateTimeMillisSpend();
+        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
             long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;
 

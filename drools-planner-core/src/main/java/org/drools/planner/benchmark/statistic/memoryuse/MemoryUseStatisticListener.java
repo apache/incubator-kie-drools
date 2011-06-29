@@ -48,11 +48,10 @@ public class MemoryUseStatisticListener extends SolverPhaseLifecycleListenerAdap
 
     @Override
     public void stepTaken(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateTimeMillisSpend();
+        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
-
             statisticPointList.add(new MemoryUseStatisticPoint(timeMillisSpend, MemoryUseMeasurement.create()));
-
+            
             nextTimeMillisThreshold += timeMillisThresholdInterval;
             if (nextTimeMillisThreshold < timeMillisSpend) {
                 nextTimeMillisThreshold = timeMillisSpend;

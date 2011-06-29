@@ -35,12 +35,12 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isTerminated(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateTimeMillisSpend();
+        long timeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
         return timeMillisSpend >= maximumTimeMillisSpend;
     }
 
     public double calculateTimeGradient(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateTimeMillisSpend();
+        long timeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
         double timeGradient = ((double) timeMillisSpend) / ((double) maximumTimeMillisSpend);
         return Math.min(timeGradient, 1.0);
     }

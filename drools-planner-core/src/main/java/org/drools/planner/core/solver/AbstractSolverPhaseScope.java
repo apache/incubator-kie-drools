@@ -51,10 +51,6 @@ public abstract class AbstractSolverPhaseScope {
         return startingSystemTimeMillis;
     }
 
-    public void setStartingSystemTimeMillis(long startingSystemTimeMillis) {
-        this.startingSystemTimeMillis = startingSystemTimeMillis;
-    }
-
     public Score getStartingScore() {
         return startingScore;
     }
@@ -77,6 +73,12 @@ public abstract class AbstractSolverPhaseScope {
     // Calculated methods
     // ************************************************************************
 
+    public void reset() {
+        startingSystemTimeMillis = System.currentTimeMillis();
+        bestSolutionStepIndex = -1;
+        startingScore = solverScope.getBestScore();
+    }
+
     public SolutionDescriptor getSolutionDescriptor() {
         return solverScope.getSolutionDescriptor();
     }
@@ -85,8 +87,13 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getScoreDefinition();
     }
 
-    public long calculateTimeMillisSpend() {
+    public long calculateSolverTimeMillisSpend() {
         return solverScope.calculateTimeMillisSpend();
+    }
+
+    public long calculatePhaseTimeMillisSpend() {
+        long now = System.currentTimeMillis();
+        return now - startingSystemTimeMillis;
     }
 
     public Solution getWorkingSolution() {
