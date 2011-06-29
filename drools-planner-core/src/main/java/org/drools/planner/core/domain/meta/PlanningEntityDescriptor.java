@@ -85,4 +85,10 @@ public class PlanningEntityDescriptor {
         return true;
     }
 
+    public void uninitialize(Object planningEntity) {
+        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
+            planningVariableDescriptor.uninitialize(planningEntity);
+        }
+    }
+
 }

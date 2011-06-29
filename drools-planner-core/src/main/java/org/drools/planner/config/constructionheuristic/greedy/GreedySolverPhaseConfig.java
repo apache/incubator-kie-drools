@@ -38,9 +38,18 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     // private Boolean resetInitializedPlanningEntities;
 
+    private Boolean resetInitializedPlanningEntities = null;
     private Class<? extends Comparator<Object>> fitOrderPlanningEntityComparatorClass = null;
     private Class<? extends PlanningEntityDifficultyWeightFactory> planningEntityDifficultyWeightFactoryClass = null;
     private PickEarlyFitType pickEarlyFitType = null;
+
+    public Boolean getResetInitializedPlanningEntities() {
+        return resetInitializedPlanningEntities;
+    }
+
+    public void setResetInitializedPlanningEntities(Boolean resetInitializedPlanningEntities) {
+        this.resetInitializedPlanningEntities = resetInitializedPlanningEntities;
+    }
 
     public Class<? extends Comparator<Object>> getFitOrderPlanningEntityComparatorClass() {
         return fitOrderPlanningEntityComparatorClass;
@@ -48,6 +57,14 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     public void setFitOrderPlanningEntityComparatorClass(Class<? extends Comparator<Object>> fitOrderPlanningEntityComparatorClass) {
         this.fitOrderPlanningEntityComparatorClass = fitOrderPlanningEntityComparatorClass;
+    }
+
+    public Class<? extends PlanningEntityDifficultyWeightFactory> getPlanningEntityDifficultyWeightFactoryClass() {
+        return planningEntityDifficultyWeightFactoryClass;
+    }
+
+    public void setPlanningEntityDifficultyWeightFactoryClass(Class<? extends PlanningEntityDifficultyWeightFactory> planningEntityDifficultyWeightFactoryClass) {
+        this.planningEntityDifficultyWeightFactoryClass = planningEntityDifficultyWeightFactoryClass;
     }
 
     public PickEarlyFitType getPickEarlyFitType() {
@@ -71,6 +88,9 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector() {
         GreedyPlanningEntitySelector greedyPlanningEntitySelector = new GreedyPlanningEntitySelector();
+        boolean resetInitializedPlanningEntitiesValue = resetInitializedPlanningEntities == null ? false
+                : resetInitializedPlanningEntities.booleanValue();
+        greedyPlanningEntitySelector.setResetInitializedPlanningEntities(resetInitializedPlanningEntitiesValue);
         if (fitOrderPlanningEntityComparatorClass != null && planningEntityDifficultyWeightFactoryClass != null) {
             throw new IllegalArgumentException("Cannot configure fitOrderPlanningEntityComparatorClass ("
                     + fitOrderPlanningEntityComparatorClass
@@ -124,8 +144,15 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(GreedySolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        if (resetInitializedPlanningEntities == null) {
+            resetInitializedPlanningEntities = inheritedConfig.getResetInitializedPlanningEntities();
+        }
         if (fitOrderPlanningEntityComparatorClass == null) {
             fitOrderPlanningEntityComparatorClass = inheritedConfig.getFitOrderPlanningEntityComparatorClass();
+        }
+        if (planningEntityDifficultyWeightFactoryClass == null) {
+            planningEntityDifficultyWeightFactoryClass = inheritedConfig
+                    .getPlanningEntityDifficultyWeightFactoryClass();
         }
         if (pickEarlyFitType == null) {
             pickEarlyFitType = inheritedConfig.getPickEarlyFitType();

@@ -67,6 +67,11 @@ public class PlanningVariableDescriptor {
         return variable != null;
     }
 
+    public void uninitialize(Object planningEntity) {
+        // TODO extract to VariableInitialized interface
+        DescriptorUtils.executeSetter(variablePropertyDescriptor, planningEntity, null);
+    }
+
     public Object getValue(Object bean) {
         return DescriptorUtils.executeGetter(variablePropertyDescriptor, bean);
     }

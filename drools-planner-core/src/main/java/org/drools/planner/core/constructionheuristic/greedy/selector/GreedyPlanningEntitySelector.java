@@ -7,10 +7,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import org.drools.WorkingMemory;
 import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedy.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightUtils;
+import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 
 /**
  * Determines the order in which the planning entities are fit into the planning
@@ -18,10 +20,15 @@ import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightUtils
 public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleListenerAdapter
         implements Iterable<Object> {
 
+    private boolean resetInitializedPlanningEntities = false;
     private Comparator<Object> fitOrderPlanningEntityComparator = null;
     private PlanningEntityDifficultyWeightFactory planningEntityDifficultyWeightFactory = null;
 
     private Collection<Object> fitOrderPlanningEntities = null;
+
+    public void setResetInitializedPlanningEntities(boolean resetInitializedPlanningEntities) {
+        this.resetInitializedPlanningEntities = resetInitializedPlanningEntities;
+    }
 
     public void setFitOrderPlanningEntityComparator(Comparator<Object> fitOrderPlanningEntityComparator) {
         this.fitOrderPlanningEntityComparator = fitOrderPlanningEntityComparator;
@@ -47,6 +54,21 @@ public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleList
 
     private void initFitOrderPlanningEntities(GreedySolverPhaseScope greedySolverPhaseScope) {
         Collection<Object> planningEntities = greedySolverPhaseScope.getWorkingPlanningEntities();
+        for (Iterator<Object> it = planningEntities.iterator(); it.hasNext(); ) {
+            Object planningEntity = it.next();
+            PlanningEntityDescriptor planningEntityDescriptor = greedySolverPhaseScope.getSolutionDescriptor()
+                    .getPlanningEntityDescriptor(planningEntity.getClass());
+            if (planningEntityDescriptor.isInitialized(planningEntity)) {
+                if (resetInitializedPlanningEntities) {
+                    WorkingMemory workingMemory = greedySolverPhaseScope.getWorkingMemory();
+                    workingMemory.retract(workingMemory.getFactHandle(planningEntity));
+                    planningEntityDescriptor.uninitialize(planningEntity);
+                } else {
+                    // Do not plan the initialized planning entity
+                    it.remove();
+                }
+            }
+        }
         if (fitOrderPlanningEntityComparator != null) {
             List<Object> fitOrderPlanningEntityList = new ArrayList<Object>(planningEntities);
             Collections.sort(fitOrderPlanningEntityList, fitOrderPlanningEntityComparator);
