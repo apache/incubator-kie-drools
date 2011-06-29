@@ -206,8 +206,9 @@ public class SolverBenchmarkSuite {
         // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
         Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, List<SolverStatistic>>();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            Solver solver = solverBenchmark.getSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
+                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
                 solver.setStartingSolution(unsolvedSolution);
