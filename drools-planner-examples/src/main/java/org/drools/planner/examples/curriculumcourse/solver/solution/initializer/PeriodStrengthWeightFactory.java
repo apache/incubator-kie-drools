@@ -17,48 +17,45 @@
 package org.drools.planner.examples.curriculumcourse.solver.solution.initializer;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.core.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
+import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodConstraint;
 
-public class LectureDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+public class PeriodStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
 
-    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
+    public Comparable createStrengthWeight(Solution solution, Object planningValue) {
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
-        Lecture lecture = (Lecture) planningEntity;
-        Course course = lecture.getCourse();
+        Period period = (Period) planningValue;
         int unavailablePeriodConstraintCount = 0;
         for (UnavailablePeriodConstraint constraint : schedule.getUnavailablePeriodConstraintList()) {
-            if (constraint.getCourse().equals(course)) {
+            if (constraint.getPeriod().equals(period)) {
                 unavailablePeriodConstraintCount++;
             }
         }
-        return new LectureDifficultyWeight(lecture, unavailablePeriodConstraintCount);
+        return new PeriodStrengthWeight(period, unavailablePeriodConstraintCount);
     }
 
-    public static class LectureDifficultyWeight implements Comparable<LectureDifficultyWeight> {
+    public static class PeriodStrengthWeight implements Comparable<PeriodStrengthWeight> {
 
-        private final Lecture lecture;
+        private final Period period;
         private final int unavailablePeriodConstraintCount;
 
-        public LectureDifficultyWeight(Lecture lecture, int unavailablePeriodConstraintCount) {
-            this.lecture = lecture;
+        public PeriodStrengthWeight(Period period, int unavailablePeriodConstraintCount) {
+            this.period = period;
             this.unavailablePeriodConstraintCount = unavailablePeriodConstraintCount;
         }
 
-        public int compareTo(LectureDifficultyWeight other) {
-            Course course = lecture.getCourse();
-            Course otherCourse = other.lecture.getCourse();
+        public int compareTo(PeriodStrengthWeight other) {
             return new CompareToBuilder()
-                    .append(course.getCurriculumList().size(), otherCourse.getCurriculumList().size())
-                    .append(unavailablePeriodConstraintCount, other.unavailablePeriodConstraintCount)
-                    .append(course.getLectureSize(), otherCourse.getLectureSize())
-                    .append(course.getStudentSize(), otherCourse.getStudentSize())
-                    .append(course.getMinWorkingDaySize(), otherCourse.getMinWorkingDaySize())
-                    .append(lecture.getId(), other.lecture.getId())
+                    // The higher unavailablePeriodConstraintCount, the weaker
+                    .append(other.unavailablePeriodConstraintCount, unavailablePeriodConstraintCount) // Descending
+                    .append(period.getDay().getDayIndex(), other.period.getDay().getDayIndex())
+                    .append(period.getTimeslot().getTimeslotIndex(), other.period.getTimeslot().getTimeslotIndex())
+                    .append(period.getId(), other.period.getId())
                     .toComparison();
         }
 
