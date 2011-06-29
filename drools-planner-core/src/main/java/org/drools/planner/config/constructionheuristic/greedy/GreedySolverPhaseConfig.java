@@ -36,8 +36,6 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    // private Boolean resetInitializedPlanningEntities;
-
     private Boolean resetInitializedPlanningEntities = null;
     private Class<? extends Comparator<Object>> fitOrderPlanningEntityComparatorClass = null;
     private Class<? extends PlanningEntityDifficultyWeightFactory> planningEntityDifficultyWeightFactoryClass = null;
