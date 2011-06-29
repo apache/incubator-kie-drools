@@ -59,7 +59,7 @@ public class SolutionBusiness {
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
-    private DefaultSolverScope solverScope;
+    private DefaultSolverScope solverScope; // TODO HACK Planner internal API: don't do this
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
@@ -150,11 +150,11 @@ public class SolutionBusiness {
     }
 
     public Solution getSolution() {
-        return solverScope.getWorkingSolution();
+        return solverScope.getWorkingSolution(); // TODO HACK Planner internal API: don't do this
     }
 
     public Score getScore() {
-        return solverScope.calculateScoreFromWorkingMemory();
+        return solverScope.calculateScoreFromWorkingMemory(); // TODO HACK Planner internal API: don't do this
     }
 
     public void addSolverEventLister(SolverEventListener eventListener) {
@@ -214,8 +214,9 @@ public class SolutionBusiness {
 
     public void solve() {
         solver.solve();
-        Solution solution = solver.getBestSolution();
-        solver.setStartingSolution(solution);
+        // Normally we would do this as the point:
+        // Solution solution = solver.getBestSolution();
+        // but since this class is hacking DefaultSolverScope, it doesn't have to.
     }
 
     public void terminateSolvingEarly() {

@@ -92,7 +92,7 @@ public class DefaultGreedySolverPhase extends AbstractSolverPhase implements Gre
     public void stepTaken(GreedyStepScope greedyStepScope) {
         super.stepTaken(greedyStepScope);
         greedyPlanningEntitySelector.stepTaken(greedyStepScope);
-        logger.info("Step index ({}), time spend ({}), score ({}), initialed planning entity ({}).",
+        logger.info("Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
                 new Object[]{greedyStepScope.getStepIndex(),
                         greedyStepScope.getGreedySolverPhaseScope().calculateSolverTimeMillisSpend(),
                         greedyStepScope.getScore(),

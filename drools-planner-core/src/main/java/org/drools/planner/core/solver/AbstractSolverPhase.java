@@ -80,6 +80,9 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
     }
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
+        // At the end of the phase, the best solution should be in the working memory for the next phase
+        solverScope.setWorkingSolution(solverScope.getBestSolution());
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
     }
 

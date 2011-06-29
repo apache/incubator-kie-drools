@@ -24,7 +24,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
 import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 
-public class BruteForcePlanningVariableIterator {
+public class BruteForcePlanningVariableIterator { // TODO rename as it is used by the greedy algorithm
 
     private final AbstractSolverPhaseScope solverPhaseScope;
     private final Object planningEntity;
