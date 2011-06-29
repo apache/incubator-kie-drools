@@ -11,9 +11,9 @@ public interface PlanningEntityDifficultyWeightFactory {
 
     /**
      * @param solution never null, the {@link Solution} to which the planningEntity belongs
-     * @param planningEntity never null, the planningEntity to create the difficultyWeight for.
+     * @param planningEntity never null, the planningEntity to create the difficultyWeight for
      * @return never null
      */
-    Comparable createPlanningEntityDifficultyWeight(Solution solution, Object planningEntity);
+    Comparable createDifficultyWeight(Solution solution, Object planningEntity);
 
 }

@@ -25,7 +25,7 @@ import org.drools.planner.examples.curriculumcourse.domain.UnavailablePeriodCons
 
 public class LectureDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
 
-    public Comparable createPlanningEntityDifficultyWeight(Solution solution, Object planningEntity) {
+    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
         CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         Lecture lecture = (Lecture) planningEntity;
         Course course = lecture.getCourse();

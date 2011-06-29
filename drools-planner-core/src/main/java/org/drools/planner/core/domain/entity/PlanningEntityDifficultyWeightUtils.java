@@ -20,7 +20,7 @@ public class PlanningEntityDifficultyWeightUtils {
         SortedMap<Comparable, Object> planningEntityMap = new TreeMap<Comparable, Object>();
         for (Object planningEntity : planningEntities) {
             Comparable difficultyWeight = planningEntityDifficultyWeightFactory
-                    .createPlanningEntityDifficultyWeight(solution, planningEntity);
+                    .createDifficultyWeight(solution, planningEntity);
             planningEntityMap.put(difficultyWeight, planningEntity);
         }
         ArrayList<Object> ordedPlanningEntities = new ArrayList<Object>(planningEntityMap.values());
