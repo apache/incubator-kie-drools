@@ -18,12 +18,12 @@ public class LectureDifficultyWeight implements Comparable<LectureDifficultyWeig
         Course course = lecture.getCourse();
         Course otherCourse = other.lecture.getCourse();
         return new CompareToBuilder()
-                .append(otherCourse.getCurriculumList().size(), course.getCurriculumList().size()) // Descending
-                .append(other.unavailablePeriodConstraintCount, unavailablePeriodConstraintCount) // Descending
-                .append(otherCourse.getLectureSize(), course.getLectureSize()) // Descending
-                .append(otherCourse.getStudentSize(), course.getStudentSize()) // Descending
-                .append(otherCourse.getMinWorkingDaySize(), course.getMinWorkingDaySize()) // Descending
-                .append(lecture.getId(), other.lecture.getId()) // Ascending
+                .append(course.getCurriculumList().size(), otherCourse.getCurriculumList().size())
+                .append(unavailablePeriodConstraintCount, other.unavailablePeriodConstraintCount)
+                .append(course.getLectureSize(), otherCourse.getLectureSize())
+                .append(course.getStudentSize(), otherCourse.getStudentSize())
+                .append(course.getMinWorkingDaySize(), otherCourse.getMinWorkingDaySize())
+                .append(lecture.getId(), other.lecture.getId())
                 .toComparison();
     }
 
