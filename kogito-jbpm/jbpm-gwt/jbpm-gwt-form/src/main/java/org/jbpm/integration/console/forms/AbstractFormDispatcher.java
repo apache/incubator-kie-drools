@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -79,29 +80,46 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 	}
 	
 	public InputStream getTemplate(String name) {
-		InputStream result = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
-		if (result != null) {
-			return result;
+		// try to find on classpath
+	    InputStream nameTaskformResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + "-taskform.ftl");
+		if (nameTaskformResult != null) {
+			return nameTaskformResult;
+		} else {
+		    InputStream nameResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
+		    if (nameResult != null) {
+		        return nameResult;
+		    }
 		}
-		StringBuffer sb = new StringBuffer();
+		// try to find in repository
 		Properties properties = new Properties();
-		try {
-			properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
-		} catch (IOException e) {
-			throw new RuntimeException("Could not load jbpm.console.properties", e);
-		}
-		try {
+        try {
+            properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load jbpm.console.properties", e);
+        }
+		
+        try {
+            String templateName;
+            if(templateExistsInRepo(name + "-taskform", properties)) {
+                templateName = name + "-taskform";
+            } else if(templateExistsInRepo(name, properties)) {
+                templateName = name;
+            } else {
+                return null;
+            }
+		
+            StringBuffer sb = new StringBuffer();
 			sb.append("http://");
 			sb.append(properties.get("jbpm.console.server.host"));
 			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
 			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
-			sb.append(URLEncoder.encode(name, "UTF-8"));
+			sb.append(URLEncoder.encode(templateName, "UTF-8"));
 			sb.append(".drl");
 			return new URL(sb.toString()).openStream();
 		} catch (Throwable t) {
 			t.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
 	protected DataHandler processTemplate(final String name, InputStream src, Map<String, Object> renderContext) {
@@ -134,5 +152,20 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 		}
 		return merged;
 	}
-
+	
+	protected boolean templateExistsInRepo(String templateName, Properties properties) throws Exception {
+	    StringBuffer sb = new StringBuffer();
+	    sb.append("http://");
+        sb.append(properties.get("jbpm.console.server.host"));
+        sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
+        sb.append("/drools-guvnor/rest/packages/defaultPackage/assets/");
+        sb.append(URLEncoder.encode(templateName, "UTF-8"));
+        
+        URL checkURL = new URL(sb.toString());
+        HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
+        checkConnection.setRequestMethod("GET");
+        checkConnection.setRequestProperty("Accept", "application/atom+xml");
+        checkConnection.connect();
+        return checkConnection.getResponseCode() == 200;
+	}
 }
