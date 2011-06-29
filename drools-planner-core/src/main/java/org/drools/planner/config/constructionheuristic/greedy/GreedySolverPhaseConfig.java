@@ -65,7 +65,7 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
     public GreedySolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         DefaultGreedySolverPhase greedySolverPhase = new DefaultGreedySolverPhase();
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
-        greedySolverPhase.setGreedyDecider(buildGreedyDecider());
+        greedySolverPhase.setGreedyDecider(buildGreedyDecider(environmentMode));
         return greedySolverPhase;
     }
 
@@ -111,11 +111,14 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
         return greedyPlanningEntitySelector;
     }
 
-    private GreedyDecider buildGreedyDecider() {
+    private GreedyDecider buildGreedyDecider(EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
         PickEarlyFitType pickEarlyFitType = (this.pickEarlyFitType == null)
                 ? PickEarlyFitType.NEVER : this.pickEarlyFitType;
         greedyDecider.setPickEarlyFitType(pickEarlyFitType);
+        if (environmentMode == EnvironmentMode.TRACE) {
+            greedyDecider.setAssertMoveScoreIsUncorrupted(true);
+        }
         return greedyDecider;
     }
 

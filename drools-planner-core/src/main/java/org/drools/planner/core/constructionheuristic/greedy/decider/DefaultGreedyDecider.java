@@ -9,8 +9,14 @@ public class DefaultGreedyDecider implements GreedyDecider {
 
     private PickEarlyFitType pickEarlyFitType;
 
+    protected boolean assertMoveScoreIsUncorrupted = false;
+
     public void setPickEarlyFitType(PickEarlyFitType pickEarlyFitType) {
         this.pickEarlyFitType = pickEarlyFitType;
+    }
+
+    public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
+        this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
     }
 
     public void decideNextStep(GreedyStepScope greedyStepScope) {
@@ -23,6 +29,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
         while (bruteForcePlanningEntityIterator.hasNext()) {
             bruteForcePlanningEntityIterator.next();
             Score score = greedySolverPhaseScope.calculateScoreFromWorkingMemory();
+            if (assertMoveScoreIsUncorrupted) {
+                greedySolverPhaseScope.assertWorkingScore(score);
+            }
             if (score.compareTo(maxScore) > 0) {
                 greedyStepScope.setVariableToValueMap(bruteForcePlanningEntityIterator.getVariableToValueMap());
                 maxScore = score;
