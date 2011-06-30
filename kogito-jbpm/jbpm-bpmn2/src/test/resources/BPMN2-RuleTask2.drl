@@ -1,0 +1,15 @@
+package com.sample;
+
+import org.drools.runtime.process.WorkflowProcessInstance
+
+global java.util.List list;
+
+rule MyRule
+  ruleflow-group "myRules"
+  when
+    processInstance : WorkflowProcessInstance()
+    eval( processInstance.getVariable("x") == null)
+  then
+    System.out.println("Rule fired" + processInstance.getVariable("x"));
+    list.add("Executed");
+end
