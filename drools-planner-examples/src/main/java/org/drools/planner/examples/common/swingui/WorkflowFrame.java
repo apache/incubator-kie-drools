@@ -94,19 +94,18 @@ System.out.println("bestSolutionChanged - " + event.getNewBestSolution().getScor
                 latestBestSolutionReference.getAndSet(event.getNewBestSolution());
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-try {
-    Thread.sleep(500);
-} catch (InterruptedException e) {
-    e.printStackTrace();
-}
+//try {
+//    Thread.sleep(500);
+//} catch (InterruptedException e) {
+//    e.printStackTrace();
+//}
 System.out.println("invokeLater");
                         Solution latestBestSolution = latestBestSolutionReference.getAndSet(null);
                         if (latestBestSolution != null) {
 System.out.println("invokeLater - " + latestBestSolution.getScore());
                             if (refreshScreenDuringSolvingCheckBox.isSelected()) {
-                                // TODO reuse updateScreen code
-                                solutionPanel.resetPanel(solutionBusiness.getSolution());
-                                validate();
+                                solutionPanel.updatePanel(solutionBusiness.getSolution());
+                                validate(); // TODO remove me?
                             }
                             resultLabel.setText("Latest best score: " + latestBestSolution.getScore());
                         }

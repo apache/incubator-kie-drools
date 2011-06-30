@@ -16,34 +16,30 @@
 
 package org.drools.planner.examples.cloudbalancing.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 
@@ -52,12 +48,45 @@ import org.drools.planner.examples.common.swingui.SolutionPanel;
  */
 public class CloudBalancingPanel extends SolutionPanel {
 
-    private static final Color[] PROCESS_COLORS = {
+    public static final Color[] PROCESS_COLORS = {
             Color.GREEN, Color.YELLOW, Color.BLUE, Color.RED, Color.CYAN, Color.ORANGE, Color.MAGENTA
     };
 
+    private JPanel contentPanel;
+
+    private CloudComputerPanel unassignedPanel;
+    private Map<CloudComputer, CloudComputerPanel> cloudComputerToPanelMap;
+    private Map<CloudAssignment, CloudComputerPanel> cloudAssignmentToPanelMap;
+
     public CloudBalancingPanel() {
-        setLayout(new GridLayout(0, 5));
+        setLayout(new BorderLayout());
+        addHeaderPanel();
+        addContentPanel();
+    }
+
+    private void addHeaderPanel() {
+        JPanel headerPanel = new JPanel(new GridLayout(0, 5));
+        JLabel emptyLabel = new JLabel("");
+        headerPanel.add(emptyLabel);
+        JLabel cpuPowerLabel = new JLabel("CPU power");
+        headerPanel.add(cpuPowerLabel);
+        JLabel memoryLabel = new JLabel("Memory");
+        headerPanel.add(memoryLabel);
+        JLabel networkBandwidthLabel = new JLabel("Network bandwidth");
+        headerPanel.add(networkBandwidthLabel);
+        JLabel costLabel = new JLabel("Cost");
+        headerPanel.add(costLabel);
+        add(headerPanel, BorderLayout.NORTH);
+    }
+
+    private void addContentPanel() {
+        contentPanel = new JPanel(new GridLayout(0, 1));
+        unassignedPanel = new CloudComputerPanel(null);
+        contentPanel.add(unassignedPanel);
+        cloudComputerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
+        cloudComputerToPanelMap.put(null, unassignedPanel);
+        cloudAssignmentToPanelMap = new LinkedHashMap<CloudAssignment, CloudComputerPanel>();
+        add(contentPanel, BorderLayout.SOUTH);
     }
 
     private CloudBalance getCloudBalance() {
@@ -65,203 +94,58 @@ public class CloudBalancingPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        removeAll();
+        for (CloudComputerPanel cloudComputerCloudComputerPanel : cloudComputerToPanelMap.values()) {
+            if (cloudComputerCloudComputerPanel.getCloudComputer() != null) {
+                contentPanel.remove(cloudComputerCloudComputerPanel);
+            }
+        }
+        cloudComputerToPanelMap.clear();
+        cloudComputerToPanelMap.put(null, unassignedPanel);
+        cloudAssignmentToPanelMap.clear();
+        unassignedPanel.clearCloudAssignments();
+        updatePanel(solution);
+    }
+
+    @Override
+    public void updatePanel(Solution solution) {
         CloudBalance cloudBalance = (CloudBalance) solution;
-        addHeaders();
-
-        List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
-        Map<CloudComputer, List<CloudAssignment>> computerToAssignmentMap
-                = new LinkedHashMap<CloudComputer, List<CloudAssignment>>(cloudComputerList.size());
-        List<CloudAssignment> unassignedCloudAssignmentList = new ArrayList<CloudAssignment>();
-        for (CloudComputer cloudComputer : cloudComputerList) {
-            List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>();
-            computerToAssignmentMap.put(cloudComputer, cloudAssignmentList);
+        Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<CloudComputer>(cloudComputerToPanelMap.keySet());
+        deadCloudComputerSet.remove(null);
+        for (CloudComputer cloudComputer : ((CloudBalance) solution).getCloudComputerList()) {
+            deadCloudComputerSet.remove(cloudComputer);
+            CloudComputerPanel cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
+            if (cloudComputerPanel == null) {
+                cloudComputerPanel = new CloudComputerPanel(cloudComputer);
+                contentPanel.add(cloudComputerPanel);
+                cloudComputerToPanelMap.put(cloudComputer, cloudComputerPanel);
+            }
         }
+        Set<CloudAssignment> deadCloudAssignmentSet = new LinkedHashSet<CloudAssignment>(
+                cloudAssignmentToPanelMap.keySet());
         for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
+            deadCloudAssignmentSet.remove(cloudAssignment);
+            CloudComputerPanel cloudComputerPanel = cloudAssignmentToPanelMap.get(cloudAssignment);
             CloudComputer cloudComputer = cloudAssignment.getCloudComputer();
-            if (cloudComputer != null) {
-                List<CloudAssignment> cloudAssignmentList = computerToAssignmentMap.get(cloudComputer);
-                cloudAssignmentList.add(cloudAssignment);
-            } else {
-                unassignedCloudAssignmentList.add(cloudAssignment);
+            if (cloudComputerPanel != null
+                    && !ObjectUtils.equals(cloudComputerPanel.getCloudComputer(), cloudComputer)) {
+                cloudAssignmentToPanelMap.remove(cloudAssignment);
+                cloudComputerPanel.removeCloudAssignment(cloudAssignment);
+                cloudComputerPanel = null;
+            }
+            if (cloudComputerPanel == null) {
+                cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
+                cloudComputerPanel.addCloudAssignment(cloudAssignment);
+                cloudAssignmentToPanelMap.put(cloudAssignment, cloudComputerPanel);
             }
         }
-        for (Map.Entry<CloudComputer, List<CloudAssignment>> entry : computerToAssignmentMap.entrySet()) {
-            addCloudComputer(entry.getKey(), entry.getValue());
+        for (CloudAssignment deadCloudAssignment : deadCloudAssignmentSet) {
+            CloudComputerPanel deadCloudComputerPanel = cloudAssignmentToPanelMap.remove(deadCloudAssignment);
+            deadCloudComputerPanel.removeCloudAssignment(deadCloudAssignment);
         }
-        addUnassignedCloudAssignmentList(unassignedCloudAssignmentList);
-    }
-
-    private void addHeaders() {
-        JLabel emptyLabel = new JLabel("");
-        add(emptyLabel);
-        JLabel cpuPowerLabel = new JLabel("CPU power");
-        add(cpuPowerLabel);
-        JLabel memoryLabel = new JLabel("Memory");
-        add(memoryLabel);
-        JLabel networkBandwidthLabel = new JLabel("Network bandwidth");
-        add(networkBandwidthLabel);
-        JLabel costLabel = new JLabel("Cost");
-        add(costLabel);
-    }
-
-    private void addCloudComputer(CloudComputer cloudComputer, List<CloudAssignment> cloudAssignmentList) {
-        boolean costUsed = cloudAssignmentList.size() > 0;
-        addComputer(cloudComputer, costUsed);
-
-        int usedCpuPower = 0;
-        CloudBar cpuPowerBar = new CloudBar(cloudComputer.getCpuPower());
-        int usedMemory = 0;
-        CloudBar memoryBar = new CloudBar(cloudComputer.getMemory());
-        int usedNetworkBandwidth = 0;
-        CloudBar networkBandwidthBar = new CloudBar(cloudComputer.getNetworkBandwidth());
-        int colorIndex = 0;
-        for (CloudAssignment cloudAssignment : cloudAssignmentList) {
-            addCloudAssignment(cloudAssignment, PROCESS_COLORS[colorIndex]);
-            usedCpuPower += cloudAssignment.getMinimalCpuPower();
-            cpuPowerBar.addProcessValue(cloudAssignment.getMinimalCpuPower());
-            usedMemory += cloudAssignment.getMinimalMemory();
-            memoryBar.addProcessValue(cloudAssignment.getMinimalMemory());
-            usedNetworkBandwidth += cloudAssignment.getMinimalNetworkBandwidth();
-            networkBandwidthBar.addProcessValue(cloudAssignment.getMinimalNetworkBandwidth());
-            colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
+        for (CloudComputer deadCloudComputer : deadCloudComputerSet) {
+            CloudComputerPanel deadCloudComputerPanel = cloudComputerToPanelMap.remove(deadCloudComputer);
+            contentPanel.remove(deadCloudComputerPanel);
         }
-        addTotals(usedCpuPower, cloudComputer.getCpuPower(), usedMemory, cloudComputer.getMemory(),
-                usedNetworkBandwidth, cloudComputer.getNetworkBandwidth());
-        addBars(cpuPowerBar, memoryBar, networkBandwidthBar);
-    }
-
-    private void addComputer(CloudComputer cloudComputer, boolean costUsed) {
-        JLabel computerLabel = new JLabel(cloudComputer.getLabel());
-        add(computerLabel);
-        JTextField cpuPowerField = new JTextField(cloudComputer.getCpuPower() + " GHz");
-        cpuPowerField.setEditable(false);
-        add(cpuPowerField);
-        JTextField memoryField = new JTextField(cloudComputer.getMemory() + " GB");
-        memoryField.setEditable(false);
-        add(memoryField);
-        JTextField networkBandwidthField = new JTextField(cloudComputer.getNetworkBandwidth() + " GB");
-        networkBandwidthField.setEditable(false);
-        add(networkBandwidthField);
-        JTextField costField = new JTextField(cloudComputer.getCost() + " $");
-        costField.setEditable(false);
-        costField.setEnabled(costUsed);
-        add(costField);
-    }
-
-    private void addUnassignedCloudAssignmentList(List<CloudAssignment> unassignedCloudAssignmentList) {
-        addUnassignedHeaders();
-
-        int usedCpuPower = 0;
-        int usedMemory = 0;
-        int usedNetworkBandwidth = 0;
-        int colorIndex = 0;
-        for (CloudAssignment cloudAssignment : unassignedCloudAssignmentList) {
-            addCloudAssignment(cloudAssignment, PROCESS_COLORS[colorIndex]);
-            usedCpuPower += cloudAssignment.getMinimalCpuPower();
-            usedMemory += cloudAssignment.getMinimalMemory();
-            usedNetworkBandwidth += cloudAssignment.getMinimalNetworkBandwidth();
-            colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
-        }
-        addTotals(usedCpuPower, 0, usedMemory, 0, usedNetworkBandwidth, 0);
-    }
-
-    private void addUnassignedHeaders() {
-        add(new JLabel("Unassigned"));
-        add(new JLabel(""));
-        add(new JLabel(""));
-        add(new JLabel(""));
-        add(new JLabel(""));
-    }
-
-    private void addCloudAssignment(CloudAssignment cloudAssignment, Color color) {
-        JLabel processLabel = new JLabel("    " + cloudAssignment.getLabel());
-        processLabel.setForeground(color);
-        add(processLabel);
-
-        JTextField cpuPowerField = new JTextField(cloudAssignment.getMinimalCpuPower() + " GHz");
-        cpuPowerField.setEditable(false);
-        add(cpuPowerField);
-        JTextField memoryField = new JTextField(cloudAssignment.getMinimalMemory() + " GB");
-        memoryField.setEditable(false);
-        add(memoryField);
-        JTextField networkBandwidthField = new JTextField(cloudAssignment.getMinimalNetworkBandwidth() + " GB");
-        networkBandwidthField.setEditable(false);
-        add(networkBandwidthField);
-        JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
-        add(button);
-    }
-
-    private void addTotals(int usedCpuPower, int availableCpuPower, int usedMemory, int availableMemory,
-            int usedNetworkBandwidth, int availableNetworkBandwidth) {
-        JLabel totalLabel = new JLabel("    " + "Total");
-        add(totalLabel);
-        JTextField cpuPowerField = new JTextField(usedCpuPower + " GHz / " + availableCpuPower + " GHz");
-        if (usedCpuPower > availableCpuPower) {
-            cpuPowerField.setForeground(Color.RED);
-        }
-        cpuPowerField.setEditable(false);
-        add(cpuPowerField);
-        JTextField memoryField = new JTextField(usedMemory + " GB / " + availableMemory + " GB");
-        if (usedMemory > availableMemory) {
-            memoryField.setForeground(Color.RED);
-        }
-        memoryField.setEditable(false);
-        add(memoryField);
-        JTextField networkBandwidthField = new JTextField(usedNetworkBandwidth + " GB / "
-                + availableNetworkBandwidth + " GB");
-        if (usedNetworkBandwidth > availableNetworkBandwidth) {
-            networkBandwidthField.setForeground(Color.RED);
-        }
-        networkBandwidthField.setEditable(false);
-        add(networkBandwidthField);
-        add(new JLabel(""));
-    }
-
-    private void addBars(CloudBar cpuPowerBar, CloudBar memoryBar, CloudBar networkBandwidthBar) {
-        add(new JLabel(""));
-        add(cpuPowerBar);
-        add(memoryBar);
-        add(networkBandwidthBar);
-        add(new JLabel(""));
-    }
-
-    private static class CloudBar extends JPanel {
-
-        private List<Integer> processValues = new ArrayList<Integer>();
-        private int computerValue;
-
-        public CloudBar(int computerValue) {
-            this.computerValue = computerValue;
-        }
-        
-        public void addProcessValue(int processValue) {
-            processValues.add(processValue);
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Dimension size = getSize();
-            int rectHeight = size.height - 1;
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 0, size.width, rectHeight);
-            int computerWidth = size.width * 4 / 5;
-            computerWidth = Math.max(computerWidth, 1);
-
-            int offset = 0;
-            int colorIndex = 0;
-            for (int processValue : processValues) {
-                int processWidth = processValue * computerWidth / computerValue;
-                processWidth = Math.max(processWidth, 1);
-                g.setColor(PROCESS_COLORS[colorIndex]);
-                g.fillRect(offset, 0, processWidth, rectHeight);
-                offset += processWidth;
-                colorIndex = (colorIndex + 1) % PROCESS_COLORS.length;
-            }
-            g.setColor(Color.BLACK);
-            g.drawRect(0, 0, computerWidth, rectHeight);
-        }
-
     }
 
     private class CloudAssignmentAction extends AbstractAction {
