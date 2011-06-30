@@ -39,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -63,9 +64,9 @@ public class CloudBalancingPanel extends SolutionPanel {
         return (CloudBalance) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        CloudBalance cloudBalance = getCloudBalance();
+        CloudBalance cloudBalance = (CloudBalance) solution;
         addHeaders();
 
         List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();

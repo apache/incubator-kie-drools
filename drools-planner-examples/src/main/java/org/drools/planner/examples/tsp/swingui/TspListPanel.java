@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
@@ -47,9 +48,9 @@ public class TspListPanel extends JPanel {
         setLayout(new GridLayout(0, 1));
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
+        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
         JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanTour.getName());
         headerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),

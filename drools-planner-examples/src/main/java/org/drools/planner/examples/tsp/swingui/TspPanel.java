@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.common.swingui.WorkflowFrame;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
@@ -67,9 +68,9 @@ public class TspPanel extends SolutionPanel {
         return (TravelingSalesmanTour) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
-        tspWorldPanel.resetPanel();
-        tspListPanel.resetPanel();
+    public void resetPanel(Solution solution) {
+        tspWorldPanel.resetPanel(solution);
+        tspListPanel.resetPanel(solution);
     }
 
     public void doMove(Move move) {

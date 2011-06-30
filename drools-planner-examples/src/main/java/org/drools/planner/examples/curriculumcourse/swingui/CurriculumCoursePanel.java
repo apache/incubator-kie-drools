@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Lecture;
@@ -57,9 +58,9 @@ public class CurriculumCoursePanel extends SolutionPanel {
         return (CurriculumCourseSchedule) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        CurriculumCourseSchedule schedule = getCurriculumCourseSchedule();
+        CurriculumCourseSchedule schedule = (CurriculumCourseSchedule) solution;
         gridLayout.setColumns(schedule.getRoomList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Period         \\         Room");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(

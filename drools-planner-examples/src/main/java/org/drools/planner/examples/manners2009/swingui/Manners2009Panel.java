@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.manners2009.domain.HobbyPractician;
 import org.drools.planner.examples.manners2009.domain.Manners2009;
@@ -56,9 +57,9 @@ public class Manners2009Panel extends SolutionPanel {
         return (Manners2009) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        Manners2009 manners2009 = getManners2009();
+        Manners2009 manners2009 = (Manners2009) solution;
         gridLayout.setColumns((int) Math.ceil(Math.sqrt(manners2009.getTableList().size())));
         Map<Table, JPanel> tablePanelMap = new HashMap<Table, JPanel>(manners2009.getTableList().size());
         Map<Seat, SeatPanel> seatPanelMap = new HashMap<Seat, SeatPanel>(manners2009.getSeatList().size());

@@ -27,11 +27,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -60,16 +62,19 @@ public class WorkflowFrame extends JFrame {
 
     private List<Action> loadUnsolvedActionList;
     private List<Action> loadSolvedActionList;
-    private Action cancelSolvingAction;
+    private Action terminateSolvingEarlyAction;
+    private JCheckBox refreshScreenDuringSolvingCheckBox;
     private Action solveAction;
     private Action openAction;
     private Action saveAction;
     private Action importAction;
-    private Action exportAction;
 
+    private Action exportAction;
     private JProgressBar progressBar;
     private JLabel resultLabel;
     private ShowConstraintScoreMapDialogAction showConstraintScoreMapDialogAction;
+
+    private AtomicReference<Solution> latestBestSolutionReference = new AtomicReference<Solution>(null);
 
     public WorkflowFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
         super(exampleName + " Drools Planner example");
@@ -85,10 +90,26 @@ public class WorkflowFrame extends JFrame {
     private void registerListeners() {
         solutionBusiness.addSolverEventLister(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
-                final Solution bestSolution = event.getNewBestSolution();
+System.out.println("bestSolutionChanged - " + event.getNewBestSolution().getScore());
+                latestBestSolutionReference.getAndSet(event.getNewBestSolution());
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        resultLabel.setText("Latest best score: " + bestSolution.getScore());
+try {
+    Thread.sleep(500);
+} catch (InterruptedException e) {
+    e.printStackTrace();
+}
+System.out.println("invokeLater");
+                        Solution latestBestSolution = latestBestSolutionReference.getAndSet(null);
+                        if (latestBestSolution != null) {
+System.out.println("invokeLater - " + latestBestSolution.getScore());
+                            if (refreshScreenDuringSolvingCheckBox.isSelected()) {
+                                // TODO reuse updateScreen code
+                                solutionPanel.resetPanel(solutionBusiness.getSolution());
+                                validate();
+                            }
+                            resultLabel.setText("Latest best score: " + latestBestSolution.getScore());
+                        }
                     }
                 });
             }
@@ -177,9 +198,11 @@ public class WorkflowFrame extends JFrame {
         solveAction = new SolveAction();
         solveAction.setEnabled(false);
         panel.add(new JButton(solveAction));
-        cancelSolvingAction = new CancelSolvingAction();
-        cancelSolvingAction.setEnabled(false);
-        panel.add(new JButton(cancelSolvingAction));
+        terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
+        terminateSolvingEarlyAction.setEnabled(false);
+        panel.add(new JButton(terminateSolvingEarlyAction));
+        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving", false);
+        panel.add(refreshScreenDuringSolvingCheckBox);
         openAction = new OpenAction();
         openAction.setEnabled(true);
         panel.add(new JButton(openAction));
@@ -210,7 +233,7 @@ public class WorkflowFrame extends JFrame {
             action.setEnabled(!solving);
         }
         solveAction.setEnabled(!solving);
-        cancelSolvingAction.setEnabled(solving);
+        terminateSolvingEarlyAction.setEnabled(solving);
         openAction.setEnabled(!solving);
         saveAction.setEnabled(!solving);
         importAction.setEnabled(!solving && solutionBusiness.hasImporter());
@@ -254,9 +277,9 @@ public class WorkflowFrame extends JFrame {
 
     }
 
-    private class CancelSolvingAction extends AbstractAction {
+    private class TerminateSolvingEarlyAction extends AbstractAction {
 
-        public CancelSolvingAction() {
+        public TerminateSolvingEarlyAction() {
             super("Terminate solving early");
         }
 
@@ -394,7 +417,7 @@ public class WorkflowFrame extends JFrame {
     }
 
     public void updateScreen() {
-        solutionPanel.resetPanel();
+        solutionPanel.resetPanel(solutionBusiness.getSolution());
         validate();
         resultLabel.setText("Score: " + solutionBusiness.getScore());
     }

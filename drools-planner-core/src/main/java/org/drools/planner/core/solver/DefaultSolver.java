@@ -64,6 +64,10 @@ public class DefaultSolver implements Solver {
         solverScope.setSolutionDescriptor(solutionDescriptor);
     }
 
+    public RuleBase getRuleBase() {
+        return solverScope.getRuleBase();
+    }
+
     public void setRuleBase(RuleBase ruleBase) {
         solverScope.setRuleBase(ruleBase);
     }

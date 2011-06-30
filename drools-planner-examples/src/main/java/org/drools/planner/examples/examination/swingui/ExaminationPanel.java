@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
@@ -57,9 +58,9 @@ public class ExaminationPanel extends SolutionPanel {
         return (Examination) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        Examination examination = getExamination();
+        Examination examination = (Examination) solution;
         gridLayout.setColumns(examination.getRoomList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Period         \\         Room");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(

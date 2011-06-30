@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
@@ -56,9 +57,9 @@ public class NurseRosteringPanel extends SolutionPanel {
         return (NurseRoster) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        NurseRoster nurseRoster = getNurseRoster();
+        NurseRoster nurseRoster = (NurseRoster) solution;
         gridLayout.setColumns(nurseRoster.getShiftDateList().size() + 1);
         JLabel headerCornerLabel = new JLabel("E \\ SD");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(

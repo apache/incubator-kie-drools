@@ -22,6 +22,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
@@ -39,8 +40,8 @@ public class TspWorldPanel extends JPanel {
         this.tspPanel = tspPanel;
     }
 
-    public void resetPanel() {
-        TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
+    public void resetPanel(Solution solution) {
+        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
         LatitudeLongitudeTranslator translator = new LatitudeLongitudeTranslator();
         for (City city : travelingSalesmanTour.getCityList()) {
             translator.addCoordinates(city.getLatitude(), city.getLongitude());
