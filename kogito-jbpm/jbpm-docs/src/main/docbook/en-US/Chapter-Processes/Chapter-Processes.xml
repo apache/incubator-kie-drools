@@ -1535,6 +1535,100 @@ WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
     WorkflowProcessinstanceUpgrader does it.</para>
 
     </section>
+    
+    </section>
+      
+    <section>
+      <title>Multi-threading</title>
+    
+    <para>The engine itself allows you to run multiple threads on the same session.
+    A process instance itself however uses logical multi-threading to implement parallel
+    execution, not multiple real threads.  The main reason for doing this is that allowing
+    multiple threads to execute on the same process instance implicates that we have to
+    make sure that state is consistent across these threads, and that there are no race
+    conditions and deadlocks etc.  This can have a significant impact on performance, even
+    when multi-threading is not required.  Allowing real multi-threading on the same
+    process instance is also no guarantee on improved performance, as in general it leads
+    to decreased performance (due to overhead and conflicts).  Therefore, we only allow
+    one thread to be processing a specific process instance at each time.  It is however
+    simple to achieve logical multi-threading using asynchronous tasks, as explained below.
+    </para>
+    
+    <para>In general, the engine executes the process sequentially.  For example, when
+    the engine encounters a script task in a process, it will synchronously execute that
+    script and wait for it to complete before continuing execution.  Similarly, if a process
+    encounters a parallel gateway, it will sequentially trigger each of the outgoing
+    branches, one after the other.  This is possible since execution is almost always
+    instantaneous, meaning that it is extremely fast and almost produces no overhead.  
+    As a result, the user usually doesn't even notice this.</para>
+    
+    <para>When a service task is reached in the process, the engine will also invoke the
+    handler of this service synchronously.  This means that the engine will wait for
+    the completeWorkItem(..) method to return before continuing execution.  Therefore,
+    it is important that your service handler executes your service asynchronously if
+    its execution is not instantaneous.  Image for example you want to invoke an external
+    service.  Since the delay of invoking this service remotely and waiting for the results
+    might be too high, it might be a good idea to invoke this service asynchronously.  This
+    means that the handler will only invoke the service asynchronously and will notify
+    the engine if the results are available.  In the mean time, the process engine can
+    then continue execution elsewhere.  Similarly, your action scripts also be
+    instantaneous, as the engine will be waiting for it to execute.  For example, doing
+    Thread.sleep(..) as part of a script will not make the engine continue execution
+    elsewhere but will block the engine thread during that period.</para>
+    
+    <para>Human tasks are a typical example of a service that
+    needs to be invoked asynchronously, as we don't want the engine to wait until a human
+    actor has responded to the request.  Therefore, the human task handler will only
+    create a new task (on the task list of the assigned actor) when the human task node
+    is triggered.  The engine will then be able to continue execution on the rest of the
+    process (if necessary) and the handler will notify the engine asynchronously when the
+    user has completed the task.</para>
+    
+    <para>Image for example that you have a process that executes three service in
+    parallel using a parallel gateway.  The engine will first trigger the first service
+    when executing this process, in which case the first service will be invoked.  Since
+    the handler will invoke this service asynchronously, this service will be executing
+    separately.  The engine can in the mean while continue executing the rest of the
+    process, until the results of the service return.  So the engine will continue with
+    executing the second branch of the parallel gateway, triggering the second service
+    (asynchronously).  While the second service is also executing, it will then invoke the
+    third service as well.  At that point, all three services will be executing in parallel
+    and the engine will be waiting for the results to return.  As you can see, you can
+    achieve multi-threading and parallelism by making sure that the tasks that need to be
+    executed in parallel are invoked asynchronously</para>
+    
+    <section>
+      <title>Asynchronous handlers</title>
+      
+      <para>How to implement an asynchronous service handler?  In general, this all
+      depends on the technology you're using.  If you're using only simple Java, you
+      can for example execute the actual service in a new thread:</para>
+      
+      <programlisting language="java">public class MyServiceTaskHandler implements WorkItemHandler {
+        
+  public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    new Thread(new Runnable() {
+      public void run() {
+        // Do the heavy lifting here ...
+      }
+    }).start();
+  }
+
+  public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+  }
+      
+}</programlisting>
+
+      <para>In general, a handler usually will not implement the business logic to
+      perform the work item, but would rather contact an existing service to do the
+      hard work.  For example, the human task handler simply invokes the human task
+      service to add a task there.  To implement an asynchronous handler, you usually
+      have to simply do an asynchronous invocation of this service.  This usually
+      depends on the technology you use to do the communication, but this might be
+      as simple as asynchronously invoking a web service, sending a JMS message to
+      the external service, etc.</para>
+      
+    </section>
 
   </section>
 

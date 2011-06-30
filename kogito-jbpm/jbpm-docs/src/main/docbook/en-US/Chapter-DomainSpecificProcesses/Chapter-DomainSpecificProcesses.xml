@@ -234,7 +234,7 @@ import org.drools.process.core.datatype.impl.type.StringDataType;
   <section>
     <title>Executing service nodes</title>
 
-<para>The Drools engine contains a WorkItemManager that is responsible for executing 
+<para>The jBPM engine contains a WorkItemManager that is responsible for executing 
 work items whenever necessary.  The WorkItemManager is responsible for delegating the
 work items to WorkItemHandlers that execute the work item and notify the WorkItemManager
 when the work item has been completed.  For executing notification work items, a 

@@ -12,13 +12,13 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_userIdItem" structureRef="String" />
-  <itemDefinition id="_descriptionItem" structureRef="String" />
-  <itemDefinition id="_dateItem" structureRef="java.util.Date" />
-  <itemDefinition id="_resultItem" structureRef="String" />
-  <itemDefinition id="_commentItem" structureRef="String" />
-  <itemDefinition id="_resultUserItem" structureRef="String" />
-  <itemDefinition id="_resultManagerItem" structureRef="String" />
+  <itemDefinition id="_userIdItem" />
+  <itemDefinition id="_descriptionItem" />
+  <itemDefinition id="_dateItem" />
+  <itemDefinition id="_resultItem" />
+  <itemDefinition id="_commentItem" />
+  <itemDefinition id="_resultUserItem" />
+  <itemDefinition id="_resultManagerItem" />
 
   <process processType="Private" isExecutable="true" id="com.sample.humantask" name="HumanTask" tns:packageName="defaultPackage" >
 

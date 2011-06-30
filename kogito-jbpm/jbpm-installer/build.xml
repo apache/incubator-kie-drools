@@ -443,12 +443,6 @@
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
-    <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="mac">
-      <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
-      <arg value="-b" />
-      <arg value="${jboss.bind.address}" />
-      <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
-    </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="30"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
       <socket server="${jboss.bind.address}" port="8080" />
@@ -468,11 +462,6 @@
       <arg value="jnp://${jboss.bind.address}:1099" />
       <arg value="-S" />
     </exec>
-    <exec executable="${jboss.home}/bin/shutdown.sh" osfamily="mac">
-      <arg value="-s" />
-      <arg value="jnp://${jboss.bind.address}:1099" />
-      <arg value="-S" />
-    </exec>
   </target>
 
   <!-- Start Eclipse -->
@@ -485,7 +474,7 @@
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
     </exec>
-    <exec executable="${eclipse.home}/eclipse" spawn="yes" osfamily="unix">
+    <exec executable="${eclipse.home}/eclipse" spawn="yes" os="Linux">
       <arg value="-data" />
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />

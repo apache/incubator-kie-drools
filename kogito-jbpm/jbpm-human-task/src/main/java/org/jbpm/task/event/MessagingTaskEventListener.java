@@ -52,24 +52,18 @@ public class MessagingTaskEventListener implements TaskEventListener {
     }
 
     public void taskCompleted(TaskCompletedEvent event) {
-    	System.out.println("MessagingTaskEventListener.taskCompleted " + event.getTaskId());
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, event.getTaskId() );
         List<EventTriggerTransport> targets = keys.getTargets( key );
         if ( targets == null ){
         	key = new TaskEventKey(TaskCompletedEvent.class, -1);
         	targets = keys.getTargets( key );
         	if (targets == null) {
-            	System.out.println("Found no listeners"); 
         		return;
-        	} else {
-            	System.out.println("Found generic listeners: " + targets.size()); 
         	}
         } else {
-        	System.out.println("Found specific listeners: " + targets.size()); 
         	key = new TaskEventKey(TaskCompletedEvent.class, -1);
         	List<EventTriggerTransport> additionalTargets = keys.getTargets( key );
         	if (additionalTargets != null) {
-            	System.out.println("Found generic listeners: " + additionalTargets.size()); 
         		targets.addAll(additionalTargets);
         	}
         }

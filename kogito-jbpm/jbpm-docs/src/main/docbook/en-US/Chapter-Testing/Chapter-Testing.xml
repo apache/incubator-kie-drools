@@ -19,7 +19,7 @@
   <para>When unit testing your process, you test whether the process behaves as expected 
   in specific use cases, for example test the output based on the existing input. To 
   simplify unit testing, jBPM includes a helper class called JbpmJUnitTestCase (in the 
-  drools-bpmn2 test module) that you can use to greatly simplify your junit testing, 
+  jbpm-bpmn2 test module) that you can use to greatly simplify your junit testing, 
   by offering:</para>
   
   <itemizedlist>
