@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.termination;
 
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class TimeMillisSpendTermination extends AbstractTermination {
 
@@ -35,8 +35,8 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isSolverTerminated(AbstractSolverPhaseScope lastSolverPhaseScope) {
-        long solverTimeMillisSpend = lastSolverPhaseScope.getSolverScope().calculateTimeMillisSpend();
+    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
+        long solverTimeMillisSpend = solverScope.calculateTimeMillisSpend();
         return isTerminated(solverTimeMillisSpend);
     }
 
@@ -49,8 +49,8 @@ public class TimeMillisSpendTermination extends AbstractTermination {
         return timeMillisSpend >= maximumTimeMillisSpend;
     }
 
-    public double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope) {
-        long solverTimeMillisSpend = lastSolverPhaseScope.getSolverScope().calculateTimeMillisSpend();
+    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
+        long solverTimeMillisSpend = solverScope.calculateTimeMillisSpend();
         return calculateTimeGradient(solverTimeMillisSpend);
     }
 

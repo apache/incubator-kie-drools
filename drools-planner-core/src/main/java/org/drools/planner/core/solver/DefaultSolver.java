@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.solver;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,9 +29,11 @@ import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,19 +47,15 @@ public class DefaultSolver implements Solver {
 
     protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
-    protected AtomicBoolean solving = new AtomicBoolean(false);
-    protected AtomicBoolean terminatedEarlyHolder; // Shared with phases
-
     protected Long randomSeed;
 
+    protected AtomicBoolean solving = new AtomicBoolean(false);
+    protected AtomicBoolean terminatedEarlyHolder; // Shared with phases
+    protected Termination termination;
     protected BestSolutionRecaller bestSolutionRecaller;
     protected List<SolverPhase> solverPhaseList;
 
     protected DefaultSolverScope solverScope = new DefaultSolverScope();
-
-    public void setTerminatedEarlyHolder(AtomicBoolean terminatedEarlyHolder) {
-        this.terminatedEarlyHolder = terminatedEarlyHolder;
-    }
 
     public void setRandomSeed(long randomSeed) {
         this.randomSeed = randomSeed;
@@ -84,6 +83,14 @@ public class DefaultSolver implements Solver {
 
     public void setScoreCalculator(ScoreCalculator scoreCalculator) {
         solverScope.setWorkingScoreCalculator(scoreCalculator);
+    }
+
+    public void setTerminatedEarlyHolder(AtomicBoolean terminatedEarlyHolder) {
+        this.terminatedEarlyHolder = terminatedEarlyHolder;
+    }
+
+    public void setTermination(Termination termination) {
+        this.termination = termination;
     }
 
     public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
@@ -163,13 +170,16 @@ public class DefaultSolver implements Solver {
     }
 
     protected void runSolverPhases() {
-        for (SolverPhase solverPhase : solverPhaseList) {
+        Iterator<SolverPhase> it = solverPhaseList.iterator();
+        while (!mustTerminate(solverScope) && it.hasNext()) {
+            SolverPhase solverPhase = it.next();
             solverPhase.solve(solverScope);
-            if (terminatedEarlyHolder.get()) {
-                break;
-            }
         }
-        // TODO support doing round-robin of phases (non-construction heuristics)
+        // TODO support doing round-robin of phases (only non-construction heuristics)
+    }
+
+    protected boolean mustTerminate(DefaultSolverScope solverScope) {
+        return (terminatedEarlyHolder.get() || termination.isSolverTerminated(solverScope));
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {

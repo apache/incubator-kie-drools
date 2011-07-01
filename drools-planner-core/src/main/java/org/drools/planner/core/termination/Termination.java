@@ -22,6 +22,7 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.solver.event.SolverLifecycleListener;
 
 /**
@@ -31,10 +32,10 @@ public interface Termination extends SolverLifecycleListener, SolverPhaseLifecyc
 
     /**
      * Called by the {@link Solver} after every phase to determine if the search should stop.
-     * @param lastSolverPhaseScope never null
+     * @param solverScope never null
      * @return true if the search should terminate.
      */
-    boolean isSolverTerminated(AbstractSolverPhaseScope lastSolverPhaseScope);
+    boolean isSolverTerminated(DefaultSolverScope solverScope);
 
     /**
      * Called by the {@link SolverPhase} after every step to determine if the search should stop.
@@ -54,11 +55,11 @@ public interface Termination extends SolverLifecycleListener, SolverPhaseLifecyc
      * <p/>
      * A Termination's timeGradient can be requested after they are terminated, so implementations
      * should be careful not to return a timeGradient above 1.0.
-     * @param lastSolverPhaseScope never null
+     * @param solverScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.
      *         At the start of a solver t is 0.0 and at the end t would be 1.0.
      */
-    double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope);
+    double calculateSolverTimeGradient(DefaultSolverScope solverScope);
 
     /**
      * See {@link #calculateSolverTimeGradient(AbstractSolverPhaseScope)}.

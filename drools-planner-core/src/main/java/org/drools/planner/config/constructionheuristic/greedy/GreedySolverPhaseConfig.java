@@ -79,6 +79,7 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
 
     public GreedySolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         DefaultGreedySolverPhase greedySolverPhase = new DefaultGreedySolverPhase();
+        configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
         greedySolverPhase.setGreedyDecider(buildGreedyDecider(environmentMode));
         return greedySolverPhase;

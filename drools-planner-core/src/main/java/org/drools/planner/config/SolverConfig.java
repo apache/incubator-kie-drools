@@ -167,11 +167,9 @@ public class SolverConfig {
         solver.setScoreDefinition(scoreDefinition);
         // remove when score-in-solution is refactored
         solver.setScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
+        solver.setTermination(terminationConfig.buildTermination(scoreDefinition));
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         solver.setBestSolutionRecaller(bestSolutionRecaller);
-
-        // TODO solver.setTermination(terminationConfig.buildTermination(scoreDefinition));
-
         if (solverPhaseConfigList == null) {
             throw new IllegalArgumentException(
                     "Configure <phases> in the solver configuration.");

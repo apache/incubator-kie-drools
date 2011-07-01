@@ -24,6 +24,7 @@ import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected AtomicBoolean terminatedEarlyHolder;
+    protected Termination termination;
 
     protected BestSolutionRecaller bestSolutionRecaller;
 
@@ -42,6 +44,10 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
 
     public void setTerminatedEarlyHolder(AtomicBoolean terminatedEarlyHolder) {
         this.terminatedEarlyHolder = terminatedEarlyHolder;
+    }
+
+    public void setTermination(Termination termination) {
+        this.termination = termination;
     }
 
     public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
@@ -54,19 +60,27 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
 
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         solverPhaseScope.reset();
+        termination.phaseStarted(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
     }
 
+    protected boolean mustTerminate(AbstractStepScope stepScope) {
+        return (terminatedEarlyHolder.get() || termination.isPhaseTerminated(stepScope));
+    }
+
     public void beforeDeciding(AbstractStepScope stepScope) {
+        termination.beforeDeciding(stepScope);
         solverPhaseLifecycleSupport.fireBeforeDeciding(stepScope);
     }
 
     public void stepDecided(AbstractStepScope stepScope) {
+        termination.stepDecided(stepScope);
         solverPhaseLifecycleSupport.fireStepDecided(stepScope);
     }
 
     public void stepTaken(AbstractStepScope stepScope) {
         bestSolutionRecaller.extractBestSolution(stepScope);
+        termination.stepTaken(stepScope);
         solverPhaseLifecycleSupport.fireStepTaken(stepScope);
     }
 
@@ -74,6 +88,7 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
         DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
         // At the end of the phase, the best solution should be in the working memory for the next phase
         solverScope.setWorkingSolution(solverScope.getBestSolution());
+        termination.phaseEnded(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
     }
 

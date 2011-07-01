@@ -35,6 +35,7 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
 
     public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
+        configureSolverPhase(bruteForceSolverPhase, environmentMode, scoreDefinition);
         return bruteForceSolverPhase;
     }
 

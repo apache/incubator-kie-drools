@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.termination;
 
-import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class AndCompositeTermination extends AbstractCompositeTermination {
 
@@ -26,12 +26,12 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     // ************************************************************************
 
     /**
-     * @param lastSolverPhaseScope never null
+     * @param solverScope never null
      * @return true if all the Terminations are terminated.
      */
-    public boolean isSolverTerminated(AbstractSolverPhaseScope lastSolverPhaseScope) {
+    public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         for (Termination termination : terminationList) {
-            if (!termination.isSolverTerminated(lastSolverPhaseScope)) {
+            if (!termination.isSolverTerminated(solverScope)) {
                 return false;
             }
         }
@@ -54,13 +54,13 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
-     * @param lastSolverPhaseScope never null
+     * @param solverScope never null
      * @return the minimum timeGradient of the Terminations.
      */
-    public double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope) {
+    public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         double timeGradient = 1.0;
         for (Termination termination : terminationList) {
-            double nextTimeGradient = termination.calculateSolverTimeGradient(lastSolverPhaseScope);
+            double nextTimeGradient = termination.calculateSolverTimeGradient(solverScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.min(timeGradient, nextTimeGradient);
             }

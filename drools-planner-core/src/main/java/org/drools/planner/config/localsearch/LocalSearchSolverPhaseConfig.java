@@ -36,9 +36,6 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    @XStreamAlias("termination")
-    private TerminationConfig terminationConfig = new TerminationConfig();
-
     @XStreamAlias("deciderScoreComparatorFactory")
     private DeciderScoreComparatorFactoryConfig deciderScoreComparatorFactoryConfig
             = new DeciderScoreComparatorFactoryConfig();
@@ -48,14 +45,6 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     private AcceptorConfig acceptorConfig = new AcceptorConfig();
     @XStreamAlias("forager")
     private ForagerConfig foragerConfig = new ForagerConfig();
-
-    public TerminationConfig getTerminationConfig() {
-        return terminationConfig;
-    }
-
-    public void setTerminationConfig(TerminationConfig terminationConfig) {
-        this.terminationConfig = terminationConfig;
-    }
 
     public DeciderScoreComparatorFactoryConfig getDeciderScoreComparatorFactoryConfig() {
         return deciderScoreComparatorFactoryConfig;
@@ -96,7 +85,7 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
-        localSearchSolverPhase.setTermination(terminationConfig.buildTermination(scoreDefinition));
+        configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, scoreDefinition));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);
@@ -121,11 +110,6 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(LocalSearchSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (terminationConfig == null) {
-            terminationConfig = inheritedConfig.getTerminationConfig();
-        } else if (inheritedConfig.getTerminationConfig() != null) {
-            terminationConfig.inherit(inheritedConfig.getTerminationConfig());
-        }
         if (deciderScoreComparatorFactoryConfig == null) {
             deciderScoreComparatorFactoryConfig = inheritedConfig.getDeciderScoreComparatorFactoryConfig();
         } else if (inheritedConfig.getDeciderScoreComparatorFactoryConfig() != null) {
