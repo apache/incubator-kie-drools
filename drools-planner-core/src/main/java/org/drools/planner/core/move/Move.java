@@ -34,7 +34,7 @@ import org.drools.planner.core.solution.Solution;
 public interface Move {
 
     /**
-     * Called before a move is evaluated to decide wheter the move can be done and evaluated.
+     * Called before a move is evaluated to decide whether the move can be done and evaluated.
      * A Move isn't doable if:
      * <ul>
      * <li>Either doing it would change nothing in the solution.</li>
