@@ -34,7 +34,6 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.AbstractSolverPhase;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
