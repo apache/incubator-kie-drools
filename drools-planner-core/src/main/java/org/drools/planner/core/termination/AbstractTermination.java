@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.phase.termination;
+package org.drools.planner.core.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;

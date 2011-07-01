@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.phase.termination;
+package org.drools.planner.core.termination;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;

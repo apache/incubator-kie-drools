@@ -20,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.core.phase.termination.AbstractCompositeTermination;
-import org.drools.planner.core.phase.termination.AndCompositeTermination;
-import org.drools.planner.core.phase.termination.OrCompositeTermination;
-import org.drools.planner.core.phase.termination.ScoreAttainedTermination;
-import org.drools.planner.core.phase.termination.StepCountTermination;
-import org.drools.planner.core.phase.termination.Termination;
-import org.drools.planner.core.phase.termination.TimeMillisSpendTermination;
-import org.drools.planner.core.phase.termination.UnimprovedStepCountTermination;
+import org.drools.planner.core.termination.AbstractCompositeTermination;
+import org.drools.planner.core.termination.AndCompositeTermination;
+import org.drools.planner.core.termination.OrCompositeTermination;
+import org.drools.planner.core.termination.ScoreAttainedTermination;
+import org.drools.planner.core.termination.StepCountTermination;
+import org.drools.planner.core.termination.Termination;
+import org.drools.planner.core.termination.TimeMillisSpendTermination;
+import org.drools.planner.core.termination.UnimprovedStepCountTermination;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("termination")

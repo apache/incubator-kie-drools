@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.phase.termination;
+package org.drools.planner.core.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
-public class UnimprovedStepCountTermination extends AbstractTermination {
+public class StepCountTermination extends AbstractTermination {
 
-    private int maximumUnimprovedStepCount = 100;
+    private int maximumStepCount = 100;
 
-    public void setMaximumUnimprovedStepCount(int maximumUnimprovedStepCount) {
-        this.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
-        if (maximumUnimprovedStepCount < 0) {
-            throw new IllegalArgumentException("Property maximumUnimprovedStepCount (" + maximumUnimprovedStepCount
+    public void setMaximumStepCount(int maximumStepCount) {
+        this.maximumStepCount = maximumStepCount;
+        if (maximumStepCount < 0) {
+            throw new IllegalArgumentException("Property maximumStepCount (" + maximumStepCount
                     + ") must be greater or equal to 0.");
         }
     }
@@ -40,8 +40,8 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     }
 
     public boolean isPhaseTerminated(AbstractStepScope stepScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
-        return unimprovedStepCount >= maximumUnimprovedStepCount;
+        int stepIndex = stepScope.getStepIndex();
+        return stepIndex >= maximumStepCount;
     }
 
     public double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope) {
@@ -49,15 +49,9 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
     }
 
     public double calculatePhaseTimeGradient(AbstractStepScope stepScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
-        double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
-        return Math.min(timeGradient, 1.0);
-    }
-
-    private int calculateUnimprovedStepCount(AbstractStepScope stepScope) {
-        int bestStepIndex = stepScope.getSolverPhaseScope().getBestSolutionStepIndex();
         int stepIndex = stepScope.getStepIndex();
-        return stepIndex - bestStepIndex;
+        double timeGradient = ((double) stepIndex) / ((double) maximumStepCount);
+        return Math.min(timeGradient, 1.0);
     }
 
 }

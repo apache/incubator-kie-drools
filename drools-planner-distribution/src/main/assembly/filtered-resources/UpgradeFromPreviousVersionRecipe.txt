@@ -1000,4 +1000,11 @@ After in *Selector.java, *Acceptor.java or *Forager.java:
     }
 Similar for solvingEnded(LocalSearchSolverScope), which is now phaseEnded(LocalSearchSolverPhaseScope)
 
-[Minor] If you use a custom Termination, rewrite is as a SolverTermination or PhaseTermination.
+[MINOR] TerminationConfig and Termination moved to another package.
+Before in  *.java:
+    import org.drools.planner.config.localsearch.termination.TerminationConfig;
+    import org.drools.planner.core.localsearch.termination.Termination;
+After in  *.java:
+    import org.drools.planner.config.termination.TerminationConfig;
+    import org.drools.planner.core.termination.Termination;
+If you implemented a custom Termination: the interface has been changed to separate solver and phase termination.

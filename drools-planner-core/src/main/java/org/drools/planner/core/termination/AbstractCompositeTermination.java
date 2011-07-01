@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.phase.termination;
+package org.drools.planner.core.termination;
 
 import java.util.List;
 
