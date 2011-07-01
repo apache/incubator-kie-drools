@@ -18,6 +18,7 @@ package org.drools.planner.core.solution.initializer;
 
 import org.drools.planner.core.solver.DefaultSolverScope;
 
+@Deprecated
 public interface StartingSolutionInitializer {
 
     void initializeSolution(DefaultSolverScope solverScope);

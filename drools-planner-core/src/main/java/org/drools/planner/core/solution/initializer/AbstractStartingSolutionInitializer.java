@@ -19,6 +19,7 @@ package org.drools.planner.core.solution.initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deprecated
 public abstract class AbstractStartingSolutionInitializer implements StartingSolutionInitializer {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
