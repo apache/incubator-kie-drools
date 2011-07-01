@@ -16,14 +16,12 @@
 
 package org.drools.planner.examples.common.swingui;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -42,12 +40,12 @@ public class ConstraintScoreMapDialog extends JDialog {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected WorkflowFrame workflowFrame;
+    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
     protected SolutionBusiness solutionBusiness;
 
-    public ConstraintScoreMapDialog(WorkflowFrame workflowFrame) {
-        super(workflowFrame, "Constraint scores", true);
-        this.workflowFrame = workflowFrame;
+    public ConstraintScoreMapDialog(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+        super(solverAndPersistenceFrame, "Constraint scores", true);
+        this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {

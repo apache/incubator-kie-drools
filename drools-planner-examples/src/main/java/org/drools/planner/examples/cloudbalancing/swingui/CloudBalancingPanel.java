@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,14 +27,14 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
+import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.log4j.Layout;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -52,19 +51,27 @@ public class CloudBalancingPanel extends SolutionPanel {
             Color.GREEN, Color.YELLOW, Color.BLUE, Color.RED, Color.CYAN, Color.ORANGE, Color.MAGENTA
     };
 
-    private JPanel contentPanel;
+    private JPanel computersPanel;
 
     private CloudComputerPanel unassignedPanel;
     private Map<CloudComputer, CloudComputerPanel> cloudComputerToPanelMap;
     private Map<CloudAssignment, CloudComputerPanel> cloudAssignmentToPanelMap;
 
     public CloudBalancingPanel() {
-        setLayout(new BorderLayout());
-        addHeaderPanel();
-        addContentPanel();
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        JPanel headerPanel = createHeaderPanel();
+        JPanel computersPanel = createComputersPanel();
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(headerPanel).addComponent(computersPanel));
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(computersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE));
     }
 
-    private void addHeaderPanel() {
+    private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new GridLayout(0, 5));
         JLabel emptyLabel = new JLabel("");
         headerPanel.add(emptyLabel);
@@ -76,17 +83,17 @@ public class CloudBalancingPanel extends SolutionPanel {
         headerPanel.add(networkBandwidthLabel);
         JLabel costLabel = new JLabel("Cost");
         headerPanel.add(costLabel);
-        add(headerPanel, BorderLayout.NORTH);
+        return headerPanel;
     }
 
-    private void addContentPanel() {
-        contentPanel = new JPanel(new GridLayout(0, 1));
+    private JPanel createComputersPanel() {
+        computersPanel = new JPanel(new GridLayout(0, 1));
         unassignedPanel = new CloudComputerPanel(null);
-        contentPanel.add(unassignedPanel);
+        computersPanel.add(unassignedPanel);
         cloudComputerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
         cloudComputerToPanelMap.put(null, unassignedPanel);
         cloudAssignmentToPanelMap = new LinkedHashMap<CloudAssignment, CloudComputerPanel>();
-        add(contentPanel, BorderLayout.SOUTH);
+        return computersPanel;
     }
 
     private CloudBalance getCloudBalance() {
@@ -96,7 +103,7 @@ public class CloudBalancingPanel extends SolutionPanel {
     public void resetPanel(Solution solution) {
         for (CloudComputerPanel cloudComputerCloudComputerPanel : cloudComputerToPanelMap.values()) {
             if (cloudComputerCloudComputerPanel.getCloudComputer() != null) {
-                contentPanel.remove(cloudComputerCloudComputerPanel);
+                computersPanel.remove(cloudComputerCloudComputerPanel);
             }
         }
         cloudComputerToPanelMap.clear();
@@ -116,7 +123,7 @@ public class CloudBalancingPanel extends SolutionPanel {
             CloudComputerPanel cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
             if (cloudComputerPanel == null) {
                 cloudComputerPanel = new CloudComputerPanel(cloudComputer);
-                contentPanel.add(cloudComputerPanel);
+                computersPanel.add(cloudComputerPanel);
                 cloudComputerToPanelMap.put(cloudComputer, cloudComputerPanel);
             }
         }
@@ -144,7 +151,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
         for (CloudComputer deadCloudComputer : deadCloudComputerSet) {
             CloudComputerPanel deadCloudComputerPanel = cloudComputerToPanelMap.remove(deadCloudComputer);
-            contentPanel.remove(deadCloudComputerPanel);
+            computersPanel.remove(deadCloudComputerPanel);
         }
     }
 
@@ -166,7 +173,7 @@ public class CloudBalancingPanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toCloudComputer = (CloudComputer) cloudComputerListField.getSelectedItem();
                 solutionBusiness.doMove(new CloudComputerChangeMove(cloudAssignment, toCloudComputer));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.updateScreen();
             }
         }
 

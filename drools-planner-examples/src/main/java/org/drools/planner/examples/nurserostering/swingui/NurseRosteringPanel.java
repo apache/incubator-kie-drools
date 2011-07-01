@@ -142,7 +142,7 @@ public class NurseRosteringPanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 Employee toEmployee = (Employee) employeeListField.getSelectedItem();
                 solutionBusiness.doMove(new EmployeeChangeMove(assignment, toEmployee));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.updateScreen();
             }
         }
 

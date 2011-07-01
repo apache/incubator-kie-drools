@@ -147,7 +147,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
                 solutionBusiness.doMove(new PeriodChangeMove(lecture, toPeriod));
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 solutionBusiness.doMove(new RoomChangeMove(lecture, toRoom));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.updateScreen();
             }
         }
 

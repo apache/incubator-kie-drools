@@ -34,11 +34,11 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected WorkflowFrame workflowFrame;
+    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
     protected SolutionBusiness solutionBusiness;
 
-    public void setWorkflowFrame(WorkflowFrame workflowFrame) {
-        this.workflowFrame = workflowFrame;
+    public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+        this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {

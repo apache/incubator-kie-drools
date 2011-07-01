@@ -1,16 +1,21 @@
 package org.drools.planner.examples.cloudbalancing.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
-import java.security.PrivateKey;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
@@ -80,7 +85,7 @@ public class CloudComputerPanel extends JPanel {
         memoryField.setEditable(false);
         memoryField.setEnabled(false);
         add(memoryField);
-        networkBandwidthField = new JTextField( "0 GB / " + getComputerNetworkBandwidth() + " GB");
+        networkBandwidthField = new JTextField("0 GB / " + getComputerNetworkBandwidth() + " GB");
         networkBandwidthField.setEditable(false);
         networkBandwidthField.setEnabled(false);
         add(networkBandwidthField);
@@ -103,7 +108,13 @@ public class CloudComputerPanel extends JPanel {
         networkBandwidthBar = new CloudBar(getComputerNetworkBandwidth());
         networkBandwidthBar.setEnabled(false);
         add(networkBandwidthBar);
-        add(new JLabel());
+        add(new JButton(new AbstractAction("Details") {
+            public void actionPerformed(ActionEvent e) {
+                CloudAssignmentListDialog cloudAssignmentListDialog = new CloudAssignmentListDialog();
+                cloudAssignmentListDialog.setLocationRelativeTo(getRootPane());
+                cloudAssignmentListDialog.setVisible(true);
+            }
+        }));
     }
     public void addCloudAssignment(CloudAssignment cloudAssignment) {
         cloudAssignmentList.add(cloudAssignment);
@@ -219,5 +230,67 @@ public class CloudComputerPanel extends JPanel {
 
     }
 
+    private class CloudAssignmentListDialog extends JDialog {
+
+        public CloudAssignmentListDialog() {
+            setModal(true);
+            setTitle(getComputerLabel());
+            JPanel contentPanel = new JPanel();
+            GroupLayout layout = new GroupLayout(contentPanel);
+            contentPanel.setLayout(layout);
+            JPanel headerPanel = createHeaderPanel();
+            JPanel assignmentsPanel = createAssignmentsPanel();
+            layout.setHorizontalGroup(layout.createParallelGroup()
+                    .addComponent(headerPanel).addComponent(assignmentsPanel));
+            layout.setVerticalGroup(layout.createSequentialGroup()
+                    .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                            GroupLayout.PREFERRED_SIZE)
+                    .addComponent(assignmentsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                            GroupLayout.PREFERRED_SIZE));
+            JScrollPane contentScrollPane = new JScrollPane(contentPanel);
+            contentScrollPane.setPreferredSize(new Dimension(800, 500));
+            contentScrollPane.getVerticalScrollBar().setUnitIncrement(20);
+            setContentPane(contentScrollPane);
+            pack();
+        }
+
+        private JPanel createHeaderPanel() {
+            JPanel headerPanel = new JPanel(new GridLayout(0, 5));
+            headerPanel.add(new JLabel(""));
+            JLabel cpuPowerLabel = new JLabel("CPU power");
+            headerPanel.add(cpuPowerLabel);
+            JLabel memoryLabel = new JLabel("Memory");
+            headerPanel.add(memoryLabel);
+            JLabel networkBandwidthLabel = new JLabel("Network bandwidth");
+            headerPanel.add(networkBandwidthLabel);
+            headerPanel.add(new JLabel(""));
+            return headerPanel;
+        }
+
+        private JPanel createAssignmentsPanel() {
+            JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
+            int colorIndex = 0;
+            for (CloudAssignment cloudAssignment : cloudAssignmentList) {
+                JLabel cloudAssignmentLabel = new JLabel(cloudAssignment.getLabel());
+                cloudAssignmentLabel.setForeground(CloudBalancingPanel.PROCESS_COLORS[colorIndex]);
+                assignmentsPanel.add(cloudAssignmentLabel);
+
+                JTextField cpuPowerField = new JTextField(cloudAssignment.getMinimalCpuPower() + " GHz");
+                cpuPowerField.setEditable(false);
+                assignmentsPanel.add(cpuPowerField);
+                JTextField memoryField = new JTextField(cloudAssignment.getMinimalMemory() + " GB");
+                memoryField.setEditable(false);
+                assignmentsPanel.add(memoryField);
+                JTextField networkBandwidthField = new JTextField(cloudAssignment.getMinimalNetworkBandwidth() + " GB");
+                networkBandwidthField.setEditable(false);
+                assignmentsPanel.add(networkBandwidthField);
+                assignmentsPanel.add(new JLabel(""));
+
+                colorIndex = (colorIndex + 1) % CloudBalancingPanel.PROCESS_COLORS.length;
+            }
+            return assignmentsPanel;
+        }
+
+    }
     
 }

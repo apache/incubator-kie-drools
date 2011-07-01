@@ -51,7 +51,7 @@ import org.drools.planner.core.solution.Solution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WorkflowFrame extends JFrame {
+public class SolverAndPersistenceFrame extends JFrame {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -76,12 +76,12 @@ public class WorkflowFrame extends JFrame {
 
     private AtomicReference<Solution> latestBestSolutionReference = new AtomicReference<Solution>(null);
 
-    public WorkflowFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
+    public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
         super(exampleName + " Drools Planner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
         solutionPanel.setSolutionBusiness(solutionBusiness);
-        solutionPanel.setWorkflowFrame(this);
+        solutionPanel.setSolverAndPersistenceFrame(this);
         registerListeners();
         constraintScoreMapDialog = new ConstraintScoreMapDialog(this);
         constraintScoreMapDialog.setSolutionBusiness(solutionBusiness);
@@ -306,7 +306,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
                     return "Solver xml files";
                 }
             });
-            int approved = fileChooser.showOpenDialog(WorkflowFrame.this);
+            int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.openSolution(fileChooser.getSelectedFile());
                 setSolutionLoaded();
@@ -332,7 +332,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
                     return "Solver xml files";
                 }
             });
-            int approved = fileChooser.showSaveDialog(WorkflowFrame.this);
+            int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.saveSolution(fileChooser.getSelectedFile());
             }
@@ -356,7 +356,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
 //                    return "Import files";
 //                }
 //            });
-            int approved = fileChooser.showOpenDialog(WorkflowFrame.this);
+            int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.importSolution(fileChooser.getSelectedFile());
                 setSolutionLoaded();
@@ -381,7 +381,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
 //                    return "Export files";
 //                }
 //            });
-            int approved = fileChooser.showSaveDialog(WorkflowFrame.this);
+            int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 solutionBusiness.exportSolution(fileChooser.getSelectedFile());
             }

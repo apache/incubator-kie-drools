@@ -102,7 +102,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
                 Day toDay = (Day) dayListField.getSelectedItem();
                 Move move = new DayChangeMove(match, toDay);
                 solutionBusiness.doMove(move);
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.updateScreen();
             }
         }
 
