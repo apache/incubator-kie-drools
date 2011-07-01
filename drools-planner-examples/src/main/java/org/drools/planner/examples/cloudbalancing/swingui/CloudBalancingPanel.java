@@ -37,11 +37,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.PlanningFactChange;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
-import org.drools.planner.examples.common.business.PlanningFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 
 /**
