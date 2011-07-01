@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.phase.termination;
 
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class AndCompositeTermination extends AbstractCompositeTermination {
 

@@ -17,7 +17,7 @@
 package org.drools.planner.core.bruteforce;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class BruteForceStepScope extends AbstractStepScope {
 

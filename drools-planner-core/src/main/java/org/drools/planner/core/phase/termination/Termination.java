@@ -18,7 +18,7 @@ package org.drools.planner.core.phase.termination;
 
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 /**
  * A Termination determines when a {@link SolverPhase} should stop.

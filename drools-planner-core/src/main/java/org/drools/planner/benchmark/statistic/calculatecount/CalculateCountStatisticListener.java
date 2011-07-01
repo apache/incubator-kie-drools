@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class CalculateCountStatisticListener extends SolverPhaseLifecycleListenerAdapter {

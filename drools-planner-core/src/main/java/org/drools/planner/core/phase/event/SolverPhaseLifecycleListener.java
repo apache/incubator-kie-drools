@@ -19,7 +19,7 @@ package org.drools.planner.core.phase.event;
 import java.util.EventListener;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public interface SolverPhaseLifecycleListener extends EventListener {
 

@@ -20,7 +20,7 @@ import java.util.Iterator;
 
 import org.drools.event.AbstractEventSupport;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 /**
  * Internal API.

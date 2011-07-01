@@ -17,7 +17,7 @@
 package org.drools.planner.core.localsearch;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class LocalSearchSolverPhaseScope extends AbstractSolverPhaseScope {

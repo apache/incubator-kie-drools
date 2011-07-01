@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver;
+package org.drools.planner.core.phase.step;
 
 import java.util.Random;
 

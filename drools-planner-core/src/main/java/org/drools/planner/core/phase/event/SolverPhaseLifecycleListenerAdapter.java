@@ -17,7 +17,7 @@
 package org.drools.planner.core.phase.event;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public abstract class SolverPhaseLifecycleListenerAdapter implements SolverPhaseLifecycleListener {
 

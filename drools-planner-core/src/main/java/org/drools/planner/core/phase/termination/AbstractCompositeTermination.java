@@ -19,7 +19,7 @@ package org.drools.planner.core.phase.termination;
 import java.util.List;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.step.AbstractStepScope;
 
 /**
  * Abstract superclass for CompositeTermination classes that combine multiple Terminations.
