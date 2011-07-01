@@ -55,6 +55,12 @@ public interface Solver {
     void solve();
 
     /**
+     * This method is thread-safe.
+     * @return true if the {@link #solve()} method is still running.
+     */
+    boolean isSolving();
+
+    /**
      * Notifies the solver that it should stop at its earliest convenience.
      * This method returns immediately, but it takes an undetermined time
      * for the {@link #solve()} to actually return.

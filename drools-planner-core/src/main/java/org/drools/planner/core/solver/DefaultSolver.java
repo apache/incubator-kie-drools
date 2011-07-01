@@ -43,7 +43,8 @@ public class DefaultSolver implements Solver {
 
     protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
 
-    protected AtomicBoolean terminatedEarlyHolder;
+    protected AtomicBoolean solving = new AtomicBoolean(false);
+    protected AtomicBoolean terminatedEarlyHolder; // Shared with phases
 
     protected Long randomSeed;
 
@@ -117,6 +118,10 @@ public class DefaultSolver implements Solver {
     // Worker methods
     // ************************************************************************
 
+    public boolean isSolving() {
+        return solving.get();
+    }
+
     public boolean terminateEarly() {
         boolean terminationEarlySuccessful = !terminatedEarlyHolder.getAndSet(true);
         if (terminationEarlySuccessful) {
@@ -136,6 +141,7 @@ public class DefaultSolver implements Solver {
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
+        solving.set(true);
         terminatedEarlyHolder.set(false);
         if (solverScope.getWorkingSolution() == null) {
             throw new IllegalStateException("The startingSolution must not be null." +
@@ -179,6 +185,7 @@ public class DefaultSolver implements Solver {
                 solverScope.getBestScore(),
                 averageCalculateCountPerSecond
         });
+        solving.set(false);
     }
 
     public void addEventListener(SolverEventListener eventListener) {
