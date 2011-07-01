@@ -221,7 +221,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
         solveAction.setEnabled(true);
         saveAction.setEnabled(true);
         exportAction.setEnabled(solutionBusiness.hasExporter());
-        updateScreen();
+        resetScreen();
     }
 
     private void setSolvingState(boolean solving) {
@@ -255,7 +255,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
 
         public void actionPerformed(ActionEvent e) {
             setSolvingState(true);
-            // This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
+            // TODO This should be replaced with a java 6 SwingWorker once drools's hudson is on JDK 1.6
             solvingExecutor.submit(new Runnable() {
                 public void run() {
                     try {
@@ -267,7 +267,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             setSolvingState(false);
-                            updateScreen();
+                            resetScreen();
                         }
                     });
                 }
@@ -415,7 +415,7 @@ System.out.println("invokeLater - " + latestBestSolution.getScore());
 
     }
 
-    public void updateScreen() {
+    public void resetScreen() {
         solutionPanel.resetPanel(solutionBusiness.getSolution());
         validate();
         resultLabel.setText("Score: " + solutionBusiness.getScore());

@@ -143,7 +143,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 Bed toBed = (Bed) bedListField.getSelectedItem();
                 solutionBusiness.doMove(new BedChangeMove(bedDesignation, toBed));
-                solverAndPersistenceFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

@@ -23,10 +23,12 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
 public class CloudComputerPanel extends JPanel {
 
+    private final CloudBalancingPanel cloudBalancingPanel;
     private CloudComputer cloudComputer;
     private List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>();
 
     private JLabel computerLabel;
+    private JButton deleteButton;
     private JTextField cpuPowerField;
     private JTextField memoryField;
     private JTextField networkBandwidthField;
@@ -38,8 +40,9 @@ public class CloudComputerPanel extends JPanel {
     private CloudBar networkBandwidthBar;
     private JButton detailsButton;
 
-    public CloudComputerPanel(CloudComputer cloudComputer) {
+    public CloudComputerPanel(CloudBalancingPanel cloudBalancingPanel, CloudComputer cloudComputer) {
         super(new GridLayout(0, 5));
+        this.cloudBalancingPanel = cloudBalancingPanel;
         this.cloudComputer = cloudComputer;
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createCompoundBorder(
@@ -75,9 +78,19 @@ public class CloudComputerPanel extends JPanel {
     }
 
     private void addTotals() {
+        JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
         computerLabel = new JLabel(getComputerLabel());
         computerLabel.setEnabled(false);
-        add(computerLabel);
+        labelAndDeletePanel.add(computerLabel, BorderLayout.CENTER);
+        if (cloudComputer != null) {
+            deleteButton = new JButton(new AbstractAction("X") {
+                public void actionPerformed(ActionEvent e) {
+                    cloudBalancingPanel.deleteComputer(cloudComputer);
+                }
+            });
+            labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
+        }
+        add(labelAndDeletePanel);
         cpuPowerField = new JTextField("0 GHz / " + getComputerCpuPower() + " GHz");
         cpuPowerField.setEditable(false);
         cpuPowerField.setEnabled(false);

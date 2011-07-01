@@ -151,7 +151,7 @@ public class Manners2009Panel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 SeatDesignation switchSeatDesignation = (SeatDesignation) seatDesignationListField.getSelectedItem();
                 solutionBusiness.doMove(new SeatDesignationSwitchMove(seatDesignation, switchSeatDesignation));
-                solverAndPersistenceFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

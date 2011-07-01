@@ -16,10 +16,10 @@
 
 package org.drools.planner.examples.cloudbalancing.swingui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -34,12 +34,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.log4j.Layout;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
+import org.drools.planner.examples.common.business.PlanningFactChange;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 
 /**
@@ -88,7 +90,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     private JPanel createComputersPanel() {
         computersPanel = new JPanel(new GridLayout(0, 1));
-        unassignedPanel = new CloudComputerPanel(null);
+        unassignedPanel = new CloudComputerPanel(this, null);
         computersPanel.add(unassignedPanel);
         cloudComputerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
         cloudComputerToPanelMap.put(null, unassignedPanel);
@@ -122,7 +124,7 @@ public class CloudBalancingPanel extends SolutionPanel {
             deadCloudComputerSet.remove(cloudComputer);
             CloudComputerPanel cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
             if (cloudComputerPanel == null) {
-                cloudComputerPanel = new CloudComputerPanel(cloudComputer);
+                cloudComputerPanel = new CloudComputerPanel(this, cloudComputer);
                 computersPanel.add(cloudComputerPanel);
                 cloudComputerToPanelMap.put(cloudComputer, cloudComputerPanel);
             }
@@ -155,6 +157,33 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
     }
 
+    public void deleteComputer(final CloudComputer cloudComputer) {
+        // TODO this goes horribly wrong if the solver is solving.
+        solutionBusiness.doPlanningFactChange(new PlanningFactChange() {
+            public void doChange(Solution solution, WorkingMemory workingMemory) {
+                CloudBalance cloudBalance = (CloudBalance) solution;
+                for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
+                    if (ObjectUtils.equals(cloudAssignment.getCloudComputer(), cloudComputer)) {
+                        FactHandle cloudAssignmentHandle = workingMemory.getFactHandle(cloudAssignment);
+                        cloudAssignment.setCloudComputer(null);
+                        workingMemory.update(cloudAssignmentHandle, cloudAssignment);
+                    }
+                }
+                for (Iterator<CloudComputer> it = cloudBalance.getCloudComputerList().iterator(); it.hasNext(); ) {
+                    CloudComputer workingCloudComputer = it.next();
+                    if (ObjectUtils.equals(workingCloudComputer, cloudComputer)) {
+                        FactHandle cloudComputerHandle = workingMemory.getFactHandle(workingCloudComputer);
+                        workingMemory.retract(cloudComputerHandle);
+                        it.remove(); // remove from list
+                        break;
+                    }
+                }
+                // TODO scoreScope.calculateScoreFromWorkingMemory()
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
+    }
+
     private class CloudAssignmentAction extends AbstractAction {
 
         private CloudAssignment cloudAssignment;
@@ -173,7 +202,7 @@ public class CloudBalancingPanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toCloudComputer = (CloudComputer) cloudComputerListField.getSelectedItem();
                 solutionBusiness.doMove(new CloudComputerChangeMove(cloudAssignment, toCloudComputer));
-                solverAndPersistenceFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

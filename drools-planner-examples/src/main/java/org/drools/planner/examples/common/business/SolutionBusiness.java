@@ -212,6 +212,10 @@ public class SolutionBusiness {
         move.doMove(solverScope.getWorkingMemory());
     }
 
+    public void doPlanningFactChange(PlanningFactChange planningFactChange) {
+        planningFactChange.doChange(solverScope.getWorkingSolution(), solverScope.getWorkingMemory());
+    }
+
     public void solve() {
         solver.solve();
         // Normally we would do this as the point:

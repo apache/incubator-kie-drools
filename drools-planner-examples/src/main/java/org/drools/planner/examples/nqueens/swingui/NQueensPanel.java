@@ -102,7 +102,7 @@ public class NQueensPanel extends SolutionPanel {
                 int toY = (Integer) yListField.getSelectedItem();
                 Move move = new YChangeMove(queen, toY);
                 solutionBusiness.doMove(move);
-                solverAndPersistenceFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

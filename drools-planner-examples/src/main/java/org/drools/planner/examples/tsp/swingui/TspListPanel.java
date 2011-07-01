@@ -29,7 +29,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
@@ -91,7 +90,7 @@ public class TspListPanel extends JPanel {
             if (result == JOptionPane.OK_OPTION) {
                 CityAssignment toAfterCityAssignment = (CityAssignment) afterCityAssignmentListField.getSelectedItem();
                 tspPanel.doMove(new SubTourChangeMove(cityAssignment, cityAssignment, toAfterCityAssignment));
-                tspPanel.getWorkflowFrame().updateScreen();
+                tspPanel.getWorkflowFrame().resetScreen();
             }
         }
 
