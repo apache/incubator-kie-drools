@@ -33,80 +33,78 @@ import java.util.regex.Pattern;
 import org.drools.lang.Expander;
 import org.drools.lang.ExpanderException;
 
-/** 
- * The default expander uses String templates to provide pseudo natural language,
- * as well as general DSLs.
+/**
+ * The default expander uses String templates to provide pseudo natural
+ * language, as well as general DSLs.
  * 
- * For most people, this should do the job just fine. 
+ * For most people, this should do the job just fine.
  */
 public class DefaultExpander
-implements
-Expander {
-    private static final String ruleOrQuery = 
-        "^(?:                         "             +  // alternatives rule...end, query...end
-        "\\p{Blank}*(rule\\b.+?^\\s*when\\b)"  +  // 1: rule, name, attributes. when starts a line
-        "(.*?)                       "         +  // 2: condition
-        "^(\\s*then)                 "         +  // 3: then starts a line
-        "(.*?)                       "         +  // 4: consequence
-        "(^\\s*end.*?$)              "         +  // 5: end starts a line
-        "|\\s*(query\\s+             "         +
-        "(?:\"[^\"]+\"|'[^']+'|\\S+)"        +  
-        "(?:\\s+\\([^)]+)?)        "         +  // 6: query, name, arguments
-        "(.*?)                       "         +  // 7: condition
-        "(^\\s*end.*?$)              "         +  // 8: end starts a line
-        ")";
+    implements
+    Expander {
+    private static final String         ruleOrQuery  =
+                                                                 "^(?:                         " + // alternatives rule...end, query...end
+                                                                         "\\p{Blank}*(rule\\b.+?^\\s*when\\b)" + // 1: rule, name, attributes. when starts a line
+                                                                         "(.*?)                       " + // 2: condition
+                                                                         "^(\\s*then)                 " + // 3: then starts a line
+                                                                         "(.*?)                       " + // 4: consequence
+                                                                         "(^\\s*end.*?$)              " + // 5: end starts a line
+                                                                         "|\\s*(query\\s+             " +
+                                                                         "(?:\"[^\"]+\"|'[^']+'|\\S+)" +
+                                                                         "(?:\\s+\\([^)]+)?)        " + // 6: query, name, arguments
+                                                                         "(.*?)                       " + // 7: condition
+                                                                         "(^\\s*end.*?$)              " + // 8: end starts a line
+                                                                         ")";
 
-    private static final Pattern finder =
-        Pattern.compile( ruleOrQuery,
-                Pattern.DOTALL | Pattern.MULTILINE | Pattern.COMMENTS );
+    private static final Pattern        finder       =
+                                                                 Pattern.compile( ruleOrQuery,
+                                                                                  Pattern.DOTALL | Pattern.MULTILINE | Pattern.COMMENTS );
 
-    // This pattern finds a pattern's constraint list
-    private static final Pattern constraintFinder = Pattern.compile( "\\((.*?)\\)" );
- 
     // This pattern finds a statement's modify body
-    private static final Pattern modifyFinder = Pattern.compile( "\\{(.*?)\\}" );
+    private static final Pattern        modifyFinder = Pattern.compile( "\\{(.*?)\\}" );
 
-    private static final String funcPatStr = "(?:!(uc|lc|ucfirst|num|.*))?";
-    
+    private static final String         funcPatStr   = "(?:!(uc|lc|ucfirst|num|.*))?";
+
     // Pattern for finding a variable reference, restricted to Unicode letters and digits.
-    private static final Pattern varRefPat = Pattern.compile( "\\{([\\p{L}\\d]+)" + funcPatStr + "\\}" );
+    private static final Pattern        varRefPat    = Pattern.compile( "\\{([\\p{L}\\d]+)" + funcPatStr + "\\}" );
 
     // Pattern for initial integer
-    private static final Pattern intPat = Pattern.compile( "^(-?\\d+).*$" );
+    private static final Pattern        intPat       = Pattern.compile( "^(-?\\d+).*$" );
 
-    private final List<DSLMappingEntry>   keywords      = new LinkedList<DSLMappingEntry>();
-    private final List<DSLMappingEntry>   condition     = new LinkedList<DSLMappingEntry>();
-    private final List<DSLMappingEntry>   consequence   = new LinkedList<DSLMappingEntry>();
-    private final List<DSLMappingEntry>   cleanup       = new LinkedList<DSLMappingEntry>();
+    private final List<DSLMappingEntry> keywords     = new LinkedList<DSLMappingEntry>();
+    private final List<DSLMappingEntry> condition    = new LinkedList<DSLMappingEntry>();
+    private final List<DSLMappingEntry> consequence  = new LinkedList<DSLMappingEntry>();
+    private final List<DSLMappingEntry> cleanup      = new LinkedList<DSLMappingEntry>();
 
-    private Map<String,Integer> useKeyword;
-    private Map<String,Integer> useWhen;
-    private Map<String,Integer> useThen;
-    
-    private List<Map<String,String>> substitutions;
+    private Map<String, Integer>        useKeyword;
+    private Map<String, Integer>        useWhen;
+    private Map<String, Integer>        useThen;
 
-    private List<ExpanderException>       errors        = Collections.emptyList();
-    private boolean showResult  = false;
-    private boolean showSteps   = false;
-    private boolean showWhen    = false;
-    private boolean showThen    = false;
-    private boolean showKeyword = false;
-    private boolean showUsage   = false;
+    private List<Map<String, String>>   substitutions;
+
+    private List<ExpanderException>     errors       = Collections.emptyList();
+    private boolean                     showResult   = false;
+    private boolean                     showSteps    = false;
+    private boolean                     showWhen     = false;
+    private boolean                     showThen     = false;
+    private boolean                     showKeyword  = false;
+    private boolean                     showUsage    = false;
 
     /**
      * Creates a new DefaultExpander
      */
     public DefaultExpander() {
         this.cleanup.add( new AntlrDSLMappingEntry( DSLMappingEntry.KEYWORD,
-                DSLMappingEntry.EMPTY_METADATA,
-                "expander {name}",
-                "",
-                "expander (.*?)",
-        "" ) );
+                                                    DSLMappingEntry.EMPTY_METADATA,
+                                                    "expander {name}",
+                                                    "",
+                                                    "expander (.*?)",
+                                                    "" ) );
     }
 
     /**
      * Add the new mapping to this expander.
+     * 
      * @param mapping
      */
     public void addDSLMapping(final DSLMapping mapping) {
@@ -123,62 +121,71 @@ Expander {
                 this.consequence.add( entry );
             }
         }
-        if( mapping.getOption( "result" ) )  showResult  = true;
-        if( mapping.getOption( "steps" ) )   showSteps   = true;
-        if( mapping.getOption( "keyword" ) ) showKeyword = true;
-        if( mapping.getOption( "when" ) )    showWhen    = true;
-        if( mapping.getOption( "then" ) )    showThen    = true;
-        if( mapping.getOption( "usage" ) )   showUsage   = true;
+        if ( mapping.getOption( "result" ) ) showResult = true;
+        if ( mapping.getOption( "steps" ) ) showSteps = true;
+        if ( mapping.getOption( "keyword" ) ) showKeyword = true;
+        if ( mapping.getOption( "when" ) ) showWhen = true;
+        if ( mapping.getOption( "then" ) ) showThen = true;
+        if ( mapping.getOption( "usage" ) ) showUsage = true;
 
     }
 
     /**
      * @inheritDoc
-     * @throws IOException 
+     * @throws IOException
      */
     public String expand(final Reader drlReader) throws IOException {
         return this.expand( this.loadDrlFile( drlReader ) );
     }
 
-    private void displayUsage( String what, Map<String,Integer>use ){
+    private void displayUsage(String what,
+                              Map<String, Integer> use) {
         System.out.println( "=== Usage of " + what + " ===" );
         Formatter fmt = new Formatter( System.out );
-        for( Map.Entry<String,Integer> entry: use.entrySet() ){
-            fmt.format( "%4d %s%n", entry.getValue(), entry.getKey() );
+        for ( Map.Entry<String, Integer> entry : use.entrySet() ) {
+            fmt.format( "%4d %s%n",
+                        entry.getValue(),
+                        entry.getKey() );
         }
     }
-    
-    
+
     /**
      * @inheritDoc
-     * @throws IOException 
+     * @throws IOException
      */
     public String expand(String drl) {
-        
-        if( showUsage ){
-            useKeyword = new HashMap<String,Integer>();
-            useWhen = new HashMap<String,Integer>();
-            useThen = new HashMap<String,Integer>();
+
+        if ( showUsage ) {
+            useKeyword = new HashMap<String, Integer>();
+            useWhen = new HashMap<String, Integer>();
+            useThen = new HashMap<String, Integer>();
         }
-        
+
         drl = expandKeywords( drl );
         drl = cleanupExpressions( drl );
         final StringBuffer buf = expandConstructions( drl );
 
-        if( showUsage ){
-            displayUsage( "keyword", useKeyword );
-            displayUsage( "when", useWhen );
-            displayUsage( "then", useThen );
+        if ( showUsage ) {
+            displayUsage( "keyword",
+                          useKeyword );
+            displayUsage( "when",
+                          useWhen );
+            displayUsage( "then",
+                          useThen );
         }
-        
-        if( showResult ){
+
+        if ( showResult ) {
             StringBuffer show = new StringBuffer();
             Formatter fmt = new Formatter( show );
             int offset = 0;
             int nlPos;
             int iLine = 1;
-            while( (nlPos = buf.indexOf( "\n", offset ) ) >= 0 ){
-                fmt.format( "%4d  %s%n", Integer.valueOf(iLine++), buf.substring( offset, nlPos ) );
+            while ( (nlPos = buf.indexOf( "\n",
+                                          offset )) >= 0 ) {
+                fmt.format( "%4d  %s%n",
+                            Integer.valueOf( iLine++ ),
+                            buf.substring( offset,
+                                           nlPos ) );
                 offset = nlPos + 1;
             }
             System.out.println( "=== DRL xpanded from DSLR ===" );
@@ -191,12 +198,15 @@ Expander {
 
     private static final String nl = System.getProperty( "line.separator" );
 
-    private static int countNewlines( final String drl, int start, int end ){
+    private static int countNewlines(final String drl,
+                                     int start,
+                                     int end) {
         int count = 0;
         int pos = start;
-        while( (pos = drl.indexOf( nl, pos )) >= 0 ){
+        while ( (pos = drl.indexOf( nl,
+                                    pos )) >= 0 ) {
             //      System.out.println( "pos at " + pos );
-            if( pos >= end ) break;
+            if ( pos >= end ) break;
             pos += nl.length();
             count++;
         }
@@ -211,21 +221,21 @@ Expander {
      */
     private StringBuffer expandConstructions(final String drl) {
         // display keys if requested
-        if( showKeyword ){
-            for( DSLMappingEntry entry: this.keywords ){
+        if ( showKeyword ) {
+            for ( DSLMappingEntry entry : this.keywords ) {
                 System.out.println( "keyword: " + entry.getMappingKey() );
                 System.out.println( "         " + entry.getKeyPattern() );
             }
         }
-        if( showWhen ){
-            for( DSLMappingEntry entry: this.condition ){
+        if ( showWhen ) {
+            for ( DSLMappingEntry entry : this.condition ) {
                 System.out.println( "when: " + entry.getMappingKey() );
                 System.out.println( "      " + entry.getKeyPattern() );
-//                System.out.println( "      " + entry.getValuePattern() );
+                //                System.out.println( "      " + entry.getValuePattern() );
             }
         }
-        if( showThen ){
-            for( DSLMappingEntry entry: this.consequence ){
+        if ( showThen ) {
+            for ( DSLMappingEntry entry : this.consequence ) {
                 System.out.println( "then: " + entry.getMappingKey() );
                 System.out.println( "      " + entry.getKeyPattern() );
             }
@@ -240,33 +250,46 @@ Expander {
             final StringBuilder expanded = new StringBuilder();
 
             int newPos = m.start();
-            linecount += countNewlines( drl, drlPos, newPos );
+            linecount += countNewlines( drl,
+                                        drlPos,
+                                        newPos );
             drlPos = newPos;
 
             String constr = m.group().trim();
-            if( constr.startsWith( "rule" ) ){
+            if ( constr.startsWith( "rule" ) ) {
                 String headerFragment = m.group( 1 );
                 expanded.append( headerFragment ); // adding rule header and attributes
                 String lhsFragment = m.group( 2 );
-                expanded.append(  this.expandLHS( lhsFragment, linecount + countNewlines( drl, drlPos, m.start(2) ) + 1 ) );
+                expanded.append( this.expandLHS( lhsFragment,
+                                                 linecount + countNewlines( drl,
+                                                                            drlPos,
+                                                                            m.start( 2 ) ) + 1 ) );
                 String thenFragment = m.group( 3 );
-                expanded.append( thenFragment );   // adding "then" header
-                String rhsFragment = this.expandRHS( m.group( 4 ), linecount + countNewlines( drl, drlPos, m.start(4) ) + 1 );
+                expanded.append( thenFragment ); // adding "then" header
+                String rhsFragment = this.expandRHS( m.group( 4 ),
+                                                     linecount + countNewlines( drl,
+                                                                                drlPos,
+                                                                                m.start( 4 ) ) + 1 );
                 expanded.append( rhsFragment );
                 expanded.append( m.group( 5 ) ); // adding rule trailer
 
-            } else if( constr.startsWith( "query" ) ){
+            } else if ( constr.startsWith( "query" ) ) {
                 String fragment = m.group( 6 );
                 expanded.append( fragment ); // adding query header and attributes
-                String lhsFragment = this.expandLHS( m.group( 7 ), linecount + countNewlines( drl, drlPos, m.start(7) ) + 1 );
+                String lhsFragment = this.expandLHS( m.group( 7 ),
+                                                     linecount + countNewlines( drl,
+                                                                                drlPos,
+                                                                                m.start( 7 ) ) + 1 );
                 expanded.append( lhsFragment );
                 expanded.append( m.group( 8 ) ); // adding query trailer
 
             } else {
                 // strange behavior
-                this.addError( new ExpanderException( "Unable to expand statement: " + constr, 0 ) );
+                this.addError( new ExpanderException( "Unable to expand statement: " + constr,
+                                                      0 ) );
             }
-            m.appendReplacement( buf, Matcher.quoteReplacement( expanded.toString() ) );
+            m.appendReplacement( buf,
+                                 Matcher.quoteReplacement( expanded.toString() ) );
         }
         m.appendTail( buf );
         return buf;
@@ -286,74 +309,84 @@ Expander {
         return drl;
     }
 
-//    private int countAll( Matcher matcher ){
-//        int n = 0;
-//        while( matcher.find() ){
-//            n++;
-//        }
-//        return n;
-//    }
-    
-    
+    //    private int countAll( Matcher matcher ){
+    //        int n = 0;
+    //        while( matcher.find() ){
+    //            n++;
+    //        }
+    //        return n;
+    //    }
+
     /**
      * Expand all configured keywords
      * 
      * @param drl
      * @return
      */
-    private String expandKeywords( String drl ) {
-        substitutions = new ArrayList<Map<String,String>>();
+    private String expandKeywords(String drl) {
+        substitutions = new ArrayList<Map<String, String>>();
         // apply all keywords templates
-        drl = substitute( drl, this.keywords, 0, useKeyword, false );
+        drl = substitute( drl,
+                          this.keywords,
+                          0,
+                          useKeyword,
+                          false );
         substitutions = null;
         return drl;
     }
 
     private Pattern letterPat = Pattern.compile( "\\p{L}" );
-    
-    private String applyFunc( String theFunc, String theValue ){
-        if( theFunc != null ){
-            if( "uc".equals( theFunc ) ){
+
+    private String applyFunc(String theFunc,
+                             String theValue) {
+        if ( theFunc != null ) {
+            if ( "uc".equals( theFunc ) ) {
                 theValue = theValue.toUpperCase();
-            } else if( "lc".equals( theFunc ) ){
+            } else if ( "lc".equals( theFunc ) ) {
                 theValue = theValue.toLowerCase();
-            } else if( "ucfirst".equals( theFunc ) ){
+            } else if ( "ucfirst".equals( theFunc ) ) {
                 Matcher letterMat = letterPat.matcher( theValue );
-                if( letterMat.find() ){
+                if ( letterMat.find() ) {
                     int pos = letterMat.start();
-                    theValue = theValue.substring( 0, pos ) +
-                               theValue.substring( pos, pos + 1 ).toUpperCase() +
+                    theValue = theValue.substring( 0,
+                                                   pos ) +
+                               theValue.substring( pos,
+                                                   pos + 1 ).toUpperCase() +
                                theValue.substring( pos + 1 ).toLowerCase();
                 }
-            } else if( theFunc.startsWith( "num" ) ){
+            } else if ( theFunc.startsWith( "num" ) ) {
                 // kill all non-digits, but keep '-'
-                String numStr = theValue.replaceAll( "[^-\\d]+", "" );
+                String numStr = theValue.replaceAll( "[^-\\d]+",
+                                                     "" );
                 try {
                     long numLong = Long.parseLong( numStr );
-                    if( theValue.matches( "^.*[.,]\\d\\d(?:\\D.*|$)") ){
+                    if ( theValue.matches( "^.*[.,]\\d\\d(?:\\D.*|$)" ) ) {
                         numStr = Long.toString( numLong );
-                        theValue = numStr.substring( 0, numStr.length()-2) + '.' + numStr.substring(numStr.length()-2);
+                        theValue = numStr.substring( 0,
+                                                     numStr.length() - 2 ) + '.' + numStr.substring( numStr.length() - 2 );
                     } else {
                         theValue = Long.toString( numLong );
                     }
-                } catch( NumberFormatException nfe ){
+                } catch ( NumberFormatException nfe ) {
                     // silently ignore - keep the value as it is
                 }
             } else {
-                StringTokenizer strTok = new StringTokenizer( theFunc, "?/", true );
+                StringTokenizer strTok = new StringTokenizer( theFunc,
+                                                              "?/",
+                                                              true );
                 boolean compare = true;
                 int toks = strTok.countTokens();
-                while( toks >= 4 ) {
+                while ( toks >= 4 ) {
                     String key = strTok.nextToken();
                     String qmk = strTok.nextToken(); // '?'
                     String val = strTok.nextToken(); // to use
                     String sep = strTok.nextToken(); // '/'
-                    if( key.equals( theValue ) ){
+                    if ( key.equals( theValue ) ) {
                         theValue = val;
                         break;
                     }
                     toks -= 4;
-                    if( toks < 4 ){
+                    if ( toks < 4 ) {
                         theValue = strTok.nextToken();
                         break;
                     }
@@ -362,29 +395,38 @@ Expander {
         }
         return theValue;
     }
-    
+
     /**
      * Perform the substitutions.
-     * @param exp a DSLR source line to be expanded
-     * @param entries the appropriate DSL keys and values 
-     * @param line line number
-     * @param use map for registering use
+     * 
+     * @param exp
+     *            a DSLR source line to be expanded
+     * @param entries
+     *            the appropriate DSL keys and values
+     * @param line
+     *            line number
+     * @param use
+     *            map for registering use
      * @return the expanden line
      */
-    private String substitute( String exp, List<DSLMappingEntry> entries, int line,
-            Map<String,Integer> use, boolean showSingleSteps ){
-        if( entries.size() == 0 ){
-            if( line > 0 ){
-                this.addError( new ExpanderException( "No mapping entries for expanding: " + exp, line ) );
+    private String substitute(String exp,
+                              List<DSLMappingEntry> entries,
+                              int line,
+                              Map<String, Integer> use,
+                              boolean showSingleSteps) {
+        if ( entries.size() == 0 ) {
+            if ( line > 0 ) {
+                this.addError( new ExpanderException( "No mapping entries for expanding: " + exp,
+                                                      line ) );
             }
             return exp;
         }
-        if( showSingleSteps ){
-            System.out.println("to expand: |" + exp + "|");
+        if ( showSingleSteps ) {
+            System.out.println( "to expand: |" + exp + "|" );
         }
-        Map<String,String> key2value = new HashMap<String,String>();
+        Map<String, String> key2value = new HashMap<String, String>();
         for ( final DSLMappingEntry entry : entries ) {
-            Map<String,Integer> vars = entry.getVariables();
+            Map<String, Integer> vars = entry.getVariables();
             String mappingKey = entry.getMappingKey();
             String vp = entry.getValuePattern();
             Pattern kp = entry.getKeyPattern();
@@ -392,25 +434,27 @@ Expander {
             int startPos = 0;
             boolean match = false;
             Integer count = null;
-            if( showUsage ){
+            if ( showUsage ) {
                 count = use.get( mappingKey );
-                if( count == null ) use.put( mappingKey, Integer.valueOf( 0 ) );
+                if ( count == null ) use.put( mappingKey,
+                                              Integer.valueOf( 0 ) );
             }
-            while( startPos < exp.length() && m.find( startPos ) ){
+            while ( startPos < exp.length() && m.find( startPos ) ) {
                 match = true;
-                if( showSingleSteps ){
-                    System.out.println("  matches: " + kp.toString() );
+                if ( showSingleSteps ) {
+                    System.out.println( "  matches: " + kp.toString() );
                 }
-                if( showUsage ){
-                    use.put( mappingKey, use.get( mappingKey ) + 1 );
+                if ( showUsage ) {
+                    use.put( mappingKey,
+                             use.get( mappingKey ) + 1 );
                 }
                 // Replace the range of group 0.  
                 String target = m.group( 0 );
-                if( ! vars.keySet().isEmpty() ){
+                if ( !vars.keySet().isEmpty() ) {
                     // Build a pattern matching any variable enclosed in braces.
-                    StringBuilder sb = new StringBuilder(  );
+                    StringBuilder sb = new StringBuilder();
                     String del = "\\{(";
-                    for( String key: vars.keySet() ){
+                    for ( String key : vars.keySet() ) {
                         sb.append( del ).append( Pattern.quote( key ) );
                         del = "|";
                     }
@@ -420,28 +464,33 @@ Expander {
                     Matcher allkeyMat = allkeyPat.matcher( vp );
 
                     // While the pattern matches, get the actual key and replace by '$' + index
-                    while( allkeyMat.find() ){
+                    while ( allkeyMat.find() ) {
                         String theKey = allkeyMat.group( 1 );
                         String theFunc = allkeyMat.group( 2 );
                         String foundValue = m.group( vars.get( theKey ) );
-                        String theValue = applyFunc( theFunc, foundValue );
-                        vp = vp.substring(0, allkeyMat.start()) + theValue + vp.substring( allkeyMat.end() );
+                        String theValue = applyFunc( theFunc,
+                                                     foundValue );
+                        vp = vp.substring( 0,
+                                           allkeyMat.start() ) + theValue + vp.substring( allkeyMat.end() );
                         allkeyMat.reset( vp );
-                        key2value.put( theKey, foundValue );
+                        key2value.put( theKey,
+                                       foundValue );
                     }
                 }
 
                 // Try to find any matches from previous lines.
                 Matcher varRefMat = varRefPat.matcher( vp );
-                while( varRefMat.find() ){
+                while ( varRefMat.find() ) {
                     String theKey = varRefMat.group( 1 );
                     String theFunc = varRefMat.group( 2 );
-                    for( int ientry = substitutions.size() - 1; ientry >= 0; ientry-- ){
+                    for ( int ientry = substitutions.size() - 1; ientry >= 0; ientry-- ) {
                         String foundValue = substitutions.get( ientry ).get( theKey );
-                        if( foundValue != null ){
-                            String theValue = applyFunc( theFunc, foundValue );
+                        if ( foundValue != null ) {
+                            String theValue = applyFunc( theFunc,
+                                                         foundValue );
                             // replace it
-                            vp = vp.substring(0, varRefMat.start()) + theValue + vp.substring( varRefMat.end() );
+                            vp = vp.substring( 0,
+                                               varRefMat.start() ) + theValue + vp.substring( varRefMat.end() );
                             varRefMat.reset( vp );
                             break;
                         }
@@ -449,14 +498,15 @@ Expander {
                 }
 
                 // add the new set of substitutions
-                if( key2value.size() > 0 ){
+                if ( key2value.size() > 0 ) {
                     substitutions.add( key2value );
                 }
 
                 // now replace the target
-                exp = exp.substring(0, m.start()) + vp + exp.substring( m.end() );
-                if( match && showSingleSteps ){
-                    System.out.println("   result: |" + exp + "|" );
+                exp = exp.substring( 0,
+                                     m.start() ) + vp + exp.substring( m.end() );
+                if ( match && showSingleSteps ) {
+                    System.out.println( "   result: |" + exp + "|" );
                 }
                 startPos = m.start() + vp.length();
                 m.reset( exp );
@@ -465,19 +515,21 @@ Expander {
         return exp;
     }
 
-
     /**
      * Expand LHS for a construction
+     * 
      * @param lhs
-     * @param lineOffset 
+     * @param lineOffset
      * @return
      */
-    private String expandLHS( final String lhs, int lineOffset) {
-        substitutions = new ArrayList<Map<String,String>>();
+    private String expandLHS(final String lhs,
+                             int lineOffset) {
+        substitutions = new ArrayList<Map<String, String>>();
 
         //        System.out.println( "*** LHS>" + lhs + "<" );
         final StringBuilder buf = new StringBuilder();
-        final String[] lines = lhs.split( "\n", -1 ); // since we assembled the string, we know line breaks are \n
+        final String[] lines = lhs.split( "\n",
+                                          -1 ); // since we assembled the string, we know line breaks are \n
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
         int lastExpanded = -1;
         int lastPattern = -1;
@@ -489,42 +541,39 @@ Expander {
                 // comments - do nothing
             } else if ( trimmed.startsWith( ">" ) ) {
                 // passthrough code - simply remove the passthrough mark character
-                expanded[lastExpanded] = lines[i].replaceFirst( ">", " " );
+                expanded[lastExpanded] = lines[i].replaceFirst( ">",
+                                                                " " );
                 lastPattern = lastExpanded;
             } else {
                 // regular expansion - expand the expression
                 expanded[lastExpanded] =
-                    substitute( expanded[lastExpanded], this.condition, i + lineOffset, useWhen, showSteps );
+                        substitute( expanded[lastExpanded],
+                                    this.condition,
+                                    i + lineOffset,
+                                    useWhen,
+                                    showSteps );
 
                 // do we need to report errors for that?
                 if ( lines[i].equals( expanded[lastExpanded] ) ) {
                     // report error
-                    this.addError( new ExpanderException( "Unable to expand: " + lines[i].replaceAll( "[\n\r]", "" ).trim(),
+                    this.addError( new ExpanderException( "Unable to expand: " + lines[i].replaceAll( "[\n\r]",
+                                                                                                      "" ).trim(),
                                                           i + lineOffset ) );
                 }
                 // but if the original starts with a "-", it means we need to add it
                 // as a constraint to the previous pattern
                 if ( trimmed.startsWith( "-" ) && (!lines[i].equals( expanded[lastExpanded] )) ) {
-                    int lastMatchStart = -1;
-                    int lastMatchEnd = -1;
-                    String constraints = "";
                     if ( lastPattern >= 0 ) {
-                        final Matcher m2 = constraintFinder.matcher( expanded[lastPattern] );
-                        while ( m2.find() ) {
-                            lastMatchStart = m2.start();
-                            lastMatchEnd = m2.end();
-                            constraints = m2.group( 1 ).trim();
+                        ConstraintInformation c = ConstraintInformation.findConstraintInformationInPattern( expanded[lastPattern] );
+                        if ( c.start > -1 ) {
+                            // rebuilding previous pattern structure
+                            expanded[lastPattern] = expanded[lastPattern].substring( 0,
+                                                                                     c.start ) + c.constraints + ((c.constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + expanded[lastPattern].substring( c.end );
+                        } else {
+                            // error, pattern not found to add constraint to
+                            this.addError( new ExpanderException( "No pattern was found to add the constraint to: " + lines[i].trim(),
+                                                                  i + lineOffset ) );
                         }
-                    }
-                    if ( lastMatchStart > -1 ) {
-                        // rebuilding previous pattern structure
-                        expanded[lastPattern] = expanded[lastPattern].substring( 0,
-                                lastMatchStart ) + "( " + constraints + ((constraints.length() == 0) ? "" : ", ") + expanded[lastExpanded].trim() + " )"
-                                + expanded[lastPattern].substring( lastMatchEnd );
-                    } else {
-                        // error, pattern not found to add constraint to
-                        this.addError( new ExpanderException( "No pattern was found to add the constraint to: " + lines[i].trim(),
-                                i + lineOffset ) );
                     }
                     lastExpanded--;
                 } else {
@@ -546,14 +595,16 @@ Expander {
      * @param lhs
      * @return
      */
-    private String expandRHS(final String lhs, int lineOffset) {
+    private String expandRHS(final String lhs,
+                             int lineOffset) {
         final StringBuilder buf = new StringBuilder();
-        final String[] lines = lhs.split( "\n", -1 ); // since we assembled the string, we know line breaks are \n
-        
+        final String[] lines = lhs.split( "\n",
+                                          -1 ); // since we assembled the string, we know line breaks are \n
+
         final String[] expanded = new String[lines.length]; // buffer for expanded lines
         int lastExpanded = -1;
         int lastPattern = -1;
-        for ( int i = 0; i < lines.length -1; i++ ) {
+        for ( int i = 0; i < lines.length - 1; i++ ) {
             final String trimmed = lines[i].trim();
             expanded[++lastExpanded] = lines[i];
 
@@ -561,21 +612,26 @@ Expander {
                 buf.append( lines[i] );
             } else if ( trimmed.startsWith( ">" ) ) {
                 // passthrough code
-                expanded[lastExpanded] = lines[i].replaceFirst( ">", " " );
+                expanded[lastExpanded] = lines[i].replaceFirst( ">",
+                                                                " " );
             } else { // regular expansions
                 expanded[lastExpanded] =
-                    substitute( expanded[lastExpanded], this.consequence, i + lineOffset, useThen, showSteps );
+                        substitute( expanded[lastExpanded],
+                                    this.consequence,
+                                    i + lineOffset,
+                                    useThen,
+                                    showSteps );
 
                 // do we need to report errors for that?
-                if ( lines[i].equals(  expanded[lastExpanded] ) ) {
+                if ( lines[i].equals( expanded[lastExpanded] ) ) {
                     // report error
                     this.addError( new ExpanderException( "Unable to expand: " + lines[i],
                                                           i + lineOffset ) );
                 }
-                
+
                 // If the original starts with a "-", it means we need to add it
                 // as a modify term to the previous pattern
-                if ( trimmed.startsWith( "-" ) && ( ! lines[i].equals( expanded[lastExpanded] )) ) {
+                if ( trimmed.startsWith( "-" ) && (!lines[i].equals( expanded[lastExpanded] )) ) {
                     int lastMatchStart = -1;
                     int lastMatchEnd = -1;
                     String modifiers = "";
@@ -589,15 +645,16 @@ Expander {
                     }
                     if ( lastMatchStart > -1 ) {
                         // rebuilding previous modify structure
-                        expanded[lastPattern] = expanded[lastPattern].substring( 0, lastMatchStart )
-                                                + "{ " + modifiers + 
-                                                ((modifiers.length() == 0) ? "" : ", ") + 
+                        expanded[lastPattern] = expanded[lastPattern].substring( 0,
+                                                                                 lastMatchStart )
+                                                + "{ " + modifiers +
+                                                ((modifiers.length() == 0) ? "" : ", ") +
                                                 expanded[lastExpanded].trim() + " }" +
                                                 expanded[lastPattern].substring( lastMatchEnd );
                     } else {
                         // error, pattern not found to add constraint to
                         this.addError( new ExpanderException( "No modify was found to add the modifier to: " + lines[i].trim(),
-                                i + lineOffset ) );
+                                                              i + lineOffset ) );
                     }
                     lastExpanded--;
                 } else {
@@ -605,12 +662,12 @@ Expander {
                 }
             }
         }
-        
+
         for ( int i = 0; i <= lastExpanded; i++ ) {
             buf.append( expanded[i] );
             buf.append( "\n" );
         }
-        
+
         if ( lines.length == 0 ) {
             buf.append( "\n" );
         }
@@ -649,4 +706,39 @@ Expander {
     public boolean hasErrors() {
         return !this.errors.isEmpty();
     }
+
+    //Container for information relating to constraint substitution on LHS expansion 
+    //where a DSL Sentence begins with "-". The pattern's constraints are deemed to
+    //be between the first "(" and related matching ")". The constraint can include
+    //other parenthesis.
+    private static class ConstraintInformation {
+        int    start       = -1;
+        int    end         = -1;
+        String constraints = "";
+
+        static ConstraintInformation findConstraintInformationInPattern(String pattern) {
+            ConstraintInformation ci = new ConstraintInformation();
+            int bracketCount = 0;
+            for ( int i = 0; i < pattern.length(); i++ ) {
+                char c = pattern.charAt( i );
+                if ( c == '(' ) {
+                    if ( bracketCount == 0 ) {
+                        ci.start = i + 1;
+                    }
+                    bracketCount++;
+                }
+                if ( c == ')' ) {
+                    bracketCount--;
+                    if ( bracketCount == 0 ) {
+                        ci.end = i;
+                        ci.constraints = pattern.substring( ci.start,
+                                                            ci.end );
+                        return ci;
+                    }
+                }
+            }
+            return ci;
+        }
+    }
+
 }
