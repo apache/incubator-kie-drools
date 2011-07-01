@@ -36,6 +36,7 @@ public class CloudComputerPanel extends JPanel {
     private CloudBar cpuPowerBar;
     private CloudBar memoryBar;
     private CloudBar networkBandwidthBar;
+    private JButton detailsButton;
 
     public CloudComputerPanel(CloudComputer cloudComputer) {
         super(new GridLayout(0, 5));
@@ -108,13 +109,15 @@ public class CloudComputerPanel extends JPanel {
         networkBandwidthBar = new CloudBar(getComputerNetworkBandwidth());
         networkBandwidthBar.setEnabled(false);
         add(networkBandwidthBar);
-        add(new JButton(new AbstractAction("Details") {
+        detailsButton = new JButton(new AbstractAction("Details") {
             public void actionPerformed(ActionEvent e) {
                 CloudAssignmentListDialog cloudAssignmentListDialog = new CloudAssignmentListDialog();
                 cloudAssignmentListDialog.setLocationRelativeTo(getRootPane());
                 cloudAssignmentListDialog.setVisible(true);
             }
-        }));
+        });
+        detailsButton.setEnabled(false);
+        add(detailsButton);
     }
     public void addCloudAssignment(CloudAssignment cloudAssignment) {
         cloudAssignmentList.add(cloudAssignment);
@@ -150,14 +153,7 @@ public class CloudComputerPanel extends JPanel {
         }
         boolean used = cloudAssignmentList.size() > 0;
         updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
-        numberOfProcessesLabel.setText("    " + cloudAssignmentList.size() + " processes");
-        numberOfProcessesLabel.setEnabled(used);
-        cpuPowerBar.setEnabled(used);
-        cpuPowerBar.repaint();
-        memoryBar.setEnabled(used);
-        memoryBar.repaint();
-        networkBandwidthBar.setEnabled(used);
-        networkBandwidthBar.repaint();
+        updateBars(used);
     }
 
     private void updateTotals(int usedCpuPower, int usedMemory, int usedNetworkBandwidth, boolean used) {
@@ -173,6 +169,18 @@ public class CloudComputerPanel extends JPanel {
                 ? Color.RED : Color.BLACK);
         networkBandwidthField.setEnabled(used);
         costField.setEnabled(used);
+    }
+
+    private void updateBars(boolean used) {
+        numberOfProcessesLabel.setText("    " + cloudAssignmentList.size() + " processes");
+        numberOfProcessesLabel.setEnabled(used);
+        cpuPowerBar.setEnabled(used);
+        cpuPowerBar.repaint();
+        memoryBar.setEnabled(used);
+        memoryBar.repaint();
+        networkBandwidthBar.setEnabled(used);
+        networkBandwidthBar.repaint();
+        detailsButton.setEnabled(used);
     }
 
     private static class CloudBar extends JPanel {
@@ -248,7 +256,7 @@ public class CloudComputerPanel extends JPanel {
                     .addComponent(assignmentsPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
                             GroupLayout.PREFERRED_SIZE));
             JScrollPane contentScrollPane = new JScrollPane(contentPanel);
-            contentScrollPane.setPreferredSize(new Dimension(800, 500));
+            contentScrollPane.setPreferredSize(new Dimension(800, 200));
             contentScrollPane.getVerticalScrollBar().setUnitIncrement(20);
             setContentPane(contentScrollPane);
             pack();
