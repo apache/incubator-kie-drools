@@ -49,7 +49,7 @@ public class DefaultGreedySolverPhase extends AbstractSolverPhase implements Gre
 
         GreedyStepScope greedyStepScope = createNextStepScope(greedySolverPhaseScope, null);
         Iterator it = greedyPlanningEntitySelector.iterator();
-        while (!mustTerminate(greedyStepScope) && it.hasNext()) {
+        while (!mustTerminate(greedySolverPhaseScope) && it.hasNext()) {
             Object planningEntity = it.next();
             greedyStepScope.setPlanningEntity(planningEntity);
             beforeDeciding(greedyStepScope);

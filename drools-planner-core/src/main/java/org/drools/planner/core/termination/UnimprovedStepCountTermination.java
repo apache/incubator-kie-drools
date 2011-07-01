@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.termination;
 
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -39,8 +40,8 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
     }
 
-    public boolean isPhaseTerminated(AbstractStepScope stepScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
+        int unimprovedStepCount = calculateUnimprovedStepCount(solverPhaseScope);
         return unimprovedStepCount >= maximumUnimprovedStepCount;
     }
 
@@ -48,16 +49,16 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
     }
 
-    public double calculatePhaseTimeGradient(AbstractStepScope stepScope) {
-        int unimprovedStepCount = calculateUnimprovedStepCount(stepScope);
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
+        int unimprovedStepCount = calculateUnimprovedStepCount(solverPhaseScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) maximumUnimprovedStepCount);
         return Math.min(timeGradient, 1.0);
     }
 
-    private int calculateUnimprovedStepCount(AbstractStepScope stepScope) {
-        int bestStepIndex = stepScope.getSolverPhaseScope().getBestSolutionStepIndex();
-        int stepIndex = stepScope.getStepIndex();
-        return stepIndex - bestStepIndex;
+    private int calculateUnimprovedStepCount(AbstractSolverPhaseScope solverPhaseScope) {
+        int bestStepIndex = solverPhaseScope.getBestSolutionStepIndex();
+        int lastStepIndex = solverPhaseScope.getLastCompletedStepScope().getStepIndex();
+        return lastStepIndex - bestStepIndex;
     }
 
 }

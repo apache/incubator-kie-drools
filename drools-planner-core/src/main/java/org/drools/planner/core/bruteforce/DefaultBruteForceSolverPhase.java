@@ -36,7 +36,7 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase implements
         phaseStarted(bruteForceSolverPhaseScope);
 
         BruteForceStepScope bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, null);
-        while (!mustTerminate(bruteForceStepScope) && bruteForceSolutionIterator.hasNext()) {
+        while (!mustTerminate(bruteForceSolverPhaseScope) && bruteForceSolutionIterator.hasNext()) {
             bruteForceSolutionIterator.next();
             Score score = bruteForceSolverPhaseScope.calculateScoreFromWorkingMemory();
             bruteForceStepScope.setScore(score);

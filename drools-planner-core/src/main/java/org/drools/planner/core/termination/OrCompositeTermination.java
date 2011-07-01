@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.termination;
 
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -38,12 +39,12 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
         return false;
     }
     /**
-     * @param stepScope never null
+     * @param solverPhaseScope never null
      * @return true if any of the Termination is terminated.
      */
-    public boolean isPhaseTerminated(AbstractStepScope stepScope) {
+    public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {
         for (Termination termination : terminationList) {
-            if (termination.isPhaseTerminated(stepScope)) {
+            if (termination.isPhaseTerminated(solverPhaseScope)) {
                 return true;
             }
         }
@@ -70,13 +71,13 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
-     * @param stepScope never null
+     * @param solverPhaseScope never null
      * @return the maximum timeGradient of the Terminations.
      */
-    public double calculatePhaseTimeGradient(AbstractStepScope stepScope) {
+    public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
         double timeGradient = 0.0;
         for (Termination termination : terminationList) {
-            double nextTimeGradient = termination.calculatePhaseTimeGradient(stepScope);
+            double nextTimeGradient = termination.calculatePhaseTimeGradient(solverPhaseScope);
             if (nextTimeGradient >= 0.0) {
                 timeGradient = Math.max(timeGradient, nextTimeGradient);
             }

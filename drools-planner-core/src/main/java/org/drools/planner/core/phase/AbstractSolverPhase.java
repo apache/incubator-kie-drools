@@ -64,8 +64,8 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
     }
 
-    protected boolean mustTerminate(AbstractStepScope stepScope) {
-        return (terminatedEarlyHolder.get() || termination.isPhaseTerminated(stepScope));
+    protected boolean mustTerminate(AbstractSolverPhaseScope solverPhaseScope) {
+        return (terminatedEarlyHolder.get() || termination.isPhaseTerminated(solverPhaseScope));
     }
 
     public void beforeDeciding(AbstractStepScope stepScope) {
