@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.phase.termination;
 
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class TimeMillisSpendTermination extends AbstractTermination {
@@ -34,13 +35,31 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isTerminated(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
+    public boolean isSolverTerminated(AbstractSolverPhaseScope lastSolverPhaseScope) {
+        long solverTimeMillisSpend = lastSolverPhaseScope.getSolverScope().calculateTimeMillisSpend();
+        return isTerminated(solverTimeMillisSpend);
+    }
+
+    public boolean isPhaseTerminated(AbstractStepScope stepScope) {
+        long phaseTimeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
+        return isTerminated(phaseTimeMillisSpend);
+    }
+
+    private boolean isTerminated(long timeMillisSpend) {
         return timeMillisSpend >= maximumTimeMillisSpend;
     }
 
-    public double calculateTimeGradient(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
+    public double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope) {
+        long solverTimeMillisSpend = lastSolverPhaseScope.getSolverScope().calculateTimeMillisSpend();
+        return calculateTimeGradient(solverTimeMillisSpend);
+    }
+
+    public double calculatePhaseTimeGradient(AbstractStepScope stepScope) {
+        long phaseTimeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
+        return calculateTimeGradient(phaseTimeMillisSpend);
+    }
+
+    private double calculateTimeGradient(double timeMillisSpend) {
         double timeGradient = ((double) timeMillisSpend) / ((double) maximumTimeMillisSpend);
         return Math.min(timeGradient, 1.0);
     }

@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * Abstract superclass for CompositeTermination classes that combine multiple Terminations.
@@ -35,6 +36,13 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        for (Termination termination : terminationList) {
+            termination.solvingStarted(solverScope);
+        }
+    }
 
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
@@ -68,6 +76,13 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         for (Termination termination : terminationList) {
             termination.phaseEnded(solverPhaseScope);
+        }
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        for (Termination termination : terminationList) {
+            termination.solvingEnded(solverScope);
         }
     }
 

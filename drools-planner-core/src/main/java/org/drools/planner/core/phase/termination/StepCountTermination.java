@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.phase.termination;
 
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
 public class StepCountTermination extends AbstractTermination {
@@ -34,12 +35,20 @@ public class StepCountTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isTerminated(AbstractStepScope stepScope) {
+    public boolean isSolverTerminated(AbstractSolverPhaseScope lastSolverPhaseScope) {
+        throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
+    }
+
+    public boolean isPhaseTerminated(AbstractStepScope stepScope) {
         int stepIndex = stepScope.getStepIndex();
         return stepIndex >= maximumStepCount;
     }
 
-    public double calculateTimeGradient(AbstractStepScope stepScope) {
+    public double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope) {
+        throw new UnsupportedOperationException("StepCountTermination can only be used for phase termination.");
+    }
+
+    public double calculatePhaseTimeGradient(AbstractStepScope stepScope) {
         int stepIndex = stepScope.getStepIndex();
         double timeGradient = ((double) stepIndex) / ((double) maximumStepCount);
         return Math.min(timeGradient, 1.0);

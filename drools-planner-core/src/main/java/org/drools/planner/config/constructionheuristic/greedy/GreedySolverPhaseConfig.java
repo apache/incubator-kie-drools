@@ -19,7 +19,7 @@ package org.drools.planner.config.constructionheuristic.greedy;
 import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.SolverPhaseConfig;
+import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.constructionheuristic.greedy.DefaultGreedySolverPhase;
 import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhase;

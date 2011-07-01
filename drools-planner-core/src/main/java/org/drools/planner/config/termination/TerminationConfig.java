@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.config.localsearch.termination;
+package org.drools.planner.config.termination;
 
 import java.util.ArrayList;
 import java.util.List;

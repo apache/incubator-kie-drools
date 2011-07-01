@@ -58,8 +58,8 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         phaseStarted(localSearchSolverPhaseScope);
 
         LocalSearchStepScope localSearchStepScope = createNextStepScope(localSearchSolverPhaseScope, null);
-        while (!terminatedEarlyHolder.get() && !termination.isTerminated(localSearchStepScope)) {
-            localSearchStepScope.setTimeGradient(termination.calculateTimeGradient(localSearchStepScope));
+        while (!terminatedEarlyHolder.get() && !termination.isPhaseTerminated(localSearchStepScope)) {
+            localSearchStepScope.setTimeGradient(termination.calculatePhaseTimeGradient(localSearchStepScope));
             beforeDeciding(localSearchStepScope);
             decider.decideNextStep(localSearchStepScope);
             Move nextStep = localSearchStepScope.getStep();

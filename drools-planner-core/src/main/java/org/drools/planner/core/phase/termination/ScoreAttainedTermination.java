@@ -19,6 +19,7 @@ package org.drools.planner.core.phase.termination;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class ScoreAttainedTermination extends AbstractTermination {
 
@@ -32,17 +33,32 @@ public class ScoreAttainedTermination extends AbstractTermination {
     // Worker methods
     // ************************************************************************
 
-    public boolean isTerminated(AbstractStepScope stepScope) {
+    public boolean isSolverTerminated(AbstractSolverPhaseScope lastSolverPhaseScope) {
+        Score bestScore = lastSolverPhaseScope.getSolverScope().getBestScore();
+        return isTerminated(bestScore);
+    }
+
+    public boolean isPhaseTerminated(AbstractStepScope stepScope) {
         Score bestScore = stepScope.getSolverPhaseScope().getBestScore();
+        return isTerminated(bestScore);
+    }
+
+    private boolean isTerminated(Score bestScore) {
         return bestScore.compareTo(scoreAttained) >= 0;
     }
 
-    public double calculateTimeGradient(AbstractStepScope stepScope) {
+    public double calculateSolverTimeGradient(AbstractSolverPhaseScope lastSolverPhaseScope) {
+        DefaultSolverScope solverScope = lastSolverPhaseScope.getSolverScope();
+        Score startingScore = solverScope.getStartingScore();
+        Score bestScore = solverScope.getBestScore();
+        return solverScope.getScoreDefinition().calculateTimeGradient(startingScore, scoreAttained, bestScore);
+    }
+
+    public double calculatePhaseTimeGradient(AbstractStepScope stepScope) {
         AbstractSolverPhaseScope solverPhaseScope = stepScope.getSolverPhaseScope();
         Score startingScore = solverPhaseScope.getStartingScore();
-        Score lastCompletedStepScore = solverPhaseScope.getLastCompletedStepScope().getScore();
-        return solverPhaseScope.getScoreDefinition()
-                .calculateTimeGradient(startingScore, scoreAttained, lastCompletedStepScore);
+        Score bestScore = solverPhaseScope.getBestScore();
+        return solverPhaseScope.getScoreDefinition().calculateTimeGradient(startingScore, scoreAttained, bestScore);
     }
 
 }

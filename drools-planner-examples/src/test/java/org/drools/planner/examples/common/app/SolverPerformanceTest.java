@@ -20,7 +20,7 @@ import java.io.File;
 
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.XmlSolverConfigurer;
-import org.drools.planner.config.localsearch.termination.TerminationConfig;
+import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;

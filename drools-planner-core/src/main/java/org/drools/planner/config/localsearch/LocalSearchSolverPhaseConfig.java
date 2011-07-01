@@ -17,13 +17,13 @@
 package org.drools.planner.config.localsearch;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.SolverPhaseConfig;
+import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
-import org.drools.planner.config.localsearch.termination.TerminationConfig;
+import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;

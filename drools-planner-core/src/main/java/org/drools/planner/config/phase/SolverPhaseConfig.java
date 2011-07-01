@@ -1,5 +1,6 @@
-package org.drools.planner.config;
+package org.drools.planner.config.phase;
 
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 

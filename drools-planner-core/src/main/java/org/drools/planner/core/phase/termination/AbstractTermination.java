@@ -18,6 +18,7 @@ package org.drools.planner.core.phase.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,10 @@ public abstract class AbstractTermination implements Termination {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        // Hook which can be optionally overwritten by subclasses.
+    }
 
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
@@ -49,6 +54,10 @@ public abstract class AbstractTermination implements Termination {
     }
 
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
+        // Hook which can be optionally overwritten by subclasses.
+    }
+
+    public void solvingEnded(DefaultSolverScope solverScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
