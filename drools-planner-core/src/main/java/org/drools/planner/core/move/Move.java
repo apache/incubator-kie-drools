@@ -25,7 +25,7 @@ import org.drools.planner.core.solution.Solution;
 /**
  * A Move represents a change in the solution.
  * </p>
- * Ussually the move holds a direct pointer to the part of the solution
+ * Usually the move holds a direct pointer to the part of the solution
  * that it will change when {@link #doMove(WorkingMemory)} is called.
  * On that change it should also notify the {@link WorkingMemory} accordingly.
  * </p>
