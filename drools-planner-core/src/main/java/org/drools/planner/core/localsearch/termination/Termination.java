@@ -16,9 +16,9 @@
 
 package org.drools.planner.core.localsearch.termination;
 
+import org.drools.planner.core.phase.SolverPhase;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.solver.AbstractStepScope;
-import org.drools.planner.core.solver.SolverPhase;
-import org.drools.planner.core.solver.event.SolverPhaseLifecycleListener;
 
 /**
  * A Termination determines when a {@link SolverPhase} should stop.

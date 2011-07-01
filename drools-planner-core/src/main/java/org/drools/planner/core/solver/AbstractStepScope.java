@@ -19,6 +19,7 @@ package org.drools.planner.core.solver;
 import java.util.Random;
 
 import org.drools.WorkingMemory;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 

@@ -16,9 +16,8 @@
 
 package org.drools.planner.core.localsearch;
 
-import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.drools.planner.core.solver.AbstractSolverPhase;
-import org.drools.planner.core.solver.SolverPhase;
+import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.SolverPhase;
 
 /**
  * A LocalSearchSolverPhase is a SolverPhase which uses a local search algorithm,

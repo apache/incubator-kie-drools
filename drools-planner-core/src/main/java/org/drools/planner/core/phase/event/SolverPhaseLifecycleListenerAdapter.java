@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver.event;
+package org.drools.planner.core.phase.event;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public abstract class SolverPhaseLifecycleListenerAdapter implements SolverPhaseLifecycleListener {

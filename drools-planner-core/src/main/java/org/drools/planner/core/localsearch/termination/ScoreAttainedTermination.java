@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.localsearch.termination;
 
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public class ScoreAttainedTermination extends AbstractTermination {

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver;
+package org.drools.planner.core.phase;
 
-import org.drools.planner.core.solver.event.SolverPhaseLifecycleListener;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**
  * A SolverPhase

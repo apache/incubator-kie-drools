@@ -26,10 +26,11 @@ import org.drools.planner.core.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
+import org.drools.planner.core.phase.SolverPhase;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.event.SolverPhaseLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

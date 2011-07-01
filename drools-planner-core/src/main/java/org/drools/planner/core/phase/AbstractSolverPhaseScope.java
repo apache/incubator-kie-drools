@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver;
+package org.drools.planner.core.phase;
 
 import java.util.Collection;
 import java.util.Random;
@@ -24,6 +24,8 @@ import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

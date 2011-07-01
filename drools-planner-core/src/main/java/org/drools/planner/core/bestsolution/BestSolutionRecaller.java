@@ -18,9 +18,9 @@ package org.drools.planner.core.bestsolution;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.event.SolverEventSupport;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 import org.drools.planner.core.solver.event.SolverLifecycleListener;

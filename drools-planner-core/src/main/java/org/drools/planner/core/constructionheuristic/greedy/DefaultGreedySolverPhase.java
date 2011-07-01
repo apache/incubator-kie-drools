@@ -20,8 +20,7 @@ import java.util.Iterator;
 
 import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
-import org.drools.planner.core.solver.AbstractSolverPhase;
-import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 /**

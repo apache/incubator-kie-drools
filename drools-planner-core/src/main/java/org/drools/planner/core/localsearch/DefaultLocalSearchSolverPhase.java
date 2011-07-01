@@ -20,7 +20,7 @@ import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.localsearch.termination.Termination;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.core.solver.AbstractSolverPhase;
+import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.solver.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 

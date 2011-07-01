@@ -21,7 +21,7 @@ import java.util.Map;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public class GreedyStepScope extends AbstractStepScope {

@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.bruteforce;
 
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 

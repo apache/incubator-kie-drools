@@ -16,8 +16,8 @@
 
 package org.drools.planner.core.bruteforce;
 
-import org.drools.planner.core.solver.AbstractSolverPhase;
-import org.drools.planner.core.solver.SolverPhase;
+import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.SolverPhase;
 
 /**
  * A BruteForceSolverPhase is a SolverPhase which uses the brute force algorithm

@@ -22,7 +22,7 @@ import java.util.Iterator;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 
 public class BruteForcePlanningVariableIterator { // TODO rename as it is used by the greedy algorithm
 

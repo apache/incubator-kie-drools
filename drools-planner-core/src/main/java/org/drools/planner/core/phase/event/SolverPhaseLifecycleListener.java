@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver.event;
+package org.drools.planner.core.phase.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public interface SolverPhaseLifecycleListener extends EventListener {

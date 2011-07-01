@@ -18,7 +18,7 @@ package org.drools.planner.core.localsearch.termination;
 
 import java.util.List;
 
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 /**

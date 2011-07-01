@@ -19,9 +19,9 @@ package org.drools.planner.benchmark.statistic.calculatecount;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.solver.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
-import org.drools.planner.core.solver.event.SolverPhaseLifecycleListenerAdapter;
 
 public class CalculateCountStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 

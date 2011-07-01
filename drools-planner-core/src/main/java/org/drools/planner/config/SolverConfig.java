@@ -39,11 +39,11 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
 import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.AbstractSolverPhase;
 import org.drools.planner.core.solver.DefaultSolver;
-import org.drools.planner.core.solver.SolverPhase;
 
 @XStreamAlias("solver")
 public class SolverConfig {

@@ -19,8 +19,8 @@ package org.drools.planner.core.localsearch;
 import java.util.Comparator;
 
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solver.AbstractSolverPhaseScope;
 import org.drools.planner.core.solver.AbstractStepScope;
 
 public class LocalSearchStepScope extends AbstractStepScope {

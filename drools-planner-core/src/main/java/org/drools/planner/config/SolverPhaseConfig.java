@@ -1,7 +1,7 @@
 package org.drools.planner.config;
 
+import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.solver.SolverPhase;
 
 public abstract class SolverPhaseConfig {
 

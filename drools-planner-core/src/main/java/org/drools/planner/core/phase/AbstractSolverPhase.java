@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solver;
+package org.drools.planner.core.phase;
 
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.RuleBase;
-import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
-import org.drools.planner.core.event.SolverEventListener;
-import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
-import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solution.initializer.StartingSolutionInitializer;
-import org.drools.planner.core.solver.event.SolverPhaseLifecycleListener;
-import org.drools.planner.core.solver.event.SolverPhaseLifecycleSupport;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
+import org.drools.planner.core.solver.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
