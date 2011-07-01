@@ -62,7 +62,7 @@ public interface Termination extends SolverLifecycleListener, SolverPhaseLifecyc
     double calculateSolverTimeGradient(DefaultSolverScope solverScope);
 
     /**
-     * See {@link #calculateSolverTimeGradient(AbstractSolverPhaseScope)}.
+     * See {@link #calculateSolverTimeGradient(DefaultSolverScope)}.
      * @param stepScope never null
      * @return timeGradient t for which 0.0 &lt;= t &lt;= 1.0 or -1.0 when it is not supported.
      *         At the start of a phase t is 0.0 and at the end t would be 1.0.
