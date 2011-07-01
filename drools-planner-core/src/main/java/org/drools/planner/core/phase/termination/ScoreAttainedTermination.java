@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.termination;
+package org.drools.planner.core.phase.termination;
 
+import org.drools.planner.core.phase.AbstractSolverPhaseScope;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solver.AbstractStepScope;
 
-public class TimeMillisSpendTermination extends AbstractTermination {
+public class ScoreAttainedTermination extends AbstractTermination {
 
-    private long maximumTimeMillisSpend;
+    private Score scoreAttained;
 
-    public void setMaximumTimeMillisSpend(long maximumTimeMillisSpend) {
-        this.maximumTimeMillisSpend = maximumTimeMillisSpend;
-        if (maximumTimeMillisSpend <= 0L) {
-            throw new IllegalArgumentException("Property maximumTimeMillisSpend (" + maximumTimeMillisSpend
-                    + ") must be greater than 0.");
-        }
+    public void setScoreAttained(Score scoreAttained) {
+        this.scoreAttained = scoreAttained;
     }
 
     // ************************************************************************
@@ -35,14 +33,16 @@ public class TimeMillisSpendTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isTerminated(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
-        return timeMillisSpend >= maximumTimeMillisSpend;
+        Score bestScore = stepScope.getSolverPhaseScope().getBestScore();
+        return bestScore.compareTo(scoreAttained) >= 0;
     }
 
     public double calculateTimeGradient(AbstractStepScope stepScope) {
-        long timeMillisSpend = stepScope.getSolverPhaseScope().calculatePhaseTimeMillisSpend();
-        double timeGradient = ((double) timeMillisSpend) / ((double) maximumTimeMillisSpend);
-        return Math.min(timeGradient, 1.0);
+        AbstractSolverPhaseScope solverPhaseScope = stepScope.getSolverPhaseScope();
+        Score startingScore = solverPhaseScope.getStartingScore();
+        Score lastCompletedStepScore = solverPhaseScope.getLastCompletedStepScope().getScore();
+        return solverPhaseScope.getScoreDefinition()
+                .calculateTimeGradient(startingScore, scoreAttained, lastCompletedStepScore);
     }
 
 }

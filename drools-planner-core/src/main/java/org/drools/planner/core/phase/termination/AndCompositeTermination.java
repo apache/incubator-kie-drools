@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.termination;
+package org.drools.planner.core.phase.termination;
 
 import org.drools.planner.core.solver.AbstractStepScope;
 
-public class OrCompositeTermination extends AbstractCompositeTermination {
+public class AndCompositeTermination extends AbstractCompositeTermination {
 
     // ************************************************************************
     // Worker methods
@@ -26,29 +26,29 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
 
     /**
      * @param stepScope never null
-     * @return true if any of the Termination is terminated.
+     * @return true if all the Terminations are terminated.
      */
     public boolean isTerminated(AbstractStepScope stepScope) {
         for (Termination termination : terminationList) {
-            if (termination.isTerminated(stepScope)) {
-                return true;
+            if (!termination.isTerminated(stepScope)) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
      * Calculates the minimum timeGradient of all Terminations.
      * Not supported timeGradients (-1.0) are ignored.
      * @param stepScope never null
-     * @return the maximum timeGradient of the Terminations.
+     * @return the minimum timeGradient of the Terminations.
      */
     public double calculateTimeGradient(AbstractStepScope stepScope) {
-        double timeGradient = 0.0;
+        double timeGradient = 1.0;
         for (Termination termination : terminationList) {
             double nextTimeGradient = termination.calculateTimeGradient(stepScope);
             if (nextTimeGradient >= 0.0) {
-                timeGradient = Math.max(timeGradient, nextTimeGradient);
+                timeGradient = Math.min(timeGradient, nextTimeGradient);
             }
         }
         return timeGradient;

@@ -999,3 +999,5 @@ After in *Selector.java, *Acceptor.java or *Forager.java:
         ...
     }
 Similar for solvingEnded(LocalSearchSolverScope), which is now phaseEnded(LocalSearchSolverPhaseScope)
+
+[Minor] If you use a custom Termination, rewrite is as a SolverTermination or PhaseTermination.

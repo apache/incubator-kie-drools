@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.localsearch.termination;
+package org.drools.planner.core.phase.termination;
 
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
