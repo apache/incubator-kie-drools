@@ -8939,6 +8939,33 @@ public class MiscTest {
     }
     
     @Test
+    public void testComplexOperator() {
+        String str = "package org.drools\n" +
+                     "rule \"test in\"\n" +
+                     "when\n" +
+                     "    Person( $name : name in (\"bob\", \"mark\") )\n" +
+                     "then\n" +
+                     "    boolean test = $name != null;" +
+                     "end\n" +
+                     "rule \"test not in\"\n" +
+                     "when\n" +
+                     "    Person( $name : name not in (\"joe\", \"doe\") )\n" +
+                     "then\n" +
+                     "    boolean test = $name != null;" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person person = new Person( "bob" );
+        ksession.insert( person );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 2,
+                      rules );
+    }
+    
+    @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared
