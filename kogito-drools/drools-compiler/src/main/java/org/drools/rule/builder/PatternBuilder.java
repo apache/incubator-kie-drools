@@ -441,6 +441,15 @@ public class PatternBuilder
                         Pattern pattern,
                         ConstraintConnectiveDescr descr ) {
         for ( BaseDescr d : descr.getDescrs() ) {
+            
+            if( d instanceof BindingDescr ) {
+                buildRuleBindings( context,
+                                   patternDescr,
+                                   pattern,
+                                   (BindingDescr) d,
+                                   null ); // null containers get added to the pattern
+                continue;
+            }
 
             boolean simple = false;
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
