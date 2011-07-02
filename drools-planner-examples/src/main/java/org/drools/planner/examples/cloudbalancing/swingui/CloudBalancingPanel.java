@@ -165,7 +165,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                     if (ObjectUtils.equals(cloudAssignment.getCloudComputer(), cloudComputer)) {
                         FactHandle cloudAssignmentHandle = workingMemory.getFactHandle(cloudAssignment);
                         cloudAssignment.setCloudComputer(null);
-                        workingMemory.update(cloudAssignmentHandle, cloudAssignment);
+                        workingMemory.retract(cloudAssignmentHandle);
                     }
                 }
                 for (Iterator<CloudComputer> it = cloudBalance.getCloudComputerList().iterator(); it.hasNext(); ) {
