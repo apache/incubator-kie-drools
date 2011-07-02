@@ -16,11 +16,20 @@
 
 package org.drools.planner.core.termination;
 
+import java.util.Arrays;
+
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class AndCompositeTermination extends AbstractCompositeTermination {
+
+    public AndCompositeTermination() {
+    }
+
+    public AndCompositeTermination(Termination... terminations) {
+        super(terminations);
+    }
 
     // ************************************************************************
     // Worker methods

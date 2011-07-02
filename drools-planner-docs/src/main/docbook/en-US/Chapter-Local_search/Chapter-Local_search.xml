@@ -825,7 +825,7 @@ INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted 
     // ...
 
     boolean terminateEarly();
-    boolean isTerminatedEarly();
+    boolean isTerminateEarly();
 
 }</programlisting>
 

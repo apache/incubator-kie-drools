@@ -29,6 +29,7 @@ import org.drools.planner.core.constructionheuristic.greedy.decider.PickEarlyFit
 import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.termination.Termination;
 
 @XStreamAlias("greedy")
 public class GreedySolverPhaseConfig extends SolverPhaseConfig {
@@ -77,11 +78,15 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public GreedySolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+    public GreedySolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
+            Termination solverTermination) {
         DefaultGreedySolverPhase greedySolverPhase = new DefaultGreedySolverPhase();
-        configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition);
+        configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition, solverTermination);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
         greedySolverPhase.setGreedyDecider(buildGreedyDecider(environmentMode));
+        if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
+            greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
+        }
         return greedySolverPhase;
     }
 

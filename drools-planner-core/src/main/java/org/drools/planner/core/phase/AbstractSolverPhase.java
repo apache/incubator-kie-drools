@@ -35,16 +35,11 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected AtomicBoolean terminatedEarlyHolder;
     protected Termination termination;
 
     protected BestSolutionRecaller bestSolutionRecaller;
 
     protected SolverPhaseLifecycleSupport solverPhaseLifecycleSupport = new SolverPhaseLifecycleSupport();
-
-    public void setTerminatedEarlyHolder(AtomicBoolean terminatedEarlyHolder) {
-        this.terminatedEarlyHolder = terminatedEarlyHolder;
-    }
 
     public void setTermination(Termination termination) {
         this.termination = termination;
@@ -62,10 +57,6 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
         solverPhaseScope.reset();
         termination.phaseStarted(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseStarted(solverPhaseScope);
-    }
-
-    protected boolean mustTerminate(AbstractSolverPhaseScope solverPhaseScope) {
-        return (terminatedEarlyHolder.get() || termination.isPhaseTerminated(solverPhaseScope));
     }
 
     public void beforeDeciding(AbstractStepScope stepScope) {

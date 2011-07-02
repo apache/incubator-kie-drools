@@ -19,6 +19,7 @@ package org.drools.planner.core.solver;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.RuleBase;
@@ -29,7 +30,7 @@ import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
-import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
@@ -49,11 +50,13 @@ public class DefaultSolver implements Solver {
 
     protected Long randomSeed;
 
-    protected AtomicBoolean solving = new AtomicBoolean(false);
-    protected AtomicBoolean terminatedEarlyHolder; // Shared with phases
+    protected BasicPlumbingTermination basicPlumbingTermination;
+    // Note that the basicPlumbingTermination is a component of this termination
     protected Termination termination;
     protected BestSolutionRecaller bestSolutionRecaller;
     protected List<SolverPhase> solverPhaseList;
+
+    protected AtomicBoolean solving = new AtomicBoolean(false);
 
     protected DefaultSolverScope solverScope = new DefaultSolverScope();
 
@@ -85,8 +88,8 @@ public class DefaultSolver implements Solver {
         solverScope.setWorkingScoreCalculator(scoreCalculator);
     }
 
-    public void setTerminatedEarlyHolder(AtomicBoolean terminatedEarlyHolder) {
-        this.terminatedEarlyHolder = terminatedEarlyHolder;
+    public void setBasicPlumbingTermination(BasicPlumbingTermination basicPlumbingTermination) {
+        this.basicPlumbingTermination = basicPlumbingTermination;
     }
 
     public void setTermination(Termination termination) {
@@ -131,26 +134,32 @@ public class DefaultSolver implements Solver {
     }
 
     public boolean terminateEarly() {
-        boolean terminationEarlySuccessful = !terminatedEarlyHolder.getAndSet(true);
-        if (terminationEarlySuccessful) {
-            logger.info("Terminating solver early.");
-        }
-        return terminationEarlySuccessful;
+        return basicPlumbingTermination.terminateEarly();
     }
 
-    public boolean isTerminatedEarly() {
-        return terminatedEarlyHolder.get();
+    public boolean isTerminateEarly() {
+        return basicPlumbingTermination.isTerminateEarly();
+    }
+
+    public boolean addPlanningFactChange(PlanningFactChange planningFactChange) {
+        return basicPlumbingTermination.addPlanningFactChange(planningFactChange);
     }
 
     public final void solve() {
-        solvingStarted(solverScope);
-        runSolverPhases();
-        solvingEnded(solverScope);
+        solving.set(true);
+        basicPlumbingTermination.resetTerminateEarly();
+        solverScope.setRestartSolver(true);
+        while (solverScope.isRestartSolver()) {
+            solverScope.setRestartSolver(false);
+            solvingStarted(solverScope);
+            runSolverPhases();
+            solvingEnded(solverScope);
+            checkPlanningFactChanges();
+        }
+        solving.set(false);
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
-        solving.set(true);
-        terminatedEarlyHolder.set(false);
         if (solverScope.getWorkingSolution() == null) {
             throw new IllegalStateException("The startingSolution must not be null." +
                     " Use Solver.setStartingSolution(Solution).");
@@ -171,15 +180,11 @@ public class DefaultSolver implements Solver {
 
     protected void runSolverPhases() {
         Iterator<SolverPhase> it = solverPhaseList.iterator();
-        while (!mustTerminate(solverScope) && it.hasNext()) {
+        while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
             SolverPhase solverPhase = it.next();
             solverPhase.solve(solverScope);
         }
         // TODO support doing round-robin of phases (only non-construction heuristics)
-    }
-
-    protected boolean mustTerminate(DefaultSolverScope solverScope) {
-        return (terminatedEarlyHolder.get() || termination.isSolverTerminated(solverScope));
     }
 
     public void solvingEnded(DefaultSolverScope solverScope) {
@@ -196,7 +201,28 @@ public class DefaultSolver implements Solver {
                 solverScope.getBestScore(),
                 averageCalculateCountPerSecond
         });
-        solving.set(false);
+    }
+
+    private void checkPlanningFactChanges() {
+        BlockingQueue<PlanningFactChange> planningFactChangeQueue
+                = basicPlumbingTermination.getPlanningFactChangeQueue();
+        if (!planningFactChangeQueue.isEmpty()) {
+            solverScope.setRestartSolver(true);
+            Score score = null;
+            PlanningFactChange planningFactChange = planningFactChangeQueue.poll();
+            while (planningFactChange != null) {
+                score = doPlanningFactChange(planningFactChange);
+                planningFactChange = planningFactChangeQueue.poll();
+            }
+            logger.info("Each PlanningFactChange done with new score ({}), restarting solver.", score);
+        }
+    }
+
+    private Score doPlanningFactChange(PlanningFactChange planningFactChange) {
+        planningFactChange.doChange(solverScope.getWorkingSolution(), solverScope.getWorkingMemory());
+        Score score = solverScope.calculateScoreFromWorkingMemory();
+        logger.debug("PlanningFactChange done with new score ({}).", score);
+        return score;
     }
 
     public void addEventListener(SolverEventListener eventListener) {

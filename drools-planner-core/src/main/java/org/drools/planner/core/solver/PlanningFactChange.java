@@ -9,7 +9,7 @@ import org.drools.planner.core.solution.Solution;
  * A PlanningFactChange represents a change in 1 or more planning facts of a solution.
  * Planning facts used by a {@link Solver} must not be changed while it is solving,
  * but by scheduling this command to the {@link Solver}, you can change them when the time is right.
- * </p>
+ * <p/>
  * Any change should be done on the planning facts and planning entities referenced by the {@link Solver}.
  * Note that the {@link Solver} clones a {@link Solution} at will.
  * On that change it should also notify the {@link WorkingMemory} accordingly.

@@ -30,6 +30,8 @@ public class DefaultGreedySolverPhase extends AbstractSolverPhase implements Gre
 
     protected GreedyPlanningEntitySelector greedyPlanningEntitySelector;
     protected GreedyDecider greedyDecider;
+
+    protected boolean assertStepScoreIsUncorrupted = false;
     
     public void setGreedyPlanningEntitySelector(GreedyPlanningEntitySelector greedyPlanningEntitySelector) {
         this.greedyPlanningEntitySelector = greedyPlanningEntitySelector;
@@ -37,6 +39,10 @@ public class DefaultGreedySolverPhase extends AbstractSolverPhase implements Gre
 
     public void setGreedyDecider(GreedyDecider greedyDecider) {
         this.greedyDecider = greedyDecider;
+    }
+
+    public void setAssertStepScoreIsUncorrupted(boolean assertStepScoreIsUncorrupted) {
+        this.assertStepScoreIsUncorrupted = assertStepScoreIsUncorrupted;
     }
 
     // ************************************************************************
@@ -49,7 +55,7 @@ public class DefaultGreedySolverPhase extends AbstractSolverPhase implements Gre
 
         GreedyStepScope greedyStepScope = createNextStepScope(greedySolverPhaseScope, null);
         Iterator it = greedyPlanningEntitySelector.iterator();
-        while (!mustTerminate(greedySolverPhaseScope) && it.hasNext()) {
+        while (!termination.isPhaseTerminated(greedySolverPhaseScope) && it.hasNext()) {
             Object planningEntity = it.next();
             greedyStepScope.setPlanningEntity(planningEntity);
             beforeDeciding(greedyStepScope);
@@ -58,6 +64,9 @@ public class DefaultGreedySolverPhase extends AbstractSolverPhase implements Gre
             greedyStepScope.doStep();
             if (!it.hasNext()) {
                 greedyStepScope.setSolutionInitialized(true);
+            }
+            if (assertStepScoreIsUncorrupted) {
+                greedySolverPhaseScope.assertWorkingScore(greedyStepScope.getScore());
             }
             stepTaken(greedyStepScope);
             greedyStepScope = createNextStepScope(greedySolverPhaseScope, greedyStepScope);

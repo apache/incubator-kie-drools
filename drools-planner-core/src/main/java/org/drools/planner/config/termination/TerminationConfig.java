@@ -130,7 +130,7 @@ public class TerminationConfig {
     // Builder methods
     // ************************************************************************
 
-    public Termination buildTermination(ScoreDefinition scoreDefinition) {
+    public Termination buildTermination(ScoreDefinition scoreDefinition, Termination chainedTermination) {
         List<Termination> terminationList = new ArrayList<Termination>();
         if (termination != null) {
             terminationList.add(termination);
@@ -182,7 +182,7 @@ public class TerminationConfig {
             terminationList.add(termination);
         }
         if (terminationList.size() == 1) {
-            return terminationList.get(0);
+            return new OrCompositeTermination(chainedTermination, terminationList.get(0));
         } else if (terminationList.size() > 1) {
             AbstractCompositeTermination compositeTermination;
             if (terminationCompositionStyle == null || terminationCompositionStyle == TerminationCompositionStyle.OR) {
@@ -194,11 +194,9 @@ public class TerminationConfig {
                         + ") is not implemented");
             }
             compositeTermination.setTerminationList(terminationList);
-            return compositeTermination;
+            return new OrCompositeTermination(chainedTermination, compositeTermination);
         } else {
-            TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(60000);
-            return termination;
+            return chainedTermination;
         }
     }
 

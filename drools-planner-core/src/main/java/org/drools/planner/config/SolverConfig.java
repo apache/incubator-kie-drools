@@ -44,7 +44,9 @@ import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.BasicPlumbingTermination;
 import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.termination.Termination;
 
 @XStreamAlias("solver")
 public class SolverConfig {
@@ -152,8 +154,8 @@ public class SolverConfig {
 
     public Solver buildSolver() {
         DefaultSolver solver = new DefaultSolver();
-        AtomicBoolean terminatedEarlyHolder = new AtomicBoolean(false);
-        solver.setTerminatedEarlyHolder(terminatedEarlyHolder);
+        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination();
+        solver.setBasicPlumbingTermination(basicPlumbingTermination);
         if (environmentMode != EnvironmentMode.PRODUCTION) {
             if (randomSeed != null) {
                 solver.setRandomSeed(randomSeed);
@@ -167,7 +169,8 @@ public class SolverConfig {
         solver.setScoreDefinition(scoreDefinition);
         // remove when score-in-solution is refactored
         solver.setScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
-        solver.setTermination(terminationConfig.buildTermination(scoreDefinition));
+        Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
+        solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         solver.setBestSolutionRecaller(bestSolutionRecaller);
         if (solverPhaseConfigList == null) {
@@ -176,8 +179,7 @@ public class SolverConfig {
         }
         List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
         for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
-            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(environmentMode, scoreDefinition);
-            ((AbstractSolverPhase) solverPhase).setTerminatedEarlyHolder(terminatedEarlyHolder);
+            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(environmentMode, scoreDefinition, termination);
             ((AbstractSolverPhase) solverPhase).setBestSolutionRecaller(bestSolutionRecaller);
             solverPhaseList.add(solverPhase);
         }

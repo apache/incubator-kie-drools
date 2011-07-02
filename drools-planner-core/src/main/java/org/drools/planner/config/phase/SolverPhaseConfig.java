@@ -7,6 +7,8 @@ import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.termination.PhaseToSolverTerminationBridge;
+import org.drools.planner.core.termination.Termination;
 
 public abstract class SolverPhaseConfig {
 
@@ -28,11 +30,13 @@ public abstract class SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public abstract SolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition);
+    public abstract SolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
+            Termination solverTermination);
 
     protected void configureSolverPhase(AbstractSolverPhase solverPhase,
-            EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
-        solverPhase.setTermination(terminationConfig.buildTermination(scoreDefinition));
+            EnvironmentMode environmentMode, ScoreDefinition scoreDefinition, Termination solverTermination) {
+        solverPhase.setTermination(terminationConfig.buildTermination(scoreDefinition,
+                new PhaseToSolverTerminationBridge(solverTermination)));
     }
 
     public void inherit(SolverPhaseConfig inheritedConfig) {

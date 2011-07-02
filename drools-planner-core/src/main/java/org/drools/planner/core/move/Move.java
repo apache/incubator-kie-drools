@@ -24,11 +24,11 @@ import org.drools.planner.core.solution.Solution;
 
 /**
  * A Move represents a change of 1 or more planning variables of 1 or more planning entities in the solution.
- * </p>
+ * <p/>
  * Usually the move holds a direct reference to each planning entity of the solution
  * that it will change when {@link #doMove(WorkingMemory)} is called.
  * On that change it should also notify the {@link WorkingMemory} accordingly.
- * </p>
+ * <p/>
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()}.
  */
 public interface Move {

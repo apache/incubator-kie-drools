@@ -49,6 +49,7 @@ public class DefaultSolverScope {
     protected RuleBase ruleBase;
     protected ScoreDefinition scoreDefinition;
 
+    protected boolean restartSolver = false;
     protected long startingSystemTimeMillis;
 
     protected Solution workingSolution;
@@ -92,6 +93,14 @@ public class DefaultSolverScope {
 
     public void setStartingSystemTimeMillis(long startingSystemTimeMillis) {
         this.startingSystemTimeMillis = startingSystemTimeMillis;
+    }
+
+    public boolean isRestartSolver() {
+        return restartSolver;
+    }
+
+    public void setRestartSolver(boolean restartSolver) {
+        this.restartSolver = restartSolver;
     }
 
     public Solution getWorkingSolution() {

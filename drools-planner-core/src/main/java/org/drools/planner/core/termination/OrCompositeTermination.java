@@ -22,6 +22,13 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 
 public class OrCompositeTermination extends AbstractCompositeTermination {
 
+    public OrCompositeTermination() {
+    }
+
+    public OrCompositeTermination(Termination... terminations) {
+        super(terminations);
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.termination;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -28,6 +29,13 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 public abstract class AbstractCompositeTermination extends AbstractTermination implements Termination {
 
     protected List<Termination> terminationList;
+
+    public AbstractCompositeTermination() {
+    }
+
+    public AbstractCompositeTermination(Termination... terminations) {
+        terminationList = Arrays.asList(terminations);
+    }
 
     public void setTerminationList(List<Termination> terminationList) {
         this.terminationList = terminationList;

@@ -213,7 +213,11 @@ public class SolutionBusiness {
     }
 
     public void doPlanningFactChange(PlanningFactChange planningFactChange) {
-        planningFactChange.doChange(solverScope.getWorkingSolution(), solverScope.getWorkingMemory());
+        if (solver.isSolving()) {
+            solver.addPlanningFactChange(planningFactChange);
+        } else {
+            planningFactChange.doChange(solverScope.getWorkingSolution(), solverScope.getWorkingMemory());
+        }
     }
 
     public void solve() {

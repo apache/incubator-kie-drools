@@ -29,6 +29,7 @@ import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.DefaultDecider;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.termination.Termination;
 
 @XStreamAlias("localSearch")
 public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
@@ -83,9 +84,10 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+    public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
+            Termination solverTermination) {
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
-        configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition);
+        configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition, solverTermination);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, scoreDefinition));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             localSearchSolverPhase.setAssertStepScoreIsUncorrupted(true);

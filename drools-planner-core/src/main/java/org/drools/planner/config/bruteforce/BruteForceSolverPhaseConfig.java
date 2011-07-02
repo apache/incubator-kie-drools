@@ -22,6 +22,7 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
 import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;
 import org.drools.planner.core.score.definition.ScoreDefinition;
+import org.drools.planner.core.termination.Termination;
 
 @XStreamAlias("bruteForce")
 public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
@@ -33,9 +34,10 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+    public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
+            Termination solverTermination) {
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
-        configureSolverPhase(bruteForceSolverPhase, environmentMode, scoreDefinition);
+        configureSolverPhase(bruteForceSolverPhase, environmentMode, scoreDefinition, solverTermination);
         return bruteForceSolverPhase;
     }
 

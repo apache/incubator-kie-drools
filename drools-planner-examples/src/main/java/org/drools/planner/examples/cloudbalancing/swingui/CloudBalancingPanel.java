@@ -158,7 +158,6 @@ public class CloudBalancingPanel extends SolutionPanel {
     }
 
     public void deleteComputer(final CloudComputer cloudComputer) {
-        // TODO this goes horribly wrong if the solver is solving.
         solutionBusiness.doPlanningFactChange(new PlanningFactChange() {
             public void doChange(Solution solution, WorkingMemory workingMemory) {
                 CloudBalance cloudBalance = (CloudBalance) solution;
@@ -178,7 +177,6 @@ public class CloudBalancingPanel extends SolutionPanel {
                         break;
                     }
                 }
-                // TODO scoreScope.calculateScoreFromWorkingMemory()
             }
         });
         updatePanel(solutionBusiness.getSolution());
