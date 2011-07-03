@@ -24,6 +24,8 @@ import java.util.ListIterator;
 import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.base.mvel.ActivationPropertyHandler;
+import org.drools.common.AgendaItem;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -49,6 +51,8 @@ import org.drools.spi.ObjectType;
 import org.drools.time.impl.CompositeMaxDurationTimer;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.Timer;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
 
 /**
  * A builder for patterns
@@ -80,6 +84,13 @@ public class PatternBuilder
 
         // Set pattern offset to the appropriate value
         pattern.setOffset( context.getCurrentPatternOffset() );
+        
+        if ( ClassObjectType.AgendaItem_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
+            if ( handler == null ) {
+                PropertyHandlerFactory.registerPropertyHandler( AgendaItem.class, new ActivationPropertyHandler() );
+            }
+        }
 
         final List<Constraint> alphaConstraints = new LinkedList<Constraint>();
         final List<Constraint> betaConstraints = new LinkedList<Constraint>();
@@ -297,7 +308,6 @@ public class PatternBuilder
             if ( DroolsQuery.class == ((ClassObjectType) pattern.getObjectType()).getClassType() ) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
-                context.setTerminalNodeMemoryEnabled( false );
                 context.setAlphaNodeMemoryAllowed( false );
             }
         }

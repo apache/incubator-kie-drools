@@ -47,7 +47,7 @@ public class QueryElementBuilder
                                                                     new QueryElementNode( context.getNextId(),
                                                                                           context.getTupleSource(),
                                                                                           qe,
-                                                                                          context.isTerminalNodeMemoryEnabled(),
+                                                                                          context.isTupleMemoryEnabled(),
                                                                                           qe.isOpenQuery(),
                                                                                           context ) ) );
         context.popRuleComponent();
