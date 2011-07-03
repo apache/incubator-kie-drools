@@ -33,6 +33,7 @@ import org.drools.core.util.ArrayUtils;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.reteoo.ReteooWorkingMemory.EvaluateResultConstraints;
 import org.drools.reteoo.ReteooWorkingMemory.QueryRiaFixerNodeFixer;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
@@ -139,9 +140,7 @@ public class AccumulateNode extends BetaNode {
 
         if ( useLeftMemory ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-            memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                       accresult,
-                                                       false );
+            leftTuple.setObject( accresult );
         }         
         
         accresult.context = this.accumulate.createContext();
@@ -180,13 +179,15 @@ public class AccumulateNode extends BetaNode {
 
         this.constraints.resetTuple( memory.betaMemory.getContext() );
 
-        evaluateResultConstraints( ActivitySource.LEFT,
-                                   leftTuple,
-                                   context,
-                                   workingMemory,
-                                   memory,
-                                   accresult,
-                                   useLeftMemory );
+        if ( accresult.getAction() == null ) {
+            evaluateResultConstraints( ActivitySource.LEFT,
+                                       leftTuple,
+                                       context,
+                                       workingMemory,
+                                       memory,
+                                       accresult,
+                                       true );
+        } // else evaluation is already scheduled, so do nothing
 
     }
 
@@ -205,7 +206,8 @@ public class AccumulateNode extends BetaNode {
         } else {
             return;
         }
-        final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().remove( leftTuple );
+        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+        leftTuple.setObject( null );
 
         removePreviousMatchesForLeftTuple( leftTuple,
                                            workingMemory,
@@ -266,7 +268,7 @@ public class AccumulateNode extends BetaNode {
         for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, leftIt ); leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
             if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                         leftTuple ) ) {
-                final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
                 addMatch( leftTuple,
                           rightTuple,
                           null,
@@ -275,13 +277,21 @@ public class AccumulateNode extends BetaNode {
                           memory,
                           accctx,
                           true );
-                evaluateResultConstraints( ActivitySource.RIGHT,
-                                           leftTuple,
-                                           context,
-                                           workingMemory,
-                                           memory,
-                                           accctx,
-                                           true );
+                if ( accctx.getAction() == null ) {
+                    // schedule a test to evaluate the constraints, this is an optimisation for sub networks
+                    // We set Source to LEFT, even though this is a right propagation, because it might end up
+                    // doing multiple right propagations anyway
+                    EvaluateResultConstraints action = new EvaluateResultConstraints( ActivitySource.LEFT,
+                                                                                      leftTuple,
+                                                                                      context,
+                                                                                      workingMemory,
+                                                                                      memory,
+                                                                                      accctx,
+                                                                                      true,
+                                                                                      this );  
+                    accctx.setAction( action );
+                    context.getQueue1().addFirst( action );
+                }
             }
         }
 
@@ -324,7 +334,7 @@ public class AccumulateNode extends BetaNode {
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-        final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
@@ -429,14 +439,16 @@ public class AccumulateNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( memory.betaMemory.getContext() );
-        evaluateResultConstraints( ActivitySource.LEFT,
-                                   leftTuple,
-                                   context,
-                                   workingMemory,
-                                   memory,
-                                   accctx,
-                                   true );
+        this.constraints.resetTuple( memory.betaMemory.getContext() );        
+        if ( accctx.getAction() == null ) {
+            evaluateResultConstraints( ActivitySource.LEFT,
+                                       leftTuple,
+                                       context,
+                                       workingMemory,
+                                       memory,
+                                       accctx,
+                                       true );
+        } // else evaluation is already scheduled, so do nothing
     }
 
     public void modifyRightTuple( RightTuple rightTuple,
@@ -494,7 +506,7 @@ public class AccumulateNode extends BetaNode {
                 for ( ; leftTuple != null; leftTuple = ( LeftTuple ) leftIt.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
-                        final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
                         // add a new match
                         addMatch( leftTuple,
                                   rightTuple,
@@ -504,13 +516,21 @@ public class AccumulateNode extends BetaNode {
                                   memory,
                                   accctx,
                                   true );
-                        evaluateResultConstraints( ActivitySource.RIGHT,
-                                                   leftTuple,
-                                                   context,
-                                                   workingMemory,
-                                                   memory,
-                                                   accctx,
-                                                   true );
+                        if ( accctx.getAction() == null ) {
+                            // schedule a test to evaluate the constraints, this is an optimisation for sub networks
+                            // We set Source to LEFT, even though this is a right propagation, because it might end up
+                            // doing multiple right propagations anyway
+                            EvaluateResultConstraints action = new EvaluateResultConstraints( ActivitySource.LEFT,
+                                                                                              leftTuple,
+                                                                                              context,
+                                                                                              workingMemory,
+                                                                                              memory,
+                                                                                              accctx,
+                                                                                              true,
+                                                                                              this );  
+                            accctx.setAction( action );
+                            context.getQueue1().addFirst( action );
+                        }
                     }
                 }
             } else {
@@ -518,7 +538,7 @@ public class AccumulateNode extends BetaNode {
                 for ( ; leftTuple != null; leftTuple = (LeftTuple) leftIt.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.betaMemory.getContext(),
                                                                 leftTuple ) ) {
-                        final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
                         LeftTuple temp = null;
                         if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
                             temp = childLeftTuple.getRightParentNext();
@@ -544,17 +564,25 @@ public class AccumulateNode extends BetaNode {
                         if ( temp != null ) {
                             childLeftTuple = temp;
                         }
-                        evaluateResultConstraints( ActivitySource.RIGHT,
-                                                   leftTuple,
-                                                   context,
-                                                   workingMemory,
-                                                   memory,
-                                                   accctx,
-                                                   true );
+                        if ( accctx.getAction() == null ) {
+                            // schedule a test to evaluate the constraints, this is an optimisation for sub networks
+                            // We set Source to LEFT, even though this is a right propagation, because it might end up
+                            // doing multiple right propagations anyway
+                            EvaluateResultConstraints action = new EvaluateResultConstraints( ActivitySource.LEFT,
+                                                                                              leftTuple,
+                                                                                              context,
+                                                                                              workingMemory,
+                                                                                              memory,
+                                                                                              accctx,
+                                                                                              true,
+                                                                                              this );  
+                            accctx.setAction( action );
+                            context.getQueue1().addFirst( action );
+                        }
                     } else if ( childLeftTuple != null && childLeftTuple.getLeftParent() == leftTuple ) {
 
                         LeftTuple temp = childLeftTuple.getRightParentNext();
-                        final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                        final AccumulateContext accctx = (AccumulateContext)leftTuple.getObject();
                         // remove the match
                         removeMatch( rightTuple,
                                      childLeftTuple,
@@ -562,13 +590,21 @@ public class AccumulateNode extends BetaNode {
                                      memory,
                                      accctx,
                                      true );
-                        evaluateResultConstraints( ActivitySource.RIGHT,
-                                                   leftTuple,
-                                                   context,
-                                                   workingMemory,
-                                                   memory,
-                                                   accctx,
-                                                   true );
+                        if ( accctx.getAction() == null ) {
+                            // schedule a test to evaluate the constraints, this is an optimisation for sub networks
+                            // We set Source to LEFT, even though this is a right propagation, because it might end up
+                            // doing multiple right propagations anyway
+                            EvaluateResultConstraints action = new EvaluateResultConstraints( ActivitySource.LEFT,
+                                                                                              leftTuple,
+                                                                                              context,
+                                                                                              workingMemory,
+                                                                                              memory,
+                                                                                              accctx,
+                                                                                              true,
+                                                                                              this );  
+                            accctx.setAction( action );
+                            context.getQueue1().addFirst( action );
+                        }
 
                         childLeftTuple = temp;
                     }
@@ -590,7 +626,7 @@ public class AccumulateNode extends BetaNode {
      * @param accresult
      * @param handle
      */
-    private void evaluateResultConstraints( final ActivitySource source,
+    public void evaluateResultConstraints( final ActivitySource source,
                                             final LeftTuple leftTuple,
                                             final PropagationContext context,
                                             final InternalWorkingMemory workingMemory,
@@ -697,7 +733,7 @@ public class AccumulateNode extends BetaNode {
 
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+            AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
             if ( accctx.propagated ) {
                 // temporarily break the linked list to avoid wrong interactions
                 LeftTuple[] matchings = splitList( leftTuple,
@@ -718,14 +754,13 @@ public class AccumulateNode extends BetaNode {
     }
 
     protected void doRemove( final InternalWorkingMemory workingMemory,
-                             final AccumulateMemory memory ) {
-        
-        Iterator it = memory.betaMemory.getCreatedHandles().iterator();
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            AccumulateContext ctx = (AccumulateContext) entry.getValue();
-            //workingMemory.getFactHandleFactory().destroyFactHandle( ctx.result.getFactHandle() );
-        }
-        memory.betaMemory.getCreatedHandles().clear();
+                             final AccumulateMemory memory ) {        
+//        Iterator it = memory.betaMemory.getCreatedHandles().iterator();
+//        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+//            AccumulateContext ctx = (AccumulateContext) entry.getValue();
+//            //workingMemory.getFactHandleFactory().destroyFactHandle( ctx.result.getFactHandle() );
+//        }
+//        memory.betaMemory.getCreatedHandles().clear();
     }
 
     /* (non-Javadoc)
@@ -911,20 +946,28 @@ public class AccumulateNode extends BetaNode {
         for ( LeftTuple match = firstChild; match != null; ) {
             final LeftTuple tmp = match.getRightParentNext();
             final LeftTuple parent = match.getLeftParent();
-            final AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( parent );
+            final AccumulateContext accctx = (AccumulateContext) parent.getObject();
             removeMatch( rightTuple,
                          match,
                          workingMemory,
                          memory,
                          accctx,
                          true );
-            evaluateResultConstraints( ActivitySource.RIGHT,
-                                       parent,
-                                       context,
-                                       workingMemory,
-                                       memory,
-                                       accctx,
-                                       true );
+            if ( accctx.getAction() == null ) {
+                // schedule a test to evaluate the constraints, this is an optimisation for sub networks
+                // We set Source to LEFT, even though this is a right propagation, because it might end up
+                // doing multiple right propagations anyway
+                EvaluateResultConstraints action = new EvaluateResultConstraints( ActivitySource.LEFT,
+                                                                                  parent,
+                                                                                  context,
+                                                                                  workingMemory,
+                                                                                  memory,
+                                                                                  accctx,
+                                                                                  true,
+                                                                                  this );  
+                accctx.setAction( action );
+                context.getQueue1().addFirst( action );
+            }          
             match = tmp;
         }
     }
@@ -1026,6 +1069,7 @@ public class AccumulateNode extends BetaNode {
         public Serializable[] context;
         public RightTuple     result;
         public boolean        propagated;
+        private EvaluateResultConstraints        action;
 
         public void readExternal( ObjectInput in ) throws IOException,
                                                   ClassNotFoundException {
@@ -1040,24 +1084,32 @@ public class AccumulateNode extends BetaNode {
             out.writeBoolean( propagated );
         }
 
+        public EvaluateResultConstraints getAction() {
+            return action;
+        }
+
+        public void setAction(EvaluateResultConstraints action) {
+            this.action = action;
+        }               
+
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
     }    
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+        return new FromNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      LeftTupleSink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+        return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
@@ -1066,10 +1118,10 @@ public class AccumulateNode extends BetaNode {
                                      LeftTuple currentRightChild,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }         
 
-    private static enum ActivitySource {
+    public static enum ActivitySource {
         LEFT, RIGHT
     }
 

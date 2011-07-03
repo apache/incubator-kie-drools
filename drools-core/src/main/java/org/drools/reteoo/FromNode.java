@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -117,9 +118,8 @@ public class FromNode extends LeftTupleSource
 
         if ( useLeftMemory ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-            matches = new LinkedHashMap<Object, RightTuple>();
-            memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                       matches );
+            matches = new HashMap<Object, RightTuple>();
+            leftTuple.setObject( matches );
         }         
 
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
@@ -201,10 +201,9 @@ public class FromNode extends LeftTupleSource
 
         memory.betaMemory.getLeftTupleMemory().removeAdd( leftTuple );
 
-        final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
-        final Map<Object, RightTuple> newMatches = new LinkedHashMap<Object, RightTuple>();
-        memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                   newMatches );
+        final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) leftTuple.getObject();
+        final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
+        leftTuple.setObject( newMatches );
 
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
@@ -337,7 +336,7 @@ public class FromNode extends LeftTupleSource
     private void destroyCreatedHandles(final InternalWorkingMemory workingMemory,
                                        final FromMemory memory,
                                        final LeftTuple leftTuple) {
-        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
+        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
         FastIterator rightIt = LinkedList.fastIterator;
         for ( RightTuple rightTuple : matches.values() ) {
             for ( RightTuple current = rightTuple; current != null; ) {
@@ -413,7 +412,7 @@ public class FromNode extends LeftTupleSource
         FastIterator rightIter = LinkedList.fastIterator;
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
+            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
                     boolean isAllowed = true;
@@ -527,19 +526,19 @@ public class FromNode extends LeftTupleSource
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
     }    
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, sink, leftTupleMemoryEnabled );
+        return new FromNodeLeftTuple(leftTuple, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      LeftTupleSink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+        return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
@@ -548,6 +547,6 @@ public class FromNode extends LeftTupleSource
                                      LeftTuple currentRightChild,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }      
 }
