@@ -55,7 +55,9 @@ import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.AccumulateNode.ActivitySource;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -488,6 +490,113 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         }
     }
+    
+    public static class EvaluateResultConstraints
+    implements
+    WorkingMemoryAction {
+        
+        private ActivitySource source;
+        private LeftTuple leftTuple;
+        private PropagationContext context;
+        private InternalWorkingMemory workingMemory;
+        private AccumulateMemory memory;
+        private AccumulateContext accctx;
+        private boolean useLeftMemory;
+        private AccumulateNode node;
+
+    public EvaluateResultConstraints(PropagationContext context) {
+        this.context = context;
+    }
+
+    public EvaluateResultConstraints(ActivitySource source,
+                                     LeftTuple leftTuple,
+                                     PropagationContext context,
+                                     InternalWorkingMemory workingMemory,
+                                     AccumulateMemory memory,
+                                     AccumulateContext accctx,
+                                     boolean useLeftMemory,
+                                     AccumulateNode node) {
+        this.source = source;
+        this.leftTuple = leftTuple;
+        this.context = context;
+        this.workingMemory = workingMemory;
+        this.memory = memory;
+        this.accctx = accctx;
+        this.useLeftMemory = useLeftMemory;
+        this.node = node;
+    }
+
+
+
+    public EvaluateResultConstraints(MarshallerReaderContext context) throws IOException {
+        throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
+        //            this.factHandle = context.handles.get( context.readInt() );
+        //
+        //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
+        //            varIndexes = new int[context.readInt()];
+        //            for ( int i = 0; i < varIndexes.length; i++ ) {
+        //                varIndexes[i] = context.readInt();
+        //            }
+        //            node = (QueryElementNode) context.sinks.get( context.readInt() );
+        //            try {
+        //                srcVarIndexes = (List<Integer>) context.readObject();
+        //            } catch ( ClassNotFoundException e ) {
+        //                throw new RuntimeException( "Unable to Marshal",
+        //                                            e );
+        //            }
+    }
+
+    public void write(MarshallerWriteContext context) throws IOException {
+        throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
+        //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
+        //
+        //            context.writeInt( this.factHandle.getId() );
+        //
+        //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
+        //
+        //            context.writeInt( varIndexes.length );
+        //            for ( int i : varIndexes ) {
+        //                context.writeInt( varIndexes[i] );
+        //            }
+        //
+        //            context.writeObject( node.getId() );
+        //
+        //            context.writeObject( srcVarIndexes );
+    }
+
+    public void execute(InternalWorkingMemory workingMemory) {
+        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+        accctx.setAction( null );        
+        node.evaluateResultConstraints( source, leftTuple, context, workingMemory, memory, accctx, useLeftMemory );
+    }
+
+    public void execute(InternalKnowledgeRuntime kruntime) {
+        execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
+    }
+
+    public ActivitySource getSource() {
+        return source;
+    }
+    
+    public void setSource(ActivitySource source) {
+        this.source = source;
+    }
+
+    public String toString() {
+        return "[ResumeInsertAction leftTuple=" + leftTuple + "]\n";
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        // TODO Auto-generated method stub
+
+    }
+}    
 
     public static class QueryInsertAction
         implements

@@ -19,8 +19,12 @@ package org.drools.core.util.debug;
 import java.util.Stack;
 
 import org.drools.common.NetworkNode;
+import org.drools.core.util.FastIterator;
 import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.BetaNode;
+import org.drools.reteoo.LeftTuple;
 
 public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -44,7 +48,17 @@ public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
         }
         if( an.isLeftTupleMemoryEnabled() ) {
             ni.setTupleMemorySize( memory.betaMemory.getLeftTupleMemory().size() );
-            ni.setCreatedFactHandles( memory.betaMemory.getCreatedHandles().size() );
+            FastIterator it =  memory.betaMemory.getLeftTupleMemory().fullFastIterator();
+            
+            int i = 0;
+            for ( LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.betaMemory.getLeftTupleMemory(), it ); leftTuple != null; leftTuple = ( LeftTuple) it.next( leftTuple  )) {
+                AccumulateContext ctx = (AccumulateContext) leftTuple.getObject();
+                if ( ctx != null && ctx.result != null ) {
+                    i++;
+                }
+            }
+             
+            ni.setCreatedFactHandles( i );
         }
 
     }

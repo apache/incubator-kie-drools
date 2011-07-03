@@ -581,9 +581,8 @@ public class InputMarshaller {
                 memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
 
                 AccumulateContext accctx = new AccumulateContext();
-                memory.betaMemory.getCreatedHandles().put( parentLeftTuple,
-                                                           accctx,
-                                                           false );
+                parentLeftTuple.setObject( accctx );
+                
                 // first we de-serialize the generated fact handle
                 InternalFactHandle handle = readFactHandle( context );
                 accctx.result = new RightTuple( handle,
@@ -653,7 +652,7 @@ public class InputMarshaller {
                 
                 memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
                 Map<Object, RightTuple> matches =  new LinkedHashMap<Object, RightTuple>();
-                memory.betaMemory.getCreatedHandles().put( parentLeftTuple, matches );
+                parentLeftTuple.setObject( matches );
                 
                 while( stream.readShort() == PersisterEnums.FACT_HANDLE ) {
                     // we de-serialize the generated fact handle ID
