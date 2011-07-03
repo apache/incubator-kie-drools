@@ -45,7 +45,7 @@ public class BindingStep
                         List<String[]> args) {
         if ( args.size() > 0 ) {
             for( String[] bind : args ) {
-                if ( bind.length == 4 ) {
+                if ( bind.length == 4  ||  bind.length == 5) {
                     createBinding( context,
                                    bind );
                 } else {

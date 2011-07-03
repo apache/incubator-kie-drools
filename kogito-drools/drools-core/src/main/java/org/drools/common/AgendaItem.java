@@ -84,7 +84,7 @@ public class AgendaItem
 
     private ActivationGroupNode activationGroupNode;
 
-    private ActivationNode   activationNode;
+    private ActivationNode      activationNode;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -337,7 +337,7 @@ public class AgendaItem
     }
 
     public Object getDeclarationValue(String variableName) {
-        Declaration decl = this.getRule().getDeclaration( variableName );
+        Declaration decl = this.rtn.getSubRule().getOuterDeclarations().get( variableName );
         InternalFactHandle handle = this.tuple.get( decl );
         // need to double check, but the working memory reference is only used for resolving globals, right?
         return decl.getValue( null, handle.getObject() );

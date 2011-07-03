@@ -1,0 +1,174 @@
+TestCase "Exists Node unification test case"
+
+Setup
+    ObjectTypeNode:
+        otnLeft1, org.drools.base.DroolsQuery;
+    LeftInputAdapterNode:
+        lian0, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Cheese;
+    Binding:
+         v, 0, org.drools.base.DroolsQuery, [0], java.lang.String;
+         $age, 0, org.drools.base.DroolsQuery, [1], java.lang.Integer;
+         p1, 1, org.drools.Person, age;
+    ExistsNode:
+        exists1, lian0, otnRight1;
+        name, :=,v;
+        age, ==, $age;
+    JoinNode:
+        join2, exists1, otnRight2;
+        type, :=, v;
+    Facts:
+        new org.drools.base.DroolsQuery( "x", [org.drools.runtime.rule.Variable.v, 35], null, true), 
+        new org.drools.Person('bobba', 36),
+        new org.drools.Person('yoda', 35);       
+
+Test "assert right then left then add right block"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    exists1:
+        rightMemory, [h1];
+    exists1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [];
+    /**
+     * Insert Person (blocker)
+     */
+    assert:
+        otnRight1, [h2];
+    exists1:
+        rightMemory, [h1];
+        rightMemory, [h2]; // h2 is present but in a different bucket        
+    exists1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0]];       
+        
+Test "assert right, then right blocker then left"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    /**
+     * Insert Person (blocker)
+     */
+    assert:
+        otnRight1, [h2];        
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    exists1:
+        rightMemory, [h1]; 
+        rightMemory, [h2]; // h2 is present but in a different bucket
+    exists1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0]]; 
+
+Test "assert right then left then modify right to block"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    exists1:
+        rightMemory, [h1];
+    exists1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [];
+    /**
+     * Modify Person (blocker)
+     */
+    With:
+        h1, age = 35;
+    modify:
+        otnRight1, [h1];
+    exists1:
+        rightMemory, [h1]; 
+    exists1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0]];        
+        
+Test "assert right then left then modify left to block"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    exists1:
+        rightMemory, [h1];
+    exists1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [];
+    /**
+     * Modify Person (blocker)
+     */
+    With:
+        h0, elements[1] = 36;
+    modify:
+        otnLeft1, [h0];
+    exists1:
+        rightMemory, [h1]; 
+    exists1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0]];         
+        
+Test "assert left then right then add right block"
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];        
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+
+    exists1:
+        rightMemory, [h1];
+    exists1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [];        
+    /**
+     * Insert Person (blocker)
+     */
+    assert:
+        otnRight1, [h2];
+    exists1:
+        rightMemory, [h1];
+        rightMemory, [h2]; // h2 is present but in a different bucket
+    exists1:
+        leftMemory, [];
+    join2:
+        leftMemory, [[h0]];                                     
+      

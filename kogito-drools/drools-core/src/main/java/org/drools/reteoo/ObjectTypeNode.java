@@ -118,7 +118,8 @@ public class ObjectTypeNode extends ObjectSource
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
         this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
-        setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
+        //setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
+        setObjectMemoryEnabled(true );
     }
 
     public void readExternal(ObjectInput in) throws IOException,

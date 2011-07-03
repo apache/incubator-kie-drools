@@ -66,12 +66,12 @@ public class BetaNodeStep
             context.put( name,
                          betaNode );
 
-            if ( ! "mock".equals( leftInput ) ) {
+            if ( ! leftInput.startsWith( "mock" ) ) {
                 LeftTupleSource leftTupleSource = (LeftTupleSource) context.get( leftInput );
                 leftTupleSource.addTupleSink( betaNode );
             }
 
-            if ( ! "mock".equals( rightInput ) ) {
+            if ( ! rightInput.startsWith( "mock" ) ) {
                 ObjectSource rightObjectSource = (ObjectSource) context.get( rightInput );
                 rightObjectSource.addObjectSink( betaNode );
             }

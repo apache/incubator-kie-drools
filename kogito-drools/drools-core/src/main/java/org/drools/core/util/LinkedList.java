@@ -279,6 +279,10 @@ public class LinkedList
         public Entry next(Entry object) {
             return object.getNext();
         }
+        
+        public boolean isFullIterator() {
+            return false;
+        }        
     }
 
     public java.util.Iterator javaUtilIterator() {

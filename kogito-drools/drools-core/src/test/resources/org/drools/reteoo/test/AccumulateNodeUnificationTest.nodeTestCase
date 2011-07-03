@@ -1,0 +1,132 @@
+TestCase "Accumulate Node unification test case"
+
+import org.drools.Cheese;
+import org.drools.Person;
+
+Setup
+    ObjectTypeNode:
+        otnLeft0, org.drools.base.DroolsQuery;
+    LeftInputAdapterNode:
+        lian0, otnLeft0;        
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    Binding:
+        v, 0, org.drools.base.DroolsQuery, [0], java.lang.String;
+        $age, 0, org.drools.base.DroolsQuery, [1], java.lang.Integer;    
+        $likes, 1, Person, likes;
+        $price, 2, Cheese, price;        
+    JoinNode:
+        join1, lian0, otnRight1;
+        age, !=,$age;        
+    AccumulateNode:
+        acc, join1, mock(Cheese), Cheese, $price;
+        source, type, :=,v;                
+        source, price, !=, $age;
+        result, intValue, >, 5;
+    LeftTupleSink:
+        sink, acc;
+    Facts:
+        new org.drools.base.DroolsQuery( "x", [org.drools.runtime.rule.Variable.v, 40], null, true),    
+        new Person('darth', 35, "brie"),     // h1
+        new Person('bobba', 36, 'stilton'),  // h2
+        new Cheese('brie', 10),              // h3
+        new Cheese('brie', 12),              // h5
+        new Cheese('stilton', 15),           // h6
+        new Cheese('brie', 12);              // h7
+        
+
+Test "Assert two right then left"  
+    assert:
+        acc, [h3];
+        acc, [h4];
+        otnLeft0, [h0];
+        otnRight1, [h1];
+    acc:
+        leftMemory, [[h0, h1]];
+        rightMemory, [h3, h4];
+    sink:
+        verify, assertLeft, count, 1;
+    sink:
+        verify, assertLeft, tuple0[2].object.intValue() == 22;
+
+Test "Assert left then two right"  
+    assert:
+        otnLeft0, [h0];
+        otnRight1, [h1];
+        acc, [h3];
+        acc, [h4];        
+    acc:
+        leftMemory, [[h0, h1]];
+        rightMemory, [h3, h4];
+    sink:
+        verify, assertLeft, count, 1;
+    sink:
+        verify, assertLeft, tuple0[2].object.intValue() == 22;
+        
+    
+Test "Assert left then two right and modify left"  
+    assert:
+        otnLeft0, [h0];
+        otnRight1, [h1];
+        acc, [h3];        
+    acc:
+        leftMemory, [[h0, h1]];
+        rightMemory, [h3];
+    sink:
+        verify, assertLeft, count, 1;
+        verify, modifyLeft, count, 0;        
+        verify, assertLeft, tuple0[2].object.intValue() == 10;
+    assert:
+        acc, [h4];
+    acc:
+        leftMemory, [[h0, h1]];
+        rightMemory, [h3, h4];        
+    sink:
+        verify, assertLeft, count, 1;
+        verify, modifyLeft, count, 1;        
+        verify, assertLeft, tuple0[2].object.intValue() == 22;                          
+    /**
+     * Modify Query
+     */
+    With:
+        h0, elements[1] = 12;
+    modify:
+        otnRight1, [h1];
+    sink:
+        verify, modifyLeft, count, 2;        
+    sink:
+        verify, assertLeft, tuple0[2].object.intValue() == 10;          
+
+        
+Test "Assert left then two right and modify right"  
+    assert:
+        otnLeft0, [h0];
+        otnRight1, [h1];
+        acc, [h3];        
+    acc:
+        leftMemory, [[h0, h1]];
+        rightMemory, [h3];
+    sink:
+        verify, assertLeft, count, 1;
+        verify, modifyLeft, count, 0;        
+        verify, assertLeft, tuple0[2].object.intValue() == 10;
+    assert:
+        acc, [h4];
+    acc:
+        leftMemory, [[h0, h1]];
+        rightMemory, [h3, h4];        
+    sink:
+        verify, assertLeft, count, 1;
+        verify, modifyLeft, count, 1;        
+        verify, assertLeft, tuple0[2].object.intValue() == 22;                          
+    /**
+     * Modify Cheese
+     */
+    With:
+        h3, price = 5;
+    modify:
+        acc, [h3];
+    sink:
+        verify, modifyLeft, count, 2;        
+    sink:
+        verify, assertLeft, tuple0[2].object.intValue() == 17;

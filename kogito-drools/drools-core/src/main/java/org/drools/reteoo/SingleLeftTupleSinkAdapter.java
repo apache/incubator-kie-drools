@@ -116,7 +116,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                          workingMemory,
                                          child,
                                          child.getLeftTupleSink() );
-            workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
+            //workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
             child.unlinkFromRightParent();
             child.unlinkFromLeftParent();
             child = temp;

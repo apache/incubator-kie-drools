@@ -5,7 +5,7 @@ import org.drools.Person;
 
 Setup
     EvalNode:
-        eval, mock, tuple[0].object.age > 30;
+        eval, mock(Person), tuple[0].object.age > 30;
     LeftTupleSink:
         sink, eval;
     Facts:

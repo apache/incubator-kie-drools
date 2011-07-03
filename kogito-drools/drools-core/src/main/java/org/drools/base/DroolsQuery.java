@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Declaration;
@@ -34,7 +35,11 @@ public final class DroolsQuery extends ArrayElements {
     
     private Variable[]                        vars;
     
-    private RightTupleList                    rightTupleList;
+    private RightTupleList                    resultInsertRightTupleList;
+    private RightTupleList                    resultUpdateRightTupleList;
+    private RightTupleList                    resultRetractRightTupleList;
+    
+    private WorkingMemoryAction               action;
     
 //    public DroolsQuery(DroolsQuery droolsQuery) {
 //        super( new Object[droolsQuery.getElements().length] );
@@ -65,6 +70,7 @@ public final class DroolsQuery extends ArrayElements {
             for ( int i = 0; i < params.length; i++ ) {
                 if ( params[i] == Variable.v ) {
                     vars[i] = Variable.v;
+                    params[i] = null;
                 }
             }
         }        
@@ -96,12 +102,36 @@ public final class DroolsQuery extends ArrayElements {
         return open;
     }
 
-    public RightTupleList getRightTupleList() {
-        return rightTupleList;
+    public RightTupleList getResultInsertRightTupleList() {
+        return resultInsertRightTupleList;
     }
 
-    public void setRightTupleList(RightTupleList rightTupleList) {
-        this.rightTupleList = rightTupleList;
+    public void setResultInsertRightTupleList(RightTupleList evaluateActionsRightTupleList) {
+        this.resultInsertRightTupleList = evaluateActionsRightTupleList;
+    }
+
+    public RightTupleList getResultUpdateRightTupleList() {
+        return resultUpdateRightTupleList;
+    }
+
+    public void setResultUpdateRightTupleList(RightTupleList insertUpdateRightTupleList) {
+        this.resultUpdateRightTupleList = insertUpdateRightTupleList;
+    }
+
+    public RightTupleList getResultRetractRightTupleList() {
+        return resultRetractRightTupleList;
+    }
+
+    public void setResultRetractRightTupleList(RightTupleList retractRightTupleList) {
+        this.resultRetractRightTupleList = retractRightTupleList;
+    } 
+
+    public WorkingMemoryAction getAction() {
+        return action;
+    }
+
+    public void setAction(WorkingMemoryAction action) {
+        this.action = action;
     }
 
     @Override

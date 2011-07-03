@@ -210,6 +210,9 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return null;
         }
 
+        public boolean isFullIterator() {
+            return true;
+        }        
     }
 
     public static class FieldIndexHashTableFullIterator

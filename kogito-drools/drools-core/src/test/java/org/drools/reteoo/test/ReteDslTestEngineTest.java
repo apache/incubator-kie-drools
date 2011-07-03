@@ -690,13 +690,13 @@ public class ReteDslTestEngineTest {
     public void testBetaNodeModifyOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn1, java.lang.Integer;\n";
+        str += "    otn1, org.drools.Person;\n";
         str += "LeftInputAdapterNode:\n";
         str += "    lian0, otn1;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn2, java.lang.Integer;\n";
+        str += "    otn2, org.drools.Person;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn3, java.lang.Integer;\n";
+        str += "    otn3, org.drools.Person;\n";
         str += "Binding:\n";
         str += "     p1, 0, org.drools.Person, age;\n";
         str += "JoinNode:\n";

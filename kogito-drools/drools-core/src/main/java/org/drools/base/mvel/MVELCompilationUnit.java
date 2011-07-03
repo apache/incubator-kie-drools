@@ -263,11 +263,7 @@ public class MVELCompilationUnit
 
         VariableResolverFactory factory = varModel.createFactory( vals );
         DroolsVarFactory df = new  DroolsVarFactory();
-        factory.setNextFactory( df );
-
-//        df.setOtherVarsPos( otherVarsPos );
-//        df.setOtherVarsLength( otherVarsLength );
-//        df.setAllVarsLength( this.allVarsLength );        
+        factory.setNextFactory( df );       
         return factory;
     }
     

@@ -5,7 +5,7 @@ import org.drools.Cheese;
 
 Setup
     NotNode:
-        not, mock, mock;
+        not, mock(Person), mock(Cheese);
     LeftTupleSink:
         sink, not;
     Facts:

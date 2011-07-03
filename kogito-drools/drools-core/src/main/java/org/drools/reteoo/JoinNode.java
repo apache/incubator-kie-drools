@@ -84,6 +84,10 @@ public class JoinNode extends BetaNode {
             }
         }
 
+        if ( this.tupleMemoryEnabled || ( useLeftMemory && memory.getLeftTupleMemory() != null ) ) {
+            memory.getLeftTupleMemory().add( leftTuple );
+        } 
+        
         this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
@@ -107,10 +111,7 @@ public class JoinNode extends BetaNode {
                                                     useLeftMemory );
             }
         }
-        
-        if ( this.tupleMemoryEnabled || ( useLeftMemory && memory.getLeftTupleMemory() != null ) ) {
-            memory.getLeftTupleMemory().add( leftTuple );
-        }         
+                
 
         this.constraints.resetTuple( contextEntry );
     }
@@ -119,6 +120,8 @@ public class JoinNode extends BetaNode {
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
         if ( lrUnlinkingEnabled &&
              rightUnlinked( context,
@@ -149,8 +152,9 @@ public class JoinNode extends BetaNode {
                                                workingMemory,
                                                factHandle );
 
-        FastIterator it = memory.getLeftTupleMemory().fastIterator();
-        for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
+        FastIterator it = getLeftIterator( leftMemory );
+                        
+        for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         leftTuple ) ) {
                 // wm.marshaller.write( i, leftTuple )
@@ -233,16 +237,17 @@ public class JoinNode extends BetaNode {
 
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
-        FastIterator it = leftMemory.fastIterator();
-        LeftTuple leftTuple = leftMemory.getFirst( rightTuple );
 
+        FastIterator it = getLeftIterator( leftMemory );        
+        LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );
+        
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                rightTuple.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
         // We assume a bucket change if leftTuple == null        
-        if ( childLeftTuple != null && leftMemory.isIndexed() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
+        if ( childLeftTuple != null && leftMemory.isIndexed() && !it.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractRightTuple( rightTuple,
                                                   context,
@@ -320,13 +325,16 @@ public class JoinNode extends BetaNode {
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
-        FastIterator it = rightMemory.fastIterator();
-        RightTuple rightTuple = rightMemory.getFirst( leftTuple,
-                                                      (InternalFactHandle) context.getFactHandle() );
+        FastIterator it = getRightIterator( rightMemory );
 
+        RightTuple rightTuple = getFirstRightTuple( leftTuple,
+                                                    rightMemory,
+                                                    context,
+                                                    it );
+        
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
         // if rightTuple is null, we assume there was a bucket change and that bucket is empty        
-        if ( childLeftTuple != null && rightMemory.isIndexed() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory())) ) {
+        if ( childLeftTuple != null && rightMemory.isIndexed() && !it.isFullIterator() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory())) ) {
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,

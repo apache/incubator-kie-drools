@@ -1,0 +1,32 @@
+package com.sample
+ 
+import com.sample.DroolsMain.Bar;
+import com.sample.DroolsMain.Foo;
+import java.util.concurrent.atomic.AtomicInteger;
+
+global AtomicInteger barCount;
+global AtomicInteger fooCount;
+
+rule "DuplicateBars"
+	dialect "java"
+	when
+		f1 : Foo( )
+		f2 : Foo( this != f1 )
+		b1 : Bar( ) from f1.bar
+//		b2 : Bar( this == b1 ) from f2.bar
+	then
+		barCount.incrementAndGet();
+end
+ 
+/*
+rule "DuplicateFoos"
+	dialect "java"
+	when
+		b1 : Bar( )
+		b2 : Bar( this != b1 )
+		f1 : Foo( ) from b1.foo
+//		f2 : Foo( this == f1 ) from b2.foo
+	then
+		fooCount.incrementAndGet();
+end
+*/

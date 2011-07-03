@@ -6,16 +6,20 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.Address;
+import org.drools.InitialFact;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.InternalFactHandle;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -880,7 +884,7 @@ public class BackwardChainingTest {
         assertEquals( 2, list.size() );
         assertEquals( 6, list.get(0).intValue());
         assertEquals( 6, list.get(1).intValue());
-    }      
+    }              
     
     @Test
     public void testGeneology() throws Exception {
@@ -1639,82 +1643,109 @@ public class BackwardChainingTest {
     }
     
     @Test
-    @Ignore
     public void testInsertionOrderTwo() throws Exception {
         String str = "" +
-            "package org.test " +
-            "import java.util.List " +
-            "global List list " +
-            "declare Thing " +
-            "    thing : String @key " +
+            "package org.test \n" +
+            "import java.util.List \n" +
+            "global List list \n" +
+            "declare Thing \n" +
+            "    thing : String @key \n" +
+            "end \n" +
+            "declare Edible extends Thing \n" +
+            "end \n" +
+            "declare Location extends Thing \n" +
+            "    location : String  @key \n" +
+            "end \n" +
+            "declare Here \n" +
+            "    place : String \n" +
+            "end \n" +
+            "rule kickOff \n" +
+            "when \n" +
+            "    Integer( $i: intValue ) \n" +
+            "then \n" +
+            "    switch( $i ){ \n";
+            
+        String[] facts = new String[] { "new Edible( 'peach' )", "new Location( 'peach', 'table' )", "new Here( 'table' )" };
+        int f = 0;
+        for ( int i = 0; i < facts.length; i++ ) {
+            for ( int j = 0; j < facts.length; j++ ) {
+                for ( int k = 0; k < facts.length; k++ ) {
+                    // use a Set to make sure we only include 3 unique values
+                    Set<String> set = new HashSet<String>();
+                    set.add(facts[i]);
+                    set.add(facts[j]);
+                    set.add(facts[k]);
+                    if ( set.size() == 3 ) {
+                        str +=
+                          "    case "  + f++ + ": \n" +
+                          //"        System.out.println( \"s) \"+" + (f-1) + ");\n" +                          
+                          "        insert( " + facts[i] + " ); \n" +
+                          "        insert( " + facts[j] + " ); \n" +
+                          "        insert( " + facts[k] + " ); \n" +
+                          "        break; \n"; 
+                    }
+                }  
+            }            
+        }
+        
+        facts = new String[] { "new Edible( 'peach' )", "new Location( 'table', 'office' )", "new Location( 'peach', 'table' )", "new Here( 'office' )" };
+        int h = f;
+        for ( int i = 0; i < facts.length; i++ ) {
+            for ( int j = 0; j < facts.length; j++ ) {
+                for ( int k = 0; k < facts.length; k++ ) {
+                    for ( int l = 0; l < facts.length; l++ ) {
+                        // use a Set to make sure we only include 3 unique values
+                        Set<String> set = new HashSet<String>();
+                        set.add(facts[i]);
+                        set.add(facts[j]);
+                        set.add(facts[k]);
+                        set.add(facts[l]);
+                        if ( set.size() == 4 ) {
+                            str +=
+                              "    case "  + h++ + ": \n" +
+                              //"        System.out.println( \"s) \"+" + (h-1) + ");\n" +                              
+                              "        insert( " + facts[i] + " ); \n" +
+                              "        insert( " + facts[j] + " ); \n" +
+                              "        insert( " + facts[k] + " ); \n" +
+                              "        insert( " + facts[l] + " ); \n" +                              
+                              "        break; \n"; 
+                        }
+                    }  
+                }
+            }            
+        }        
+        
+        str +=
+            "    } \n" +
+            "end \n" +
+            "\n" +
+            "query whereFood( String x, String y ) \n" +
+            "    ( Location(x, y;) and \n" +
+            "    Edible(x;) ) \n " +
+            "    or  \n" +
+            "    ( Location(z, y;) and whereFood(x, z;) ) \n" +
             "end " +
-            "declare Edible extends Thing " +
-            "end " +
-            "declare Location extends Thing " +
-            "    location : String  @key " +
-            "end " +
-            "declare Here " +
-            "    place : String " +
-            "end " +
-            "rule kickOff " +
-            "when " +
-            "    Integer( $i: intValue ) " +
-            "then " +
-            "    switch( $i ){ " +
-            "    case 1: " +
-            "        insert( new Edible( 'peach' ) ); " +
-            "        insert( new Location( 'peach', 'table' ) ); " +
-            "        insert( new Here( 'table' ) ); " +
-            "        break; " +
-            "    case 2: " +
-            "        insert( new Edible( 'peach' ) ); " +
-            "        insert( new Here( 'table' ) ); " +
-            "        insert( new Location( 'peach', 'table' ) ); " +
-            "        break; " +
-            "    case 3: " +
-            "        insert( new Here( 'table' ) ); " +
-            "        insert( new Edible( 'peach' ) ); " +
-            "        insert( new Location( 'peach', 'table' ) ); " +
-            "        break; " +
-            "    case 4: " +
-            "        insert( new Location( 'peach', 'table' ) ); " +
-            "        insert( new Edible( 'peach' ) ); " +
-            "        insert( new Here( 'table' ) ); " +
-            "        break; " +
-            "    case 5: " +
-            "        insert( new Location( 'peach', 'table' ) ); " +
-            "        insert( new Here( 'table' ) ); " +
-            "        insert( new Edible( 'peach' ) ); " +
-            "        break; " +
-            "    case 6: " +
-            "        insert( new Here( 'table' ) ); " +
-            "        insert( new Location( 'peach', 'table' ) ); " +
-            "        insert( new Edible( 'peach' ) ); " +
-            "        break; " +
-            "    } " +
-            "end " +
-            "query whereFood( String x, String y ) " +
-            "    ( Location(x, y;) and " +
-            "    Edible(x;) )  " +
-            "    or  " +
-            "    ( Location(z, y;) and /*?*/whereFood(x, z;) ) " +
-            "end " +
-            "query look(String place, List things, List food)  " +
-            "    Here(place;) " +
-            "    things := List() from accumulate( Location(thing, place;), " +
-            "                                      collectList( thing ) ) " +
-            "    food := List() from accumulate( /*?*/whereFood(thing, place;), " +
-            "                                    collectList( thing ) ) " +
-            "end " +
-            "rule reactiveLook " +
-            "when " +
-            "    Here( $place : place)  " +
-            "    /*?*/look($place, $things; $food := food) " +
-            "then " +
-            "    list.addAll( $things ); " +
-            "    list.addAll( $food   ); " +
-            "end " +
+            "query look(String place, List things, List food)  \n" +
+            "    Here(place;) \n" +
+            "    things := List() from accumulate( Location(thing, place;), \n" +
+            "                                      collectList( thing ) ) \n" +
+            "    food := List() from accumulate( whereFood(thing, place;), \n" +
+            "                                    collectList( thing ) ) \n" +
+            "end \n" +
+            "rule reactiveLook \n" +
+            "when \n" +
+            "    Here( $place : place)  \n" +
+            "    look($place, $things; $food := food) \n" +
+            "then \n" +
+            "    list.addAll( $things ); \n" +
+            "    list.addAll( $food   ); \n" +
+            //"    System.out.println( $things + \":\" + $food ); \n" +
+            "end \n" +
              "";
+        
+
+        // System.out.println( str );        
+        
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
                           ResourceType.DRL );
@@ -1728,26 +1759,99 @@ public class BackwardChainingTest {
 
         kbase = SerializationHelper.serializeObject( kbase );
 
-        for ( int i = 1; i <= 6; i++) {
+        for ( int i = 0; i < f; i++) {
             StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             List<String> list = new ArrayList<String>();
             ksession.setGlobal( "list", list );            
             ksession.fireAllRules();
-            list.clear();
-            FactHandle fh = ksession.insert( Integer.valueOf( i ) );
+            list.clear();            
+            FactHandle fh = ksession.insert( Integer.valueOf( i ) );            
             ksession.fireAllRules();
-            ksession.retract( fh );
             assertEquals( 2, list.size() );
             assertEquals( "peach", list.get( 0 ) );
             assertEquals( "peach", list.get( 1 ) );
-            ksession.dispose();
+            list.clear();           
+
+            InternalFactHandle[] handles = ksession.getFactHandles().toArray( new InternalFactHandle[0] );
+            for ( int j = 0; j < handles.length; j++ ) {
+                if ( handles[j].getObject() instanceof InitialFact || handles[j].getObject() instanceof Integer ) {
+                    continue;
+                }
+                
+//                if ( !handles[j].getObject().getClass().getSimpleName().equals( "Here" )) {
+//                    continue;
+//                }                
+                Object o = handles[j].getObject();
+                // first retract + assert
+                ksession.retract( handles[j] );
+                handles[j] = ( InternalFactHandle ) ksession.insert( o );
+                ksession.fireAllRules();
+                assertEquals( 2, list.size() );
+                assertEquals( "peach", list.get( 0 ) );
+                assertEquals( "peach", list.get( 1 ) );
+                list.clear();                
+                
+                // now try update
+                ksession.update( handles[j], handles[j].getObject() );
+                ksession.fireAllRules();
+                assertEquals( 2, list.size() );
+                assertEquals( "peach", list.get( 0 ) );
+                assertEquals( "peach", list.get( 1 ) );
+                list.clear();                  
+            }
+            
+            ksession.retract( fh );           
+            ksession.dispose();            
         }
+        
+        for ( int i = f; i < h; i++) {
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            List<String> list = new ArrayList<String>();
+            ksession.setGlobal( "list", list );            
+            ksession.fireAllRules();
+            list.clear();            
+            FactHandle fh = ksession.insert( Integer.valueOf( i ) );                        
+            ksession.fireAllRules();
+            assertEquals( 2, list.size() );
+            assertEquals( "table", list.get( 0 ) );
+            assertEquals( "peach", list.get( 1 ) );
+            list.clear();
+            
+            InternalFactHandle[] handles = ksession.getFactHandles().toArray( new InternalFactHandle[0] );
+            for ( int j = 0; j < handles.length; j++ ) {
+                if ( handles[j].getObject() instanceof InitialFact || handles[j].getObject() instanceof Integer ) {
+                    continue;
+                }
+                
+//                if ( !handles[j].getObject().getClass().getSimpleName().equals( "Here" )) {
+//                    continue;
+//                }                
+                Object o = handles[j].getObject();
+                // first retract + assert
+                ksession.retract( handles[j] );
+                handles[j] = ( InternalFactHandle ) ksession.insert( o );
+                ksession.fireAllRules();
+                assertEquals( 2, list.size() );
+                assertEquals( "table", list.get( 0 ) );
+                assertEquals( "peach", list.get( 1 ) );
+                list.clear();                
+                
+                // now try update
+                ksession.update( handles[j], handles[j].getObject() );
+                ksession.fireAllRules();
+                assertEquals( 2, list.size() );
+                assertEquals( "table", list.get( 0 ) );
+                assertEquals( "peach", list.get( 1 ) );
+                list.clear();                  
+            }
+            
+            ksession.retract( fh );           
+            ksession.dispose();
+        }        
     }    
 
     @Test
     public void testInsertionOrder() throws Exception {
-        // http://www.amzi.com/AdventureInProlog/advtop.php
-
         String str = "" +
             "package org.test  \n" +
 
@@ -1862,7 +1966,6 @@ public class BackwardChainingTest {
     
     
     @Test
-    @Ignore
     public void testQueryFindAll() throws Exception {
         Object[] objects = new Object[]{Integer.valueOf( 42 ), "a String", Integer.valueOf( 100 )  };
         int oCount = objects.length + 1; // +1 for InitialFact
@@ -1950,7 +2053,6 @@ public class BackwardChainingTest {
     }
     
     @Test
-    @Ignore
     public void testQueryWithObject() throws Exception {
         String str = "" +
             "package org.drools.test  \n" +

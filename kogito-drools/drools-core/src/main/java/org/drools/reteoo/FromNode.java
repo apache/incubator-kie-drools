@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
@@ -105,12 +106,21 @@ public class FromNode extends LeftTupleSource
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
         Map<Object, RightTuple> matches = null;
-        if ( this.tupleMemoryEnabled ) {
+        boolean useLeftMemory = true;       
+        if ( !this.tupleMemoryEnabled ) {
+            // This is a hack, to not add closed DroolsQuery objects
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
+                useLeftMemory = false;
+            }
+        }
+
+        if ( this.tupleMemoryEnabled || ( useLeftMemory ) ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
             matches = new LinkedHashMap<Object, RightTuple>();
             memory.betaMemory.getCreatedHandles().put( leftTuple,
                                                        matches );
-        }
+        }         
 
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
@@ -306,7 +316,7 @@ public class FromNode extends LeftTupleSource
                                                       workingMemory );
 
         }
-        workingMemory.getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
+        //workingMemory.getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
@@ -332,7 +342,7 @@ public class FromNode extends LeftTupleSource
         for ( RightTuple rightTuple : matches.values() ) {
             for ( RightTuple current = rightTuple; current != null; ) {
                 RightTuple next = (RightTuple) rightIt.next( current );
-                workingMemory.getFactHandleFactory().destroyFactHandle( current.getFactHandle() );
+                //workingMemory.getFactHandleFactory().destroyFactHandle( current.getFactHandle() );
                 current.unlinkFromRightParent();
                 current = next;
             }
@@ -406,14 +416,31 @@ public class FromNode extends LeftTupleSource
             Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
-                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
-                                                                rightTuple,
-                                                                null,
-                                                                null,
-                                                                sink,
-                                                                this.tupleMemoryEnabled ),
-                                          context,
-                                          workingMemory );
+                    boolean isAllowed = true;
+                    if ( this.alphaConstraints != null ) {
+                        // First alpha node filters
+                        for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
+                            if ( !this.alphaConstraints[i].isAllowed( rightTuple.getFactHandle(),
+                                                                      workingMemory,
+                                                                      memory.alphaContexts[i] ) ) {
+                                // next iteration
+                                isAllowed = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
+                                                                                rightTuple.getFactHandle() ) ) {
+                        sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                                    rightTuple,
+                                                                    null,
+                                                                    null,
+                                                                    sink,
+                                                                    this.tupleMemoryEnabled ),
+                                              context,
+                                              workingMemory );
+                    }                                      
                 }
             }
         }

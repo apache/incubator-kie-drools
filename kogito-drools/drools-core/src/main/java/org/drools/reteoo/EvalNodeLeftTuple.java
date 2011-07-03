@@ -128,6 +128,7 @@ public class EvalNodeLeftTuple
         leftTuple.setLastChild( this );
         
         // insert at the end of the list
+        this.rightParent = rightTuple;
         if ( rightTuple.lastChild != null ) {
             this.rightParentPrevious = rightTuple.lastChild;
             this.rightParentPrevious.setRightParentNext( this );

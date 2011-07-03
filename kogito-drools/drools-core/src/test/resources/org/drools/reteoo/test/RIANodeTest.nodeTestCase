@@ -5,9 +5,9 @@ import org.drools.Person;
 
 Setup
     RightInputAdapterNode:
-        ria, mock;
+        ria, mock(Object);
     BetaNodeStep:
-        sink, mock, ria;
+        sink, mock(Object), ria;
     Facts:
         new Person('darth', 35, "brie"),     // h0
         new Person('bobba', 36, 'stilton'),  // h1

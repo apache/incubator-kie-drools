@@ -80,7 +80,7 @@ public interface PropagationContext
     
     public LinkedList<WorkingMemoryAction> getQueue1();
 
-    public LinkedList<WorkingMemoryAction> getQueue2();
+    public LinkedList<WorkingMemoryAction> getQueue2();    
 
     public void evaluateActionQueue(InternalWorkingMemory workingMemory); 
 

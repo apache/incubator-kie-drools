@@ -24,6 +24,7 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ClassTypeResolver;
+import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -84,7 +85,7 @@ public class ReteTesterHelper {
                                                                 getClass().getClassLoader() );
 
         Evaluator evaluator = getEvaluator( clazz,
-                                            ":=".equals( evaluatorString ) ? "==" : evaluatorString );
+                                            ":=".equals( evaluatorString ) ? Operator.EQUAL.getOperatorString() : evaluatorString );
         
         Restriction vr = new VariableRestriction( extractor, declaration, evaluator );                
 
@@ -122,6 +123,9 @@ public class ReteTesterHelper {
 
     public Evaluator getEvaluator(Class< ? > cls,
                                   String operator) {
+        if ( cls == DroolsQuery.class ) {
+            cls = Object.class;
+        }
         return registry.getEvaluator( ValueType.determineValueType( cls ),
                                       Operator.determineOperator( operator,
                                                                   false ) );
