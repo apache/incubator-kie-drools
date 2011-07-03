@@ -111,6 +111,7 @@ public class SlidingLengthWindow
             tuple.getRightTupleSink().retractRightTuple( tuple,
                                                          propagationContext,
                                                          workingMemory );
+            propagationContext.evaluateActionQueue( workingMemory );
             tuple.unlinkFromRightParent();
 
         }

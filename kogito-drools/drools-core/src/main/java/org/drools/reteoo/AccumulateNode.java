@@ -1069,7 +1069,7 @@ public class AccumulateNode extends BetaNode {
         public Serializable[] context;
         public RightTuple     result;
         public boolean        propagated;
-        private EvaluateResultConstraints        action;
+        private EvaluateResultConstraints        action; // is transiant
 
         public void readExternal( ObjectInput in ) throws IOException,
                                                   ClassNotFoundException {
