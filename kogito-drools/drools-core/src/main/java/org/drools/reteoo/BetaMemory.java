@@ -32,7 +32,6 @@ public class BetaMemory
 
     private LeftTupleMemory   leftTupleMemory;
     private RightTupleMemory  rightTupleMemory;
-    private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
     private Object            behaviorContext;
     
@@ -55,7 +54,6 @@ public class BetaMemory
                                             ClassNotFoundException {
         leftTupleMemory = (LeftTupleMemory) in.readObject();
         rightTupleMemory = (RightTupleMemory) in.readObject();
-        createdHandles = (ObjectHashMap) in.readObject();
         context = (ContextEntry[]) in.readObject();
         behaviorContext = (Object) in.readObject();
         isLeftUnlinked = in.readBoolean();
@@ -65,7 +63,6 @@ public class BetaMemory
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( leftTupleMemory );
         out.writeObject( rightTupleMemory );
-        out.writeObject( createdHandles );
         out.writeObject( context );
         out.writeObject( behaviorContext );
         out.writeBoolean( isLeftUnlinked );
@@ -78,13 +75,6 @@ public class BetaMemory
 
     public LeftTupleMemory getLeftTupleMemory() {
         return this.leftTupleMemory;
-    }
-
-    public ObjectHashMap getCreatedHandles() {
-        if ( this.createdHandles == null ) {
-            this.createdHandles = new ObjectHashMap();
-        }
-        return this.createdHandles;
     }
 
     /**

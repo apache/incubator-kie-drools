@@ -526,7 +526,7 @@ public class OutputMarshaller {
                 //context.out.println( ".... AccumulateNode" );
                 // accumulate nodes generate new facts on-demand and need special procedures when serializing to persistent storage
                 AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
-                AccumulateContext accctx = (AccumulateContext) memory.betaMemory.getCreatedHandles().get( leftTuple );
+                AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
                 // first we serialize the generated fact handle
                 writeFactHandle( context,
                                  stream,
@@ -579,7 +579,7 @@ public class OutputMarshaller {
               // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
               FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
 
-              Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
+              Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
               for ( RightTuple rightTuples : matches.values() ) {
                   // first we serialize the generated fact handle ID
                   stream.writeShort( PersisterEnums.FACT_HANDLE );
