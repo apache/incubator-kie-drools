@@ -159,6 +159,55 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
 
+	public void testRuleTask2() throws Exception {
+		KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory
+				.newKnowledgeBuilderConfiguration();
+		((PackageBuilderConfiguration) conf).initSemanticModules();
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNSemanticModule());
+		((PackageBuilderConfiguration) conf)
+				.addSemanticModule(new BPMNDISemanticModule());
+		// ProcessDialectRegistry.setDialect("XPath", new XPathDialect());
+		XmlProcessReader processReader = new XmlProcessReader(
+				((PackageBuilderConfiguration) conf).getSemanticModules(),
+				getClass().getClassLoader());
+		List<Process> processes = processReader
+				.read(SimpleBPMNProcessTest.class
+						.getResourceAsStream("/BPMN2-RuleTask2.bpmn2"));
+		assertNotNull(processes);
+		assertEquals(1, processes.size());
+		RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
+		assertNotNull(p);
+		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
+				.newKnowledgeBuilder(conf);
+		// System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
+				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
+		kbuilder.add(
+				ResourceFactory.newClassPathResource("BPMN2-RuleTask2.drl"),
+				ResourceType.DRL);
+		if (!kbuilder.getErrors().isEmpty()) {
+			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+				System.err.println(error);
+			}
+			throw new IllegalArgumentException(
+					"Errors while parsing knowledge base");
+		}
+		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+		List<String> list = new ArrayList<String>();
+		ksession.setGlobal("list", list);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("x", "SomeString");
+		ProcessInstance processInstance = ksession.startProcess("RuleTask", params);
+		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+		restoreSession(ksession, true);
+		ksession.fireAllRules();
+		assertTrue(list.size() == 0);
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+
 	public void testDataObject() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-DataObject.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
