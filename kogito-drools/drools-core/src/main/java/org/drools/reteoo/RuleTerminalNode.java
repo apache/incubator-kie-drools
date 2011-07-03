@@ -79,8 +79,6 @@ public class RuleTerminalNode extends BaseNode
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
 
-    protected boolean         tupleMemoryEnabled;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -110,7 +108,6 @@ public class RuleTerminalNode extends BaseNode
         this.tupleSource = source;
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
-        this.tupleMemoryEnabled = context.isTerminalNodeMemoryEnabled();
         
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
         this.declarations = new Declaration[ rule.getRequiredDeclarations().length ];
@@ -441,11 +438,11 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public boolean isLeftTupleMemoryEnabled() {
-        return tupleMemoryEnabled;
+        return false;
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
+        
     }
     
     public Declaration[] getDeclarations() {

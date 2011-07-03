@@ -226,12 +226,30 @@ public abstract class BetaNode extends LeftTupleSource
                                        final LeftTupleMemory memory,
                                        final PropagationContext context,
                                        final FastIterator it) {
-        if ( !this.indexedUnificationJoin ) {
+        if ( !this.indexedUnificationJoin  ) {
             return memory.getFirst( rightTuple );
         } else {
             return (LeftTuple) it.next( null );
         }
-    }    
+    }   
+    
+    public RightTuple getFirstRightTuple(final RightTupleMemory memory,
+                                         final FastIterator it) {
+        if ( !memory.isIndexed() ) {
+            return memory.getFirst( null, null );
+        } else {
+            return (RightTuple) it.next( null );
+        }
+    }
+    
+    public LeftTuple getFirstLeftTuple(final LeftTupleMemory memory,
+                                       final FastIterator it) {
+        if ( !memory.isIndexed() ) {
+            return memory.getFirst( null );
+        } else {
+            return (LeftTuple) it.next( null );
+        }
+    }      
 
     public BetaNodeFieldConstraint[] getConstraints() {
         final LinkedList constraints = this.constraints.getConstraints();
@@ -320,7 +338,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
     }
-
+    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -341,8 +359,8 @@ public abstract class BetaNode extends LeftTupleSource
                     memory = ( BetaMemory ) object;
                 }
                 
-                FastIterator it = memory.getLeftTupleMemory().fullFastIterator();                
-                for ( LeftTuple leftTuple = (LeftTuple) memory.getLeftTupleMemory().getFirst( null ); leftTuple != null; ) {
+                FastIterator it = memory.getLeftTupleMemory().fullFastIterator(); 
+                for ( LeftTuple leftTuple = getFirstLeftTuple( memory.getLeftTupleMemory(), it ); leftTuple != null; ) {
                     LeftTuple tmp = (LeftTuple) it.next(leftTuple);                    
                     if( context.getCleanupAdapter() != null ) {                        
                         for( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext() ) {
@@ -355,9 +373,9 @@ public abstract class BetaNode extends LeftTupleSource
                             }
                         }
                     }
+                    memory.getLeftTupleMemory().remove( leftTuple );                    
                     leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
-                    memory.getLeftTupleMemory().remove( leftTuple );
+                    leftTuple.unlinkFromRightParent();                    
                     leftTuple = tmp;                    
                 }
 
@@ -368,8 +386,8 @@ public abstract class BetaNode extends LeftTupleSource
                 }
 
                 if( ! this.isInUse() ) {
-                    it = memory.getRightTupleMemory().fullFastIterator();
-                    for ( RightTuple rightTuple = (RightTuple) memory.getRightTupleMemory().getFirst( null, null); rightTuple != null; ) {
+                    it = memory.getRightTupleMemory().fullFastIterator();                    
+                    for ( RightTuple rightTuple = getFirstRightTuple( memory.getRightTupleMemory(), it ); rightTuple != null; ) {
                         RightTuple tmp = (RightTuple) it.next(rightTuple);
                         if ( rightTuple.getBlocked() != null ) {
                             // special case for a not, so unlink left tuple from here, as they aren't in the left memory
@@ -382,9 +400,9 @@ public abstract class BetaNode extends LeftTupleSource
                                 leftTuple.unlinkFromLeftParent();
                                 leftTuple = temp;
                             }
-                        }                        
-                        rightTuple.unlinkFromRightParent();
+                        }                                                
                         memory.getRightTupleMemory().remove( rightTuple );
+                        rightTuple.unlinkFromRightParent();                        
                         rightTuple = tmp;                        
                     }
                     workingMemories[i].clearNodeMemory( this );

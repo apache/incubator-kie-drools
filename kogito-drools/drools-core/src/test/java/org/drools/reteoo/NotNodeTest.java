@@ -403,7 +403,6 @@ public class NotNodeTest extends DroolsTestCase {
 
         buildContext.setTupleMemoryEnabled( false );
         buildContext.setObjectTypeNodeMemoryEnabled( false );
-        buildContext.setTerminalNodeMemoryEnabled( false );
 
         // override setup, so its working in sequential mode
         this.node = new NotNode( 15,

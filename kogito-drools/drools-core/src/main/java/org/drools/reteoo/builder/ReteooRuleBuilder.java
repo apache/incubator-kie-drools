@@ -112,12 +112,10 @@ public class ReteooRuleBuilder {
             if ( rulebase.getConfiguration().isSequential() ) {
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
-                context.setTerminalNodeMemoryEnabled( false );
                 context.setAlphaNodeMemoryAllowed( false );
             } else {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );
-                context.setTerminalNodeMemoryEnabled( true );
                 context.setAlphaNodeMemoryAllowed( true );
             }
             

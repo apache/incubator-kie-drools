@@ -63,11 +63,9 @@ public class FactTemplateTypeConf
                 // We are in sequential mode, so no nodes should have memory
                 context.setTupleMemoryEnabled( false );
                 context.setObjectTypeNodeMemoryEnabled( false );
-                context.setTerminalNodeMemoryEnabled( false );
             } else {
                 context.setTupleMemoryEnabled( true );
                 context.setObjectTypeNodeMemoryEnabled( true );
-                context.setTerminalNodeMemoryEnabled( true );
             }
             // there must exist an ObjectTypeNode for this concrete class
             this.concreteObjectTypeNode = PatternBuilder.attachObjectTypeNode( context,
