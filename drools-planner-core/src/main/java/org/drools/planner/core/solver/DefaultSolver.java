@@ -209,12 +209,14 @@ public class DefaultSolver implements Solver {
         if (!planningFactChangeQueue.isEmpty()) {
             solverScope.setRestartSolver(true);
             Score score = null;
+            int count = 0;
             PlanningFactChange planningFactChange = planningFactChangeQueue.poll();
             while (planningFactChange != null) {
                 score = doPlanningFactChange(planningFactChange);
+                count++;
                 planningFactChange = planningFactChangeQueue.poll();
             }
-            logger.info("Each PlanningFactChange done with new score ({}), restarting solver.", score);
+            logger.info("Done {} PlanningFactChange(s), score ({}), possibly uninitialized. Restarting solver.", count, score);
         }
     }
 
