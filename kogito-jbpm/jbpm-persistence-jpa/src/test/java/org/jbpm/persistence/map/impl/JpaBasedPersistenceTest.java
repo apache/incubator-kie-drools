@@ -1,15 +1,20 @@
 package org.jbpm.persistence.map.impl;
 
 import static org.jbpm.persistence.util.PersistenceUtil.*;
-import java.io.InputStream;
+
+import java.util.List;
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.transaction.Transaction;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
+import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -19,7 +24,6 @@ import org.junit.Before;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import bitronix.tm.utils.PropertyException;
 
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
@@ -28,11 +32,10 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @Before
     public void setUp() throws Exception {
-        Properties btmProps = getBitronixProperties(this);
-        ds1 = setupPoolingDataSource(btmProps);
+        ds1 = setupPoolingDataSource();
         ds1.init();
         
-        emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
     
     @After

@@ -1,11 +1,11 @@
 package org.jbpm.persistence.session;
 
 import static org.jbpm.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
@@ -46,8 +46,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        Properties btmProps = getBitronixProperties(this);
-        ds1 = setupPoolingDataSource(btmProps);
+        ds1 = setupPoolingDataSource();
         
         ds1.init();
     }
@@ -80,7 +79,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -128,7 +127,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -213,7 +212,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -282,7 +281,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -351,7 +350,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -372,7 +371,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
@@ -406,7 +405,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
@@ -438,7 +437,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -486,7 +485,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -574,7 +573,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -625,7 +624,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
 
@@ -693,7 +692,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );

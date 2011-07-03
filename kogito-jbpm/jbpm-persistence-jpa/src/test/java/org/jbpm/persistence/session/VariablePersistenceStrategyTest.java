@@ -82,11 +82,10 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
 
     @Before
     public void setUp() throws Exception {
-        Properties btmProps = getBitronixProperties(this);
-        ds1 = setupPoolingDataSource(btmProps);
+        ds1 = setupPoolingDataSource();
         ds1.init();
         
-        emf = Persistence.createEntityManagerFactory("org.drools.persistence.jpa");
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
 
     @After
