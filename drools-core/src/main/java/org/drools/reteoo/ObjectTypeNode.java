@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.base.ValueType;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.BaseNode;
@@ -90,6 +91,8 @@ public class ObjectTypeNode extends ObjectSource
     private long                expirationOffset = -1;
 
     private transient ExpireJob job              = new ExpireJob();
+    
+    private boolean             queryNode;
 
     private CompiledNetwork     compiledNetwork;
 
@@ -118,8 +121,11 @@ public class ObjectTypeNode extends ObjectSource
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
         this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
-        //setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
-        setObjectMemoryEnabled(true );
+        setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
+        
+        if ( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( objectType )) {
+            queryNode = true;
+        }        
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -137,6 +143,7 @@ public class ObjectTypeNode extends ObjectSource
         objectMemoryEnabled = in.readBoolean();
         expirationOffset = in.readLong();
         lrUnlinkingEnabled = in.readBoolean();
+        queryNode = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -146,6 +153,7 @@ public class ObjectTypeNode extends ObjectSource
         out.writeBoolean( objectMemoryEnabled );
         out.writeLong( expirationOffset );
         out.writeBoolean( lrUnlinkingEnabled );
+        out.writeBoolean( queryNode );
     }
 
     /**
@@ -166,7 +174,7 @@ public class ObjectTypeNode extends ObjectSource
 
         this.compiledNetwork.setObjectTypeNode( this );
     }
-
+    
     /**
      * Propagate the <code>FactHandleimpl</code> through the <code>Rete</code> network. All
      * <code>FactHandleImpl</code> should be remembered in the node memory, so that later runtime rule attachmnents
@@ -179,11 +187,13 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        if ( this.objectMemoryEnabled ) {
+        
+        if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery)factHandle.getObject()).isOpen() ) ) {
             final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
             memory.add( factHandle,
-                        false );
+                        false );            
         }
+        
         if ( compiledNetwork != null ) {
             compiledNetwork.assertObject( factHandle,
                                           context,
@@ -227,9 +237,9 @@ public class ObjectTypeNode extends ObjectSource
     public void retractObject(final InternalFactHandle factHandle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        if ( this.objectMemoryEnabled ) {
+        if ( objectMemoryEnabled && !(queryNode && !((DroolsQuery)factHandle.getObject()).isOpen() ) ) {
             final ObjectHashSet memory = (ObjectHashSet) workingMemory.getNodeMemory( this );
-            memory.remove( factHandle );
+            memory.remove( factHandle );            
         }
 
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {

@@ -351,14 +351,6 @@ public class BuildContext {
         this.objectTypeNodeMemoryEnabled = hasObjectTypeMemory;
     }
 
-    public boolean isTerminalNodeMemoryEnabled() {
-        return terminalNodeMemoryEnabled;
-    }
-
-    public void setTerminalNodeMemoryEnabled(boolean hasTerminalNodeMemory) {
-        this.terminalNodeMemoryEnabled = hasTerminalNodeMemory;
-    }
-
     public void setAlphaNodeMemoryAllowed(boolean alphaMemoryAllowed) {
         this.alphaNodeMemoryAllowed = alphaMemoryAllowed;
     }
