@@ -16,6 +16,8 @@
 
 package org.jbpm.process.audit;
 
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,22 +50,14 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 
     PoolingDataSource ds1;
+    EntityManagerFactory emf;
 
     @Override
     protected void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        ds1 = setupPoolingDataSource();
         ds1.init();
-
+        
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
 
     @Override
@@ -75,7 +69,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -122,7 +115,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -163,7 +155,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -209,7 +200,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -270,7 +260,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
