@@ -696,6 +696,7 @@ public class ReteDslTestEngine {
                             ((ObjectSink) sink).assertObject( handle,
                                                               pContext,
                                                               wm );
+                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             LeftTuple tuple = createTuple( context,
@@ -708,6 +709,7 @@ public class ReteDslTestEngine {
                             ((LeftTupleSink) sink).assertLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );
+                            pContext.evaluateActionQueue( wm );
                         }
 
                     }
@@ -812,6 +814,7 @@ public class ReteDslTestEngine {
                                 handle.setFirstLeftTuple( null );
                                 handle.setLastLeftTuple( null );
                             }
+                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             String id = getTupleId( tlist );
@@ -827,6 +830,7 @@ public class ReteDslTestEngine {
                             ((LeftTupleSink) sink).retractLeftTuple( tuple,
                                                                      pContext,
                                                                      wm );
+                            pContext.evaluateActionQueue( wm );
                         }
 
                     }
@@ -892,6 +896,7 @@ public class ReteDslTestEngine {
                                                               wm );
                             modifyPreviousTuples.retractTuples( pContext,
                                                                 wm );
+                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             String id = getTupleId( tlist );
@@ -907,6 +912,7 @@ public class ReteDslTestEngine {
                             ((LeftTupleSink) sink).modifyLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );
+                            pContext.evaluateActionQueue( wm );
                         }
                     }
                 } catch ( Exception e ) {
