@@ -1,5 +1,6 @@
 package org.jbpm.integration;
 
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -50,27 +51,18 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public abstract class JbpmTestCase {
 
 	private static  PoolingDataSource ds1;
-	private  static Server h2Server;
 	static MinaTaskServer minaServer;
 	static Thread minaServerThread;
     
-
     @BeforeClass
 	public static void setUp(){
     	if (minaServerThread==null){
-    	try {
-			DeleteDbFiles.execute("", "JPADroolsFlow", true);
-			h2Server = Server.createTcpServer(new String[0]);
-			h2Server.start();
-		} catch (SQLException e) {
-			throw new RuntimeException("can't start h2 server db",e);
-		}
-		System.setProperty("jbpm.console.directory","./src/test/resources");
-		
-		 startPersistenceServer();
-		 startHumanTaskServer();
-	
-
+    	    ds1 = setupPoolingDataSource();
+    	    ds1.init();
+    	    
+    	    System.setProperty("jbpm.console.directory","./src/test/resources");
+    	    
+    	    startHumanTaskServer();
 		}
 	
 	}
@@ -113,19 +105,7 @@ public abstract class JbpmTestCase {
         System.out.println("Task service running ...");
 		
 	}
-	protected static void startPersistenceServer(){
-		ds1 = new PoolingDataSource();
-        ds1.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-    	ds1.setUniqueName("jdbc/testDS1");
-    	ds1.setMaxPoolSize(5);
-    	ds1.setAllowLocalTransactions(true);
-    	ds1.getDriverProperties().setProperty("driverClassName", "org.h2.Driver");
-    	ds1.getDriverProperties().setProperty("url", "jdbc:h2:tcp://localhost/JPADroolsFlow");
-    	ds1.getDriverProperties().setProperty("user", "sa");
-    	ds1.getDriverProperties().setProperty("password", "");
-        ds1.init();
-		
-	}
+ 	
 	@SuppressWarnings("rawtypes")
 	public static Object eval(Reader reader, Map vars) {
         try {
