@@ -115,7 +115,7 @@ public class FromNode extends LeftTupleSource
             }
         }
 
-        if ( this.tupleMemoryEnabled || ( useLeftMemory ) ) {
+        if ( useLeftMemory ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
             matches = new LinkedHashMap<Object, RightTuple>();
             memory.betaMemory.getCreatedHandles().put( leftTuple,

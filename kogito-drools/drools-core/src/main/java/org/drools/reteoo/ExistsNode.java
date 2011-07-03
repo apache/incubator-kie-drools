@@ -107,7 +107,7 @@ public class ExistsNode extends BetaNode {
         if ( !this.tupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
             Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
-            if ( memory.getLeftTupleMemory() == null || object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
             }
         }

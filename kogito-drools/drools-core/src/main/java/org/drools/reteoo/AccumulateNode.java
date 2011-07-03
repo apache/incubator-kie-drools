@@ -137,7 +137,7 @@ public class AccumulateNode extends BetaNode {
             }
         }
 
-        if ( this.tupleMemoryEnabled || ( useLeftMemory && memory.betaMemory.getLeftTupleMemory() != null ) ) {
+        if ( useLeftMemory ) {
             memory.betaMemory.getLeftTupleMemory().add( leftTuple );
             memory.betaMemory.getCreatedHandles().put( leftTuple,
                                                        accresult,

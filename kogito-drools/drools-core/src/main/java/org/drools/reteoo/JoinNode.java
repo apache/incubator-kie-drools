@@ -84,7 +84,7 @@ public class JoinNode extends BetaNode {
             }
         }
 
-        if ( this.tupleMemoryEnabled || ( useLeftMemory && memory.getLeftTupleMemory() != null ) ) {
+        if ( useLeftMemory ) {
             memory.getLeftTupleMemory().add( leftTuple );
         } 
         
