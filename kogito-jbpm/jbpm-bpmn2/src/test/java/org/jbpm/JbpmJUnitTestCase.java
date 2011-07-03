@@ -1,5 +1,5 @@
 package org.jbpm;
-
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	private boolean persistence = false;
 	private PoolingDataSource ds1;
 	private EntityManagerFactory emf;
-	private static Server h2Server;
+
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 	public StatefulKnowledgeSession ksession;
 	
@@ -62,9 +62,6 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	
 	public JbpmJUnitTestCase(boolean persistence) {
 		this.persistence = persistence;
-		if (persistence) {
-			startH2Database();
-		}
 	}
 	
 	public boolean isPersistence() {
@@ -73,17 +70,10 @@ public abstract class JbpmJUnitTestCase extends TestCase {
     
     protected void setUp() {
     	if (persistence) {
-	    	ds1 = new PoolingDataSource();
-	        ds1.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-	    	ds1.setUniqueName("jdbc/testDS1");
-	    	ds1.setMaxPoolSize(5);
-	    	ds1.setAllowLocalTransactions(true);
-	    	ds1.getDriverProperties().setProperty("driverClassName", "org.h2.Driver");
-	    	ds1.getDriverProperties().setProperty("url", "jdbc:h2:tcp://localhost/JPADroolsFlow");
-	    	ds1.getDriverProperties().setProperty("user", "sa");
-	    	ds1.getDriverProperties().setProperty("password", "");
+	    	ds1 = setupPoolingDataSource();
 	        ds1.init();
-	        emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
+	        
+	        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     	}
     }
 
@@ -93,22 +83,6 @@ public abstract class JbpmJUnitTestCase extends TestCase {
     	}
     	if (ds1 != null) {
             ds1.close();
-    	}
-    }
-    
-    public synchronized void startH2Database() {
-    	if (h2Server == null) {
-	    	try {
-				DeleteDbFiles.execute("", "", true);
-				h2Server = Server.createTcpServer(new String[0]);
-				h2Server.start();
-			} catch (SQLException e) {
-				if (h2Server != null) {
-					h2Server.shutdown();
-					h2Server = null;
-				}
-				throw new RuntimeException("can't start h2 server db",e);
-			}
     	}
     }
     
