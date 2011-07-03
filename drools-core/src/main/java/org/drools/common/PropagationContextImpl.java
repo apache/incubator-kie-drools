@@ -25,8 +25,8 @@ import org.drools.FactHandle;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooWorkingMemory.QueryInsertModifyAction;
-import org.drools.reteoo.ReteooWorkingMemory.QueryEvaluationAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.spi.PropagationContext;
@@ -250,7 +250,7 @@ public class PropagationContextImpl
             this.queue2 = new LinkedList<WorkingMemoryAction>();
         }
         return this.queue2; 
-    }
+    }   
     
     public void evaluateActionQueue(InternalWorkingMemory workingMemory) {                
         boolean repeat = true;
@@ -274,7 +274,8 @@ public class PropagationContextImpl
                         break;
                     }
                 }
-            }              
+            }     
+                                  
         }
     }
 

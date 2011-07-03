@@ -7,8 +7,8 @@ Setup
     Binding:
         $likes, 0, Person, likes;
     ExistsNode:
-        exists, mock, mock;
-        Cheese, type, ==, $likes;
+        exists, mock(Person), mock(Cheese);
+        type, ==, $likes;
     LeftTupleSink:
         sink, exists;
     Facts:

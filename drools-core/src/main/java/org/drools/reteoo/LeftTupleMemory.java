@@ -41,4 +41,6 @@ public interface LeftTupleMemory {
 
     public FastIterator fastIterator();
 
+    public FastIterator fullFastIterator();
+
 }

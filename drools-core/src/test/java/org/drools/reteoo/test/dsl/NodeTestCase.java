@@ -126,16 +126,15 @@ public class NodeTestCase {
     }
 
     public void setFileName(String fileName) {
-
         this.fileName = removeSuffix( fileName );
     }
 
     private String removeSuffix(String name) {
-        // removes the suffix, if present.
-        if ( name.endsWith( SUFFIX ) ) {
-            return name.substring( 0,
-                                   name.indexOf( SUFFIX ) );
-        }
+//        // removes the suffix, if present.
+//        if ( name.endsWith( SUFFIX ) ) {
+//            return name.substring( 0,
+//                                   name.indexOf( SUFFIX ) );
+//        }
 
         return name;
 

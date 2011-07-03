@@ -113,6 +113,7 @@ class LogicTransformer {
         for ( int i = 0; i < ands.length; i++ ) {
             // fix the cloned declarations
             this.fixClonedDeclarations( ands[i] );
+            ands[i].setRoot( true );
         }
 
         return ands;

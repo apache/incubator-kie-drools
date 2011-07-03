@@ -183,8 +183,9 @@ public class ExistsNode extends BetaNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                factHandle );
-        FastIterator it = memory.getLeftTupleMemory().fastIterator();
-        for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; ) {
+        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();        
+        FastIterator it = getLeftIterator( leftMemory );
+        for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );  leftTuple != null; ) {        
             // preserve next now, in case we remove this leftTuple 
             LeftTuple temp = (LeftTuple) it.next(leftTuple);
 
@@ -306,6 +307,9 @@ public class ExistsNode extends BetaNode {
                                 InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
+        
+        FastIterator rightIt = getRightIterator( rightMemory );         
+        RightTuple firstRightTuple = getFirstRightTuple(leftTuple, rightMemory, context, rightIt);
 
         // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
         RightTuple blocker = leftTuple.getBlocker();
@@ -313,10 +317,9 @@ public class ExistsNode extends BetaNode {
             memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             // check if we changed bucket
-            if ( rightMemory.isIndexed() ) {
-                RightTuple newRightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
-                // if newRightTuple is null, we assume there was a bucket change and that bucket is empty
-                if ( newRightTuple == null || newRightTuple.getMemory() != blocker.getMemory() ) {
+            if ( rightMemory.isIndexed()&& !rightIt.isFullIterator()  ) {                
+                // if newRightTuple is null, we assume there was a bucket change and that bucket is empty                
+                if ( firstRightTuple == null || firstRightTuple.getMemory() != blocker.getMemory() ) {
                     // we changed bucket, so blocker no longer blocks
                     blocker.removeBlocked( leftTuple );
                     leftTuple.setBlocker( null );
@@ -346,9 +349,7 @@ public class ExistsNode extends BetaNode {
             FastIterator it = memory.getRightTupleMemory().fastIterator();
             
             // find first blocker, because it's a modify, we need to start from the beginning again        
-            RightTuple rightTuple = rightMemory.getFirst( leftTuple,
-                                                          (InternalFactHandle) context.getFactHandle() );
-            for ( RightTuple newBlocker = rightTuple; newBlocker != null; newBlocker = (RightTuple) it.next( newBlocker ) ) {
+            for ( RightTuple newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );
@@ -412,13 +413,13 @@ public class ExistsNode extends BetaNode {
                                                workingMemory,
                                                rightTuple.getFactHandle() );
 
-        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
-        LeftTuple firstLeftTuple = leftMemory.getFirst( rightTuple );
+        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();        
+        FastIterator leftIt = getLeftIterator( leftMemory );        
+        LeftTuple firstLeftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, leftIt );
+        
         LeftTuple firstBlocked = rightTuple.getBlocked();
         // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild
         rightTuple.nullBlocked();
-
-        FastIterator leftIt = memory.getRightTupleMemory().fastIterator();
         
         // first process non-blocked tuples, as we know only those ones are in the left memory.
         for ( LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
@@ -446,8 +447,7 @@ public class ExistsNode extends BetaNode {
 
         if ( firstBlocked != null ) {
             // now process existing blocks, we only process existing and not new from above loop
-
-            FastIterator rightIt = memory.getRightTupleMemory().fastIterator();
+            FastIterator rightIt = getRightIterator( memory.getRightTupleMemory() );
             RightTuple rootBlocker = (RightTuple) rightIt.next(rightTuple);
           
             RightTupleList list = rightTuple.getMemory();

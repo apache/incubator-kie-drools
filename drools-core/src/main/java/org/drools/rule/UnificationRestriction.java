@@ -62,7 +62,10 @@ public class UnificationRestriction
                              InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              ContextEntry context) {
-        return this.vr.isAllowed( extractor, handle, workingMemory, ((UnificationContextEntry)context).getContextEntry() );
+        if ( ((UnificationContextEntry)context).getVariable() == null ) {
+            return this.vr.isAllowed( extractor, handle, workingMemory, ((UnificationContextEntry)context).getContextEntry() );
+        }
+        return true;
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context,
@@ -75,7 +78,10 @@ public class UnificationRestriction
 
     public boolean isAllowedCachedRight(LeftTuple tuple,
                                         ContextEntry context) {
-        return this.vr.isAllowedCachedRight( tuple, ((UnificationContextEntry)context).getContextEntry() );
+        if ( ((UnificationContextEntry)context).getVariable() == null ) {
+            return this.vr.isAllowedCachedRight( tuple, ((UnificationContextEntry)context).getContextEntry() );
+        }
+        return true;
     }
     
     public VariableRestriction getVariableRestriction() {

@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.drools.base.DroolsQuery;
 import org.drools.base.InternalViewChangedEventListener;
+import org.drools.base.ValueType;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
@@ -33,11 +34,12 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.core.util.RightTupleList;
-import org.drools.reteoo.ReteooWorkingMemory.QueryInsertModifyAction;
-import org.drools.reteoo.ReteooWorkingMemory.QueryEvaluationAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryInsertAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryRetractAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryUpdateAction;
+import org.drools.reteoo.ReteooWorkingMemory.QueryResultInsertAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultRetractAction;
 import org.drools.reteoo.ReteooWorkingMemory.QueryResultUpdateAction;
-import org.drools.reteoo.ReteooWorkingMemory.QueryRetractAction;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -173,22 +175,39 @@ public class QueryElementNode extends LeftTupleSource
                           0,
                           args.length );
 
-        int[] declIndexes = this.queryElement.getDeclIndexes();
-
-        List<Integer> srcVarIndexes = null;
+        int[] declIndexes = this.queryElement.getDeclIndexes();       
 
         for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
             Declaration declr = (Declaration) argTemplate[declIndexes[i]];
 
             Object tupleObject = leftTuple.get( declr ).getObject();
 
-            Object o = declr.getValue( workingMemory,
-                                       tupleObject );
+            Object o;
+            
+            if ( tupleObject instanceof DroolsQuery ) {
+                // If the query passed in a Variable, we need to use it
+                ArrayElementReader arrayReader = ( ArrayElementReader ) declr.getExtractor();                
+                if ( ((DroolsQuery)tupleObject).getVariables()[arrayReader.getIndex()] != null ) {
+                    o = Variable.v;
+                }  else {
+                    o = declr.getValue( workingMemory,
+                                        tupleObject );
+                }
+            }  else {
+                o = declr.getValue( workingMemory,
+                                    tupleObject );
+            }          
 
             args[declIndexes[i]] = o;
         }
 
         int[] varIndexes = this.queryElement.getVariableIndexes();
+        for ( int i = 0, length = varIndexes.length; i < length; i++ ) {
+            if ( argTemplate[varIndexes[i]] == Variable.v ) {
+                // Need to check against the arg template, as the varIndexes also includes re-declared declarations
+                args[varIndexes[i]] = Variable.v;
+            }
+        }
 
 
         UnificationNodeViewChangedEventListener collector = new UnificationNodeViewChangedEventListener( leftTuple,
@@ -208,7 +227,10 @@ public class QueryElementNode extends LeftTupleSource
         
         collector.setFactHandle( handle );
         
-        QueryInsertModifyAction action = new QueryInsertModifyAction(context, handle, leftTuple, varIndexes, srcVarIndexes, this);
+        QueryInsertAction action = new QueryInsertAction(context, handle, leftTuple, this);
+        queryObject.setAction( action ); // this is necessary as queries can be re-entrant, so we can check this before re-sheduling
+                                         // another action in the modify section. Make sure it's nulled after the action is done
+                                         // i.e. scheduling an insert and then an update, before the insert is executed
         context.getQueue1().addFirst( action );                   
         
         leftTuple.setObject( handle ); // so it can be retracted later and destroyed
@@ -234,6 +256,15 @@ public class QueryElementNode extends LeftTupleSource
             assertLeftTuple( leftTuple, context, workingMemory );
             return;
         }
+        
+        InternalFactHandle handle = ( InternalFactHandle ) leftTuple.getObject();
+        DroolsQuery queryObject = (DroolsQuery) handle.getObject();
+        if ( queryObject.getAction() != null ) {
+            // we already have an insert scheduled for this query, but have re-entered it
+            // do nothing
+            return;
+        }
+        
         Object[] argTemplate = this.queryElement.getArgTemplate(); // an array of declr, variable and literals
         Object[] args = new Object[argTemplate.length]; // the actual args, to be created from the  template
 
@@ -244,29 +275,44 @@ public class QueryElementNode extends LeftTupleSource
                           0,
                           args.length );
 
-        int[] declIndexes = this.queryElement.getDeclIndexes();
-
-        List<Integer> srcVarIndexes = null;
+        int[] declIndexes = this.queryElement.getDeclIndexes();       
 
         for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
             Declaration declr = (Declaration) argTemplate[declIndexes[i]];
 
             Object tupleObject = leftTuple.get( declr ).getObject();
 
-            Object o = declr.getValue( workingMemory,
-                                       tupleObject );
+            Object o;
+            
+            if ( tupleObject instanceof DroolsQuery ) {
+                // If the query passed in a Variable, we need to use it
+                ArrayElementReader arrayReader = ( ArrayElementReader ) declr.getExtractor();                
+                if ( ((DroolsQuery)tupleObject).getVariables()[arrayReader.getIndex()] != null ) {
+                    o = Variable.v;
+                }  else {
+                    o = declr.getValue( workingMemory,
+                                        tupleObject );
+                }
+            }  else {
+                o = declr.getValue( workingMemory,
+                                    tupleObject );
+            }          
 
             args[declIndexes[i]] = o;
         }
 
         int[] varIndexes = this.queryElement.getVariableIndexes();
+        for ( int i = 0, length = varIndexes.length; i < length; i++ ) {
+            if ( argTemplate[varIndexes[i]] == Variable.v ) {
+                // Need to check against the arg template, as the varIndexes also includes re-declared declarations
+                args[varIndexes[i]] = Variable.v;
+            }
+        }
 
-        InternalFactHandle handle = ( InternalFactHandle ) leftTuple.getObject();
-        DroolsQuery queryObject = (DroolsQuery) handle.getObject();
         queryObject.setParameters( args );
         ((UnificationNodeViewChangedEventListener)queryObject.getQueryResultCollector()).setVariables( varIndexes );
        
-        QueryInsertModifyAction action = new QueryInsertModifyAction(context, handle, leftTuple, varIndexes, srcVarIndexes, this);
+        QueryUpdateAction action = new QueryUpdateAction(context, handle, leftTuple, this);
         context.getQueue1().addFirst( action );
     }
 
@@ -400,14 +446,14 @@ public class QueryElementNode extends LeftTupleSource
                                                                                // find the child tuples to iterate for evaluating the query results
                                                                          query.isOpen() );
             
-            RightTupleList rightTuples = query.getRightTupleList();
+            RightTupleList rightTuples = query.getResultInsertRightTupleList();
             if ( rightTuples == null ) {
                 rightTuples = new RightTupleList();
-                query.setRightTupleList( rightTuples );                
-                QueryEvaluationAction evalAction = new QueryEvaluationAction( context,
-                                                                              this.factHandle,
-                                                                              leftTuple,
-                                                                              this.node );
+                query.setResultInsertRightTupleList( rightTuples );                
+                QueryResultInsertAction evalAction = new QueryResultInsertAction( context,
+                                                                                  this.factHandle,
+                                                                                  leftTuple,
+                                                                                  this.node );
                 context.getQueue2().addFirst( evalAction );
             }
             
@@ -424,27 +470,34 @@ public class QueryElementNode extends LeftTupleSource
             
             DroolsQuery query = (DroolsQuery) this.factHandle.getObject();
             
-            RightTupleList rightTuples = query.getRightTupleList();
+            RightTupleList rightTuples = query.getResultRetractRightTupleList();
             if ( rightTuples == null ) {
                 rightTuples = new RightTupleList();
-                query.setRightTupleList( rightTuples );                
+                query.setResultRetractRightTupleList( rightTuples );                
                 QueryResultRetractAction retractAction = new QueryResultRetractAction( context,
                                                                                        this.factHandle,
                                                                                        leftTuple,
                                                                                        this.node );
                 context.getQueue2().addFirst( retractAction );
             }
-            
-            rightTuples.add(  rightTuple );            
+            if ( rightTuple.getMemory() != null ) {
+                throw new RuntimeException(  );
+            }
+            rightTuples.add(  rightTuple );  
         }
 
         public void rowUpdated(final Rule rule,
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
-            RightTuple rightTuple = resultLeftTuple.getBlocker();
+            RightTuple rightTuple = ( RightTuple ) resultLeftTuple.getObject();
+            if ( rightTuple.getMemory() != null ) {
+                // Already sheduled as an insert
+                return;
+            }            
+            
             rightTuple.setLeftTuple( null );
-            resultLeftTuple.setBlocker( null );            
+            resultLeftTuple.setObject( null );            
        
             // We need to recopy everything back again, as we don't know what has or hasn't changed
             QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
@@ -468,26 +521,21 @@ public class QueryElementNode extends LeftTupleSource
             
             if ( query.isOpen() ) {
                 rightTuple.setLeftTuple( resultLeftTuple );
-                resultLeftTuple.setBlocker( rightTuple );
+                resultLeftTuple.setObject( rightTuple );
             }
 
-            this.node.getSinkPropagator().createChildLeftTuplesforQuery( this.leftTuple,
-                                                                         rightTuple,
-                                                                         true, // this must always be true, otherwise we can't 
-                                                                               // find the child tuples to iterate for evaluating the query results
-                                                                         query.isOpen() );
+            // Don't need to recreate child links, as they will already be there form the first "add"
             
-            RightTupleList rightTuples = query.getRightTupleList();
+            RightTupleList rightTuples = query.getResultUpdateRightTupleList();
             if ( rightTuples == null ) {
                 rightTuples = new RightTupleList();
-                query.setRightTupleList( rightTuples );                
+                query.setResultUpdateRightTupleList( rightTuples );                
                 QueryResultUpdateAction updateAction = new QueryResultUpdateAction( context,
                                                                                     this.factHandle,
                                                                                     leftTuple,
                                                                                     this.node );
                 context.getQueue2().addFirst( updateAction );
-            }
-            
+            }            
             rightTuples.add(  rightTuple );
         }
 

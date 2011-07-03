@@ -8,7 +8,7 @@ Setup
         $likes, 0, Person, likes;
         $price, 1, Cheese, price;
     AccumulateNode:
-        acc, mock, mock, Cheese, $price;
+        acc, mock(Person), mock(Cheese), Cheese, $price;
         source, type, ==, $likes;
         result, intValue, >, 10;
     LeftTupleSink:

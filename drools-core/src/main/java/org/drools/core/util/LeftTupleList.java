@@ -104,6 +104,7 @@ public class LeftTupleList
         
         leftTuple.setPrevious( null );
         leftTuple.setNext( null );
+        leftTuple.setMemory( null );
 
         this.size--;
     }
@@ -144,6 +145,10 @@ public class LeftTupleList
     }
     
     public FastIterator fastIterator() {
+        return LinkedList.fastIterator; // contains no state, so ok to be static
+    }
+    
+    public FastIterator fullFastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
 
