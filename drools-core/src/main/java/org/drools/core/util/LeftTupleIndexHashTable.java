@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.RightTupleIndexHashTable.FullFastIterator;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleMemory;
@@ -95,7 +96,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         out.writeInt( startResult );
         out.writeInt( factSize );
         out.writeObject( index );
-    }
+    }   
 
     public Iterator iterator() {
         if ( this.tupleValueFullIterator == null ) {
@@ -108,6 +109,71 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     
     public FastIterator fastIterator() {
         return LinkedList.fastIterator;
+    }
+
+    public FastIterator fullFastIterator() {
+        return new FullFastIterator( this.table );
+    }
+
+    public static class FullFastIterator implements FastIterator {
+        private Entry[]           table;
+        private int               row;
+        
+        
+        
+        public FullFastIterator(Entry[] table) {
+            this.table = table;
+            this.row = 0;
+        }
+
+        public Entry next(Entry object) {
+            LeftTuple leftTuple = ( LeftTuple ) object;
+            LeftTupleList list = null;
+            if ( leftTuple != null ) {
+                list = leftTuple.getMemory(); // assumes you do not pass in a null RightTuple
+            }
+
+            int length = table.length;
+
+            while ( this.row < length ) {
+                // check if there is a current bucket
+                while ( list == null ) {
+                    // iterate while there is no current bucket, trying each array position
+                    list = (LeftTupleList) this.table[this.row];
+                    this.row++;
+                    
+                    if ( list != null ) {
+                        // we have a bucket so assign the frist LeftTuple and return
+                        leftTuple = (LeftTuple) list.getFirst( );
+                        return leftTuple;
+                    } else if ( this.row >= length ) {
+                        // we've scanned the whole table and nothing is left, so return null
+                        return null;
+                    }
+                    
+                }
+
+                leftTuple = (LeftTuple) leftTuple.getNext();
+                if ( leftTuple != null ) {
+                    // we have a next tuple so return
+                    return leftTuple;
+                } else {
+                    list = (LeftTupleList) list.getNext();
+                    // try the next bucket if we have a shared array position
+                    if ( list != null ) {
+                        // if we have another bucket, assign the first LeftTuple and return
+                        leftTuple = (LeftTuple) list.getFirst( );
+                        return leftTuple;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public boolean isFullIterator() {
+            return true;
+        }
+
     }
 
     public LeftTuple getFirst(final RightTuple rightTuple) {

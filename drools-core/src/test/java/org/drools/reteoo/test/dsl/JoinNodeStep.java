@@ -17,11 +17,19 @@
 package org.drools.reteoo.test.dsl;
 
 import java.beans.IntrospectionException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.base.ClassObjectType;
+import org.drools.base.TypeResolver;
+import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.DoubleBetaConstraints;
+import org.drools.common.EmptyBetaConstraints;
+import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
+import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.MockObjectSource;
@@ -53,40 +61,81 @@ public class JoinNodeStep
             String leftInput = a[1].trim();
             String rightInput = a[2].trim();
 
+            Class cls = null;
+                      
             LeftTupleSource leftTupleSource;
-            if ( "mock".equals( leftInput ) ) {
-                leftTupleSource = new MockTupleSource( buildContext.getNextId() );
+            if ( leftInput.startsWith( "mock" ) ) {
+                leftTupleSource = new MockTupleSource( buildContext.getNextId() );                
             } else {
                 leftTupleSource = (LeftTupleSource) context.get( leftInput );
             }
 
             ObjectSource rightObjectSource;
-            if ( "mock".equals( rightInput ) ) {
+            if ( rightInput.startsWith( "mock" ) ) {
+                String type = rightInput.substring( 5, rightInput.length() -1 );                
+                try {
+                    cls = reteTesterHelper.getTypeResolver().resolveType( type );
+                } catch ( ClassNotFoundException e ) {
+                    throw new RuntimeException( e );
+                }
                 rightObjectSource = new MockObjectSource( buildContext.getNextId() );
             } else {
                 rightObjectSource = (ObjectSource) context.get( rightInput );
+                ObjectSource source = rightObjectSource;
+                while ( !( source instanceof ObjectTypeNode ) ) {
+                    source = source.getParentObjectSource();
+                }
+                cls = ((ClassObjectType)((ObjectTypeNode)source).getObjectType()).getClassType();
             }
             
-            a = args.get( 1 );
-            String fieldName = a[0].trim();
-            String operator = a[1].trim();
-            String var = a[2].trim();
+            List<BetaNodeFieldConstraint> list = new ArrayList<BetaNodeFieldConstraint>();
+            for ( int i = 1; i < args.size(); i++ ) {
+                a = args.get( i );
+                String fieldName = a[0].trim();
+                String operator = a[1].trim();
+                String var = a[2].trim();
 
-            Declaration declr = (Declaration) context.get( var );
+                Declaration declr = (Declaration) context.get( var );
 
-            BetaNodeFieldConstraint betaConstraint;
-            
-            try {
-                betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( ((ClassObjectType) declr.getPattern().getObjectType()).getClassType(),
-                                                                                  fieldName,
-                                                                                  declr,
-                                                                                  operator );
-            } catch ( IntrospectionException e ) {
-                throw new IllegalArgumentException();
+                BetaNodeFieldConstraint betaConstraint;
+                try {
+                    betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( cls,
+                                                                                         fieldName,
+                                                                                         declr,
+                                                                                         operator );
+                    list.add( betaConstraint );
+                } catch ( IntrospectionException e ) {
+                    throw new IllegalArgumentException();
+                }
             }
-
-            SingleBetaConstraints constraints = new SingleBetaConstraints( betaConstraint,
-                                                                           buildContext.getRuleBase().getConfiguration() );
+            
+            BetaConstraints constraints;
+            switch ( list.size() ) {
+                case 0:
+                    constraints = new EmptyBetaConstraints();
+                    break;
+                case 1:
+                  constraints = new SingleBetaConstraints( list.get(0),
+                                                           buildContext.getRuleBase().getConfiguration() );                    
+                  break;
+                case 2:
+                    constraints = new DoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                             buildContext.getRuleBase().getConfiguration() );                    
+                    break;                    
+                case 3:
+                    constraints = new TripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                             buildContext.getRuleBase().getConfiguration() );                    
+                    break;                    
+                case 4:
+                    constraints = new QuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                                 buildContext.getRuleBase().getConfiguration() );                    
+                    break;                                        
+                default:
+                    constraints = new DefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                              buildContext.getRuleBase().getConfiguration() );                    
+                    break;                                        
+                        
+            }
 
             JoinNode joinNode = new JoinNode( buildContext.getNextId(),
                                               leftTupleSource,

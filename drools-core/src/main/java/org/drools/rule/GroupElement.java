@@ -44,6 +44,10 @@ public class GroupElement extends ConditionalElement
     private Type              type                 = null;
     private List              children             = new ArrayList();
     private ObjectType        forallBaseObjectType = null;
+    
+    private boolean           root;
+    
+    private Map<String, Declaration> outerDeclrarations;
 
     public GroupElement() {
         this( Type.AND );
@@ -105,6 +109,12 @@ public class GroupElement extends ConditionalElement
      * @inheritDoc
      */
     public Map<String, Declaration> getOuterDeclarations() {
+        if ( outerDeclrarations != null ) {
+            return outerDeclrarations;
+        } else if ( root ) {
+            outerDeclrarations = this.type.getOuterDeclarations( this.children );
+            return outerDeclrarations;
+        }
         return this.type.getOuterDeclarations( this.children );
     }
 
@@ -347,6 +357,14 @@ public class GroupElement extends ConditionalElement
 
     public boolean isPatternScopeDelimiter() {
         return this.type.isPatternScopeDelimiter();
+    }
+
+    public boolean isRoot() {
+        return root;
+    }
+
+    public void setRoot(boolean root) {
+        this.root = root;
     }
 
     /**

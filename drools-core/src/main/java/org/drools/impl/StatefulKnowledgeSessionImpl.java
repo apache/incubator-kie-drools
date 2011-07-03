@@ -525,12 +525,21 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public Object[] toArray() {
-            return toArray( new Object[size()] );
+            if ( type == FACT_HANDLE ) {
+                return toArray( new InternalFactHandle[size()] );
+            } else {
+                return toArray( new Object[size()] );
+            }            
+            
         }
 
         public Object[] toArray(Object[] array) {
             if ( array == null || array.length != size() ) {
-                array = new Object[size()];
+                if ( type == FACT_HANDLE ) {
+                    array = new InternalFactHandle[size()];
+                } else {
+                    array = new Object[size()];
+                }
             }
 
             int i = 0;

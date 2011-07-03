@@ -155,7 +155,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
             child.unlinkFromLeftParent();
             child = temp;
         }
-        workingMemory.getFactHandleFactory().destroyFactHandle( rightParent );
+        //workingMemory.getFactHandleFactory().destroyFactHandle( rightParent );
     }
 
     public void propagateRetractRightTuple(final RightTuple rightTuple,
