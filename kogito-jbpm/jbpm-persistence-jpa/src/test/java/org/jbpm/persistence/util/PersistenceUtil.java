@@ -47,14 +47,14 @@ public class PersistenceUtil {
         pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
         pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps
                 .getProperty("allowLocalTransactions")));
-        for (String propertyName : new String[] { "user", "password", "driverClassName" }) {
+        for (String propertyName : new String[] { "user", "password" }) {
             pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
         }
 
         String driverClass = dsProps.getProperty("driverClassName");
         if (driverClass.startsWith("org.h2")) {
             h2Server.start();
-            for (String propertyName : new String[] { "url" }) {
+            for (String propertyName : new String[] { "url", "driverClassName" }) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
         }
