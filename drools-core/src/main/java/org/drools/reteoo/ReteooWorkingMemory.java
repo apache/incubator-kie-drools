@@ -398,6 +398,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                    this.factHandle.getObject(),
                                    context,
                                    workingMemory );
+            context.evaluateActionQueue( workingMemory );
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
@@ -473,7 +474,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     // remove it from the object store and clean up resources
                     ((EventFactHandle) factHandle).getEntryPoint().retract( factHandle );
                 }
+                context.evaluateActionQueue( workingMemory );  
             }
+            
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {

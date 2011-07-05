@@ -252,7 +252,11 @@ public class PropagationContextImpl
         return this.queue2; 
     }   
     
-    public void evaluateActionQueue(InternalWorkingMemory workingMemory) {                
+    public void evaluateActionQueue(InternalWorkingMemory workingMemory) {
+        if ( queue1 == null && queue2 == null ) {
+            return;
+        }
+        
         boolean repeat = true;
         while(repeat) {
             if ( this.queue1 != null ) {

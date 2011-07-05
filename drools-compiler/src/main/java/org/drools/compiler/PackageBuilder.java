@@ -45,8 +45,10 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.ClassObjectType;
 import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
+import org.drools.base.mvel.MVELCompileable;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
@@ -96,6 +98,7 @@ import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
@@ -1558,21 +1561,31 @@ public class PackageBuilder {
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
-                ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-                InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
-                                                                  timestamp,
-                                                                  type.new TimestampAccessorSetter() );
+                Package pkg = pkgRegistry.getPackage();
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( pkg.getName(),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              timestamp,
+                                                                                              type.isTypesafe() );
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile( data );
+                type.setTimestampExtractor( reader );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
             String duration = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if ( duration != null ) {
+            if ( duration != null ) {                
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
-                ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-                InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
-                                                                  duration,
-                                                                  type.new DurationAccessorSetter() );
+                Package pkg = pkgRegistry.getPackage();
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( pkg.getName(),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              duration,
+                                                                                              type.isTypesafe() );
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile( data );
+                type.setDurationExtractor( reader );                
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );

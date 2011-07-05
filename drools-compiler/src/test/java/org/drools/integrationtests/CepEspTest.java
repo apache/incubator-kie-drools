@@ -22,8 +22,10 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
@@ -43,6 +45,7 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.EventFactHandle;
@@ -160,6 +163,41 @@ public class CepEspTest {
         return kbase;
     }
 
+    @Test
+    public void testComplexTimestamp() {
+        String rule = "";
+        rule += "package " + Message.class.getPackage().getName() + "\n" +
+                "declare " + Message.class.getCanonicalName() + "\n" +
+        		 "   @role( event ) \n" +
+        		 "   @timestamp( getProperties().get( 'timestamp' ) ) \n" +
+        		"end\n";
+
+        System.out.println( rule );
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Message msg = new Message();
+        Properties props = new Properties();
+        props.put( "timestamp", new Integer( 99 ) );
+        msg.setProperties( props );
+        
+        EventFactHandle efh = ( EventFactHandle ) ksession.insert( msg );
+        assertEquals( 99, efh.getStartTimestamp() );
+
+    }    
+    
     @Test
     public void testEventAssertion() throws Exception {
         // read in the source
@@ -1772,6 +1810,18 @@ public class CepEspTest {
     public static class A
         implements
         Serializable {
+    }
+    
+    public static class Message {
+        private Properties properties;
+
+        public Properties getProperties() {
+            return properties;
+        }
+
+        public void setProperties(Properties properties) {
+            this.properties = properties;
+        }
     }
 
     @Test
