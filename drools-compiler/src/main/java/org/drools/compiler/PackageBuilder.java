@@ -1404,7 +1404,8 @@ public class PackageBuilder {
                 if ( cls != null ) {
                     String str = ClassUtils.getPackage( cls );
                     typeDescr.setNamespace( str );
-                    typeDescr.setTypeName( cls.getSimpleName() );
+                    dotPos = cls.getName().lastIndexOf( '.' ); // reget dotPos, incase there were nested classes
+                    typeDescr.setTypeName( cls.getName().substring( dotPos + 1 ) );
                 } else {
                     typeDescr.setNamespace( typeDescr.getTypeName().substring( 0,
                                                                                dotPos ) );
@@ -1417,7 +1418,9 @@ public class PackageBuilder {
                 try {
                     Class< ? > cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
                     typeDescr.setNamespace( ClassUtils.getPackage( cls ) );
-                    typeDescr.setTypeName( cls.getSimpleName() );
+                    String name = cls.getName();
+                    dotPos = name.lastIndexOf( '.' );
+                    typeDescr.setTypeName( name.substring( dotPos + 1 ) );
                 } catch ( ClassNotFoundException e ) {
                     // swallow, as this isn't a mistake, it just means the type declaration is intended for the default namespace
                     typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
@@ -1562,7 +1565,7 @@ public class PackageBuilder {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
                 Package pkg = pkgRegistry.getPackage();
-                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( pkg.getName(),
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                               type.getTypeClass().getName(),
                                                                                               timestamp,
                                                                                               type.isTypesafe() );
@@ -1578,7 +1581,7 @@ public class PackageBuilder {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
                 Package pkg = pkgRegistry.getPackage();
-                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( pkg.getName(),
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
                                                                                               type.getTypeClass().getName(),
                                                                                               duration,
                                                                                               type.isTypesafe() );
@@ -1749,7 +1752,6 @@ public class PackageBuilder {
                                d );
 
             } catch ( Exception e ) {
-                e.printStackTrace();
                 this.results.add( new TypeDeclarationError( "Unable to create a class for declared type " + fullName + ": " + e.getMessage() + ";",
                                                             typeDescr.getLine() ) );
             }

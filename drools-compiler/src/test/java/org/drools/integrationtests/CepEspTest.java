@@ -80,6 +80,7 @@ import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -168,11 +169,10 @@ public class CepEspTest {
         String rule = "";
         rule += "package " + Message.class.getPackage().getName() + "\n" +
                 "declare " + Message.class.getCanonicalName() + "\n" +
-                 "   @role( event ) \n" +
-                 "   @timestamp( getProperties().get( 'timestamp' ) ) \n" +
-                "end\n";
-
-        System.out.println( rule );
+        		 "   @role( event ) \n" +
+        		 "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
+        		 "   @duration( getProperties().get( 'duration' )+1 ) \n" +
+        		"end\n";
         
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
@@ -191,10 +191,12 @@ public class CepEspTest {
         Message msg = new Message();
         Properties props = new Properties();
         props.put( "timestamp", new Integer( 99 ) );
+        props.put( "duration", new Integer( 52 ) );
         msg.setProperties( props );
         
         EventFactHandle efh = ( EventFactHandle ) ksession.insert( msg );
-        assertEquals( 99, efh.getStartTimestamp() );
+        assertEquals( 98, efh.getStartTimestamp() );
+        assertEquals( 53, efh.getDuration() );
 
     }    
     
