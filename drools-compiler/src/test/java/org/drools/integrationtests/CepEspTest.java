@@ -77,6 +77,7 @@ import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -160,6 +161,42 @@ public class CepEspTest {
         return kbase;
     }
 
+    @Test
+    public void testComplexTimestamp() {
+        String rule = "";
+        rule += "package " + Message.class.getPackage().getName() + "\n" +
+                "declare " + Message.class.getCanonicalName() + "\n" +
+        		 "   @role( event ) \n" +
+        		 "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
+        		 "   @duration( getProperties().get( 'duration' )+1 ) \n" +
+        		"end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Message msg = new Message();
+        Properties props = new Properties();
+        props.put( "timestamp", new Integer( 99 ) );
+        props.put( "duration", new Integer( 52 ) );
+        msg.setProperties( props );
+        
+        EventFactHandle efh = ( EventFactHandle ) ksession.insert( msg );
+        assertEquals( 98, efh.getStartTimestamp() );
+        assertEquals( 53, efh.getDuration() );
+
+    }    
+    
     @Test
     public void testEventAssertion() throws Exception {
         // read in the source
