@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
@@ -1809,6 +1810,18 @@ public class CepEspTest {
     public static class A
         implements
         Serializable {
+    }
+    
+    public static class Message {
+        private Properties properties;
+
+        public Properties getProperties() {
+            return properties;
+        }
+
+        public void setProperties(Properties properties) {
+            this.properties = properties;
+        }
     }
 
     @Test
