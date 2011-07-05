@@ -180,7 +180,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			Environment env = null;
 			if (noCache) {
 				env = KnowledgeBaseFactory.newEnvironment();
-				emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
+				emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
 			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 			    env.set(EnvironmentName.TRANSACTION_MANAGER,
 			        TransactionManagerServices.getTransactionManager());				
