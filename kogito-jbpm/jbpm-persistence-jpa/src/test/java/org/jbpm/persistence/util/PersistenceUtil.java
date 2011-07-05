@@ -58,8 +58,36 @@ public class PersistenceUtil {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
         }
-        else { 
-            for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
+        else if( driverClass.startsWith("oracle") ) {
+            pds.setClassName(dsProps.getProperty("className"));
+            pds.getDriverProperties().put("driverType", "thin");
+            pds.getDriverProperties().put("url", dsProps.getProperty("url"));
+        }
+        else if( driverClass.startsWith("com.ibm.db2") ) { 
+            pds.setClassName(dsProps.getProperty("className"));
+        }
+        else if( driverClass.startsWith("com.microsoft") ) { 
+            pds.setClassName(dsProps.getProperty("className"));
+            for (String propertyName : new String[] { "serverName", "portNumber" }) {
+                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+            }
+            String propertyName = "databaseName";
+            pds.getDriverProperties().put("instanceName", dsProps.getProperty(propertyName));
+        }
+        else if( driverClass.startsWith("com.mysql") ) { 
+            pds.setClassName(dsProps.getProperty("className"));
+            for (String propertyName : new String[] { "url", "serverName", "portNumber", "databaseName" }) {
+                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+            }
+        }
+        else if( driverClass.startsWith("com.sybase") ) { 
+            pds.setClassName(dsProps.getProperty("className"));
+            for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+            }
+        }
+        else {
+            for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
         }
