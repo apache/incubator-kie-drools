@@ -2,6 +2,7 @@ package org.drools.persistence.jpa;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
@@ -57,6 +58,7 @@ public class JpaPersistenceContextManager
            ( this.cmdScopedEntityManager != null && !this.cmdScopedEntityManager.isOpen() )) {
             internalCmdScopedEntityManager = true;
             this.cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
+            this.cmdScopedEntityManager.setFlushMode(FlushModeType.COMMIT);
             this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER,
                           this.cmdScopedEntityManager );
             cmdScopedEntityManager = this.cmdScopedEntityManager;
