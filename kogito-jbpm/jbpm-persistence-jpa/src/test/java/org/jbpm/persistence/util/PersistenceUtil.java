@@ -63,7 +63,7 @@ public class PersistenceUtil {
             
             if( driverClass.startsWith("oracle") ) {
 	            pds.getDriverProperties().put("driverType", "thin");
-	            pds.getDriverProperties().put("url", dsProps.getProperty("url"));
+	            pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
 	        }
 	        else if( driverClass.startsWith("com.ibm.db2") ) { 
 	            // placeholder for eventual future modifications
