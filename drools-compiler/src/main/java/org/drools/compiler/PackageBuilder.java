@@ -237,7 +237,7 @@ public class PackageBuilder {
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<DroolsError>();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
@@ -280,7 +280,7 @@ public class PackageBuilder {
         //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<DroolsError>();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
@@ -1041,6 +1041,12 @@ public class PackageBuilder {
                 e.printStackTrace();
             }
         }
+
+        // need to reinsert this to ensure that the package is the first/last one in the ordered map
+        // this feature is exploited by the knowledgeAgent
+        this.pkgRegistryMap.remove( packageDescr.getName() );
+        this.pkgRegistryMap.put( packageDescr.getName(),
+                                 pkgRegistry );
 
     }
 
@@ -1888,7 +1894,7 @@ public class PackageBuilder {
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
         if ( !this.pkgRegistryMap.isEmpty() ) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[0];
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[this.pkgRegistryMap.size()-1];
         }
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -1902,7 +1908,7 @@ public class PackageBuilder {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-        int i = 0;
+        int i = pkgs.length;
         String errors = null;
         if ( !getErrors().isEmpty() ) {
             errors = getErrors().toString();
@@ -1913,7 +1919,7 @@ public class PackageBuilder {
             if ( errors != null ) {
                 pkg.setError( errors );
             }
-            pkgs[i++] = pkg;
+            pkgs[--i] = pkg;
         }
 
         return pkgs;
