@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import junit.framework.Assert;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
@@ -50,6 +51,7 @@ import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.Activation;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -1853,4 +1855,78 @@ public class AccumulateTest {
         assertEquals( "7 facts", 
                       results.get( 0 ) );
     }
+
+
+
+
+
+    @Test
+    @Ignore
+    public void testAccumulateAndRetract() {
+
+        String drl = "package org.drools;\n" +
+                "\n" +
+                "import java.util.ArrayList;\n" +
+                "\n" +
+                "global ArrayList list;\n" +
+                "\n" +
+                "declare Holder\n" +
+                "    list : ArrayList\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "    $l : ArrayList()\n" +
+                "then\n" +
+                "    insert( new Holder($l) );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"axx\"\n" +
+                "when\n" +
+                "    $h : Holder( $l : list )\n" +
+                "    $n : Long() from accumulate (\n" +
+                "                    $b : String( ) from $l\n" +
+                "                    count($b))\n" +
+                "then\n" +
+                "    System.out.println($n);\n" +
+                "    list.add($n);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"clean\"\n" +
+                "salience -10\n" +
+                "when\n" +
+                "    $h : Holder()\n" +
+                "then\n" +
+                "    retract($h);\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()),
+                ResourceType.DRL );
+            if (kbuilder.hasErrors()) {
+                System.err.println(kbuilder.getErrors());
+                Assert.fail(kbuilder.getErrors().toString());
+            }
+        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+
+        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+
+        ArrayList resList = new ArrayList();
+            ks.setGlobal("list",resList);
+
+
+        ArrayList<String> list = new ArrayList<String>();
+            list.add("x");
+            list.add("y");
+            list.add("z");
+
+        ks.insert(list);
+        ks.fireAllRules();
+
+        Assert.assertEquals(3L, resList.get(0));
+
+    }
+
 }
