@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
@@ -1904,18 +1903,15 @@ public class AccumulateTest {
         kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()),
                 ResourceType.DRL );
             if (kbuilder.hasErrors()) {
-                System.err.println(kbuilder.getErrors());
-                Assert.fail(kbuilder.getErrors().toString());
+                fail(kbuilder.getErrors().toString());
             }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
 
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
 
-
         ArrayList resList = new ArrayList();
             ks.setGlobal("list",resList);
-
 
         ArrayList<String> list = new ArrayList<String>();
             list.add("x");
@@ -1925,7 +1921,7 @@ public class AccumulateTest {
         ks.insert(list);
         ks.fireAllRules();
 
-        Assert.assertEquals(3L, resList.get(0));
+        assertEquals(3L, resList.get(0));
 
     }
 
