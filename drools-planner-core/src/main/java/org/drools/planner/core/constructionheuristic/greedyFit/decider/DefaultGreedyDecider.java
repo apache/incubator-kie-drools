@@ -1,8 +1,8 @@
-package org.drools.planner.core.constructionheuristic.greedy.decider;
+package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 import org.drools.planner.core.bruteforce.BruteForcePlanningEntityIterator;
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedy.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
 import org.drools.planner.core.score.Score;
 
 public class DefaultGreedyDecider implements GreedyDecider {

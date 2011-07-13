@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy.event;
+package org.drools.planner.core.constructionheuristic.greedyFit.event;
 
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedy.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
 
 public abstract class GreedySolverPhaseLifecycleListenerAdapter implements GreedySolverPhaseLifecycleListener {
 

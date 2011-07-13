@@ -1,4 +1,4 @@
-package org.drools.planner.core.constructionheuristic.greedy.selector;
+package org.drools.planner.core.constructionheuristic.greedyFit.selector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedy.event.GreedySolverPhaseLifecycleListenerAdapter;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightUtils;
 import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;

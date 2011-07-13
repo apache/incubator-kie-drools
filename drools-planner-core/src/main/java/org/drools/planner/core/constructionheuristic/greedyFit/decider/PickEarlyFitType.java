@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy.decider;
+package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 public enum PickEarlyFitType {
     NEVER,

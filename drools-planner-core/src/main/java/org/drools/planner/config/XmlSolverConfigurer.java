@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
 import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
-import org.drools.planner.config.constructionheuristic.greedy.GreedySolverPhaseConfig;
+import org.drools.planner.config.constructionheuristic.greedyFit.GreedySolverPhaseConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.core.Solver;
 

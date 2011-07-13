@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy;
+package org.drools.planner.core.constructionheuristic.greedyFit;
 
 import java.util.Map;
 

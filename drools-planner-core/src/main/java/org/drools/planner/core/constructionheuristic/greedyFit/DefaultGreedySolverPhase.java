@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy;
+package org.drools.planner.core.constructionheuristic.greedyFit;
 
 import java.util.Iterator;
 
-import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
+import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.solver.DefaultSolverScope;
 

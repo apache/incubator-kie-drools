@@ -1,6 +1,6 @@
-package org.drools.planner.core.constructionheuristic.greedy.decider;
+package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
-import org.drools.planner.core.constructionheuristic.greedy.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
 
 public interface GreedyDecider {
 

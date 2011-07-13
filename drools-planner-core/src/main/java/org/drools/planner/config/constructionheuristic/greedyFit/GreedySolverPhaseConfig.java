@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.planner.config.constructionheuristic.greedy;
+package org.drools.planner.config.constructionheuristic.greedyFit;
 
 import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
-import org.drools.planner.core.constructionheuristic.greedy.DefaultGreedySolverPhase;
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhase;
-import org.drools.planner.core.constructionheuristic.greedy.decider.DefaultGreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedy.decider.GreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedy.decider.PickEarlyFitType;
-import org.drools.planner.core.constructionheuristic.greedy.selector.GreedyPlanningEntitySelector;
+import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedySolverPhase;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhase;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyFitType;
+import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.constructionheuristic.greedy.event;
+package org.drools.planner.core.constructionheuristic.greedyFit.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.constructionheuristic.greedy.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedy.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
 
 public interface GreedySolverPhaseLifecycleListener extends EventListener {
 
