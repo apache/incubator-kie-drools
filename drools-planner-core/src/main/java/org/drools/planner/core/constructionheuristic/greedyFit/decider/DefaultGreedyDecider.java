@@ -1,8 +1,8 @@
 package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
 import org.drools.planner.core.bruteforce.BruteForcePlanningEntityIterator;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 import org.drools.planner.core.score.Score;
 
 public class DefaultGreedyDecider implements GreedyDecider {
@@ -19,21 +19,21 @@ public class DefaultGreedyDecider implements GreedyDecider {
         this.assertMoveScoreIsUncorrupted = assertMoveScoreIsUncorrupted;
     }
 
-    public void decideNextStep(GreedyStepScope greedyStepScope) {
-        GreedySolverPhaseScope greedySolverPhaseScope = greedyStepScope.getGreedySolverPhaseScope();
-        // TODO use greedySolverPhaseScope.getLastCompletedStepScope()
-        Score lastStepScore = greedySolverPhaseScope.calculateScoreFromWorkingMemory();
+    public void decideNextStep(GreedyFitStepScope greedyFitStepScope) {
+        GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = greedyFitStepScope.getGreedyFitSolverPhaseScope();
+        // TODO use greedyFitSolverPhaseScope.getLastCompletedStepScope()
+        Score lastStepScore = greedyFitSolverPhaseScope.calculateScoreFromWorkingMemory();
         BruteForcePlanningEntityIterator bruteForcePlanningEntityIterator = new BruteForcePlanningEntityIterator(
-                greedySolverPhaseScope, greedyStepScope.getPlanningEntity());
-        Score maxScore = greedySolverPhaseScope.getScoreDefinition().getPerfectMinimumScore();
+                greedyFitSolverPhaseScope, greedyFitStepScope.getPlanningEntity());
+        Score maxScore = greedyFitSolverPhaseScope.getScoreDefinition().getPerfectMinimumScore();
         while (bruteForcePlanningEntityIterator.hasNext()) {
             bruteForcePlanningEntityIterator.next();
-            Score score = greedySolverPhaseScope.calculateScoreFromWorkingMemory();
+            Score score = greedyFitSolverPhaseScope.calculateScoreFromWorkingMemory();
             if (assertMoveScoreIsUncorrupted) {
-                greedySolverPhaseScope.assertWorkingScore(score);
+                greedyFitSolverPhaseScope.assertWorkingScore(score);
             }
             if (score.compareTo(maxScore) > 0) {
-                greedyStepScope.setVariableToValueMap(bruteForcePlanningEntityIterator.getVariableToValueMap());
+                greedyFitStepScope.setVariableToValueMap(bruteForcePlanningEntityIterator.getVariableToValueMap());
                 maxScore = score;
             }
             if (pickEarlyFitType == PickEarlyFitType.FIRST_LAST_STEP_SCORE_IMPROVING_OR_EQUAL
@@ -41,7 +41,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
                 break;
             }
         }
-        greedyStepScope.setScore(maxScore);
+        greedyFitStepScope.setScore(maxScore);
     }
 
 }

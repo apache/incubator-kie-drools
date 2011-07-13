@@ -20,11 +20,11 @@ import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
 
 /**
- * A GreedySolverPhase is a SolverPhase which uses the greedy algorithm, which is a construction heuristic.
+ * A GreedyFitSolverPhase is a SolverPhase which uses the greedy algorithm, which is a construction heuristic.
  * @see SolverPhase
  * @see AbstractSolverPhase
- * @see DefaultGreedySolverPhase
+ * @see DefaultGreedyFitSolverPhase
  */
-public interface GreedySolverPhase extends SolverPhase {
+public interface GreedyFitSolverPhase extends SolverPhase {
 
 }

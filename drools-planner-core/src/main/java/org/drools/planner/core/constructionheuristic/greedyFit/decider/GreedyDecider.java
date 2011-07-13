@@ -1,13 +1,13 @@
 package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 
 public interface GreedyDecider {
 
     /**
      * Decides the next step
-     * @param greedyStepScope never null
+     * @param greedyFitStepScope never null
      */
-    void decideNextStep(GreedyStepScope greedyStepScope);
+    void decideNextStep(GreedyFitStepScope greedyFitStepScope);
 
 }

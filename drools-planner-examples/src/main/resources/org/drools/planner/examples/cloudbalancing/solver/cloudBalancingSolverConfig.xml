@@ -12,9 +12,9 @@
     </termination>
     <!--<bruteForce>-->
     <!--</bruteForce>-->
-    <greedy>
+    <greedyFit>
         <fitOrderPlanningEntityComparatorClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingFitOrderPlanningEntityComparator</fitOrderPlanningEntityComparatorClass>
-    </greedy>
+    </greedyFit>
     <localSearch>
         <selector>
             <selector>

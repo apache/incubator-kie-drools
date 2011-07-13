@@ -21,8 +21,8 @@ import java.util.Comparator;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
-import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedySolverPhase;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhase;
+import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyFitType;
@@ -31,8 +31,8 @@ import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFacto
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
-@XStreamAlias("greedy")
-public class GreedySolverPhaseConfig extends SolverPhaseConfig {
+@XStreamAlias("greedyFit")
+public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -78,9 +78,9 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public GreedySolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
+    public GreedyFitSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
             Termination solverTermination) {
-        DefaultGreedySolverPhase greedySolverPhase = new DefaultGreedySolverPhase();
+        DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
         configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition, solverTermination);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
         greedySolverPhase.setGreedyDecider(buildGreedyDecider(environmentMode));
@@ -146,7 +146,7 @@ public class GreedySolverPhaseConfig extends SolverPhaseConfig {
         return greedyDecider;
     }
 
-    public void inherit(GreedySolverPhaseConfig inheritedConfig) {
+    public void inherit(GreedyFitSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         if (resetInitializedPlanningEntities == null) {
             resetInitializedPlanningEntities = inheritedConfig.getResetInitializedPlanningEntities();

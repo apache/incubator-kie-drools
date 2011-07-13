@@ -18,19 +18,19 @@ package org.drools.planner.core.constructionheuristic.greedyFit.event;
 
 import java.util.EventListener;
 
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 
 public interface GreedySolverPhaseLifecycleListener extends EventListener {
 
-    void phaseStarted(GreedySolverPhaseScope greedySolverPhaseScope);
+    void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope);
 
-    void beforeDeciding(GreedyStepScope greedyStepScope);
+    void beforeDeciding(GreedyFitStepScope greedyFitStepScope);
 
-    void stepDecided(GreedyStepScope greedyStepScope);
+    void stepDecided(GreedyFitStepScope greedyFitStepScope);
 
-    void stepTaken(GreedyStepScope greedyStepScope);
+    void stepTaken(GreedyFitStepScope greedyFitStepScope);
 
-    void phaseEnded(GreedySolverPhaseScope greedySolverPhaseScope);
+    void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope);
 
 }

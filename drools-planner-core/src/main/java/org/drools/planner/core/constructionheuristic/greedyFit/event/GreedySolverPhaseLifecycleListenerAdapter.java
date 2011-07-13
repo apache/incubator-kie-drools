@@ -16,28 +16,28 @@
 
 package org.drools.planner.core.constructionheuristic.greedyFit.event;
 
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedyStepScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 
 public abstract class GreedySolverPhaseLifecycleListenerAdapter implements GreedySolverPhaseLifecycleListener {
 
-    public void phaseStarted(GreedySolverPhaseScope greedySolverPhaseScope) {
+    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         // Hook method
     }
 
-    public void beforeDeciding(GreedyStepScope greedyStepScope) {
+    public void beforeDeciding(GreedyFitStepScope greedyFitStepScope) {
         // Hook method
     }
 
-    public void stepDecided(GreedyStepScope greedyStepScope) {
+    public void stepDecided(GreedyFitStepScope greedyFitStepScope) {
         // Hook method
     }
 
-    public void stepTaken(GreedyStepScope greedyStepScope) {
+    public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
         // Hook method
     }
 
-    public void phaseEnded(GreedySolverPhaseScope greedySolverPhaseScope) {
+    public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         // Hook method
     }
 

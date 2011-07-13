@@ -20,24 +20,24 @@ import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class GreedySolverPhaseScope extends AbstractSolverPhaseScope {
+public class GreedyFitSolverPhaseScope extends AbstractSolverPhaseScope {
 
-    private GreedyStepScope lastCompletedGreedyStepScope;
+    private GreedyFitStepScope lastCompletedGreedyFitStepScope;
 
-    public GreedySolverPhaseScope(DefaultSolverScope solverScope) {
+    public GreedyFitSolverPhaseScope(DefaultSolverScope solverScope) {
         super(solverScope);
     }
 
     public AbstractStepScope getLastCompletedStepScope() {
-        return lastCompletedGreedyStepScope;
+        return lastCompletedGreedyFitStepScope;
     }
 
-    public GreedyStepScope getLastCompletedGreedyStepScope() {
-        return lastCompletedGreedyStepScope;
+    public GreedyFitStepScope getLastCompletedGreedyFitStepScope() {
+        return lastCompletedGreedyFitStepScope;
     }
 
-    public void setLastCompletedGreedyStepScope(GreedyStepScope lastCompletedGreedyStepScope) {
-        this.lastCompletedGreedyStepScope = lastCompletedGreedyStepScope;
+    public void setLastCompletedGreedyFitStepScope(GreedyFitStepScope lastCompletedGreedyFitStepScope) {
+        this.lastCompletedGreedyFitStepScope = lastCompletedGreedyFitStepScope;
     }
 
     // ************************************************************************

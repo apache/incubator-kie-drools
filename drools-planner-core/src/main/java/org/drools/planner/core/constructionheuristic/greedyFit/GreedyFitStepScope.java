@@ -24,25 +24,25 @@ import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 
-public class GreedyStepScope extends AbstractStepScope {
+public class GreedyFitStepScope extends AbstractStepScope {
 
-    private final GreedySolverPhaseScope greedySolverPhaseScope;
+    private final GreedyFitSolverPhaseScope greedyFitSolverPhaseScope;
 
     private Object planningEntity;
 
     private Map<PlanningVariableDescriptor, Object> variableToValueMap;
 
-    public GreedyStepScope(GreedySolverPhaseScope greedySolverPhaseScope) {
-        this.greedySolverPhaseScope = greedySolverPhaseScope;
+    public GreedyFitStepScope(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+        this.greedyFitSolverPhaseScope = greedyFitSolverPhaseScope;
     }
 
-    public GreedySolverPhaseScope getGreedySolverPhaseScope() {
-        return greedySolverPhaseScope;
+    public GreedyFitSolverPhaseScope getGreedyFitSolverPhaseScope() {
+        return greedyFitSolverPhaseScope;
     }
 
     @Override
     public AbstractSolverPhaseScope getSolverPhaseScope() {
-        return greedySolverPhaseScope;
+        return greedyFitSolverPhaseScope;
     }
 
     public Object getPlanningEntity() {
@@ -62,7 +62,7 @@ public class GreedyStepScope extends AbstractStepScope {
     // ************************************************************************
 
     public void doStep() {
-        WorkingMemory workingMemory = greedySolverPhaseScope.getWorkingMemory();
+        WorkingMemory workingMemory = greedyFitSolverPhaseScope.getWorkingMemory();
         FactHandle factHandle = workingMemory.getFactHandle(planningEntity);
         for (Map.Entry<PlanningVariableDescriptor, Object> entry : variableToValueMap.entrySet()) {
             PlanningVariableDescriptor planningVariableDescriptor = entry.getKey();
@@ -71,7 +71,7 @@ public class GreedyStepScope extends AbstractStepScope {
         }
         workingMemory.update(factHandle, planningEntity);
         // there is no need to recalculate the score, but we still need to set it
-        greedySolverPhaseScope.getWorkingSolution().setScore(score);
+        greedyFitSolverPhaseScope.getWorkingSolution().setScore(score);
     }
 
 }

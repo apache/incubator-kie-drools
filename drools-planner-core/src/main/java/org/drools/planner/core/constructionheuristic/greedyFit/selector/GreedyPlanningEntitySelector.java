@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.constructionheuristic.greedyFit.GreedySolverPhaseScope;
+import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightUtils;
@@ -40,9 +40,9 @@ public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleList
     }
 
     @Override
-    public void phaseStarted(GreedySolverPhaseScope greedySolverPhaseScope) {
+    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         validateConfiguration();
-        initFitOrderPlanningEntities(greedySolverPhaseScope);
+        initFitOrderPlanningEntities(greedyFitSolverPhaseScope);
     }
 
     private void validateConfiguration() {
@@ -52,15 +52,15 @@ public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleList
         }
     }
 
-    private void initFitOrderPlanningEntities(GreedySolverPhaseScope greedySolverPhaseScope) {
-        Collection<Object> planningEntities = greedySolverPhaseScope.getWorkingPlanningEntities();
+    private void initFitOrderPlanningEntities(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+        Collection<Object> planningEntities = greedyFitSolverPhaseScope.getWorkingPlanningEntities();
         for (Iterator<Object> it = planningEntities.iterator(); it.hasNext(); ) {
             Object planningEntity = it.next();
-            PlanningEntityDescriptor planningEntityDescriptor = greedySolverPhaseScope.getSolutionDescriptor()
+            PlanningEntityDescriptor planningEntityDescriptor = greedyFitSolverPhaseScope.getSolutionDescriptor()
                     .getPlanningEntityDescriptor(planningEntity.getClass());
             if (planningEntityDescriptor.isInitialized(planningEntity)) {
                 if (resetInitializedPlanningEntities) {
-                    WorkingMemory workingMemory = greedySolverPhaseScope.getWorkingMemory();
+                    WorkingMemory workingMemory = greedyFitSolverPhaseScope.getWorkingMemory();
                     workingMemory.retract(workingMemory.getFactHandle(planningEntity));
                     planningEntityDescriptor.uninitialize(planningEntity);
                 } else {
@@ -75,7 +75,7 @@ public class GreedyPlanningEntitySelector extends GreedySolverPhaseLifecycleList
             fitOrderPlanningEntities = fitOrderPlanningEntityList;
         } else if (planningEntityDifficultyWeightFactory != null) {
             fitOrderPlanningEntities = PlanningEntityDifficultyWeightUtils.sortByDifficultyWeight(
-                    greedySolverPhaseScope.getWorkingSolution(), planningEntities,
+                    greedyFitSolverPhaseScope.getWorkingSolution(), planningEntities,
                     planningEntityDifficultyWeightFactory, false);
         } else {
             // Return them in the order as defined on the solution

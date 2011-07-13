@@ -18,9 +18,9 @@
         <!--<maximumStepCount>100</maximumStepCount>-->
     </termination>
 
-    <greedy>
+    <greedyFit>
         <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
-    </greedy>
+    </greedyFit>
     <localSearch>
         <selector>
             <selector>
