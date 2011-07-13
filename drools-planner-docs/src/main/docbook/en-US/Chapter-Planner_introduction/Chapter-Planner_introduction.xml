@@ -184,7 +184,7 @@ $ mvn exec:exec
     <para>Your questions and remarks are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user
     mailing list</link>. Start the subject of your mail with <literal>[planner]</literal>. You can read/write to the
     user mailing list without littering your mailbox through <link
-    xlink:href="http://n3.nabble.com/Drools-User-f47000.html">this web forum</link> or <link
+    xlink:href="http://drools.46999.n3.nabble.com/Drools-User-forum-f47000.html">this web forum</link> or <link
     xlink:href="nntp://news.gmane.org/gmane.comp.java.drools.user">this newsgroup</link>.</para>
 
     <para>Feel free to report an issue (such as a bug, improvement or a new feature request) for the Drools Planner code
