@@ -177,6 +177,11 @@ public class PackageBuilder {
     //AttributeDescr's name.
     private Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
+    //This list of package imports is initialised with the PackageDescr's imports added to the builder. The 
+    //package imports are inherited by individual other DRL fragments loaded into the same Package. The map 
+    //is keyed on the PackageDescr's namespace and contains a list of ImportDescr's.
+    private Map<String, List<ImportDescr>>           packageImports    = new HashMap<String, List<ImportDescr>>();
+    
     /**
      * Use this when package is starting from scratch.
      */
@@ -656,6 +661,25 @@ public class PackageBuilder {
         }
         if ( !checkNamespace( packageDescr.getNamespace() ) ) {
             return;
+        }
+        
+        //Cache (or apply) package imports to subsequent PackageDescrs for the same package name
+        List<ImportDescr> existingImports = packageImports.get( packageDescr.getName() );
+        if ( existingImports == null ) {
+            existingImports = new ArrayList<ImportDescr>();
+        }
+        if ( packageDescr.getImports().size() > 0 ) {
+            for ( ImportDescr imp : packageDescr.getImports() ) {
+                existingImports.add( imp );
+            }
+            packageImports.put( packageDescr.getName(),
+                                existingImports );
+        } else {
+            for ( ImportDescr imp : existingImports ) {
+                if ( !packageDescr.getImports().contains( imp ) ) {
+                    packageDescr.addImport( imp );
+                }
+            }
         }
 
         //Copy package level attributes for inclusion on individual rules

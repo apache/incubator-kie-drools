@@ -259,7 +259,7 @@ public final class ClassUtils {
                 
             if ( dotPos > 0 ) {
                 return cls.getName().substring( 0,
-                                                dotPos - 1 );
+                                                dotPos );
             } else {
                 // must be default package.
                 return "";
