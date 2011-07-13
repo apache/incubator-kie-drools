@@ -21,8 +21,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
 
     public void decideNextStep(GreedyFitStepScope greedyFitStepScope) {
         GreedyFitSolverPhaseScope greedyFitSolverPhaseScope = greedyFitStepScope.getGreedyFitSolverPhaseScope();
-        // TODO use greedyFitSolverPhaseScope.getLastCompletedStepScope()
-        Score lastStepScore = greedyFitSolverPhaseScope.calculateScoreFromWorkingMemory();
+        Score lastStepScore = greedyFitSolverPhaseScope.getLastCompletedStepScope().getScore();
         BruteForcePlanningEntityIterator bruteForcePlanningEntityIterator = new BruteForcePlanningEntityIterator(
                 greedyFitSolverPhaseScope, greedyFitStepScope.getPlanningEntity());
         Score maxScore = greedyFitSolverPhaseScope.getScoreDefinition().getPerfectMinimumScore();
