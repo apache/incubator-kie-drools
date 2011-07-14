@@ -22,12 +22,14 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.*;
 import org.drools.definition.type.FactType;
 import org.drools.io.ResourceFactory;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.ClassObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -280,5 +282,64 @@ public class ExtendsTest extends TestCase {
 
 
     }
+
+
+
+    @Test
+    public void tesExtendOverride() {
+
+        String drl = "package test.beans;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "\n" +
+                "global List ans;" +
+                "\n" +
+                "\n" +
+                "declare ArrayList\n" +
+                "end\n" +
+                "" +
+                "declare Bean extends ArrayList\n" +
+                "  fld : int = 4 \n" +
+                "  myField : String = \"xxx\" \n" +
+                "end\n" +
+                "\n" +
+                "declare Bean2 extends Bean\n" +
+                "  moref : double\n" +
+                "  myField : String\n" +
+                "end\n" +
+
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  Bean b = new Bean2();\n" +
+                "  ans.add(b);" +
+                "  System.out.println(b);\t\n" +
+                "end\n"
+                ;
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List out = new ArrayList();
+        ksession.setGlobal("ans",out);
+
+        ksession.fireAllRules();
+
+        FactType type = kbase.getFactType("test.beans","Bean2");
+        assertEquals(4, type.get(out.get(0),"fld"));
+        assertEquals("xxx", type.get(out.get(0),"myField"));
+        assertEquals(0.0, type.get(out.get(0),"moref"));
+
+
+
+    }
+
 }
 
