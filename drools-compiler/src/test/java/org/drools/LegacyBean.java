@@ -16,6 +16,7 @@
 
 package org.drools;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -33,6 +34,8 @@ public class LegacyBean extends SuperLegacy {
 
     private Object objField;
     private Double doubleField;
+
+    private BigDecimal decimalField;
 
     public String getStrField() {
         return strField;
@@ -67,7 +70,13 @@ public class LegacyBean extends SuperLegacy {
     }
 
 
+    public BigDecimal getDecimalField() {
+        return decimalField;
+    }
 
+    public void setDecimalField(BigDecimal decimalField) {
+        this.decimalField = decimalField;
+    }
 }
 
 class SuperLegacy {

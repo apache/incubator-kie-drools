@@ -17,6 +17,7 @@
 package org.drools.lang.descr;
 
 import org.drools.definition.type.FactField;
+import org.drools.factmodel.FieldDefinition;
 import org.drools.rule.TypeDeclaration;
 
 import java.io.IOException;
@@ -144,6 +145,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         if (fld.isKey()) inheritedFldDescr.getAnnotations().put(TypeDeclaration.ATTR_KEY,new AnnotationDescr(TypeDeclaration.ATTR_KEY));
         inheritedFldDescr.setIndex(fld.getIndex());
         inheritedFldDescr.setInherited(true);
+        inheritedFldDescr.setInitExpr(((FieldDefinition) fld).getInitExpr());
         return inheritedFldDescr;
 
     }
