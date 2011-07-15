@@ -78,8 +78,17 @@ public class SolutionDescriptor implements Serializable {
         planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
     }
 
-    public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityClass) {
-        return planningEntityDescriptorMap.get(planningEntityClass);
+    public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
+        PlanningEntityDescriptor planningEntityDescriptor = null;
+        Class<?> planningEntityClass = planningEntityImplementationClass;
+        while (planningEntityClass != null) {
+            planningEntityDescriptor = planningEntityDescriptorMap.get(planningEntityClass);
+            if (planningEntityDescriptor != null) {
+                return planningEntityDescriptor;
+            }
+            planningEntityClass = planningEntityClass.getSuperclass();
+        }
+        return null;
     }
 
     public Collection<Object> getAllFacts(Solution solution) {
@@ -87,7 +96,7 @@ public class SolutionDescriptor implements Serializable {
         planningFacts.addAll(solution.getProblemFacts());
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
-            PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+            PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
             if (entity != null && planningEntityDescriptor.isInitialized(entity)) {
                 planningFacts.add(entity);
             }
@@ -100,7 +109,7 @@ public class SolutionDescriptor implements Serializable {
                         + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
             }
             for (Object entity : entityCollection) {
-                PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (planningEntityDescriptor.isInitialized(entity)) {
                     planningFacts.add(entity);
                 }
@@ -138,7 +147,7 @@ public class SolutionDescriptor implements Serializable {
     public boolean isInitialized(Solution solution) {
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
-            PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+            PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
             if (entity == null || !planningEntityDescriptor.isInitialized(entity)) {
                 return false;
             }
@@ -147,7 +156,7 @@ public class SolutionDescriptor implements Serializable {
             Collection<? extends Object> entityCollection = (Collection<? extends Object>)
                     DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
             for (Object entity : entityCollection) {
-                PlanningEntityDescriptor planningEntityDescriptor = planningEntityDescriptorMap.get(entity.getClass());
+                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (!planningEntityDescriptor.isInitialized(entity)) {
                     return false;
                 }
