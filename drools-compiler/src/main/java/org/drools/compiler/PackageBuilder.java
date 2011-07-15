@@ -45,7 +45,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
 import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
@@ -105,7 +104,6 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
-import org.drools.rule.builder.dialect.java.PackageStore;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
@@ -181,10 +179,8 @@ public class PackageBuilder {
     //AttributeDescr's name.
     private Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
-    //This list of package imports is initialised with the PackageDescr's imports added to the builder. The 
-    //package imports are inherited by individual other DRL fragments loaded into the same Package. The map 
-    //is keyed on the PackageDescr's namespace and contains a list of ImportDescr's.
-    private Map<String, List<ImportDescr>>           packageImports    = new HashMap<String, List<ImportDescr>>();
+    //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
+    private Map<String, List<PackageDescr>>          packages          = new HashMap<String, List<PackageDescr>>();
 
     /**
      * Use this when package is starting from scratch.
@@ -677,22 +673,26 @@ public class PackageBuilder {
             return;
         }
 
-        //Cache (or apply) package imports to subsequent PackageDescrs for the same package name
-        List<ImportDescr> existingImports = packageImports.get( packageDescr.getName() );
-        if ( existingImports == null ) {
-            existingImports = new ArrayList<ImportDescr>();
+        //Gather all imports for all PackageDescrs for the current package and replicate into
+        //all PackageDescrs for the current package, thus maintaining a complete list of 
+        //ImportDescrs for all PackageDescrs for the current package.
+        List<PackageDescr> packageDescrsForPackage = packages.get( packageDescr.getName() );
+        if ( packageDescrsForPackage == null ) {
+            packageDescrsForPackage = new ArrayList<PackageDescr>();
+            packages.put( packageDescr.getName(),
+                          packageDescrsForPackage );
         }
-        if ( packageDescr.getImports().size() > 0 ) {
-            for ( ImportDescr imp : packageDescr.getImports() ) {
-                existingImports.add( imp );
-            }
-            packageImports.put( packageDescr.getName(),
-                                existingImports );
-        } else {
-            for ( ImportDescr imp : existingImports ) {
-                if ( !packageDescr.getImports().contains( imp ) ) {
-                    packageDescr.addImport( imp );
-                }
+        packageDescrsForPackage.add( packageDescr );
+        List<ImportDescr> imports = new ArrayList<ImportDescr>();
+        for ( PackageDescr pd : packageDescrsForPackage ) {
+            imports.addAll( pd.getImports() );
+        }
+        for ( PackageDescr pd : packageDescrsForPackage ) {
+            pd.getImports().clear();
+            //PackageDescr.getImports() can return a Collections.EmptyList which doesn't
+            //support addAll(). PackageDescr.addImport() ensures the list can be appended 
+            for ( ImportDescr id : imports ) {
+                pd.addImport( id );
             }
         }
 
