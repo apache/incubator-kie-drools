@@ -6,7 +6,7 @@
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</unsolvedSolutionFile>
-    <localSearchSolver>
+    <solver>
       <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
       <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
@@ -18,43 +18,55 @@
         <maximumSecondsSpend>10</maximumSecondsSpend>
         <scoreAttained>0</scoreAttained>
       </termination>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
-      </selector>
-    </localSearchSolver>
+    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <name>Move tabu</name>
-    <localSearchSolver>
-      <acceptor>
-        <completeMoveTabuSize>5</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeMoveTabuSize>5</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>Undo move tabu</name>
-    <localSearchSolver>
-      <acceptor>
-        <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>Solution tabu</name>
-    <localSearchSolver>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>

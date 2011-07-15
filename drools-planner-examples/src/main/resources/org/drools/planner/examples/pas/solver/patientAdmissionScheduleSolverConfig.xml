@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
+<solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
   <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
   <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
@@ -15,23 +15,25 @@
     -->
     <maximumSecondsSpend>3720</maximumSecondsSpend>
   </termination>
-  <selector>
-    <!--<selector>-->
-      <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
-    <!--<selector>-->
-      <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
+  <localSearch>
     <selector>
-      <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
-  </selector>
-  <acceptor>
-    <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-    <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
-  </acceptor>
-  <forager>
-    <pickEarlyType>NEVER</pickEarlyType>
-    <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
-  </forager>
-</localSearchSolver>
+    <acceptor>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
+    </acceptor>
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
+    </forager>
+  </localSearch>
+</solver>

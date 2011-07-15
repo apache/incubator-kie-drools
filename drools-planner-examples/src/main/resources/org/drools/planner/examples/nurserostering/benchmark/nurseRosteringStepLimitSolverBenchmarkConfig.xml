@@ -6,7 +6,7 @@
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</unsolvedSolutionFile>
 
-    <localSearchSolver>
+    <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
       <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
@@ -18,27 +18,29 @@
       <termination>
         <maximumStepCount>100</maximumStepCount>
       </termination>
-    </localSearchSolver>
+    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <localSearchSolver>
-      <selector>
+    <solver>
+      <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-      </forager>
-    </localSearchSolver>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>

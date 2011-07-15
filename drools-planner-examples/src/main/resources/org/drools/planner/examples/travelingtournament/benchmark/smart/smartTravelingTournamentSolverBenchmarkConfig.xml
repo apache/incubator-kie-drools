@@ -5,7 +5,7 @@
 
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
-    <localSearchSolver>
+    <solver>
       <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
@@ -16,85 +16,107 @@
         <maximumHoursSpend>2</maximumHoursSpend>
         <!--<maximumMinutesSpend>10</maximumMinutesSpend>-->
       </termination>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-      </selector>
-    </localSearchSolver>
+    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <name>tabuSearch</name>
-    <localSearchSolver>
-      <deciderScoreComparatorFactory>
-        <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-      </deciderScoreComparatorFactory>
-      <acceptor>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <deciderScoreComparatorFactory>
+          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+        </deciderScoreComparatorFactory>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>simulatedAnnealing-0hard-8000soft</name>
-    <localSearchSolver>
-      <acceptor>
-        <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
-        <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-      </acceptor>
-      <forager>
-        <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-        <minimalAcceptedSelection>4</minimalAcceptedSelection>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
+          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+        </acceptor>
+        <forager>
+          <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>simulatedAnnealing-0hard-10000soft</name>
-    <localSearchSolver>
-      <acceptor>
-        <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
-        <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-      </acceptor>
-      <forager>
-        <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-        <minimalAcceptedSelection>4</minimalAcceptedSelection>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
+          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+        </acceptor>
+        <forager>
+          <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>simulatedAnnealing-2hard-10000soft</name>
-    <localSearchSolver>
-      <acceptor>
-        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-        <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
-      </acceptor>
-      <forager>
-        <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-        <minimalAcceptedSelection>4</minimalAcceptedSelection>
-      </forager>
-    </localSearchSolver>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
+          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+        </acceptor>
+        <forager>
+          <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <!--<solverBenchmark>-->
     <!--<name>deciderScoreComparatorFactory-SHIFTING_HARD_PENALTY</name>-->
-    <!--<localSearchSolver>-->
-      <!--<deciderScoreComparatorFactory>-->
-        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
-        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
-        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
-        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
-        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-        <!--<hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>-->
-        <!--<startingHardWeight>1000</startingHardWeight>-->
-      <!--</deciderScoreComparatorFactory>-->
-      <!--<acceptor>-->
-        <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-        <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
-      <!--</acceptor>-->
-      <!--<forager>-->
-        <!--<pickEarlyType>NEVER</pickEarlyType>-->
-      <!--</forager>-->
-    <!--</localSearchSolver>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<deciderScoreComparatorFactory>-->
+          <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
+          <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
+          <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
+          <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
+          <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
+          <!--<hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>-->
+          <!--<startingHardWeight>1000</startingHardWeight>-->
+        <!--</deciderScoreComparatorFactory>-->
+        <!--<selector>-->
+          <!--<moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+          <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<pickEarlyType>NEVER</pickEarlyType>-->
+        <!--</forager>-->
+      <!--<localSearch>-->
+    <!--</solver>-->
   <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

@@ -13,7 +13,7 @@
     <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set7.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set8.xml</unsolvedSolutionFile>
 
-    <localSearchSolver>
+    <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
       <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
       <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
@@ -30,117 +30,125 @@
         -->
         <maximumSecondsSpend>429</maximumSecondsSpend>
       </termination>
-    </localSearchSolver>
+    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <name>absolute500_propertyTabu10</name>
-    <localSearchSolver>
-      <deciderScoreComparatorFactory>
-        <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-      </deciderScoreComparatorFactory>
-      <selector>
+    <solver>
+      <localSearch>
+        <deciderScoreComparatorFactory>
+          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+        </deciderScoreComparatorFactory>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completePropertyTabuSize>10</completePropertyTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-      </forager>
-    </localSearchSolver>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>10</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>absolute500_moveTabu7</name>
-    <localSearchSolver>
-      <deciderScoreComparatorFactory>
-        <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-      </deciderScoreComparatorFactory>
-      <selector>
+    <solver>
+      <localSearch>
+        <deciderScoreComparatorFactory>
+          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+        </deciderScoreComparatorFactory>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-      </forager>
-    </localSearchSolver>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>absolute500WithCustomSelector_propertyTabu10</name>
-    <localSearchSolver>
-      <deciderScoreComparatorFactory>
-        <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-      </deciderScoreComparatorFactory>
-      <selector>
-        <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
+    <solver>
+      <localSearch>
+        <deciderScoreComparatorFactory>
+          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+        </deciderScoreComparatorFactory>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completePropertyTabuSize>10</completePropertyTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-      </forager>
-    </localSearchSolver>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>10</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>absolute500WithCustomSelector_moveTabu7</name>
-    <localSearchSolver>
-      <deciderScoreComparatorFactory>
-        <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
-      </deciderScoreComparatorFactory>
-      <selector>
-        <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
+    <solver>
+      <localSearch>
+        <deciderScoreComparatorFactory>
+          <deciderScoreComparatorFactoryType>NATURAL</deciderScoreComparatorFactoryType>
+        </deciderScoreComparatorFactory>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          <selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-      </forager>
-    </localSearchSolver>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>

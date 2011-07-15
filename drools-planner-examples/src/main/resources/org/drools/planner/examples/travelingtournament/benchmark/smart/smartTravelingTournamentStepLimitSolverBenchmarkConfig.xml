@@ -8,7 +8,7 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <localSearchSolver>
+    <solver>
       <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
@@ -18,16 +18,18 @@
       <termination>
         <maximumStepCount>100</maximumStepCount>
       </termination>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-      </forager>
-    </localSearchSolver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>

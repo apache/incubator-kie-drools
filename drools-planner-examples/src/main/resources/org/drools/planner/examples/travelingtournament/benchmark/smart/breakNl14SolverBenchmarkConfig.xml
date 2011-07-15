@@ -3,33 +3,35 @@
   <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
-    <localSearchSolver>
+    <solver>
       <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>3000</completeSolutionTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-      </forager>
-    </localSearchSolver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>3000</completeSolutionTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <localSearchSolver>
+    <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
+    <solver>
       <termination>
         <terminationCompositionStyle>AND</terminationCompositionStyle>
         <scoreAttained>-0hard/-188727soft</scoreAttained><!-- 188728 (Van Hentenryck and Vergados, May 18 2006) -->
         <maximumUnimprovedStepCount>20</maximumUnimprovedStepCount>
       </termination>
-    </localSearchSolver>
+    </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>

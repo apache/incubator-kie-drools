@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
+<solver>
   <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
   <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
   <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/simple/simpleTravelingTournamentScoreRules.drl</scoreDrl>
@@ -9,13 +9,15 @@
   <termination>
     <maximumHoursSpend>2</maximumHoursSpend>
   </termination>
-  <selector>
-    <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
-  </selector>
-  <acceptor>
-    <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-  </acceptor>
-  <forager>
-    <pickEarlyType>NEVER</pickEarlyType>
-  </forager>
-</localSearchSolver>
+  <localSearch>
+    <selector>
+      <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
+    </selector>
+    <acceptor>
+      <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+    </acceptor>
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+    </forager>
+  </localSearch>
+</solver>

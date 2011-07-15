@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
+<solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
   <solutionClass>org.drools.planner.examples.manners2009.domain.Manners2009</solutionClass>
   <planningEntityClass>org.drools.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
@@ -13,14 +13,16 @@
     <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
     <scoreAttained>0</scoreAttained>
   </termination>
-  <selector>
-    <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
-  </selector>
-  <acceptor>
-    <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-  </acceptor>
-  <forager>
-    <pickEarlyType>NEVER</pickEarlyType>
-    <!-- Real world problems require to use of <minimalAcceptedSelection> -->
-  </forager>
-</localSearchSolver>
+  <localSearch>
+    <selector>
+      <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
+    </selector>
+    <acceptor>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+    </acceptor>
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+      <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+    </forager>
+  </localSearch>
+</solver>

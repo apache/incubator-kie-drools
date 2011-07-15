@@ -662,11 +662,11 @@ After in *AcceptorConfig.java:
 [MAJOR] You need to define your solution class in the configuration now:
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <localSearchSolver>
-        <scoreDrl>...</scoreDrl>
+      <scoreDrl>...</scoreDrl>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <localSearchSolver>
-        <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
-        <scoreDrl>...</scoreDrl>
+      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+      <scoreDrl>...</scoreDrl>
 
 [README] Understand the concept of a "planning entity" class.
 The class (or classes) that change during planning (and do not implement Solution) are a planning entity.
@@ -679,13 +679,13 @@ Read the manual to understand the "planning entity" concept better.
 [MAJOR] You need to define your planning entity class(es) in the configuration now:
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
     <localSearchSolver>
-        <solutionClass>...</solutionClass>
-        <scoreDrl>...</scoreDrl>
+      <solutionClass>...</solutionClass>
+      <scoreDrl>...</scoreDrl>
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
     <localSearchSolver>
-        <solutionClass>...</solutionClass>
-        <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
-        <scoreDrl>...</scoreDrl>
+      <solutionClass>...</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+      <scoreDrl>...</scoreDrl>
 
 [MAJOR] You need to annotate your planning entity class(es) with the @PlanningEntity annotation
 Before in *.java:
@@ -937,11 +937,67 @@ After in *.java:
 
     }
 
-[MAJOR] TODO phasing changes
+[README] Phasing: a Solver can now have multiple phases.
+Each phase runs an algorithm, such as local search (tabu search, simulated annealing, ...),
+greedy fit (best fit decreasing, ...), ...
+The phasing algorithms are executed sequentially.
+For example, it's now easy to do 5 minutes of simulated annealing, followed by 5 minutes of tabu search.
+
+[MAJOR] The local search solver is now a local search solver phase.
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <localSearchSolver>
+        ...
+      <termination>
+        ...
+      </termination>
+      <selector>
+        ...
+      </selector>
+      <acceptor>
+        ...
+      </acceptor>
+      <forager>
+        ...
+      </forager>
+    </localSearchSolver>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <solver>
+        ...
+      <termination>
+        ...
+      </termination>
+      <localSearch>
+        <selector>
+          ...
+        </selector>
+        <acceptor>
+          ...
+        </acceptor>
+        <forager>
+          ...
+        </forager>
+      </localSearch>
+    </solver>
+Note: it's also possible to set a termination per phase.
+Warning: some terminations are not supported on the solver level, only on the phase level. For example maximumStepCount:
+    <termination>
+      <maximumStepCount>100</maximumStepCount><!-- ERROR -->
+    </termination>
+    <localSearch>
+      <termination>
+        <maximumStepCount>100</maximumStepCount><!-- OK -->
+      </termination>
+      ...
+    </localSearch>
+Warning for *SolverBenchmarkConfig.xml:
+  If the <inheritedSolverBenchmark> contains a <selector>, <acceptor> or <forager>,
+  that can no longer be inherited individually. Copy the <selector>, <acceptor> or <forager> to every <solverBenchmark>.
+  Because a benchmark specific <localSearch> will not overwrite the inheriting <localSearch>,
+  but instead add an extra localSearch phase, which will result in 2 separate, sequential localSearch phases.
 
 [README] The StartingSolutionInitializer interface has been removed.
 Instead, there's now out-of-the-box support for several greedy construction heuristics.
-These implementations are fast, scalable and configurable.
+These implementations are fast, scalable and configurable. They require little or no domain specific code.
 They also support features like terminateEarly, logging, partially initialized starting solutions, ...
 Alternatively, you can also replace it with your own construction heuristic,
 which is similar to how writing your own StartingSolutionInitializer was.

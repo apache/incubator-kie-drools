@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
+<solver>
   <environmentMode>DEBUG</environmentMode>
   <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
@@ -13,14 +13,16 @@
     <maximumStepCount>100</maximumStepCount>
     <scoreAttained>0</scoreAttained>
   </termination>
-  <selector>
-    <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
-  </selector>
-  <acceptor>
-    <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-  </acceptor>
-  <forager>
-    <pickEarlyType>NEVER</pickEarlyType>
-    <!-- Real world problems require to use of <minimalAcceptedSelection> -->
-  </forager>
-</localSearchSolver>
+  <localSearch>
+    <selector>
+      <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+    </selector>
+    <acceptor>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+    </acceptor>
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+      <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+    </forager>
+  </localSearch>
+</solver>

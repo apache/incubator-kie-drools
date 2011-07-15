@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
+<solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
   <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
   <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
@@ -17,28 +17,30 @@
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
     <!--<maximumStepCount>100</maximumStepCount>-->
   </termination>
-  <selector>
+  <localSearch>
     <selector>
-      <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+      </selector>
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
-    <selector>
-      <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-    </selector>
-    <!--<selector>-->
-      <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
-    <!--<selector>-->
-      <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
-    <selector>
-      <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-    </selector>
-  </selector>
-  <acceptor>
-    <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-    <completePropertyTabuSize>7</completePropertyTabuSize>
-  </acceptor>
-  <forager>
-    <minimalAcceptedSelection>800</minimalAcceptedSelection>
-  </forager>
-</localSearchSolver>
+    <acceptor>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completePropertyTabuSize>7</completePropertyTabuSize>
+    </acceptor>
+    <forager>
+      <minimalAcceptedSelection>800</minimalAcceptedSelection>
+    </forager>
+  </localSearch>
+</solver>
