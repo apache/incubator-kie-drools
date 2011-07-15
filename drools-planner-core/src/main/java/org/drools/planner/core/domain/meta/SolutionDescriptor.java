@@ -133,9 +133,7 @@ public class SolutionDescriptor implements Serializable {
                 throw new IllegalArgumentException("The entity collection property ("
                         + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
             }
-            for (Object entity : entityCollection) {
-                planningEntities.add(entity);
-            }
+            planningEntities.addAll(entityCollection);
         }
         return planningEntities;
     }
