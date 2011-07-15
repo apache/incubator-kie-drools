@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-    <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
-    <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <termination>
-        <scoreAttained>0hard/0soft</scoreAttained>
-    </termination>
-    <deciderScoreComparatorFactory>
-        <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
-        <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
-        <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
-        <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
-        <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
-        <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
-        <startingHardWeight>1000</startingHardWeight>
-    </deciderScoreComparatorFactory>
-    <selector>
-        <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-    </selector>
-    <acceptor>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-    </acceptor>
-    <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <!-- Real world problems require to use of <minimalAcceptedSelection> -->
-    </forager>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <scoreAttained>0hard/0soft</scoreAttained>
+  </termination>
+  <deciderScoreComparatorFactory>
+    <deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>
+    <hardScoreActivationThreshold>0</hardScoreActivationThreshold>
+    <successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>
+    <successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>
+    <successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>
+    <hardWeightSurvivalRatio>0.5</hardWeightSurvivalRatio>
+    <startingHardWeight>1000</startingHardWeight>
+  </deciderScoreComparatorFactory>
+  <selector>
+    <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+  </selector>
+  <acceptor>
+    <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+    <completeMoveTabuSize>7</completeMoveTabuSize>
+  </acceptor>
+  <forager>
+    <pickEarlyType>NEVER</pickEarlyType>
+    <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+  </forager>
 </localSearchSolver>

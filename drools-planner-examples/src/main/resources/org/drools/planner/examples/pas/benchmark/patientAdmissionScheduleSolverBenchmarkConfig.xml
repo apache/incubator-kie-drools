@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <benchmarkDirectory>local/data/pas</benchmarkDirectory>
-    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <benchmarkDirectory>local/data/pas</benchmarkDirectory>
+  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
-    <inheritedSolverBenchmark>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata01.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata02.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata03.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata04.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata05.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata06.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata07.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata08.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata09.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata10.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata11.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata12.xml</unsolvedSolutionFile>
-        <unsolvedSolutionFile>data/pas/unsolved/testdata13.xml</unsolvedSolutionFile>
-    
-        <localSearchSolver>
-            <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
-            <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
-            <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
-            <termination>
-                <!--
-                   On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
-                   On Peter Demeester's PC: 300 (short run), 3000 (long run).
-                -->
-                <maximumSecondsSpend>3720</maximumSecondsSpend>
-            </termination>
-        </localSearchSolver>
-    </inheritedSolverBenchmark>
+  <inheritedSolverBenchmark>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata01.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata02.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata03.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata04.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata05.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata06.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata07.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata08.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata09.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata10.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata11.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata12.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/pas/unsolved/testdata13.xml</unsolvedSolutionFile>
 
-    <solverBenchmark>
-        <name>basis</name>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-                <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-                <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+    <localSearchSolver>
+      <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
+      <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+      <startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
+      <termination>
+        <!--
+           On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
+           On Peter Demeester's PC: 300 (short run), 3000 (long run).
+        -->
+        <maximumSecondsSpend>3720</maximumSecondsSpend>
+      </termination>
+    </localSearchSolver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>basis</name>
+    <localSearchSolver>
+      <selector>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+        </selector>
+      </selector>
+      <acceptor>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+        <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
+      </acceptor>
+      <forager>
+        <pickEarlyType>NEVER</pickEarlyType>
+        <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
+      </forager>
+    </localSearchSolver>
+  </solverBenchmark>
 </solverBenchmarkSuite>

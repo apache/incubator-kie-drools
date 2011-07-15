@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
-    <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
-    <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <termination>
-        <!--
-            Official benchmark maximumSecondsSpend allowed on:
-            ge0ffrey's main pc: 429
-            ge0ffrey's old pc: 1152
-        -->
-        <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
-        <!--<maximumStepCount>100</maximumStepCount>-->
-    </termination>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <!--
+      Official benchmark maximumSecondsSpend allowed on:
+      ge0ffrey's main pc: 429
+      ge0ffrey's old pc: 1152
+    -->
+    <maximumSecondsSpend>429</maximumSecondsSpend>
+    <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+    <!--<maximumStepCount>100</maximumStepCount>-->
+  </termination>
 
-    <greedyFit>
-        <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
-    </greedyFit>
-    <localSearch>
-        <selector>
-            <selector>
-                <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-            </selector>
-            <selector>
-                <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-            </selector>
-            <selector>
-                <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-            </selector>
-        </selector>
-        <acceptor>
-            <completePropertyTabuSize>10</completePropertyTabuSize>
-            <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        </acceptor>
-        <forager>
-            <pickEarlyType>NEVER</pickEarlyType>
-            <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-    </localSearch>
+  <greedyFit>
+    <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
+  </greedyFit>
+  <localSearch>
+    <selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+      </selector>
+    </selector>
+    <acceptor>
+      <completePropertyTabuSize>10</completePropertyTabuSize>
+      <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+    </acceptor>
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+    </forager>
+  </localSearch>
 </solver>

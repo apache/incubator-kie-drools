@@ -1,47 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <benchmarkDirectory>local/data/examination</benchmarkDirectory>
-    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <benchmarkDirectory>local/data/examination</benchmarkDirectory>
+  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
-    <inheritedSolverBenchmark>
-        <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</unsolvedSolutionFile>
+  <inheritedSolverBenchmark>
+    <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1_initialized.xml</unsolvedSolutionFile>
 
-        <localSearchSolver>
-            <!--<environmentMode>DEBUG</environmentMode>-->
-            <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
-            <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
-            <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
-            <termination>
-                <maximumStepCount>70</maximumStepCount>
-            </termination>
-        </localSearchSolver>
-    </inheritedSolverBenchmark>
+    <localSearchSolver>
+      <!--<environmentMode>DEBUG</environmentMode>-->
+      <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
+      <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+      <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+      <termination>
+        <maximumStepCount>70</maximumStepCount>
+      </termination>
+    </localSearchSolver>
+  </inheritedSolverBenchmark>
 
-    <solverBenchmark>
-        <localSearchSolver>
-            <selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-                </selector>
-                <selector>
-                    <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-                </selector>
-            </selector>
-            <acceptor>
-                <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-                <completePropertyTabuSize>10</completePropertyTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-                <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+  <solverBenchmark>
+    <localSearchSolver>
+      <selector>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+        </selector>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+        </selector>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+        </selector>
+      </selector>
+      <acceptor>
+        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+        <completePropertyTabuSize>10</completePropertyTabuSize>
+      </acceptor>
+      <forager>
+        <pickEarlyType>NEVER</pickEarlyType>
+        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+      </forager>
+    </localSearchSolver>
+  </solverBenchmark>
 </solverBenchmarkSuite>

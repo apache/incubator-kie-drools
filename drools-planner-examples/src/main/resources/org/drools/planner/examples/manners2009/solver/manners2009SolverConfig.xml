@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <solutionClass>org.drools.planner.examples.manners2009.domain.Manners2009</solutionClass>
-    <planningEntityClass>org.drools.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
-    <scoreDrl>/org/drools/planner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
-        <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
-        <scoreAttained>0</scoreAttained>
-    </termination>
-    <selector>
-        <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
-    </selector>
-    <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-    </acceptor>
-    <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <!-- Real world problems require to use of <minimalAcceptedSelection> -->
-    </forager>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.manners2009.domain.Manners2009</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+  </scoreDefinition>
+  <startingSolutionInitializerClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</startingSolutionInitializerClass>
+  <termination>
+    <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
+    <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->
+    <scoreAttained>0</scoreAttained>
+  </termination>
+  <selector>
+    <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
+  </selector>
+  <acceptor>
+    <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+  </acceptor>
+  <forager>
+    <pickEarlyType>NEVER</pickEarlyType>
+    <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+  </forager>
 </localSearchSolver>
