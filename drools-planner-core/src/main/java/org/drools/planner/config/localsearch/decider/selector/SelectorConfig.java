@@ -110,11 +110,8 @@ public class SelectorConfig {
             }
             MoveFactorySelector selector = new MoveFactorySelector();
             selector.setMoveFactory(initializedMoveFactory);
-            if (shuffle != null) {
-                selector.setShuffle(shuffle.booleanValue());
-            } else {
-                selector.setShuffle(true);
-            }
+            boolean shuffleValue = (shuffle == null) ?  true : shuffle.booleanValue();
+            selector.setShuffle(shuffleValue);
             return selector;
         } else if (topSize != null) {
             TopListSelector selector = new TopListSelector();
