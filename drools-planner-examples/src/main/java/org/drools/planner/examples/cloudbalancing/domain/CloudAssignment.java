@@ -23,9 +23,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
+import org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudAssignmentDifficultyComparator;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@PlanningEntity
+@PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
 @XStreamAlias("CloudAssignment")
 public class CloudAssignment extends AbstractPersistable implements Comparable<CloudAssignment> {
 

@@ -19,7 +19,9 @@
   </termination>
 
   <greedyFit>
-    <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
+    <greedyFitPlanningEntity>
+      <selectionOrder>DECREASING_DIFFICULTY</selectionOrder>
+    </greedyFitPlanningEntity>
   </greedyFit>
   <localSearch>
     <selector>

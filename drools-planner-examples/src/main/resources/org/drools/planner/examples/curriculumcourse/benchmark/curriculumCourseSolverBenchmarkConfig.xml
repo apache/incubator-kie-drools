@@ -34,15 +34,17 @@
         <!--&ndash;&gt;-->
         <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
       <!--</termination>-->
+      <greedyFit>
+        <greedyFitPlanningEntity>
+          <selectionOrder>DECREASING_DIFFICULTY</selectionOrder>
+        </greedyFitPlanningEntity>
+      </greedyFit>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <name>propertyTabu10</name>
     <solver>
-      <greedyFit>
-        <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
-      </greedyFit>
       <localSearch>
         <termination>
           <!--<maximumMinutesSpend>6</maximumMinutesSpend>-->
@@ -72,9 +74,6 @@
   <solverBenchmark>
     <name>simulatedAnnealing100</name>
     <solver>
-      <greedyFit>
-        <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
-      </greedyFit>
       <localSearch>
         <termination>
           <!--<maximumMinutesSpend>6</maximumMinutesSpend>-->
@@ -103,9 +102,6 @@
   <solverBenchmark>
     <name>simulatedAnnealing100-propertyTabu10</name>
     <solver>
-      <greedyFit>
-        <planningEntityDifficultyWeightFactoryClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory</planningEntityDifficultyWeightFactoryClass>
-      </greedyFit>
       <localSearch>
         <termination>
           <!--<maximumMinutesSpend>3</maximumMinutesSpend>-->

@@ -16,9 +16,11 @@
 
 package org.drools.planner.config.constructionheuristic.greedyFit;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
@@ -27,7 +29,8 @@ import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGr
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyFitType;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
-import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.heuristic.selector.PlanningEntitySelector;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
@@ -37,33 +40,17 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    private Boolean resetInitializedPlanningEntities = null;
-    private Class<? extends Comparator<Object>> fitOrderPlanningEntityComparatorClass = null;
-    private Class<? extends PlanningEntityDifficultyWeightFactory> planningEntityDifficultyWeightFactoryClass = null;
+    @XStreamImplicit(itemFieldName = "greedyFitPlanningEntity")
+    protected List<GreedyFitPlanningEntityConfig> greedyFitPlanningEntityConfigList = null;
+
     private PickEarlyFitType pickEarlyFitType = null;
 
-    public Boolean getResetInitializedPlanningEntities() {
-        return resetInitializedPlanningEntities;
+    public List<GreedyFitPlanningEntityConfig> getGreedyFitPlanningEntityConfigList() {
+        return greedyFitPlanningEntityConfigList;
     }
 
-    public void setResetInitializedPlanningEntities(Boolean resetInitializedPlanningEntities) {
-        this.resetInitializedPlanningEntities = resetInitializedPlanningEntities;
-    }
-
-    public Class<? extends Comparator<Object>> getFitOrderPlanningEntityComparatorClass() {
-        return fitOrderPlanningEntityComparatorClass;
-    }
-
-    public void setFitOrderPlanningEntityComparatorClass(Class<? extends Comparator<Object>> fitOrderPlanningEntityComparatorClass) {
-        this.fitOrderPlanningEntityComparatorClass = fitOrderPlanningEntityComparatorClass;
-    }
-
-    public Class<? extends PlanningEntityDifficultyWeightFactory> getPlanningEntityDifficultyWeightFactoryClass() {
-        return planningEntityDifficultyWeightFactoryClass;
-    }
-
-    public void setPlanningEntityDifficultyWeightFactoryClass(Class<? extends PlanningEntityDifficultyWeightFactory> planningEntityDifficultyWeightFactoryClass) {
-        this.planningEntityDifficultyWeightFactoryClass = planningEntityDifficultyWeightFactoryClass;
+    public void setGreedyFitPlanningEntityConfigList(List<GreedyFitPlanningEntityConfig> greedyFitPlanningEntityConfigList) {
+        this.greedyFitPlanningEntityConfigList = greedyFitPlanningEntityConfigList;
     }
 
     public PickEarlyFitType getPickEarlyFitType() {
@@ -78,11 +65,11 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public GreedyFitSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
-            Termination solverTermination) {
+    public GreedyFitSolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
         configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition, solverTermination);
-        greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector());
+        greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
         greedySolverPhase.setGreedyDecider(buildGreedyDecider(environmentMode));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
@@ -90,48 +77,13 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         return greedySolverPhase;
     }
 
-    private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector() {
+    private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
         GreedyPlanningEntitySelector greedyPlanningEntitySelector = new GreedyPlanningEntitySelector();
-        boolean resetInitializedPlanningEntitiesValue = resetInitializedPlanningEntities == null ? false
-                : resetInitializedPlanningEntities.booleanValue();
-        greedyPlanningEntitySelector.setResetInitializedPlanningEntities(resetInitializedPlanningEntitiesValue);
-        if (fitOrderPlanningEntityComparatorClass != null && planningEntityDifficultyWeightFactoryClass != null) {
-            throw new IllegalArgumentException("Cannot configure fitOrderPlanningEntityComparatorClass ("
-                    + fitOrderPlanningEntityComparatorClass
-                    + ") and planningEntityDifficultyWeightFactoryClass (" + planningEntityDifficultyWeightFactoryClass
-                    + ") at the same time.");
+        List<PlanningEntitySelector> planningEntitySelectorList = new ArrayList<PlanningEntitySelector>(greedyFitPlanningEntityConfigList.size());
+        for (GreedyFitPlanningEntityConfig greedyFitPlanningEntityConfig : greedyFitPlanningEntityConfigList) {
+            planningEntitySelectorList.add(greedyFitPlanningEntityConfig.buildPlanningEntitySelector(solutionDescriptor));
         }
-        if (fitOrderPlanningEntityComparatorClass != null) {
-            Comparator<Object> fitOrderPlanningEntityComparator;
-            try {
-                fitOrderPlanningEntityComparator = fitOrderPlanningEntityComparatorClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("The fitOrderPlanningEntityComparatorClass ("
-                        + fitOrderPlanningEntityComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("The fitOrderPlanningEntityComparatorClass ("
-                        + fitOrderPlanningEntityComparatorClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
-            greedyPlanningEntitySelector.setFitOrderPlanningEntityComparator(fitOrderPlanningEntityComparator);
-        }
-        if (planningEntityDifficultyWeightFactoryClass != null) {
-            PlanningEntityDifficultyWeightFactory planningEntityDifficultyWeightFactory;
-            try {
-                planningEntityDifficultyWeightFactory = planningEntityDifficultyWeightFactoryClass.newInstance();
-            } catch (InstantiationException e) {
-                throw new IllegalArgumentException("The planningEntityDifficultyWeightFactoryClass ("
-                        + planningEntityDifficultyWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            } catch (IllegalAccessException e) {
-                throw new IllegalArgumentException("The planningEntityDifficultyWeightFactoryClass ("
-                        + planningEntityDifficultyWeightFactoryClass.getName()
-                        + ") does not have a public no-arg constructor", e);
-            }
-            greedyPlanningEntitySelector.setPlanningEntityDifficultyWeightFactory(
-                    planningEntityDifficultyWeightFactory);
-        }
+        greedyPlanningEntitySelector.setPlanningEntitySelectorList(planningEntitySelectorList);
         return greedyPlanningEntitySelector;
     }
 
@@ -148,15 +100,14 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
 
     public void inherit(GreedyFitSolverPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (resetInitializedPlanningEntities == null) {
-            resetInitializedPlanningEntities = inheritedConfig.getResetInitializedPlanningEntities();
-        }
-        if (fitOrderPlanningEntityComparatorClass == null) {
-            fitOrderPlanningEntityComparatorClass = inheritedConfig.getFitOrderPlanningEntityComparatorClass();
-        }
-        if (planningEntityDifficultyWeightFactoryClass == null) {
-            planningEntityDifficultyWeightFactoryClass = inheritedConfig
-                    .getPlanningEntityDifficultyWeightFactoryClass();
+        if (greedyFitPlanningEntityConfigList == null) {
+            greedyFitPlanningEntityConfigList = inheritedConfig.getGreedyFitPlanningEntityConfigList();
+        } else if (inheritedConfig.getGreedyFitPlanningEntityConfigList() != null) {
+            // The inherited greedyFitPlanningEntityConfigList should be before the non-inherited greedyFitPlanningEntityConfigList.
+            List<GreedyFitPlanningEntityConfig> mergedList
+                    = new ArrayList<GreedyFitPlanningEntityConfig>(inheritedConfig.getGreedyFitPlanningEntityConfigList());
+            mergedList.addAll(greedyFitPlanningEntityConfigList);
+            greedyFitPlanningEntityConfigList = mergedList;
         }
         if (pickEarlyFitType == null) {
             pickEarlyFitType = inheritedConfig.getPickEarlyFitType();

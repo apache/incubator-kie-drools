@@ -21,7 +21,7 @@ import java.util.Comparator;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 
-public class CloudBalancingFitOrderPlanningEntityComparator implements Comparator<Object> {
+public class CloudAssignmentDifficultyComparator implements Comparator<Object> {
 
     public int compare(Object a, Object b) {
         return compare((CloudAssignment) a, (CloudAssignment) b);
@@ -29,8 +29,7 @@ public class CloudBalancingFitOrderPlanningEntityComparator implements Comparato
 
     public int compare(CloudAssignment a, CloudAssignment b) {
         return new CompareToBuilder()
-                .append(b.getCloudProcess().getMinimalMultiplicand(),
-                        a.getCloudProcess().getMinimalMultiplicand()) // Descending
+                .append(a.getCloudProcess().getMinimalMultiplicand(), b.getCloudProcess().getMinimalMultiplicand())
                 .toComparison();
     }
 

@@ -17,6 +17,7 @@
 package org.drools.planner.core.phase;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import org.drools.WorkingMemory;
@@ -106,8 +107,8 @@ public abstract class AbstractSolverPhaseScope {
         return solverScope.getWorkingFacts();
     }
 
-    public Collection<Object> getWorkingPlanningEntities() {
-        return solverScope.getWorkingPlanningEntities();
+    public List<Object> getWorkingPlanningEntityList() {
+        return solverScope.getWorkingPlanningEntityList();
     }
 
     public boolean isWorkingSolutionInitialized() {

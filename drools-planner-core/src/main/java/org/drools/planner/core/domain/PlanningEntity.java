@@ -18,6 +18,10 @@ package org.drools.planner.core.domain;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.security.PrivateKey;
+import java.util.Comparator;
+
+import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -31,5 +35,25 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Target({TYPE})
 @Retention(RUNTIME)
 public @interface PlanningEntity {
+
+    /**
+     * Allows a collection of planning entities to be sorted by difficulty.
+     * <p/>
+     * Do not use together with {@link #difficultyWeightFactoryClass()}.
+     * @return {@link NullDifficultyComparator} when it is null (workaround for annotation limitation)
+     */
+    public Class<? extends Comparator> difficultyComparatorClass() default NullDifficultyComparator.class;
+    interface NullDifficultyComparator extends Comparator {}
+
+    /**
+     * Allows a collection of planning entities to be sorted by difficulty.
+     * <p/>
+     * Do not use together with {@link #difficultyComparatorClass()}.
+     * @return {@link NullDifficultyWeightFactory} when it is null (workaround for annotation limitation)
+     * @see PlanningEntityDifficultyWeightFactory
+     */
+    public Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass()
+            default NullDifficultyWeightFactory.class;
+    interface NullDifficultyWeightFactory extends PlanningEntityDifficultyWeightFactory {}
 
 }

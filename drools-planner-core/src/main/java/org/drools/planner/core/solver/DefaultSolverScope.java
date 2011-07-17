@@ -18,6 +18,7 @@ package org.drools.planner.core.solver;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
@@ -178,8 +179,8 @@ public class DefaultSolverScope {
         return solutionDescriptor.getAllFacts(workingSolution);
     }
 
-    public Collection<Object> getWorkingPlanningEntities() {
-        return solutionDescriptor.getPlanningEntities(workingSolution);
+    public List<Object> getWorkingPlanningEntityList() {
+        return solutionDescriptor.getPlanningEntityList(workingSolution);
     }
 
     public boolean isWorkingSolutionInitialized() {

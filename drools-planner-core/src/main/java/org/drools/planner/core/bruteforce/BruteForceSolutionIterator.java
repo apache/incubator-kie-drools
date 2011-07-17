@@ -25,7 +25,7 @@ public class BruteForceSolutionIterator {
 
     public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
         planningEntityIteratorList = new ArrayList<BruteForcePlanningEntityIterator>();
-        for (Object planningEntity : bruteForceSolverPhaseScope.getWorkingPlanningEntities()) {
+        for (Object planningEntity : bruteForceSolverPhaseScope.getWorkingPlanningEntityList()) {
             BruteForcePlanningEntityIterator planningEntityIterator = new BruteForcePlanningEntityIterator(
                     bruteForceSolverPhaseScope, planningEntity);
             planningEntityIteratorList.add(planningEntityIterator);

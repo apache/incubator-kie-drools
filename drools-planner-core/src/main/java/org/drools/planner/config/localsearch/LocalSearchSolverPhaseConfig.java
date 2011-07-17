@@ -23,7 +23,7 @@ import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
-import org.drools.planner.config.termination.TerminationConfig;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;
@@ -84,8 +84,8 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
-            Termination solverTermination) {
+    public LocalSearchSolverPhase buildSolverPhase(EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultLocalSearchSolverPhase localSearchSolverPhase = new DefaultLocalSearchSolverPhase();
         configureSolverPhase(localSearchSolverPhase, environmentMode, scoreDefinition, solverTermination);
         localSearchSolverPhase.setDecider(buildDecider(environmentMode, scoreDefinition));

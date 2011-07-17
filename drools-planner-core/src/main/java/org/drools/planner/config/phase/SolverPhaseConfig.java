@@ -3,6 +3,7 @@ package org.drools.planner.config.phase;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.termination.TerminationConfig;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.phase.SolverPhase;
@@ -30,8 +31,8 @@ public abstract class SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public abstract SolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
-            Termination solverTermination);
+    public abstract SolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
+            ScoreDefinition scoreDefinition, Termination solverTermination);
 
     protected void configureSolverPhase(AbstractSolverPhase solverPhase,
             EnvironmentMode environmentMode, ScoreDefinition scoreDefinition, Termination solverTermination) {

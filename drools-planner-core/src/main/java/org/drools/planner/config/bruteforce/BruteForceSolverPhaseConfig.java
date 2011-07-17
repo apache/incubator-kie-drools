@@ -21,6 +21,7 @@ import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
 import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;
+import org.drools.planner.core.domain.meta.SolutionDescriptor;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
@@ -34,8 +35,8 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
-    public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition,
-            Termination solverTermination) {
+    public BruteForceSolverPhase buildSolverPhase(EnvironmentMode environmentMode,
+            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
         configureSolverPhase(bruteForceSolverPhase, environmentMode, scoreDefinition, solverTermination);
         return bruteForceSolverPhase;

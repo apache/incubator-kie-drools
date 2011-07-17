@@ -26,8 +26,9 @@ import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory;
 
-@PlanningEntity
+@PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
 

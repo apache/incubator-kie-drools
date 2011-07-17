@@ -22,7 +22,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -163,7 +162,8 @@ public class SolverConfig {
                 solver.setRandomSeed(DEFAULT_RANDOM_SEED);
             }
         }
-        solver.setSolutionDescriptor(buildSolutionDescriptor());
+        SolutionDescriptor solutionDescriptor = buildSolutionDescriptor();
+        solver.setSolutionDescriptor(solutionDescriptor);
         solver.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
         solver.setScoreDefinition(scoreDefinition);
@@ -179,7 +179,8 @@ public class SolverConfig {
         }
         List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
         for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
-            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(environmentMode, scoreDefinition, termination);
+            SolverPhase solverPhase = solverPhaseConfig.buildSolverPhase(environmentMode,
+                    solutionDescriptor, scoreDefinition, termination);
             ((AbstractSolverPhase) solverPhase).setBestSolutionRecaller(bestSolutionRecaller);
             solverPhaseList.add(solverPhase);
         }

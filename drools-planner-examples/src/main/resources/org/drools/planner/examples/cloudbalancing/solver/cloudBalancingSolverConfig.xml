@@ -13,7 +13,9 @@
   <!--<bruteForce>-->
   <!--</bruteForce>-->
   <greedyFit>
-    <fitOrderPlanningEntityComparatorClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingFitOrderPlanningEntityComparator</fitOrderPlanningEntityComparatorClass>
+    <greedyFitPlanningEntity>
+      <selectionOrder>DECREASING_DIFFICULTY</selectionOrder>
+    </greedyFitPlanningEntity>
   </greedyFit>
   <localSearch>
     <selector>

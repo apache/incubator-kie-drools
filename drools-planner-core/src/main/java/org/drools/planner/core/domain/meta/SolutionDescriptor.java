@@ -9,7 +9,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
 import org.drools.planner.core.domain.PlanningEntityProperty;
@@ -78,6 +81,10 @@ public class SolutionDescriptor implements Serializable {
         planningEntityDescriptorMap.put(planningEntityDescriptor.getPlanningEntityClass(), planningEntityDescriptor);
     }
 
+    public Set<Class<?>> getPlanningEntityImplementationClassSet() {
+        return planningEntityDescriptorMap.keySet();
+    }
+
     public PlanningEntityDescriptor getPlanningEntityDescriptor(Class<?> planningEntityImplementationClass) {
         PlanningEntityDescriptor planningEntityDescriptor = null;
         Class<?> planningEntityClass = planningEntityImplementationClass;
@@ -118,12 +125,12 @@ public class SolutionDescriptor implements Serializable {
         return planningFacts;
     }
 
-    public Collection<Object> getPlanningEntities(Solution solution) {
-        Collection<Object> planningEntities = new ArrayList<Object>();
+    public List<Object> getPlanningEntityList(Solution solution) {
+        List<Object> planningEntityList = new ArrayList<Object>();
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
             if (entity != null) {
-                planningEntities.add(entity);
+                planningEntityList.add(entity);
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
@@ -133,9 +140,9 @@ public class SolutionDescriptor implements Serializable {
                 throw new IllegalArgumentException("The entity collection property ("
                         + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
             }
-            planningEntities.addAll(entityCollection);
+            planningEntityList.addAll(entityCollection);
         }
-        return planningEntities;
+        return planningEntityList;
     }
 
     /**

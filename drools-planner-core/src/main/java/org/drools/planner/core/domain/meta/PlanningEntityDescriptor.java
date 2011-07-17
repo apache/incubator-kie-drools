@@ -6,11 +6,14 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.core.domain.entity.PlanningEntitySorter;
+import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
 
 public class PlanningEntityDescriptor {
 
@@ -18,30 +21,81 @@ public class PlanningEntityDescriptor {
 
     private final Class<?> planningEntityClass;
     private final BeanInfo planningEntityBeanInfo;
+    private PlanningEntitySorter planningEntitySorter;
 
-    private final Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
+    private Map<String, PlanningVariableDescriptor> planningVariableDescriptorMap;
 
     public PlanningEntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> planningEntityClass) {
         this.solutionDescriptor = solutionDescriptor;
         this.planningEntityClass = planningEntityClass;
-        PlanningEntity planningEntityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
-        if (planningEntityAnnotation == null) {
-            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
-                    + ") has been specified as a planning entity in the configuration," +
-                    " but does not have a PlanningEntity annotation.");
-        }
         try {
             planningEntityBeanInfo = Introspector.getBeanInfo(planningEntityClass);
         } catch (IntrospectionException e) {
             throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                     + ") is not a valid java bean.", e);
         }
-        int mapSize = planningEntityBeanInfo.getPropertyDescriptors().length;
-        planningVariableDescriptorMap = new HashMap<String, PlanningVariableDescriptor>(mapSize);
+        processEntityAnnotations();
         processPropertyAnnotations();
     }
 
+    private void processEntityAnnotations() {
+        PlanningEntity planningEntityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
+        if (planningEntityAnnotation == null) {
+            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                    + ") has been specified as a planning entity in the configuration," +
+                    " but does not have a PlanningEntity annotation.");
+        }
+        Class<? extends Comparator> difficultyComparatorClass = planningEntityAnnotation.difficultyComparatorClass();
+        if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
+            difficultyComparatorClass = null;
+        }
+        Class<? extends PlanningEntityDifficultyWeightFactory> difficultyWeightFactoryClass
+                = planningEntityAnnotation.difficultyWeightFactoryClass();
+        if (difficultyWeightFactoryClass == PlanningEntity.NullDifficultyWeightFactory.class) {
+            difficultyWeightFactoryClass = null;
+        }
+        if (difficultyComparatorClass != null && difficultyWeightFactoryClass != null) {
+            throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
+                    + ") cannot have a difficultyComparatorClass (" + difficultyComparatorClass.getName()
+                    + ") and a difficultyWeightFactoryClass (" + difficultyWeightFactoryClass.getName()
+                    + ") at the same time.");
+        }
+        planningEntitySorter = new PlanningEntitySorter();
+        if (difficultyComparatorClass != null) {
+            Comparator<Object> difficultyComparator;
+            try {
+                difficultyComparator = difficultyComparatorClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("The difficultyComparatorClass ("
+                        + difficultyComparatorClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("The difficultyComparatorClass ("
+                        + difficultyComparatorClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            planningEntitySorter.setDifficultyComparator(difficultyComparator);
+        }
+        if (difficultyWeightFactoryClass != null) {
+            PlanningEntityDifficultyWeightFactory difficultyWeightFactory;
+            try {
+                difficultyWeightFactory = difficultyWeightFactoryClass.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalArgumentException("The difficultyWeightFactoryClass ("
+                        + difficultyWeightFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalArgumentException("The difficultyWeightFactoryClass ("
+                        + difficultyWeightFactoryClass.getName()
+                        + ") does not have a public no-arg constructor", e);
+            }
+            planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
+        }
+    }
+
     private void processPropertyAnnotations() {
+        int mapSize = planningEntityBeanInfo.getPropertyDescriptors().length;
+        planningVariableDescriptorMap = new HashMap<String, PlanningVariableDescriptor>(mapSize);
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
@@ -70,6 +124,10 @@ public class PlanningEntityDescriptor {
 
     public Class<?> getPlanningEntityClass() {
         return planningEntityClass;
+    }
+
+    public PlanningEntitySorter getPlanningEntitySorter() {
+        return planningEntitySorter;
     }
 
     public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {
