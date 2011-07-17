@@ -277,6 +277,21 @@ public class RuleBuilderTest {
     }
 
     @Test
+    public void testInvalidDialect() throws Exception {
+        final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
+        final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );
+        ruleDescr.addAttribute( new AttributeDescr( "dialect", "mvl" ) );
+        ruleDescr.setConsequence( "" );
+        pkgDescr.addRule( ruleDescr );
+
+        final PackageBuilder pkgBuilder = new PackageBuilder();
+        pkgBuilder.addPackage( pkgDescr );
+
+        assertFalse( pkgBuilder.getErrors().toString(),
+                     pkgBuilder.getErrors().isEmpty() );
+    }    
+    
+    @Test
     public void testBuildBigIntegerLiteralConstraint() throws Exception {
         final PackageDescr pkgDescr = new PackageDescr( "org.drools" );
         final RuleDescr ruleDescr = new RuleDescr( "Test Rule" );

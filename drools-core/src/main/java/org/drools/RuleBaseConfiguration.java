@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.builder.conf.ClassLoaderCacheOption;
+import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
 import org.drools.common.PriorityQueueAgendaGroupFactory;
@@ -102,6 +103,7 @@ import org.mvel2.MVEL;
  * drools.multithreadEvaluation = &lt;true|false&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
+ * drools.lrUnlinkingEnabled = &lt;true|false&gt; 
  * </pre>
  */
 public class RuleBaseConfiguration
@@ -133,6 +135,7 @@ public class RuleBaseConfiguration
     private String                         consequenceExceptionHandler;
     private String                         ruleBaseUpdateHandler;
     private boolean                        classLoaderCacheEnabled;
+    private boolean                        lrUnlinkingEnabled;
 
     private EventProcessingOption          eventProcessingMode;
 
@@ -184,6 +187,7 @@ public class RuleBaseConfiguration
         out.writeInt( maxThreads );
         out.writeObject( eventProcessingMode );
         out.writeBoolean( classLoaderCacheEnabled );
+        out.writeBoolean( lrUnlinkingEnabled );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -211,6 +215,7 @@ public class RuleBaseConfiguration
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
+        lrUnlinkingEnabled = in.readBoolean();
     }
 
     /**
@@ -302,6 +307,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled( MBeansOption.isEnabled( value ) );
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf( value ) );
+        } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
+            setLRUnlinkingEnabled( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
         }
     }
 
@@ -355,6 +362,8 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
+        } else if ( name.equals( LRUnlinkingOption.PROPERTY_NAME ) ) {
+            return Boolean.toString( isLRUnlinkingEnabled() );
         }
 
         return null;
@@ -451,6 +460,10 @@ public class RuleBaseConfiguration
 
         setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
                                                                                          "true" ) ) );
+        
+        setLRUnlinkingEnabled( Boolean.valueOf( this.chainedProperties.getProperty( LRUnlinkingOption.PROPERTY_NAME,
+                                                                                        "false" ) ) );
+
     }
 
     /**
@@ -478,6 +491,9 @@ public class RuleBaseConfiguration
 
     public void setSequential(boolean sequential) {
         this.sequential = sequential;
+        if (sequential && isLRUnlinkingEnabled()) {
+            throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right unlinking is enabled." );
+        }
     }
 
     public boolean isSequential() {
@@ -648,6 +664,9 @@ public class RuleBaseConfiguration
     public void setMultithreadEvaluation(boolean enableMultithread) {
         checkCanChange();
         this.multithread = enableMultithread;
+        if (multithread && isLRUnlinkingEnabled()) {
+            throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
+        }
     }
 
     /**
@@ -693,6 +712,32 @@ public class RuleBaseConfiguration
         this.classLoaderCacheEnabled = classLoaderCacheEnabled;
         this.classLoader.setCachingEnabled( this.classLoaderCacheEnabled );
     }
+    
+    /**
+     * @return whether or not Left & Right Unlinking is enabled.
+     */
+    public boolean isLRUnlinkingEnabled() {
+        return this.lrUnlinkingEnabled;
+    }
+    
+    /**
+     * Enable Left & Right Unlinking. It will also disable sequential mode 
+     * and multithread evaluation as these are incompatible with L&R unlinking.
+     * @param enabled
+     */
+    public void setLRUnlinkingEnabled(boolean enabled) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.lrUnlinkingEnabled = enabled;
+
+        if ( enabled && isSequential() ) {
+            throw new IllegalArgumentException( "Sequential mode cannot be used when Left & Right Unlinking is enabled." );
+        }
+        
+        if ( enabled && isMultithreadEvaluation() ) {
+            throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
+        }
+    }
+
 
     public List<Map<String, Object>> getWorkDefinitions() {
         if ( this.workDefinitions == null ) {
@@ -1080,6 +1125,8 @@ public class RuleBaseConfiguration
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
         } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
+        } else if ( LRUnlinkingOption.class.equals( option ) ) {
+            return (T) (this.isLRUnlinkingEnabled() ? LRUnlinkingOption.ENABLED : LRUnlinkingOption.DISABLED);
         }
         return null;
 
@@ -1122,6 +1169,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled( ((MBeansOption) option).isEnabled() );
         } else if ( option instanceof ClassLoaderCacheOption ) {
             setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
+        } else if ( option instanceof LRUnlinkingOption ) {
+            setLRUnlinkingEnabled( ((LRUnlinkingOption) option).isLRUnlinkingEnabled() );
         }
 
     }

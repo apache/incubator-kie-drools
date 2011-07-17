@@ -262,7 +262,7 @@ public class Accumulate extends ConditionalElement
     }
 
     public Object clone() {
-        Accumulate clone = new Accumulate( this.source,
+        Accumulate clone = new Accumulate( (RuleConditionElement) this.source.clone(),
                                            this.requiredDeclarations,
                                            this.innerDeclarations,
                                            this.accumulators,

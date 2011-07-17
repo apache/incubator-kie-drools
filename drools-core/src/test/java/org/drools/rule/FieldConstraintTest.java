@@ -40,7 +40,7 @@ import org.drools.base.evaluators.EqualityEvaluatorsDefinition;
 import org.drools.base.evaluators.Operator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.PredicateConstraint.PredicateContextEntry;
@@ -251,7 +251,7 @@ public class FieldConstraintTest {
         final Cheese cheddar0 = new Cheese( "cheddar",
                                             5 );
         final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
-        LeftTuple tuple = new LeftTuple( f0,
+        LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                          null,
                                          true );
 
@@ -259,7 +259,7 @@ public class FieldConstraintTest {
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
 
-        tuple = new LeftTuple( tuple,
+        tuple = new LeftTupleImpl( tuple,
                                new RightTuple( f1,
                                                null ),
                                null,
@@ -362,14 +362,14 @@ public class FieldConstraintTest {
                                             5 );
         final InternalFactHandle f0 = (InternalFactHandle) workingMemory.insert( cheddar0 );
 
-        LeftTuple tuple = new LeftTuple( f0,
+        LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                          null,
                                          true );
 
         final Cheese cheddar1 = new Cheese( "cheddar",
                                             10 );
         final InternalFactHandle f1 = (InternalFactHandle) workingMemory.insert( cheddar1 );
-        tuple = new LeftTuple( tuple,
+        tuple = new LeftTupleImpl( tuple,
                                new RightTuple( f1,
                                                null ),
                                null,
@@ -395,259 +395,4 @@ public class FieldConstraintTest {
         assertTrue( constraint2.isAllowedCachedLeft( context2,
                                                      f2 ) );
     }
-
-    /**
-     * <pre>
-     *
-     *
-     *                type == &quot;cheddar&quot &amp;&amp; price &gt; 10
-     *
-     *
-     * </pre>
-     *
-     * Test the use of the composite AND constraint. Composite AND constraints are only
-     * used when nested inside other field constraints, as the top level AND is implicit
-     *
-     * @throws IntrospectionException
-     */
-    @Test
-    public void testCompositeAndConstraint() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
-
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type",
-                                                            getClass().getClassLoader() );
-
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
-
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE,
-                                                         Operator.EQUAL );
-
-        final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
-                                                                     evaluator,
-                                                                     field );
-
-        final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
-                                                                 "price",
-                                                                 getClass().getClassLoader() );
-
-        final FieldValue priceField = FieldFactory.getFieldValue( 10 );
-
-        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE,
-                                                                   Operator.GREATER );
-
-        final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
-                                                                     priceEvaluator,
-                                                                     priceField );
-
-        final Cheese cheddar = new Cheese( "cheddar",
-                                           15 );
-
-        final AndConstraint constraint = new AndConstraint();
-        constraint.addAlphaConstraint( constraint1 );
-        constraint.addAlphaConstraint( constraint2 );
-
-        final ContextEntry context = constraint.createContextEntry();
-
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
-
-        // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
-                                          context ) );
-
-        cheddar.setPrice( 5 );
-        assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory,
-                                           context ) );
-
-        cheddar.setType( "stilton" );
-        assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory,
-                                           context ) );
-
-        cheddar.setPrice( 15 );
-        assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory,
-                                           context ) );
-    }
-
-    /**
-     * <pre>
-     *
-     *
-     *                Cheese( type == &quot;cheddar&quot || price &gt; 10 )
-     *
-     *
-     * </pre>
-     *
-     * Test the use of the composite OR constraint.
-     *
-     * @throws IntrospectionException
-     */
-    @Test
-    public void testCompositeOrConstraint() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
-
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type",
-                                                            getClass().getClassLoader() );
-
-        final FieldValue field = FieldFactory.getFieldValue( "cheddar" );
-
-        final Evaluator evaluator = equals.getEvaluator( ValueType.STRING_TYPE,
-                                                         Operator.EQUAL );
-
-        final LiteralConstraint constraint1 = new LiteralConstraint( extractor,
-                                                                     evaluator,
-                                                                     field );
-
-        final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
-                                                                 "price",
-                                                                 getClass().getClassLoader() );
-
-        final FieldValue priceField = FieldFactory.getFieldValue( 10 );
-
-        final Evaluator priceEvaluator = comparables.getEvaluator( ValueType.INTEGER_TYPE,
-                                                                   Operator.GREATER );
-
-        final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
-                                                                     priceEvaluator,
-                                                                     priceField );
-
-        final Cheese cheddar = new Cheese( "cheddar",
-                                           15 );
-
-        final OrConstraint constraint = new OrConstraint();
-        constraint.addAlphaConstraint( constraint1 );
-        constraint.addAlphaConstraint( constraint2 );
-        final ContextEntry context = constraint.createContextEntry();
-
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
-
-        // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
-                                          context ) );
-
-        cheddar.setPrice( 5 );
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
-                                          context ) );
-
-        cheddar.setType( "stilton" );
-        assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory,
-                                           context ) );
-
-        cheddar.setPrice( 15 );
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
-                                          context ) );
-    }
-
-    /**
-     * <pre>
-     *
-     *
-     *                Cheese( ( type == &quot;cheddar&quot &amp;&amp; price &gt; 10) || ( type == &quote;stilton&quote; && price &lt; 10 ) )
-     *
-     *
-     * </pre>
-     *
-     * Test the use of the composite OR constraint.
-     *
-     * @throws IntrospectionException
-     */
-    @Test
-    public void testNestedCompositeConstraints() {
-        final ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        final InternalWorkingMemory workingMemory = (InternalWorkingMemory) ruleBase.newStatefulSession();
-
-        final ClassFieldReader typeExtractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
-
-        final FieldValue cheddarField = FieldFactory.getFieldValue( "cheddar" );
-
-        final Evaluator stringEqual = equals.getEvaluator( ValueType.STRING_TYPE,
-                                                           Operator.EQUAL );
-
-        // type == 'cheddar'
-        final LiteralConstraint constraint1 = new LiteralConstraint( typeExtractor,
-                                                                     stringEqual,
-                                                                     cheddarField );
-
-        final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
-                                                                 "price",
-                                                                 getClass().getClassLoader() );
-
-        final FieldValue field10 = FieldFactory.getFieldValue( 10 );
-
-        final Evaluator integerGreater = comparables.getEvaluator( ValueType.INTEGER_TYPE,
-                                                                   Operator.GREATER );
-
-        // price > 10
-        final LiteralConstraint constraint2 = new LiteralConstraint( priceExtractor,
-                                                                     integerGreater,
-                                                                     field10 );
-
-        // type == 'cheddar' && price > 10
-        final AndConstraint and1 = new AndConstraint();
-        and1.addAlphaConstraint( constraint1 );
-        and1.addAlphaConstraint( constraint2 );
-
-        final FieldValue stiltonField = FieldFactory.getFieldValue( "stilton" );
-        // type == 'stilton'
-        final LiteralConstraint constraint3 = new LiteralConstraint( typeExtractor,
-                                                                     stringEqual,
-                                                                     stiltonField );
-
-        final Evaluator integerLess = comparables.getEvaluator( ValueType.INTEGER_TYPE,
-                                                                Operator.LESS );
-
-        // price < 10
-        final LiteralConstraint constraint4 = new LiteralConstraint( priceExtractor,
-                                                                     integerLess,
-                                                                     field10 );
-
-        // type == 'stilton' && price < 10
-        final AndConstraint and2 = new AndConstraint();
-        and2.addAlphaConstraint( constraint3 );
-        and2.addAlphaConstraint( constraint4 );
-
-        // ( type == 'cheddar' && price > 10 ) || ( type == 'stilton' && price < 10 )
-        final OrConstraint constraint = new OrConstraint();
-        constraint.addAlphaConstraint( and1 );
-        constraint.addAlphaConstraint( and2 );
-        final ContextEntry context = constraint.createContextEntry();
-
-        final Cheese cheddar = new Cheese( "cheddar",
-                                           15 );
-
-        final InternalFactHandle cheddarHandle = (InternalFactHandle) workingMemory.insert( cheddar );
-
-        // check constraint
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
-                                          context ) );
-
-        cheddar.setPrice( 5 );
-        assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory,
-                                           context ) );
-
-        cheddar.setType( "stilton" );
-        assertTrue( constraint.isAllowed( cheddarHandle,
-                                          workingMemory,
-                                          context ) );
-
-        cheddar.setPrice( 15 );
-        assertFalse( constraint.isAllowed( cheddarHandle,
-                                           workingMemory,
-                                           context ) );
-    }
-
 }

@@ -117,7 +117,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 sink,
                                                 true );
 
@@ -129,7 +129,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 sink,
                                                 true );
 
@@ -159,7 +159,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 sink,
                                                 true );
 
@@ -172,7 +172,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 sink,
                                                 true );
 
@@ -220,7 +220,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "stilton" );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 sink,
                                                 true );
 
@@ -232,7 +232,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         // Create the Tuple
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             "cheddar" );
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 sink,
                                                 true );
 
@@ -282,12 +282,12 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                             "stilton" );
         // an eval node always has at least a LIAN before it, so, tuples that reach it 
         // always have at least one tuple parent
-        final LeftTuple parentTuple = new LeftTuple( f0,
+        final LeftTupleImpl parentTuple = new LeftTupleImpl( f0,
                                                      null,
                                                      true );
-        final LeftTuple tuple0 = new LeftTuple( parentTuple,
-                                                sink,
-                                                true );
+        final LeftTuple tuple0 = sink.createLeftTuple( parentTuple,
+                                                       sink,
+                                                       true );
 
         // Tuple should pass and propagate 
         node.assertLeftTuple( tuple0,

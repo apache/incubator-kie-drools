@@ -20,7 +20,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.definition.rule.Rule;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
@@ -87,7 +87,7 @@ public class MVELSalienceBuilderTest {
                                      "",
                                      31 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( p );
-        final LeftTuple tuple = new LeftTuple( f0,
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                null,
                                                true );
 
@@ -140,7 +140,7 @@ public class MVELSalienceBuilderTest {
 
         private Salience          salience;
         private Rule              rule;
-        private LeftTuple         tuple;
+        private LeftTupleImpl         tuple;
         private WorkingMemory     wm;
         private final int         result;
         private transient boolean halt;
@@ -153,7 +153,7 @@ public class MVELSalienceBuilderTest {
                                  Person person) {
             wm = ruleBase.newStatefulSession();
             final InternalFactHandle f0 = (InternalFactHandle) wm.insert( person );
-            tuple = new LeftTuple( f0,
+            tuple = new LeftTupleImpl( f0,
                                    null,
                                    true );
             this.salience = salience;

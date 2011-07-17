@@ -114,14 +114,14 @@ public class NotNodeTest extends DroolsTestCase {
     @Test
     public void testNotStandard() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
-        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
 
-        final LeftTuple tuple1 = new LeftTuple( f0,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f0,
                                                 this.node,
                                                 true );
 
@@ -136,7 +136,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );
 
-        assertEquals( new LeftTuple( f0,
+        assertEquals( new LeftTupleImpl( f0,
                                      this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
@@ -161,7 +161,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 1,
                       this.sink.getRetracted() );
 
-        assertEquals( new LeftTuple( f0,
+        assertEquals( new LeftTupleImpl( f0,
                                      this.sink,
                                      true ),
                       ((Object[]) this.sink.getRetracted().get( 0 ))[0] );
@@ -173,7 +173,7 @@ public class NotNodeTest extends DroolsTestCase {
         // assert tuple, will have matches, so no propagation
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
                                                                                                 10 ) );
-        final LeftTuple tuple2 = new LeftTuple( f2,
+        final LeftTupleImpl tuple2 = new LeftTupleImpl( f2,
                                                 this.node,
                                                 true );
         this.node.assertLeftTuple( tuple2,
@@ -218,14 +218,14 @@ public class NotNodeTest extends DroolsTestCase {
     @Test
     public void testNotWithConstraints() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(false);
-        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(false);
+        when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(false);
 
         // assert tuple
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
 
-        final LeftTuple tuple1 = new LeftTuple( f0,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f0,
                                                 this.node,
                                                 true );
 
@@ -240,7 +240,7 @@ public class NotNodeTest extends DroolsTestCase {
         assertLength( 0,
                       this.sink.getRetracted() );
 
-        assertEquals( new LeftTuple( f0,
+        assertEquals( new LeftTupleImpl( f0,
                                      this.sink,
                                      true ),
                       ((Object[]) this.sink.getAsserted().get( 0 ))[0] );
@@ -264,7 +264,7 @@ public class NotNodeTest extends DroolsTestCase {
         // assert tuple, will have no matches, so do assert propagation
         final DefaultFactHandle f2 = (DefaultFactHandle) this.workingMemory.insert( new Cheese( "gouda",
                                                                                                 10 ) );
-        final LeftTuple tuple2 = new LeftTuple( f2,
+        final LeftTupleImpl tuple2 = new LeftTupleImpl( f2,
                                                 this.node,
                                                 true );
         this.node.assertLeftTuple( tuple2,
@@ -286,14 +286,14 @@ public class NotNodeTest extends DroolsTestCase {
      */
     public void TestNotMemoryManagement() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
-        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         try {
             // assert tuple
             final Cheese cheddar = new Cheese( "cheddar",
                                                10 );
             final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.insert( cheddar );
-            final LeftTuple tuple1 = new LeftTuple( f0,
+            final LeftTupleImpl tuple1 = new LeftTupleImpl( f0,
                                                     this.node,
                                                     true );
 
@@ -361,7 +361,7 @@ public class NotNodeTest extends DroolsTestCase {
     @Test
     public void testGetConstraints_ReturnsNullEvenWithEmptyBinder() {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
-        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         final BetaConstraints nullConstraints = EmptyBetaConstraints.getInstance();
 
@@ -388,7 +388,7 @@ public class NotNodeTest extends DroolsTestCase {
     @Test
     public void testAssertTupleSequentialMode() throws Exception {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
-        when( constraint.isAllowedCachedRight( any( LeftTuple.class ), any( ContextEntry.class ) )).thenReturn(true);
+        when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setSequential( true );
@@ -403,7 +403,6 @@ public class NotNodeTest extends DroolsTestCase {
 
         buildContext.setTupleMemoryEnabled( false );
         buildContext.setObjectTypeNodeMemoryEnabled( false );
-        buildContext.setTerminalNodeMemoryEnabled( false );
 
         // override setup, so its working in sequential mode
         this.node = new NotNode( 15,
@@ -420,7 +419,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             "cheese" );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 this.node,
                                                 true );
 

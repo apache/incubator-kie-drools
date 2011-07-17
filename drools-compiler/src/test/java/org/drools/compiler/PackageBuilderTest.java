@@ -71,7 +71,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.builder.BuildContext;
@@ -84,6 +84,7 @@ import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
+import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.rule.TypeDeclaration;
@@ -117,10 +118,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -175,8 +176,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final LeftTuple tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, rule,rule.getLhs(), new BuildContext(ruleBase, null) )  );        
+        final LeftTupleImpl tuple = new MockTuple( new HashMap() );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, rule,rule.getLhs(), 0,new BuildContext(ruleBase, null) )  );        
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -259,8 +260,8 @@ public class PackageBuilderTest extends DroolsTestCase {
         workingMemory.setGlobal( "map",
                                  map );
 
-        final LeftTuple tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, newRule,newRule.getLhs(), new BuildContext(ruleBase, null) )  );
+        final LeftTupleImpl tuple = new MockTuple( new HashMap() );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, null, newRule,newRule.getLhs(), 0, new BuildContext(ruleBase, null) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),
@@ -353,10 +354,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -424,11 +425,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                                  "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
                                                                   "price" );
-        pattern.addBinding( fieldBindingDescr2 );
+        pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -503,10 +504,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -977,10 +978,10 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                            "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
         fieldBindingDescr = new BindingDescr( "y",
                                               "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -1004,11 +1005,11 @@ public class PackageBuilderTest extends DroolsTestCase {
 
         final BindingDescr fieldBindingDescr = new BindingDescr( "x",
                                                                  "price" );
-        pattern.addBinding( fieldBindingDescr );
+        pattern.addConstraint( fieldBindingDescr );
 
         final BindingDescr fieldBindingDescr2 = new BindingDescr( "y",
                                                                   "price" );
-        pattern.addBinding( fieldBindingDescr2 );
+        pattern.addConstraint( fieldBindingDescr2 );
 
         packageDescr.addGlobal( new GlobalDescr( "map",
                                                  "java.util.Map" ) );
@@ -1186,12 +1187,12 @@ public class PackageBuilderTest extends DroolsTestCase {
         private Rule               rule;
         private int                salience;
         private final GroupElement subrule;
-        private LeftTuple          tuple;
+        private LeftTupleImpl          tuple;
 
         public MockActivation(final Rule rule,
                               int salience,
                               final GroupElement subrule,
-                              final LeftTuple tuple) {
+                              final LeftTupleImpl tuple) {
             this.rule = rule;
             this.salience = salience;
             this.tuple = tuple;
@@ -1206,7 +1207,7 @@ public class PackageBuilderTest extends DroolsTestCase {
             return this.salience;
         }
 
-        public LeftTuple getTuple() {
+        public LeftTupleImpl getTuple() {
             return this.tuple;
         }
 
@@ -1292,7 +1293,7 @@ public class PackageBuilderTest extends DroolsTestCase {
 
     class MockTuple
         extends
-        LeftTuple {
+        LeftTupleImpl {
         private Map declarations;
 
         public MockTuple(final Map declarations) {

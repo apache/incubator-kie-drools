@@ -113,6 +113,14 @@ public abstract class AbstractFactHandleFactory
      */
     public abstract FactHandleFactory newInstance();
     
+    public AtomicInteger getAtomicId() {
+        return this.id;
+    }
+    
+    public AtomicLong getAtomicRecency() {
+        return this.counter;
+    }    
+    
     public int getId() {
         return this.id.get();
     }

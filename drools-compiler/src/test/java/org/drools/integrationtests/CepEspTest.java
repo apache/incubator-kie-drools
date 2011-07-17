@@ -22,8 +22,10 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
@@ -43,6 +45,7 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.EventFactHandle;
@@ -77,6 +80,7 @@ import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -160,6 +164,42 @@ public class CepEspTest {
         return kbase;
     }
 
+    @Test
+    public void testComplexTimestamp() {
+        String rule = "";
+        rule += "package " + Message.class.getPackage().getName() + "\n" +
+                "declare " + Message.class.getCanonicalName() + "\n" +
+        		 "   @role( event ) \n" +
+        		 "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
+        		 "   @duration( getProperties().get( 'duration' )+1 ) \n" +
+        		"end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Message msg = new Message();
+        Properties props = new Properties();
+        props.put( "timestamp", new Integer( 99 ) );
+        props.put( "duration", new Integer( 52 ) );
+        msg.setProperties( props );
+        
+        EventFactHandle efh = ( EventFactHandle ) ksession.insert( msg );
+        assertEquals( 98, efh.getStartTimestamp() );
+        assertEquals( 53, efh.getDuration() );
+
+    }    
+    
     @Test
     public void testEventAssertion() throws Exception {
         // read in the source
@@ -500,6 +540,50 @@ public class CepEspTest {
         // the expiration policy @expires(10m) should override the temporal operator usage 
         assertEquals( parser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
+    }
+
+    @Test
+    public void testEventExpiration4() throws Exception {
+        // read in the source
+        final Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_CEP_EventExpiration4.drl" ) );
+        final KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( reader,
+                                                       conf );
+
+        final KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+
+        WorkingMemoryEntryPoint eventStream = ksession.getWorkingMemoryEntryPoint( "Event Stream" );
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        final List results = new ArrayList();
+        ksession.setGlobal( "results",
+                            results );
+
+        EventFactHandle handle1 = (EventFactHandle) eventStream.insert( new StockTick( 1,
+                                                                                       "ACME",
+                                                                                       50,
+                                                                                       System.currentTimeMillis(),
+                                                                                       3 ) );
+
+        ksession.fireAllRules();
+
+        clock.advanceTime( 11,
+                           TimeUnit.SECONDS );
+        /** clock.advance() will put the event expiration in the queue to be executed, 
+            but it has to wait for a "thread" to do that
+            so we fire rules again here to get that
+            alternative could run fireUntilHalt() **/
+        ksession.fireAllRules();
+
+        assertTrue( results.size() == 1 );
+        assertTrue( handle1.isExpired() );
+        assertFalse( ksession.getFactHandles().contains( handle1 ) );
     }
 
     @Test
@@ -1729,6 +1813,18 @@ public class CepEspTest {
         implements
         Serializable {
     }
+    
+    public static class Message {
+        private Properties properties;
+
+        public Properties getProperties() {
+            return properties;
+        }
+
+        public void setProperties(Properties properties) {
+            this.properties = properties;
+        }
+    }
 
     @Test
     public void testStreamModeNoSerialization() throws IOException,
@@ -2006,6 +2102,150 @@ public class CepEspTest {
         int rules = ksession.fireAllRules();
         assertEquals( 2,
                       rules );
+    }
+
+    @Test
+    public void testTemporalOperatorsInfinity() throws Exception {
+        // read in the source
+        final RuleBaseConfiguration kbconf = new RuleBaseConfiguration();
+        kbconf.setEventProcessingMode( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( "test_CEP_TemporalOperators3.drl",
+                                                 kbconf,
+                                                 true );
+
+        KnowledgeSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
+                                                                               null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
+
+        clock.advanceTime( 1000,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 1,
+                                  "A",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 2,
+                                  "B",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        ep.insert( new StockTick( 3,
+                                  "B",
+                                  10,
+                                  clock.getCurrentTime() ) );
+        clock.advanceTime( 8,
+                           TimeUnit.SECONDS );
+        int rules = ksession.fireAllRules();
+        assertEquals( 3,
+                      rules );
+    }
+
+    @Test
+    public void testMultipleSlidingWindows() throws IOException,
+                                            ClassNotFoundException {
+        String str = "declare A\n" +
+                     "    @role( event )\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "declare B\n" +
+                     "    @role( event )\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "rule launch\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( new A( 1 ) );\n" +
+                     "    insert( new A( 2 ) );\n" +
+                     "    insert( new B( 1 ) );\n" +
+                     "    insert( new A( 3 ) );\n" +
+                     "    insert( new B( 2 ) );\n" +
+                     "end\n" +
+                     "rule \"ab\"\n" +
+                     "when\n" +
+                     "    A( $a : id ) over window:length( 1 )\n" +
+                     "    B( $b : id ) over window:length( 1 )\n" +
+                     "then\n" +
+                     "    //System.out.println(\"AB: ( \"+$a+\", \"+$b+\" )\");\n" +
+                     "end\n" +
+                     "rule \"ba\"\n" +
+                     "when\n" +
+                     "    B( $b : id ) over window:length( 1 )\n" +
+                     "    A( $a : id ) over window:length( 1 )\n" +
+                     "then\n" +
+                     "    //System.out.println(\"BA: ( \"+$b+\", \"+$a+\" )\");\n" +
+                     "end";
+
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
+                                                 config );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        ksession.fireAllRules();
+
+        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 7 ) ).afterActivationFired( captor.capture() );
+
+        List<AfterActivationFiredEvent> values = captor.getAllValues();
+        // first rule
+        Activation act = values.get( 0 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "launch" ) );
+        
+        // second rule
+        act = values.get( 1 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ba" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 2 ) );
+        
+        // third rule
+        act = values.get( 2 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ab" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 2 ) );
+        
+        // fourth rule
+        act = values.get( 3 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ba" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+        // fifth rule
+        act = values.get( 4 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ab" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+        // sixth rule
+        act = values.get( 5 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ba" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 2 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+        // seventh rule
+        act = values.get( 6 ).getActivation();
+        assertThat( act.getRule().getName(),
+                    is( "ab" ) );
+        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 2 ) );
+        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
+        
+
     }
 
 }

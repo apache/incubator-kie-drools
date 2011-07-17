@@ -691,15 +691,9 @@ public class ExtensibleXmlParser extends DefaultHandler {
             xsd = systemId;
         }
 
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-
-        if ( cl == null ) {
-            cl = ExtensibleXmlParser.class.getClassLoader();
-        }
-
         // Try looking in META-INF
         {
-            final InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
+            final InputStream is = classLoader.getResourceAsStream( "META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -707,7 +701,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         // Try looking in /META-INF
         {
-            final InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
+            final InputStream is = classLoader.getResourceAsStream( "/META-INF/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -715,7 +709,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
 
         // Try looking at root of classpath
         {
-            final InputStream is = cl.getResourceAsStream( "/" + xsd );
+            final InputStream is = classLoader.getResourceAsStream( "/" + xsd );
             if ( is != null ) {
                 return new InputSource( is );
             }
@@ -729,32 +723,6 @@ public class ExtensibleXmlParser extends DefaultHandler {
             }
         }
 
-        cl = ClassLoader.getSystemClassLoader();
-
-        // Try looking in META-INF
-        {
-            final InputStream is = cl.getResourceAsStream( "META-INF/" + xsd );
-            if ( is != null ) {
-                return new InputSource( is );
-            }
-        }
-
-        // Try looking in /META-INF
-        {
-            final InputStream is = cl.getResourceAsStream( "/META-INF/" + xsd );
-            if ( is != null ) {
-                return new InputSource( is );
-            }
-        }
-
-        // Try looking at root of classpath
-        {
-            final InputStream is = cl.getResourceAsStream( "/" + xsd );
-            if ( is != null ) {
-                return new InputSource( is );
-            }
-        }
-
         return null;
     }
 
@@ -765,7 +733,8 @@ public class ExtensibleXmlParser extends DefaultHandler {
         final String entityResolveClazzName = System.getProperty( ExtensibleXmlParser.ENTITY_RESOLVER_PROPERTY_NAME );
         if ( entityResolveClazzName != null && entityResolveClazzName.length() > 0 ) {
             try {
-                final Class entityResolverClazz = Thread.currentThread().getContextClassLoader().loadClass( entityResolveClazzName );
+
+                final Class entityResolverClazz = classLoader.loadClass( entityResolveClazzName );
                 this.entityResolver = (EntityResolver) entityResolverClazz.newInstance();
             } catch ( final Exception ignoreIt ) {
             }

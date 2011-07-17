@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,42 +38,58 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.junit.Ignore;
+import org.junit.Test;
 
-/**
- * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 3, 2008 Time: 11:19:44 AM To change this template use File |
- * Settings | File Templates.
- */
 public class DroolsObjectIOTest {
 
-    private static final String TEST_FILE   = "test.dat";
-    private static final GroupElement   testGroupElement    = new GroupElement();
+    private static class FooBar implements Serializable {
 
-    static class FooBar implements Serializable {
+        private String value = "hello";
+
         public FooBar() {
-            
         }
-        String  str = TEST_FILE;
-    }
-    
-    public DroolsObjectIOTest() {
-        
     }
 
-    @org.junit.Test
+    @Test
     public void testFileIO() throws Exception {
-        File    file    = new File(getClass().getResource("DroolsObjectIOTest.class").getFile());
-        ByteArrayOutputStream   bytes   = new ByteArrayOutputStream();
-        new ObjectOutputStream(bytes).writeObject(new FooBar());
-        FooBar    t   = (FooBar)new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray())).readObject();
-        String  str = TEST_FILE;
-        file    = new File(file.getParent().replaceAll("%20", " "), str);
+        FooBar fooBar1 = new FooBar();
+        ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+        new ObjectOutputStream(byteArrayOut).writeObject(fooBar1);
+        ByteArrayInputStream byteArrayIn = new ByteArrayInputStream(byteArrayOut.toByteArray());
+        FooBar fooBar2 = (FooBar) new ObjectInputStream(byteArrayIn).readObject();
 
-        DroolsStreamUtils.streamOut(new FileOutputStream(file), testGroupElement);
+        final File testFile = new File("target/test/DroolsObjectIOTest_testFileIO.dat");
+        testFile.getParentFile().mkdirs();
+        GroupElement testGroupElement = new GroupElement();
+        DroolsStreamUtils.streamOut(new FileOutputStream(testFile), testGroupElement);
 
-        InputStream         fis = getClass().getResourceAsStream(TEST_FILE);
+        InputStream fis = new FileInputStream(testFile);
+        GroupElement streamedGroupElement = (GroupElement) DroolsStreamUtils.streamIn(new FileInputStream(testFile));
 
-        GroupElement    that    = (GroupElement)DroolsStreamUtils.streamIn(fis);
-        assertEquals(that, testGroupElement);
+        assertEquals(streamedGroupElement, testGroupElement);
+    }
+
+    public static class SerializableObject implements Serializable {
+        protected int value = 123;
+        protected String name;
+
+        public SerializableObject() {
+            this("SerializableObject");
+        }
+        public SerializableObject(String name) {
+            this.name   = name;
+        }
+
+        // TODO bug: breaks equals - hashcode contract
+        public boolean equals(Object obj) {
+            if (obj instanceof SerializableObject) {
+                return value == ((SerializableObject)obj).value;
+            }
+            return false;
+        }
+        public String toString() {
+            return new StringBuilder(name).append('|').append(value).toString();
+        }
     }
 
     public static class ExternalizableObject extends SerializableObject implements Externalizable {
@@ -90,29 +107,7 @@ public class DroolsObjectIOTest {
         }
     }
 
-    public static class SerializableObject implements Serializable {
-        protected int value = 123;
-        protected String    name;
-
-        public SerializableObject() {
-            this("SerializableObject");
-        }
-        public SerializableObject(String name) {
-            this.name   = name;
-        }
-
-        public boolean equals(Object obj) {
-            if (obj instanceof SerializableObject) {
-                return value == ((SerializableObject)obj).value;
-            }
-            return false;
-        }
-        public String toString() {
-            return new StringBuilder(name).append('|').append(value).toString();
-        }
-    }
-
-    @org.junit.Test
+    @Test
     public void testObject() throws Exception {
         SerializableObject    obj = new ExternalizableObject();
 
@@ -154,7 +149,7 @@ public class DroolsObjectIOTest {
         return bytes.toByteArray();
     }
 
-    @org.junit.Test
+    @Test
     public void testStreaming() throws Exception {
         Package pkg = new Package("test");
 

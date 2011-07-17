@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
@@ -84,8 +86,6 @@ public class FromNode extends LeftTupleSource
         tupleSource = (LeftTupleSource) in.readObject();
         alphaConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
         betaConstraints = (BetaConstraints) in.readObject();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
     }
 
@@ -95,8 +95,6 @@ public class FromNode extends LeftTupleSource
         out.writeObject( tupleSource );
         out.writeObject( alphaConstraints );
         out.writeObject( betaConstraints );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
         out.writeBoolean( tupleMemoryEnabled );
     }
 
@@ -109,12 +107,20 @@ public class FromNode extends LeftTupleSource
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
         Map<Object, RightTuple> matches = null;
-        if ( this.tupleMemoryEnabled ) {
-            memory.betaMemory.getLeftTupleMemory().add( leftTuple );
-            matches = new LinkedHashMap<Object, RightTuple>();
-            memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                       matches );
+        boolean useLeftMemory = true;       
+        if ( !this.tupleMemoryEnabled ) {
+            // This is a hack, to not add closed DroolsQuery objects
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
+                useLeftMemory = false;
+            }
         }
+
+        if ( useLeftMemory ) {
+            memory.betaMemory.getLeftTupleMemory().add( leftTuple );
+            matches = new HashMap<Object, RightTuple>();
+            leftTuple.setObject( matches );
+        }         
 
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
@@ -178,9 +184,9 @@ public class FromNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( createLeftTuple( factHandle,
+                                              this,
+                                              true ),
                              context,
                              workingMemory );
         }
@@ -195,10 +201,9 @@ public class FromNode extends LeftTupleSource
 
         memory.betaMemory.getLeftTupleMemory().removeAdd( leftTuple );
 
-        final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
-        final Map<Object, RightTuple> newMatches = new LinkedHashMap<Object, RightTuple>();
-        memory.betaMemory.getCreatedHandles().put( leftTuple,
-                                                   newMatches );
+        final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) leftTuple.getObject();
+        final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
+        leftTuple.setObject( newMatches );
 
         this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
                                               workingMemory,
@@ -310,7 +315,7 @@ public class FromNode extends LeftTupleSource
                                                       workingMemory );
 
         }
-        workingMemory.getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
+        //workingMemory.getFactHandleFactory().destroyFactHandle( rightTuple.getFactHandle() );
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
@@ -331,12 +336,12 @@ public class FromNode extends LeftTupleSource
     private void destroyCreatedHandles(final InternalWorkingMemory workingMemory,
                                        final FromMemory memory,
                                        final LeftTuple leftTuple) {
-        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().remove( leftTuple );
+        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
         FastIterator rightIt = LinkedList.fastIterator;
         for ( RightTuple rightTuple : matches.values() ) {
             for ( RightTuple current = rightTuple; current != null; ) {
                 RightTuple next = (RightTuple) rightIt.next( current );
-                workingMemory.getFactHandleFactory().destroyFactHandle( current.getFactHandle() );
+                //workingMemory.getFactHandleFactory().destroyFactHandle( current.getFactHandle() );
                 current.unlinkFromRightParent();
                 current = next;
             }
@@ -407,17 +412,34 @@ public class FromNode extends LeftTupleSource
         FastIterator rightIter = LinkedList.fastIterator;
         final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) memory.betaMemory.getCreatedHandles().get( leftTuple );
+            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuples ) ) {
-                    sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                         rightTuple,
-                                                         null,
-                                                         null,
-                                                         sink,
-                                                         this.tupleMemoryEnabled ),
-                                          context,
-                                          workingMemory );
+                    boolean isAllowed = true;
+                    if ( this.alphaConstraints != null ) {
+                        // First alpha node filters
+                        for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
+                            if ( !this.alphaConstraints[i].isAllowed( rightTuple.getFactHandle(),
+                                                                      workingMemory,
+                                                                      memory.alphaContexts[i] ) ) {
+                                // next iteration
+                                isAllowed = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
+                                                                                rightTuple.getFactHandle() ) ) {
+                        sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                                    rightTuple,
+                                                                    null,
+                                                                    null,
+                                                                    sink,
+                                                                    this.tupleMemoryEnabled ),
+                                              context,
+                                              workingMemory );
+                    }                                      
                 }
             }
         }
@@ -478,7 +500,7 @@ public class FromNode extends LeftTupleSource
 
     public short getType() {
         return NodeTypeEnums.FromNode;
-    }
+    } 
 
     public static class FromMemory
         implements
@@ -500,5 +522,31 @@ public class FromNode extends LeftTupleSource
             }
         }
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new FromNodeLeftTuple(leftTuple, sink, leftTupleMemoryEnabled );
+    }
 
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }      
 }

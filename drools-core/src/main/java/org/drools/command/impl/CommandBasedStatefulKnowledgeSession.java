@@ -76,6 +76,7 @@ import org.drools.command.runtime.rule.UpdateCommand;
 import org.drools.event.process.ProcessEventListener;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.impl.StatefulKnowledgeSessionImpl.AgendaFilterWrapper;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.rule.EntryPoint;
@@ -249,6 +250,10 @@ public class CommandBasedStatefulKnowledgeSession
 
     public int fireAllRules(AgendaFilter agendaFilter) {
         return this.commandService.execute( new FireAllRulesCommand( agendaFilter ) );
+    }
+
+    public int fireAllRules(AgendaFilter agendaFilter, int max) {
+        return this.commandService.execute( new FireAllRulesCommand( agendaFilter, max ) );
     }
 
     public void fireUntilHalt() {
@@ -473,7 +478,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public <T> T execute(Command<T> command) {
-        return (T) this.commandService.execute( new ExecuteCommand( command ) );
+        return (T) this.commandService.execute( command );
     }
 
     public QueryResults getQueryResults(String query,

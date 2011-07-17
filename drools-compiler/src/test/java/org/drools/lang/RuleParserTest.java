@@ -144,7 +144,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getTarget() );
         assertEquals( source.indexOf( "import " + impdescr.getTarget() ),
                       impdescr.getStartCharacter() );
-        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length() + 1,
+        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length(),
                       impdescr.getEndCharacter() );
 
         impdescr = pkg.getImports().get( 1 );
@@ -152,7 +152,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getTarget() );
         assertEquals( source.indexOf( "import " + impdescr.getTarget() ),
                       impdescr.getStartCharacter() );
-        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length() + 1,
+        assertEquals( source.indexOf( "import " + impdescr.getTarget() ) + ("import " + impdescr.getTarget()).length(),
                       impdescr.getEndCharacter() );
     }
 
@@ -202,7 +202,7 @@ public class RuleParserTest extends TestCase {
                       impdescr.getTarget() );
         assertEquals( source.indexOf( "import function " + impdescr.getTarget() ),
                       impdescr.getStartCharacter() );
-        assertEquals( source.indexOf( "import function " + impdescr.getTarget() ) + ("import function " + impdescr.getTarget()).length() + 1,
+        assertEquals( source.indexOf( "import function " + impdescr.getTarget() ) + ("import function " + impdescr.getTarget()).length(),
                       impdescr.getEndCharacter() );
 
     }
@@ -241,7 +241,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( source.indexOf( "global " + global.getType() ),
                       global.getStartCharacter() );
         assertEquals( source.indexOf( "global " + global.getType() + " " + global.getIdentifier() ) +
-                              ("global " + global.getType() + " " + global.getIdentifier()).length() + 1,
+                              ("global " + global.getType() + " " + global.getIdentifier()).length(),
                       global.getEndCharacter() );
 
         global = pkg.getGlobals().get( 1 );
@@ -790,7 +790,7 @@ public class RuleParserTest extends TestCase {
         assertNotNull( rule );
 
         AndDescr lhs = rule.getLhs();
-        ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 0 );
+        ExprConstraintDescr constr = (ExprConstraintDescr) ((PatternDescr) lhs.getDescrs().get( 0 )).getDescrs().get( 1 );
 
         assertEquals( "type == \"s\\tti\\\"lto\\nn\"",
                       constr.getText() );
@@ -920,7 +920,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testSimpleMethodCallWithFrom() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
-                                                              "test_SimpleMethodCallWithFrom.drl" );
+                                                          "test_SimpleMethodCallWithFrom.drl" );
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
@@ -1053,13 +1053,11 @@ public class RuleParserTest extends TestCase {
 
         // no constraints, only a binding
         fieldAnd = (AndDescr) second.getConstraint();
-        assertEquals( 0,
+        assertEquals( 1,
                       fieldAnd.getDescrs().size() );
 
-        final BindingDescr binding = second.getBindings().get( 0 );
-        assertEquals( "a4",
-                      binding.getVariable() );
-        assertEquals( "a==4",
+        final ExprConstraintDescr binding = (ExprConstraintDescr) second.getConstraint().getDescrs().get( 0 );
+        assertEquals( "a4:a==4",
                       binding.getExpression() );
 
         // Check third pattern
@@ -1235,13 +1233,11 @@ public class RuleParserTest extends TestCase {
                       second.getObjectType() );
 
         assertEquals( 1,
-                      second.getBindings().size() );
+                      second.getDescrs().size() );
 
-        final BindingDescr fieldBindingDescr = second.getBindings().get( 0 );
-        assertEquals( "a==4",
+        final ExprConstraintDescr fieldBindingDescr = (ExprConstraintDescr) second.getDescrs().get( 0 );
+        assertEquals( "a4:a==4",
                       fieldBindingDescr.getExpression() );
-        assertEquals( "a4",
-                      fieldBindingDescr.getVariable() );
 
         // Check third pattern
         final PatternDescr third = (PatternDescr) lhs.getDescrs().get( 2 );
@@ -1361,13 +1357,11 @@ public class RuleParserTest extends TestCase {
                       second.getObjectType() );
 
         assertEquals( 1,
-                      second.getBindings().size() );
+                      second.getDescrs().size() );
         // check it has field bindings.
-        final BindingDescr bindingDescr = second.getBindings().get( 0 );
-        assertEquals( "a==4",
+        final ExprConstraintDescr bindingDescr = (ExprConstraintDescr) second.getDescrs().get( 0 );
+        assertEquals( "a4:a==4",
                       bindingDescr.getExpression() );
-        assertEquals( "a4",
-                      bindingDescr.getVariable() );
     }
 
     @Test
@@ -1585,12 +1579,10 @@ public class RuleParserTest extends TestCase {
         final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
-        assertEquals( 0,
-                      cheese.getConstraint().getDescrs().size() );
         assertEquals( 1,
-                      cheese.getBindings().size() );
-        final BindingDescr fieldBinding = (BindingDescr) cheese.getBindings().get( 0 );
-        assertEquals( "type",
+                      cheese.getConstraint().getDescrs().size() );
+        final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get( 0 );
+        assertEquals( "$type:type",
                       fieldBinding.getExpression() );
     }
 
@@ -1607,18 +1599,20 @@ public class RuleParserTest extends TestCase {
         final PatternDescr cheese = (PatternDescr) lhs.getDescrs().get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
-        assertEquals( 2,
-                      lhs.getDescrs().size() );
-        BindingDescr fieldBinding = (BindingDescr) cheese.getBindings().get( 0 );
-        assertEquals( "type == \"stilton\"",
+        assertEquals( 1,
+                      cheese.getDescrs().size() );
+        ExprConstraintDescr fieldBinding = (ExprConstraintDescr) cheese.getDescrs().get( 0 );
+        assertEquals( "$type : type == \"stilton\"",
                       fieldBinding.getExpression() );
 
         final PatternDescr person = (PatternDescr) lhs.getDescrs().get( 1 );
-        fieldBinding = (BindingDescr) person.getBindings().get( 0 );
-        assertEquals( "name == \"bob\"",
+        assertEquals( 2,
+                      person.getDescrs().size() );
+        fieldBinding = (ExprConstraintDescr) person.getDescrs().get( 0 );
+        assertEquals( "$name : name == \"bob\"",
                       fieldBinding.getExpression() );
 
-        ExprConstraintDescr fld = (ExprConstraintDescr) person.getConstraint().getDescrs().get( 0 );
+        ExprConstraintDescr fld = (ExprConstraintDescr) person.getDescrs().get( 1 );
         assertEquals( "likes == $type",
                       fld.getExpression() );
     }
@@ -1962,15 +1956,13 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
         AndDescr and = (AndDescr) col.getConstraint();
-        assertEquals( 1,
+        assertEquals( 2,
                       and.getDescrs().size() );
 
-        final BindingDescr field = (BindingDescr) col.getBindings().get( 0 );
-        final ExprConstraintDescr pred = (ExprConstraintDescr) and.getDescrs().get( 0 );
-        assertEquals( "age",
+        final ExprConstraintDescr field = (ExprConstraintDescr) col.getDescrs().get( 0 );
+        final ExprConstraintDescr pred = (ExprConstraintDescr) and.getDescrs().get( 1 );
+        assertEquals( "$age2:age",
                       field.getExpression() );
-        assertEquals( "$age2",
-                      field.getVariable() );
         assertEqualsIgnoreWhitespace( "$age2 == $age1+2",
                                       pred.getExpression() );
     }
@@ -1988,9 +1980,9 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
 
         PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        final BindingDescr fieldBinding = (BindingDescr) pattern.getBindings().get( 0 );
-        assertEquals( "$likes",
-                      fieldBinding.getVariable() );
+        final ExprConstraintDescr fieldBinding = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "$likes:like",
+                      fieldBinding.getExpression() );
 
         final NotDescr not = (NotDescr) rule.getLhs().getDescrs().get( 1 );
         pattern = (PatternDescr) not.getDescrs().get( 0 );
@@ -3084,7 +3076,7 @@ public class RuleParserTest extends TestCase {
 
         assertEquals( "max",
                       functions.get( 2 ).getFunction() );
-        assertEquals( null,
+        assertEquals( "$M1",
                       functions.get( 2 ).getBind() );
         assertEquals( "$price",
                       functions.get( 2 ).getParams()[0] );
@@ -3825,28 +3817,144 @@ public class RuleParserTest extends TestCase {
         final String text = "rule X when $p := Person( $name := name, $loc : location ) then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
                                                                   text )).getLhs().getDescrs().get( 0 );
-        
+
         assertEquals( "$p",
                       pattern.getIdentifier() );
         assertTrue( pattern.isUnification() );
 
-        assertEquals( 2, 
-                      pattern.getBindings().size() );
-        BindingDescr bindingDescr = pattern.getBindings().get( 0 );
-        assertEquals( "$name",
-                      bindingDescr.getVariable() );
-        assertEquals( "name",
+        assertEquals( 2,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "$name := name",
                       bindingDescr.getExpression() );
-        assertTrue( bindingDescr.isUnification() );
 
-        bindingDescr = pattern.getBindings().get( 1 );
-        assertEquals( "$loc",
-                      bindingDescr.getVariable() );
-        assertEquals( "location",
+        bindingDescr = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "$loc : location",
                       bindingDescr.getExpression() );
-        assertFalse( bindingDescr.isUnification() );
 
+    }
+
+    @Test
+    public void testBindingComposite() throws Exception {
+        final String text = "rule X when Person( $name : name == \"Bob\" || $loc : location == \"Montreal\" ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        assertFalse( pattern.isUnification() );
+
+//        assertEquals( 2,
+//                      pattern.getDescrs().size() );
+//        BindingDescr bindingDescr = pattern.getDescrs().get( 0 );
+//        assertEquals( "$name",
+//                      bindingDescr.getVariable() );
+//        assertEquals( "name",
+//                      bindingDescr.getExpression() );
+//        assertFalse( bindingDescr.isUnification() );
+//
+//        bindingDescr = pattern.getDescrs().get( 1 );
+//        assertEquals( "$loc",
+//                      bindingDescr.getVariable() );
+//        assertEquals( "location",
+//                      bindingDescr.getExpression() );
+//        assertFalse( bindingDescr.isUnification() );
+
+        // embedded bindings are extracted at compile time
+        List<?> constraints = pattern.getDescrs();
+        assertEquals( 1, 
+                      constraints.size() );
+        assertEquals( "$name : name == \"Bob\" || $loc : location == \"Montreal\"",
+                      ((ExprConstraintDescr)constraints.get( 0 )).getExpression() );
+    }
+
+    @Test
+    public void testBindingCompositeWithMethods() throws Exception {
+        final String text = "rule X when Person( $name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\" ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        assertFalse( pattern.isUnification() );
+
+//        assertEquals( 2,
+//                      pattern.getDescrs().size() );
+//        BindingDescr bindingDescr = pattern.getDescrs().get( 0 );
+//        assertEquals( "$name",
+//                      bindingDescr.getVariable() );
+//        assertEquals( "name.toUpperCase()",
+//                      bindingDescr.getExpression() );
+//        assertFalse( bindingDescr.isUnification() );
+//
+//        bindingDescr = pattern.getDescrs().get( 1 );
+//        assertEquals( "$loc",
+//                      bindingDescr.getVariable() );
+//        assertEquals( "location[0].city",
+//                      bindingDescr.getExpression() );
+//        assertFalse( bindingDescr.isUnification() );
         
+        // embedded bindings are extracted at compile time
+        List<?> constraints = pattern.getDescrs();
+        assertEquals( 1, 
+                      constraints.size() );
+        assertEquals( "$name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\"",
+                      ((ExprConstraintDescr)constraints.get( 0 )).getExpression() );
+    }
+
+    @Test
+    public void testPluggableOperators2() throws Exception {
+        final String text = "rule \"tt\"\n" +
+                            "    dialect \"mvel\"\n" +
+                            "when\n" +
+                            "    exists (TelephoneCall( this finishes [1m] \"25-May-2011\" ))\n" +
+                            "then\n" +
+                            "end";
+        PatternDescr pattern = (PatternDescr) ((ExistsDescr) ((RuleDescr) parse( "rule",
+                                                                                 text )).getLhs().getDescrs().get( 0 )).getDescrs().get( 0 );
+
+        assertEquals( "TelephoneCall",
+                      pattern.getObjectType() );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        assertEquals( "this finishes [1m] \"25-May-2011\"",
+                      constr.getText() );
+
+    }
+
+    @Test
+    public void testInlineEval() throws Exception {
+        final String text = "rule \"inline eval\"\n" +
+                            "when\n" +
+                            "    Person( eval( name.startsWith(\"b\") && name.finishesWith(\"b\")) )\n" +
+                            "then\n" +
+                            "end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( "Person",
+                      pattern.getObjectType() );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        assertEquals( "eval( name.startsWith(\"b\") && name.finishesWith(\"b\"))",
+                      constr.getText() );
+
+    }
+
+    @Test
+    public void testInfinityLiteral() throws Exception {
+        final String text = "rule \"infinity\"\n" +
+                            "when\n" +
+                            "    StockTick( this after[-*,*] $another )\n" +
+                            "then\n" +
+                            "end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( "StockTick",
+                      pattern.getObjectType() );
+        ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
+        assertEquals( "this after[-*,*] $another",
+                      constr.getText() );
+
     }
 
     private Object parse( final String parserRuleName,
@@ -3876,10 +3984,18 @@ public class RuleParserTest extends TestCase {
         try {
             createParser( charStream );
             /** Use Reflection to get rule method from parser */
-            Method ruleName = DRLParser.class.getMethod( testRuleName );
+            Method ruleName = null;
+            Object[] params = null;
+            for( Method method : DRLParser.class.getMethods() ) {
+                if( method.getName().equals( testRuleName ) ) {
+                    ruleName = method;
+                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    params = new Object[parameterTypes.length];
+                }
+            }
 
             /** Invoke grammar rule, and get the return value */
-            Object ruleReturn = ruleName.invoke( parser );
+            Object ruleReturn = ruleName.invoke( parser, params );
 
             if ( parser.hasErrors() ) {
                 System.out.println( parser.getErrorMessages() );

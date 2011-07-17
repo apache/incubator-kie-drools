@@ -355,6 +355,89 @@ public class CompositeObjectSinkAdapterTest {
                       ad.hashableSinks.size() );
         assertNull( ad.hashedSinkMap );
     }
+    
+    @Test
+    public void testTripleAlphaObjectCharacterConstraint() {
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
+        InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                          "charObjectType",
+                                                          this.getClass().getClassLoader() );
+
+        final LiteralConstraint lit = new LiteralConstraint( extractor,
+                                                             equals.getEvaluator( extractor.getValueType(),
+                                                                                  Operator.EQUAL ),
+                                                             new LongFieldImpl( 65 ) ); // chars are handled as integers
+        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
+                                            lit,
+                                            new MockObjectSource( buildContext.getNextId() ),
+                                            buildContext );
+
+        ad.addObjectSink( al );
+
+        assertNull( ad.otherSinks );
+        assertNotNull( ad.hashedFieldIndexes );
+        assertEquals( 1,
+                      ad.hashableSinks.size() );
+        assertEquals( al,
+                      ad.getSinks()[0] );
+
+        final LiteralConstraint lit2 = new LiteralConstraint( extractor,
+                                                              equals.getEvaluator( extractor.getValueType(),
+                                                                                   Operator.EQUAL ),
+                                                              new LongFieldImpl( 66 ) );
+        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
+                                             lit2,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+
+        ad.addObjectSink( al2 );
+
+        assertNull( ad.hashedSinkMap );
+        assertEquals( 2,
+                      ad.hashableSinks.size() );
+
+        final LiteralConstraint lit3 = new LiteralConstraint( extractor,
+                                                              equals.getEvaluator( extractor.getValueType(),
+                                                                                   Operator.EQUAL ),
+                                                              new LongFieldImpl( 67 ) );
+        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
+                                             lit3,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+        ad.addObjectSink( al3 );
+
+        //this should now be nicely hashed.
+        assertNotNull( ad.hashedSinkMap );
+        assertNull( ad.hashableSinks );
+
+        // test propagation
+        Cheese cheese = new Cheese();
+        cheese.setCharObjectType( 'B' );
+        CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
+
+        // should find this
+        hashKey.setValue( extractor.getIndex(),
+                          cheese,
+                          extractor );
+        ObjectSink sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
+        assertSame( al2,
+                    sink );
+
+        // should not find this one
+        cheese.setCharObjectType( 'X' );
+        hashKey.setValue( extractor.getIndex(),
+                          cheese,
+                          extractor );
+        sink = (ObjectSink) ad.hashedSinkMap.get( hashKey );
+        assertNull( sink );
+
+        //now remove one, check the hashing is undone
+        ad.removeObjectSink( al2 );
+        assertNotNull( ad.hashableSinks );
+        assertEquals( 2,
+                      ad.hashableSinks.size() );
+        assertNull( ad.hashedSinkMap );
+    }    
 
     @Test
     public void testPropagationWithNullValue() {
@@ -670,5 +753,32 @@ public class CompositeObjectSinkAdapterTest {
             // TODO Auto-generated method stub
             
         }
+
+        public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
+        }    
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new LeftTupleImpl(leftTuple,sink, leftTupleMemoryEnabled );
+        }
+
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTupleSink sink) {
+            return new LeftTupleImpl(leftTuple, rightTuple, sink );
+        }   
+        
+        public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                         RightTuple rightTuple,
+                                         LeftTuple currentLeftChild,
+                                         LeftTuple currentRightChild,
+                                         LeftTupleSink sink,
+                                         boolean leftTupleMemoryEnabled) {
+            return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        }                
     }
 }

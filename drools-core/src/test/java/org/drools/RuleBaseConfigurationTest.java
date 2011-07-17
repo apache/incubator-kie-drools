@@ -120,5 +120,21 @@ public class RuleBaseConfigurationTest {
         assertEquals( SequentialAgenda.DYNAMIC, cfg.getSequentialAgenda() );
         assertTrue( cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory );
     }
+
+    @Test
+    public void testLRUnlinking() {
+        RuleBaseConfiguration cfg = new RuleBaseConfiguration();
+        assertEquals( false,
+                      cfg.isLRUnlinkingEnabled() );
+
+        Properties properties = new Properties();
+        properties.setProperty( "drools.lrUnlinkingEnabled",
+                                "true" );
+        cfg = new RuleBaseConfiguration( properties );
+
+        assertEquals( true,
+                      cfg.isLRUnlinkingEnabled() );
+    }
+
     
 }

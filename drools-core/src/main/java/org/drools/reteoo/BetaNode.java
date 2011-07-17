@@ -52,6 +52,8 @@ import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
+import com.thoughtworks.xstream.core.util.FastField;
+
 /**
  * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
  * both TupleSink and ObjectSink and as such can receive <code>Tuple</code>s and <code>FactHandle</code>s. BetaNode uses BetaMemory
@@ -91,9 +93,12 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         objectMemory               = true; // hard coded to true
     protected boolean         tupleMemoryEnabled;
     protected boolean         concurrentRightTupleMemory = false;
-    
+
+    /** @see LRUnlinkingOption */
+    protected boolean         lrUnlinkingEnabled         = false;
     
     private boolean indexedUnificationJoin;
+
 
     // ------------------------------------------------------------
     // Constructors
@@ -137,13 +142,10 @@ public abstract class BetaNode extends LeftTupleSource
         behavior = (BehaviorManager) in.readObject();
         leftInput = (LeftTupleSource) in.readObject();
         rightInput = (ObjectSource) in.readObject();
-        previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        previousObjectSinkNode = (ObjectSinkNode) in.readObject();
-        nextObjectSinkNode = (ObjectSinkNode) in.readObject();
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
+        lrUnlinkingEnabled = in.readBoolean();
         setUnificationJoin();
         super.readExternal( in );
     }
@@ -161,13 +163,10 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeObject( behavior );
         out.writeObject( leftInput );
         out.writeObject( rightInput );
-        out.writeObject( previousTupleSinkNode );
-        out.writeObject( nextTupleSinkNode );
-        out.writeObject( previousObjectSinkNode );
-        out.writeObject( nextObjectSinkNode );
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
+        out.writeBoolean( lrUnlinkingEnabled );
 
         super.writeExternal( out );
     }
@@ -203,6 +202,14 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
     
+    public FastIterator getLeftIterator(LeftTupleMemory memory) {
+        if ( !this.indexedUnificationJoin ) {
+            return memory.fastIterator();
+        } else {
+            return memory.fullFastIterator();
+        }
+    }    
+    
     public RightTuple getFirstRightTuple(final LeftTuple leftTuple, 
                                          final RightTupleMemory memory,
                                          final PropagationContext context,
@@ -214,6 +221,35 @@ public abstract class BetaNode extends LeftTupleSource
             return (RightTuple) it.next( null );
         }
     }
+    
+    public LeftTuple getFirstLeftTuple(final RightTuple rightTuple, 
+                                       final LeftTupleMemory memory,
+                                       final PropagationContext context,
+                                       final FastIterator it) {
+        if ( !this.indexedUnificationJoin  ) {
+            return memory.getFirst( rightTuple );
+        } else {
+            return (LeftTuple) it.next( null );
+        }
+    }   
+    
+    public static RightTuple getFirstRightTuple(final RightTupleMemory memory,
+                                         final FastIterator it) {
+        if ( !memory.isIndexed() ) {
+            return memory.getFirst( null, null );
+        } else {
+            return (RightTuple) it.next( null );
+        }
+    }
+    
+    public static LeftTuple getFirstLeftTuple(final LeftTupleMemory memory,
+                                       final FastIterator it) {
+        if ( !memory.isIndexed() ) {
+            return memory.getFirst( null );
+        } else {
+            return (LeftTuple) it.next( null );
+        }
+    }      
 
     public BetaNodeFieldConstraint[] getConstraints() {
         final LinkedList constraints = this.constraints.getConstraints();
@@ -279,17 +315,30 @@ public abstract class BetaNode extends LeftTupleSource
                                                                                       PropagationContext.RULE_ADDITION,
                                                                                       null,
                                                                                       null,
-                                                                                      null );
-            this.rightInput.updateSink( this,
-                                        propagationContext,
-                                        workingMemory );
+                                                                                      null);
+
+            /* FIXME: This should be generalized at BetaNode level and the 
+             * instanceof should be removed!
+             * 
+             * When L&R Unlinking is enabled, we only need to update the side
+             * that is initially linked. If there are tuples to be propagated,
+             * they will trigger the update (thus, population) of the other side.
+             * */
+            if (!lrUnlinkingEnabled || 
+                    (lrUnlinkingEnabled && !(this instanceof JoinNode) )) {
+
+                this.rightInput.updateSink( this,
+                                            propagationContext,
+                                            workingMemory );
+            }
+
             this.leftInput.updateSink( this,
                                        propagationContext,
                                        workingMemory );
         }
 
     }
-
+    
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final BaseNode node,
@@ -310,10 +359,11 @@ public abstract class BetaNode extends LeftTupleSource
                     memory = ( BetaMemory ) object;
                 }
                 
-                Iterator it = memory.getLeftTupleMemory().iterator();
-                for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                    if( context.getCleanupAdapter() != null ) {
-                        for( LeftTuple child = leftTuple.firstChild; child != null; child = child.getLeftParentNext() ) {
+                FastIterator it = memory.getLeftTupleMemory().fullFastIterator(); 
+                for ( LeftTuple leftTuple = getFirstLeftTuple( memory.getLeftTupleMemory(), it ); leftTuple != null; ) {
+                    LeftTuple tmp = (LeftTuple) it.next(leftTuple);                    
+                    if( context.getCleanupAdapter() != null ) {                        
+                        for( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getLeftParentNext() ) {
                             if( child.getLeftTupleSink() == this ) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
                                 leftTuple.unlinkFromLeftParent();
@@ -323,8 +373,10 @@ public abstract class BetaNode extends LeftTupleSource
                             }
                         }
                     }
+                    memory.getLeftTupleMemory().remove( leftTuple );                    
                     leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
+                    leftTuple.unlinkFromRightParent();                    
+                    leftTuple = tmp;                    
                 }
 
                 // handle special cases for Accumulate to make sure they tidy up their specific data
@@ -334,8 +386,9 @@ public abstract class BetaNode extends LeftTupleSource
                 }
 
                 if( ! this.isInUse() ) {
-                    it = memory.getRightTupleMemory().iterator();
-                    for ( RightTuple rightTuple = (RightTuple) it.next(); rightTuple != null; rightTuple = (RightTuple) it.next() ) {
+                    it = memory.getRightTupleMemory().fullFastIterator();                    
+                    for ( RightTuple rightTuple = getFirstRightTuple( memory.getRightTupleMemory(), it ); rightTuple != null; ) {
+                        RightTuple tmp = (RightTuple) it.next(rightTuple);
                         if ( rightTuple.getBlocked() != null ) {
                             // special case for a not, so unlink left tuple from here, as they aren't in the left memory
                             for ( LeftTuple leftTuple = (LeftTuple)rightTuple.getBlocked(); leftTuple != null; ) {
@@ -347,8 +400,10 @@ public abstract class BetaNode extends LeftTupleSource
                                 leftTuple.unlinkFromLeftParent();
                                 leftTuple = temp;
                             }
-                        }
-                        rightTuple.unlinkFromRightParent();
+                        }                                                
+                        memory.getRightTupleMemory().remove( rightTuple );
+                        rightTuple.unlinkFromRightParent();                        
+                        rightTuple = tmp;                        
                     }
                     workingMemories[i].clearNodeMemory( this );
                 }
@@ -397,9 +452,9 @@ public abstract class BetaNode extends LeftTupleSource
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( createLeftTuple( factHandle,
+                                              this,
+                                              true ),
                              context,
                              workingMemory );
         }
@@ -554,4 +609,39 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
+    protected boolean leftUnlinked(final PropagationContext context, 
+            final InternalWorkingMemory workingMemory, final BetaMemory memory) {
+        
+        // If left input is unlinked, don't do anything.
+       if(memory.isLeftUnlinked()) {
+            return true;
+        }
+        
+        if (memory.isRightUnlinked()) {
+            memory.linkRight();
+            context.setShouldPropagateAll( this );    
+            // updates the right input memory before going on.
+            this.rightInput.updateSink(this, context, workingMemory);
+        }
+        
+        return false;
+    }
+    
+    protected boolean rightUnlinked(final PropagationContext context,
+            final InternalWorkingMemory workingMemory, final BetaMemory memory) {
+        
+        if (memory.isRightUnlinked()) {
+            return true;
+        }
+        
+        if (memory.isLeftUnlinked()) {
+            
+            memory.linkLeft();
+            context.setShouldPropagateAll( this );    
+            // updates the left input memory before going on.
+            this.leftInput.updateSink(this, context, workingMemory);
+        }
+        
+        return false;
+    }   
 }

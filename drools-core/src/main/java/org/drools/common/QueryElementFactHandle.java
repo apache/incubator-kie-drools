@@ -31,15 +31,19 @@ public class QueryElementFactHandle
     implements
     InternalFactHandle {
     private Object object;
+    private int id;
+    private long recency;
 
     protected QueryElementFactHandle() {}
 
-    public QueryElementFactHandle(Object object) {
+    public QueryElementFactHandle(Object object, int id, long recency) {
         this.object = object;
+        this.id = id;
+        this.recency = recency;
     }
 
     public int getId() {
-        return -1;
+        return this.id;
     }
 
     public int getIdentityHashCode() {
@@ -51,7 +55,7 @@ public class QueryElementFactHandle
     }
 
     public long getRecency() {
-        return 0;
+        return this.recency;
     }
 
     public LeftTuple getLastLeftTuple() {
@@ -64,6 +68,10 @@ public class QueryElementFactHandle
         }
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
+    
+    public void setObject(Object object) {
+        this.object = object;
+    }    
 
     public WorkingMemoryEntryPoint getEntryPoint() {
         return null;
@@ -101,20 +109,16 @@ public class QueryElementFactHandle
     public void setFirstLeftTuple(LeftTuple leftTuple) {
     }
 
-    public void setObject(Object object) {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
-    }
-
     public void setRecency(long recency) {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+        this.recency = recency;
     }
 
     public void setRightTuple(RightTuple rightTuple) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public DefaultFactHandle clone() {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
+    public InternalFactHandle clone() {
+        return new QueryElementFactHandle( object, id, recency );
     }
 
     public String toExternalForm() {
@@ -165,6 +169,10 @@ public class QueryElementFactHandle
     
     public String toString() {
         return "results: " + Arrays.asList( (Object[]) this.object ).toString();
+    }
+
+    public void disconnect() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
 }

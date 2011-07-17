@@ -17,13 +17,19 @@
 package org.drools.rule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 
+import org.drools.base.ClassObjectType;
+import org.drools.base.extractors.ArrayElementReader;
+import org.drools.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.util.ArrayUtils;
 import org.drools.spi.Constraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.DeclarationScopeResolver;
@@ -107,6 +113,7 @@ class LogicTransformer {
         for ( int i = 0; i < ands.length; i++ ) {
             // fix the cloned declarations
             this.fixClonedDeclarations( ands[i] );
+            ands[i].setRoot( true );
         }
 
         return ands;
@@ -156,7 +163,22 @@ class LogicTransformer {
                 for ( int i = 0; i < decl.length; i++ ) {
                     Declaration resolved = resolver.getDeclaration( null,
                                                                     decl[i].getIdentifier() );
-                    if ( resolved != null && resolved != decl[i] ) {
+                    
+                    if ( constraint instanceof VariableConstraint && ((VariableConstraint)constraint).getRestriction() instanceof UnificationRestriction ) {
+                        UnificationRestriction restriction = ( UnificationRestriction ) ((VariableConstraint)constraint).getRestriction();
+                        if( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
+                            // if the resolved still points to DroolsQuery, we know this is the first unification pattern, so redeclare it as the visible Declaration
+                            Declaration redeclaredDeclr = new Declaration(resolved.getIdentifier(), restriction.getVariableRestriction().getReadAccessor(), pattern, false );
+                            pattern.addDeclaration(  redeclaredDeclr ); 
+                        } else if ( resolved.getPattern() != pattern ) {
+                            // It's a subsequent unification, so it should be able to use the redeclared Declaration as a normal VariableRestriction.
+                            // but only rewrite if the resolved declaration is not for current pattern (this occurs if LogicTransformer is applied twice
+                            // to the same tree that has already been rewritten before.
+                            ((VariableConstraint)constraint).setRestriction( restriction.getVariableRestriction() );
+                        }
+                    }                    
+                    
+                    if ( resolved != null && resolved != decl[i] && resolved.getPattern() != pattern ) {
                         constraint.replaceDeclaration( decl[i],
                                                        resolved );
                     } else if ( resolved == null ) {
@@ -205,6 +227,43 @@ class LogicTransformer {
                     }
                 }
             }
+        } else if ( element instanceof QueryElement ) {
+            QueryElement qe = ( QueryElement ) element;
+            Pattern pattern = qe.getResultPattern();
+            
+            for ( Entry<String, Declaration> entry : pattern.getInnerDeclarations().entrySet() ) {
+                Declaration resolved = resolver.getDeclaration( null,
+                                                                entry.getValue().getIdentifier() );
+                if ( resolved != null && resolved != entry.getValue() && resolved.getPattern() != pattern ) {
+                    entry.setValue( resolved );
+                }
+            }
+
+            
+            List<Integer> varIndexes = ArrayUtils.asList( qe.getVariableIndexes() );
+            for ( int i = 0; i < qe.getDeclIndexes().length; i++ ) {
+                Declaration declr = (Declaration) qe.getArgTemplate()[qe.getDeclIndexes()[i]];
+                Declaration resolved = resolver.getDeclaration( null,
+                                                                    declr.getIdentifier() );
+                if ( resolved != null && resolved != declr && resolved.getPattern() != pattern ) {
+                    qe.getArgTemplate()[qe.getDeclIndexes()[i]] = resolved;
+                }
+                
+                if( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
+                    // if the resolved still points to DroolsQuery, we know this is the first unification pattern, so redeclare it as the visible Declaration
+                    declr = pattern.addDeclaration( declr.getIdentifier() );
+
+                    // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
+                    ArrayElementReader reader = new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class, "this"),
+                                                                        qe.getDeclIndexes()[i],
+                                                                        resolved.getExtractor().getExtractToClass() );                    
+
+                    declr.setReadAccessor( reader );  
+                    
+                    varIndexes.add( qe.getDeclIndexes()[i] );
+                }                  
+            }
+            qe.setVariableIndexes( ArrayUtils.toIntArray( varIndexes ) );            
         } else {
             contextStack.push( element );
             for ( Iterator it = element.getNestedElements().iterator(); it.hasNext(); ) {

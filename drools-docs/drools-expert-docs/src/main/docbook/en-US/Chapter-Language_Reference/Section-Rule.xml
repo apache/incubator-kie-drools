@@ -23,10 +23,10 @@
 
   <para>A rule specifies that <emphasis>when</emphasis> a particular set of
   conditions occur, specified in the Left Hand Side (LHS),
-  <emphasis>then</emphasis> do what is specified as a list of actions in the
-  Right Hand Side (RHS). A common question from users is "Why use when instead
-  of if?" "When" was chosen over "if" because "if" is normally part of a
-  procedural execution flow, where, at a specific point in time, a condition
+  <emphasis>then</emphasis> do what queryis specified as a list of actions in
+  the Right Hand Side (RHS). A common question from users is "Why use when
+  instead of if?" "When" was chosen over "if" because "if" is normally part of
+  a procedural execution flow, where, at a specific point in time, a condition
   is to be checked. In contrast, "when" indicates that the condition
   evaluation is not tied to a specific evaluation sequence or point in time,
   but that it happens continually, at any time during the life time of the
@@ -36,7 +36,7 @@
   a rule twice in the same DRL it produces an error while loading. If you add
   a DRL that includes a rule name already in the package, it replaces the
   previous rule. If a rule name is to have spaces, then it will need to be
-  enclosd in double quotes (it is best to always use double quotes).</para>
+  enclosed in double quotes (it is best to always use double quotes).</para>
 
   <para>Attributes - described below - are optional. They are best written one
   per line.</para>
@@ -101,14 +101,14 @@ end</programlisting>
         <term><literal>no-loop</literal></term>
 
         <listitem>
-          <para>default value: false</para>
+          <para>default value: <literal>false</literal></para>
 
           <para>type: Boolean</para>
 
-          <para>When the rule's consequence modifies a fact it may cause the
-          Rule to activate again, causing recursion. Setting no-loop to true
-          means the attempt to create the Activation for the current set of
-          data will be ignored.</para>
+          <para>When a rule's consequence modifies a fact it may cause the
+          rule to activate again, causing an infinite loop. Setting no-loop to
+          true will skip the creation of another Activation for the rule with
+          the current set of facts.</para>
         </listitem>
       </varlistentry>
 
@@ -131,7 +131,7 @@ end</programlisting>
         <term><literal>lock-on-active</literal></term>
 
         <listitem>
-          <para>default value: false</para>
+          <para>default value: <literal>false</literal></para>
 
           <para>type: Boolean</para>
 
@@ -154,28 +154,29 @@ end</programlisting>
         <term><literal>salience</literal></term>
 
         <listitem>
-          <para>default value: 0</para>
+          <para>default value: <literal>0</literal></para>
 
           <para>type: integer</para>
 
-          <para>Each rule has a salience attribute that can be assigned an
-          integer number, which defaults to zero and can be negative or
-          positive. Salience is a form of priority where rules with higher
-          salience values are given higher priority when ordered in the
-          Activation queue.</para>
-          <para>Drools also supports dynamic salience where you can use
-          an expression involving bound variables.</para>
-          
+          <para>Each rule has an integer salience attribute which defaults to
+          zero and can be negative or positive. Salience is a form of priority
+          where rules with higher salience values are given higher priority
+          when ordered in the Activation queue.</para>
+
+          <para>Drools also supports dynamic salience where you can use an
+          expression involving bound variables.</para>
+
           <example>
-        <title>Dynamic Salience</title>
-        <programlisting>rule "Fire in rank order 1,2,.."
-          salience( -$rank )
-          when
-              Element( $rank : rank,... )
-          then
-              ...
-        end</programlisting>
-      </example>
+            <title>Dynamic Salience</title>
+
+            <programlisting>rule "Fire in rank order 1,2,.."
+        salience( -$rank )
+    when
+        Element( $rank : rank,... )
+    then
+        ...
+end</programlisting>
+          </example>
         </listitem>
       </varlistentry>
 
@@ -197,7 +198,7 @@ end</programlisting>
         <term><literal>auto-focus</literal></term>
 
         <listitem>
-          <para>default value: false</para>
+          <para>default value: <literal>false</literal></para>
 
           <para>type: Boolean</para>
 
@@ -291,15 +292,14 @@ end</programlisting>
       <programlisting>rule "my rule"
   salience 42
   agenda-group "number 1"
-    when ...
-</programlisting>
+    when ...</programlisting>
     </example>
   </section>
 
   <section>
     <title>Timers and Calendars</title>
 
-    <para>Rule's now suport both interval and cron based timers, which replace
+    <para>Rules now suport both interval and cron based timers, which replace
     the now deprecated duration attribute.</para>
 
     <example>
@@ -308,14 +308,15 @@ end</programlisting>
       <programlisting language="java">timer ( int: &lt;initial delay&gt; &lt;repeat interval&gt;? )
 timer ( int: 30s )
 timer ( int: 30s 5m )
- 
+
 timer ( cron: &lt;cron expression&gt; )
 timer ( cron:* 0/15 * * * ? )</programlisting>
     </example>
 
-    <para>Interval "int:" timers follow the JDK semantics for initial delay
-    optionally followed by a repeat interval. Cron "cron:" timers follow
-    standard cron expressions:</para>
+    <para>Interval (indicated by "int:") timers follow the semantics of
+    java.util.Timer objects, with an initial delay and an optional repeat
+    interval. Cron (indicated by "cron:") timers follow standard Unix cron
+    expressions:</para>
 
     <example>
       <title>A Cron Example</title>
@@ -329,9 +330,9 @@ then
 end</programlisting>
     </example>
 
-    <para>Calendars may now be used to control when rules can fire. The Calendar API is
-    modelled on <link xlink:href="http://www.quartz-scheduler.org/">Quartz
-    http://www.quartz-scheduler.org/</link> :</para>
+    <para>Calendars are used to control when rules can fire. The Calendar API
+    is modelled on <link
+    xlink:href="http://www.quartz-scheduler.org/">Quartz</link>:</para>
 
     <example>
       <title>Adapting a Quartz Calendar</title>
@@ -344,12 +345,12 @@ end</programlisting>
     <example>
       <title>Registering a Calendar</title>
 
-      <programlisting language="java">ksession.getCalendars().set( "week day", weekDayCal );</programlisting>
+      <programlisting language="java">ksession.getCalendars().set( "weekday", weekDayCal );</programlisting>
     </example>
 
     <para>They can be used in conjunction with normal rules and rules
-    including timers. The rule calendar attribute can have one or more comma
-    calendar names.</para>
+    including timers. The rule attribute "calendars" may contain one or more
+    comma-separated calendar names written as string literals.</para>
 
     <example>
       <title>Using Calendars and Timers together</title>
@@ -374,34 +375,38 @@ end</programlisting>
     </example>
   </section>
 
-  <section id="RuleLanguage-ConditionalElements">
-    <title>Left Hand Side (when) Conditional Elements</title>
+  <section>
+    <title>Left Hand Side (when) syntax</title>
 
-    <para>The Left Hand Side (LHS) is a common name for the conditional part
-    of the rule. It consists of zero or more Conditional Elements. If the LHS
-    is left empty, it is re-written as <code>eval(true)</code>, which means
-    that the rule's condition is always true. It will be activated, once, when
-    a new Working Memory session is created.</para>
+    <section>
+      <title>What is the Left Hand Side?</title>
 
-    <figure>
-      <title>Left Hand Side</title>
+      <para>The Left Hand Side (LHS) is a common name for the conditional part
+      of the rule. It consists of zero or more Conditional Elements. If the
+      LHS is empty, it will be considered as a condition element that is
+      always true and it will be activated once, when a new WorkingMemory
+      session is created.</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center"
-                     fileref="images/Chapter-Rule_Language/lhs.png"
-                     format="PNG" role="" />
-        </imageobject>
-      </mediaobject>
-    </figure>
+      <figure>
+        <title>Left Hand Side</title>
 
-    <example>
-      <title>Rule without a Conditional Element</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Rule_Language/lhs.png"
+                       format="PNG" role=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-      <programlisting>rule "no CEs"
+      <example>
+        <title>Rule without a Conditional Element</title>
+
+        <programlisting>rule "no CEs"
 when
+    // empty
 then
-    &lt;action&gt;*
+    ... // actions (executed once)
 end
 
 # The above rule is internally rewritten as:
@@ -410,698 +415,647 @@ rule "eval(true)"
 when
     eval( true )
 then
-    &lt;action&gt;*
+    ... // actions (executed once)
 end</programlisting>
-    </example>
+      </example>
 
-    <para>Conditional elements work on one or more
-    <emphasis>patterns</emphasis> (which are described below). The most common
-    one is <literal>and</literal>, which is implicit when you have multiple
-    patterns in the LHS of a rule that are not connected in any way. Note that
-    an <literal>and</literal> cannot have a leading declaration binding like
-    <literal>or</literal>. This is obvious, since a declaration can only
-    reference a single fact, and when the <literal>and</literal> is satisfied
-    it matches more than one fact - so which fact would the declaration bind
-    to?</para>
+      <para>Conditional elements work on one or more
+      <emphasis>patterns</emphasis> (which are described below). The most
+      common conditional element is "<literal>and"</literal>. Therefore it is
+      implicit when you have multiple patterns in the LHS of a rule that are
+      not connected in any way:</para>
+
+      <example>
+        <title>Implicit and</title>
+
+        <programlisting>rule "2 unconnected patterns"
+when
+    Pattern1()
+    Pattern2()
+then
+    ... // actions
+end
+
+# The above rule is internally rewritten as:
+
+rule "2 and connected patterns"
+when
+    Pattern1()
+    and Pattern2()
+then
+    ... // actions
+end</programlisting>
+      </example>
+
+      <note>
+        <para>An "<literal>and"</literal> cannot have a leading declaration
+        binding (unlike for example <literal>or</literal>). This is obvious,
+        since a declaration can only reference a single fact at a time, and
+        when the "<literal>and"</literal> is satisfied it matches both facts -
+        so which fact would the declaration bind to?</para>
+
+        <programlisting>// Compile error
+$person : (Person( name == "Romeo" ) and Person( name == "Juliet"))</programlisting>
+      </note>
+    </section>
 
     <section>
-      <title>Pattern</title>
-
-      <para>The pattern element is the most important Conditional Element. The
-      entity relationship diagram below provides an overview of the various
-      parts that make up the pattern's constraints and how they work together;
-      each is then covered in more detail with railroad diagrams and
-      examples.</para>
-
-      <figure>
-        <title>Pattern Entity Relationship Diagram</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/patternER.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>At the top of the ER diagram you can see that the pattern consists
-      of zero or more constraints and has an optional pattern binding. The
-      railroad diagram below shows the syntax for this.</para>
-
-      <figure>
-        <title>Pattern</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/pattern.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>In its simplest form, with no constraints, a pattern matches
-      against a fact of the given type. In the following case the type is
-      <code>Cheese</code>, which means that the pattern will match against all
-      <code>Cheese</code> objects in the Working Memory.</para>
-
-      <para>Notice that the type need not be the actual class of some fact
-      object. Patterns may refer to superclasses or even interfaces, thereby
-      potentially matching facts from many different classes.</para>
-
-      <example>
-        <title>Simple Pattern</title>
-
-        <programlisting>Cheese()</programlisting>
-      </example>
-
-      <para>For referring to the matched object, use a pattern binding
-      variable such as <code>$c</code>. The prefixed dollar symbol ('$') is
-      optional; it can be useful in complex rules where it helps to more
-      easily differentiate between variables and fields.</para>
-
-      <example>
-        <title>Pattern with a binding variable</title>
-
-        <programlisting>$c : Cheese()</programlisting>
-      </example>
-
-      <para>Inside of the pattern parenthesis is where all the action happens.
-      A constraint can be either a Field Constraint, Inline Eval, or a
-      Constraint Group. Constraints can be separated by the following symbols:
-      ',', '&amp;&amp;' or '||'.</para>
-
-      <figure>
-        <title>Constraints</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/constraints.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <figure>
-        <title>Constraint</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/constraint.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <figure>
-        <title>constraintGroup</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/constraintGroup.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>The comma character (',') is used to separate constraint groups.
-      It has implicit and connective semantics.<example>
-          <title>Constraint Group connective ','</title>
-
-          <programlisting># Cheese type is stilton and price &lt; 10 and age is mature.
-Cheese( type == "stilton", price &lt; 10, age == "mature" )</programlisting>
-        </example>The above example has three constraint groups, each with a
-      single constraint:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Group 1 - <code>type == "stilton"</code> requires that the
-          type is stilton.</para>
-        </listitem>
-
-        <listitem>
-          <para>Group 2 - <code>price &lt; 10</code> demands a price less than
-          10.</para>
-        </listitem>
-
-        <listitem>
-          <para>Group 3 - <code>age == "mature"</code> accepts only mature
-          cheese.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>The '&amp;&amp;' (and) and '||' (or) constraint connectives allow
-      constraint groups to have multiple constraints. Example:</para>
-
-      <example>
-        <title>&amp;&amp; and || Constraint Connectives</title>
-
-        <programlisting>// Cheese type is "stilton" and price &lt; 10, and age is mature
-Cheese( type == "stilton" &amp;&amp; price &lt; 10, age == "mature" )
-// Cheese type is "stilton" or price &lt; 10, and age is mature
-Cheese( type == "stilton" || price &lt; 10, age == "mature" )</programlisting>
-      </example>
-
-      <para>The above example has two constraint groups. The first has two
-      constraints and the second has one constraint.</para>
-
-      <para>The connectives are evaluated in the following order, from first
-      to last:</para>
-
-      <orderedlist>
-        <listitem>
-          <para>&amp;&amp;</para>
-        </listitem>
-
-        <listitem>
-          <para>||</para>
-        </listitem>
-
-        <listitem>
-          <para>,</para>
-        </listitem>
-      </orderedlist>
-
-      <para>It is possible to change the evaluation priority by using
-      parentheses, as in any logic or mathematical expression. Example:</para>
-
-      <example>
-        <title>Using parentheses to change evaluation priority</title>
-
-        <programlisting># Cheese type is stilton and ( price is less than 20 or age is mature ).
-Cheese( type == "stilton" &amp;&amp; ( price &lt; 20 || age == "mature" ) ) </programlisting>
-      </example>
-
-      <para>In the above example, the use of parentheses evaluates the
-      connective '||' before the connective '&amp;&amp;'.</para>
-
-      <para>Also, it is important to note that besides having the same
-      semantics, the connectives '&amp;&amp;' and ',' are resolved with
-      different priorities, and ',' cannot be embedded in a composite
-      constraint expression.</para>
-
-      <example>
-        <title>Not Equivalent connectives</title>
-
-        <programlisting>// invalid as ',' cannot be embedded in an expression:
-Cheese( ( type == "stilton", price &lt; 10 ) || age == "mature" )
-// valid as '&amp;&amp;' can be embedded in an expression:
-Cheese( ( type == "stilton" &amp;&amp; price &lt; 10 ) || age == "mature")</programlisting>
-      </example>
+      <title>Pattern (conditional element)</title>
 
       <section>
-        <title>Field Constraints</title>
+        <title>What is a pattern?</title>
 
-        <para>A Field constraint specifies a restriction to be used on a named
-        field; the field name can have an optional variable binding.</para>
+        <para>A pattern element is the most important Conditional Element. It
+        can potentially match on each fact that is inserted in the working
+        memory.</para>
+
+        <para>A pattern contains of zero or more constraints and has an
+        optional pattern binding. The railroad diagram below shows the syntax
+        for this.</para>
 
         <figure>
-          <title>fieldConstraint</title>
+          <title>Pattern</title>
 
           <mediaobject>
             <imageobject>
               <imagedata align="center"
-                         fileref="images/Chapter-Rule_Language/fieldConstraint.png"
-                         format="PNG" role="" />
+                         fileref="images/Chapter-Rule_Language/pattern.png"
+                         format="PNG" role=""></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
 
-        <para>There are three types of restrictions: Single Value Restriction,
-        Compound Value Restriction, and Multi Restriction.</para>
+        <para>In its simplest form, with no constraints, a pattern matches
+        against a fact of the given type. In the following case the type is
+        <code>Cheese</code>, which means that the pattern will match against
+        all <code>Person</code> objects in the Working Memory:</para>
 
-        <figure>
-          <title>restriction</title>
+        <programlisting>Person()</programlisting>
 
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center"
-                         fileref="images/Chapter-Rule_Language/restriction.png"
-                         format="PNG" role="" />
-            </imageobject>
-          </mediaobject>
-        </figure>
+        <para>The type need not be the actual class of some fact object.
+        Patterns may refer to superclasses or even interfaces, thereby
+        potentially matching facts from many different classes.</para>
 
-        <section>
-          <title>JavaBeans as facts</title>
+        <programlisting>Object() // matches all objects in the working memory</programlisting>
 
-          <para>A field is derived from an accessible method of the object. If
-          your model objects follow the Java Bean pattern, then fields are
-          exposed using "getXXX" or "isXXX" methods, where these methods take
-          no arguments, and return something. Within patterns, fields can be
-          accessed using the bean naming convention, so that "getType" would
-          be accessed as "type". Drools uses the standard JDK Introspector
-          class to do this mapping.</para>
+        <para>Inside of the pattern parenthesis is where all the action
+        happens: it defines the constraints for that pattern. For example,
+        with a age related constraint:</para>
 
-          <para>For example, referring to our Cheese class, the pattern
-          <code>Cheese(type == "brie")</code> applies the getType() method to
-          a Cheese instance. If a field name cannot be found, the compiler
-          will resort to using the name as a method without arguments. Thus,
-          the method <code>toString()</code> is called due to a constraint
-          <code>Cheese(toString == "cheddar")</code>. In this case, you use
-          the full name of the method with correct capitalization, but still
-          without parentheses. Do please make sure that you are accessing
-          methods that take no parameters, and that are in fact
-          <emphasis>accessors</emphasis> which don't change the state of the
-          object in a way that may effect the rules. Remember that the rule
-          engine effectively caches the results of its matching in between
+        <programlisting>Person( age == 100 )</programlisting>
+
+        <note>
+          <para>For backwards compatibility reasons it's allowed to suffix
+          patterns with the <literal>;</literal> character. But it is not
+          recommended to do that.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Pattern binding</title>
+
+        <para>For referring to the matched object, use a pattern binding
+        variable such as <code>$p</code>.</para>
+
+        <example>
+          <title>Pattern with a binding variable</title>
+
+          <programlisting>rule ...
+when
+    $p : Person()
+then
+    System.out.println( "Person " + $p );
+end</programlisting>
+        </example>
+
+        <para>The prefixed dollar symbol (<literal>$</literal>) is just a
+        convention; it can be useful in complex rules where it helps to easily
+        differentiate between variables and fields, but it is not
+        mandatory.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Constraint (part of a pattern)</title>
+
+      <section>
+        <title>What is a constraint?</title>
+
+        <para>A constraint is an expression that returns
+        <literal>true</literal> or <literal>false</literal>. This example has
+        a constraint that states <emphasis>5 is smaller than
+        6</emphasis>:</para>
+
+        <programlisting>Person( 5 &lt; 6 )  // just an example, as constraints like this would be useless in a real pattern</programlisting>
+
+        <para>In essence, it's a Java expression with some enhancements (such
+        as property access) and a few differences (such as
+        <literal>equals()</literal> semantics for <literal>==</literal>).
+        Let's take a deeper look.</para>
+      </section>
+
+      <section>
+        <title>Property access on Java Beans (POJO's)</title>
+
+        <para>Any bean property can be used directly. A bean property is
+        exposed using a standard Java bean getter: a method
+        <literal>getMyProperty()</literal> (or
+        <literal>isMyProperty()</literal> for a primitive boolean) which takes
+        no arguments and return something. For example: the age property is
+        written as <literal>age</literal> in DRL instead of the getter
+        <literal>getAge()</literal>:</para>
+
+        <programlisting>Person( age == 50 )
+
+// this is the same as:
+Person( getAge() == 50 )</programlisting>
+
+        <para>Drools uses the standard JDK <literal>Introspector</literal>
+        class to do this mapping, so it follows the standard Java bean
+        specification.</para>
+
+        <note>
+          <para>We recommend using property access (<literal>age</literal>)
+          over using getters explicitly (<literal>getAge()</literal>) because
+          of performance enhancements through field indexing.</para>
+        </note>
+
+        <warning>
+          <para>Property accessors must not change the state of the object in
+          a way that may effect the rules. Remember that the rule engine
+          effectively caches the results of its matching in between
           invocations to make it faster.</para>
+
+          <programlisting>public int getAge() {
+    age++; // Do NOT do this
+    return age;
+}</programlisting>
+
+          <programlisting>public int getAge() {
+    Date now = DateUtil.now(); // Do NOT do this
+    return DateUtil.differenceInYears(now, birthday);
+}</programlisting>
+
+          <para>To solve this latter case, insert a fact that wraps the
+          current date into working memory and update that fact between
+          <literal>fireAllRules</literal> as needed.</para>
+        </warning>
+
+        <note>
+          <para>The following fallback applies: if the getter of a property
+          cannot be found, the compiler will resort to using the property name
+          as a method name and without arguments:</para>
+
+          <programlisting>Person( age == 50 )
+
+// If Person.getAge() does not exists, this falls back to:
+Person( age() == 50 )</programlisting>
+        </note>
+
+        <para>Nested property access is also supported:</para>
+
+        <programlisting>Person( address.houseNumber == 50 )
+
+// this is the same as:
+Person( getAddress().getHouseNumber() == 50 )</programlisting>
+
+        <para>Nested properties are also indexed.</para>
+
+        <warning>
+          <para>In a stateful session, care should be taken when using nested
+          accessors as the Working Memory is not aware of any of the nested
+          values, and does not know when they change. Either consider them
+          immutable while any of their parent references are inserted into the
+          Working Memory. Or, instead, if you wish to modify a nested value
+          you should mark all of the outer facts as updated. In the above
+          example, when the <literal>houseNumber</literal> changes, any
+          <literal>Person</literal> with that <literal>Address</literal> must
+          be marked as updated.</para>
+        </warning>
+      </section>
+
+      <section>
+        <title>Java expression</title>
+
+        <para>You can use any Java expression that returns a
+        <literal>boolean</literal> as a constraint inside the parentheses of a
+        pattern. Java expressions can be mixed with other expression
+        enhancements, such as property access:</para>
+
+        <programlisting>Person( age == 50 )</programlisting>
+
+        <para>It is possible to change the evaluation priority by using
+        parentheses, as in any logic or mathematical expression:</para>
+
+        <programlisting>Person( age &gt; 100 &amp;&amp; ( age % 10 == 0 ) )</programlisting>
+
+        <para>It is possible to reuse Java methods:</para>
+
+        <programlisting>Person( Math.round( weight / ( height * height ) ) &lt; 25.0 )</programlisting>
+
+        <warning>
+          <para>As for property accessors, methods must not change the state
+          of the object in a way that may affect the rules. Any method
+          executed on a fact in the LHS should be a <emphasis>read
+          only</emphasis> method.</para>
+
+          <programlisting>Person( incrementAndGetAge() == 10 ) // Do NOT do this</programlisting>
+        </warning>
+
+        <warning>
+          <para>The state of a fact should not change between rule invocations
+          (unless those facts are marked as updated to the working memory on
+          every change):</para>
+
+          <programlisting>Person( System.currentTimeMillis() % 1000 == 0 ) // Do NOT do this</programlisting>
+        </warning>
+
+        <para>Normal Java operator precedence applies, see the operator
+        precedence list below.</para>
+
+        <important>
+          <para>All operators have normal Java semantics except for
+          <literal>==</literal> and <literal>!=</literal>.</para>
+
+          <para>The <literal>==</literal> operator has null-safe
+          <literal>equals()</literal> semantics:</para>
+
+          <programlisting>// Similar to: java.util.Objects.equals(person.getFirstName(), "John")
+// so (because "John" is not null) similar to:
+// "John".equals(person.getFirstName())
+Person( firstName == "John" )</programlisting>
+
+          <para>The <literal>!=</literal> operator has null-safe
+          <literal>!equals()</literal> semantics:</para>
+
+          <programlisting>// Similar to: !java.util.Objects.equals(person.getFirstName(), "John")
+Person( firstName != "John" )</programlisting>
+        </important>
+
+        <para>Type coercion is always attempted if the field and the value are
+        of different types; exceptions will be thrown if a bad coercion is
+        attempted. For instance, if "ten" is provided as a string in a numeric
+        evaluator, an exception is thrown, whereas "10" would coerce to a
+        numeric 10. Coercion is always in favor of the field type and not the
+        value type:</para>
+
+        <programlisting>Person( age == "10" ) // "10" is coerced to 10</programlisting>
+      </section>
+
+      <section>
+        <title>Comma separated AND</title>
+
+        <para>The comma character ('<literal>,</literal>') is used to separate
+        constraint groups. It has implicit <emphasis>AND</emphasis> connective
+        semantics.</para>
+
+        <programlisting>// Person is at least 50 and weighs at least 80 kg
+Person( age &gt; 50, weight &gt; 80 )</programlisting>
+
+        <programlisting>// Person is at least 50, weighs at least 80 kg and is taller than 2 meter.
+Person( age &gt; 50, weight &gt; 80, height &gt; 2 )</programlisting>
+
+        <note>
+          <para>Although the <literal>&amp;&amp;</literal> and
+          <literal>,</literal> operators have the same semantics, they are
+          resolved with different priorities: The
+          <literal>&amp;&amp;</literal> operator precedes the
+          <literal>||</literal> operator. Both the
+          <literal>&amp;&amp;</literal> and <literal>||</literal> operator
+          precede the <literal>,</literal> operator. See the operator
+          precedence list below.</para>
+
+          <para>The comma operator should be preferred at the top level
+          constraint, as it makes constraints easier to read and the engine
+          will often be able to optimize them better.</para>
+        </note>
+
+        <para>The comma (<literal>,</literal>) operator cannot be embedded in
+        a composite constraint expression, such as parentheses:</para>
+
+        <programlisting>Person( ( age &gt; 50, weight &gt; 80 ) || height &gt; 2 ) // Do NOT do this: compile error
+
+// Use this instead
+Person( ( age &gt; 50 &amp;&amp; weight &gt; 80 ) || height &gt; 2 )</programlisting>
+      </section>
+
+      <section>
+        <title>Binding variables</title>
+
+        <para>A property can be bound to a variable:</para>
+
+        <programlisting>// 2 persons of the same age
+Person( $firstAge : age ) // binding
+Person( age == $firstAge ) // constraint expression</programlisting>
+
+        <para>The prefixed dollar symbol (<literal>$</literal>) is just a
+        convention; it can be useful in complex rules where it helps to easily
+        differentiate between variables and fields.</para>
+
+        <note>
+          <para>For backwards compatibility reasons, It's allowed (but not
+          recommended) to mix a constraint binding and constraint expressions
+          as such:</para>
+
+          <programlisting>// Not recommended
+Person( $age : age * 2 &lt; 100 )</programlisting>
+
+          <programlisting>// Recommended (seperates bindings and constraint expressions)
+Person( age * 2 &lt; 100, $age : age )</programlisting>
+        </note>
+
+        <para>Bound variable restrictions using the operator
+        <literal>==</literal> provide for very fast execution as it use hash
+        indexing to improve performance.</para>
+      </section>
+
+      <section>
+        <title>Unification</title>
+
+        <para>Drools does not allow bindings to the same declaration. However
+        this is an important aspect to derivation query unification. While
+        positional arguments are always processed with unification a special
+        unification symbol, ':=', was introduced for named arguments named
+        arguments. The following "unifies" the age argument across two
+        people.</para>
+
+        <programlisting>Person( $age := age ) 
+Person( $age := age) </programlisting>
+
+        <para>In essence unification will declare a binding for the first
+        occurance, and constrain to the same value of the bound field for
+        sequence occurances.</para>
+      </section>
+
+      <section>
+        <title>Special literal support</title>
+
+        <para>Besides normal Java literals (including Java 5 enums), this
+        literal is also supported:</para>
+
+        <section>
+          <title>Date literal</title>
+
+          <para>The date format <literal>dd-mmm-yyyy</literal> is supported by
+          default. You can customize this by providing an alternative date
+          format mask as the System property named
+          <code>drools.dateformat</code>. If more control is required, use a
+          restriction.</para>
+
+          <example>
+            <title>Date Literal Restriction</title>
+
+            <programlisting>Cheese( bestBefore &lt; "27-Oct-2009" )</programlisting>
+          </example>
+        </section>
+      </section>
+
+      <section>
+        <title>List and Map access</title>
+
+        <para>It's possible to directly access a <literal>List</literal> value
+        by index:</para>
+
+        <programlisting>// Same as childList(0).getAge() == 18
+Person( childList[0].age == 18 )</programlisting>
+
+        <para>It's also possible to directly access a <literal>Map</literal>
+        value by key:</para>
+
+        <programlisting>// Same as credentialMap.get("jsmith").isValid()
+Person( credentialMap["jsmith"].valid )</programlisting>
+      </section>
+
+      <section>
+        <title>Abbreviated combined relation condition</title>
+
+        <para>This allows you to place more than one restriction on a field
+        using the restriction connectives <literal>&amp;&amp;</literal> or
+        <literal>||</literal>. Grouping via parentheses is permitted,
+        resulting in a recursive syntax pattern.</para>
+
+        <figure>
+          <title>Abbreviated combined relation condition</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/abbreviatedCombinedRelationCondition.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Abbreviated combined relation condition with
+          parentheses</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/abbreviatedCombinedRelationConditionGroup.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <programlisting>// Simple abbreviated combined relation condition using a single &amp;&amp;
+Person( age &gt; 30 &amp;&amp; &lt; 40 )</programlisting>
+
+        <programlisting>// Complex abbreviated combined relation using groupings
+Person( age ( (&gt; 30 &amp;&amp; &lt; 40) ||
+              (&gt; 20 &amp;&amp; &lt; 25) ) )</programlisting>
+
+        <programlisting>// Mixing abbreviated combined relation with constraint connectives
+Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting>
+      </section>
+
+      <section>
+        <title>Special DRL operators</title>
+
+        <figure>
+          <title>Operators</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/operator.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Coercion to the correct value for the evaluator and the field
+        will be attempted.</para>
+
+        <section>
+          <title>The operators <literal>&lt;</literal>
+          <literal>&lt;=</literal> <literal>&gt;</literal>
+          <literal>&gt;=</literal></title>
+
+          <para>These operators can be used on properties with natural
+          ordering. For example, for Date fields, <literal>&lt;</literal>
+          means <emphasis>before</emphasis>, for <literal>String</literal>
+          fields, it means alphabetically lower.</para>
+
+          <programlisting>Person( firstName &lt; $otherFirstName )</programlisting>
+
+          <programlisting>Person( birthDate &lt; $otherBirthDate )</programlisting>
+
+          <para>Only applies on <literal>Comperable</literal>
+          properties.</para>
         </section>
 
         <section>
-          <title>Values</title>
+          <title>The operator <literal>matches</literal></title>
 
-          <para>The field constraints can take a number of values; including
-          literal, qualifiedIdentifier (enum), variable and
-          returnValue.</para>
+          <para>Matches a field against any valid Java <indexterm>
+              <primary>regular expression</primary>
+            </indexterm>Regular Expression. Typically that regexp is a string
+          literal, but variables that resolve to a valid regexp are also
+          allowed.</para>
 
-          <figure>
-            <title>literal</title>
+          <example>
+            <title>Regular Expression Constraint</title>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/literal.png"
-                           format="PNG" />
-              </imageobject>
-            </mediaobject>
-          </figure>
+            <programlisting>Cheese( type matches "(Buffalo)?\\S*Mozarella" )</programlisting>
+          </example>
 
-          <figure>
-            <title>qualifiedIdentifier</title>
+          <note>
+            <para>Like in Java, regular expressions written as string literals
+            <emphasis>need to escape '<literal>\</literal></emphasis>'.</para>
+          </note>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/qualifiedIdentifier.png"
-                           format="PNG" />
-              </imageobject>
-            </mediaobject>
-          </figure>
-
-          <figure>
-            <title>variable</title>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/identifier.png"
-                           format="PNG" />
-              </imageobject>
-            </mediaobject>
-          </figure>
-
-          <figure>
-            <title>returnValue</title>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/returnValue.png"
-                           format="PNG" />
-              </imageobject>
-            </mediaobject>
-          </figure>
-
-          <para>You can do checks against fields that are or may be null,
-          using '==' and '!=' as you would expect, and the literal
-          <literal>null</literal> keyword, as in <code>Cheese(type !=
-          null)</code>, where the evaluator will not throw an exception and
-          return true if the value is null. Type coercion is always attempted
-          if the field and the value are of different types; exceptions will
-          be thrown if a bad coercion is attempted. For instance, if "ten" is
-          provided as a string in a numeric evaluator, an exception is thrown,
-          whereas "10" would coerce to a numeric 10. Coercion is always in
-          favor of the field type and not the value type.</para>
+          <para>Only applies on <literal>String</literal> properties.</para>
         </section>
 
         <section>
-          <title>Single Value Restriction</title>
+          <title>The operator <literal>not matches</literal></title>
 
-          <figure>
-            <title>singleValueRestriction</title>
+          <para>The operator returns true if the String does not match the
+          regular expression. The same rules apply as for the
+          <literal>matches</literal> operator. Example:</para>
 
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/singleValueRestriction.png"
-                           format="PNG" role="" />
-              </imageobject>
-            </mediaobject>
-          </figure>
+          <example>
+            <title>Regular Expression Constraint</title>
 
-          <para>A Single Value Restriction is a binary relation, applying a
-          binary operator to the field value and another value, which may be a
-          literal, a variable, a parenthesized expression ("return value"), or
-          a qualified identifier, i.e., an enum constant.</para>
+            <programlisting>Cheese( type not matches "(Buffulo)?\\S*Mozarella" )</programlisting>
+          </example>
 
-          <section>
-            <title>Operators</title>
+          <para>Only applies on <literal>String</literal> properties.</para>
+        </section>
 
-            <figure>
-              <title>Operators</title>
+        <section>
+          <title>The operator <literal>contains</literal></title>
 
-              <mediaobject>
-                <imageobject>
-                  <imagedata align="center"
-                             fileref="images/Chapter-Rule_Language/operator.png"
-                             format="PNG" />
-                </imageobject>
-              </mediaobject>
-            </figure>
+          <para>The operator <literal>contains</literal> is used to check
+          whether a field that is a <indexterm>
+              <primary>Collection</primary>
+            </indexterm>Collection or array contains the specified
+          value.</para>
 
-            <para>The operators '==' and '!=' are valid for all types. Other
-            relational operatory may be used whenever the type values are
-            ordered; for date fields, '&lt;' means "before". The pair
-            <literal>matches</literal> and <literal>not matches</literal> is
-            only applicable to string fields, <literal>contains</literal> and
-            <literal>not contains</literal> require the field to be of some
-            Collection type. Coercion to the correct value for the evaluator
-            and the field will be attempted, as mentioned in the "Values"
-            section.</para>
+          <example>
+            <title>Contains with Collections</title>
 
-            <simplesect>
-              <title>The Operator <literal>matches</literal></title>
-
-              <para>Matches a field against any valid Java <indexterm>
-                  <primary>regular expression</primary>
-                </indexterm>Regular Expression. Typically that regexp is a
-              string literal, but variables that resolve to a valid regexp are
-              also allowed. It is important to note that, <emphasis>different
-              from Java</emphasis>, within regular expressions written as
-              string literals <emphasis>you don't need to escape
-              '\'</emphasis>. Example:</para>
-
-              <example>
-                <title>Regular Expression Constraint</title>
-
-                <programlisting>Cheese( type matches "(Buffalo)?\S*Mozarella" )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>The Operator <literal>not matches</literal></title>
-
-              <para>The operator returns true if the string does not match the
-              regular expression. The same rules apply as for the
-              <literal>matches</literal> operator. Example:</para>
-
-              <example>
-                <title>Regular Expression Constraint</title>
-
-                <programlisting>Cheese( type not matches "(Buffulo)?\S*Mozarella" )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>The Operator <literal>contains</literal></title>
-
-              <para>The operator <literal>contains</literal> is used to check
-              whether a field that is a <indexterm>
-                  <primary>Collection</primary>
-                </indexterm>Collection or array contains the specified
-              value.</para>
-
-              <example>
-                <title>Contains with Collections</title>
-
-                <programlisting>CheeseCounter( cheeses contains "stilton" ) // contains with a String literal
+            <programlisting>CheeseCounter( cheeses contains "stilton" ) // contains with a String literal
 CheeseCounter( cheeses contains $var ) // contains with a variable</programlisting>
-              </example>
-            </simplesect>
+          </example>
 
-            <simplesect>
-              <title>The Operator <literal>not contains</literal></title>
-
-              <para>The operator <literal>not contains</literal> is used to
-              check whether a field that is a <indexterm>
-                  <primary>Collection</primary>
-                </indexterm>Collection or array does <emphasis>not</emphasis>
-              contain the specified value.</para>
-
-              <example>
-                <title>Literal Constraint with Collections</title>
-
-                <programlisting>CheeseCounter( cheeses not contains "cheddar" ) // not contains with a String literal
-CheeseCounter( cheeses not contains $var ) // not contains with a variable</programlisting>
-              </example>
-
-              <blockquote>
-                <note>
-                  <para>For backward compatibility, the
-                  <literal>excludes</literal> operator is supported as a
-                  synonym for <literal>not contains</literal>.</para>
-                </note>
-              </blockquote>
-            </simplesect>
-
-            <simplesect>
-              <title>The Operator <literal>memberOf</literal></title>
-
-              <para>The operator <literal>memberOf</literal> is used to check
-              whether a field is a member of a collection or array; that
-              collection must be a variable.</para>
-
-              <example>
-                <title>Literal Constraint with Collections</title>
-
-                <programlisting>CheeseCounter( cheese memberOf $matureCheeses )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>The Operator <literal>not memberOf</literal></title>
-
-              <para>The operator <literal>not memberOf</literal> is used to
-              check whether a field is not a member of a collection or array;
-              that collection must be a variable.</para>
-
-              <example>
-                <title>Literal Constraint with Collections</title>
-
-                <programlisting>CheeseCounter( cheese not memberOf $matureCheeses )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>The Operator <literal>soundslike</literal></title>
-
-              <para>This operator is similar to <literal>matches</literal>,
-              but it checks whether a word has almost the same sound (using
-              English pronounciation) as the given value. This is based on the
-              Soundex algorithm (see
-              <code>http://en.wikipedia.org/wiki/Soundex</code>).</para>
-
-              <example>
-                <title>Test with soundslike</title>
-
-                <programlisting>// match cheese "fubar" or "foobar"
-Cheese( name soundslike 'foobar' )</programlisting>
-              </example>
-            </simplesect>
-          
-          <simplesect>
-              <title>The Operator <literal>str</literal></title>
-
-              <para>This operator <literal>str</literal> is used to
-              check whether a field that is a <indexterm>
-                  <primary>String</primary>
-                </indexterm>String starts with or ends with with a certain value. It can also be used to check
-                the length of the String.
-              <example>
-                <title>Test with str</title>
-
-                <programlisting>$m : Message( routingValue str[startsWith] "R1" )
-                        $m : Message( routingValue str[endsWith] "R2" )
-                        $m : Message( routingValue str[length] 17 )
-                </programlisting>
-              </example>
-              </para>
-            </simplesect>
-          </section>
-
-          <section>
-            <title>Literal Restrictions</title>
-
-            <para>Literal restrictions are the simplest form of restrictions
-            and evaluate a field against a specified literal, which may be
-            numeric or a date, a string or a boolean.</para>
-
-            <figure>
-              <title>literalRestriction</title>
-
-              <mediaobject>
-                <imageobject>
-                  <imagedata align="center"
-                             fileref="images/Chapter-Rule_Language/literalRestriction.png"
-                             format="PNG" />
-                </imageobject>
-              </mediaobject>
-            </figure>
-
-            <para>Literal Restrictions using the operator '==' provide for
-            faster execution as we can index using hashing to improve
-            performance.</para>
-
-            <simplesect>
-              <title>Numeric</title>
-
-              <para>All standard Java numeric primitives are supported.</para>
-
-              <example>
-                <title>Numeric Literal Restriction</title>
-
-                <programlisting>Cheese( quantity == 5 )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>Date</title>
-
-              <para>The date format "dd-mmm-yyyy" is supported by default. You
-              can customize this by providing an alternative date format mask
-              as the System property named <code>drools.dateformat</code>. If
-              more control is required, use the inline-eval constraint.</para>
-
-              <example>
-                <title>Date Literal Restriction</title>
-
-                <programlisting>Cheese( bestBefore &lt; "27-Oct-2009" )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>String</title>
-
-              <para>Any valid Java String is allowed.</para>
-
-              <example>
-                <title>String Literal Restriction</title>
-
-                <programlisting>Cheese( type == "stilton" )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>Boolean</title>
-
-              <para>Only <code>true</code> or <code>false</code> can be used;
-              0 and 1 are not acceptable. A boolean field alone (as in
-              <code>Cheese( smelly )</code> is not permitted; you must compare
-              this to a boolean literal.</para>
-
-              <example>
-                <title>Boolean Literal Restriction</title>
-
-                <programlisting>Cheese( smelly == true )</programlisting>
-              </example>
-            </simplesect>
-
-            <simplesect>
-              <title>Qualified Identifier</title>
-
-              <para>Enums can be used as well, both JDK 1.4 and 5 style enums
-              are supported. For the latter you must be executing on a JDK 5
-              environment.</para>
-
-              <example>
-                <title>Boolean Literal Restriction</title>
-
-                <programlisting>Cheese( smelly == SomeClass.TRUE )</programlisting>
-              </example>
-            </simplesect>
-          </section>
-
-          <section>
-            <title>Bound Variable Restriction</title>
-
-            <figure>
-              <title>variableRestriction</title>
-
-              <mediaobject>
-                <imageobject>
-                  <imagedata align="center"
-                             fileref="images/Chapter-Rule_Language/variableRestriction.png"
-                             format="PNG" />
-                </imageobject>
-              </mediaobject>
-            </figure>
-
-            <para>Variables can be bound to facts and their fields and then
-            used in subsequent Field Constraints. A bound variable is called a
-            <indexterm>
-                <primary>declaration</primary>
-              </indexterm>Declaration. Valid operators are determined by the
-            type of the field being constrained; coercion will be attempted
-            where possible. Bound Variable Restrictions using the operator
-            '==' provide for very fast execution as we can use hashing to
-            improve performance.</para>
-
-            <example>
-              <title>Bound Field using the operator '=='</title>
-
-              <programlisting>Person( likes : favouriteCheese )
-Cheese( type == likes )</programlisting>
-            </example>
-
-            <para>Here, <code>likes</code> is the variable that is bound in
-            its declaration to the field <code>favouriteCheese</code> of any
-            matching Person instance. It is then used to constrain the type of
-            Cheese in the following pattern. Any valid Java variable name can
-            be used, and it may be prefixed with a '$', which you will often
-            see used to help differentiate declarations from fields. The
-            example below shows a declaration for <code>$stilton</code>, bound
-            to the object matching the first pattern and used with a
-            <code>contains</code> operator. - Note the optional use of
-            '$'.</para>
-
-            <example>
-              <title>Bound Fact using 'contains' operator</title>
-
-              <programlisting>$stilton : Cheese( type == "stilton" )
-Cheesery( cheeses contains $stilton )</programlisting>
-            </example>
-          </section>
-
-          <section>
-            <title>Return Value Restriction</title>
-
-            <figure>
-              <title>returnValueRestriction</title>
-
-              <mediaobject>
-                <imageobject>
-                  <imagedata align="center"
-                             fileref="images/Chapter-Rule_Language/returnValueRestriction.png"
-                             format="PNG" />
-                </imageobject>
-              </mediaobject>
-            </figure>
-
-            <para>A <indexterm>
-                <primary>Return Value</primary>
-              </indexterm>Return Value restriction is a parenthesized
-            expression composed from literals, any valid Java primitive or
-            object, previously bound variables, function calls, and operators.
-            Functions used in a Return Value must return results that do not
-            depend on time.</para>
-
-            <example>
-              <title>Return Value Restriction</title>
-
-              <programlisting>Person( girlAge : age, sex == "F" )
-Person( age == ( girlAge + 2) ), sex == 'M' )
-</programlisting>
-            </example>
-          </section>
+          <para>Only applies on <literal>Collection</literal>
+          properties.</para>
         </section>
 
         <section>
-          <title>Compound Value Restriction</title>
+          <title>The operator <literal>not contains</literal></title>
+
+          <para>The operator <literal>not contains</literal> is used to check
+          whether a field that is a <indexterm>
+              <primary>Collection</primary>
+            </indexterm>Collection or array does <emphasis>not</emphasis>
+          contain the specified value.</para>
+
+          <example>
+            <title>Literal Constraint with Collections</title>
+
+            <programlisting>CheeseCounter( cheeses not contains "cheddar" ) // not contains with a String literal
+CheeseCounter( cheeses not contains $var ) // not contains with a variable</programlisting>
+          </example>
+
+          <para>Only applies on <literal>Collection</literal>
+          properties.</para>
+
+          <blockquote>
+            <note>
+              <para>For backward compatibility, the
+              <literal>excludes</literal> operator is supported as a synonym
+              for <literal>not contains</literal>.</para>
+            </note>
+          </blockquote>
+        </section>
+
+        <section>
+          <title>The operator <literal>memberOf</literal></title>
+
+          <para>The operator <literal>memberOf</literal> is used to check
+          whether a field is a member of a collection or array; that
+          collection must be a variable.</para>
+
+          <example>
+            <title>Literal Constraint with Collections</title>
+
+            <programlisting>CheeseCounter( cheese memberOf $matureCheeses )</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>The operator <literal>not memberOf</literal></title>
+
+          <para>The operator <literal>not memberOf</literal> is used to check
+          whether a field is not a member of a collection or array; that
+          collection must be a variable.</para>
+
+          <example>
+            <title>Literal Constraint with Collections</title>
+
+            <programlisting>CheeseCounter( cheese not memberOf $matureCheeses )</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>The operator <literal>soundslike</literal></title>
+
+          <para>This operator is similar to <literal>matches</literal>, but it
+          checks whether a word has almost the same sound (using English
+          pronunciation) as the given value. This is based on the Soundex
+          algorithm (see
+          <code>http://en.wikipedia.org/wiki/Soundex</code>).</para>
+
+          <example>
+            <title>Test with soundslike</title>
+
+            <programlisting>// match cheese "fubar" or "foobar"
+Cheese( name soundslike 'foobar' )</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>The operator <literal>str</literal></title>
+
+          <para>This operator <literal>str</literal> is used to check whether
+          a field that is a <literal>String</literal> starts with or ends with
+          a certain value. It can also be used to check the length of the
+          String.</para>
+
+          <programlisting>Message( routingValue str[startsWith] "R1" )</programlisting>
+
+          <programlisting>Message( routingValue str[endsWith] "R2" )</programlisting>
+
+          <programlisting>Message( routingValue str[length] 17 )</programlisting>
+        </section>
+
+        <section>
+          <title>The operators <literal>in</literal> and <literal>not
+          in</literal> (compound value restriction)</title>
 
           <para>The compound value restriction is used where there is more
           than one possible value to match. Currently only the
@@ -1109,9 +1063,10 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
           support this. The second operand of this operator must be a
           comma-separated list of values, enclosed in parentheses. Values may
           be given as variables, literals, return values or qualified
-          identifiers. Both evaluators are actually "syntactic sugar",
-          internally rewritten as a list of multiple restrictions using the
-          operators '!=' and '=='.</para>
+          identifiers. Both evaluators are actually <emphasis>syntactic
+          sugar</emphasis>, internally rewritten as a list of multiple
+          restrictions using the operators <literal>!=</literal> and
+          <literal>==</literal>.</para>
 
           <figure>
             <title>compoundValueRestriction</title>
@@ -1120,72 +1075,22 @@ Person( age == ( girlAge + 2) ), sex == 'M' )
               <imageobject>
                 <imagedata align="center"
                            fileref="images/Chapter-Rule_Language/compoundValueRestriction.png"
-                           format="PNG" role="" />
+                           format="PNG" role=""></imagedata>
               </imageobject>
             </mediaobject>
           </figure>
-
-          <para />
 
           <example>
             <title>Compound Restriction using "in"</title>
 
             <programlisting>Person( $cheese : favouriteCheese )
-Cheese( type in ( "stilton", "cheddar", $cheese )
-</programlisting>
-          </example>
-        </section>
-
-        <section>
-          <title>Multi Restriction</title>
-
-          <para>Multi restriction allows you to place more than one
-          restriction on a field using the restriction connectives
-          '&amp;&amp;' or '||'. Grouping via parentheses is permitted,
-          resulting in a recursive syntax pattern.</para>
-
-          <figure>
-            <title>multiRestriction</title>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/multiRestriction.png"
-                           format="PNG" role="" />
-              </imageobject>
-            </mediaobject>
-          </figure>
-
-          <figure>
-            <title>restrictionGroup</title>
-
-            <mediaobject>
-              <imageobject>
-                <imagedata align="center"
-                           fileref="images/Chapter-Rule_Language/restrictionGroup.png"
-                           format="PNG" role="" />
-              </imageobject>
-            </mediaobject>
-          </figure>
-
-          <para />
-
-          <example>
-            <title>Multi Restriction</title>
-
-            <programlisting>// Simple multi restriction using a single &amp;&amp;
-Person( age &gt; 30 &amp;&amp; &lt; 40 )
-// Complex multi restriction using groupings of multi restrictions
-Person( age ( (&gt; 30 &amp;&amp; &lt; 40) ||
-              (&gt; 20 &amp;&amp; &lt; 25) ) )
-// Mixing muti restrictions with constraint connectives
-Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting>
+Cheese( type in ( "stilton", "cheddar", $cheese ) )</programlisting>
           </example>
         </section>
       </section>
 
       <section>
-        <title>Inline Eval Constraints</title>
+        <title>Inline eval operator (deprecated)</title>
 
         <figure>
           <title>Inline Eval Expression</title>
@@ -1194,7 +1099,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Rule_Language/inlineEvalConstraint.png"
-                         format="PNG" />
+                         format="PNG"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -1210,7 +1115,7 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
         the identifier is a field on the current object type, if it is, the
         field binding is auto-created as a variable of the same name. This is
         called autovivification of field variables inside of inline
-        evals.</para>
+        eval's.</para>
 
         <para>This example will find all male-female pairs where the male is 2
         years older than the female; the variable <code>age</code> is
@@ -1221,288 +1126,412 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
           <title>Return Value operator</title>
 
           <programlisting>Person( girlAge : age, sex = "F" )
-Person( eval( age == girlAge + 2 ), sex = 'M' )
+Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obselete in this example</programlisting>
+        </example>
+
+        <note>
+          <para>Inline eval's are effectively obsolete as their inner syntax
+          is now directly supported. It's recommended not to use them. Simply
+          write the expression without wrapping eval() around it.</para>
+        </note>
+      </section>
+
+      <section>
+        <title>Operator precedence</title>
+
+        <para>The operators are evaluated in this precedence:</para>
+
+        <table>
+          <title>Operator precedence</title>
+
+          <tgroup cols="3">
+            <thead>
+              <row>
+                <entry align="center">Operator type</entry>
+
+                <entry align="center">Operators</entry>
+
+                <entry align="center">Notes</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>(nested) property access</entry>
+
+                <entry><literal>.</literal></entry>
+
+                <entry>Not normal Java semantics</entry>
+              </row>
+
+              <row>
+                <entry>List/Map access</entry>
+
+                <entry><literal>[ ]</literal></entry>
+
+                <entry>Not normal Java semantics</entry>
+              </row>
+
+              <row>
+                <entry>constraint binding</entry>
+
+                <entry><literal>:</literal></entry>
+
+                <entry>Not normal Java semantics</entry>
+              </row>
+
+              <row>
+                <entry>multiplicative</entry>
+
+                <entry><literal>*</literal> <literal>/</literal>
+                <literal>%</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>additive</entry>
+
+                <entry><literal>+</literal> <literal>-</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>shift</entry>
+
+                <entry><literal>&lt;&lt;</literal> <literal>&gt;&gt;</literal>
+                <literal>&gt;&gt;&gt;</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>relational</entry>
+
+                <entry><literal>&lt;</literal> <literal>&gt;</literal>
+                <literal>&lt;=</literal> <literal>&gt;=</literal>
+                <literal>instanceof</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>equality</entry>
+
+                <entry><literal>==</literal> <literal>!=</literal></entry>
+
+                <entry>Does not use normal Java (<emphasis>not</emphasis>)
+                <emphasis>same</emphasis> semantics: uses
+                (<emphasis>not</emphasis>) <emphasis>equals</emphasis>
+                semantics instead.</entry>
+              </row>
+
+              <row>
+                <entry>non-short circuiting AND</entry>
+
+                <entry><literal>&amp;</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>non-short circuiting exclusive OR</entry>
+
+                <entry><literal>^</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>non-short circuiting inclusive OR</entry>
+
+                <entry><literal>|</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>logical AND</entry>
+
+                <entry><literal>&amp;&amp;</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>logical OR</entry>
+
+                <entry><literal>||</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>ternary</entry>
+
+                <entry><literal>? :</literal></entry>
+
+                <entry></entry>
+              </row>
+
+              <row>
+                <entry>Comma separated AND</entry>
+
+                <entry><literal>,</literal></entry>
+
+                <entry>Not normal Java semantics</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
+    </section>
+
+    <section>
+      <title>Positional Arguments</title>
+
+      <para>Patterns now support positional arguments on type
+      declarations.</para>
+
+      <para>Positional arguments are ones where you don't need to specify the
+      field name, as the position maps to a known named field. i.e. Person(
+      name == "mark" ) can be rewritten as Person( "mark"; ). The semicolon
+      ';' is important so that the engine knows that everything before it is a
+      positional argument. Otherwise we might assume it was a boolean
+      expression, which is how it could be interpretted after the semicolon.
+      You can mix positional and named arguments on a pattern by using the
+      semicolon ';' to separate them. Any variables used in a positional that
+      have not yet been bound will be bound to the field that maps to that
+      position.</para>
+
+      <programlisting>declare Cheese
+    name : String
+    shop : String
+    price : int
+end
 </programlisting>
+
+      <para>Example patterns, with two constraints and a binding. Remember
+      semicolon ';' is used to differentiate the positional section from the
+      named argument section. Variables and literals and expressions using
+      just literals are supported in posional arguments, but not variables.
+      Positional arguments are always resolved using unification.</para>
+
+      <programlisting>Cheese( "stilton", "Cheese Shop", p; )
+Cheese( "stilton", "Cheese Shop"; p : price )
+Cheese( "stilton"; shop == "Cheese Shop", p : price )
+Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
+</programlisting>
+
+      <para>Positional arguments that are given a previously declared binding
+      will consrain against that using unification; these are referred to as
+      input arguments. If the binding does not yet exist, it will create the
+      declaration binding it to the field represented by the position
+      argument; these are referred to as output arguments.</para>
+    </section>
+
+    <section>
+      <title>Basic conditional elements</title>
+
+      <section>
+        <title>Conditional Element <literal>and</literal></title>
+
+        <para>The Conditional Element <literal>"and"</literal> is used to
+        group other Conditional Elements into a logical conjunction. Drools
+        supports both prefix <literal>and</literal> and infix
+        <literal>and</literal>.</para>
+
+        <figure>
+          <title>infixAnd</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/infixAnd.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Traditional infix <literal>and</literal> is supported:</para>
+
+        <programlisting>//infixAnd
+Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )</programlisting>
+
+        <para>Explicit grouping with parentheses is also supported:</para>
+
+        <programlisting>//infixAnd with grouping
+( Cheese( cheeseType : type ) and
+  ( Person( favouriteCheese == cheeseType ) or 
+    Person( favouriteCheese == cheeseType ) )</programlisting>
+
+        <note>
+          <para>The symbol <literal>&amp;&amp;</literal> (as an alternative to
+          <literal>and</literal>) is deprecated. But it is still supported in
+          the syntax for backwards compatibility.</para>
+        </note>
+
+        <figure>
+          <title>prefixAnd</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/prefixAnd.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Prefix <literal>and</literal> is also supported:</para>
+
+        <programlisting>(and Cheese( cheeseType : type )
+     Person( favouriteCheese == cheeseType ) )</programlisting>
+
+        <para>The root element of the LHS is an implicit prefix
+        <literal>and</literal> and doesn't need to be specified:</para>
+
+        <example>
+          <title>implicit root prefixAnd</title>
+
+          <programlisting>when
+    Cheese( cheeseType : type )
+    Person( favouriteCheese == cheeseType )
+then
+    ...</programlisting>
         </example>
       </section>
 
       <section>
-        <title>Nested Accessors</title>
+        <title>Conditional Element <literal>or</literal></title>
 
-        <para>Drools permits <emphasis>nested accessors</emphasis> in in the
-        field constraints using the MVEL accessor graph notation. Field
-        constraints involving nested accessors are actually re-written as an
-        MVEL dialect inline-eval. Care should be taken when using nested
-        accessors as the Working Memory is not aware of any of the nested
-        values, and does not know when they change; they should be considered
-        immutable while any of their parent references are inserted into the
-        Working Memory. If you wish to modify a nested value you should remove
-        the parent objects first and re-assert afterwards. If you only have a
-        single parent at the root of the graph, when in the MVEL dialect, you
-        can use the <literal>modify</literal> construct and its block setters
-        to write the nested accessor assignments while retracting and
-        inserting the the root parent object as required. Nested accessors can
-        be used on either side of the operator symbol.</para>
+        <para>The Conditional Element <literal>or</literal> is used to group
+        other Conditional Elements into a logical disjunction. Drools supports
+        both prefix <literal>or</literal> and infix
+        <literal>or</literal>.</para>
 
-        <example>
-          <title>Nested Accessors</title>
+        <figure>
+          <title>infixOr</title>
 
-          <programlisting>// Find a pet older than its owners first-born child
-$p : Person( ) 
-Pet( owner == $p, age &gt; $p.children[0].age )</programlisting>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/infixOr.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-          <para>This is internally rewriten as an MVEL inline eval:</para>
-
-          <programlisting>// Find a pet older than its owners first-born child
-$p : Person( ) 
-Pet( owner == $p, eval( age &gt; $p.children[0].age ) ) </programlisting>
-        </example>
-
-        <remark><emphasis role="bold">Note: </emphasis>Nested accessors have a
-        much greater performance cost than direct field accesses, so use them
-        carefully.</remark>
-      </section>
-    </section>
-
-    <section>
-      <title>Conditional Element <literal>and</literal></title>
-
-      <para>The Conditional Element <literal>and</literal> is used to group
-      other Conditional Elements into a logical conjunction. The root element
-      of the LHS is an implicit prefix <literal>and</literal> and doesn't need
-      to be specified. Drools supports both prefix <literal>and</literal> and
-      infix <literal>and</literal>, but prefix is the preferred option as its
-      implicit grouping avoids confusion.</para>
-
-      <figure>
-        <title>prefixAnd</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/prefixAnd.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para />
-
-      <example>
-        <title>prefixAnd</title>
-
-        <programlisting>(and Cheese( cheeseType : type )
-     Person( favouriteCheese == cheeseType ) )
-</programlisting>
-      </example>
-
-      <example>
-        <title>implicit root prefixAnd</title>
-
-        <programlisting>when
-     Cheese( cheeseType : type )
-     Person( favouriteCheese == cheeseType )</programlisting>
-      </example>
-
-      <para>Infix <literal>and</literal> is supported along with explicit
-      grouping with parentheses, should it be needed. The symbol '&amp;&amp;',
-      as an alternative to <literal>and</literal>, is deprecated although it
-      is still supported in the syntax for legacy support reasons.</para>
-
-      <figure>
-        <title>infixAnd</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/infixAnd.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <example>
-        <title>infixAnd</title>
-
-        <programlisting>//infixAnd
-Cheese( cheeseType : type ) and Person( favouriteCheese == cheeseType )
-//infixAnd with grouping
-( Cheese( cheeseType : type ) and
-  ( Person( favouriteCheese == cheeseType ) or 
-    Person( favouriteCheese == cheeseType ) )</programlisting>
-      </example>
-    </section>
-
-    <section>
-      <title>Conditional Element <literal>or</literal></title>
-
-      <para>The Conditional Element <literal>or</literal> is used to group
-      other Conditional Elements into a logical disjunction. Drools supports
-      both prefix <literal>or</literal> and infix <literal>or</literal>, but
-      prefix is the preferred option as its implicit grouping avoids
-      confusion. The behavior of the Conditional Element <literal>or</literal>
-      is different from the connective '||' for constraints and restrictions
-      in field constraints. The engine actually has no understanding of the
-      Conditional Element <literal>or</literal>; instead, via a number of
-      different logic transformations, a rule with <literal>or</literal> is
-      rewritten as a number of subrules. This process ultimately results in a
-      rule that has a single <literal>or</literal> as the root node and one
-      subrule for each of its CEs. Each subrule can activate and fire like any
-      normal rule; there is no special behavior or interaction between these
-      subrules. - This can be most confusing to new rule authors.</para>
-
-      <figure>
-        <title>prefixOr</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/prefixOr.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <example>
-        <title>prefixOr</title>
-
-        <programlisting>(or Person( sex == "f", age &gt; 60 )
-    Person( sex == "m", age &gt; 65 )
-</programlisting>
-      </example>
-
-      <para>Infix <literal>or</literal> is supported along with explicit
-      grouping with parentheses, should it be needed. The symbol '||', as an
-      alternative to <literal>or</literal>, is deprecated although it is still
-      supported in the syntax for legacy support reasons.</para>
-
-      <figure>
-        <title>infixOr</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/infixOr.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <example>
-        <title>infixOr</title>
+        <para>Traditional infix <literal>or</literal> is supported:</para>
 
         <programlisting>//infixOr
-Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )
-//infixOr with grouping
+Cheese( cheeseType : type ) or Person( favouriteCheese == cheeseType )</programlisting>
+
+        <para>Explicit grouping with parentheses is also supported:</para>
+
+        <programlisting>//infixOr with grouping
 ( Cheese( cheeseType : type ) or
   ( Person( favouriteCheese == cheeseType ) and
     Person( favouriteCheese == cheeseType ) )</programlisting>
-      </example>
 
-      <para>The Conditional Element <literal>or</literal> also allows for
-      optional pattern binding. This means that each resulting subrule will
-      bind its pattern to the pattern binding. Each pattern must be bound
-      separately, using eponymous variables:</para>
+        <note>
+          <para>The symbol <literal>||</literal> (as an alternative to
+          <literal>or</literal>) is deprecated. But it is still supported in
+          the syntax for backwards compatibility.</para>
+        </note>
 
-      <example>
-        <title>or with binding</title>
+        <figure>
+          <title>prefixOr</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/prefixOr.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Prefix <literal>or</literal> is also supported:</para>
+
+        <programlisting>(or Person( sex == "f", age &gt; 60 )
+    Person( sex == "m", age &gt; 65 )</programlisting>
+
+        <note>
+          <para>The behavior of the Conditional Element <literal>or</literal>
+          is different from the connective <literal>||</literal> for
+          constraints and restrictions in field constraints. The engine
+          actually has no understanding of the Conditional Element
+          <literal>or</literal>. Instead, via a number of different logic
+          transformations, a rule with <literal>or</literal> is rewritten as a
+          number of subrules. This process ultimately results in a rule that
+          has a single <literal>or</literal> as the root node and one subrule
+          for each of its CEs. Each subrule can activate and fire like any
+          normal rule; there is no special behavior or interaction between
+          these subrules. - This can be most confusing to new rule
+          authors.</para>
+        </note>
+
+        <para>The Conditional Element <literal>or</literal> also allows for
+        optional pattern binding. This means that each resulting subrule will
+        bind its pattern to the pattern binding. Each pattern must be bound
+        separately, using eponymous variables:</para>
+
+        <programlisting>pensioner : ( Person( sex == "f", age &gt; 60 ) or Person( sex == "m", age &gt; 65 ) )</programlisting>
 
         <programlisting>(or pensioner : Person( sex == "f", age &gt; 60 ) 
     pensioner : Person( sex == "m", age &gt; 65 ) )</programlisting>
-      </example>
 
-      <para>Since the conditional element <literal>or</literal> results in
-      multiple subrule generation, one for each possible logically outcome,
-      the example above would result in the internal generation of two rules.
-      These two rules work independently within the Working Memory, which
-      means both can match, activate and fire - there is no
-      shortcutting.</para>
+        <para>Since the conditional element <literal>or</literal> results in
+        multiple subrule generation, one for each possible logically outcome,
+        the example above would result in the internal generation of two
+        rules. These two rules work independently within the Working Memory,
+        which means both can match, activate and fire - there is no
+        shortcutting.</para>
 
-      <para>The best way to think of the conditional element
-      <literal>or</literal> is as a shortcut for generating two or more
-      similar rules. When you think of it that way, it's clear that for a
-      single rule there could be multiple activations if two or more terms of
-      the disjunction are true.</para>
-    </section>
+        <para>The best way to think of the conditional element
+        <literal>or</literal> is as a shortcut for generating two or more
+        similar rules. When you think of it that way, it's clear that for a
+        single rule there could be multiple activations if two or more terms
+        of the disjunction are true.</para>
+      </section>
 
-    <section>
-      <title>Conditional Element <literal>eval</literal></title>
+      <section>
+        <title>Conditional Element <literal>not</literal></title>
 
-      <figure>
-        <title>eval</title>
+        <figure>
+          <title>not</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/eval.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/not.png"
+                         format="PNG" role=""></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>The CE <literal>eval</literal> is essentially a catch-all which
-      allows any semantic code (that returns a primitive boolean) to be
-      executed. This code can refer to variables that were bound in the LHS of
-      the rule, and functions in the rule package. Overuse of eval reduces the
-      declarativeness of your rules and can result in a poorly performing
-      engine. While <literal>eval</literal> can be used anywhere in the
-      patterns, the best practice is to add it as the last conditional element
-      in the LHS of a rule.</para>
+        <para>The CE <literal>not</literal> is first order logic's
+        non-existential quantifier and checks for the non-existence of
+        something in the Working Memory. Think of "not" as meaning "there must
+        be none of...".</para>
 
-      <para>Evals cannot be indexed and thus are not as efficient as Field
-      Constraints. However this makes them ideal for being used when functions
-      return values that change over time, which is not allowed within Field
-      Constraints.</para>
+        <para>The keyword <literal>not</literal> may be followed by
+        parentheses around the CEs that it applies to. In the simplest case of
+        a single pattern (like below) you may optionally omit the
+        parentheses.</para>
 
-      <para>For folks who are familiar with Drools 2.x lineage, the old Drools
-      parameter and condition tags are equivalent to binding a variable to an
-      appropriate type, and then using it in an eval node.</para>
+        <example>
+          <title>No Busses</title>
 
-      <example>
-        <title>eval</title>
+          <programlisting>not Bus()</programlisting>
+        </example>
 
-        <programlisting>p1 : Parameter() 
-p2 : Parameter()
-eval( p1.getList().containsKey(p2.getItem()) )
-// call function isValid in the LHS
-eval( isValid(p1, p2) )</programlisting>
-      </example>
-    </section>
+        <example>
+          <title>No red Busses</title>
 
-    <section>
-      <title>Conditional Element <literal>not</literal></title>
-
-      <figure>
-        <title>not</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/not.png"
-                       format="PNG" role="" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>The CE <literal>not</literal> is first order logic's
-      non-existential quantifier and checks for the non-existence of something
-      in the Working Memory. Think of "not" as meaning "there must be none
-      of...".</para>
-
-      <para>The keyword <literal>not</literal> be followed by parentheses
-      around the CEs that it applies to. In the simplest case of a single
-      pattern (like below) you may optionally omit the parentheses.</para>
-
-      <example>
-        <title>No Busses</title>
-
-        <programlisting>not Bus()</programlisting>
-      </example>
-
-      <example>
-        <title>No red Busses</title>
-
-        <programlisting>// Brackets are optional:
+          <programlisting>// Brackets are optional:
 not Bus(color == "red")
 // Brackets are optional:
 not ( Bus(color == "red", number == 42) )
@@ -1510,114 +1539,117 @@ not ( Bus(color == "red", number == 42) )
 // brackets are requires:
 not ( Bus(color == "red") and
       Bus(color == "blue") )</programlisting>
-      </example>
-    </section>
+        </example>
+      </section>
 
-    <section>
-      <title>Conditional Element <literal>exists</literal></title>
+      <section>
+        <title>Conditional Element <literal>exists</literal></title>
 
-      <figure>
-        <title>exists</title>
+        <figure>
+          <title>exists</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/exists.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/exists.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>The CE <literal>exists</literal> is first order logic's
-      existential quantifier and checks for the existence of something in the
-      Working Memory. Think of "exists" as meaning "there is at least one..".
-      It is different from just having the pattern on its own, which is more
-      like saying "for each one of...". If you use <literal>exists</literal>
-      with a pattern, the rule will only activate at most once, regardless of
-      how much data there is in working memory that matches the condition
-      inside of the <literal>exists</literal> pattern. Since only the
-      existence matters, no bindings will be established.</para>
+        <para>The CE <literal>exists</literal> is first order logic's
+        existential quantifier and checks for the existence of something in
+        the Working Memory. Think of "exists" as meaning "there is at least
+        one..". It is different from just having the pattern on its own, which
+        is more like saying "for each one of...". If you use
+        <literal>exists</literal> with a pattern, the rule will only activate
+        at most once, regardless of how much data there is in working memory
+        that matches the condition inside of the <literal>exists</literal>
+        pattern. Since only the existence matters, no bindings will be
+        established.</para>
 
-      <para>The keyword <literal>exists</literal> must be followed by
-      parentheses around the CEs that it applies to. In the simplest case of a
-      single pattern (like below) you may omit the parentheses.</para>
+        <para>The keyword <literal>exists</literal> must be followed by
+        parentheses around the CEs that it applies to. In the simplest case of
+        a single pattern (like below) you may omit the parentheses.</para>
 
-      <example>
-        <title>At least one Bus</title>
+        <example>
+          <title>At least one Bus</title>
 
-        <programlisting>exists Bus()</programlisting>
-      </example>
+          <programlisting>exists Bus()</programlisting>
+        </example>
 
-      <example>
-        <title>At least one red Bus</title>
+        <example>
+          <title>At least one red Bus</title>
 
-        <programlisting>exists Bus(color == "red")
+          <programlisting>exists Bus(color == "red")
 // brackets are optional:
 exists ( Bus(color == "red", number == 42) )
 // "exists" with nested infix <literal>and</literal>,
 // brackets are required:
 exists ( Bus(color == "red") and
          Bus(color == "blue") )</programlisting>
-      </example>
+        </example>
+      </section>
     </section>
 
     <section>
-      <title>Conditional Element <literal>forall</literal></title>
+      <title>Advanced conditional elements</title>
 
-      <figure>
-        <title>forall</title>
+      <section>
+        <title>Conditional Element <literal>forall</literal></title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/forall.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+        <figure>
+          <title>forall</title>
 
-      <para>The Conditional Element <literal>forall</literal> completes the
-      First Order Logic support in Drools. The Conditional Element
-      <literal>forall</literal> evaluates to true when all facts that match
-      the first pattern match all the remaining patterns. Example:</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/forall.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <programlisting>rule "All English buses are red"
+        <para>The Conditional Element <literal>forall</literal> completes the
+        First Order Logic support in Drools. The Conditional Element
+        <literal>forall</literal> evaluates to true when all facts that match
+        the first pattern match all the remaining patterns. Example:</para>
+
+        <programlisting>rule "All English buses are red"
 when
     forall( $bus : Bus( type == 'english') 
                    Bus( this == $bus, color = 'red' ) )
 then
     # all english buses are red
-end
-</programlisting>
+end</programlisting>
 
-      <para>In the above rule, we "select" all Bus objects whose type is
-      "english". Then, for each fact that matches this pattern we evaluate the
-      following patterns and if they match, the forall CE will evaluate to
-      true.</para>
+        <para>In the above rule, we "select" all Bus objects whose type is
+        "english". Then, for each fact that matches this pattern we evaluate
+        the following patterns and if they match, the forall CE will evaluate
+        to true.</para>
 
-      <para>To state that all facts of a given type in the working memory must
-      match a set of constraints, <literal>forall</literal> can be written
-      with a single pattern for simplicity. Example:</para>
+        <para>To state that all facts of a given type in the working memory
+        must match a set of constraints, <literal>forall</literal> can be
+        written with a single pattern for simplicity. Example:</para>
 
-      <example>
-        <title>Single Pattern Forall</title>
+        <example>
+          <title>Single Pattern Forall</title>
 
-        <programlisting>rule "All Buses are Red"
+          <programlisting>rule "All Buses are Red"
 when
     forall( Bus( color == 'red' ) )
 then
     # all asserted Bus facts are red
-end
-</programlisting>
-      </example>
+end</programlisting>
+        </example>
 
-      <para>Another example shows multiple patterns inside the
-      <literal>forall</literal>:</para>
+        <para>Another example shows multiple patterns inside the
+        <literal>forall</literal>:</para>
 
-      <example>
-        <title>Multi-Pattern Forall</title>
+        <example>
+          <title>Multi-Pattern Forall</title>
 
-        <programlisting>rule "all employees have health and dental care programs"
+          <programlisting>rule "all employees have health and dental care programs"
 when
     forall( $emp : Employee()
             HealthCare( employee == $emp )
@@ -1625,20 +1657,19 @@ when
           )
 then
     # all employees have health and dental care
-end
-</programlisting>
-      </example>
+end</programlisting>
+        </example>
 
-      <para>Forall can be nested inside other CEs.
-      For instance, <literal>forall</literal> can be used inside a
-      <literal>not</literal> CE. Note that only single patterns have optional
-      parentheses, so that with a nested <literal>forall</literal>
-      parentheses must be used:</para>
+        <para>Forall can be nested inside other CEs. For instance,
+        <literal>forall</literal> can be used inside a <literal>not</literal>
+        CE. Note that only single patterns have optional parentheses, so that
+        with a nested <literal>forall</literal> parentheses must be
+        used:</para>
 
-      <example>
-        <title>Combining Forall with Not CE</title>
+        <example>
+          <title>Combining Forall with Not CE</title>
 
-        <programlisting>rule "not all employees have health and dental care"
+          <programlisting>rule "not all employees have health and dental care"
 when 
     not ( forall( $emp : Employee()
                   HealthCare( employee == $emp )
@@ -1646,101 +1677,98 @@ when
         )
 then
     # not all employees have health and dental care
-end
-</programlisting>
-      </example>
+end</programlisting>
+        </example>
 
-      <para>As a side note, <code>forall( p1 p2 p3...)</code> is
-      equivalent to writing:</para>
+        <para>As a side note, <code>forall( p1 p2 p3...)</code> is equivalent
+        to writing:</para>
 
-      <programlisting>not(p1 and not(and p2 p3...))</programlisting>
+        <programlisting>not(p1 and not(and p2 p3...))</programlisting>
 
-      <para>Also, it is important to note that <literal>forall</literal> is a
-      <emphasis>scope delimiter</emphasis>. Therefore, it can use any
-      previously bound variable, but no variable bound inside it will be
-      available for use outside of it.</para>
-    </section>
+        <para>Also, it is important to note that <literal>forall</literal> is
+        a <emphasis>scope delimiter</emphasis>. Therefore, it can use any
+        previously bound variable, but no variable bound inside it will be
+        available for use outside of it.</para>
+      </section>
 
-    <section>
-      <title>Conditional Element <literal>from</literal></title>
+      <section>
+        <title>Conditional Element <literal>from</literal></title>
 
-      <figure>
-        <title>from</title>
+        <figure>
+          <title>from</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/from.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/from.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>The Conditional Element <literal>from</literal> enables users to
-      specify an arbitrary source for data to be matched by LHS patterns. This
-      allows the engine to reason over data not in the Working Memory. The
-      data source could be a sub-field on a bound variable or the results of a
-      method call. It is a powerful construction that allows out of the box
-      integration with other application components and frameworks. One common
-      example is the integration with data retrieved on-demand from databases
-      using hibernate named queries.</para>
+        <para>The Conditional Element <literal>from</literal> enables users to
+        specify an arbitrary source for data to be matched by LHS patterns.
+        This allows the engine to reason over data not in the Working Memory.
+        The data source could be a sub-field on a bound variable or the
+        results of a method call. It is a powerful construction that allows
+        out of the box integration with other application components and
+        frameworks. One common example is the integration with data retrieved
+        on-demand from databases using hibernate named queries.</para>
 
-      <para>The expression used to define the object source is any expression
-      that follows regular MVEL syntax. Therefore, it allows you to easily use
-      object property navigation, execute method calls and access maps and
-      collections elements.</para>
+        <para>The expression used to define the object source is any
+        expression that follows regular MVEL syntax. Therefore, it allows you
+        to easily use object property navigation, execute method calls and
+        access maps and collections elements.</para>
 
-      <para>Here is a simple example of reasoning and binding on another
-      pattern sub-field:</para>
+        <para>Here is a simple example of reasoning and binding on another
+        pattern sub-field:</para>
 
-      <programlisting>rule "validate zipcode"
+        <programlisting>rule "validate zipcode"
 when
     Person( $personAddress : address ) 
     Address( zipcode == "23920W") from $personAddress 
 then
     # zip code is ok
-end
-</programlisting>
+end</programlisting>
 
-      <para>With all the flexibility from the new expressiveness in the Drools
-      engine you can slice and dice this problem many ways. This is the same
-      but shows how you can use a graph notation with the 'from':</para>
+        <para>With all the flexibility from the new expressiveness in the
+        Drools engine you can slice and dice this problem many ways. This is
+        the same but shows how you can use a graph notation with the
+        'from':</para>
 
-      <programlisting>rule "validate zipcode"
+        <programlisting>rule "validate zipcode"
 when
     $p : Person( ) 
     $a : Address( zipcode == "23920W") from $p.address 
 then
     # zip code is ok
-end
-</programlisting>
+end</programlisting>
 
-      <para>Previous examples were evaluations using a single pattern. The CE
-      <literal>from</literal> also support object sources that return a
-      collection of objects. In that case, <literal>from</literal> will
-      iterate over all objects in the collection and try to match each of them
-      individually. For instance, if we want a rule that applies 10% discount
-      to each item in an order, we could do:</para>
+        <para>Previous examples were evaluations using a single pattern. The
+        CE <literal>from</literal> also support object sources that return a
+        collection of objects. In that case, <literal>from</literal> will
+        iterate over all objects in the collection and try to match each of
+        them individually. For instance, if we want a rule that applies 10%
+        discount to each item in an order, we could do:</para>
 
-      <programlisting>rule "apply 10% discount to all items over US$ 100,00 in an order"
+        <programlisting>rule "apply 10% discount to all items over US$ 100,00 in an order"
 when
     $order : Order()
     $item  : OrderItem( value &gt; 100 ) from $order.items
 then
     # apply discount to $item
-end
-</programlisting>
+end</programlisting>
 
-      <para>The above example will cause the rule to fire once for each item
-      whose value is greater than 100 for each given order.</para>
+        <para>The above example will cause the rule to fire once for each item
+        whose value is greater than 100 for each given order.</para>
 
-      <para>You must take caution, however, when using
-      <literal>from</literal>, especially in conjunction with the
-      <literal>lock-on-active</literal> rule attribute as it may produce
-      unexpected results. Consider the example provided earlier, but now
-      slightly modified as follows:</para>
+        <para>You must take caution, however, when using
+        <literal>from</literal>, especially in conjunction with the
+        <literal>lock-on-active</literal> rule attribute as it may produce
+        unexpected results. Consider the example provided earlier, but now
+        slightly modified as follows:</para>
 
-      <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+        <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1758,62 +1786,61 @@ when
     $a : Address( city == "Raleigh") from $p.address 
 then
     modify ($p) {} #Apply discount to person in a modify block
-end
-</programlisting>
+end</programlisting>
 
-      <para>In the above example, persons in Raleigh, NC should be assigned to
-      sales region 1 and receive a discount; i.e., you would expect both rules
-      to activate and fire. Instead you will find that only the second rule
-      fires.</para>
+        <para>In the above example, persons in Raleigh, NC should be assigned
+        to sales region 1 and receive a discount; i.e., you would expect both
+        rules to activate and fire. Instead you will find that only the second
+        rule fires.</para>
 
-      <para>If you were to turn on the audit log, you would also see that when
-      the second rule fires, it deactivates the first rule. Since the rule
-      attribute <literal>lock-on-active</literal> prevents a rule from
-      creating new activations when a set of facts change, the first rule
-      fails to reactivate. Though the set of facts have not changed, the use
-      of <literal>from</literal> returns a new fact for all intents and
-      purposes each time it is evaluated.</para>
+        <para>If you were to turn on the audit log, you would also see that
+        when the second rule fires, it deactivates the first rule. Since the
+        rule attribute <literal>lock-on-active</literal> prevents a rule from
+        creating new activations when a set of facts change, the first rule
+        fails to reactivate. Though the set of facts have not changed, the use
+        of <literal>from</literal> returns a new fact for all intents and
+        purposes each time it is evaluated.</para>
 
-      <para>First, it's important to review why you would use the above
-      pattern. You may have many rules across different rule-flow groups. When
-      rules modify working memory and other rules downstream of your RuleFlow
-      (in different rule-flow groups) need to be reevaluated, the use of
-      <literal>modify</literal> is critical. You don't, however, want other
-      rules in the same rule-flow group to place activations on one another
-      recursively. In this case, the <literal>no-loop</literal> attribute is
-      ineffective, as it would only prevent a rule from activating itself
-      recursively. Hence, you resort to
-      <literal>lock-on-active</literal>.</para>
+        <para>First, it's important to review why you would use the above
+        pattern. You may have many rules across different rule-flow groups.
+        When rules modify working memory and other rules downstream of your
+        RuleFlow (in different rule-flow groups) need to be reevaluated, the
+        use of <literal>modify</literal> is critical. You don't, however, want
+        other rules in the same rule-flow group to place activations on one
+        another recursively. In this case, the <literal>no-loop</literal>
+        attribute is ineffective, as it would only prevent a rule from
+        activating itself recursively. Hence, you resort to
+        <literal>lock-on-active</literal>.</para>
 
-      <para>There are several ways to address this issue:</para>
+        <para>There are several ways to address this issue:</para>
 
-      <itemizedlist>
-        <listitem>
-          <para>Avoid the use of <literal>from</literal> when you can assert
-          all facts into working memory or use nested object references in
-          your constraint expressions (shown below).</para>
-        </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>Avoid the use of <literal>from</literal> when you can assert
+            all facts into working memory or use nested object references in
+            your constraint expressions (shown below).</para>
+          </listitem>
 
-        <listitem>
-          <para>Place the variable assigned used in the modify block as the
-          last sentence in your condition (LHS).</para>
-        </listitem>
+          <listitem>
+            <para>Place the variable assigned used in the modify block as the
+            last sentence in your condition (LHS).</para>
+          </listitem>
 
-        <listitem>
-          <para>Avoid the use of <literal>lock-on-active</literal> when you
-          can explicitly manage how rules within the same rule-flow group
-          place activations on one another (explained below).</para>
-        </listitem>
-      </itemizedlist>
+          <listitem>
+            <para>Avoid the use of <literal>lock-on-active</literal> when you
+            can explicitly manage how rules within the same rule-flow group
+            place activations on one another (explained below).</para>
+          </listitem>
+        </itemizedlist>
 
-      <para>The preferred solution is to minimize use of
-      <literal>from</literal> when you can assert all your facts into working
-      memory directly. In the example above, both the Person and Address
-      instance can be asserted into working memory. In this case, because the
-      graph is fairly simple, an even easier solution is to modify your rules
-      as follows:</para>
+        <para>The preferred solution is to minimize use of
+        <literal>from</literal> when you can assert all your facts into
+        working memory directly. In the example above, both the Person and
+        Address instance can be asserted into working memory. In this case,
+        because the graph is fairly simple, an even easier solution is to
+        modify your rules as follows:</para>
 
-      <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+        <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1829,22 +1856,22 @@ when
     $p : Person(address.city == "Raleigh" )  
 then
     modify ($p) {} #Apply discount to person in a modify block
-end
-</programlisting>
+end</programlisting>
 
-      <para>Now, you will find that both rules fire as expected. However, it
-      is not always possible to access nested facts as above. Consider an
-      example where a Person holds one or more Addresses and you wish to use
-      an existential quantifier to match people with at least one address that
-      meets certain conditions. In this case, you would have to resort to the
-      use of <literal>from</literal> to reason over the collection.</para>
+        <para>Now, you will find that both rules fire as expected. However, it
+        is not always possible to access nested facts as above. Consider an
+        example where a Person holds one or more Addresses and you wish to use
+        an existential quantifier to match people with at least one address
+        that meets certain conditions. In this case, you would have to resort
+        to the use of <literal>from</literal> to reason over the
+        collection.</para>
 
-      <para>There are several ways to use <literal>from</literal> to achieve
-      this and not all of them exhibit an issue with the use of
-      <literal>lock-on-active</literal>. For example, the following use of
-      <literal>from</literal> causes both rules to fire as expected:</para>
+        <para>There are several ways to use <literal>from</literal> to achieve
+        this and not all of them exhibit an issue with the use of
+        <literal>lock-on-active</literal>. For example, the following use of
+        <literal>from</literal> causes both rules to fire as expected:</para>
 
-      <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+        <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1862,13 +1889,12 @@ when
     exists (Address(city == "Raleigh") from $addresses)  
 then
     modify ($p) {} #Apply discount to person in a modify block
-end
-</programlisting>
+end</programlisting>
 
-      <para>However, the following slightly different approach does exhibit
-      the problem:</para>
+        <para>However, the following slightly different approach does exhibit
+        the problem:</para>
 
-      <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
+        <programlisting>rule "Assign people in North Carolina (NC) to sales region 1"
 ruleflow-group "test"
 lock-on-active true
 when
@@ -1892,56 +1918,59 @@ then
     modify ($assessment) {} #Modify assessment in a modify block
 end</programlisting>
 
-      <para>In the above example, the $addresses variable is returned from the
-      use of <literal>from</literal>. The example also introduces a new
-      object, assessment, to highlight one possible solution in this case. If
-      the $assessment variable assigned in the condition (LHS) is moved to the
-      last condition in each rule, both rules fire as expected.</para>
+        <para>In the above example, the $addresses variable is returned from
+        the use of <literal>from</literal>. The example also introduces a new
+        object, assessment, to highlight one possible solution in this case.
+        If the $assessment variable assigned in the condition (LHS) is moved
+        to the last condition in each rule, both rules fire as
+        expected.</para>
 
-      <para>Though the above examples demonstrate how to combine the use of
-      <literal>from</literal> with <literal>lock-on-active</literal> where no
-      loss of rule activations occurs, they carry the drawback of placing a
-      dependency on the order of conditions on the LHS. In addition, the
-      solutions present greater complexity for the rule author in terms of
-      keeping track of which conditions may create issues.</para>
+        <para>Though the above examples demonstrate how to combine the use of
+        <literal>from</literal> with <literal>lock-on-active</literal> where
+        no loss of rule activations occurs, they carry the drawback of placing
+        a dependency on the order of conditions on the LHS. In addition, the
+        solutions present greater complexity for the rule author in terms of
+        keeping track of which conditions may create issues.</para>
 
-      <para>A better alternative is to assert more facts into working memory.
-      In this case, a person's addresses may be asserted into working memory
-      and the use of <literal>from</literal> would not be necessary.</para>
+        <para>A better alternative is to assert more facts into working
+        memory. In this case, a person's addresses may be asserted into
+        working memory and the use of <literal>from</literal> would not be
+        necessary.</para>
 
-      <para>There are cases, however, where asserting all data into working
-      memory is not practical and we need to find other solutions. Another
-      option is to reevaluate the need for <literal>lock-on-active</literal>.
-      An alternative to <literal>lock-on-active</literal> is to directly
-      manage how rules within the same rule-flow group activate one another by
-      including conditions in each rule that prevent rules from activating
-      each other recursively when working memory is modified. For example, in
-      the case above where a discount is applied to citizens of Raleigh, a
-      condition may be added to the rule that checks whether the discount has
-      already been applied. If so, the rule does not activate.</para>
-    </section>
+        <para>There are cases, however, where asserting all data into working
+        memory is not practical and we need to find other solutions. Another
+        option is to reevaluate the need for
+        <literal>lock-on-active</literal>. An alternative to
+        <literal>lock-on-active</literal> is to directly manage how rules
+        within the same rule-flow group activate one another by including
+        conditions in each rule that prevent rules from activating each other
+        recursively when working memory is modified. For example, in the case
+        above where a discount is applied to citizens of Raleigh, a condition
+        may be added to the rule that checks whether the discount has already
+        been applied. If so, the rule does not activate.</para>
+      </section>
 
-    <section>
-      <title>Conditional Element <literal>collect</literal></title>
+      <section>
+        <title>Conditional Element <literal>collect</literal></title>
 
-      <figure>
-        <title>collect</title>
+        <figure>
+          <title>collect</title>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/collect.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/collect.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-      <para>The Conditional Element <literal>collect</literal> allows rules to
-      reason over a collection of objects obtained from the given source or
-      from the working memory. In First Oder Logic terms this is the
-      cardinality quantifier. A simple example:</para>
+        <para>The Conditional Element <literal>collect</literal> allows rules
+        to reason over a collection of objects obtained from the given source
+        or from the working memory. In First Oder Logic terms this is the
+        cardinality quantifier. A simple example:</para>
 
-      <programlisting>import java.util.ArrayList
+        <programlisting>import java.util.ArrayList
 
 rule "Raise priority if system has more than 3 pending alarms"
 when
@@ -1952,36 +1981,35 @@ then
     # Raise priority, because system $system has
     # 3 or more alarms pending. The pending alarms
     # are $alarms.
-end
-</programlisting>
+end</programlisting>
 
-      <para>In the above example, the rule will look for all pending alarms in
-      the working memory for each given system and group them in ArrayLists.
-      If 3 or more alarms are found for a given system, the rule will
-      fire.</para>
+        <para>In the above example, the rule will look for all pending alarms
+        in the working memory for each given system and group them in
+        ArrayLists. If 3 or more alarms are found for a given system, the rule
+        will fire.</para>
 
-      <para>The result pattern of <literal>collect</literal> can be any
-      concrete class that implements the <code>java.util.Collection</code>
-      interface and provides a default no-arg public constructor. This means
-      that you can use Java collections like ArrayList, LinkedList, HashSet,
-      etc., or your own class, as long as it implements the
-      <code>java.util.Collection</code> interface and provide a default no-arg
-      public constructor.</para>
+        <para>The result pattern of <literal>collect</literal> can be any
+        concrete class that implements the <code>java.util.Collection</code>
+        interface and provides a default no-arg public constructor. This means
+        that you can use Java collections like ArrayList, LinkedList, HashSet,
+        etc., or your own class, as long as it implements the
+        <code>java.util.Collection</code> interface and provide a default
+        no-arg public constructor.</para>
 
-      <para>Both source and result patterns can be constrained as any other
-      pattern.</para>
+        <para>Both source and result patterns can be constrained as any other
+        pattern.</para>
 
-      <para>Variables bound before the <literal>collect</literal> CE are in
-      the scope of both source and result patterns and therefore you can use
-      them to constrain both your source and result patterns. But note that
-      <literal>collect</literal> is a scope delimiter for bindings, so that
-      any binding made inside of it is not available for use outside of
-      it.</para>
+        <para>Variables bound before the <literal>collect</literal> CE are in
+        the scope of both source and result patterns and therefore you can use
+        them to constrain both your source and result patterns. But note that
+        <literal>collect</literal> is a scope delimiter for bindings, so that
+        any binding made inside of it is not available for use outside of
+        it.</para>
 
-      <para>Collect accepts nested <literal>from</literal> CEs. The following
-      example is a valid use of "collect":</para>
+        <para>Collect accepts nested <literal>from</literal> CEs. The
+        following example is a valid use of "collect":</para>
 
-      <programlisting>import java.util.LinkedList;
+        <programlisting>import java.util.LinkedList;
 
 rule "Send a message to all mothers"
 when
@@ -1992,165 +2020,53 @@ when
                            )
 then
     # send a message to all mothers
-end
-</programlisting>
-    </section>
-
-    <section>
-      <title>Conditional Element <literal>accumulate</literal></title>
-
-      <figure>
-        <title>accumulate</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Rule_Language/accumulate.png"
-                       format="PNG" />
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>The Conditional Element <literal>accumulate</literal> is a more
-      flexible and powerful form of <literal>collect</literal>, the sense that
-      it can be used to do what <literal>collect</literal> does and also
-      achieve things that the CE <literal>collect</literal> is not capable of
-      doing. Basically, what it does is that it allows a rule to iterate over
-      a collection of objects, executing custom actions for each of the
-      elements, and at the end it returns a result object.</para>
-
-      <para>The general syntax of the <literal>accumulate</literal> CE
-      is:</para>
-
-      <programlisting><replaceable>&lt;result pattern&gt;</replaceable> <literal>from accumulate(</literal> <replaceable>&lt;source pattern&gt;</replaceable><literal>,</literal>
-                                  <literal>init(</literal> <replaceable>&lt;init code&gt;</replaceable> <literal>),</literal>
-                                  <literal>action(</literal> <replaceable>&lt;action code&gt;</replaceable> <literal>),</literal>
-                                  <literal>reverse(</literal> <replaceable>&lt;reverse code&gt;</replaceable> <literal>),</literal>
-                                  <literal>result(</literal> <replaceable>&lt;result expression&gt;</replaceable> <literal>) )</literal>
-</programlisting>
-
-      <para>The meaning of each of the elements is the following:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para><emphasis>&lt;source pattern&gt;</emphasis>: the source
-          pattern is a regular pattern that the engine will try to match
-          against each of the source objects.</para>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>&lt;init code&gt;</emphasis>: this is a semantic
-          block of code in the selected dialect that will be executed once for
-          each tuple, before iterating over the source objects.</para>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>&lt;action code&gt;</emphasis>: this is a semantic
-          block of code in the selected dialect that will be executed for each
-          of the source objects.</para>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>&lt;reverse code&gt;</emphasis>: this is an optional
-          semantic block of code in the selected dialect that if present will
-          be executed for each source object that no longer matches the source
-          pattern. The objective of this code block is to undo any calculation
-          done in the <emphasis>&lt;action code&gt;</emphasis> block, so that
-          the engine can do decremental calculation when a source object is
-          modified or retracted, hugely improving performance of these
-          operations.</para>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>&lt;result expression&gt;</emphasis>: this is a
-          semantic expression in the selected dialect that is executed after
-          all source objects are iterated.</para>
-        </listitem>
-
-        <listitem>
-          <para><emphasis>&lt;result pattern&gt;</emphasis>: this is a regular
-          pattern that the engine tries to match against the object returned
-          from the <emphasis>&lt;result expression&gt;</emphasis>. If it
-          matches, the <literal>accumulate</literal> conditional element
-          evaluates to <emphasis>true</emphasis> and the engine proceeds with
-          the evaluation of the next CE in the rule. If it does not matches,
-          the <literal>accumulate</literal> CE evaluates to
-          <emphasis>false</emphasis> and the engine stops evaluating CEs for
-          that rule.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>It is easier to understand if we look at an example:</para>
-
-      <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
-when
-    $order : Order()
-    $total : Number( doubleValue &gt; 100 ) 
-             from accumulate( OrderItem( order == $order, $value : value ),
-                              init( double total = 0; ),
-                              action( total += $value; ),
-                              reverse( total -= $value; ),
-                              result( total ) )
-then
-    # apply discount to $order
-end
-</programlisting>
-
-      <para>In the above example, for each <code>Order</code> in the Working
-      Memory, the engine will execute the <emphasis>init code</emphasis>
-      initializing the total variable to zero. Then it will iterate over all
-      <code>OrderItem</code> objects for that order, executing the
-      <emphasis>action</emphasis> for each one (in the example, it will sum
-      the value of all items into the total variable). After iterating over
-      all <code>OrderItem</code> objects, it will return the value
-      corresponding to the <emphasis>result expression</emphasis> (in the
-      above example, the value of variable <code>total</code>). Finally, the
-      engine will try to match the result with the <code>Number</code>
-      pattern, and if the double value is greater than 100, the rule will
-      fire.</para>
-
-      <para>The example used Java as the semantic dialect, and as such, note
-      that the usage of the semicolon as statement delimiter is mandatory in
-      the init, action and reverse code blocks. The result is an expression
-      and, as such, it does not admit ';'. If the user uses any other dialect,
-      he must comply to that dialect's specific syntax.</para>
-
-      <para>As mentioned before, the <emphasis>reverse code</emphasis> is
-      optional, but it is strongly recommended that the user writes it in
-      order to benefit from the <emphasis>improved performance on update and
-      retract</emphasis>.</para>
-
-      <para>The <literal>accumulate</literal> CE can be used to execute any
-      action on source objects. The following example instantiates and
-      populates a custom object:</para>
-
-      <programlisting>rule "Accumulate using custom objects"
-when
-    $person   : Person( $likes : likes )
-    $cheesery : Cheesery( totalAmount &gt; 100 )
-                from accumulate( $cheese : Cheese( type == $likes ),
-                                 init( Cheesery cheesery = new Cheesery(); ),
-                                 action( cheesery.addCheese( $cheese ); ),
-                                 reverse( cheesery.removeCheese( $cheese ); ),
-                                 result( cheesery ) );
-then
-    // do something
 end</programlisting>
+      </section>
 
       <section>
-        <title>Accumulate Functions</title>
+        <title>Conditional Element <literal>accumulate</literal></title>
 
-        <para>The accumulate CE is a very powerful CE, but it gets real
-        declarative and easy to use when using predefined functions that are
-        known as Accumulate Functions. They work exactly like accumulate, but
-        instead of explicitly writing custom code in every accumulate CE, the
-        user can use predefined code for common operations.</para>
+        <figure>
+          <title>accumulate</title>
 
-        <para>For instance, the rule to apply discount on orders written in
-        the previous section, could be written in the following way, using
-        Accumulate Functions:</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Rule_Language/accumulate.png"
+                         format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-        <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+        <para>The Conditional Element <literal>accumulate</literal> is a more
+        flexible and powerful form of <literal>collect</literal>, in the sense
+        that it can be used to do what <literal>collect</literal> does and
+        also achieve results that the CE <literal>collect</literal> is not
+        capable of doing. Basically, what it does is that it allows a rule to
+        iterate over a collection of objects, executing custom actions for
+        each of the elements, and at the end it returns a result
+        object.</para>
+
+        <para>Accumulate supports both the use of pre-defined accumulate
+        functions, or the use of inline custom code. Inline custom code should
+        be avoided though, as it is extremely hard to maintain, and frequently
+        leads to code duplication. Accumulate functions are easier to test and
+        reuse.</para>
+
+        <section>
+          <title>Accumulate Functions</title>
+
+          <para>The accumulate CE is a very powerful CE, but it gets real
+          declarative and easy to use when using predefined functions that are
+          known as Accumulate Functions. They work exactly like accumulate,
+          but instead of explicitly writing custom code in every accumulate
+          CE, the user can use predefined code for common operations.</para>
+
+          <para>For instance, a rule to apply a 10% discount on orders over
+          $100 could be written in the following way, using Accumulate
+          Functions:</para>
+
+          <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
 when
     $order : Order()
     $total : Number( doubleValue &gt; 100 ) 
@@ -2158,43 +2074,50 @@ when
                               sum( $value ) )
 then
     # apply discount to $order
-end
-</programlisting>
+end</programlisting>
 
-        <para>In the above example, sum is an Accumulate Function and will sum
-        the $value of all OrderItems and return the result.</para>
+          <para>In the above example, sum is an Accumulate Function and will
+          sum the $value of all OrderItems and return the result.</para>
 
-        <para>Drools ships with the following built-in accumulate
-        functions:</para>
+          <para>Drools ships with the following built-in accumulate
+          functions:</para>
 
-        <itemizedlist>
-          <listitem>
-            <para>average</para>
-          </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>average</para>
+            </listitem>
 
-          <listitem>
-            <para>min</para>
-          </listitem>
+            <listitem>
+              <para>min</para>
+            </listitem>
 
-          <listitem>
-            <para>max</para>
-          </listitem>
+            <listitem>
+              <para>max</para>
+            </listitem>
 
-          <listitem>
-            <para>count</para>
-          </listitem>
+            <listitem>
+              <para>count</para>
+            </listitem>
 
-          <listitem>
-            <para>sum</para>
-          </listitem>
-        </itemizedlist>
+            <listitem>
+              <para>sum</para>
+            </listitem>
 
-        <para>These common functions accept any expression as input. For
-        instance, if someone wants to calculate the average profit on all
-        items of an order, a rule could be written using the average
-        function:</para>
+            <listitem>
+              <para>collectList</para>
+            </listitem>
 
-        <programlisting>rule "Average profit"
+            <listitem>
+              <para>collectSet</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>These common functions accept any expression as input. For
+          instance, if someone wants to calculate the average profit on all
+          items of an order, a rule could be written using the average
+          function:</para>
+
+          <programlisting>rule "Average profit"
 when
     $order : Order()
     $profit : Number() 
@@ -2202,71 +2125,71 @@ when
                                average( 1 - $cost / $price ) )
 then
     # average profit for $order is $profit
-end
-</programlisting>
+end</programlisting>
 
-        <para>Accumulate Functions are all pluggable. That means that if
-        needed, custom, domain specific functions can easily be added to the
-        engine and rules can start to use them without any restrictions. To
-        implement a new Accumulate Functions all one needs to do is to create
-        a Java class that implements the
-        <code>org.drools.base.acumulators.AccumulateFunction</code> interface
-        and add a line to the configuration file or set a system property to
-        let the engine know about the new function. As an example of an
-        Accumulate Function implementation, the following is the
-        implementation of the <literal>average</literal> function:</para>
+          <para>Accumulate Functions are all pluggable. That means that if
+          needed, custom, domain specific functions can easily be added to the
+          engine and rules can start to use them without any restrictions. To
+          implement a new Accumulate Functions all one needs to do is to
+          create a Java class that implements the
+          <code>org.drools.runtime.rule.TypedAccumulateFunction</code>
+          interface and add a line to the configuration file or set a system
+          property to let the engine know about the new function. As an
+          example of an Accumulate Function implementation, the following is
+          the implementation of the <literal>average</literal>
+          function:</para>
 
-        <programlisting language="java">/*
- * Copyright 2007 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Created on Jun 21, 2007
- */
-package org.drools.base.accumulators;
-
-
-/**
+          <programlisting language="java">/**
  * An implementation of an accumulator capable of calculating average values
  */
 public class AverageAccumulateFunction implements AccumulateFunction {
 
-    protected static class AverageData {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+    }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+    }
+
+    public static class AverageData implements Externalizable {
         public int    count = 0;
         public double total = 0;
+        
+        public AverageData() {}
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            count   = in.readInt();
+            total   = in.readDouble();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeInt(count);
+            out.writeDouble(total);
+        }
+
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#createContext()
      */
-    public Object createContext() {
+    public Serializable createContext() {
         return new AverageData();
     }
 
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Object context) throws Exception {
+    public void init(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
         data.count = 0;
         data.total = 0;
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object,
-     * java.lang.Object)
+     * @see org.drools.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
      */
-    public void accumulate(Object context,
+    public void accumulate(Serializable context,
                            Object value) {
         AverageData data = (AverageData) context;
         data.count++;
@@ -2274,10 +2197,9 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     }
 
     /* (non-Javadoc)
-     * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object,
-     * java.lang.Object)
+     * @see org.drools.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
-    public void reverse(Object context,
+    public void reverse(Serializable context,
                         Object value) throws Exception {
         AverageData data = (AverageData) context;
         data.count--;
@@ -2287,7 +2209,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.drools.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Object context) throws Exception {
+    public Object getResult(Serializable context) throws Exception {
         AverageData data = (AverageData) context;
         return new Double( data.count == 0 ? 0 : data.total / data.count );
     }
@@ -2299,24 +2221,694 @@ public class AverageAccumulateFunction implements AccumulateFunction {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public Class&lt; ? &gt; getResultType() {
+        return Number.class;
+    }
+
 }
 </programlisting>
 
-        <para>The code for the function is very simple, as we could expect, as
-        all the "dirty" integration work is done by the engine. Finally, to
-        plug the function into the engine, we added it to the configuration
-        file:</para>
+          <para>The code for the function is very simple, as we could expect,
+          as all the "dirty" integration work is done by the engine. Finally,
+          to plug the function into the engine, we added it to the
+          configuration file:</para>
 
-        <programlisting>drools.accumulate.function.average =
-   org.drools.base.accumulators.AverageAccumulateFunction
+          <programlisting>drools.accumulate.function.average =
+   org.drools.base.accumulators.AverageAccumulateFunction</programlisting>
+
+          <para>Here, "drools.accumulate.function." is a prefix that must
+          always be used, "average" is how the function will be used in the
+          rule file, and
+          "org.drools.base.accumulators.AverageAccumulateFunction" is the
+          fully qualified name of the class that implements the function
+          behavior.</para>
+        </section>
+
+        <section>
+          <title>Accumulate with inline custom code</title>
+
+          <warning>
+            <para>The use of accumulate with inline custom code is not a good
+            practice for several reasons, including dificulties on maintaining
+            and testing rules that use them, as well as the inability of
+            reusing that code. Implementing your own accumulate functions is
+            very simple and straightforward, they are easy to unit test and to
+            use. This form of accumulate is supported for backward
+            compatibility only.</para>
+          </warning>
+
+          <para>The general syntax of the <literal>accumulate</literal> CE
+          with inline custom code is:</para>
+
+          <programlisting><replaceable>&lt;result pattern&gt;</replaceable> <literal>from accumulate(</literal> <replaceable>&lt;source pattern&gt;</replaceable><literal>,</literal>
+                                  <literal>init(</literal> <replaceable>&lt;init code&gt;</replaceable> <literal>),</literal>
+                                  <literal>action(</literal> <replaceable>&lt;action code&gt;</replaceable> <literal>),</literal>
+                                  <literal>reverse(</literal> <replaceable>&lt;reverse code&gt;</replaceable> <literal>),</literal>
+                                  <literal>result(</literal> <replaceable>&lt;result expression&gt;</replaceable> <literal>) )</literal>
 </programlisting>
 
-        <para>Here, "drools.accumulate.function." is a prefix that must always
-        be used, "average" is how the function will be used in the rule file,
-        and "org.drools.base.accumulators.AverageAccumulateFunction" is the
-        fully qualified name of the class that implements the function
-        behavior.</para>
+          <para>The meaning of each of the elements is the following:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><emphasis>&lt;source pattern&gt;</emphasis>: the source
+              pattern is a regular pattern that the engine will try to match
+              against each of the source objects.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>&lt;init code&gt;</emphasis>: this is a semantic
+              block of code in the selected dialect that will be executed once
+              for each tuple, before iterating over the source objects.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>&lt;action code&gt;</emphasis>: this is a
+              semantic block of code in the selected dialect that will be
+              executed for each of the source objects.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>&lt;reverse code&gt;</emphasis>: this is an
+              optional semantic block of code in the selected dialect that if
+              present will be executed for each source object that no longer
+              matches the source pattern. The objective of this code block is
+              to undo any calculation done in the <emphasis>&lt;action
+              code&gt;</emphasis> block, so that the engine can do decremental
+              calculation when a source object is modified or retracted,
+              hugely improving performance of these operations.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>&lt;result expression&gt;</emphasis>: this is a
+              semantic expression in the selected dialect that is executed
+              after all source objects are iterated.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>&lt;result pattern&gt;</emphasis>: this is a
+              regular pattern that the engine tries to match against the
+              object returned from the <emphasis>&lt;result
+              expression&gt;</emphasis>. If it matches, the
+              <literal>accumulate</literal> conditional element evaluates to
+              <emphasis>true</emphasis> and the engine proceeds with the
+              evaluation of the next CE in the rule. If it does not matches,
+              the <literal>accumulate</literal> CE evaluates to
+              <emphasis>false</emphasis> and the engine stops evaluating CEs
+              for that rule.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>It is easier to understand if we look at an example:</para>
+
+          <programlisting>rule "Apply 10% discount to orders over US$ 100,00"
+when
+    $order : Order()
+    $total : Number( doubleValue &gt; 100 ) 
+             from accumulate( OrderItem( order == $order, $value : value ),
+                              init( double total = 0; ),
+                              action( total += $value; ),
+                              reverse( total -= $value; ),
+                              result( total ) )
+then
+    # apply discount to $order
+end</programlisting>
+
+          <para>In the above example, for each <code>Order</code> in the
+          Working Memory, the engine will execute the <emphasis>init
+          code</emphasis> initializing the total variable to zero. Then it
+          will iterate over all <code>OrderItem</code> objects for that order,
+          executing the <emphasis>action</emphasis> for each one (in the
+          example, it will sum the value of all items into the total
+          variable). After iterating over all <code>OrderItem</code> objects,
+          it will return the value corresponding to the <emphasis>result
+          expression</emphasis> (in the above example, the value of variable
+          <code>total</code>). Finally, the engine will try to match the
+          result with the <code>Number</code> pattern, and if the double value
+          is greater than 100, the rule will fire.</para>
+
+          <para>The example used Java as the semantic dialect, and as such,
+          note that the usage of the semicolon as statement delimiter is
+          mandatory in the init, action and reverse code blocks. The result is
+          an expression and, as such, it does not admit ';'. If the user uses
+          any other dialect, he must comply to that dialect's specific
+          syntax.</para>
+
+          <para>As mentioned before, the <emphasis>reverse code</emphasis> is
+          optional, but it is strongly recommended that the user writes it in
+          order to benefit from the <emphasis>improved performance on update
+          and retract</emphasis>.</para>
+
+          <para>The <literal>accumulate</literal> CE can be used to execute
+          any action on source objects. The following example instantiates and
+          populates a custom object:</para>
+
+          <programlisting>rule "Accumulate using custom objects"
+when
+    $person   : Person( $likes : likes )
+    $cheesery : Cheesery( totalAmount &gt; 100 )
+                from accumulate( $cheese : Cheese( type == $likes ),
+                                 init( Cheesery cheesery = new Cheesery(); ),
+                                 action( cheesery.addCheese( $cheese ); ),
+                                 reverse( cheesery.removeCheese( $cheese ); ),
+                                 result( cheesery ) );
+then
+    // do something
+end</programlisting>
+        </section>
+
+        <section>
+          <title>Multi-function Accumulates</title>
+
+          <para>The accumulate CE now supports multiple functions. For
+          instance, if one needs to find the minimum, maximum and average
+          value for the same set of data, instead of having to repeat the
+          accumulate statement 3 times, a single accumulate can be
+          used.</para>
+
+          <programlisting>rule "Max, min and average" 
+    when
+        accumulate( Cheese( $price : price ),
+                    $max : max( $price ),
+                    $min : min( $price ),
+                    $avg : average( $price ) )
+    then
+        // do something
+end </programlisting>
+        </section>
       </section>
+    </section>
+
+    <section>
+      <title>Conditional Element <literal>eval</literal></title>
+
+      <figure>
+        <title>eval</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Rule_Language/eval.png"
+                       format="PNG" role=""></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The conditional element <literal>eval</literal> is essentially a
+      catch-all which allows any semantic code (that returns a primitive
+      boolean) to be executed. This code can refer to variables that were
+      bound in the LHS of the rule, and functions in the rule package. Overuse
+      of eval reduces the declarativeness of your rules and can result in a
+      poorly performing engine. While <literal>eval</literal> can be used
+      anywhere in the patterns, the best practice is to add it as the last
+      conditional element in the LHS of a rule.</para>
+
+      <para>Evals cannot be indexed and thus are not as efficient as Field
+      Constraints. However this makes them ideal for being used when functions
+      return values that change over time, which is not allowed within Field
+      Constraints.</para>
+
+      <para>For folks who are familiar with Drools 2.x lineage, the old Drools
+      parameter and condition tags are equivalent to binding a variable to an
+      appropriate type, and then using it in an eval node.</para>
+
+      <programlisting>p1 : Parameter()
+p2 : Parameter()
+eval( p1.getList().containsKey( p2.getItem() ) )</programlisting>
+
+      <programlisting>p1 : Parameter()
+p2 : Parameter()
+// call function isValid in the LHS
+eval( isValid( p1, p2 ) )</programlisting>
+    </section>
+
+    <section>
+      <title>Railroad diagrams</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateAction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateFunction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateInit.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateResult.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateReverse.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateSteps.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Accumulations.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AdditiveExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Annotation.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Arguments.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayCreatorRest.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayInitializer.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/AssignmentOperator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/BindingPattern.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Block.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/BooleanLiteral.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/CompilationUnit.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalAnd.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementAccumulate.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementEval.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementExists.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementForall.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementNot.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElement.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOrExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Constraints.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/CreatedName.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Creator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Definition.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Digit.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocationSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocation.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Exponent.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ExpressionList.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Expression.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Field.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Fraction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromAccumulateClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FromCollectClause.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/FunctionDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/GlobalDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/IdentifierSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ImportDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineListExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineMapExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InnerCreator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/InstanceOfExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/IntLiteral.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Literal.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ModifyStatement.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/NonWildcardTypeArguments.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/OrRestriction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/OverClause.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Parameters.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Pattern.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Placeholders.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Primary.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/PrimitiveType.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QualifiedName.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryOptions.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RealLiteral.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RealTypeSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalOperator.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RhsStatement.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttributes.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttribute.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleOptions.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Selector.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ShiftExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SingleRestriction.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SourcePattern.svg," format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/StringId.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/SuperSuffix.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/ThenPart.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArguments.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArgument.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeDefinition.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeOptions.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Type.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExprNotPlusMinus.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExpr.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/Value.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/VariableInitializer.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Language_Reference/WhenPart.svg" format="SVG"/>
+        </imageobject>
+      </mediaobject>
+
     </section>
   </section>
 
@@ -2409,7 +3001,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
         </listitem>
       </itemizedlist>
 
-      <para>The full Knowlege Runtime API is exposed through another
+      <para>The full Knowledge Runtime API is exposed through another
       predefined variable, <code>kcontext</code>, of type
       <code>KnowledgeContext</code>. Its method
       <code>getKnowledgeRuntime()</code> delivers an object of type
@@ -2430,8 +3022,7 @@ public class AverageAccumulateFunction implements AccumulateFunction {
           flow groups. A fairly common paradigm is the activation of some
           agenda group, which could be done with the lengthy call:</para>
 
-          <programlisting language="java">
-// give focus to the agenda group CleanUp
+          <programlisting language="java">// give focus to the agenda group CleanUp
 kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
 
           <para>(You can achieve the same using <code>drools.setFocus(

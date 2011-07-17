@@ -56,44 +56,49 @@ public class JoinNode extends BetaNode {
                binder,
                behaviors );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        this.lrUnlinkingEnabled = context.getRuleBase().getConfiguration().isLRUnlinkingEnabled();
     }
 
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
+    public void assertLeftTuple( final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.setOpen( true );
-        
+
+        if ( lrUnlinkingEnabled &&
+             leftUnlinked( context,
+                           workingMemory,
+                           memory ) ) {
+            return;
+        }        
+
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
         ContextEntry[] contextEntry = memory.getContext();
-        
-        boolean useLeftMemory = true;
-        if ( this.tupleMemoryEnabled ) {
-            memory.getLeftTupleMemory().add( leftTuple );
-        } else {
-            if ( memory.isOpen() ) {
-                // we are re-entrant to force new ContextEntry
-                contextEntry = this.constraints.createContext();
-            }
+        boolean useLeftMemory = true;       
+    
+        if ( !this.tupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle) context.getFactHandle()).getObject();
-            if ( object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
-            } else if ( memory.getLeftTupleMemory() != null ) {
-                // LeftMemory will be null for sequential (still created for queries).
-                memory.getLeftTupleMemory().add( leftTuple );
             }
         }
 
-        this.constraints.updateFromTuple(contextEntry,
+        if ( useLeftMemory ) {
+            memory.getLeftTupleMemory().add( leftTuple );
+        } 
+        
+        this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
-        
-                
-        FastIterator it = getRightIterator( rightMemory);
-        
-        for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
+
+        FastIterator it = getRightIterator( rightMemory );
+
+        for ( RightTuple rightTuple = getFirstRightTuple( leftTuple,
+                                                          rightMemory,
+                                                          context,
+                                                          it ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
+            
             final InternalFactHandle handle = rightTuple.getFactHandle();
             if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        handle ) ) {
@@ -106,16 +111,25 @@ public class JoinNode extends BetaNode {
                                                     useLeftMemory );
             }
         }
+                
 
         this.constraints.resetTuple( contextEntry );
-        memory.setOpen( false );
     }
-  
 
-    public void assertObject(final InternalFactHandle factHandle,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
+    public void assertObject( final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
+
+        if ( lrUnlinkingEnabled &&
+             rightUnlinked( context,
+                            workingMemory,
+                            memory ) ) {
+            context.getPropagationAttemptsMemory().add( this );
+            return;
+        }
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this );
@@ -137,9 +151,10 @@ public class JoinNode extends BetaNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                factHandle );
-        
-        FastIterator it = memory.getLeftTupleMemory().fastIterator();
-        for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
+
+        FastIterator it = getLeftIterator( leftMemory );
+                        
+        for ( LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
             if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                         leftTuple ) ) {
                 // wm.marshaller.write( i, leftTuple )
@@ -155,10 +170,16 @@ public class JoinNode extends BetaNode {
         this.constraints.resetFactHandle( memory.getContext() );
     }
 
-    public void retractRightTuple(final RightTuple rightTuple,
-                                  final PropagationContext context,
-                                  final InternalWorkingMemory workingMemory) {
+    public void retractRightTuple( final RightTuple rightTuple,
+                                   final PropagationContext context,
+                                   final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        if ( lrUnlinkingEnabled &&
+             memory.isRightUnlinked() ) {
+            return;
+        }
+
         behavior.retractRightTuple( memory.getBehaviorContext(),
                                     rightTuple,
                                     workingMemory );
@@ -171,21 +192,27 @@ public class JoinNode extends BetaNode {
         }
     }
 
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
+    public void retractLeftTuple( final LeftTuple leftTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        if ( lrUnlinkingEnabled &&
+             memory.isLeftUnlinked() ) {
+            return;
+        }
+
         memory.getLeftTupleMemory().remove( leftTuple );
-        if ( leftTuple.firstChild != null ) {
+        if ( leftTuple.getFirstChild() != null ) {
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
                                                  workingMemory );
         }
     }
 
-    public void modifyRightTuple(final RightTuple rightTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
+    public void modifyRightTuple( final RightTuple rightTuple,
+                                  final PropagationContext context,
+                                  final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         // WTD here
@@ -210,16 +237,17 @@ public class JoinNode extends BetaNode {
 
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
-        FastIterator it = leftMemory.fastIterator();
-        LeftTuple leftTuple = leftMemory.getFirst( rightTuple );
 
+        FastIterator it = getLeftIterator( leftMemory );        
+        LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );
+        
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                rightTuple.getFactHandle() );
 
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
         // We assume a bucket change if leftTuple == null        
-        if ( childLeftTuple != null && leftMemory.isIndexed() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
+        if ( childLeftTuple != null && leftMemory.isIndexed() && !it.isFullIterator() && (leftTuple == null || (leftTuple.getMemory() != childLeftTuple.getLeftParent().getMemory())) ) {
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractRightTuple( rightTuple,
                                                   context,
@@ -233,7 +261,7 @@ public class JoinNode extends BetaNode {
             if ( childLeftTuple == null ) {
                 // either we are indexed and changed buckets or
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                                 leftTuple ) ) {
                         this.sink.propagateAssertLeftTuple( leftTuple,
@@ -247,7 +275,7 @@ public class JoinNode extends BetaNode {
                 }
             } else {
                 // in the same bucket, so iterate and compare
-                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next(leftTuple) ) {
+                for ( ; leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
                     if ( this.constraints.isAllowedCachedRight( memory.getContext(),
                                                                 leftTuple ) ) {
                         if ( childLeftTuple == null || childLeftTuple.getLeftParent() != leftTuple ) {
@@ -279,29 +307,34 @@ public class JoinNode extends BetaNode {
         this.constraints.resetFactHandle( memory.getContext() );
     }
 
-    public void modifyLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
+    public void modifyLeftTuple( final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory ) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+        
+        ContextEntry[] contextEntry = memory.getContext();
 
         // Add and remove to make sure we are in the right bucket and at the end
         // this is needed to fix for indexing and deterministic iteration
         memory.getLeftTupleMemory().removeAdd( leftTuple );
 
-        this.constraints.updateFromTuple( memory.getContext(),
+        this.constraints.updateFromTuple( contextEntry,
                                           workingMemory,
                                           leftTuple );
-        LeftTuple childLeftTuple = leftTuple.firstChild;
+        LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
-        FastIterator it = rightMemory.fastIterator();
-        RightTuple rightTuple = rightMemory.getFirst( leftTuple,
-                                                      (InternalFactHandle) context.getFactHandle() );
+        FastIterator it = getRightIterator( rightMemory );
 
+        RightTuple rightTuple = getFirstRightTuple( leftTuple,
+                                                    rightMemory,
+                                                    context,
+                                                    it );
+        
         // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
         // if rightTuple is null, we assume there was a bucket change and that bucket is empty        
-        if ( childLeftTuple != null && rightMemory.isIndexed() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory())) ) {
+        if ( childLeftTuple != null && rightMemory.isIndexed() && !it.isFullIterator() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory())) ) {
             // our index has changed, so delete all the previous propagations
             this.sink.propagateRetractLeftTuple( leftTuple,
                                                  context,
@@ -317,7 +350,7 @@ public class JoinNode extends BetaNode {
                 // we had no children before, but there is a bucket to potentially match, so try as normal assert
                 for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
-                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                    if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                                handle ) ) {
                         this.sink.propagateAssertLeftTuple( leftTuple,
                                                             rightTuple,
@@ -330,10 +363,10 @@ public class JoinNode extends BetaNode {
                 }
             } else {
                 // in the same bucket, so iterate and compare
-                for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple )  ) {
+                for ( ; rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                     final InternalFactHandle handle = rightTuple.getFactHandle();
 
-                    if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+                    if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                                handle ) ) {
                         if ( childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple ) {
                             this.sink.propagateAssertLeftTuple( leftTuple,
@@ -361,20 +394,20 @@ public class JoinNode extends BetaNode {
             }
         }
 
-        this.constraints.resetTuple( memory.getContext() );
+        this.constraints.resetTuple( contextEntry );
     }
 
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
      */
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
+    public void updateSink( final LeftTupleSink sink,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory ) {
 
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
         FastIterator it = memory.getLeftTupleMemory().fastIterator();
-        
+
         final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
             this.constraints.updateFromTuple( memory.getContext(),
@@ -384,12 +417,12 @@ public class JoinNode extends BetaNode {
                                                                                  (InternalFactHandle) context.getFactHandle() ); rightTuple != null; rightTuple = (RightTuple) it.next( rightTuple ) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            rightTuple.getFactHandle() ) ) {
-                    sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                         rightTuple,
-                                                         null,
-                                                         null,
-                                                         sink,
-                                                         true ),
+                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                                rightTuple,
+                                                                null,
+                                                                null,
+                                                                sink,
+                                                                true ),
                                           context,
                                           workingMemory );
                 }
@@ -399,10 +432,46 @@ public class JoinNode extends BetaNode {
         }
     }
 
+    @Override
+    public void modifyLeftTuple( InternalFactHandle factHandle,
+                                 ModifyPreviousTuples modifyPreviousTuples,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory ) {
+
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        if ( lrUnlinkingEnabled &&
+             memory.isLeftUnlinked() ) return;
+
+        super.modifyLeftTuple( factHandle,
+                               modifyPreviousTuples,
+                               context,
+                               workingMemory );
+    }
+
+    @Override
+    public void modifyObject( InternalFactHandle factHandle,
+                              ModifyPreviousTuples modifyPreviousTuples,
+                              PropagationContext context,
+                              InternalWorkingMemory workingMemory ) {
+
+        BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
+
+        if ( lrUnlinkingEnabled &&
+             memory.isRightUnlinked() ) return;
+
+        super.modifyObject( factHandle,
+                            modifyPreviousTuples,
+                            context,
+                            workingMemory );
+    }
+
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }
 
+  
+    
     public String toString() {
         ObjectSource source = this.rightInput;
         while ( !(source instanceof ObjectTypeNode) ) {
@@ -411,4 +480,31 @@ public class JoinNode extends BetaNode {
 
         return "[JoinNode(" + this.getId() + ") - " + ((ObjectTypeNode) source).getObjectType() + "]";
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }      
 }

@@ -124,6 +124,7 @@ public class RightTupleList
         
         rightTuple.setPrevious( null );
         rightTuple.setNext( null );
+        rightTuple.setMemory( null );
     }
 
     public RightTuple get(final InternalFactHandle handle) {

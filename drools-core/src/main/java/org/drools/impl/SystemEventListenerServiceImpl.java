@@ -18,12 +18,12 @@ package org.drools.impl;
 
 import org.drools.SystemEventListener;
 import org.drools.SystemEventListenerService;
-import org.drools.agent.impl.PrintStreamSystemEventListener;
+import org.drools.agent.impl.DoNothingSystemEventListener;
 import org.drools.core.util.DelegatingSystemEventListener;
 
 public class SystemEventListenerServiceImpl implements SystemEventListenerService{
     
-    private DelegatingSystemEventListener    listener = new DelegatingSystemEventListener( new PrintStreamSystemEventListener() );
+    private DelegatingSystemEventListener    listener = new DelegatingSystemEventListener( new DoNothingSystemEventListener() );
     
     public SystemEventListener getSystemEventListener() {
         return this.listener;

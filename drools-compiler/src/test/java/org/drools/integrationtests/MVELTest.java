@@ -10,29 +10,45 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import org.drools.*;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.reteoo.AlphaNode;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.MapBackedClassLoader;
+import org.drools.rule.PredicateConstraint;
+import org.drools.rule.ReturnValueRestriction;
+import org.drools.rule.VariableConstraint;
 import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.base.ClassFieldReader;
+import org.drools.base.ClassObjectType;
+import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.base.mvel.MVELDebugHandler;
+import org.drools.base.mvel.MVELPredicateExpression;
+import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.InternalRuleBase;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.core.util.DateUtils;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.ReturnValueExpression;
 import org.drools.type.DateFormatsImpl;
 import org.mvel2.MVEL;
 
@@ -290,6 +306,62 @@ public class MVELTest {
         assertEquals(3, insertedObjects.size());
     }
     
+    @Test @Ignore // MVEL bug
+    public void testSizeCheckInObject() {
+        String str = ""+
+        "package org.test \n" +
+        "import " + Triangle.class.getCanonicalName() + "\n" +
+        //"import " + Address.class.getCanonicalName() + "\n" +
+        "global java.util.List list \n" +
+        "rule \"show\" \n" + 
+        "when  \n" + 
+        "    $m : Triangle( deliveries.size == 0) \n" + 
+        "then \n" + 
+        "    list.add('r1'); \n" + 
+        "end \n";
+         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+         
+         if ( kbuilder.hasErrors() ) {
+             System.out.println( kbuilder.getErrors().toString()  );
+             fail( kbuilder.getErrors().toString());
+         }
+         
+//         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+//         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+//    
+//         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//         List list = new ArrayList();
+//         ksession.setGlobal( "list", list );
+//         
+//         Person p = new Person("yoda");
+//         p.setAddress( new Address("s1") );
+//         
+//         ksession.insert( p );
+//         
+//         ksession.fireAllRules();    
+//         
+//         assertEquals( "r1", list.get(0) );
+//         
+//         // Check it was built with MVELReturnValueExpression constraint
+//         List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+//         ObjectTypeNode node = null;
+//         for ( ObjectTypeNode n : nodes ) {
+//             if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+//                 node = n;
+//                 break;
+//             }
+//         }
+//         
+//         AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+//         assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof ClassFieldReader );
+//         ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+//         
+//         assertTrue( r.getExpression() instanceof ReturnValueExpression );
+//         assertTrue( r.getExpression() instanceof MVELReturnValueExpression );  
+    }
+    
+    
     @Test
     public void testNestedEnum() {
         String str = ""+
@@ -321,6 +393,307 @@ public class MVELTest {
         ksession.fireAllRules();    
         
         assertEquals(Triangle.Type.ACUTE, list.get(0) );
+    }
+    
+    @Test
+    public void testNestedEnumWithMap() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + DMap.class.getCanonicalName() + " \n" +
+           "import " + Triangle.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $m : DMap( this[Triangle.Type.ACUTE] == 'xxx') \n" + 
+           "then \n" + 
+           "    list.add('r1'); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        DMap m = new DMap();
+        m.put(  Triangle.Type.ACUTE, "xxx" );
+        
+        ksession.insert( m );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+    } 
+    
+    @Test
+    public void testNewConstructor() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + Person.class.getCanonicalName() + "\n" +
+           "import " + Address.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $m : Person( address == new Address('s1')) \n" + 
+           "then \n" + 
+           "    list.add('r1'); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        Person p = new Person("yoda");
+        p.setAddress( new Address("s1") );
+        
+        ksession.insert( p );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+        
+        // Check it was built with MVELReturnValueExpression constraint
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        ObjectTypeNode node = null;
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+                node = n;
+                break;
+            }
+        }
+        
+        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof ClassFieldReader );
+        ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );         
+    }         
+    
+    @Test
+    public void testArrayAccessorWithGenerics() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + Person.class.getCanonicalName() + "\n" +
+           "import " + Address.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $m : Person( addresses[0] == new Address('s1'), addresses[0].street == new Address('s1').street ) \n" + 
+           "then \n" + 
+           "    list.add('r1'); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        Person p = new Person("yoda");
+        p.addAddress( new Address("s1") );
+        
+        ksession.insert( p );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+        
+        // Check it was built with MVELReturnValueExpression constraint
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        ObjectTypeNode node = null;
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+                node = n;
+                break;
+            }
+        }
+        
+        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+        ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );  
+        
+        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+        r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );          
+    }    
+    
+    @Test
+    public void testArrayAccessorWithStaticFieldAccess() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + Person.class.getCanonicalName() + "\n" +
+           "import " + Address.class.getCanonicalName() + "\n" +
+           "import " + Triangle.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $m : Person( addresses[Triangle.ZERO] == new Address('s1'), addresses[Triangle.ZERO].street == new Address('s1').street ) \n" + 
+           "then \n" + 
+           "    list.add('r1'); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        Person p = new Person("yoda");
+        p.addAddress( new Address("s1") );
+        
+        ksession.insert( p );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+        
+        // Check it was built with MVELReturnValueExpression constraint
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        ObjectTypeNode node = null;
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+                node = n;
+                break;
+            }
+        }
+        
+        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+        ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );  
+        
+        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+        r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );          
+    }       
+    
+    @Test
+    public void testMapAccessorWithStaticFieldAccess() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + Person.class.getCanonicalName() + "\n" +
+           "import " + Address.class.getCanonicalName() + "\n" +
+           "import " + TestEnum.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $m : Person( namedAddresses[TestEnum.ONE] == new Address('s1'), namedAddresses[TestEnum.ONE].street == new Address('s1').street ) \n" + 
+           "then \n" + 
+           "    list.add('r1'); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+ 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        Person p = new Person("yoda");
+        p.getNamedAddresses().put( TestEnum.ONE,  new Address("s1") );
+        
+        ksession.insert( p );
+        
+        ksession.fireAllRules();    
+        
+        assertEquals( "r1", list.get(0) );
+        
+        // Check it was built with MVELReturnValueExpression constraint
+        List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
+        ObjectTypeNode node = null;
+        for ( ObjectTypeNode n : nodes ) {
+            if ( ((ClassObjectType)n.getObjectType()).getClassType() == Person.class ) {
+                node = n;
+                break;
+            }
+        }
+        
+        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+        ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );  
+        
+        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];        
+        assertTrue( (( VariableConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELClassFieldReader );
+        r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        
+        assertTrue( r.getExpression() instanceof ReturnValueExpression );
+        assertTrue( r.getExpression() instanceof MVELReturnValueExpression );          
+    }     
+    
+    @Test
+    public void testArrayAccessorWithoutGenerics() {
+        String str = ""+
+           "package org.test \n" +
+           "import " + Person.class.getCanonicalName() + "\n" +
+           "import " + Address.class.getCanonicalName() + "\n" +
+           "global java.util.List list \n" +
+           "rule \"show\" \n" + 
+           "when  \n" + 
+           "    $m : Person( addressesNoGenerics[0].street == new Address('s1').street) \n" + 
+           "then \n" + 
+           "    list.add('r1'); \n" + 
+           "end \n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        
+        // This should fail as there are no generics for the List 
+        assertTrue( kbuilder.hasErrors() );
+        
+    }         
+    
+    public static class DMap extends HashMap {
+        
     }
 
     @Test
@@ -403,6 +776,10 @@ public class MVELTest {
     }
 
     public static class Triangle {
+        public static final int ZERO = 0;
+        
+        private List<Map<String, Object>> deliveries;
+        
         public static enum Type {
             ACUTE, OBTUSE;
         }
@@ -420,6 +797,14 @@ public class MVELTest {
         public void setT(Type t) {
             this.t = t;
         }
+        
+        public List<Map<String, Object>> getDeliveries() {
+            return deliveries;
+        }
+    
+        public void setDeliveries(List<Map<String, Object>> deliveries) {
+                this.deliveries = deliveries;
+        }        
     }
     
 

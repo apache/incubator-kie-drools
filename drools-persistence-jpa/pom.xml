@@ -12,6 +12,7 @@
   <artifactId>drools-persistence-jpa</artifactId>
 
   <name>Drools :: Persistence :: JPA</name>
+  <description>JPA implementation for Drools</description>
 
   <build>
     <plugins>
@@ -40,7 +41,7 @@
           <manifestLocation>META-INF</manifestLocation>
           <instructions>
             <_removeheaders>Ignore-Package</_removeheaders>
-            <Require-Bundle>org.drools.core;bundle-version="5.3.0.SNAPSHOT", org.drools.compiler;bundle-version="5.3.0.SNAPSHOT"</Require-Bundle>
+            <Require-Bundle>org.drools.core;bundle-version="${drools.osgi.version}", org.drools.compiler;bundle-version="${drools.osgi.version}"</Require-Bundle>
             <Import-Package>!org.drools.*, *</Import-Package>
             <Export-Package>org.drools.*</Export-Package>
             <DynamicImport-Package>*</DynamicImport-Package>

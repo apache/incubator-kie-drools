@@ -57,7 +57,7 @@ import org.drools.time.Interval;
  * 
  * <p>The temporal distance interval for the <b><code>after</code></b> operator is optional:</p>
  * 
- * <ul><li>If two values are defined (like in the example bellow), the interval starts on the
+ * <ul><li>If two values are defined (like in the example below), the interval starts on the
  * first value and finishes on the second.</li>
  * <li>If only one value is defined, the interval starts on the value and finishes on the positive 
  * infinity.</li>

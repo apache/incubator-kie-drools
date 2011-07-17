@@ -220,27 +220,6 @@ public class Declaration
                                            object );
     }
 
-    public Object getNonShadowedValue(InternalWorkingMemory workingMemory,
-                                      final Object object) {
-        Object result = this.readAccessor.getValue( workingMemory,
-                                                    object );
-        if ( this.isInternalFact() && result instanceof Collection ) {
-            try {
-                Collection newCol = (Collection) result.getClass().newInstance();
-                for ( Iterator it = ((Collection) result).iterator(); it.hasNext(); ) {
-                    Object element = it.next();
-                    newCol.add( element );
-                }
-                return newCol;
-            } catch ( InstantiationException e ) {
-                // nothing we can do, so just return the resulting object
-            } catch ( IllegalAccessException e ) {
-                // TODO Auto-generated catch block
-            }
-        }
-        return result;
-    }
-
     public char getCharValue(InternalWorkingMemory workingMemory,
                              final Object object) {
         return this.readAccessor.getCharValue( workingMemory,
@@ -301,16 +280,19 @@ public class Declaration
     }
 
     public Method getNativeReadMethod() {
-        if ( this.isPatternDeclaration() && this.isInternalFact() ) {
+        if ( this.readAccessor != null ) {
+            return this.readAccessor.getNativeReadMethod();
+        } else {
+            // This only happens if there was an error else where, such as building the initial declaration binding
+            // return getValue to avoid null pointers, so rest of drl can attempt to build
             try {
-                return this.getClass().getDeclaredMethod( "getNonShadowedValue",
+                return this.getClass().getDeclaredMethod( "getValue",
                                                           new Class[]{InternalWorkingMemory.class, Object.class} );
             } catch ( final Exception e ) {
                 throw new RuntimeDroolsException( "This is a bug. Please report to development team: " + e.getMessage(),
                                                   e );
             }
         }
-        return this.readAccessor.getNativeReadMethod();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

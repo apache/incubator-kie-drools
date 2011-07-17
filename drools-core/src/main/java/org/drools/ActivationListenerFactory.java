@@ -11,6 +11,7 @@ public interface ActivationListenerFactory {
                                           LeftTupleSource source,
                                           Rule rule,
                                           GroupElement subrule,
+                                          int subruleIndex,                                          
                                           BuildContext context,
                                           Object... args);
 }

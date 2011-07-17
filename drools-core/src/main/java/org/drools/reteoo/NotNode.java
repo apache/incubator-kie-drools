@@ -58,21 +58,15 @@ public class NotNode extends BetaNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        memory.setOpen( true );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
         
         ContextEntry[] contextEntry = memory.getContext();
         
         boolean useLeftMemory = true;
         if ( !this.tupleMemoryEnabled ) {
-            if ( memory.isOpen() ) {
-                // we are re-entrant to force new ContextEntry
-                contextEntry = this.constraints.createContext();
-            }
-            
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle)context.getFactHandle()).getObject();
-            if (  memory.getLeftTupleMemory() == null || object instanceof DroolsQuery &&  !((DroolsQuery)object).isOpen() ) {
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
             }
         }
@@ -83,7 +77,7 @@ public class NotNode extends BetaNode {
         FastIterator it = getRightIterator( rightMemory );
         
         for ( RightTuple rightTuple = getFirstRightTuple(leftTuple, rightMemory, context, it); rightTuple != null; rightTuple = (RightTuple) it.next(rightTuple)) {
-            if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
+            if ( this.constraints.isAllowedCachedLeft( contextEntry,
                                                        rightTuple.getFactHandle() ) ) {
                 leftTuple.setBlocker( rightTuple );
 
@@ -108,7 +102,6 @@ public class NotNode extends BetaNode {
                                                 workingMemory,
                                                 useLeftMemory );
         }
-        memory.setOpen( false );
     }
 
     public void assertObject(final InternalFactHandle factHandle,
@@ -135,9 +128,10 @@ public class NotNode extends BetaNode {
 
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
-                                               factHandle );
-        FastIterator it = memory.getLeftTupleMemory().fastIterator();
-        for ( LeftTuple leftTuple = memory.getLeftTupleMemory().getFirst( rightTuple ); leftTuple != null; ) {
+                                               factHandle );        
+        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();        
+        FastIterator it = getLeftIterator( leftMemory );
+        for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, it );  leftTuple != null; ) {      
             // preserve next now, in case we remove this leftTuple 
             LeftTuple temp = (LeftTuple) it.next(leftTuple);
 
@@ -243,17 +237,19 @@ public class NotNode extends BetaNode {
                                 InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         RightTupleMemory rightMemory = memory.getRightTupleMemory();
-
+        
+        FastIterator rightIt = getRightIterator( rightMemory );         
+        RightTuple firstRightTuple = getFirstRightTuple(leftTuple, rightMemory, context, rightIt);
+        
         // If in memory, remove it, because we'll need to add it anyway if it's not blocked, to ensure iteration order
         RightTuple blocker = leftTuple.getBlocker();
         if ( blocker == null ) {
             memory.getLeftTupleMemory().remove( leftTuple );
         } else {
             // check if we changed bucket
-            if ( rightMemory.isIndexed() ) {
-                RightTuple newRightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
+            if ( rightMemory.isIndexed() && !rightIt.isFullIterator()  ) {                
                 // if newRightTuple is null, we assume there was a bucket change and that bucket is empty                
-                if ( newRightTuple == null || newRightTuple.getMemory() != blocker.getMemory() ) {
+                if ( firstRightTuple == null || firstRightTuple.getMemory() != blocker.getMemory() ) {
                     // we changed bucket, so blocker no longer blocks
                     blocker.removeBlocked( leftTuple );
                     leftTuple.setBlocker( null );
@@ -279,12 +275,9 @@ public class NotNode extends BetaNode {
                 leftTuple.setBlockedPrevious( null );
                 leftTuple.setBlockedNext( null );
             }
-
-            FastIterator rightIt = memory.getRightTupleMemory().fastIterator();
             
             // find first blocker, because it's a modify, we need to start from the beginning again        
-            RightTuple rightTuple = rightMemory.getFirst( leftTuple, (InternalFactHandle) context.getFactHandle() );
-            for ( RightTuple newBlocker = rightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker) ) {
+            for ( RightTuple newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                            newBlocker.getFactHandle() ) ) {
                     leftTuple.setBlocker( newBlocker );
@@ -297,7 +290,7 @@ public class NotNode extends BetaNode {
             if ( leftTuple.getBlocker() != null ) {
                 // blocked
 
-                if ( leftTuple.firstChild != null ) {
+                if ( leftTuple.getFirstChild() != null ) {
                     // blocked, with previous children, so must have not been previously blocked, so retract
                     // no need to remove, as we removed at the start
                     // to be matched against, as it's now blocked
@@ -305,7 +298,7 @@ public class NotNode extends BetaNode {
                                                workingMemory,
                                                leftTuple );
                 } // else: it's blocked now and no children so blocked before, thus do nothing             
-            } else if ( leftTuple.firstChild == null ) {
+            } else if ( leftTuple.getFirstChild() == null ) {
                 // not blocked, with no children, must have been previously blocked so assert
                 memory.getLeftTupleMemory().add( leftTuple ); // add to memory so other fact handles can attempt to match
                 propagateAssertLeftTuple( context,
@@ -348,12 +341,14 @@ public class NotNode extends BetaNode {
                                                rightTuple.getFactHandle() );
 
         LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
-        LeftTuple firstLeftTuple = leftMemory.getFirst( rightTuple );
+
+        FastIterator leftIt = getLeftIterator( leftMemory );        
+        LeftTuple firstLeftTuple = getFirstLeftTuple( rightTuple, leftMemory, context, leftIt );
+        
         LeftTuple firstBlocked = rightTuple.getBlocked();
         // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild
         rightTuple.nullBlocked();
 
-        FastIterator leftIt = memory.getLeftTupleMemory().fastIterator();
         
         // first process non-blocked tuples, as we know only those ones are in the left memory.
         for ( LeftTuple leftTuple = firstLeftTuple; leftTuple != null; ) {
@@ -380,11 +375,10 @@ public class NotNode extends BetaNode {
 
         
         if ( firstBlocked != null ) {
-            // now process existing blocks, we only process existing and not new from above loop
+            // now process existing blocks, we only process existing and not new from above loop            
+            FastIterator rightIt = getRightIterator( memory.getRightTupleMemory() );
 
-            FastIterator it = memory.getRightTupleMemory().fastIterator();
-
-            RightTuple rootBlocker = (RightTuple) it.next(rightTuple);
+            RightTuple rootBlocker = (RightTuple) rightIt.next(rightTuple);
             
             RightTupleList list = rightTuple.getMemory();
             
@@ -411,7 +405,7 @@ public class NotNode extends BetaNode {
                                                   leftTuple );
 
                 // we know that older tuples have been checked so continue next
-                for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) it.next( newBlocker ) ) {
+                for ( RightTuple newBlocker = rootBlocker; newBlocker != null; newBlocker = (RightTuple) rightIt.next( newBlocker ) ) {
                     if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                                newBlocker.getFactHandle() ) ) {
                         leftTuple.setBlocker( newBlocker );
@@ -478,9 +472,9 @@ public class NotNode extends BetaNode {
         
         final Iterator tupleIter = memory.getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
-            sink.assertLeftTuple( new LeftTuple( leftTuple,
-                                                 sink,
-                                                 true ),
+            sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
+                                                        sink,
+                                                        true ),
                                   context,
                                   workingMemory );
         }
@@ -489,6 +483,33 @@ public class NotNode extends BetaNode {
     public short getType() {
         return NodeTypeEnums.NotNode;
     }
+
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }       
 
     public String toString() {
         ObjectSource source = this.rightInput;

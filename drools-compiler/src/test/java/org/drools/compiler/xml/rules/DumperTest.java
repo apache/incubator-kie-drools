@@ -84,6 +84,11 @@ public class DumperTest {
     }
 
     @Test
+    public void testRoundTripDRLAnnotations() throws Exception {
+        DumperTestHelper.DrlFile( "test_DumpAnnotations.drl" );
+    }
+
+    @Test
     public void testRoundTripPComplexXml() throws Exception {
         DumperTestHelper.XmlFile( "test_ParseComplex.xml" );
     }

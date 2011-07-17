@@ -1,5 +1,9 @@
 package org.drools.agent;
 
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.definition.KnowledgePackage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -12,8 +16,6 @@ import org.drools.io.ResourceFactory;
 import org.drools.rule.Rule;
 import org.drools.runtime.StatefulKnowledgeSession;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -360,6 +362,162 @@ public class KnowledgeAgentBinaryDiffTests extends BaseKnowledgeAgentTest {
         kagent.dispose();
     }
 
+    @Test
+    public void testEvalCondition() throws Exception{
+
+        String rule1 = "";
+        rule1 += "package org.drools\n";
+        rule1 += "global Integer salesChannelId;\n";
+        rule1 += "global Boolean includeFinishing;\n";
+        rule1 += "global java.util.List list;\n";
+        rule1 += "rule \"Rule A\"\n";
+        rule1 += "  dialect \"java\"\n";
+        rule1 += "  ruleflow-group \"finishing-price\"\n";
+        rule1 += "  when\n";
+        rule1 += "      $s : String()\n";
+        rule1 += "      eval(salesChannelId @operator@ 4 && includeFinishing)\n";
+        rule1 += "  then\n";
+        rule1 += "      list.add(\"@message@\");\n";
+        rule1 += "  end\n";
+        
+        fileManager.write( "rule1.drl",
+                                       rule1.replaceAll("@message@", "Rule A fired!").replaceAll("@operator@", "!=") );
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        
+        applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.setGlobal("salesChannelId", 1);
+        ksession.setGlobal("includeFinishing", true);
+        ksession.insert("Some String");
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        //assertEquals(1, list.size());
+        //assertTrue(list.contains("Rule A fired!"));
+
+        list.clear();
+        
+        
+        fileManager.write( "rule1.drl",
+                                     rule1.replaceAll("@message@", "Rule A V2 fired!").replaceAll("@operator@", "==") );
+        
+        scan(kagent);
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("list", list);
+        ksession.setGlobal("salesChannelId", 4);
+        ksession.setGlobal("includeFinishing", true);
+        ksession.insert("Some String");
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        //assertEquals(1, list.size());
+        //assertTrue(list.contains("Rule A V2 fired!"));
+
+        kagent.dispose();
+    }
+    
+    @Test
+    public void testEvalConditionOnBinaryPackages() throws Exception{
+
+        String rule1 = "";
+        rule1 += "package org.drools\n";
+        rule1 += "global Integer salesChannelId;\n";
+        rule1 += "global Boolean includeFinishing;\n";
+        rule1 += "global java.util.List list;\n";
+        rule1 += "rule \"Rule A\"\n";
+        rule1 += "  dialect \"java\"\n";
+        rule1 += "  ruleflow-group \"finishing-price\"\n";
+        rule1 += "  when\n";
+        rule1 += "      $s : String()\n";
+        rule1 += "      eval(salesChannelId @operator@ 4 && includeFinishing)\n";
+        rule1 += "  then\n";
+        rule1 += "      list.add(\"@message@\");\n";
+        rule1 += "  end\n";
+        //Create an empty file
+        File ruleFile = fileManager.write( "rule1.pkg","");
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.replaceAll("@message@", "Rule A fired!").replaceAll("@operator@", "!=").getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgePackage pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+        writePackage( pkg, ruleFile );
+        
+        
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:"+this.getPort()+"/rule1.pkg' type='PKG' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+        File fxml = fileManager.write( "changeset.xml",
+                                       xml );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = this.createKAgent(kbase, false);
+        
+        applyChangeSet( kagent, ResourceFactory.newUrlResource(fxml.toURI().toURL()) );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.setGlobal("salesChannelId", 1);
+        ksession.setGlobal("includeFinishing", true);
+        ksession.insert("Some String");
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        //assertEquals(1, list.size());
+        //assertTrue(list.contains("Rule A fired!"));
+
+        list.clear();
+        
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.replaceAll("@message@", "Rule A V2 fired!").replaceAll("@operator@", "==").getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+        writePackage( pkg, ruleFile );
+        
+        scan(kagent);
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("list", list);
+        ksession.setGlobal("salesChannelId", 4);
+        ksession.setGlobal("includeFinishing", true);
+        ksession.insert("Some String");
+        ksession.fireAllRules();
+        ksession.dispose();
+
+        //assertEquals(1, list.size());
+        //assertTrue(list.contains("Rule A V2 fired!"));
+
+        kagent.dispose();
+    }
+    
     private void differentRuleAttributeTest(String attribute1, String attribute2,RuleAttributeAsserter asserter) throws Exception {
         File f1 = fileManager.write( "rule1.drl",
                                      createAttributeRule( "rule1", attribute1 ) );

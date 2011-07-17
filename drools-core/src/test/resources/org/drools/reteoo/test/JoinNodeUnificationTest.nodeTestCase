@@ -1,0 +1,160 @@
+TestCase "Join Node unification test case"
+
+Setup
+    ObjectTypeNode:
+        otnLeft1, org.drools.base.DroolsQuery;
+    LeftInputAdapterNode:
+        lian0, otnLeft1;
+    ObjectTypeNode:
+        otnRight1, org.drools.Person;
+    ObjectTypeNode:
+        otnRight2, org.drools.Person;                        
+    Binding:
+         v, 0, org.drools.base.DroolsQuery, [0], java.lang.Integer;
+         p1, 1, org.drools.Person, age;
+    JoinNode:
+        join1, lian0, otnRight1;
+        name, :=,v;
+    JoinNode:
+        join2, join1, otnRight2;
+        age, !=, p1;        
+    Facts:
+        new org.drools.base.DroolsQuery( "x", [org.drools.runtime.rule.Variable.v], null, true), 
+        new org.drools.Person('bobba', 36);
+
+Test "Assert right then left"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1];
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];     
+  
+Test "Assert right then left then modify right"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1];
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];  
+   /** trigger modify Person, but don't actually change anything */
+    modify:
+        otnRight1, [h1]; 
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];            
+        
+Test "Assert right then left then modify left"
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1];
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];  
+   /** trigger modify Person, but don't actually change anything */
+    modify:
+        otnLeft1, [h0]; 
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];          
+                        
+            
+Test "Assert left then right"
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];  
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1]; 
+    join2:
+        leftMemory, [[h0, h1]];
+        
+Test "Assert left then right with right modify"
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];  
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1]; 
+    join2:
+        leftMemory, [[h0, h1]];        
+   /** trigger modify Person, but don't actually change anything */
+    modify:
+        otnRight1, [h1]; 
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];        
+        
+Test "Assert left then right with left modify"
+    /**
+     * Insert Query
+     */
+    assert:
+        otnLeft1, [h0];
+    join1:
+        leftMemory, [[h0]];  
+    /**
+     * Insert Person
+     */
+    assert:
+        otnRight1, [h1];
+    join1:
+        rightMemory, [h1]; 
+    join2:
+        leftMemory, [[h0, h1]];        
+   /** trigger modify Person, but don't actually change anything */
+    modify:
+        otnLeft1, [h0]; 
+    join1:
+        leftMemory, [[h0]];
+    join2:
+        leftMemory, [[h0, h1]];              

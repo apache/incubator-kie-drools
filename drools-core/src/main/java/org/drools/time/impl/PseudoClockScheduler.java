@@ -115,6 +115,7 @@ public class PseudoClockScheduler
      * @see org.drools.time.TimerService#removeJob(org.drools.time.JobHandle)
      */
     public boolean removeJob(JobHandle jobHandle) {
+        jobHandle.setCancel( true );
         return this.queue.remove( ((DefaultJobHandle) jobHandle).getScheduledJob() );
     }
 
@@ -159,6 +160,11 @@ public class PseudoClockScheduler
         while ( item != null && ((fireTime = item.getTrigger().hasNextFireTime().getTime()) <= this.timer) ) {
             // remove the head
             queue.remove();
+            
+            if ( item.getHandle().isCancel() ) {
+                // do not call it, do not reschedule it
+                continue;
+            }
             
             // updates the trigger
             item.getTrigger().nextFireTime();

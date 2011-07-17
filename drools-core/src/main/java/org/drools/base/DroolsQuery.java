@@ -16,48 +16,64 @@
 
 package org.drools.base;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.common.WorkingMemoryAction;
+import org.drools.core.util.RightTupleList;
+import org.drools.reteoo.QueryTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.Query;
-import org.drools.rule.Variable;
+import org.drools.runtime.rule.Variable;
 
 public final class DroolsQuery extends ArrayElements {
-    private final String         name;
-    private InternalViewChangedEventListener resultsCollector;
-    private Query                query;
-    private boolean              open;
+    private final String                      name;
+    private InternalViewChangedEventListener  resultsCollector;
+    private Query                             query;
+    private boolean                           open;
     
-    private Variable[]           vars;
-
-    public DroolsQuery(final String name,
-                       InternalViewChangedEventListener resultsCollector) {
-        this( name,
-              null,
-              resultsCollector,
-              false );
-    }
+    private Variable[]                        vars;
+    
+    private RightTupleList                    resultInsertRightTupleList;
+    private RightTupleList                    resultUpdateRightTupleList;
+    private RightTupleList                    resultRetractRightTupleList;
+    
+    private WorkingMemoryAction               action;
+    
+//    public DroolsQuery(DroolsQuery droolsQuery) {
+//        super( new Object[droolsQuery.getElements().length] );
+//
+//        this.name = droolsQuery.getName();
+//        this.resultsCollector = droolsQuery.getQueryResultCollector();
+//        this.open = droolsQuery.isOpen();
+//        final Object[] params = getElements();
+//        System.arraycopy( droolsQuery.getElements(), 0, params, 0, params.length );
+//        originalDroolsQuery = droolsQuery;
+//    }
 
     public DroolsQuery(final String name,
                        final Object[] params,
                        final InternalViewChangedEventListener resultsCollector,
                        final boolean open ) {
-        super( params );
+        setParameters( params );
         this.name = name;
         this.resultsCollector = resultsCollector;
-        this.open = open;
-        
+        this.open = open;                
+    }
+    
+    public void setParameters(final Object[] params) {
+        setElements( params );
         // build the indexes to the Variables  
         if ( params != null ) {
             vars = new Variable[params.length];
             for ( int i = 0; i < params.length; i++ ) {
-                // now record the var index positions and replace with null
-                if ( params[i] == Variable.variable ) {
-                    vars[i] = new Variable( getElements(),
-                                           i );
+                if ( params[i] == Variable.v ) {
+                    vars[i] = Variable.v;
                     params[i] = null;
                 }
             }
-        }
-        
+        }        
     }
 
     public String getName() {
@@ -66,11 +82,12 @@ public final class DroolsQuery extends ArrayElements {
     
     public Variable[] getVariables() {
         return this.vars;
-    }
+    }    
+    
 
     public void setQuery(Query query) {
         // this is set later, as we don't yet know which Query will match this DroolsQuery propagation
-        this.query = query;
+        this.query = query;     
     }
 
     public Query getQuery() {
@@ -85,41 +102,63 @@ public final class DroolsQuery extends ArrayElements {
         return open;
     }
 
+    public RightTupleList getResultInsertRightTupleList() {
+        return resultInsertRightTupleList;
+    }
+
+    public void setResultInsertRightTupleList(RightTupleList evaluateActionsRightTupleList) {
+        this.resultInsertRightTupleList = evaluateActionsRightTupleList;
+    }
+
+    public RightTupleList getResultUpdateRightTupleList() {
+        return resultUpdateRightTupleList;
+    }
+
+    public void setResultUpdateRightTupleList(RightTupleList insertUpdateRightTupleList) {
+        this.resultUpdateRightTupleList = insertUpdateRightTupleList;
+    }
+
+    public RightTupleList getResultRetractRightTupleList() {
+        return resultRetractRightTupleList;
+    }
+
+    public void setResultRetractRightTupleList(RightTupleList retractRightTupleList) {
+        this.resultRetractRightTupleList = retractRightTupleList;
+    } 
+
+    public WorkingMemoryAction getAction() {
+        return action;
+    }
+
+    public void setAction(WorkingMemoryAction action) {
+        this.action = action;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + (open ? 1231 : 1237);
+        result = prime * result + Arrays.hashCode( vars );
         return result;
     }
 
+
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( !super.equals( obj ) ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        DroolsQuery other = (DroolsQuery) obj;
-        if ( name == null ) {
-            if ( other.name != null ) return false;
-        } else if ( !name.equals( other.name ) ) return false;
-        return true;
+        // DroolsQuery must be instance equals
+        return this == obj;
+    }
+
+    @Override
+    public String toString() {
+        return "DroolsQuery [name=" + name + ", resultsCollector=" + resultsCollector + 
+                    ", query=" + query + ", open=" + open +
+                    ", args=" + Arrays.toString( getElements() ) +
+                    ", vars=" + Arrays.toString( vars ) + "]";
     }
     
-    public String toString() {
-        StringBuilder sbuilder = new StringBuilder();
-        sbuilder.append( "query: " + name + "\n" + "parameters:\n" );
-        
-        if (this.query != null) {
-            for ( Declaration declr : this.query.getParameters() ) {
-                sbuilder.append( "   " );
-                sbuilder.append( declr.getExtractor().getExtractToClass() + ":" + declr.getIdentifier() );
-                sbuilder.append( "\n" );
-            }
-        }
-        
-        sbuilder.append( "collector: " + this.resultsCollector );
-        
-        return sbuilder.toString();
-    }
+
 
 }

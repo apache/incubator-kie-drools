@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 
 import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 
@@ -209,6 +210,9 @@ public class RightTupleIndexHashTable extends AbstractHashTable
             return null;
         }
 
+        public boolean isFullIterator() {
+            return true;
+        }        
     }
 
     public static class FieldIndexHashTableFullIterator

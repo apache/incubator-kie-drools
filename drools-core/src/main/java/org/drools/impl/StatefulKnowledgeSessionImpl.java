@@ -158,11 +158,11 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
         List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
-        for ( WorkingMemoryEventListener listener : ((List<WorkingMemoryEventListener>) this.session.getWorkingMemoryEventListeners()) ) {
+        for ( Object  listener : this.session.getWorkingMemoryEventListeners() ) {
             if ( listener instanceof WorkingMemoryEventListenerWrapper ) {
                 listeners.add( ((WorkingMemoryEventListenerWrapper) listener).unWrap() );
             } else {
-                listeners.add( listener );
+                listeners.add( ( WorkingMemoryEventListener ) listener );
             }
         }
         return Collections.unmodifiableCollection( listeners );
@@ -175,11 +175,11 @@ public class StatefulKnowledgeSessionImpl
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         List<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
-        for ( AgendaEventListener listener : ((List<AgendaEventListener>) this.session.getAgendaEventListeners()) ) {
+        for ( Object listener :  this.session.getAgendaEventListeners() ) {
             if ( listener instanceof AgendaEventListenerWrapper ) {
                 listeners.add( ((AgendaEventListenerWrapper) listener).unWrap() );
             } else {
-                listeners.add( listener );
+                listeners.add( (AgendaEventListener) listener );
             }
         }
         return Collections.unmodifiableCollection( listeners );
@@ -224,6 +224,10 @@ public class StatefulKnowledgeSessionImpl
 
     public int fireAllRules(AgendaFilter agendaFilter) {
         return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ) );
+    }
+
+    public int fireAllRules(AgendaFilter agendaFilter, int max) {
+        return this.session.fireAllRules( new AgendaFilterWrapper( agendaFilter ), max );
     }
 
     public void fireUntilHalt() {
@@ -521,12 +525,21 @@ public class StatefulKnowledgeSessionImpl
         }
 
         public Object[] toArray() {
-            return toArray( new Object[size()] );
+            if ( type == FACT_HANDLE ) {
+                return toArray( new InternalFactHandle[size()] );
+            } else {
+                return toArray( new Object[size()] );
+            }            
+            
         }
 
         public Object[] toArray(Object[] array) {
             if ( array == null || array.length != size() ) {
-                array = new Object[size()];
+                if ( type == FACT_HANDLE ) {
+                    array = new InternalFactHandle[size()];
+                } else {
+                    array = new Object[size()];
+                }
             }
 
             int i = 0;

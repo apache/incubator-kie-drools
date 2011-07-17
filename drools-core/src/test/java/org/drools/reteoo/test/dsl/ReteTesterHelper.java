@@ -24,6 +24,7 @@ import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ClassTypeResolver;
+import org.drools.base.DroolsQuery;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorRegistry;
@@ -32,12 +33,15 @@ import org.drools.rule.Declaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Package;
 import org.drools.rule.Pattern;
+import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.VariableRestriction;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
+import org.drools.spi.Restriction;
 
 public class ReteTesterHelper {
 
@@ -71,22 +75,28 @@ public class ReteTesterHelper {
         return typeResolver;
     }
 
-    public BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
+    public BetaNodeFieldConstraint getBoundVariableConstraint(final Class clazz,
                                                               final String fieldName,
                                                               final Declaration declaration,
                                                               final String evaluatorString) throws IntrospectionException {
-        final Class< ? > clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
                                                                 fieldName,
                                                                 getClass().getClassLoader() );
 
         Evaluator evaluator = getEvaluator( clazz,
-                                            evaluatorString );
+                                            ":=".equals( evaluatorString ) ? Operator.EQUAL.getOperatorString() : evaluatorString );
+        
+        Restriction vr = new VariableRestriction( extractor, declaration, evaluator );                
 
-        return new VariableConstraint( extractor,
-                                       declaration,
-                                       evaluator );
+        if (  ":=".equals( evaluatorString ) ) {
+            vr = new UnificationRestriction( (VariableRestriction)  vr );
+        }
+
+        VariableConstraint vc = new VariableConstraint( extractor,
+                                                        vr );
+        
+        return vc;
     }
 
     public AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
@@ -113,6 +123,9 @@ public class ReteTesterHelper {
 
     public Evaluator getEvaluator(Class< ? > cls,
                                   String operator) {
+        if ( cls == DroolsQuery.class ) {
+            cls = Object.class;
+        }
         return registry.getEvaluator( ValueType.determineValueType( cls ),
                                       Operator.determineOperator( operator,
                                                                   false ) );

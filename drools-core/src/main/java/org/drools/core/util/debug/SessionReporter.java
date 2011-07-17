@@ -51,8 +51,6 @@ public class SessionReporter {
     public static String generateReport(final String ruleTemplate,
                                         final StatefulKnowledgeSessionInfo session,
                                         final Map<String, Object> vars) {
-        AbstractParser.setLanguageLevel( 5 );
-
         Map<String, Object> context = new HashMap<String, Object>();
         if ( vars != null ) {
             context.putAll( vars );

@@ -13,15 +13,10 @@ import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.ExprConstraintDescr.Type;
-import org.drools.lang.descr.FieldConstraintDescr;
-import org.drools.lang.descr.LiteralDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.VariableDescr;
-import org.drools.lang.descr.VariableRestrictionDescr;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class QueryBuilderTest extends DroolsTestCase {
@@ -44,9 +39,9 @@ public class QueryBuilderTest extends DroolsTestCase {
         queryDescr.setLhs( lhs );
         PatternDescr pattern = new PatternDescr( Person.class.getName() );
         lhs.addDescr( pattern );
-        pattern.addBinding( new BindingDescr( "$name", "name" ) );
-        pattern.addBinding( new BindingDescr( "$age", "age" ) );
-        pattern.addBinding( new BindingDescr( "$likes", "likes" ) );
+        pattern.addConstraint( new BindingDescr( "$name", "name", true ) );
+        pattern.addConstraint( new BindingDescr( "$age", "age", true ) );
+        pattern.addConstraint( new BindingDescr( "$likes", "likes", true ) );
 
         RuleDescr ruleDescr = new RuleDescr( "rule-1" );
         packageDescr.addRule( ruleDescr );
@@ -55,7 +50,7 @@ public class QueryBuilderTest extends DroolsTestCase {
 
         pattern = new PatternDescr( Cheese.class.getName() );
         lhs.addDescr( pattern );
-        pattern.addBinding( new BindingDescr( "$type",
+        pattern.addConstraint( new BindingDescr( "$type",
                                               "type" ) );
 
         pattern = new PatternDescr( "query1" );

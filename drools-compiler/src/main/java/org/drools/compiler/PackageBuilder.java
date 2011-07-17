@@ -16,6 +16,28 @@
 
 package org.drools.compiler;
 
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
 import org.drools.RuleBase;
@@ -23,7 +45,9 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
+import org.drools.base.mvel.MVELCompileable;
 import org.drools.builder.DecisionTableConfiguration;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
@@ -37,6 +61,8 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactField;
+import org.drools.definition.type.Position;
+import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
@@ -47,15 +73,34 @@ import org.drools.facttemplates.FieldTemplateImpl;
 import org.drools.io.Resource;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.io.impl.DescrResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.internal.InternalResource;
-import org.drools.lang.descr.*;
+import org.drools.lang.descr.AnnotationDescr;
+import org.drools.lang.descr.AttributeDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.FactTemplateDescr;
+import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.FunctionDescr;
+import org.drools.lang.descr.FunctionImportDescr;
+import org.drools.lang.descr.GlobalDescr;
+import org.drools.lang.descr.ImportDescr;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.*;
+import org.drools.rule.Function;
+import org.drools.rule.ImportDeclaration;
+import org.drools.rule.JavaDialectRuntimeData;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
@@ -66,11 +111,6 @@ import org.drools.type.DateFormatsImpl;
 import org.drools.util.CompositeClassLoader;
 import org.drools.xml.XmlChangeSetReader;
 import org.xml.sax.SAXException;
-
-import java.beans.IntrospectionException;
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
 
 /**
  * This is the main compiler class for parsing and compiling rules and
@@ -139,6 +179,9 @@ public class PackageBuilder {
     //AttributeDescr's name.
     private Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
+    //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
+    private Map<String, List<PackageDescr>>          packages          = new HashMap<String, List<PackageDescr>>();
+
     /**
      * Use this when package is starting from scratch.
      */
@@ -195,7 +238,7 @@ public class PackageBuilder {
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<DroolsError>();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
@@ -238,7 +281,7 @@ public class PackageBuilder {
         //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<DroolsError>();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
@@ -294,6 +337,12 @@ public class PackageBuilder {
         final DrlParser parser = new DrlParser();
         final PackageDescr pkg = parser.parse( reader );
         this.results.addAll( parser.getErrors() );
+        if ( pkg == null ) {
+            this.results.add( new ParserError( "Parser returned a null Package",
+                                               0,
+                                               0 ) );
+        }
+
         if ( !parser.hasErrors() ) {
             addPackage( pkg );
         }
@@ -303,10 +352,22 @@ public class PackageBuilder {
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                       IOException {
         this.resource = resource;
-        final DrlParser parser = new DrlParser();
-        final PackageDescr pkg = parser.parse( resource.getInputStream() );
-        this.results.addAll( parser.getErrors() );
-        if ( !parser.hasErrors() ) {
+        PackageDescr pkg = null;
+        boolean hasErrors = false;
+        if ( resource instanceof DescrResource ) {
+            pkg = (PackageDescr) ((DescrResource) resource).getDescr();
+        } else {
+            final DrlParser parser = new DrlParser();
+            pkg = parser.parse( resource.getInputStream() );
+            this.results.addAll( parser.getErrors() );
+            if ( pkg == null ) {
+                this.results.add( new ParserError( "Parser returned a null Package",
+                                                   0,
+                                                   0 ) );
+            }
+            hasErrors = parser.hasErrors();
+        }
+        if ( !hasErrors ) {
             addPackage( pkg );
         }
         this.resource = null;
@@ -323,6 +384,7 @@ public class PackageBuilder {
                                                         IOException {
         this.resource = new ReaderResource( reader );
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
+        xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
         try {
             xmlReader.read( reader );
@@ -340,6 +402,7 @@ public class PackageBuilder {
         this.resource = resource;
 
         final XmlPackageReader xmlReader = new XmlPackageReader( this.configuration.getSemanticModules() );
+        xmlReader.getParser().setClassLoader( this.rootClassLoader );
 
         try {
             xmlReader.read( resource.getReader() );
@@ -484,6 +547,9 @@ public class PackageBuilder {
             if ( ResourceType.DRL.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromDrl( resource );
+            } else if ( ResourceType.DESCR.equals( type ) ) {
+                ((InternalResource) resource).setResourceType( type );
+                addPackageFromDrl( resource );
             } else if ( ResourceType.DSLR.equals( type ) ) {
                 ((InternalResource) resource).setResourceType( type );
                 addPackageFromDslr( resource );
@@ -560,11 +626,17 @@ public class PackageBuilder {
                 }
             } else if ( ResourceType.PMML.equals( type ) ) {
                 PMMLCompiler compiler = getPMMLCompiler();
-                String theory = compiler.compile( resource.getInputStream() );
+                if ( compiler != null ) {
 
-                addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
-                                      ResourceType.DRL,
-                                      configuration );
+                    String theory = compiler.compile( resource.getInputStream(),
+                                                      getPackageRegistry() );
+
+                    addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
+                                          ResourceType.DRL,
+                                          configuration );
+                } else {
+                    throw new RuntimeException( "Unknown resource type: " + type );
+                }
 
             } else {
                 ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder( type );
@@ -599,6 +671,29 @@ public class PackageBuilder {
         }
         if ( !checkNamespace( packageDescr.getNamespace() ) ) {
             return;
+        }
+
+        //Gather all imports for all PackageDescrs for the current package and replicate into
+        //all PackageDescrs for the current package, thus maintaining a complete list of 
+        //ImportDescrs for all PackageDescrs for the current package.
+        List<PackageDescr> packageDescrsForPackage = packages.get( packageDescr.getName() );
+        if ( packageDescrsForPackage == null ) {
+            packageDescrsForPackage = new ArrayList<PackageDescr>();
+            packages.put( packageDescr.getName(),
+                          packageDescrsForPackage );
+        }
+        packageDescrsForPackage.add( packageDescr );
+        List<ImportDescr> imports = new ArrayList<ImportDescr>();
+        for ( PackageDescr pd : packageDescrsForPackage ) {
+            imports.addAll( pd.getImports() );
+        }
+        for ( PackageDescr pd : packageDescrsForPackage ) {
+            pd.getImports().clear();
+            //PackageDescr.getImports() can return a Collections.EmptyList which doesn't
+            //support addAll(). PackageDescr.addImport() ensures the list can be appended 
+            for ( ImportDescr id : imports ) {
+                pd.addImport( id );
+            }
         }
 
         //Copy package level attributes for inclusion on individual rules
@@ -707,9 +802,9 @@ public class PackageBuilder {
                 this.ruleBase.addRule( pkgRegistry.getPackage(),
                                        pkgRegistry.getPackage().getRule( ruleDescr.getName() ) );
             }
-        }        
+        }
     }
-    
+
     //  test
 
     /**
@@ -939,7 +1034,13 @@ public class PackageBuilder {
 
         for ( final GlobalDescr global : packageDescr.getGlobals() ) {
             final String identifier = global.getIdentifier();
-            final String className = global.getType();
+            String className = global.getType();
+
+            // JBRULES-3039: can't handle type name with generic params
+            while ( className.indexOf( '<' ) >= 0 ) {
+                className = className.replaceAll( "<[^<>]+?>",
+                                                  "" );
+            }
 
             Class< ? > clazz;
             try {
@@ -955,75 +1056,176 @@ public class PackageBuilder {
             }
         }
 
+        // need to reinsert this to ensure that the package is the first/last one in the ordered map
+        // this feature is exploited by the knowledgeAgent
+        this.pkgRegistryMap.remove( packageDescr.getName() );
+        this.pkgRegistryMap.put( packageDescr.getName(),
+                                 pkgRegistry );
+
     }
 
     public TypeDeclaration getTypeDeclaration(Class< ? > cls) {
         if ( cls.isPrimitive() || cls.isArray() ) {
             return null;
         }
+
+        // If this class has already been accessed, it'll be in the cache
         TypeDeclaration tdecl = null;
-        if ( this.cacheTypes != null ) {
+        PackageRegistry pkgReg = null;
+        if ( this.cacheTypes == null ) {
+            this.cacheTypes = new HashMap<String, TypeDeclaration>();
+        } else {
             tdecl = cacheTypes.get( cls.getName() );
             if ( tdecl != null ) {
                 return tdecl;
             }
         }
-        tdecl = this.builtinTypes.get( (cls.getName()) );
 
-        PackageRegistry pkgReg = null;
+        // Check if we are in the built-ins
+        tdecl = this.builtinTypes.get( (cls.getName()) );
         if ( tdecl == null ) {
-            String pack = ClassUtils.getPackage( cls );
-            pkgReg = this.pkgRegistryMap.get( pack );
+            // No built-in
+            // Check if there is a user specified typedeclr
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
             if ( pkgReg != null ) {
                 tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
             }
         }
 
-        Class< ? > originalCls = cls;
-        while ( tdecl == null && cls != Object.class ) {
-            cls = cls.getSuperclass();
-            if ( cls == null ) {
+        if ( tdecl == null ) {
+            // no typedeclr exists, so create one, which will be added to the cache
+            tdecl = new TypeDeclaration( cls.getSimpleName() );
+
+            // it's a new type declaration, so generate the @Position for it
+            ClassDefinition clsDef = tdecl.getTypeClassDef();
+            if ( clsDef == null ) {
+                clsDef = new ClassDefinition();
+
+                Collection<Field> fields = new LinkedList<Field>();
+                Class< ? > tempKlass = cls;
+                while ( tempKlass != null && tempKlass != Object.class ) {
+                    for ( Field f : tempKlass.getDeclaredFields() ) {
+                        fields.add( f );
+                    }
+                    tempKlass = tempKlass.getSuperclass();
+                }
+
+                List<FieldDefinition> orderedFields = new ArrayList<FieldDefinition>( fields.size() );
+                for ( int i = 0; i < fields.size(); i++ ) {
+                    // as these could be set in any order, initialise first, to allow setting later.
+                    orderedFields.add( null );
+                }
+
+                for ( Field fld : fields ) {
+                    Position pos = fld.getAnnotation( Position.class );
+                    if ( pos != null ) {
+                        FieldDefinition fldDef = new FieldDefinition( fld.getName(),
+                                                                      fld.getType().getName() );
+                        fldDef.setIndex( pos.value() );
+                        orderedFields.set( pos.value(),
+                                           fldDef );
+                    }
+                }
+                for ( FieldDefinition fld : orderedFields ) {
+                    if ( fld != null ) {
+                        // it's null if there is no @Position
+                        clsDef.addField( fld );
+                    }
+                }
+
+                tdecl.setTypeClassDef( clsDef );
+
+            }
+        }
+
+        // build up a set of all the super classes and interfaces
+        Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
+        buildTypeDeclarations( cls,
+                               tdecls );
+
+        // Iterate and for each typedeclr assign it's value if it's not already set
+        // We start from the rear as those are the furthest away classes and interfaces
+        TypeDeclaration[] tarray = tdecls.toArray( new TypeDeclaration[tdecls.size()] );
+        for ( int i = tarray.length - 1; i >= 0; i-- ) {
+            TypeDeclaration currentTDecl = tarray[i];
+            if ( (tdecl.getSetMask() & TypeDeclaration.ROLE_BIT) != TypeDeclaration.ROLE_BIT ) {
+                tdecl.setRole( currentTDecl.getRole() );
+            }
+            if ( (tdecl.getSetMask() & TypeDeclaration.FORMAT_BIT) != TypeDeclaration.FORMAT_BIT ) {
+                tdecl.setFormat( currentTDecl.getFormat() );
+            }
+            if ( (tdecl.getSetMask() & TypeDeclaration.TYPESAFE_BIT) != TypeDeclaration.TYPESAFE_BIT ) {
+                tdecl.setTypesafe( currentTDecl.isTypesafe() );
+            }
+        }
+
+        this.cacheTypes.put( cls.getName(),
+                             tdecl );
+
+        return tdecl;
+    }
+
+    public void buildTypeDeclarations(Class< ? > cls,
+                                      Set<TypeDeclaration> tdecls) {
+        TypeDeclaration tdecl = null;
+
+        // Process current interfaces
+        Class< ? >[] intfs = cls.getInterfaces();
+        for ( Class< ? > intf : intfs ) {
+            buildTypeDeclarationInterfaces( intf,
+                                            tdecls );
+        }
+
+        // Process super classes and their interfaces
+        cls = cls.getSuperclass();
+        while ( tdecl == null && (cls != null && cls != Object.class) ) {
+            if ( !buildTypeDeclarationInterfaces( cls,
+                                                  tdecls ) ) {
                 break;
             }
-            tdecl = this.builtinTypes.get( (cls.getName()) );
-            if ( tdecl == null ) {
-                pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
-                if ( pkgReg != null ) {
-                    tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
-                }
-            }
+            cls = cls.getSuperclass();
         }
 
+    }
+
+    public boolean buildTypeDeclarationInterfaces(Class cls,
+                                                  Set<TypeDeclaration> tdecls) {
+        PackageRegistry pkgReg = null;
+        TypeDeclaration tdecl = null;
+
+        tdecl = this.builtinTypes.get( (cls.getName()) );
         if ( tdecl == null ) {
-            Class< ? >[] intfs = originalCls.getInterfaces();
-            for ( Class< ? > intf : intfs ) {
-                cls = intf;
-                pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
-                if ( pkgReg != null ) {
-                    tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
-                }
-                while ( tdecl == null ) {
-                    cls = cls.getSuperclass();
-                    if ( cls == null ) {
-                        break;
-                    }
-                    tdecl = this.builtinTypes.get( (cls.getName()) );
-                    if ( tdecl == null ) {
-                        pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
-                        if ( pkgReg != null ) {
-                            tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
-                        }
-                    }
-                }
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( cls ) );
+            if ( pkgReg != null ) {
+                tdecl = pkgReg.getPackage().getTypeDeclaration( cls.getSimpleName() );
+            }
+        }
+        if ( tdecl != null ) {
+            if ( !tdecls.add( tdecl ) ) {
+                return false; // the interface already exists, return to stop recursion
             }
         }
 
-        if ( this.cacheTypes == null ) {
-            this.cacheTypes = new HashMap<String, TypeDeclaration>();
+        Class< ? >[] intfs = cls.getInterfaces();
+        for ( Class< ? > intf : intfs ) {
+            pkgReg = this.pkgRegistryMap.get( ClassUtils.getPackage( intf ) );
+            if ( pkgReg != null ) {
+                tdecl = pkgReg.getPackage().getTypeDeclaration( intf.getSimpleName() );
+            }
+            if ( tdecl != null ) {
+                tdecls.add( tdecl );
+            }
         }
-        this.cacheTypes.put( originalCls.getName(),
-                             tdecl ); // should also cache null, to avoid expensive lookups with no results
-        return tdecl;
+
+        for ( Class< ? > intf : intfs ) {
+            if ( !buildTypeDeclarationInterfaces( intf,
+                                                  tdecls ) ) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
     /**
@@ -1094,17 +1296,22 @@ public class PackageBuilder {
                         resolveSuperType( declaredSuperType,
                                           packageDescr,
                                           this.pkgRegistryMap.get( typeDescr.getNamespace() ) );
-
             }
 
             // sets supertype name and supertype package
             separator = declaredSuperType.lastIndexOf( "." );
-            typeDescr.setSuperTypeName( declaredSuperType.substring( separator + 1 ) );
-            typeDescr.setSuperTypeNamespace( declaredSuperType.substring( 0,
-                                                                          separator ) );
-
+            if ( separator < 0 ) {
+                this.results.add( new TypeDeclarationError(
+                                                            "Cannot resolve supertype '" + typeDescr.getSuperTypeName() + "'",
+                                                            typeDescr.getLine() ) );
+                typeDescr.setSuperTypeName( null );
+                typeDescr.setSuperTypeNamespace( null );
+            } else {
+                typeDescr.setSuperTypeName( declaredSuperType.substring( separator + 1 ) );
+                typeDescr.setSuperTypeNamespace( declaredSuperType.substring( 0,
+                                                                              separator ) );
+            }
         }
-
     }
 
     /**
@@ -1126,12 +1333,15 @@ public class PackageBuilder {
      * @param typeDescr
      *            The base class descriptor, to be completed with the inherited
      *            fields descriptors
+     * @return true if all went well
      */
-    private void mergeInheritedFields(TypeDeclarationDescr typeDescr) {
-        if ( typeDescr.getSuperTypeName() == null ) return;
+    private boolean mergeInheritedFields(TypeDeclarationDescr typeDescr) {
+        if ( typeDescr.getSuperTypeName() == null ) return false;
 
         String simpleSuperTypeName = typeDescr.getSuperTypeName();
         String superTypePackageName = typeDescr.getSuperTypeNamespace();
+        String fullSuper = superTypePackageName + "." + simpleSuperTypeName;
+
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
 
         boolean isSuperClassDeclared = true; //in the same package, or in a previous one
@@ -1139,7 +1349,17 @@ public class PackageBuilder {
 
         PackageRegistry registry = this.pkgRegistryMap.get( superTypePackageName );
         Package pack = null;
-        if ( registry != null ) pack = registry.getPackage();
+        if ( registry != null ) {
+            pack = registry.getPackage();
+        } else {
+            // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
+            // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
+            this.results.add( new TypeDeclarationError( "Cannot extend supertype '" + fullSuper + "' (not a declared type)",
+                                                        typeDescr.getLine() ) );
+            typeDescr.setSuperTypeName( null );
+            typeDescr.setSuperTypeNamespace( null );
+            return false;
+        }
 
         // if a class is declared in DRL, its package can't be null? The default package is replaced by "defaultpkg"
         if ( pack != null ) {
@@ -1168,32 +1388,66 @@ public class PackageBuilder {
 
         // look for the class externally
         if ( !isSuperClassDeclared || isSuperClassTagged ) {
-            String fullSuper = superTypePackageName + "." + simpleSuperTypeName;
             try {
                 ClassFieldInspector inspector = new ClassFieldInspector( registry.getTypeResolver().resolveType( fullSuper ) );
                 for ( String name : inspector.getGetterMethods().keySet() ) {
-                    if ( !inspector.isNonGetter( name ) && !"class".equals( name ) ) {
-                        TypeFieldDescr inheritedFlDescr = new TypeFieldDescr( name,
-                                                                              new PatternDescr( inspector.getFieldTypes().get( name ).getSimpleName() ) );
-                        inheritedFlDescr.setInherited( true );
-                        inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
+                    // classFieldAccessor requires both getter and setter
+                    if ( inspector.getSetterMethods().containsKey(name) ) {
+                        if ( !inspector.isNonGetter( name ) && !"class".equals( name ) ) {
+                            TypeFieldDescr inheritedFlDescr = new TypeFieldDescr( name,
+                                    new PatternDescr( inspector.getFieldTypes().get( name ).getName() ) );
+                            inheritedFlDescr.setInherited( true );
+                            inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
 
-                        if ( !fieldMap.containsKey( inheritedFlDescr.getFieldName() ) ) fieldMap.put( inheritedFlDescr.getFieldName(),
-                                                                                                      inheritedFlDescr );
+                            if ( !fieldMap.containsKey( inheritedFlDescr.getFieldName() ) ) fieldMap.put( inheritedFlDescr.getFieldName(),
+                                    inheritedFlDescr );
+                        }
                     }
                 }
 
             } catch ( ClassNotFoundException cnfe ) {
-                throw new RuntimeDroolsException( "unable to resolve Type Declaration superclass '" + fullSuper + "'" );
+                throw new RuntimeDroolsException( "Unable to resolve Type Declaration superclass '" + fullSuper + "'" );
             } catch ( IOException e ) {
 
             }
         }
 
         // finally, locally declared fields are merged. The map swap ensures that super-fields are added in order, before the subclass' ones
-        fieldMap.putAll( typeDescr.getFields() );
+        // notice that it is not possible to override a field changing its type
+        for (String fieldName : typeDescr.getFields().keySet()) {
+            if (fieldMap.containsKey(fieldName)) {
+                String type1 = fieldMap.get(fieldName).getPattern().getObjectType();
+                String type2 = typeDescr.getFields().get(fieldName).getPattern().getObjectType();
+                if ( type2.lastIndexOf(".") < 0 ) {
+                    try {
+                        type1 = pkgRegistryMap.get(pack.getName()).getTypeResolver().resolveType( type1 ).getName();
+                        type2 = pkgRegistryMap.get(pack.getName()).getTypeResolver().resolveType( type2 ).getName();
+                            // now that we are at it... this will be needed later anyway
+                            fieldMap.get(fieldName).getPattern().setObjectType(type1);
+                            typeDescr.getFields().get(fieldName).getPattern().setObjectType(type2);
+                    } catch (ClassNotFoundException cnfe) {
+                        // will fail later
+                    }
+                }
+
+                if ( ! type1.equals(type2) ) {
+                    this.results.add(new TypeDeclarationError("Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2 , typeDescr.getLine() ));
+                        typeDescr.setSuperTypeName(null);
+                        typeDescr.setSuperTypeNamespace(null);
+                    return false;
+                } else {
+                    String initVal = fieldMap.get(fieldName).getInitExpr();
+                    if (typeDescr.getFields().get(fieldName).getInitExpr() == null) {
+                        typeDescr.getFields().get(fieldName).setInitExpr(initVal);
+                    }
+                }
+            }
+            fieldMap.put(fieldName, typeDescr.getFields().get(fieldName));
+        }
+
         typeDescr.setFields( fieldMap );
 
+        return true;
     }
 
     /**
@@ -1207,9 +1461,40 @@ public class PackageBuilder {
 
             int dotPos = typeDescr.getTypeName().lastIndexOf( '.' );
             if ( dotPos >= 0 ) {
-                typeDescr.setNamespace( typeDescr.getTypeName().substring( 0,
-                                                                           dotPos ) );
-                typeDescr.setTypeName( typeDescr.getTypeName().substring( dotPos + 1 ) );
+                // see if this overwrites an existing bean, which also could be a nested class.
+                Class cls = null;
+                try {
+                    cls = Class.forName( typeDescr.getTypeName(),
+                                         true,
+                                         this.rootClassLoader );
+                } catch ( ClassNotFoundException e ) {
+                }
+
+                String qualifiedClass = typeDescr.getTypeName();
+                int lastIndex;
+                while ( cls == null && (lastIndex = qualifiedClass.lastIndexOf( '.' )) != -1 ) {
+                    try {
+
+                        qualifiedClass = qualifiedClass.substring( 0,
+                                                                   lastIndex ) + "$" + qualifiedClass.substring( lastIndex + 1 );
+                        cls = Class.forName( qualifiedClass,
+                                             true,
+                                             this.rootClassLoader );
+                    } catch ( final ClassNotFoundException e ) {
+                        cls = null;
+                    }
+                }
+
+                if ( cls != null ) {
+                    String str = ClassUtils.getPackage( cls );
+                    typeDescr.setNamespace( str );
+                    dotPos = cls.getName().lastIndexOf( '.' ); // reget dotPos, incase there were nested classes
+                    typeDescr.setTypeName( cls.getName().substring( dotPos + 1 ) );
+                } else {
+                    typeDescr.setNamespace( typeDescr.getTypeName().substring( 0,
+                                                                               dotPos ) );
+                    typeDescr.setTypeName( typeDescr.getTypeName().substring( dotPos + 1 ) );
+                }
             }
 
             if ( isEmpty( typeDescr.getNamespace() ) ) {
@@ -1217,7 +1502,9 @@ public class PackageBuilder {
                 try {
                     Class< ? > cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
                     typeDescr.setNamespace( ClassUtils.getPackage( cls ) );
-                    typeDescr.setTypeName( cls.getSimpleName() );
+                    String name = cls.getName();
+                    dotPos = name.lastIndexOf( '.' );
+                    typeDescr.setTypeName( name.substring( dotPos + 1 ) );
                 } catch ( ClassNotFoundException e ) {
                     // swallow, as this isn't a mistake, it just means the type declaration is intended for the default namespace
                     typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
@@ -1245,7 +1532,11 @@ public class PackageBuilder {
                 for ( ImportDescr imp : packageDescr.getImports() ) {
                     altDescr.addImport( imp );
                 }
-                newPackage( altDescr );
+                if ( getPackageRegistry().containsKey( altDescr.getNamespace() ) ) {
+                    mergePackage( altDescr );
+                } else {
+                    newPackage( altDescr );
+                }
             }
 
         }
@@ -1264,17 +1555,18 @@ public class PackageBuilder {
             //descriptor needs fields inherited from superclass
             if ( typeDescr.getSuperTypeName() != null ) {
                 //descriptor needs fields inherited from superclass
-                mergeInheritedFields( typeDescr );
-                //descriptor also needs metadata from superclass
-                Iterator<TypeDeclarationDescr> iter = sortedTypeDescriptors.iterator();
-                while ( iter.hasNext() ) {
-                    // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
-                    TypeDeclarationDescr descr = iter.next();
-                    if ( (typeDescr.getSuperTypeName().equals( descr.getTypeName() ) && typeDescr.getSuperTypeNamespace().equals( descr.getNamespace() )) ) {
-                        typeDescr.getAnnotations().putAll( descr.getAnnotations() );
-                        break;
-                    } else if ( (typeDescr.getTypeName().equals( descr.getTypeName() ) && typeDescr.getNamespace().equals( descr.getNamespace() )) ) {
-                        break;
+                if ( mergeInheritedFields( typeDescr ) ) {
+                    //descriptor also needs metadata from superclass
+                    Iterator<TypeDeclarationDescr> iter = sortedTypeDescriptors.iterator();
+                    while ( iter.hasNext() ) {
+                        // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
+                        TypeDeclarationDescr descr = iter.next();
+                        if ( (typeDescr.getSuperTypeName().equals( descr.getTypeName() ) && typeDescr.getSuperTypeNamespace().equals( descr.getNamespace() )) ) {
+                            typeDescr.getAnnotations().putAll( descr.getAnnotations() );
+                            break;
+                        } else if ( (typeDescr.getTypeName().equals( descr.getTypeName() ) && typeDescr.getNamespace().equals( descr.getNamespace() )) ) {
+                            break;
+                        }
                     }
                 }
             }
@@ -1342,8 +1634,8 @@ public class PackageBuilder {
                         }
                     }
                 } catch ( final ClassNotFoundException e ) {
-
-                    this.results.add( new TypeDeclarationError( "Class not found TypeDeclaration'" + className + "' for type '" + type.getTypeName() + "'",
+                    this.results.add( new TypeDeclarationError( "Class '" + className +
+                                                                        "' not found for type declaration of '" + type.getTypeName() + "'",
                                                                 typeDescr.getLine() ) );
                     continue;
                 }
@@ -1354,10 +1646,15 @@ public class PackageBuilder {
             if ( timestamp != null ) {
                 type.setTimestampAttribute( timestamp );
                 ClassDefinition cd = type.getTypeClassDef();
-                ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-                InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
-                                                                  timestamp,
-                                                                  type.new TimestampAccessorSetter() );
+                Package pkg = pkgRegistry.getPackage();
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              timestamp,
+                                                                                              type.isTypesafe() );
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile( data );
+                type.setTimestampExtractor( reader );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
@@ -1365,10 +1662,15 @@ public class PackageBuilder {
             if ( duration != null ) {
                 type.setDurationAttribute( duration );
                 ClassDefinition cd = type.getTypeClassDef();
-                ClassFieldAccessorStore store = pkgRegistry.getPackage().getClassFieldAccessorStore();
-                InternalReadAccessor extractor = store.getReader( type.getTypeClass().getName(),
-                                                                  duration,
-                                                                  type.new DurationAccessorSetter() );
+                Package pkg = pkgRegistry.getPackage();
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              duration,
+                                                                                              type.isTypesafe() );
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile( data );
+                type.setDurationExtractor( reader );
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_EXPIRE );
@@ -1398,13 +1700,39 @@ public class PackageBuilder {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if ( reg != null ) {
-                reg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                Class< ? > resolvedType = reg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                if ( resolvedType != null && typeDescr.getFields().size() > 1 ) {
+                    this.results.add( new TypeDeclarationError( "Duplicate type definition. A class with the name '" + resolvedType.getName() + "' was found in the classpath while trying to " +
+                                                                        "redefine the fields in the declare statement. Fields can only be defined for non-existing classes.",
+                                                                typeDescr.getLine() ) );
+                }
                 return false;
             } else {
                 return false;
             }
         } catch ( ClassNotFoundException cnfe ) {
             return true;
+        }
+    }
+
+    /**
+     * Tries to determine whether a given annotation is properly defined using a
+     * java.lang.Annotation and can be resolved
+     * 
+     * Proper annotations will be wired to dynamically generated beans
+     * 
+     * @param annotation
+     * @param resolver
+     * @return
+     */
+    private Class resolveAnnotation(String annotation,
+                                    TypeResolver resolver) {
+        try {
+            Class ann = resolver.resolveType( annotation );
+            return ann;
+        } catch ( ClassNotFoundException e ) {
+            // internal annotation, or annotation which can't be resolved.
+            return null;
         }
     }
 
@@ -1465,6 +1793,23 @@ public class PackageBuilder {
                                                    fullSuperType,
                                                    interfaces );
 
+        for ( String annotationName : typeDescr.getAnnotationNames() ) {
+            Class annotation = resolveAnnotation( annotationName,
+                                                  pkgRegistry.getTypeResolver() );
+            if ( annotation != null ) {
+                try {
+                    AnnotationDefinition annotationDefinition = AnnotationDefinition.build(
+                                                                                            annotation,
+                                                                                            typeDescr.getAnnotations().get( annotationName ).getValueMap(),
+                                                                                            pkgRegistry.getTypeResolver() );
+                    def.addAnnotation( annotationDefinition );
+                } catch ( NoSuchMethodException nsme ) {
+                    this.results.add( new TypeDeclarationError( "Annotated type " + fullName + "  - undefined property in @annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                                                                typeDescr.getLine() ) );
+                }
+            }
+        }
+
         // fields definitions are created. will be used by subclasses, if any.
         // Fields are SORTED in the process
         if ( typeDescr.getFields().size() > 0 ) {
@@ -1490,7 +1835,6 @@ public class PackageBuilder {
                                d );
 
             } catch ( Exception e ) {
-                e.printStackTrace();
                 this.results.add( new TypeDeclarationError( "Unable to create a class for declared type " + fullName + ": " + e.getMessage() + ";",
                                                             typeDescr.getLine() ) );
             }
@@ -1537,6 +1881,22 @@ public class PackageBuilder {
                 fieldDef.setIndex( field.getIndex() );
                 fieldDef.setInherited( field.isInherited() );
                 fieldDef.setInitExpr( field.getInitExpr() );
+
+                for ( String annotationName : field.getAnnotationNames() ) {
+                    Class annotation = resolveAnnotation( annotationName,
+                                                          pkgRegistry.getTypeResolver() );
+                    if ( annotation != null ) {
+                        try {
+                            AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation,
+                                                                                                    field.getAnnotations().get( annotationName ).getValueMap(),
+                                                                                                    pkgRegistry.getTypeResolver() );
+                            fieldDef.addAnnotation( annotationDefinition );
+                        } catch ( NoSuchMethodException nsme ) {
+                            this.results.add( new TypeDeclarationError( "Annotated field " + field.getFieldName() + "  - undefined property in @annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                                                                        field.getLine() ) );
+                        }
+                    }
+                }
 
                 queue.add( fieldDef );
             } catch ( ClassNotFoundException cnfe ) {
@@ -1647,7 +2007,7 @@ public class PackageBuilder {
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
         if ( !this.pkgRegistryMap.isEmpty() ) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[0];
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[this.pkgRegistryMap.size()-1];
         }
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -1661,7 +2021,7 @@ public class PackageBuilder {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-        int i = 0;
+        int i = pkgs.length;
         String errors = null;
         if ( !getErrors().isEmpty() ) {
             errors = getErrors().toString();
@@ -1672,7 +2032,7 @@ public class PackageBuilder {
             if ( errors != null ) {
                 pkg.setError( errors );
             }
-            pkgs[i++] = pkg;
+            pkgs[--i] = pkg;
         }
 
         return pkgs;

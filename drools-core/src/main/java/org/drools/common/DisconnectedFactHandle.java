@@ -178,4 +178,8 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public void disconnect() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 }

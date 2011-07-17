@@ -46,6 +46,8 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         {
             addEvaluator( ValueType.STRING_TYPE,        SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
             addEvaluator( ValueType.STRING_TYPE,        NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
         }
     };
 
@@ -119,6 +121,26 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         return this.evaluators.supportsType( type );
     }
 
+    private static boolean soundslike(final String value1,
+                                   final String value2) {
+
+        final String soundex1;
+        final String soundex2;
+
+        if (value1 == null || value2 == null) {
+            return false;
+        }
+        
+        soundex1 = Soundex.soundex(value1);
+        soundex2 = Soundex.soundex(value2);
+
+        if (soundex1 == null) {
+            return false;
+        }
+
+        return soundex1.equals(soundex2);
+    }
+
     /*  *********************************************************
      *           Evaluator Implementations
      *  *********************************************************
@@ -138,29 +160,22 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1, final FieldValue object2) {
             final String value1 = (String) extractor.getValue( workingMemory, object1 );
             final String value2 = (String) object2.getValue();
-            if ( value1 == null ) {
-                return false;
-            }
 
-            return Soundex.soundex( value1 ).equals(  Soundex.soundex(value2) );
+            return soundslike(value1,value2);
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
             final String value = (String) ((ObjectVariableContextEntry) context).right;
-            if ( value == null ) {
-                return false;
-            }
-            return Soundex.soundex( value ).equals( Soundex.soundex((String) context.declaration.getExtractor().getValue( workingMemory, left )) );
+
+            return soundslike( value, (String) context.declaration.getExtractor().getValue( workingMemory, left ) );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
             final String value = (String) context.extractor.getValue( workingMemory, right );
-            if ( value == null ) {
-                return false;
-            }
-            return Soundex.soundex(value).equals( Soundex.soundex((String) ((ObjectVariableContextEntry) context).left ));
+
+            return soundslike(value, (String) ((ObjectVariableContextEntry) context).left );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -169,10 +184,8 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
-                return false;
-            }
-            return Soundex.soundex( ((String) value1)).equals( Soundex.soundex( (String) value2 ));
+
+            return soundslike( (String) value1, (String) value2 );
         }
 
         public String toString() {
@@ -195,29 +208,22 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1, final FieldValue object2) {
             final String value1 = (String) extractor.getValue( workingMemory, object1 );
             final String value2 = (String) object2.getValue();
-            if ( value1 == null ) {
-                return false;
-            }
 
-            return ! Soundex.soundex( value1 ).equals(  Soundex.soundex(value2) );
+            return ! soundslike( value1,  value2 );
         }
 
         public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                            final VariableContextEntry context, final Object left) {
             final String value = (String) ((ObjectVariableContextEntry) context).right;
-            if ( value == null ) {
-                return false;
-            }
-            return ! Soundex.soundex( value ).equals( Soundex.soundex((String) context.declaration.getExtractor().getValue( workingMemory, left )) );
+
+            return ! soundslike( value, (String) context.declaration.getExtractor().getValue( workingMemory, left ) );
         }
 
         public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                           final VariableContextEntry context, final Object right) {
             final String value = (String) context.extractor.getValue( workingMemory, right );
-            if ( value == null ) {
-                return false;
-            }
-            return ! Soundex.soundex(value).equals( Soundex.soundex((String) ((ObjectVariableContextEntry) context).left ));
+
+            return ! soundslike( value, (String) ((ObjectVariableContextEntry) context).left );
         }
 
         public boolean evaluate(InternalWorkingMemory workingMemory,
@@ -226,10 +232,8 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
                                 final InternalReadAccessor extractor2, final Object object2) {
             final Object value1 = extractor1.getValue( workingMemory, object1 );
             final Object value2 = extractor2.getValue( workingMemory, object2 );
-            if ( value1 == null ) {
-                return false;
-            }
-            return ! Soundex.soundex( ((String) value1)).equals( Soundex.soundex( (String) value2 ));
+
+            return ! soundslike( (String) value1,  (String) value2 );
         }
 
         public String toString() {

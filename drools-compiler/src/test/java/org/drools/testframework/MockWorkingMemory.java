@@ -35,6 +35,7 @@ import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
 import org.drools.process.instance.WorkItemManager;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
@@ -601,6 +602,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public Map<String, Channel> getChannels() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public EntryPointNode getEntryPointNode() {
         // TODO Auto-generated method stub
         return null;
     }

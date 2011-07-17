@@ -16,12 +16,14 @@
 
 package org.drools.command.runtime.rule;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.InternalFactHandle;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
@@ -46,23 +48,27 @@ public class GetFactHandlesCommand
 
     public Collection<FactHandle> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-
+        Collection<FactHandle> disconnectedFactHandles = new ArrayList<FactHandle>();
         if ( filter != null ) {
-            Collection<FactHandle> factHandles = ksession.getFactHandles( this.filter );
+            Collection<InternalFactHandle> factHandles = ksession.getFactHandles( this.filter );
             if(factHandles != null && disconnected){
-                for(FactHandle factHandle: factHandles){
-                    ((DefaultFactHandle)factHandle).disconnect();
+                for(InternalFactHandle factHandle: factHandles){
+                    InternalFactHandle handle = factHandle.clone();
+                    handle.disconnect();
+                    disconnectedFactHandles.add(handle);
                 }
             }
-            return factHandles;
+            return disconnectedFactHandles;
         } else {
-            Collection<FactHandle> factHandles = ksession.getFactHandles( );
+            Collection<InternalFactHandle> factHandles = ksession.getFactHandles( );
             if(factHandles != null && disconnected){
-                for(FactHandle factHandle: factHandles){
-                    ((DefaultFactHandle)factHandle).disconnect();
+                for(InternalFactHandle factHandle: factHandles){
+                    InternalFactHandle handle = factHandle.clone();
+                    handle.disconnect();
+                    disconnectedFactHandles.add(handle);
                 }
             }
-            return factHandles;
+            return disconnectedFactHandles;
         }
     }
 

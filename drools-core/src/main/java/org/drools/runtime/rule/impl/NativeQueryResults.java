@@ -53,7 +53,7 @@ public class NativeQueryResults
 
     public String[] getIdentifiers() {
         List<String> actualIds = new ArrayList();
-        for ( Declaration declr : results.getDeclarations().values() ) {
+        for ( Declaration declr : results.getDeclarations(0).values() ) {
                ObjectType objectType = declr.getPattern().getObjectType();
                 if ( objectType instanceof ClassObjectType ) {
                     if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {
@@ -67,7 +67,7 @@ public class NativeQueryResults
     
     
     public Map<String, Declaration> getDeclarations() {
-        return this.getResults().getDeclarations();
+        return this.getResults().getDeclarations(0);
     }
 
     public int size() {

@@ -248,10 +248,18 @@ public final class ClassUtils {
         // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
         java.lang.Package pkg = cls.isArray() ? cls.getComponentType().getPackage() : cls.getPackage();
         if ( pkg == null ) {
-            int dotPos = cls.getName().lastIndexOf( '.' );
+            int dotPos;
+            int dolPos = cls.getName().indexOf( '$' );
+            if ( dolPos > 0 ) {
+                // we have nested classes, so adjust dotpos to before first $
+                dotPos = cls.getName().substring( 0, dolPos ).lastIndexOf( '.' );
+            } else {
+                dotPos = cls.getName().lastIndexOf( '.' );
+            }
+                
             if ( dotPos > 0 ) {
                 return cls.getName().substring( 0,
-                                                dotPos - 1 );
+                                                dotPos );
             } else {
                 // must be default package.
                 return "";

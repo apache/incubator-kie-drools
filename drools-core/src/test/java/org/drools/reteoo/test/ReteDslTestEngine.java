@@ -22,10 +22,13 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import junit.framework.AssertionFailedError;
 
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.ANTLRReaderStream;
@@ -48,9 +51,12 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.util.RightTupleList;
 import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.LeftTupleMemory;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.ModifyPreviousTuples;
@@ -62,11 +68,11 @@ import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleMemory;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.Sink;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.AccumulateNodeStep;
 import org.drools.reteoo.test.dsl.BetaNodeStep;
 import org.drools.reteoo.test.dsl.BindingStep;
+import org.drools.reteoo.test.dsl.ConfigStep;
 import org.drools.reteoo.test.dsl.DSLMock;
 import org.drools.reteoo.test.dsl.DslStep;
 import org.drools.reteoo.test.dsl.EvalNodeStep;
@@ -78,6 +84,8 @@ import org.drools.reteoo.test.dsl.LeftTupleSinkStep;
 import org.drools.reteoo.test.dsl.MockitoHelper;
 import org.drools.reteoo.test.dsl.NodeTestCase;
 import org.drools.reteoo.test.dsl.NodeTestCaseResult;
+import org.drools.reteoo.test.dsl.NodeTestCaseResult.NodeTestResult;
+import org.drools.reteoo.test.dsl.NodeTestCaseResult.Result;
 import org.drools.reteoo.test.dsl.NodeTestDef;
 import org.drools.reteoo.test.dsl.NotNodeStep;
 import org.drools.reteoo.test.dsl.ObjectTypeNodeStep;
@@ -86,14 +94,12 @@ import org.drools.reteoo.test.dsl.ReteTesterHelper;
 import org.drools.reteoo.test.dsl.RuleTerminalNodeStep;
 import org.drools.reteoo.test.dsl.Step;
 import org.drools.reteoo.test.dsl.WithStep;
-import org.drools.reteoo.test.dsl.NodeTestCaseResult.NodeTestResult;
-import org.drools.reteoo.test.dsl.NodeTestCaseResult.Result;
 import org.drools.reteoo.test.parser.NodeTestDSLLexer;
 import org.drools.reteoo.test.parser.NodeTestDSLParser;
-import org.drools.reteoo.test.parser.NodeTestDSLTree;
 import org.drools.reteoo.test.parser.NodeTestDSLParser.compilation_unit_return;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Rule;
+import org.drools.reteoo.test.parser.NodeTestDSLTree;
 import org.drools.spi.PropagationContext;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
@@ -103,6 +109,9 @@ import org.mvel2.MVEL;
 
 public class ReteDslTestEngine {
 
+    public static final String  WORKING_MEMORY           = "WorkingMemory";
+    public static final String  BUILD_CONTEXT            = "BuildContext";
+    private static final String CONFIG                   = "Config";
     private static final String OBJECT_TYPE_NODE         = "ObjectTypeNode";
     private static final String LEFT_INPUT_ADAPTER_NODE  = "LeftInputAdapterNode";
     private static final String BINDING                  = "Binding";
@@ -127,6 +136,8 @@ public class ReteDslTestEngine {
 
         this.steps = new HashMap<String, Object>();
 
+        this.steps.put( CONFIG,
+                        new ConfigStep() );
         this.steps.put( OBJECT_TYPE_NODE,
                         new ObjectTypeNodeStep( this.reteTesterHelper ) );
         this.steps.put( LEFT_INPUT_ADAPTER_NODE,
@@ -169,30 +180,41 @@ public class ReteDslTestEngine {
         NodeTestCaseResult result = new NodeTestCaseResult( testCase );
         for ( NodeTestDef test : testCase.getTests() ) {
             notifier.fireTestStarted( test.getDescription() );
-            NodeTestResult testResult = run( testCase,
-                                             test );
-            switch ( testResult.result ) {
-                case SUCCESS :
-                    notifier.fireTestFinished( test.getDescription() );
-                    break;
-                case ERROR :
-                case FAILURE :
-                    notifier.fireTestFailure( new Failure( test.getDescription(),
-                                                           new AssertionError( testResult.errorMsgs ) ) );
-                    break;
+            NodeTestResult testResult = createTestResult( test,
+                                                          null );
+
+            try {
+                testResult = run( testCase,
+                                  test );
+
+                switch ( testResult.result ) {
+                    case SUCCESS :
+                        notifier.fireTestFinished( test.getDescription() );
+                        break;
+                    case ERROR :
+                    case FAILURE :
+                        notifier.fireTestFailure( new Failure( test.getDescription(),
+                                                               new AssertionError( testResult.errorMsgs ) ) );
+                        break;
+                }
+
+            } catch ( Throwable e ) {
+                notifier.fireTestFailure( new Failure( test.getDescription(),
+                                                       e ) );
             }
+ 
             result.add( testResult );
         }
+    
         return result;
     }
 
     private NodeTestResult run(NodeTestCase testCase,
                                NodeTestDef test) {
         Map<String, Object> context = createContext( testCase );
-        NodeTestResult result = new NodeTestResult( test,
-                                                    Result.NOT_EXECUTED,
-                                                    context,
-                                                    new LinkedList<String>() );
+        NodeTestResult result = createTestResult( test,
+                                                  context );
+
         try {
             // run setup
             run( context,
@@ -207,12 +229,23 @@ public class ReteDslTestEngine {
                  testCase.getTearDown(),
                  result );
             result.result = Result.SUCCESS;
-        } catch ( Exception e ) {
+        } catch ( Throwable e ) {
             result.result = Result.ERROR;
-            result.errorMsgs.add( e.getMessage() );
+            result.errorMsgs.add( e.toString() );
         }
         return result;
     }
+    
+    private NodeTestResult createTestResult(NodeTestDef test,
+                                            Map<String, Object> context) {
+        
+        NodeTestResult result = new NodeTestResult( test,
+                                                    Result.NOT_EXECUTED,
+                                                    context,
+                                                    new LinkedList<String>() );
+        return result;
+    }
+    
 
     private Map<String, Object> createContext(NodeTestCase testCase) {
         Map<String, Object> context = new HashMap<String, Object>();
@@ -225,6 +258,7 @@ public class ReteDslTestEngine {
                                                    conf );
         BuildContext buildContext = new BuildContext( rbase,
                                                       rbase.getReteooBuilder().getIdGenerator() );
+
         Rule rule = new Rule("rule1", "org.pkg1", null);
         org.drools.rule.Package pkg = new org.drools.rule.Package( "org.pkg1" );
         pkg.getDialectRuntimeRegistry().setDialectData( "mvel", new MVELDialectRuntimeData() );
@@ -233,13 +267,13 @@ public class ReteDslTestEngine {
         buildContext.setRule( rule );        
         
         rbase.addPackage( pkg );
-        context.put( "BuildContext",
+        context.put( BUILD_CONTEXT,
                      buildContext );
         context.put( "ClassFieldAccessorStore",
                      this.reteTesterHelper.getStore() );
 
         InternalWorkingMemory wm = (InternalWorkingMemory) rbase.newStatefulSession( true );
-        context.put( "WorkingMemory",
+        context.put( WORKING_MEMORY,
                      wm );
         return context;
     }
@@ -247,7 +281,7 @@ public class ReteDslTestEngine {
     public Map<String, Object> run(Map<String, Object> context,
                                    List<DslStep> steps,
                                    NodeTestResult result) {
-        InternalWorkingMemory wm = (InternalWorkingMemory) context.get( "WorkingMemory" );
+        InternalWorkingMemory wm = (InternalWorkingMemory) context.get( WORKING_MEMORY );
         for ( DslStep step : steps ) {
             String name = step.getName();
             Object object = this.steps.get( name );
@@ -312,6 +346,11 @@ public class ReteDslTestEngine {
                           BetaNode node,
                           Map<String, Object> context,
                           InternalWorkingMemory wm) {
+        
+        final boolean lrUnlinkingEnabled = ((BuildContext) context
+                .get( BUILD_CONTEXT )).getRuleBase().getConfiguration()
+                .isLRUnlinkingEnabled();
+
         try {
             List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
@@ -337,21 +376,26 @@ public class ReteDslTestEngine {
                     LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
 
                     if ( expectedLeftTuples.isEmpty() && leftMemory.size() != 0 ) {
-                        throw new AssertionError( "line " + step.getLine() + ": left Memory expected [] actually " + leftMemory );
-                    } else if ( expectedLeftTuples.isEmpty() && leftMemory.size() == 0 ) {
-                        return;
+                        throw new AssertionFailedError( "line " + step.getLine()
+                                                        + ": left Memory expected [] actually "
+                                                        + print( leftMemory,
+                                                                 lrUnlinkingEnabled ) );
+                    } else if ( expectedLeftTuples.isEmpty()
+                                && leftMemory.size() == 0 ) {
+                        continue;
+                        
                     }
 
                     // we always lookup from the first element, in case it's indexed
                     List<InternalFactHandle> first = (List<InternalFactHandle>) expectedLeftTuples.get( 0 );
-                    LeftTuple firstTuple = new LeftTuple( first.get( 0 ),
-                                                          null,
-                                                          false);
+                    LeftTuple firstTuple = new LeftTupleImpl( first.get( 0 ),
+                                                              null,
+                                                              false);
                     for ( int i = 1; i < first.size(); i++ ) {
-                        firstTuple = new LeftTuple( firstTuple,
-                                                    new RightTuple( first.get( i )),
-                                                    null,
-                                                    false );
+                        firstTuple = new LeftTupleImpl( firstTuple,
+                                                        new RightTuple( first.get( i )),
+                                                        null,
+                                                        false );
                     }
 
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
@@ -359,11 +403,23 @@ public class ReteDslTestEngine {
                     for ( LeftTuple leftTuple = getFirst(memory.getLeftTupleMemory(), firstTuple); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getNext() ) {
                         leftTuples.add( leftTuple );
                     }
-                    List<List<InternalFactHandle>> actualLeftTuples = new ArrayList<List<InternalFactHandle>>( leftTuples.size() );
-                    for ( LeftTuple leftTuple : leftTuples ) {
-                        List<InternalFactHandle> tupleHandles = Arrays.asList( leftTuple.toFactHandles() );
-                        actualLeftTuples.add( tupleHandles );
+                    
+                    if ( lrUnlinkingEnabled ) {
+                        // When L&R Unlinking is active, we need to sort the
+                        // tuples here,
+                        // because we might have asserted things in the wrong
+                        // order,
+                        // since linking a node's side means populating its
+                        // memory
+                        // from the OTN which stores things in a hash-set, so
+                        // insertion order is not kept.
+                        Collections.sort( leftTuples,
+                                          new LeftTupleComparator() );
+
                     }
+                    
+                    List<List<InternalFactHandle>> actualLeftTuples = getHandlesList( leftTuples );
+
 
                     if ( !expectedLeftTuples.equals( actualLeftTuples ) ) {
                         throw new AssertionError( "line " + step.getLine() + ": left Memory expected " + expectedLeftTuples + " actually " + actualLeftTuples );
@@ -382,9 +438,9 @@ public class ReteDslTestEngine {
                     RightTupleMemory rightMemory = memory.getRightTupleMemory();
 
                     if ( expectedFactHandles.isEmpty() && rightMemory.size() != 0 ) {
-                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected [] actually " + rightMemory );
+                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected [] actually " + print( rightMemory ));
                     } else if ( expectedFactHandles.isEmpty() && rightMemory.size() == 0 ) {
-                        return;
+                        continue;
                     }
 
                     RightTuple first = new RightTuple( (InternalFactHandle) expectedFactHandles.get( 0 ) );
@@ -394,12 +450,14 @@ public class ReteDslTestEngine {
                     }
 
                     if ( expectedFactHandles.size() != actualRightTuples.size() ) {
-                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + expectedFactHandles + " actually " + actualRightTuples );
+                        throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + print( expectedFactHandles ) 
+                                                  + " actually " + print( actualRightTuples ));
                     }
 
                     for ( int i = 0, length = actualRightTuples.size(); i < length; i++ ) {
                         if ( expectedFactHandles.get( i ) != actualRightTuples.get( i ).getFactHandle() ) {
-                            throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + expectedFactHandles + " actually " + actualRightTuples );
+                            throw new AssertionError( "line " + step.getLine() + ": right Memory expected " + print( expectedFactHandles )
+                                                      + " actually " + print( actualRightTuples ));
                         }
                     }
 
@@ -435,6 +493,82 @@ public class ReteDslTestEngine {
         return null;
     }
 
+    private List<List<InternalFactHandle>> getHandlesList(
+                                                          List<LeftTuple> leftTuples) {
+        List<List<InternalFactHandle>> actualLeftTuples = new ArrayList<List<InternalFactHandle>>(
+                                                                                                   leftTuples.size() );
+        for ( LeftTuple leftTuple : leftTuples ) {
+            List<InternalFactHandle> tupleHandles = Arrays.asList( leftTuple
+                    .toFactHandles() );
+            actualLeftTuples.add( tupleHandles );
+        }
+        return actualLeftTuples;
+    }
+
+    private String print(LeftTupleMemory leftMemory,
+                         boolean lrUnlinkingEnabled) {
+
+        List<LeftTuple> tuples = new ArrayList<LeftTuple>();
+        Iterator it = leftMemory.iterator();
+        for ( LeftTuple tuple = (LeftTuple) it.next(); tuple != null; tuple = (LeftTuple) it
+                .next() ) {
+            tuples.add( tuple );
+        }
+
+        if ( lrUnlinkingEnabled ) {
+            // Necessary only when L&R unlinking are active.
+            Collections.sort( tuples,
+                              new LeftTupleComparator() );
+        }
+
+        return print( getHandlesList( tuples ) );
+    }
+
+    private String print(RightTupleMemory memory) {
+
+        List<RightTuple> tuples = new ArrayList<RightTuple>();
+        Iterator it = memory.iterator();
+
+        for ( RightTuple tuple = (RightTuple) it.next(); tuple != null; tuple = (RightTuple) it
+                .next() ) {
+            tuples.add( tuple );
+        }
+
+        return "[" + print( tuples ) + "]";
+    }
+
+    /** Provides better error messages. */
+    protected String print(List< ? > tuples) {
+
+        StringBuilder b = new StringBuilder();
+
+        for ( java.util.Iterator iterator = tuples.iterator(); iterator
+                .hasNext(); ) {
+
+            Object tuple = (Object) iterator.next();
+
+            if ( tuple instanceof List< ? > ) {
+                b.append( "[" );
+                b.append( print( (List< ? >) tuple ) );
+                b.append( "]" );
+            } else if ( tuple instanceof InternalFactHandle ) {
+                InternalFactHandle h = (InternalFactHandle) tuple;
+                b.append( "h" ).append( h.getId() - 1 );
+            } else if ( tuple instanceof RightTuple ) {
+                InternalFactHandle h = (InternalFactHandle) ((RightTuple) tuple)
+                        .getFactHandle();
+                b.append( "h" ).append( h.getId() - 1 );
+            }
+
+            if ( iterator.hasNext() ) b.append( ", " );
+        }
+
+        if ( b.length() == 0 ) return "[]";
+
+        return b.toString();
+    }
+
+
     private void riaNode(DslStep step,
                          RightInputAdapterNode node,
                          Map<String, Object> context,
@@ -464,11 +598,11 @@ public class ReteDslTestEngine {
                     // create expected tuples
                     List<LeftTuple> leftTuples = new ArrayList<LeftTuple>();
                     for ( List<InternalFactHandle> tlist : (List<List<InternalFactHandle>>) expectedLeftTuples ) {
-                        LeftTuple tuple = new LeftTuple( tlist.get( 0 ),
+                        LeftTuple tuple = new LeftTupleImpl( tlist.get( 0 ),
                                                          null,
                                                          false );
                         for ( int i = 1; i < tlist.size(); i++ ) {
-                            tuple = new LeftTuple( tuple,
+                            tuple = new LeftTupleImpl( tuple,
                                                    new RightTuple( tlist.get( i ) ),
                                                    null,
                                                    false );
@@ -562,6 +696,7 @@ public class ReteDslTestEngine {
                             ((ObjectSink) sink).assertObject( handle,
                                                               pContext,
                                                               wm );
+                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             LeftTuple tuple = createTuple( context,
@@ -574,6 +709,7 @@ public class ReteDslTestEngine {
                             ((LeftTupleSink) sink).assertLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );
+                            pContext.evaluateActionQueue( wm );
                         }
 
                     }
@@ -595,14 +731,14 @@ public class ReteDslTestEngine {
         String id = getTupleId( tlist );
         for ( InternalFactHandle handle : tlist ) {
             if ( tuple == null ) {
-                tuple = new LeftTuple( handle,
-                                       null,
-                                       false ); // do not keep generated tuples on the handle list
+                tuple = new LeftTupleImpl( handle,
+                                           null,
+                                           false ); // do not keep generated tuples on the handle list
             } else {
-                tuple = new LeftTuple( tuple,
-                                       new RightTuple( handle ),
-                                       null,
-                                       true );
+                tuple = new LeftTupleImpl( tuple,
+                                           new RightTuple( handle ),
+                                           null,
+                                           true );
             }
         }
         context.put( id,
@@ -678,6 +814,7 @@ public class ReteDslTestEngine {
                                 handle.setFirstLeftTuple( null );
                                 handle.setLastLeftTuple( null );
                             }
+                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             String id = getTupleId( tlist );
@@ -693,6 +830,7 @@ public class ReteDslTestEngine {
                             ((LeftTupleSink) sink).retractLeftTuple( tuple,
                                                                      pContext,
                                                                      wm );
+                            pContext.evaluateActionQueue( wm );
                         }
 
                     }
@@ -758,6 +896,7 @@ public class ReteDslTestEngine {
                                                               wm );
                             modifyPreviousTuples.retractTuples( pContext,
                                                                 wm );
+                            pContext.evaluateActionQueue( wm );
                         } else {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             String id = getTupleId( tlist );
@@ -773,6 +912,7 @@ public class ReteDslTestEngine {
                             ((LeftTupleSink) sink).modifyLeftTuple( tuple,
                                                                     pContext,
                                                                     wm );
+                            pContext.evaluateActionQueue( wm );
                         }
                     }
                 } catch ( Exception e ) {
@@ -847,6 +987,30 @@ public class ReteDslTestEngine {
         NodeTestDSLParser parser = new NodeTestDSLParser( new CommonTokenStream( lexer ) );
         return parser;
     }
+    
+    private static final class LeftTupleComparator implements Comparator<LeftTuple> {
+        
+        public int compare(LeftTuple o1,
+                           LeftTuple o2) {
+
+            InternalFactHandle[] h1 = o1.getFactHandles();
+            InternalFactHandle[] h2 = o2.getFactHandles();
+
+            // Handles have to be compared in the inverse order.
+            for ( int i = (h1.length - 1); i >= 0; i-- ) {
+
+                int diff = h1[i].getId() - h2[i].getId();
+
+                // Will continue comparing handles until
+                // a difference is found.
+                if ( diff != 0 ) return diff;
+            }
+
+            return 0;
+        }
+    }
+
+    
 
     public static class EmptyNotifier extends RunNotifier {
         public static final EmptyNotifier INSTANCE = new EmptyNotifier();

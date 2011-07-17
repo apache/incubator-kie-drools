@@ -21,6 +21,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -109,20 +110,28 @@ public class RightInputAdapterNode extends ObjectSource
      * @param workingMemory
      *            the <code>WorkingMemory</code> session.
      */
-    public void assertLeftTuple(final LeftTuple tuple,
+    public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         // creating a dummy fact handle to wrap the tuple
-        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( tuple,
+        final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( leftTuple,
                                                                                               workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                                                    tuple ),
+                                                                                                                                                                    leftTuple ),
                                                                                               workingMemory,
                                                                                               null );
-
-        if ( this.tupleMemoryEnabled ) {
+        boolean useLeftMemory = true;   
+        if ( !this.tupleMemoryEnabled ) {
+            // This is a hack, to not add closed DroolsQuery objects
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
+                useLeftMemory = false;
+            }
+        }         
+        
+        if ( useLeftMemory) {
             final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
             // add it to a memory mapping
-            memory.put( tuple,
+            memory.put( leftTuple,
                         handle );
         }
 
@@ -139,7 +148,6 @@ public class RightInputAdapterNode extends ObjectSource
     public void retractLeftTuple(final LeftTuple tuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-
         final ObjectHashMap memory = (ObjectHashMap) workingMemory.getNodeMemory( this );
         // retrieve handle from memory
         final InternalFactHandle factHandle = (InternalFactHandle) memory.remove( tuple );
@@ -159,7 +167,7 @@ public class RightInputAdapterNode extends ObjectSource
         factHandle.setFirstLeftTuple( null );
 
         // destroy dummy handle
-        workingMemory.getFactHandleFactory().destroyFactHandle( factHandle );
+        //workingMemory.getFactHandleFactory().destroyFactHandle( factHandle );
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -243,7 +251,7 @@ public class RightInputAdapterNode extends ObjectSource
                     leftTuple.unlinkFromRightParent();
 
                     InternalFactHandle handle = (InternalFactHandle) entry.getValue();
-                    workingMemory.getFactHandleFactory().destroyFactHandle( handle );
+                    //workingMemory.getFactHandleFactory().destroyFactHandle( handle );
                 }
                 workingMemory.clearNodeMemory( this );
             }
@@ -331,6 +339,31 @@ public class RightInputAdapterNode extends ObjectSource
                + source + ", associations=" + associations.keySet() + ", partitionId=" + partitionId + "]";
     }
     
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
     
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }           
 
 }

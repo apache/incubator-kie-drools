@@ -82,15 +82,11 @@ public class AlphaNode extends ObjectSource
                                             ClassNotFoundException {
         super.readExternal( in );
         constraint = (AlphaNodeFieldConstraint) in.readObject();
-        previousRightTupleSinkNode = (ObjectSinkNode) in.readObject();
-        nextRightTupleSinkNode = (ObjectSinkNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( constraint );
-        out.writeObject( previousRightTupleSinkNode );
-        out.writeObject( nextRightTupleSinkNode );
     }
 
     /**

@@ -23,18 +23,26 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.tool.Rule;
+import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.base.accumulators.SumAccumulateFunction;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.BetaConstraints;
+import org.drools.common.DefaultBetaConstraints;
+import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.QuadroupleBetaConstraints;
 import org.drools.common.SingleBetaConstraints;
+import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.LeftTupleSource;
+import org.drools.reteoo.MockObjectSource;
+import org.drools.reteoo.MockTupleSource;
 import org.drools.reteoo.ObjectSource;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Accumulate;
 import org.drools.rule.Behavior;
@@ -72,18 +80,31 @@ public class AccumulateNodeStep
             String sourceType = a[3];
             String expr = a[4];
 
+            Class cls = null;
+            
             LeftTupleSource leftTupleSource;
-            if ( "mock".equals( leftInput ) ) {
-                leftTupleSource = Mockito.mock( LeftTupleSource.class );
+            if ( leftInput.startsWith( "mock" ) ) {
+                leftTupleSource = new MockTupleSource( buildContext.getNextId() );                
             } else {
                 leftTupleSource = (LeftTupleSource) context.get( leftInput );
             }
 
             ObjectSource rightObjectSource;
-            if ( "mock".equals( rightInput ) ) {
-                rightObjectSource = Mockito.mock( ObjectSource.class );
+            if ( rightInput.startsWith( "mock" ) ) {
+                String type = rightInput.substring( 5, rightInput.length() -1 );                
+                try {
+                    cls = reteTesterHelper.getTypeResolver().resolveType( type );
+                } catch ( ClassNotFoundException e ) {
+                    throw new RuntimeException( e );
+                }
+                rightObjectSource = new MockObjectSource( buildContext.getNextId() );
             } else {
                 rightObjectSource = (ObjectSource) context.get( rightInput );
+                ObjectSource source = rightObjectSource;
+                while ( !( source instanceof ObjectTypeNode ) ) {
+                    source = source.getParentObjectSource();
+                }
+                cls = ((ClassObjectType)((ObjectTypeNode)source).getObjectType()).getClassType();
             }
 
             Pattern sourcePattern;
@@ -99,7 +120,8 @@ public class AccumulateNodeStep
                 throw new IllegalArgumentException( "Not possible to process arguments: " + Arrays.toString( a ) );
             }
 
-            BetaConstraints betaSourceConstraints = new EmptyBetaConstraints();
+            List<BetaNodeFieldConstraint> list = new ArrayList<BetaNodeFieldConstraint>();
+            
             AlphaNodeFieldConstraint[] alphaResultConstraint = new AlphaNodeFieldConstraint[0];
             // the following arguments are constraints
             for ( int i = 1; i < args.size(); i++ ) {
@@ -112,12 +134,11 @@ public class AccumulateNodeStep
                 if ( "source".equals( type ) ) {
                     Declaration declr = (Declaration) context.get( val );
                     try {
-                        BetaNodeFieldConstraint sourceBetaConstraint = this.reteTesterHelper.getBoundVariableConstraint( sourcePattern,
+                        BetaNodeFieldConstraint sourceBetaConstraint = this.reteTesterHelper.getBoundVariableConstraint( cls,
                                                                                                                          fieldName,
                                                                                                                          declr,
                                                                                                                          operator );
-                        betaSourceConstraints = new SingleBetaConstraints( sourceBetaConstraint,
-                                                                           buildContext.getRuleBase().getConfiguration() );
+                        list.add( sourceBetaConstraint );
                     } catch ( IntrospectionException e ) {
                         throw new IllegalArgumentException();
                     }
@@ -134,6 +155,34 @@ public class AccumulateNodeStep
                     }
                 }
             }
+            
+            BetaConstraints betaSourceConstraints;
+            switch ( list.size() ) {
+                case 0:
+                    betaSourceConstraints = new EmptyBetaConstraints();
+                    break;
+                case 1:
+                    betaSourceConstraints = new SingleBetaConstraints( list.get(0),
+                                                           buildContext.getRuleBase().getConfiguration() );                    
+                  break;
+                case 2:
+                    betaSourceConstraints = new DoubleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                             buildContext.getRuleBase().getConfiguration() );                    
+                    break;                    
+                case 3:
+                    betaSourceConstraints = new TripleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                             buildContext.getRuleBase().getConfiguration() );                    
+                    break;                    
+                case 4:
+                    betaSourceConstraints = new QuadroupleBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                                 buildContext.getRuleBase().getConfiguration() );                    
+                    break;                                        
+                default:
+                    betaSourceConstraints = new DefaultBetaConstraints( list.toArray( new BetaNodeFieldConstraint[2] ),
+                                                              buildContext.getRuleBase().getConfiguration() );                    
+                    break;                                        
+                        
+            }            
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) buildContext.getRuleBase().getPackage( buildContext.getRule().getPackageName() ).getDialectRuntimeRegistry().getDialectData( "mvel" );
             data.onAdd( null, ((InternalRuleBase) buildContext.getRuleBase()).getRootClassLoader() );
@@ -148,7 +197,7 @@ public class AccumulateNodeStep
                                                 imp.lastIndexOf( '.' ) ) );
                     } else {
                         //classImports.add( imp );
-                        Class cls = data.getRootClassLoader().loadClass( imp ) ;
+                        cls = data.getRootClassLoader().loadClass( imp ) ;
                         data.addImport( cls.getSimpleName(),  cls);
                     }
                 }  

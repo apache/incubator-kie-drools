@@ -16,46 +16,46 @@
 
 package org.drools.reteoo.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.FactHandle;
 import org.drools.Person;
-import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.base.ClassObjectType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.LeftTupleList;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.reteoo.ReteooWorkingMemory;
-import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.test.dsl.DslStep;
-import org.drools.reteoo.test.dsl.NodeTestDef;
 import org.drools.reteoo.test.dsl.NodeTestCase;
 import org.drools.reteoo.test.dsl.NodeTestCaseResult;
 import org.drools.reteoo.test.dsl.NodeTestCaseResult.NodeTestResult;
 import org.drools.reteoo.test.dsl.NodeTestCaseResult.Result;
+import org.drools.reteoo.test.dsl.NodeTestDef;
 import org.drools.rule.Declaration;
 import org.drools.spi.PropagationContext;
+import org.junit.Test;
 
 public class ReteDslTestEngineTest {
 
@@ -342,7 +342,7 @@ public class ReteDslTestEngineTest {
 
         final DefaultFactHandle f0 = new DefaultFactHandle( 0,
                                                             0 );
-        final LeftTuple tuple0 = new LeftTuple( f0,
+        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
                                                 join1,
                                                 true );
 
@@ -359,7 +359,7 @@ public class ReteDslTestEngineTest {
         // assert tuple, should add left memory should be 2
         final DefaultFactHandle f1 = new DefaultFactHandle( 1,
                                                             0 );
-        final LeftTuple tuple1 = new LeftTuple( f1,
+        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
                                                 join1,
                                                 true );
         join1.assertLeftTuple( tuple1,
@@ -690,13 +690,13 @@ public class ReteDslTestEngineTest {
     public void testBetaNodeModifyOperations() throws IOException {
         String str = "TestCase 'testOTN'\nTest 'dummy'\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn1, java.lang.Integer;\n";
+        str += "    otn1, org.drools.Person;\n";
         str += "LeftInputAdapterNode:\n";
         str += "    lian0, otn1;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn2, java.lang.Integer;\n";
+        str += "    otn2, org.drools.Person;\n";
         str += "ObjectTypeNode:\n";
-        str += "    otn3, java.lang.Integer;\n";
+        str += "    otn3, org.drools.Person;\n";
         str += "Binding:\n";
         str += "     p1, 0, org.drools.Person, age;\n";
         str += "JoinNode:\n";
@@ -791,6 +791,21 @@ public class ReteDslTestEngineTest {
         NodeTestResult result = executeTest( str );
         Map<String, Object> map = result.context;
     }
+    
+    public void testConfigOptions() throws IOException {
+        String str = "TestCase 'testOTN'\nTest 'dummy'\n";
+        str += "Config:\n";
+        str += "    drools.lrUnlinkingEnabled, true;\n";
+        str += "ObjectTypeNode:\n";
+        str += "    otn1, java.lang.Integer;\n";
+        
+        NodeTestResult result = executeTest( str );
+        Map<String, Object> map = result.context;
+
+        BuildContext buildCtx = (BuildContext) map.get( ReteDslTestEngine.BUILD_CONTEXT );
+        assertTrue(buildCtx.getRuleBase().getConfiguration().isLRUnlinkingEnabled());
+    }
+
 
     private void print(DslStep[] steps) {
         for ( DslStep command : steps ) {

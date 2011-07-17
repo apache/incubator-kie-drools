@@ -61,7 +61,7 @@ public class EvalNodeStep
             throw new IllegalArgumentException( "Cannot execute arguments " + args );
         }
         LeftTupleSource pnode = null;
-        if ( source.equals( "mock" ) ) {
+        if ( source.startsWith( "mock" ) ) {
             pnode = Mockito.mock( LeftTupleSource.class );
         } else {
             pnode = (LeftTupleSource) context.get( source );

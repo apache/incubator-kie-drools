@@ -303,7 +303,7 @@ query.dispose() // make sure you call dispose when you want the query to close</
 
       <para>The <code>KnowledgeRuntime</code> provides further methods that
       are applicable to both rules and processes, such as setting globals and
-      registering <code>Channels</code> (previously exit points, some 
+      registering <code>Channels</code> (previously exit points, some
       references may remain in docs for a while).</para>
 
       <figure>
@@ -474,7 +474,10 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <para>As a general rule, it is a good idea not to count on rules firing
       in any particular order, and to author the rules without worrying about
-      a "flow".</para>
+      a "flow". However when a flow is needed a number of possibilities exist,
+      including but not limited to: agenda groups, rule flow groups,
+      activation groups, control/semaphore facts. These are discussed in later
+      sections.</para>
 
       <para>Drools 4.0 supported custom conflict resolution strategies; while
       this capability still exists in Drools it has not yet been exposed to
@@ -501,12 +504,13 @@ ksession.setGlobal("list", list);           </programlisting>
       also have rules with "auto focus" which means that the focus is taken
       for its agenda group when that rule's conditions are true.</para>
 
-      <para>Agenda groups are known as "modules" in CLIPS terminology. They
-      provide a handy way to create a "flow" between grouped rules. You can
-      switch the group which has focus either from within the rule engine, or
-      via the API. If your rules have a clear need for multiple "phases" or
-      "sequences" of processing, consider using agenda-groups for this
-      purpose.</para>
+      <para>Agenda groups are known as "modules" in CLIPS terminology. While
+      it best to design rules that do not need control flow, this is not
+      always possible. Agenda groups provide a handy way to create a "flow"
+      between grouped rules. You can switch the group which has focus either
+      from within the rule engine, or via the API. If your rules have a clear
+      need for multiple "phases" or "sequences" of processing, consider using
+      agenda-groups for this purpose.</para>
 
       <para>Each time <code>setFocus()</code> is called it pushes that Agenda
       Group onto a stack. When the focus group is empty it is popped from the
@@ -1242,11 +1246,10 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     when services are involved.</para>
 
     <para>There is currently no XML schema to support schema validation. The
-    basic format is outlined here, and the drools-pipeline module
-    has an illustrative unit test in the
-    <code>XStreamBatchExecutionTest</code> unit test. The root element is
-    &lt;batch-execution&gt; and it can contain zero or more commands
-    elements.</para>
+    basic format is outlined here, and the drools-pipeline module has an
+    illustrative unit test in the <code>XStreamBatchExecutionTest</code> unit
+    test. The root element is &lt;batch-execution&gt; and it can contain zero
+    or more commands elements.</para>
 
     <example>
       <title>Root XML element</title>
@@ -1650,12 +1653,13 @@ ds.init();
     <title>Drools Clips</title>
 
     <para>Drools Clips is an alpha level research project to provide a Clips
-    like front end ot Drools.</para>
+    like front end ot Drools. As of Drools 5.2 this module as stopped working,
+    we will try and fix for 5.3.</para>
 
     <para>Deftemplates are working, the knowledge base handles multiple name
     spaces and you can attach the knoweldge base to the session for interative
-    building, to provide a more "shell" like environment suitable for Clips.
-    </para>
+    building, to provide a more "shell" like environment suitable for
+    Clips.</para>
 
     <itemizedlist>
       <listitem>

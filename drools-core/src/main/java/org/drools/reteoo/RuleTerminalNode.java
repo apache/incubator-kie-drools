@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
+import org.drools.common.DefaultAgenda;
 import org.drools.common.EventFactHandle;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
@@ -71,13 +72,12 @@ public class RuleTerminalNode extends BaseNode
      * because declarations may have different offsets in each subrule
      */
     private GroupElement      subrule;
+    private int               subruleIndex;
     private LeftTupleSource   tupleSource;
     private Declaration[]     declarations;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
-
-    protected boolean         tupleMemoryEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -93,11 +93,13 @@ public class RuleTerminalNode extends BaseNode
      *            The parent tuple source.
      * @param rule
      *            The rule.
+     * @param subruleIndex 
      */
     public RuleTerminalNode(final int id,
                             final LeftTupleSource source,
                             final Rule rule,
                             final GroupElement subrule,
+                            final int subruleIndex, 
                             final BuildContext context) {
         super( id,
                context.getPartitionId(),
@@ -105,7 +107,7 @@ public class RuleTerminalNode extends BaseNode
         this.rule = rule;
         this.tupleSource = source;
         this.subrule = subrule;
-        this.tupleMemoryEnabled = context.isTerminalNodeMemoryEnabled();
+        this.subruleIndex = subruleIndex;
         
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
         this.declarations = new Declaration[ rule.getRequiredDeclarations().length ];
@@ -125,6 +127,7 @@ public class RuleTerminalNode extends BaseNode
         sequence = in.readInt();
         rule = (Rule) in.readObject();
         subrule = (GroupElement) in.readObject();
+        subruleIndex = in.readInt();
         tupleSource = (LeftTupleSource) in.readObject();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
@@ -136,6 +139,7 @@ public class RuleTerminalNode extends BaseNode
         out.writeInt( sequence );
         out.writeObject( rule );
         out.writeObject( subrule );
+        out.writeInt( subruleIndex );
         out.writeObject( tupleSource );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
@@ -289,9 +293,9 @@ public class RuleTerminalNode extends BaseNode
                              workingMemory );
         } else {
             // LeftTuple does not exist, so create and continue as assert
-            assertLeftTuple( new LeftTuple( factHandle,
-                                            this,
-                                            true ),
+            assertLeftTuple( createLeftTuple( factHandle,
+                                                this,
+                                                true ),
                              context,
                              workingMemory );
         }
@@ -434,11 +438,11 @@ public class RuleTerminalNode extends BaseNode
     }
 
     public boolean isLeftTupleMemoryEnabled() {
-        return tupleMemoryEnabled;
+        return false;
     }
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        this.tupleMemoryEnabled = tupleMemoryEnabled;
+        
     }
     
     public Declaration[] getDeclarations() {
@@ -526,7 +530,14 @@ public class RuleTerminalNode extends BaseNode
             }
 
             final Activation activation = (Activation) leftTuple.getObject();
-
+            
+            // this is to catch a race condition as activations are activated and unactivated on timers
+            if ( activation instanceof ScheduledAgendaItem ) {                
+                ScheduledAgendaItem scheduled = ( ScheduledAgendaItem ) activation;
+                workingMemory.getTimerService().removeJob( scheduled.getJobHandle() );
+                scheduled.getJobHandle().setCancel( true );
+            }
+            
             if ( activation.isActivated() ) {
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
@@ -546,4 +557,31 @@ public class RuleTerminalNode extends BaseNode
             leftTuple.unlinkFromRightParent();
         }
     }
+    
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new RuleTerminalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }    
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new RuleTerminalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTupleSink sink) {
+        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, sink );
+    }   
+    
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }            
 }

@@ -50,7 +50,7 @@ then
 @comment{***************************************************************
                        ANNOTATIONS TEMPLATE
 ************************************************************************ }
-@declare{"annotation"}@@@{ann.name}@if{!ann.values.empty}( @foreach{entry:ann.values.entrySet()}@{entry.key}=@{entry.value}@end{", "} )@end{}@end{}
+@declare{"annotation"}@@@{ann.name}@code{count=ann.values.size()}@if{count>0}( @foreach{entry:ann.values.entrySet()}@if{count>1 || !entry.key.equals("value")}@{entry.key}=@end{}@{entry.value}@end{", "} )@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT TEMPLATE
@@ -61,7 +61,7 @@ then
 }exists( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof ForallDescr }@comment{    
 }forall( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof EvalDescr }@comment{    
 }eval( @{base.content} )@elseif{ base instanceof PatternDescr }@comment{    
-}@if{base.identifier!=null}@{base.identifier} : @end{}@{base.objectType}( @foreach{bind:base.bindings}@{bind.variable} : @{bind.expression}@end{", "}@if{!base.bindings.isEmpty()&&!base.descrs.isEmpty()}, @end{}@foreach{constr:base.descrs}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@includeNamed{"psource";source=base.source}@end{}@end{}
+}@if{base.identifier!=null}@{base.identifier} : @end{}@{base.objectType}( @foreach{constr:base.descrs}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@includeNamed{"psource";source=base.source}@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE

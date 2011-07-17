@@ -26,16 +26,18 @@ import org.drools.rule.ContextEntry;
 
 public class BetaMemory
     implements
-    Externalizable {
+    Externalizable, Unlinkable {
 
     private static final long serialVersionUID = 510l;
 
     private LeftTupleMemory   leftTupleMemory;
     private RightTupleMemory  rightTupleMemory;
-    private ObjectHashMap     createdHandles;
     private ContextEntry[]    context;
     private Object            behaviorContext;
-    private boolean           open;
+    
+    /* Let's start with only right unlinked. */
+    private boolean           isLeftUnlinked = false;
+    private boolean           isRightUnlinked = true;
 
     public BetaMemory() {
     }
@@ -52,19 +54,19 @@ public class BetaMemory
                                             ClassNotFoundException {
         leftTupleMemory = (LeftTupleMemory) in.readObject();
         rightTupleMemory = (RightTupleMemory) in.readObject();
-        createdHandles = (ObjectHashMap) in.readObject();
         context = (ContextEntry[]) in.readObject();
         behaviorContext = (Object) in.readObject();
-        open = ( boolean ) in.readBoolean();
+        isLeftUnlinked = in.readBoolean();
+        isRightUnlinked = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( leftTupleMemory );
         out.writeObject( rightTupleMemory );
-        out.writeObject( createdHandles );
         out.writeObject( context );
         out.writeObject( behaviorContext );
-        out.writeBoolean(  open  );
+        out.writeBoolean( isLeftUnlinked );
+        out.writeBoolean( isRightUnlinked );
     }
 
     public RightTupleMemory getRightTupleMemory() {
@@ -73,13 +75,6 @@ public class BetaMemory
 
     public LeftTupleMemory getLeftTupleMemory() {
         return this.leftTupleMemory;
-    }
-
-    public ObjectHashMap getCreatedHandles() {
-        if ( this.createdHandles == null ) {
-            this.createdHandles = new ObjectHashMap();
-        }
-        return this.createdHandles;
     }
 
     /**
@@ -96,14 +91,28 @@ public class BetaMemory
     public void setBehaviorContext(Object behaviorContext) {
         this.behaviorContext = behaviorContext;
     }
-
-    public boolean isOpen() {
-        return open;
+    
+    public boolean isLeftUnlinked() {
+        return this.isLeftUnlinked;
     }
 
-    public void setOpen(boolean open) {
-        this.open = open;
+    public boolean isRightUnlinked() {
+        return this.isRightUnlinked;
     }
-    
-    
+
+    public void linkLeft() {
+        this.isLeftUnlinked = false;
+    }
+
+    public void linkRight() {
+        this.isRightUnlinked = false;
+    }
+
+    public void unlinkLeft() {
+        this.isLeftUnlinked = true;
+    }
+
+    public void unlinkRight() {
+        this.isRightUnlinked = true;
+    }    
 }

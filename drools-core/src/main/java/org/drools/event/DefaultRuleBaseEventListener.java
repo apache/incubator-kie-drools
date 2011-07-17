@@ -93,4 +93,20 @@ public class DefaultRuleBaseEventListener
     public void beforeRuleRemoved(BeforeRuleRemovedEvent event) {
         // intentionally left blank
     }
+
+	public void beforeProcessAdded(BeforeProcessAddedEvent event) {
+        // intentionally left blank
+	}
+
+	public void afterProcessAdded(AfterProcessAddedEvent event) {
+        // intentionally left blank
+	}
+
+	public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
+        // intentionally left blank
+	}
+
+	public void afterProcessRemoved(AfterProcessRemovedEvent event) {
+        // intentionally left blank
+	}
 }

@@ -76,6 +76,10 @@ public class ArrayElementReader
     public void setReadAccessor(InternalReadAccessor readAccessor) {
         this.arrayReadAccessor = readAccessor;
     }
+    
+    public InternalReadAccessor getReadAccessor() {
+        return this.arrayReadAccessor;
+    }
 
     public String getExtractToClassName() {
         return ClassUtils.canonicalName( type );
@@ -189,7 +193,9 @@ public class ArrayElementReader
                            Object object) {
         Object[] array = (Object[]) this.arrayReadAccessor.getValue( workingMemory,
                                                                      object );
-        return array[this.index].hashCode();
+        
+        Object value = array[this.index];
+        return (value != null) ? value.hashCode() : 0;
     }
 
     public int hashCode() {

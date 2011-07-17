@@ -63,7 +63,7 @@ public class LhsClpParserTest {
     @Test
     @Ignore
     public void testPatternsRule() throws Exception {
-        // the first pattern bellowshould generate a descriptor tree like that:
+        // the first pattern below should generate a descriptor tree like that:
         //            Pattern[person]
         //                 |
         //                AND

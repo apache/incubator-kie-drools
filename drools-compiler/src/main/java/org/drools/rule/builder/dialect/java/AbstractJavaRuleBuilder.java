@@ -12,6 +12,8 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
@@ -26,33 +28,36 @@ public class AbstractJavaRuleBuilder {
     protected static final TemplateRegistry RULE_REGISTRY    = new SimpleTemplateRegistry();
     protected static final TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
 
-    static {
-        OptimizerFactory.setDefaultOptimizer( "reflective" );
-
-        RULE_REGISTRY.addNamedTemplate( "rules",
-                                        TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
-                                                                          (Map<String, Class< ? extends Node>>) null ) );
-        INVOKER_REGISTRY.addNamedTemplate( "invokers",
-                                           TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
-                                                                             (Map<String, Class< ? extends Node>>) null ) );
-
-        /**
-         * Process these templates
-         */
-        TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
-                                 null,
-                                 RULE_REGISTRY );
-        TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
-                                 null,
-                                 INVOKER_REGISTRY );
-
-    }
-
-    public static TemplateRegistry getRuleTemplateRegistry() {
+    public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
+        if ( !RULE_REGISTRY.contains( "rules" ) ) {
+            ParserConfiguration pconf = new ParserConfiguration();
+            pconf.setClassLoader( cl );
+            
+            ParserContext pctx = new ParserContext(pconf);
+            RULE_REGISTRY.addNamedTemplate( "rules",
+                                            TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
+                                                                              pctx ) );
+            TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
+                                     null,
+                                     RULE_REGISTRY );            
+        }
+        
         return RULE_REGISTRY;
     }
 
-    public static TemplateRegistry getInvokerTemplateRegistry() {
+    public static synchronized TemplateRegistry getInvokerTemplateRegistry(ClassLoader cl) {
+        if ( !INVOKER_REGISTRY.contains( "invokers" ) ) {
+            ParserConfiguration pconf = new ParserConfiguration();
+            pconf.setClassLoader( cl );
+            
+            ParserContext pctx = new ParserContext(pconf);            
+            INVOKER_REGISTRY.addNamedTemplate( "invokers",
+                                               TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
+                                                                                 pctx ) );
+            TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
+                                     null,
+                                     INVOKER_REGISTRY );            
+        }        
         return INVOKER_REGISTRY;
     }
 
@@ -88,6 +93,11 @@ public class AbstractJavaRuleBuilder {
         final String[] declarationTypes = new String[declarations.length];
         for ( int i = 0, size = declarations.length; i < size; i++ ) {
             declarationTypes[i] = ((JavaDialect) context.getDialect()).getTypeFixer().fix( declarations[i] );
+            if ( declarationTypes[i] == null ) {
+                // declaration type was not fixed properly, assume this was reported from it's original problem
+                //return null;
+                declarationTypes[i] = "java.lang.Object";
+            }
         }
 
         map.put( "declarations",
@@ -135,24 +145,22 @@ public class AbstractJavaRuleBuilder {
                                         final Map vars,
                                         final Object invokerLookup,
                                         final BaseDescr descrLookup) {
-        AbstractParser.setLanguageLevel( 5 );
-        TemplateRegistry registry = getRuleTemplateRegistry();
+        
+        TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
 
         context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
                                                            null,
                                                            new MapVariableResolverFactory( vars ),
-                                                           registry )
-                    );
+                                                           registry ) );
 
-        registry = getInvokerTemplateRegistry();
+        registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
         context.getInvokers().put( invokerClassName,
-                                       TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
-                                                                null,
-                                                                new MapVariableResolverFactory( vars ),
-                                                                registry )
-                    );
+                                   TemplateRuntime.execute( registry.getNamedTemplate( invokerTemplate ),
+                                                            null,
+                                                            new MapVariableResolverFactory( vars ),
+                                                            registry ) );
 
         context.getInvokerLookups().put( invokerClassName,
                                              invokerLookup );

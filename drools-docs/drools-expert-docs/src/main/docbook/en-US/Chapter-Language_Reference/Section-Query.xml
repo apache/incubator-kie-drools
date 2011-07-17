@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title id="sec.query.title">Query</title>
 
   <figure>
@@ -13,7 +16,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Rule_Language/query.png"
-                   format="PNG" role="" />
+                   format="PNG" role=""></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -69,5 +72,97 @@ for ( QueryResultsRow row : results ) {
     Person person = ( Person ) row.get( "person" );
     System.out.println( person.getName() + "\n" );
 }</programlisting>
+
+    <para>Support for positional syntax has been added for more compact code.
+    By default the the declared type order in the type declaration matches the
+    argument position. But it possible to override these using the @position
+    annotation.</para>
+
+    <programlisting>declare Cheese
+    name : String @position(1)
+    shop : String @position(2)
+    price : int @position(0)
+end
+</programlisting>
+
+    <para>The @Position annotation, in the org.drools.definition.type package,
+    can be used to annotate original pojos on the classpath. Currently only
+    fields on classes can be annotated. Inheritence of classes is supported,
+    but not interfaces of methods yet.</para>
+
+    <para>Queries can now call other queries, this combined with optional
+    query arguments provides deriviation query style backward chaining.
+    Positional and mixed positional/named type is supported. Literal
+    expressions can passed as query arguments, but at this stage you cannot
+    mix expressions with variables. Here s an example of a query that calls
+    another query. Note that 'z' here will always be an 'out' variable. The
+    '?' symbol means the query is pull only, once the results are returned you
+    will not received further results as the underlying data changes.</para>
+
+    <programlisting>declare Location
+    thing : String 
+    location : String 
+end
+
+query isContainedIn( String x, String y ) 
+    Location(x, y;)
+    or 
+    ( Location(z, y;) and ?isContainedIn(x, z;) )
+end</programlisting>
+
+    <para>As previously mentioned you can use live "open" queries to
+    reactively receive changes over time from the query results, as the
+    underlying data it queries against changes. Notice the "look" rule calls
+    the query without using '?'.</para>
+
+    <programlisting>query isContainedIn( String x, String y ) 
+    Location(x, y;)
+    or 
+    ( Location(z, y;) and isContainedIn(x, z;) )
+end
+
+rule look when 
+    Person( $l : likes ) 
+    isContainedIn( $l, 'office'; )
+then
+   insertLogical( $l 'is in the office' );
+end 
+</programlisting>
+
+    <para>Drools supports unification for derivation queries, in short this
+    means that arguments are optional. It is possible to call queries from
+    java leaving arguments unspecified using the static field
+    org.drools.runtime.rule.Variable.v - note you must use 'v' and not an
+    alternative instanceof Variable. These are referred to as 'out' arguments.
+    Note that the query itself does not declare at compile time whether an
+    argument is in or an out, this can be defined purely at runtime on each
+    use. The following example will return all objects contained in the
+    office.</para>
+
+    <programlisting>results = ksession.getQueryResults( "isContainedIn", new Object[] {  Variable.v, "office" } );
+l = new ArrayList&lt;List&lt;String&gt;&gt;();
+for ( QueryResultsRow r : results ) {
+    l.add( Arrays.asList( new String[] { (String) r.get( "x" ), (String) r.get( "y" ) } ) );
+}  
+</programlisting>
+
+    <para>The algorithm uses stacks to handle recursion, so the method stack
+    will not blow up.</para>
+
+    <para>The following is not yet suported:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>List and Map unification</para>
+      </listitem>
+
+      <listitem>
+        <para>Variables for the fields of facts</para>
+      </listitem>
+
+      <listitem>
+        <para>Expression unification - pred( X, X + 1, X * Y / 7 )</para>
+      </listitem>
+    </itemizedlist>
   </example>
 </section>

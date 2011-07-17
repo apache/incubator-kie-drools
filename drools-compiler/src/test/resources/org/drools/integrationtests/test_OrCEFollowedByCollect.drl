@@ -1,0 +1,11 @@
+package org.drools
+
+import java.util.ArrayList
+
+rule "collect after or'd evals"
+    when
+        $bonFromage : Cheesery()
+        (eval(true) || eval(true))
+		ArrayList( size > 1 ) from collect(Cheese( type == "cheddar") from $bonFromage.cheeses)
+    then
+end

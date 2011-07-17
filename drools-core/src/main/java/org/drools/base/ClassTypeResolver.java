@@ -24,10 +24,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.util.CompositeClassLoader;
+
+import com.sun.xml.bind.v2.runtime.Name;
 
 public class ClassTypeResolver
     implements
     TypeResolver {
+    private String           defaultPackagName;
     private Set<String>      imports          = Collections.emptySet();
 
     private ClassLoader      classLoader;
@@ -63,6 +67,13 @@ public class ClassTypeResolver
         }
 
         this.classLoader = classLoader;
+    }
+
+    public ClassTypeResolver(HashSet<String> imports,
+                             CompositeClassLoader rootClassLoader,
+                             String name) {
+        this( imports, rootClassLoader );
+        this.defaultPackagName = name;
     }
 
     public void setClassLoader(ClassLoader classLoader) {
@@ -155,7 +166,7 @@ public class ClassTypeResolver
 
         // Now try the className with each of the given imports
         if ( clazz == null ) {
-            final Set validClazzCandidates = new HashSet();
+            final Set<Class> validClazzCandidates = new HashSet<Class> ();
 
             final Iterator it = this.imports.iterator();
             while ( it.hasNext() ) {
@@ -163,6 +174,16 @@ public class ClassTypeResolver
                                      className );
                 if ( clazz != null ) {
                     validClazzCandidates.add( clazz );
+                }
+            }
+
+
+            if ( validClazzCandidates.size() > 1 ) {
+                for ( Iterator<Class> validIt = validClazzCandidates.iterator(); validIt.hasNext(); ) {
+                    Class cls = validIt.next();
+                    if ( this.defaultPackagName.equals( cls.getPackage().getName() ) ) {
+                        validIt.remove();
+                    }
                 }
             }
 
@@ -177,7 +198,7 @@ public class ClassTypeResolver
                     }
                     sb.append( ((Class) clazzCandIter.next()).getName() );
                 }
-                throw new Error( "Unable to find unambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
+                throw new Error( "Unable to find ambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
             } else if ( validClazzCandidates.size() == 1 ) {
                 clazz = (Class) validClazzCandidates.toArray()[0];
             } else {
@@ -215,6 +236,8 @@ public class ClassTypeResolver
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
         }
 
+        this.cachedImports.put( clazz.getSimpleName(), clazz );
+        
         return clazz;
     }
     

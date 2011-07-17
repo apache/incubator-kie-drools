@@ -57,6 +57,7 @@ public class RuleTerminalNodeStep
                                                                leftTupleSource,
                                                                rule,
                                                                null,
+                                                               0,
                                                                buildContext );
             Consequence consequence = new Consequence() {
                 public void evaluate(KnowledgeHelper knowledgeHelper,

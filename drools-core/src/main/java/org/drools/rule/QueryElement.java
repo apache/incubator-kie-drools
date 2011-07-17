@@ -25,6 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.reteoo.LeftTupleSource;
+import org.drools.runtime.rule.Variable;
+
 public class QueryElement extends ConditionalElement
     implements
     Externalizable {
@@ -34,23 +37,57 @@ public class QueryElement extends ConditionalElement
     private Object[]      argTemplate;
     private int[]         declIndexes;
     private int[]         variableIndexes;
+    private boolean       openQuery;
 
     private Declaration[] requiredDeclarations;
 
+    public QueryElement() {
+        // for serialisation
+    }
+    
     public QueryElement(Pattern       resultPattern,
                         String queryName,
                         Object[] argTemplate,
                         Declaration[] requiredDeclarations,
                         int[] declIndexes,
-                        int[] variableIndexes) {
-        super();
+                        int[] variableIndexes, 
+                        boolean openQuery) {
         this.resultPattern = resultPattern;
         this.queryName = queryName;
         this.argTemplate = argTemplate;
         this.requiredDeclarations = requiredDeclarations;
         this.declIndexes = declIndexes;
         this.variableIndexes = variableIndexes;
+        this.openQuery = openQuery;
+    }     
+    
+    
+    public void writeExternal(ObjectOutput out) throws IOException {
+       out.writeObject( this.resultPattern );
+       out.writeObject( this.queryName );
+       out.writeObject( this.argTemplate );
+       out.writeObject( this.requiredDeclarations );
+       out.writeObject( this.declIndexes );
+       out.writeObject( this.variableIndexes );
+       out.writeBoolean( this.openQuery );
     }
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        this.resultPattern = ( Pattern ) in.readObject();
+        this.queryName = (String) in.readObject();
+        this.argTemplate = (Object[]) in.readObject();
+        for ( int i = 0; i < argTemplate.length; i++ ) {
+            if ( argTemplate[i] instanceof Variable ) {
+                argTemplate[i] = Variable.v; // we need to reset this as we do == checks later in DroolsQuery
+            }
+        }
+        this.requiredDeclarations = ( Declaration[] ) in.readObject();
+        this.declIndexes = ( int[] ) in.readObject();
+        this.variableIndexes = ( int[] ) in.readObject();
+        this.openQuery = in.readBoolean();
+    }
+    
 
     public String getQueryName() {
         return queryName;
@@ -62,6 +99,10 @@ public class QueryElement extends ConditionalElement
 
     public int[] getDeclIndexes() {
         return declIndexes;
+    }
+    
+    public void setVariableIndexes(int[] varIndexes) {
+        variableIndexes = varIndexes;
     }
 
     public int[] getVariableIndexes() {
@@ -90,6 +131,10 @@ public class QueryElement extends ConditionalElement
     
     public Declaration[] getRequiredDeclarations() {
         return this.requiredDeclarations;
+    }    
+    
+    public boolean isOpenQuery() {
+        return openQuery;
     }
 
     /**
@@ -99,39 +144,20 @@ public class QueryElement extends ConditionalElement
         return this.resultPattern.resolveDeclaration( identifier );
     }
 
-    public void replaceDeclaration(Declaration declaration,
-                                   Declaration resolved) {
-        for ( int i = 0; i < this.requiredDeclarations.length; i++ ) {
-            if ( this.requiredDeclarations[i].equals( declaration ) ) {
-                this.requiredDeclarations[i] = resolved;
-            }
-        }
-    }
-
-
     @Override
     public Object clone() {
-        return new QueryElement( resultPattern, queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes );
-    }
-    
-    public void writeExternal(ObjectOutput out) throws IOException {
-       out.writeObject( this.resultPattern );
-       out.writeObject( this.queryName );
-       out.writeObject( this.argTemplate );
-       out.writeObject( this.requiredDeclarations );
-       out.writeObject( this.declIndexes );
-       out.writeObject( this.variableIndexes );
+        return new QueryElement( resultPattern, queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery );
     }
 
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        this.resultPattern = ( Pattern ) in.readObject();
-        this.queryName = (String) in.readObject();
-        this.argTemplate = (Object[]) in.readObject();
-        this.requiredDeclarations = ( Declaration[] ) in.readObject();
-        this.declIndexes = ( int[] ) in.readObject();
-        this.variableIndexes = ( int[] ) in.readObject();
+    @Override
+    public String toString() {
+        return "QueryElement [resultPattern=" + resultPattern + 
+                   ", queryName=" + queryName + ", argTemplate=" + Arrays.toString( argTemplate ) + 
+                   ", declIndexes=" + Arrays.toString( declIndexes ) + ", variableIndexes="+ Arrays.toString( variableIndexes ) + 
+                   ", openQuery=" + openQuery + 
+                   ", requiredDeclarations=" + Arrays.toString( requiredDeclarations ) + "]";
     }
+
 
 
 

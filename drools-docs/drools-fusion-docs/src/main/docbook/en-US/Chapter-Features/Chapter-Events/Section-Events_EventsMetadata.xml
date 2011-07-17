@@ -10,7 +10,7 @@
   metadata values have defaults that are automatically assigned to each event
   when they are inserted into the working memory, but it is possible to change
   the default on an event type basis, using the metadata tags listed
-  bellow.</para>
+  below.</para>
 
   <para>For the examples, lets assume the user has the following class in the
   application domain model:</para>

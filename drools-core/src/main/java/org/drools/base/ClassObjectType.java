@@ -20,8 +20,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map;
 
+import org.drools.InitialFact;
 import org.drools.RuntimeDroolsException;
+import org.drools.common.AgendaItem;
 import org.drools.spi.ObjectType;
 
 /**
@@ -34,6 +37,17 @@ public class ClassObjectType
     implements
     ObjectType,
     Externalizable {
+    
+    public static final ClassObjectType InitialFact_ObjectType = new ClassObjectType( InitialFact.class );
+    
+    public static final ClassObjectType DroolsQuery_ObjectType = new ClassObjectType( DroolsQuery.class );
+    
+    public static final ClassObjectType Map_ObjectType = new ClassObjectType( Map.class );
+    
+    public static final ClassObjectType ObjectArray_ObjectType = new ClassObjectType( Object[].class );
+    
+    public static final ClassObjectType AgendaItem_ObjectType = new ClassObjectType( AgendaItem.class );
+    
 
     private static final long serialVersionUID = 510l;
 

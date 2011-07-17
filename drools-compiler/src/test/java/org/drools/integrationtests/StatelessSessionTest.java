@@ -1,19 +1,19 @@
 package org.drools.integrationtests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
+
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
@@ -36,16 +36,13 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.Package;
 import org.drools.runtime.ExecutionResults;
-import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
-import org.drools.runtime.StatelessKnowledgeSessionResults;
-import org.drools.runtime.rule.impl.FlatQueryResults;
 import org.drools.spi.GlobalResolver;
+import org.junit.Test;
 
 public class StatelessSessionTest {
     final List list = new ArrayList();

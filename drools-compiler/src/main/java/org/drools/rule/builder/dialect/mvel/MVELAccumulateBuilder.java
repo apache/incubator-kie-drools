@@ -19,12 +19,9 @@ package org.drools.rule.builder.dialect.mvel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.drools.base.ValueType;
 import org.drools.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.base.extractors.ArrayElementReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
@@ -103,7 +100,6 @@ public class MVELAccumulateBuilder
                                                               context.getPackageBuilder().getGlobals() );
             boundIds.setDeclarations( mergedDecl );
 
-            boolean isMultiFunction = false;
             Accumulator[] accumulators = null;
 
             if ( accumDescr.isExternalFunction() ) {
@@ -114,7 +110,6 @@ public class MVELAccumulateBuilder
                                                        decls,
                                                        sourceOuterDeclr,
                                                        boundIds );
-                isMultiFunction = ((Pattern) context.getBuildStack().peek()).getObjectType().getValueType().equals( ValueType.ARRAY_TYPE ) && accumDescr.getFunctions().size() > 1;
             } else {
                 // it is a custom accumulate
                 accumulators = buildCustomAccumulate( context,
@@ -130,7 +125,7 @@ public class MVELAccumulateBuilder
                                                           null,
                                                           null,
                                                           accumulators,
-                                                          isMultiFunction );
+                                                          accumDescr.isMultiFunction() );
 
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             int index = 0;

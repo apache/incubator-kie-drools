@@ -19,9 +19,10 @@ package org.drools.compiler;
 import org.drools.Service;
 
 import java.io.InputStream;
+import java.util.Map;
 
 public interface PMMLCompiler extends Service {
 
-    public String compile(InputStream stream);
+    public String compile(InputStream stream, Map<String,PackageRegistry> registries);
 
 }

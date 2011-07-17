@@ -21,7 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.Person;
 import org.drools.RuntimeDroolsException;
+import org.drools.base.ClassObjectType;
 
 public class GroupElementTest {
 
@@ -54,6 +56,64 @@ public class GroupElementTest {
         assertSame( pattern2,
                     and2.getChildren().get( 1 ) );
     }
+    
+    @Test
+    public void testDeclarationOrdering() {
+        final GroupElement and1 = GroupElementFactory.newAndInstance();
+        final Pattern pattern1 = new Pattern( 0,
+                                              new ClassObjectType( Person.class),
+                                              "x" );
+        and1.addChild( pattern1 );
+
+        final Pattern pattern2 = new Pattern( 2,
+                                              new ClassObjectType( Person.class),
+                                              "y"  );
+        and1.addChild( pattern2 );
+        
+        Declaration x1 = ( Declaration ) and1.getInnerDeclarations().get( "x" );
+        Declaration y1 = ( Declaration ) and1.getInnerDeclarations().get( "y" );
+        Declaration z1 = ( Declaration ) and1.getInnerDeclarations().get( "z" );
+        assertNotNull( x1 );
+        assertNotNull( y1 );
+        assertNull( z1);
+
+        assertEquals( 2,
+                      and1.getChildren().size() );
+        assertSame( pattern1,
+                    and1.getChildren().get( 0 ) );
+        assertSame( pattern2,
+                    and1.getChildren().get( 1 ) );
+
+        final GroupElement and2 = GroupElementFactory.newAndInstance();
+        and2.addChild( and1 );
+        
+        final Pattern pattern3 = new Pattern( 3,
+                                              new ClassObjectType( Person.class),
+                                              "x" );        
+        and2.addChild( pattern3 );
+        
+        and2.pack();
+        assertEquals( 3,
+                      and2.getChildren().size() );
+        assertSame( pattern1,
+                    and2.getChildren().get( 0 ) );
+        assertSame( pattern2,
+                    and2.getChildren().get( 1 ) );
+        assertSame( pattern3,
+                    and2.getChildren().get( 2 ) );        
+        
+        Declaration x2 = ( Declaration ) and2.getInnerDeclarations().get( "x" );
+        Declaration y2 = ( Declaration ) and2.getInnerDeclarations().get( "y" );
+        Declaration z2 = ( Declaration ) and2.getInnerDeclarations().get( "z" );
+        assertNotNull( x2 );        
+        assertNotNull( y2 );
+        assertNull( z2);    
+        
+        assertNotSame( x1, x2);
+        assertSame( x2, pattern3.getDeclaration() );
+        assertSame( y1, y2);
+        assertSame( z1, z2);
+    }    
 
     @Test
     public void testPackNestedOr() {

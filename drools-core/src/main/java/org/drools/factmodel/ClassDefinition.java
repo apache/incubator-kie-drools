@@ -45,6 +45,8 @@ public class ClassDefinition
 
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
+    private List<AnnotationDefinition> annotations;
+
     public ClassDefinition() {
         this( null,
               null,
@@ -85,6 +87,7 @@ public class ClassDefinition
         this.superClass = (String) in.readObject();
         this.interfaces = (String[]) in.readObject();
         this.fields = (LinkedHashMap<String, FieldDefinition>) in.readObject();
+        this.annotations = (List<AnnotationDefinition>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -92,6 +95,7 @@ public class ClassDefinition
         out.writeObject( this.superClass );
         out.writeObject( this.interfaces );
         out.writeObject( this.fields );
+        out.writeObject( this.annotations );
     }
 
     /**
@@ -242,6 +246,21 @@ public class ClassDefinition
                  ent.getKey(),
                  ent.getValue() );
         }
+    }
+
+
+
+
+
+    public void addAnnotation(AnnotationDefinition annotationDefinition) {
+        if (this.annotations == null) {
+            this.annotations = new ArrayList<AnnotationDefinition>();
+        }
+        this.annotations.add(annotationDefinition);
+    }
+
+    public List<AnnotationDefinition> getAnnotations() {
+        return annotations;
     }
 
 }

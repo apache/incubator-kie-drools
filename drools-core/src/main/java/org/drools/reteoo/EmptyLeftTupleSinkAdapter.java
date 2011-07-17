@@ -57,7 +57,7 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
                                                   final PropagationContext context,
                                                   final InternalWorkingMemory workingMemory,
-                                                  final boolean leftTupleMemoryEnabled) {
+                                                  final boolean leftTupleMemoryEnabled, LeftInputAdapterNode liaNode) {
     }
 
     public void propagateRetractLeftTuple(final LeftTuple tuple,
@@ -149,6 +149,21 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                            InternalWorkingMemory workingMemory,
                                            LeftTuple leftTuple,
                                            LeftTupleSink sink) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void createChildLeftTuplesforQuery(LeftTuple leftTuple,
+                                              RightTuple rightTuple,
+                                              boolean leftTupleMemoryEnabled,
+                                              boolean linkRightTuple) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void modifyChildLeftTuplesforQuery(RightTuple rightTuple,
+                                              PropagationContext context,
+                                              InternalWorkingMemory workingMemory) {
         // TODO Auto-generated method stub
         
     }

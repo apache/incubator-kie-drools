@@ -19,7 +19,7 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.reteoo.InitialFactImpl;
-import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.MockLeftTupleSink;
 import org.drools.rule.Accumulate;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -72,7 +72,7 @@ public class MVELAccumulateBuilderTest {
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( new InitialFactImpl() );
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( cheddar1 );
         final InternalFactHandle f2 = (InternalFactHandle) wm.insert( cheddar2 );
-        final LeftTuple tuple = new LeftTuple( f0,
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                sink,
                                                true );
 
