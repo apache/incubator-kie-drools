@@ -178,7 +178,6 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
 
     }
 
-    // TODO replace with CollatingIterator?
     private class LowestDayIndexAssignmentSequenceIterator implements Iterator<AssignmentSequence> {
 
         private Iterator<AssignmentSequence> leftIterator;
