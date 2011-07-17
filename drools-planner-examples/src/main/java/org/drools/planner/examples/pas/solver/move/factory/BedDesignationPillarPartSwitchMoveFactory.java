@@ -126,6 +126,7 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
         return moveList;
     }
 
+    // TODO replace with CollatingIterator?
     private class LowestFirstNightBedDesignationIterator implements Iterator<BedDesignation> {
 
         private Iterator<BedDesignation> leftIterator;
