@@ -21,8 +21,8 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.meta.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.PlanningEntitySelectionOrder;
-import org.drools.planner.core.heuristic.selector.PlanningEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
+import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
 
 @XStreamAlias("greedyFitPlanningEntity")
 public class GreedyFitPlanningEntityConfig {

@@ -1,20 +1,13 @@
 package org.drools.planner.core.constructionheuristic.greedyFit.selector;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.iterators.IteratorChain;
-import org.drools.WorkingMemory;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhaseScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitStepScope;
 import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListener;
-import org.drools.planner.core.constructionheuristic.greedyFit.event.GreedySolverPhaseLifecycleListenerAdapter;
-import org.drools.planner.core.domain.entity.PlanningEntitySorter;
-import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
-import org.drools.planner.core.heuristic.selector.PlanningEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
 
 /**
  * Determines the order in which the planning entities are fit into the solution

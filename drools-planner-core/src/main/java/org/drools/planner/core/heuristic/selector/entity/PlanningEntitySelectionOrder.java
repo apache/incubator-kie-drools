@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector;
+package org.drools.planner.core.heuristic.selector.entity;
 
 public enum PlanningEntitySelectionOrder {
     ORIGINAL,

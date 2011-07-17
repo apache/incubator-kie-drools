@@ -30,7 +30,7 @@ import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDec
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyFitType;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.domain.meta.SolutionDescriptor;
-import org.drools.planner.core.heuristic.selector.PlanningEntitySelector;
+import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 

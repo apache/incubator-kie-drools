@@ -1,4 +1,4 @@
-package org.drools.planner.core.heuristic.selector;
+package org.drools.planner.core.heuristic.selector.entity;
 
 import java.util.Collections;
 import java.util.Iterator;
