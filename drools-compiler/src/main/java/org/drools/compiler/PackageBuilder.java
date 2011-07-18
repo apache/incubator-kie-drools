@@ -689,7 +689,7 @@ public class PackageBuilder {
                           packageDescrsForPackage );
         }
         packageDescrsForPackage.add( packageDescr );
-        List<ImportDescr> imports = new ArrayList<ImportDescr>();
+        Set<ImportDescr> imports = new HashSet<ImportDescr>();
         for ( PackageDescr pd : packageDescrsForPackage ) {
             imports.addAll( pd.getImports() );
         }
