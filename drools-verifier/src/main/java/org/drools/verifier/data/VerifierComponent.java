@@ -32,10 +32,6 @@ public abstract class VerifierComponent
 
     private BaseDescr descr;
     
-//    public VerifierComponent() {
-//        System.out.println("VerifierComponent : " + this.getClass().getSimpleName());
-//    }
-
     public VerifierComponent(BaseDescr descr) {
         this.descr = descr;
     }
