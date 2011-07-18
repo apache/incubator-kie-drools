@@ -20,6 +20,7 @@ import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
 import org.drools.base.evaluators.Operator;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.TestBaseOld;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.*;
@@ -232,7 +233,7 @@ public class IncompatibilityRestrictionsTest extends IncompatibilityBase {
 
         VerifierRule rule = VerifierComponentMockFactory.createRule1();
 
-        ObjectType objectType = new ObjectType();
+        ObjectType objectType = new ObjectType(new PackageDescr("testPackage1"));
         objectType.setFullName("org.test.Person");
 
         Pattern pattern1 = VerifierComponentMockFactory.createPattern1();

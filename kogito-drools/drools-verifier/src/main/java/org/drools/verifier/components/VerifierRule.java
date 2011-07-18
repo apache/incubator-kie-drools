@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.components.Consequence.ConsequenceType;
 import org.drools.verifier.report.components.Cause;
 
@@ -55,8 +56,8 @@ public class VerifierRule extends PackageComponent
 
     private int                       offset          = 0;
 
-    public VerifierRule(RulePackage rulePackage) {
-        super( rulePackage );
+    public VerifierRule(BaseDescr descr,RulePackage rulePackage) {
+        super(descr, rulePackage );
     }
 
     @Override

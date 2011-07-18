@@ -16,15 +16,16 @@
 
 package org.drools.verifier.visitor;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.Import;
 import org.drools.verifier.components.ObjectType;
 
 class ObjectTypeFactory {
 
-    static Field createField(String fieldName,
+    static Field createField(BaseDescr descr, String fieldName,
                              ObjectType objectType) {
-        Field field = new Field();
+        Field field = new Field(descr);
 
         field.setObjectTypePath( objectType.getPath() );
         field.setObjectTypeName( objectType.getFullName() );
@@ -35,8 +36,8 @@ class ObjectTypeFactory {
         return field;
     }
 
-    static ObjectType createObjectType(Import objectImport) {
-        ObjectType objectType = new ObjectType();
+    static ObjectType createObjectType(BaseDescr descr, Import objectImport) {
+        ObjectType objectType = new ObjectType(descr);
 
         objectType.setName( objectImport.getShortName() );
         objectType.setFullName( objectImport.getName() );
@@ -44,8 +45,8 @@ class ObjectTypeFactory {
         return objectType;
     }
 
-    static ObjectType createObjectType(String shortName) {
-        ObjectType objectType = new ObjectType();
+    static ObjectType createObjectType(BaseDescr descr, String shortName) {
+        ObjectType objectType = new ObjectType(descr);
 
         objectType.setName( shortName );
         objectType.setFullName( shortName );

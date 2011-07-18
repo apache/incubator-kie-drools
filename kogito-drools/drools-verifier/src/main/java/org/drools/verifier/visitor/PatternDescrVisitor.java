@@ -62,9 +62,9 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             Import objectImport = data.getImportByName(descr.getObjectType());
 
             if (objectImport != null) {
-                objectType = ObjectTypeFactory.createObjectType(objectImport);
+                objectType = ObjectTypeFactory.createObjectType(descr, objectImport);
             } else {
-                objectType = ObjectTypeFactory.createObjectType(descr.getObjectType());
+                objectType = ObjectTypeFactory.createObjectType(descr, descr.getObjectType());
             }
 
             data.add(objectType);
@@ -97,7 +97,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             visit(descr.getSource());
         } else {
             if (workingMemory == null) {
-                workingMemory = new WorkingMemory();
+                workingMemory = new WorkingMemory(descr);
                 data.add(workingMemory);
             }
             pattern.setSourcePath(workingMemory.getPath());
@@ -180,7 +180,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
      * @param descr
      */
     private void visitBindingDescr(BindingDescr descr) {
-        Field field = new Field();
+        Field field = new Field(descr);
         field.setName(descr.getExpression());
         field.setObjectTypeName(objectType.getName());
         field.setObjectTypePath(objectType.getPath());
@@ -207,7 +207,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
         EntryPoint entryPoint = data.getEntryPointByEntryId(descr.getEntryId());
 
         if (entryPoint == null) {
-            entryPoint = new EntryPoint();
+            entryPoint = new EntryPoint(descr);
 
             entryPoint.setEntryPointName(descr.getEntryId());
 

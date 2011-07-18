@@ -33,7 +33,7 @@ public abstract class PatternComponent extends RuleComponent {
                      String ruleName,
                      String patternName,
                      int patternOrderNumber) {
-        super( packageName,
+        super(null, packageName,
                ruleName );
 
         this.patternName = patternName;

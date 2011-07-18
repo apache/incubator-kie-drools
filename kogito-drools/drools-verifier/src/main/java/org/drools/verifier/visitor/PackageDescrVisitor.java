@@ -49,7 +49,7 @@ public class PackageDescrVisitor {
         rulePackage = data.getPackageByName(descr.getName());
 
         if (rulePackage == null) {
-            rulePackage = new RulePackage();
+            rulePackage = new RulePackage(descr);
 
             rulePackage.setName(descr.getName());
             data.add(rulePackage);
@@ -72,7 +72,7 @@ public class PackageDescrVisitor {
 
             imports.add(fullName);
 
-            Import objectImport = new Import(rulePackage);
+            Import objectImport = new Import(i, rulePackage);
             objectImport.setName(fullName);
             objectImport.setShortName(name);
             data.add(objectImport);
@@ -80,7 +80,7 @@ public class PackageDescrVisitor {
             ObjectType objectType = this.data.getObjectTypeByFullName(fullName);
 
             if (objectType == null) {
-                objectType = new ObjectType();
+                objectType = new ObjectType(i);
             }
 
             objectType.setName(name);
@@ -98,7 +98,7 @@ public class PackageDescrVisitor {
 
                 Field field = data.getFieldByObjectTypeAndFieldName(objectType.getFullName(), fieldName);
                 if (field == null) {
-                    field = ObjectTypeFactory.createField(fieldName, objectType);
+                    field = ObjectTypeFactory.createField(objectType.getDescr() ,fieldName, objectType);
                     field.setFieldType(packageHeaderLoader.getFieldType(objectType.getName(), fieldName));
                     data.add(field);
                 }

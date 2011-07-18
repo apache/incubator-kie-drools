@@ -16,7 +16,14 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
+
 public class EnumField extends Field {
+  
+    public EnumField(BaseDescr descr) {
+        super(descr);
+    }
+
     private static final long serialVersionUID = 510l;
 
     @Override
