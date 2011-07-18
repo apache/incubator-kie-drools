@@ -45,7 +45,6 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorCache;
 import org.drools.base.ClassFieldAccessorStore;
-import org.drools.base.ClassObjectType;
 import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
@@ -105,7 +104,6 @@ import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
-import org.drools.rule.builder.dialect.java.PackageStore;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
@@ -181,10 +179,8 @@ public class PackageBuilder {
     //AttributeDescr's name.
     private Map<String, Map<String, AttributeDescr>> packageAttributes = new HashMap<String, Map<String, AttributeDescr>>();
 
-    //This list of package imports is initialised with the PackageDescr's imports added to the builder. The 
-    //package imports are inherited by individual other DRL fragments loaded into the same Package. The map 
-    //is keyed on the PackageDescr's namespace and contains a list of ImportDescr's.
-    private Map<String, List<ImportDescr>>           packageImports    = new HashMap<String, List<ImportDescr>>();
+    //PackageDescrs' list of ImportDescrs are kept identical as subsequent PackageDescrs are added.
+    private Map<String, List<PackageDescr>>          packages          = new HashMap<String, List<PackageDescr>>();
 
     /**
      * Use this when package is starting from scratch.
@@ -242,7 +238,7 @@ public class PackageBuilder {
 
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<DroolsError>();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
@@ -285,7 +281,7 @@ public class PackageBuilder {
         //this.defaultNamespace = pkg.getName();
         this.defaultDialect = this.configuration.getDefaultDialect();
 
-        this.pkgRegistryMap = new HashMap<String, PackageRegistry>();
+        this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<DroolsError>();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
@@ -677,22 +673,26 @@ public class PackageBuilder {
             return;
         }
 
-        //Cache (or apply) package imports to subsequent PackageDescrs for the same package name
-        List<ImportDescr> existingImports = packageImports.get( packageDescr.getName() );
-        if ( existingImports == null ) {
-            existingImports = new ArrayList<ImportDescr>();
+        //Gather all imports for all PackageDescrs for the current package and replicate into
+        //all PackageDescrs for the current package, thus maintaining a complete list of 
+        //ImportDescrs for all PackageDescrs for the current package.
+        List<PackageDescr> packageDescrsForPackage = packages.get( packageDescr.getName() );
+        if ( packageDescrsForPackage == null ) {
+            packageDescrsForPackage = new ArrayList<PackageDescr>();
+            packages.put( packageDescr.getName(),
+                          packageDescrsForPackage );
         }
-        if ( packageDescr.getImports().size() > 0 ) {
-            for ( ImportDescr imp : packageDescr.getImports() ) {
-                existingImports.add( imp );
-            }
-            packageImports.put( packageDescr.getName(),
-                                existingImports );
-        } else {
-            for ( ImportDescr imp : existingImports ) {
-                if ( !packageDescr.getImports().contains( imp ) ) {
-                    packageDescr.addImport( imp );
-                }
+        packageDescrsForPackage.add( packageDescr );
+        List<ImportDescr> imports = new ArrayList<ImportDescr>();
+        for ( PackageDescr pd : packageDescrsForPackage ) {
+            imports.addAll( pd.getImports() );
+        }
+        for ( PackageDescr pd : packageDescrsForPackage ) {
+            pd.getImports().clear();
+            //PackageDescr.getImports() can return a Collections.EmptyList which doesn't
+            //support addAll(). PackageDescr.addImport() ensures the list can be appended 
+            for ( ImportDescr id : imports ) {
+                pd.addImport( id );
             }
         }
 
@@ -1056,6 +1056,12 @@ public class PackageBuilder {
             }
         }
 
+        // need to reinsert this to ensure that the package is the first/last one in the ordered map
+        // this feature is exploited by the knowledgeAgent
+        this.pkgRegistryMap.remove( packageDescr.getName() );
+        this.pkgRegistryMap.put( packageDescr.getName(),
+                                 pkgRegistry );
+
     }
 
     public TypeDeclaration getTypeDeclaration(Class< ? > cls) {
@@ -1385,14 +1391,17 @@ public class PackageBuilder {
             try {
                 ClassFieldInspector inspector = new ClassFieldInspector( registry.getTypeResolver().resolveType( fullSuper ) );
                 for ( String name : inspector.getGetterMethods().keySet() ) {
-                    if ( !inspector.isNonGetter( name ) && !"class".equals( name ) ) {
-                        TypeFieldDescr inheritedFlDescr = new TypeFieldDescr( name,
-                                                                              new PatternDescr( inspector.getFieldTypes().get( name ).getSimpleName() ) );
-                        inheritedFlDescr.setInherited( true );
-                        inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
+                    // classFieldAccessor requires both getter and setter
+                    if ( inspector.getSetterMethods().containsKey(name) ) {
+                        if ( !inspector.isNonGetter( name ) && !"class".equals( name ) ) {
+                            TypeFieldDescr inheritedFlDescr = new TypeFieldDescr( name,
+                                    new PatternDescr( inspector.getFieldTypes().get( name ).getName() ) );
+                            inheritedFlDescr.setInherited( true );
+                            inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
 
-                        if ( !fieldMap.containsKey( inheritedFlDescr.getFieldName() ) ) fieldMap.put( inheritedFlDescr.getFieldName(),
-                                                                                                      inheritedFlDescr );
+                            if ( !fieldMap.containsKey( inheritedFlDescr.getFieldName() ) ) fieldMap.put( inheritedFlDescr.getFieldName(),
+                                    inheritedFlDescr );
+                        }
                     }
                 }
 
@@ -1404,7 +1413,38 @@ public class PackageBuilder {
         }
 
         // finally, locally declared fields are merged. The map swap ensures that super-fields are added in order, before the subclass' ones
-        fieldMap.putAll( typeDescr.getFields() );
+        // notice that it is not possible to override a field changing its type
+        for (String fieldName : typeDescr.getFields().keySet()) {
+            if (fieldMap.containsKey(fieldName)) {
+                String type1 = fieldMap.get(fieldName).getPattern().getObjectType();
+                String type2 = typeDescr.getFields().get(fieldName).getPattern().getObjectType();
+                if ( type2.lastIndexOf(".") < 0 ) {
+                    try {
+                        type1 = pkgRegistryMap.get(pack.getName()).getTypeResolver().resolveType( type1 ).getName();
+                        type2 = pkgRegistryMap.get(pack.getName()).getTypeResolver().resolveType( type2 ).getName();
+                            // now that we are at it... this will be needed later anyway
+                            fieldMap.get(fieldName).getPattern().setObjectType(type1);
+                            typeDescr.getFields().get(fieldName).getPattern().setObjectType(type2);
+                    } catch (ClassNotFoundException cnfe) {
+                        // will fail later
+                    }
+                }
+
+                if ( ! type1.equals(type2) ) {
+                    this.results.add(new TypeDeclarationError("Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2 , typeDescr.getLine() ));
+                        typeDescr.setSuperTypeName(null);
+                        typeDescr.setSuperTypeNamespace(null);
+                    return false;
+                } else {
+                    String initVal = fieldMap.get(fieldName).getInitExpr();
+                    if (typeDescr.getFields().get(fieldName).getInitExpr() == null) {
+                        typeDescr.getFields().get(fieldName).setInitExpr(initVal);
+                    }
+                }
+            }
+            fieldMap.put(fieldName, typeDescr.getFields().get(fieldName));
+        }
+
         typeDescr.setFields( fieldMap );
 
         return true;
@@ -1967,7 +2007,7 @@ public class PackageBuilder {
     public Package getPackage() {
         PackageRegistry pkgRegistry = null;
         if ( !this.pkgRegistryMap.isEmpty() ) {
-            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[0];
+            pkgRegistry = (PackageRegistry) this.pkgRegistryMap.values().toArray()[this.pkgRegistryMap.size()-1];
         }
         Package pkg = null;
         if ( pkgRegistry != null ) {
@@ -1981,7 +2021,7 @@ public class PackageBuilder {
 
     public Package[] getPackages() {
         Package[] pkgs = new Package[this.pkgRegistryMap.size()];
-        int i = 0;
+        int i = pkgs.length;
         String errors = null;
         if ( !getErrors().isEmpty() ) {
             errors = getErrors().toString();
@@ -1992,7 +2032,7 @@ public class PackageBuilder {
             if ( errors != null ) {
                 pkg.setError( errors );
             }
-            pkgs[i++] = pkg;
+            pkgs[--i] = pkg;
         }
 
         return pkgs;
