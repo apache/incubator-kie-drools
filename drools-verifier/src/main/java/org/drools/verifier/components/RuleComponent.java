@@ -16,6 +16,8 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
+
 public abstract class RuleComponent extends PackageComponent
     implements
     ChildComponent {
@@ -27,13 +29,13 @@ public abstract class RuleComponent extends PackageComponent
     private int                   orderNumber;
 
     public RuleComponent(VerifierRule rule) {
-        this( rule.getPackageName(),
+        this(null, rule.getPackageName(),
               rule.getName() );
     }
 
-    RuleComponent(String packageName,
+    RuleComponent(BaseDescr descr, String packageName,
                   String ruleName) {
-        super( packageName );
+        super( descr, packageName );
 
         setRuleName( ruleName );
     }

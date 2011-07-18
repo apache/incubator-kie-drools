@@ -53,7 +53,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
 
     public void visitRuleDescr(RuleDescr descr) throws UnknownDescriptionException {
 
-        rule = new VerifierRule( rulePackage );
+        rule = new VerifierRule(descr, rulePackage );
 
         rule.setName( descr.getName() );
 
