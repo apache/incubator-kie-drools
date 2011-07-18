@@ -47,7 +47,7 @@ public class TypeDeclarationDescrVisitor {
             ObjectType objectType = this.data.getObjectTypeByFullName(objectTypeName);
 
             if (objectType == null) {
-                objectType = new ObjectType();
+                objectType = new ObjectType(typeDeclaration);
                 objectType.setName(typeDeclaration.getTypeName());
                 objectType.setFullName(typeDeclaration.getTypeName());
                 data.add(objectType);
@@ -58,7 +58,7 @@ public class TypeDeclarationDescrVisitor {
                 Field field = data.getFieldByObjectTypeAndFieldName(objectType.getFullName(),
                         fieldName);
                 if (field == null) {
-                    field = ObjectTypeFactory.createField(fieldName,
+                    field = ObjectTypeFactory.createField(typeDeclaration.getFields().get(fieldName),fieldName,
                             objectType);
                     field.setFieldType(typeDeclaration.getFields().get(fieldName).getPattern().getObjectType());
                     data.add(field);

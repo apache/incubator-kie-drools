@@ -16,8 +16,15 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
+
 public class WorkingMemory extends VerifierComponentSource {
 
+  
+    public WorkingMemory(BaseDescr descr) {
+        super(descr);
+    }
+  
     @Override
     public String getPath() {
         return String.format( "source[@type=%s]",

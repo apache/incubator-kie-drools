@@ -16,13 +16,14 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
 
 public class Field extends VerifierComponent
     implements
     Cause {
-
+  
     public static final String BOOLEAN  = "java.lang.Boolean";
     public static final String STRING   = "java.lang.String";
     public static final String INT      = "java.lang.Integer";
@@ -37,7 +38,11 @@ public class Field extends VerifierComponent
     protected String           objectTypeName;
     protected String           name;
     private String             fieldType;
-
+    
+    public Field(BaseDescr descr) {
+        super(descr);
+    }
+    
     @Override
     public String getPath() {
         return String.format( "%s/field[@name='%s']",
