@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 
 public class RulePackage extends VerifierComponent {
@@ -35,6 +36,10 @@ public class RulePackage extends VerifierComponent {
     private List<String>              metadata  = new ArrayList<String>();
     private Map<String, List<String>> otherInfo = new HashMap<String, List<String>>();
 
+    
+    public RulePackage(BaseDescr descr) {
+       super(descr);
+    }
     public int getOffset() {
         offset++;
         return offset % 2;

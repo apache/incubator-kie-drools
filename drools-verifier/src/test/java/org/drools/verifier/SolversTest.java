@@ -16,15 +16,15 @@
 
 package org.drools.verifier;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
@@ -35,6 +35,7 @@ import org.drools.verifier.components.SubPattern;
 import org.drools.verifier.components.SubRule;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.solver.Solvers;
+import org.junit.Test;
 
 public class SolversTest {
 
@@ -52,10 +53,11 @@ public class SolversTest {
      */
     @Test
     public void testNotAnd() {
-        RulePackage rulePackage = new RulePackage();
+        PackageDescr descr = new PackageDescr("testPackage");
+        RulePackage rulePackage = new RulePackage(descr);
         rulePackage.setName( "testPackage" );
 
-        VerifierRule rule = new VerifierRule( rulePackage );
+        VerifierRule rule = new VerifierRule(descr, rulePackage );
         rule.setName( "testRule" );
         Pattern pattern = new Pattern( rule );
 

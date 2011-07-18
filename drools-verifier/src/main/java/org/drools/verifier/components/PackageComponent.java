@@ -16,17 +16,20 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 
 public abstract class PackageComponent extends VerifierComponent {
 
     private String packageName;
-
-    public PackageComponent(RulePackage rulePackage) {
+    
+    public PackageComponent(BaseDescr descr, RulePackage rulePackage) {
+        super(descr);
         setPackageName( rulePackage.getName() );
     }
 
-    protected PackageComponent(String packageName) {
+    protected PackageComponent(BaseDescr descr, String packageName) {
+        super(descr);
         setPackageName( packageName );
     }
 

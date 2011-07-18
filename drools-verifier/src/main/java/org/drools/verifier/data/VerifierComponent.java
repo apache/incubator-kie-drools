@@ -19,6 +19,7 @@ package org.drools.verifier.data;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.report.components.Cause;
 
@@ -29,6 +30,16 @@ public abstract class VerifierComponent
     Comparable<VerifierComponent>,
     Cause {
 
+    private BaseDescr descr;
+    
+//    public VerifierComponent() {
+//        System.out.println("VerifierComponent : " + this.getClass().getSimpleName());
+//    }
+
+    public VerifierComponent(BaseDescr descr) {
+        this.descr = descr;
+    }
+    
     public abstract String getPath();
 
     public abstract VerifierComponentType getVerifierComponentType();
@@ -44,5 +55,9 @@ public abstract class VerifierComponent
     @Override
     public String toString() {
         return this.getClass().getName() + " " + getPath();
+    }
+
+    public BaseDescr getDescr() {
+        return descr;
     }
 }

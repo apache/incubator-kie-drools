@@ -44,7 +44,7 @@ public class ExprConstraintDescrVisitor {
         Operator operator = Operator.determineOperator(descr.getOperator(), descr.isNegated());
         String value = visit(descr.getRight());
 
-        setField(fieldName);
+        setField(descr,fieldName);
 
         if (isAVariableRestriction(value)) {
             createVariableRestriction(currentOrderNumber, value, operator);
@@ -66,15 +66,15 @@ public class ExprConstraintDescrVisitor {
         solvers.addPatternComponent(restriction);
     }
 
-    private void setField(String fieldName) {
+    private void setField(RelationalExprDescr descr, String fieldName) {
         field = data.getFieldByObjectTypeAndFieldName(pattern.getName(), fieldName);
         if (field == null) {
-            createField(fieldName);
+            createField(descr, fieldName);
         }
     }
 
-    private void createField(String fieldName) {
-        field = new Field();
+    private void createField(RelationalExprDescr descr, String fieldName) {
+        field = new Field(descr);
         field.setName(fieldName);
         field.setObjectTypePath(pattern.getObjectTypePath());
         field.setObjectTypeName(pattern.getName());
@@ -96,7 +96,7 @@ public class ExprConstraintDescrVisitor {
     }
 
     private void visit(BindingDescr descr) {
-        Field field = new Field();
+        Field field = new Field(descr);
         field.setName(descr.getExpression());
         field.setObjectTypeName(pattern.getName());
         field.setObjectTypePath(pattern.getObjectTypePath());
