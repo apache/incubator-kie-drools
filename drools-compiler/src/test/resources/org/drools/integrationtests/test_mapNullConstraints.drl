@@ -1,0 +1,74 @@
+#created on: Jun 2, 2011
+package org.drools
+
+rule "1. home != null"
+    salience 80
+    when
+        Person( namedAddresses["home"] != null )
+    then
+        // do something
+end
+
+rule "2. not home == null"
+    salience 70
+    when
+    	not (
+        	Person( namedAddresses["home"] == null )
+       	)
+    then
+        // do something
+end
+
+rule "3. home == null"
+    salience 60
+    when
+        Person( namedAddresses["home"] == null )
+    then
+        // do something
+end
+
+rule "4. not home != null"
+    salience 50
+    when
+    	not (
+        	Person( namedAddresses["home"] != null )
+       	)
+    then
+        // do something
+end
+
+rule "5. work != null"
+    salience 40
+    when
+        Person( namedAddresses["work"] != null )
+    then
+        // do something
+end
+
+rule "6. not work == null"
+    salience 30
+    when
+        not (
+            Person( namedAddresses["work"] == null )
+        )
+    then
+        // do something
+end
+
+rule "7. work == null"
+    salience 20
+    when
+        Person( namedAddresses["work"] == null )
+    then
+        // do something
+end
+
+rule "8. not work != null"
+    salience 10
+    when
+        not (
+            Person( namedAddresses["work"] != null )
+        )
+    then
+        // do something
+end
