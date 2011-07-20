@@ -100,6 +100,7 @@ import org.drools.StockTick;
 import org.drools.TestParam;
 import org.drools.Win;
 import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.base.RuleNameEndsWithAgendaFilter;
 import org.drools.base.RuleNameEqualsAgendaFilter;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -1919,6 +1920,36 @@ public class MiscTest {
         StatefulSession session = ruleBase.newStatefulSession();
 
         session.fireAllRules();
+    }
+
+    @Ignore("22-JUN-2011 -Toni Rikkola-")
+    @Test()
+    public void testImport() throws Exception {
+        // Same package as this test
+        String rule = "";
+        rule += "package org.drools.integrationtests;\n";
+        rule += "import java.lang.Math;\n";
+        rule += "rule \"Test Rule\"\n";
+        rule += "  dialect \"mvel\"\n";
+        rule += "  when\n";
+        rule += "  then\n";
+        // Can't handle the TestFact.TEST
+        rule += "    new TestFact(TestFact.TEST);\n";
+        rule += "end";
+
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ),
+                     ResourceType.DRL );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        try {
+            knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Should execute with out exceptions" );
+        }
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
     }
 
     @Test
@@ -4609,15 +4640,15 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( "b" );
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
@@ -4627,7 +4658,7 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore( "Requires fixing of mvel regression reported at https://github.com/mvel/mvel/pull/4")
+    @Ignore("Requires fixing of mvel regression reported at https://github.com/mvel/mvel/pull/4")
     public void testMethodCalls() throws Exception {
         final String text = "package org.drools\n" +
                             "rule \"method calls\"\n" +
@@ -4637,13 +4668,13 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
@@ -4663,7 +4694,7 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
@@ -4684,15 +4715,15 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( "b" );
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
@@ -4809,6 +4840,42 @@ public class MiscTest {
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( map ) );
+    }
+
+    @Test
+    public void testMapNullConstraint() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_mapNullConstraints.drl" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        new WorkingMemoryConsoleLogger( ksession );
+
+        Map addresses = new HashMap();
+        addresses.put( "home",
+                       new Address( "home street" ) );
+        Person bob = new Person( "Bob" );
+        bob.setNamedAddresses( addresses );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 4 ) ).afterActivationFired( arg.capture() );
+        org.drools.event.rule.AfterActivationFiredEvent aaf = arg.getAllValues().get( 0 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "1. home != null" ) );
+        aaf = arg.getAllValues().get( 1 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "2. not home == null" ) );
+
+        aaf = arg.getAllValues().get( 2 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "7. work == null" ) );
+        aaf = arg.getAllValues().get( 3 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "8. not work != null" ) );
     }
 
     @Test
@@ -5521,9 +5588,9 @@ public class MiscTest {
         ksession.setGlobal( "list",
                             list );
 
-        Person p = new Person( "ackbar");
+        Person p = new Person( "ackbar" );
         org.drools.runtime.rule.FactHandle ph = ksession.insert( p );
-        org.drools.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );        
+        org.drools.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );
         ksession.fireAllRules();
         ksession.dispose();
 
@@ -5532,8 +5599,8 @@ public class MiscTest {
         assertEquals( "ackbar",
                       list.get( 0 ) );
         ksession.retract( ph );
-    }    
-    
+    }
+
     @Test
     public void testRuleReplacement() throws Exception {
         // test rule replacement
@@ -8916,7 +8983,7 @@ public class MiscTest {
         assertEquals( 1,
                       rules );
     }
-    
+
     @Test
     public void testMethodConstraint() {
         String str = "package org.drools\n" +
@@ -8937,7 +9004,7 @@ public class MiscTest {
         assertEquals( 1,
                       rules );
     }
-    
+
     @Test
     public void testComplexOperator() {
         String str = "package org.drools\n" +
@@ -8964,7 +9031,7 @@ public class MiscTest {
         assertEquals( 2,
                       rules );
     }
-    
+
     @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
