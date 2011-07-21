@@ -110,7 +110,7 @@ public class PersistenceUtil {
         public void start() {
             if (realH2Server == null || !realH2Server.isRunning(false)) {
                 try {
-                    DeleteDbFiles.execute("", "jPADroolsFlow", true);
+                    DeleteDbFiles.execute("", "JPADroolsFlow", true);
                     realH2Server = Server.createTcpServer(new String[0]);
                     realH2Server.start();
                 } catch (SQLException e) {

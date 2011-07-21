@@ -80,20 +80,17 @@
     
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
-    <!-- <maven.datasource.classname>org.h2.jdbcx.JdbcDataSource</maven.datasource.classname> -->
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
           
     <maven.jdbc.db.name/>
     <maven.jdbc.db.port/>
     <maven.jdbc.db.server/>
           
-    <maven.jdbc.driver.dir/>
     <maven.jdbc.driver.jar/>
          
     <maven.jdbc.username>sa</maven.jdbc.username>
     <maven.jdbc.password></maven.jdbc.password>
     <maven.jdbc.url>jdbc:h2:tcp://localhost/JPADroolsFlow</maven.jdbc.url>
-    <!-- <maven.jdbc.url>jdbc:h2:mem:mydb</maven.jdbc.url> -->
   </properties>
   
   <profiles>
