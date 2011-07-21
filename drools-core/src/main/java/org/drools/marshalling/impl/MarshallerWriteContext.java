@@ -50,8 +50,10 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     public final boolean                        marshalProcessInstances;
     public final boolean                        marshalWorkItems;
     public final Environment                    env;
+    public List<InternalFactHandle>             matchFactHandles;
     
 
+    
     public MarshallerWriteContext(OutputStream stream,
                                   InternalRuleBase ruleBase,
                                   InternalWorkingMemory wm,

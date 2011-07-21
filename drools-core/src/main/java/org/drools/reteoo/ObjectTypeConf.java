@@ -16,6 +16,7 @@
 
 package org.drools.reteoo;
 
+import org.drools.rule.EntryPoint;
 import org.drools.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {
@@ -44,5 +45,7 @@ public interface ObjectTypeConf {
      * Enable TMS for this object type. 
      * */
     public void enableTMS();
+    
+    public EntryPoint getEntryPoint();
 
 }
