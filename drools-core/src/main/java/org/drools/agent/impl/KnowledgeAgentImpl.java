@@ -516,7 +516,7 @@ public class KnowledgeAgentImpl
             }
 
             for ( Rule rule : pkg.getRules() ) {
-                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                if ( resource == null ) {
                     this.listener.debug( "KnowledgeAgent no resource mapped for rule="
                                          + rule );
                 }
@@ -524,13 +524,15 @@ public class KnowledgeAgentImpl
                     resource = rule.getResource();
                 }
 
-                this.addDefinitionMapping( resource,
-                                           rule,
-                                           true );
+                if ( isNewDefinition( resource, rule ) ) {
+                    this.addDefinitionMapping( resource,
+                                               rule,
+                                               true );
+                }
             }
 
             for ( Process process : pkg.getRuleFlows().values() ) {
-                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                if ( resource == null ) {
                     this.listener.debug( "KnowledgeAgent no resource mapped for process="
                                          + process );
                 }
@@ -538,13 +540,15 @@ public class KnowledgeAgentImpl
                     resource = ((ResourcedObject) process).getResource();
                 }
 
-                this.addDefinitionMapping( resource,
-                                           process,
-                                           true );
+                if ( isNewDefinition( resource, process ) ) {
+                    this.addDefinitionMapping( resource,
+                                               process,
+                                               true );
+                }
             }
 
             for ( TypeDeclaration typeDeclaration : pkg.getTypeDeclarations().values() ) {
-                if ( resource != null && !((InternalResource) resource).hasURL() ) {
+                if ( resource == null ) {
                     this.listener.debug( "KnowledgeAgent no resource mapped for type="
                                          + typeDeclaration );
                 }
@@ -552,9 +556,11 @@ public class KnowledgeAgentImpl
                     resource = typeDeclaration.getResource();
                 }
 
-                this.addDefinitionMapping( resource,
-                                           typeDeclaration,
-                                           true );
+                if ( isNewDefinition( resource, typeDeclaration ) ) {
+                    this.addDefinitionMapping( resource,
+                                               typeDeclaration,
+                                               true );
+                }
             }
 
             for ( Function function : pkg.getFunctions().values() ) {
@@ -565,12 +571,22 @@ public class KnowledgeAgentImpl
                 if ( autoDiscoverResource ) {
                     resource = function.getResource();
                 }
-                this.addDefinitionMapping( resource,
-                                           function,
-                                           true );
+                if ( isNewDefinition( resource, function ) ) {
+                    this.addDefinitionMapping( resource,
+                                               function,
+                                               true );
+                }
             }
         }
     }
+
+    private boolean isNewDefinition( Resource resource, KnowledgeDefinition def ) {
+        if ( ! this.registeredResources.isResourceMapped( resource ) ) {
+            return true;
+        }
+        return ! this.registeredResources.getDefinitions(resource).contains( def );
+    }
+
 
     /**
      * This indexes the rules, flows, type declarations, etc against their
@@ -812,6 +828,9 @@ public class KnowledgeAgentImpl
         if ( this.newInstance ) {
             this.listener.warning( "KnowledgeAgent incremental build of KnowledgeBase when newInstance is true" );
         }
+
+         KnowledgeBuilder kBuilder = createKBuilder();
+
         // Incrementally rebuild the resources
         synchronized ( this.registeredResources ) {
             this.listener.info( "KnowledgeAgent performing an incremental build of the ChangeSet" );
@@ -893,7 +912,6 @@ public class KnowledgeAgentImpl
             /*
              * Compile the newly added resources
              */
-            KnowledgeBuilder kBuilder = createKBuilder();
             for ( Resource resource : changeSetState.addedResources ) {
                 ///compile the new resource
                 Collection<KnowledgePackage> kpkgs = createPackageFromResource( resource, kBuilder );
@@ -991,9 +1009,11 @@ public class KnowledgeAgentImpl
             }
         }
 
+        Set<KnowledgePackage> createdDistinctPackages = new HashSet<KnowledgePackage>();
         for ( Resource resource : changeSetState.createdPackages.keySet() ) {
-            this.kbase.addKnowledgePackages(changeSetState.createdPackages.get(resource));
+            createdDistinctPackages.addAll(changeSetState.createdPackages.get(resource));
         }
+        this.kbase.addKnowledgePackages(createdDistinctPackages);
 
         autoBuildResourceMapping();
 
@@ -1101,7 +1121,7 @@ public class KnowledgeAgentImpl
         this.listener.debug( "KnowledgeAgent mapping resource="
                              + resource + " to KnowledgeDefinition=" + definition );
 
-        boolean isNewResource = this.registeredResources.isResourceMapped( resource );
+        boolean isNewResource = ! this.registeredResources.isResourceMapped( resource );
 
         boolean isNewDefinition = true;
 

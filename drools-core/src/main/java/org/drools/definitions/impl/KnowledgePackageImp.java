@@ -120,4 +120,26 @@ public class KnowledgePackageImp
     }
 
 
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        KnowledgePackageImp that = (KnowledgePackageImp) o;
+
+        if (pkg == null || that.pkg == null) {
+            return false;
+        }
+        // JBRULES-3143
+        // Fixing the KnowledgeAgent: need to distinguish cases when the agent would try
+        // to load the same package from cases where a package is built from multiple resources
+        // (i.e. two partial packages with the same name are returned).
+        // Package equality would just check the name, so use identity
+        return pkg == that.pkg;
+    }
+
+
+    public int hashCode() {
+        return pkg != null ? pkg.hashCode() : 0;
+    }
 }
