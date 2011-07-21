@@ -77,6 +77,8 @@ public abstract class MapPersistenceTest {
 
     @Test
     public void dontCreateMoreSessionsThanNecessary() {
+        long initialNumberOfSavedSessions = getSavedSessionsCount();
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         StatefulKnowledgeSession crmPersistentSession = createSession(kbase);
@@ -95,7 +97,7 @@ public abstract class MapPersistenceTest {
 
         crmPersistentSession.fireAllRules();
 
-        Assert.assertEquals(1, getSavedSessionsCount());
+        Assert.assertEquals(initialNumberOfSavedSessions + 1, getSavedSessionsCount());
         crmPersistentSession.dispose();
     }
 
