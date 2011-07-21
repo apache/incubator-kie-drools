@@ -21,7 +21,6 @@ import java.io.File;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.examples.common.app.SolverPerformanceTest;
 import org.drools.planner.examples.common.persistence.SolutionDao;
-import org.drools.planner.examples.pas.persistence.PatientAdmissionScheduleDaoImpl;
 import org.drools.planner.examples.travelingtournament.persistence.smart.SmartTravelingTournamentDaoImpl;
 import org.junit.Test;
 

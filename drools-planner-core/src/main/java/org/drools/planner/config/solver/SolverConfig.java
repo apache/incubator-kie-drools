@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.config;
+package org.drools.planner.config.solver;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +32,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.config.score.definition.ScoreDefinitionConfig;

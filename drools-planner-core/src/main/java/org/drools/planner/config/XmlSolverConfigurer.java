@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.drools.planner.config.constructionheuristic.greedyFit.GreedyFitSolverPhaseConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
+import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
 
 /**

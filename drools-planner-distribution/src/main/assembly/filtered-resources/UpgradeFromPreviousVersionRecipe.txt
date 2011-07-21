@@ -1065,6 +1065,12 @@ After in  *.java:
     import org.drools.planner.core.termination.Termination;
 If you implemented a custom Termination: the interface has been changed to separate solver and phase termination.
 
+[MINOR] SolverConfig has been moved to another package.
+Before in *.java:
+    import org.drools.planner.config.SolverConfig;
+After in *.java:
+    import org.drools.planner.config.solver.SolverConfig;
+
 [MINOR] Solver.isTerminatedEarly() has been renamed to Solver.isTerminateEarly()
 Before in  *.java:
     ... solver.isTerminatedEarly() ...

@@ -17,8 +17,8 @@
 package org.drools.planner.config.localsearch;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;

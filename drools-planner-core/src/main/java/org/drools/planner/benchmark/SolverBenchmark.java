@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.drools.planner.config.SolverConfig;
+import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.score.Score;
 
 @XStreamAlias("solverBenchmark")
