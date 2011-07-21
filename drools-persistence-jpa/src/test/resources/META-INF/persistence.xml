@@ -7,16 +7,22 @@
   </properties>
  </persistence-unit-->
     <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>jdbc/testDS1</jta-data-source>        
-        <class>org.drools.persistence.info.SessionInfo</class>
-        <class>org.drools.persistence.info.WorkItemInfo</class>
+      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <jta-data-source>jdbc/testDS1</jta-data-source>        
+      <class>org.drools.persistence.info.SessionInfo</class>
+      <class>org.drools.persistence.info.WorkItemInfo</class>
       <properties>
-          <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-          <property name="hibernate.max_fetch_depth" value="3"/>
+        <property name="hibernate.max_fetch_depth" value="3"/>
         <property name="hibernate.hbm2ddl.auto" value="update" />
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+        <property name="hibernate.show_sql" value="true" />
+        <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+                        
+        <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+         
+        <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
+        <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
+        <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
+        <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
       </properties>
     </persistence-unit>
 </persistence>

@@ -1,5 +1,6 @@
 package org.drools.persistence.map.impl;
 
+import static org.drools.persistence.util.PersistenceUtil.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -26,19 +27,10 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @Before
     public void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        ds1 = setupPoolingDataSource();
+        
         ds1.init();
-        emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
     
     @After
