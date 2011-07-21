@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import org.drools.InitialFact;
 import org.drools.base.ClassObjectType;
 import org.drools.common.ActivationGroupNode;
+import org.drools.common.ActivationIterator;
 import org.drools.common.ActiveActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
@@ -265,13 +266,14 @@ public class OutputMarshaller {
 
         
 
-        ActiveActivationIterator it = ActiveActivationIterator.iterator( wm );
-        List<InternalFactHandle> list = new ArrayList<InternalFactHandle>(100);
+        ActivationIterator it = ActivationIterator.iterator( wm );
+        List<InternalFactHandle> matchFactHandles = new ArrayList<InternalFactHandle>(100);
         for ( Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
-            list.add(  item.getFactHandle() );
+            matchFactHandles.add(  item.getFactHandle() );
         }
+        context.matchFactHandles = matchFactHandles;
         
-        stream.writeInt( wm.getObjectStore().size() + list.size() );
+        stream.writeInt( wm.getObjectStore().size() + matchFactHandles.size() );
         
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
@@ -286,7 +288,7 @@ public class OutputMarshaller {
                               context );
         }
         
-        for ( InternalFactHandle handle : list) {
+        for ( InternalFactHandle handle : orderFacts( matchFactHandles ) ) {
             Object object = handle.getObject();
             handle.setObject( null );  // we must set it to null as we don't want to write out the Activation
             writeFactHandle( context,
@@ -371,6 +373,16 @@ public class OutputMarshaller {
 
         return handles;
     }
+    
+    public static InternalFactHandle[] orderFacts(List<InternalFactHandle> handlesList) {
+        // this method is just needed for testing purposes, to allow round tripping
+        int size = handlesList.size();
+        InternalFactHandle[] handles = handlesList.toArray( new InternalFactHandle[ size ] );
+        Arrays.sort( handles,
+                     new HandleSorter() );
+
+        return handles;
+    }    
 
     public static class HandleSorter
         implements
@@ -471,6 +483,24 @@ public class OutputMarshaller {
                                 true );
             }
         }
+        
+        
+        for ( InternalFactHandle handle : orderFacts( context.matchFactHandles ) ) {
+            //InternalFactHandle handle = (InternalFactHandle) it.next();
+
+            for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                stream.writeShort( PersisterEnums.LEFT_TUPLE );
+
+                stream.writeInt( leftTuple.getLeftTupleSink().getId() );
+                stream.writeInt( handle.getId() );
+
+                //context.out.println( "LeftTuple sinkId:" + leftTuple.getLeftTupleSink().getId() + " handleId:" + handle.getId() );
+                writeLeftTuple( leftTuple,
+                                context,
+                                true );
+            }
+        }        
+        
         stream.writeShort( PersisterEnums.END );
         //context.out.println( "LeftTuples End" );
     }

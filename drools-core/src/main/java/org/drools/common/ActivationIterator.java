@@ -5,6 +5,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
@@ -61,6 +62,11 @@ public class ActivationIterator
         }
     }
 
+    public static ActivationIterator iterator(InternalWorkingMemory wm) {
+        return new ActivationIterator( wm,
+                                       new KnowledgeBaseImpl( wm.getRuleBase() ) );        
+    }
+    
     public static ActivationIterator iterator(StatefulKnowledgeSession ksession) {
         return new ActivationIterator( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory(),
                                        ksession.getKnowledgeBase() );

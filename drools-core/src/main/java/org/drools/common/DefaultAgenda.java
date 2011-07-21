@@ -40,8 +40,10 @@ import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.ProcessInstance;
@@ -115,6 +117,8 @@ public class DefaultAgenda
     protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
     private int                                                 activationCounter;
+    
+    private ObjectTypeConf activationObjectTypeConf;
 
     // ------------------------------------------------------------
     // Constructors
@@ -333,8 +337,16 @@ public class DefaultAgenda
         return stagedActivations;
     }
 
-    public boolean addActivation(final AgendaItem activation) {              
-        InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, null, workingMemory, null );
+    
+    
+    public boolean addActivation(final AgendaItem activation) { 
+        if (  activationObjectTypeConf == null ) {
+            EntryPoint ep = workingMemory.getEntryPoint();
+            activationObjectTypeConf =  ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
+                                                                                                                                                                                                     activation );
+        }
+        
+        InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
         workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
         activation.setFactHandle( factHandle );
 

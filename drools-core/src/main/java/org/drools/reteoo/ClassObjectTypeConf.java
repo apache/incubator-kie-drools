@@ -33,6 +33,7 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.TypeDeclaration;
+import org.drools.spi.Activation;
 import org.drools.spi.ObjectType;
 
 public class ClassObjectTypeConf
@@ -62,8 +63,8 @@ public class ClassObjectTypeConf
 
     public ClassObjectTypeConf(final EntryPoint entryPoint,
                                final Class< ? > clazz,
-                               final InternalRuleBase ruleBase) {
-        this.cls = clazz;
+                               final InternalRuleBase ruleBase) {        
+        this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Activation_ObjectType.getClassType() : clazz;
         this.ruleBase = ruleBase;
         this.entryPoint = entryPoint;
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );
@@ -205,6 +206,10 @@ public class ClassObjectTypeConf
 
     public void enableTMS() {
         this.tmsEnabled = true;
+    }
+
+    public EntryPoint getEntryPoint() {
+        return entryPoint;
     }
     
 }
