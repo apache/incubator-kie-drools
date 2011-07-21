@@ -109,6 +109,7 @@ public class SchedulerTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                           context,
                           workingMemory );
+        workingMemory.fireAllRules();
 
         // sleep for 300ms
         Thread.sleep( 300 );
@@ -186,6 +187,7 @@ public class SchedulerTest extends DroolsTestCase {
 
         assertEquals( 0,
                       data.size() );
+        workingMemory.fireAllRules();
 
         // sleep for 2 seconds
         Thread.sleep( 2000 );
@@ -266,6 +268,8 @@ public class SchedulerTest extends DroolsTestCase {
                           workingMemory );
         assertEquals( 0,
                       data.size() );
+        
+        workingMemory.fireAllRules();
 
         // sleep for 0.5 seconds
         Thread.sleep( 500 );

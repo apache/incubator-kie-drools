@@ -2015,11 +2015,11 @@ public class MiscTest {
         session.insert( cell1 );
         FactHandle cellHandle = session.insert( cell );
 
-        StatefulKnowledgeSession ksesion = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session ),
+        StatefulKnowledgeSession ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session ),
                                                                                                       //                                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                                                       false );
 
-        ksesion.fireAllRules();
+        session.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
     }
@@ -2389,8 +2389,8 @@ public class MiscTest {
         Person p = new Person( "stilton" );
         ksession.insert( p );
 
-        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-                                                                              true );
+//        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
+//                                                                              true );
         ksession.fireAllRules();
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );

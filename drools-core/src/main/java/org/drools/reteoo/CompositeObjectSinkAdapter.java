@@ -22,6 +22,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -890,6 +891,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         public void setPrevious(final LinkedListNode previous) {
             this.previous = previous;
+        }
+
+        public void setNext(Entry next) {
+            this.next = ( LinkedListNode ) next;
         }
     }
 }

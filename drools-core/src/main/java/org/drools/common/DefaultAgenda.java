@@ -34,6 +34,8 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
@@ -53,6 +55,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.spi.Tuple;
+import org.drools.time.impl.Timer;
 
 /**
  * Rule-firing Agenda.
@@ -306,11 +309,11 @@ public class DefaultAgenda
                                       wm );
         this.scheduledActivations.add( item );
 
-        // adds item to activation group if appropriate
-        addItemToActivationGroup( item );
-
     }
 
+    
+    // @TODO make serialisation work
+    private ActivationGroup stagedActivations;
     /**
      * If the item belongs to an activation group, add it
      * 
@@ -322,11 +325,107 @@ public class DefaultAgenda
             this.getActivationGroup( group ).addActivation( item );
         }
     }
+    
+    public ActivationGroup getStageActivationsGroup() {
+        if ( stagedActivations == null ) {
+            stagedActivations = new ActivationGroupImpl( "staged activations");
+        }
+        return stagedActivations;
+    }
 
+    public boolean addActivation(final AgendaItem activation) {              
+        InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, null, workingMemory, null );
+        workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
+        activation.setFactHandle( factHandle );
+
+        // All activations started off staged, they are unstaged if they are blocked or 
+        // allowed to move onto the actual agenda for firing.
+        ActivationGroup activationGroup = getStageActivationsGroup();        
+        activationGroup.addActivation( activation );
+       
+        return true;
+    }
+    
+    public void removeActivation(final AgendaItem activation) {              
+        workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );       
+    }  
+    
+    public void modifyActivation(final AgendaItem activation) {           
+        InternalFactHandle factHandle = activation.getFactHandle();
+        workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
+        
+        // All activations started off staged, they are unstaged if they are blocked or 
+        // allowed to move onto the actual agenda for firing.
+        ActivationGroup activationGroup = getStageActivationsGroup();        
+        activationGroup.addActivation( activation );        
+    }     
+    
+    public void clearAndCancelStagedActivations() {
+        if ( getStageActivationsGroup().isEmpty() ) {
+            return;
+        }        
+        org.drools.core.util.LinkedList list = getStageActivationsGroup().getList();
+
+        final EventSupport eventsupport = (EventSupport) this.workingMemory;
+        for ( Entry entry = list.removeFirst(); entry != null; entry = list.removeFirst() ) {
+            ActivationGroupNode node = (ActivationGroupNode) entry;
+            AgendaItem item = ( AgendaItem ) node.getActivation();  
+            // This must be set to false otherwise modify won't work properly
+            item.setActivated( false );            
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                          this.workingMemory,
+                                                                          ActivationCancelledCause.CLEAR );            
+        }
+    }
+    
+    public void unstageActivations() {
+        if ( getStageActivationsGroup().isEmpty() ) {
+            return;
+        }        
+        org.drools.core.util.LinkedList list = getStageActivationsGroup().getList();
+
+        for ( Entry entry = list.removeFirst(); entry != null; entry = list.removeFirst() ) {
+            ActivationGroupNode node = (ActivationGroupNode) entry;
+            AgendaItem item = ( AgendaItem ) node.getActivation();
+            item.setActivationGroupNode( null );
+
+            Rule rule = item.getRule();
+            
+            // set the focus if rule autoFocus is true
+            if ( rule.getAutoFocus() ) {
+                this.setFocus( rule.getAgendaGroup() );
+            }              
+                                   
+            // adds item to activation group if appropriate
+            addItemToActivationGroup(  item );            
+            
+            final Timer timer = rule.getTimer();
+            if ( timer != null ) {
+                scheduleItem( (ScheduledAgendaItem) item,
+                              workingMemory );
+            } else {                
+                AgendaItem agendaItem =  ( AgendaItem ) item;
+                
+                InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( rule.getAgendaGroup() );
+
+                if ( agendaItem.getRule().getRuleFlowGroup() == null ) {
+                    agendaGroup.add( agendaItem );
+                } else {
+                    // There is a RuleFlowNode so add it there, instead of the Agenda
+                    InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( rule.getRuleFlowGroup() );
+                    rfg.addActivation( agendaItem );
+                }
+            }                        
+        }
+        
+        notifyHalt();
+
+    }
+    
     /**
      * @inheritDoc
      */
-    public boolean addActivation(final AgendaItem activation) {
+    public boolean addActivationx(final AgendaItem activation) {
         // set the focus if rule autoFocus is true
         if ( activation.getRule().getAutoFocus() ) {
             this.setFocus( activation.getRule().getAgendaGroup() );
@@ -640,6 +739,10 @@ public class DefaultAgenda
                                             this );
             }
         }
+        
+        // reset staged activations
+        getStageActivationsGroup().clear();
+        
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
@@ -678,6 +781,9 @@ public class DefaultAgenda
             }
         }
 
+        // cancel all staged activations
+        clearAndCancelStagedActivations();
+        
         // cancel all ruleflows
         for ( RuleFlowGroup group : this.ruleFlowGroups.values() ) {
             clearAndCancelAndCancel( group );
@@ -720,8 +826,8 @@ public class DefaultAgenda
             }
 
             // this must be set false before removal from the activationGroup.
-            // Otherwise the activationGroup will also try to cancel the
-            // Actvation
+            // Otherwise the activationGroup will also try to cancel the Actvation
+            // Also modify won't work properly
             item.setActivated( false );
 
             if ( item.getActivationGroupNode() != null ) {
@@ -942,6 +1048,8 @@ public class DefaultAgenda
 
             eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation,
                                                                            this.workingMemory );
+            
+            unstageActivations();
         } finally {
             this.workingMemory.endOperation();
         }
@@ -1030,6 +1138,7 @@ public class DefaultAgenda
     }
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
+        unstageActivations();
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
             boolean fired = fireNextItem( agendaFilter );
@@ -1051,6 +1160,7 @@ public class DefaultAgenda
 
     public int fireAllRules(AgendaFilter agendaFilter,
                             int fireLimit) {
+        unstageActivations();
         this.halt.set( false );
         int fireCount = 0;
         while ( continueFiring( fireLimit ) && fireNextItem( agendaFilter ) ) {
