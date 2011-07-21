@@ -27,7 +27,7 @@ import org.drools.ClassObjectFilter;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;

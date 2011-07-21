@@ -1,4 +1,4 @@
-package org.drools.planner.core.domain.meta;
+package org.drools.planner.core.domain.common;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;

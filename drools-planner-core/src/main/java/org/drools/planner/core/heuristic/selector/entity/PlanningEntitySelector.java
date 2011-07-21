@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.WorkingMemory;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.entity.PlanningEntitySorter;
-import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
 
@@ -38,7 +38,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         validateConfiguration();
-        initFitOrderPlanningEntities(solverPhaseScope);
+        initSelectedPlanningEntityList(solverPhaseScope);
     }
 
     private void validateConfiguration() {
@@ -53,7 +53,7 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
         }
     }
 
-    private void initFitOrderPlanningEntities(AbstractSolverPhaseScope solverPhaseScope) {
+    private void initSelectedPlanningEntityList(AbstractSolverPhaseScope solverPhaseScope) {
         List<Object> workingPlanningEntityList = solverPhaseScope.getWorkingPlanningEntityList();
         for (Iterator<Object> it = workingPlanningEntityList.iterator(); it.hasNext(); ) {
             Object planningEntity = it.next();

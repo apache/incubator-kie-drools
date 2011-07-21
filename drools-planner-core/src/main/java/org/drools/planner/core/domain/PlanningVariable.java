@@ -18,6 +18,9 @@ package org.drools.planner.core.domain;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.Comparator;
+
+import org.drools.planner.core.domain.variable.PlanningValueStrengthWeightFactory;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -33,5 +36,25 @@ public @interface PlanningVariable {
 
     // TODO Add null
     // boolean nullable() default false;
+
+    /**
+     * Allows a collection of planning values for this variable to be sorted by strength.
+     * <p/>
+     * Do not use together with {@link #strengthWeightFactoryClass()}.
+     * @return {@link NullStrengthComparator} when it is null (workaround for annotation limitation)
+     */
+    public Class<? extends Comparator> strengthComparatorClass() default NullStrengthComparator.class;
+    interface NullStrengthComparator extends Comparator {}
+
+    /**
+     * Allows a collection of planning values for this variable  to be sorted by strength.
+     * <p/>
+     * Do not use together with {@link #strengthComparatorClass()}.
+     * @return {@link NullStrengthWeightFactory} when it is null (workaround for annotation limitation)
+     * @see PlanningValueStrengthWeightFactory
+     */
+    public Class<? extends PlanningValueStrengthWeightFactory> strengthWeightFactoryClass()
+            default NullStrengthWeightFactory.class;
+    interface NullStrengthWeightFactory extends PlanningValueStrengthWeightFactory {}
 
 }

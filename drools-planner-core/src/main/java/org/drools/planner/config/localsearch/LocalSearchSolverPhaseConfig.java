@@ -23,7 +23,7 @@ import org.drools.planner.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.drools.planner.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig;
 import org.drools.planner.config.localsearch.decider.forager.ForagerConfig;
 import org.drools.planner.config.localsearch.decider.selector.SelectorConfig;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.localsearch.decider.Decider;

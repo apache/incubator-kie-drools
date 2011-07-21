@@ -27,6 +27,8 @@ import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory;
+import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.PeriodStrengthWeightFactory;
+import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.RoomStrengthWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
@@ -55,7 +57,7 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.lectureIndexInCourse = lectureIndexInCourse;
     }
 
-    @PlanningVariable
+    @PlanningVariable(strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
     @ValueRangeFromSolutionProperty(propertyName = "periodList")
     public Period getPeriod() {
         return period;
@@ -65,7 +67,7 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.period = period;
     }
 
-    @PlanningVariable
+    @PlanningVariable(strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     @ValueRangeFromSolutionProperty(propertyName = "roomList")
     public Room getRoom() {
         return room;

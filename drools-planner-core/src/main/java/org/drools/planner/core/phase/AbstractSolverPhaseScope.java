@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;

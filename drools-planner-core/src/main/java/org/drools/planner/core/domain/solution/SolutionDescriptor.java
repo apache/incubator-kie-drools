@@ -1,4 +1,4 @@
-package org.drools.planner.core.domain.meta;
+package org.drools.planner.core.domain.solution;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -9,13 +9,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
 import org.drools.planner.core.domain.PlanningEntityProperty;
+import org.drools.planner.core.domain.common.DescriptorUtils;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
 
 public class SolutionDescriptor implements Serializable {
@@ -102,19 +103,15 @@ public class SolutionDescriptor implements Serializable {
         Collection<Object> planningFacts = new ArrayList<Object>();
         planningFacts.addAll(solution.getProblemFacts());
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
             PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
             if (entity != null && planningEntityDescriptor.isInitialized(entity)) {
                 planningFacts.add(entity);
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
-            Collection<? extends Object> entityCollection = (Collection<? extends Object>)
-                    DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
-            if (entityCollection == null) {
-                throw new IllegalArgumentException("The entity collection property ("
-                        + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
-            }
+            Collection<?> entityCollection = extractPlanningEntityCollection(
+                    entityCollectionPropertyDescriptor, solution);
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (planningEntityDescriptor.isInitialized(entity)) {
@@ -128,18 +125,14 @@ public class SolutionDescriptor implements Serializable {
     public List<Object> getPlanningEntityList(Solution solution) {
         List<Object> planningEntityList = new ArrayList<Object>();
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
             if (entity != null) {
                 planningEntityList.add(entity);
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
-            Collection<? extends Object> entityCollection = (Collection<? extends Object>)
-                    DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
-            if (entityCollection == null) {
-                throw new IllegalArgumentException("The entity collection property ("
-                        + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
-            }
+            Collection<?> entityCollection = extractPlanningEntityCollection(
+                    entityCollectionPropertyDescriptor, solution);
             planningEntityList.addAll(entityCollection);
         }
         return planningEntityList;
@@ -151,15 +144,15 @@ public class SolutionDescriptor implements Serializable {
      */
     public boolean isInitialized(Solution solution) {
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
-            Object entity = DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
             PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
             if (entity == null || !planningEntityDescriptor.isInitialized(entity)) {
                 return false;
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
-            Collection<? extends Object> entityCollection = (Collection<? extends Object>)
-                    DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+            Collection<?> entityCollection = extractPlanningEntityCollection(
+                    entityCollectionPropertyDescriptor, solution);
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (!planningEntityDescriptor.isInitialized(entity)) {
@@ -168,6 +161,22 @@ public class SolutionDescriptor implements Serializable {
             }
         }
         return true;
+    }
+
+    private Object extractPlanningEntity(PropertyDescriptor entityPropertyDescriptor, Solution solution) {
+        return DescriptorUtils.executeGetter(entityPropertyDescriptor, solution);
+    }
+
+    private Collection<?> extractPlanningEntityCollection(
+            PropertyDescriptor entityCollectionPropertyDescriptor, Solution solution) {
+        Collection<?> entityCollection = (Collection<?>)
+                DescriptorUtils.executeGetter(entityCollectionPropertyDescriptor, solution);
+        if (entityCollection == null) {
+            throw new IllegalArgumentException("The solutionClass (" + solutionClass
+                    + ")'s entityCollectionProperty ("
+                    + entityCollectionPropertyDescriptor.getName() + ") should never return null.");
+        }
+        return entityCollection;
     }
 
 }

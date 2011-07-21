@@ -21,7 +21,7 @@ import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
 import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 

@@ -16,12 +16,12 @@
 
 package org.drools.planner.core.bruteforce;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.planner.core.domain.meta.PlanningVariableDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 
 public class BruteForcePlanningVariableIterator { // TODO rename as it is used by the greedy algorithm
@@ -31,7 +31,7 @@ public class BruteForcePlanningVariableIterator { // TODO rename as it is used b
     private FactHandle planningEntityFactHandle;
     private final PlanningVariableDescriptor planningVariableDescriptor;
 
-    private Collection<?> planningValues;
+    private List<Object> planningValueList;
     private Iterator<?> planningValueIterator;
 
     private Object workingValue;
@@ -42,8 +42,8 @@ public class BruteForcePlanningVariableIterator { // TODO rename as it is used b
         this.planningEntity = planningEntity;
         this.planningVariableDescriptor = planningVariableDescriptor;
 
-        planningValues = planningVariableDescriptor.getRangeValues(solverPhaseScope.getWorkingSolution());
-        planningValueIterator = planningValues.iterator();
+        planningValueList = planningVariableDescriptor.getPlanningValueList(solverPhaseScope.getWorkingSolution());
+        planningValueIterator = planningValueList.iterator();
     }
 
     public void setPlanningEntityFactHandle(FactHandle planningEntityFactHandle) {
@@ -59,14 +59,14 @@ public class BruteForcePlanningVariableIterator { // TODO rename as it is used b
     }
 
     public void initialize() {
-        planningValueIterator = planningValues.iterator();
+        planningValueIterator = planningValueList.iterator();
         Object value = planningValueIterator.next();
         planningVariableDescriptor.setValue(planningEntity, value);
         workingValue = value;
     }
 
     public void reset() {
-        planningValueIterator = planningValues.iterator();
+        planningValueIterator = planningValueList.iterator();
         Object value = planningValueIterator.next();
         changeWorkingValue(value);
         workingValue = value;

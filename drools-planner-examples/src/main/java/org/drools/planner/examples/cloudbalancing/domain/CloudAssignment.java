@@ -24,6 +24,7 @@ import org.drools.planner.core.domain.PlanningVariable;
 import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudAssignmentDifficultyComparator;
+import org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudComputerStrengthComparator;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
@@ -43,7 +44,7 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
         this.cloudProcess = cloudProcess;
     }
 
-    @PlanningVariable()
+    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
     @ValueRangeFromSolutionProperty(propertyName = "cloudComputerList")
     public CloudComputer getCloudComputer() {
         return cloudComputer;

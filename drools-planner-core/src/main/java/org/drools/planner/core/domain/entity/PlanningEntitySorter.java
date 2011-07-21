@@ -16,6 +16,8 @@ import org.drools.planner.core.solution.Solution;
  */
 public class PlanningEntitySorter {
 
+    // TODO also keep PlanningEntityDescriptor?
+
     private Comparator<Object> difficultyComparator = null;
     private PlanningEntityDifficultyWeightFactory difficultyWeightFactory = null;
 
@@ -50,7 +52,7 @@ public class PlanningEntitySorter {
             planningEntityList.clear();
             planningEntityList.addAll(planningEntityMap.values());
         } else {
-            throw new IllegalStateException("sortDifficultyDescending is impossible" +
+            throw new IllegalStateException("Sorting on difficulty is impossible" +
                     " because difficultyComparator and difficultyWeightFactory are null.");
         }
     }

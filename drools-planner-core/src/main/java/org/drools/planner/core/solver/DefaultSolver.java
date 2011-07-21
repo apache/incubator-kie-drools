@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.drools.RuleBase;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.SolverPhase;

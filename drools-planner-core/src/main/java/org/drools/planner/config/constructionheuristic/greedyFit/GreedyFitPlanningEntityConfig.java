@@ -19,8 +19,8 @@ package org.drools.planner.config.constructionheuristic.greedyFit;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.core.domain.meta.PlanningEntityDescriptor;
-import org.drools.planner.core.domain.meta.SolutionDescriptor;
+import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelectionOrder;
 import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
 

@@ -1,4 +1,4 @@
-package org.drools.planner.core.domain.meta;
+package org.drools.planner.core.domain.entity;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -12,8 +12,8 @@ import java.util.Map;
 
 import org.drools.planner.core.domain.PlanningEntity;
 import org.drools.planner.core.domain.PlanningVariable;
-import org.drools.planner.core.domain.entity.PlanningEntitySorter;
-import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
+import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 
 public class PlanningEntityDescriptor {
 
@@ -101,7 +101,6 @@ public class PlanningEntityDescriptor {
             Method propertyGetter = propertyDescriptor.getReadMethod();
             if (propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
                 noPlanningVariableAnnotation = false;
-                PlanningVariable planningVariableAnnotation = propertyGetter.getAnnotation(PlanningVariable.class);
                 if (propertyDescriptor.getWriteMethod() == null) {
                     throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                             + ") has a PlanningVariable annotated property (" + propertyDescriptor.getName()
