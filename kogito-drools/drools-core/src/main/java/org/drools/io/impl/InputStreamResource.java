@@ -28,7 +28,7 @@ import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
 public class InputStreamResource  extends BaseResource implements InternalResource {
-    private InputStream stream;
+    private transient InputStream stream;
     
     public InputStreamResource(InputStream stream) {
         if ( stream == null ) {

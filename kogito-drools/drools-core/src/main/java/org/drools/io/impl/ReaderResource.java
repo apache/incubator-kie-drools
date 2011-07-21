@@ -29,7 +29,7 @@ import org.drools.io.Resource;
 import org.drools.io.internal.InternalResource;
 
 public class ReaderResource  extends BaseResource implements InternalResource {
-    private Reader reader;
+    private transient Reader reader;
     private String encoding;
     
     public ReaderResource(Reader reader) {
