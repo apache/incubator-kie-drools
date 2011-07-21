@@ -1548,7 +1548,7 @@ public class PackageBuilder {
 
             // Go on with the build
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            if ( resource != null && ((InternalResource) resource).hasURL() ) {
+            if ( resource != null ) {
                 type.setResource( this.resource );
             }
 
@@ -1895,7 +1895,7 @@ public class PackageBuilder {
 
         this.results.addAll( context.getErrors() );
 
-        if ( resource != null && ((InternalResource) resource).hasURL() ) {
+        if ( resource != null ) {
             context.getRule().setResource( resource );
         }
 
