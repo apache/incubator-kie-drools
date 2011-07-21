@@ -1,13 +1,17 @@
 package org.drools.agent;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.agent.impl.KnowledgeAgentImpl;
+import org.drools.definition.KnowledgeDefinition;
+import org.drools.io.Resource;
+import org.drools.io.impl.ByteArrayResource;
+import org.drools.io.impl.ChangeSetImpl;
+import org.drools.io.impl.UrlResource;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -23,6 +27,7 @@ import org.drools.runtime.rule.QueryResultsRow;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTest {
 
@@ -1108,6 +1113,7 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
             fail("The compilation should fail!");
         }catch (RuntimeException ex){
             //expected expcetion
+            System.err.println(ex);
         }
 
         
@@ -1316,4 +1322,107 @@ public class KnowledgeAgentIncrementalChangeSetTest extends BaseKnowledgeAgentTe
         
         kagent.dispose();
     }
+
+
+
+
+
+    @Test
+       public void testResourceMappingWithIncrementalBuild() throws Exception {
+           String rule1 = this.createDefaultRule( "rule1" );
+           String rule2 = this.createDefaultRule( "rule2" );
+
+           KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+           kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ),
+                         ResourceType.DRL );
+           kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ),
+                         ResourceType.DRL );
+           if ( kbuilder.hasErrors() ) {
+               fail( kbuilder.getErrors().toString() );
+           }
+           KnowledgePackage pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+           writePackage( pkg,
+                         fileManager.newFile( "pkg1.pkg" ) );
+
+           String xml = "";
+           xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+           xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+           xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+           xml += "    <add> ";
+           xml += "        <resource source='http://localhost:" + this.getPort() + "/pkg1.pkg' type='PKG' />";
+           xml += "    </add> ";
+           xml += "</change-set>";
+           File fxml = fileManager.write( "changeset.xml",
+                                          xml );
+
+           KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+           KnowledgeAgent kagent = this.createKAgent( kbase, false );
+
+           applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+
+           StatefulKnowledgeSession ksession = kagent.getKnowledgeBase().newStatefulKnowledgeSession();
+
+           org.drools.rule.Rule r1 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test","rule1");
+               assertEquals(((UrlResource) r1.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");
+           org.drools.rule.Rule r2 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test","rule2");
+               assertEquals(((UrlResource) r2.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");
+           Map<Resource, Set<KnowledgeDefinition>> defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
+               assertTrue(defMap.containsKey(r1.getResource()));
+               assertTrue(defMap.containsKey(r2.getResource()));
+               Set<KnowledgeDefinition> defs = defMap.get(r1.getResource());
+                   assertTrue(defs.contains(r1));
+                   assertTrue(defs.contains(r2));
+                   assertEquals(2,defs.size());
+
+
+           String rule3 = this.createDefaultRule( "rule3", "org.drools.test3" );
+
+                   kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+                   kbuilder.add( ResourceFactory.newByteArrayResource( rule3.getBytes() ),
+                                 ResourceType.DRL );
+                   pkg = (KnowledgePackage) kbuilder.getKnowledgePackages().iterator().next();
+                   writePackage( pkg,
+                                 fileManager.newFile( "pkg1.pkg" ) );
+                   scan( kagent );
+
+
+           assertEquals(0,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test").getRules().size());
+           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test3").getRules().size());
+           org.drools.rule.Rule r3 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test3","rule3");
+               assertEquals(((UrlResource) r3.getResource()).getURL().toString(),"http://localhost:"+getPort()+"/pkg1.pkg");
+               defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
+                       assertTrue(defMap.containsKey(r3.getResource()));
+                       defs = defMap.get(r3.getResource());
+                           assertTrue(defs.contains(r3));
+                           assertFalse(defs.contains(r1));
+                           assertFalse(defs.contains(r2));
+                           assertEquals(1,defs.size());
+
+
+
+           String rule4 = this.createDefaultRule( "rule4", "org.drools.test4" );
+           ChangeSetImpl cs = new ChangeSetImpl();
+               ByteArrayResource res = new ByteArrayResource( rule4.getBytes( ));
+                   res.setResourceType(ResourceType.DRL);
+                   cs.setResourcesAdded(Arrays.asList(new Resource[] {res}));
+               kagent.applyChangeSet(cs);
+
+
+           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test3").getRules().size());
+           assertEquals(1,ksession.getKnowledgeBase().getKnowledgePackage("org.drools.test4").getRules().size());
+           org.drools.rule.Rule r4 = (org.drools.rule.Rule) ksession.getKnowledgeBase().getRule("org.drools.test4","rule4");
+                       defMap = ((KnowledgeAgentImpl) kagent).getRegisteredResources();
+                       assertEquals(2,defMap.size());
+                               assertTrue(defMap.containsKey(r4.getResource()));
+                               defs = defMap.get(r4.getResource());
+                                   assertTrue(defs.contains(r4));
+                                   assertFalse(defs.contains(r3));
+                                   assertFalse(defs.contains(r2));
+                                   assertEquals(1,defs.size());
+
+           ksession.dispose();
+           kagent.dispose();
+       }
+
 }
