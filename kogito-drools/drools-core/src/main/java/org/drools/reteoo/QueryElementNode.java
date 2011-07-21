@@ -31,6 +31,7 @@ import org.drools.base.extractors.ArrayElementReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.core.util.RightTupleList;
@@ -65,6 +66,8 @@ public class QueryElementNode extends LeftTupleSource
     private boolean           tupleMemoryEnabled;
     
     private boolean           openQuery;
+    
+    private ObjectTypeConf    queryObjectTypeConf;
 
     public QueryElementNode() {
         // for serialization
@@ -220,10 +223,16 @@ public class QueryElementNode extends LeftTupleSource
                                                    collector,
                                                    openQuery );       
 
+        if (  queryObjectTypeConf == null ) {
+            EntryPoint ep = workingMemory.getEntryPoint();
+            queryObjectTypeConf =  ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
+                                                                                                                                                                                                     queryObject );
+        }
+        
         InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( queryObject,
-                                                                                        null,
+                                                                                        queryObjectTypeConf,
                                                                                         workingMemory,
-                                                                                        null );
+                                                                                        workingMemory );
         
         collector.setFactHandle( handle );
         

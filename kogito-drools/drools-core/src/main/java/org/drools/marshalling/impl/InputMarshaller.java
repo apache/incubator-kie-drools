@@ -38,6 +38,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
@@ -356,22 +357,6 @@ public class InputMarshaller {
                              context );
         }
 
-        EntryPointNode node = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT );
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = node.getObjectTypeNodes();
-
-        // add handles to object type nodes
-        for ( InternalFactHandle handle : handles ) {
-            Object object = handle.getObject();
-            
-            ClassObjectType objectType = new ClassObjectType( ( object != null ) ? object.getClass() : AgendaItem.class );
-            ObjectTypeNode objectTypeNode = objectTypeNodes.get( objectType );
-            if (objectTypeNode != null) {
-                ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
-                set.add( handle,
-                         false );
-            }
-        }
-
         InternalFactHandle handle = wm.getInitialFactHandle();
         while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
             LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
@@ -386,7 +371,22 @@ public class InputMarshaller {
  
         readPropagationContexts( context );
 
-        readActivations( context );
+        readActivations( context );        
+
+        // add handles to object type nodes
+        for ( InternalFactHandle factHandle : handles ) {
+            Object object = factHandle.getObject();
+            
+            EntryPoint ep =  ((InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint()).getEntryPoint();
+            
+            ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep, object );
+            ObjectTypeNode[] cachedNodes = typeConf.getObjectTypeNodes();
+            for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
+                ObjectHashSet set = (ObjectHashSet) wm.getNodeMemory( cachedNodes[i] );
+                set.add( factHandle,
+                         false ); 
+            }
+        }        
     }
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context) throws IOException,

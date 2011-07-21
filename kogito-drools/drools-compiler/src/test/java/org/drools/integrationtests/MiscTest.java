@@ -2395,8 +2395,8 @@ public class MiscTest {
         Person p = new Person( "stilton" );
         ksession.insert( p );
 
-//        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
-//                                                                              true );
+        ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
+                                                                              true );
         ksession.fireAllRules();
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession,
                                                                               true );
