@@ -17,7 +17,7 @@
 package org.drools.planner.examples.curriculumcourse.solver.solution.initializer;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;

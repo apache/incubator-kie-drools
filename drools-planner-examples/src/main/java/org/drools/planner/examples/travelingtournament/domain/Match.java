@@ -19,9 +19,9 @@ package org.drools.planner.examples.travelingtournament.domain;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.planner.core.domain.PlanningEntity;
-import org.drools.planner.core.domain.PlanningVariable;
-import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity

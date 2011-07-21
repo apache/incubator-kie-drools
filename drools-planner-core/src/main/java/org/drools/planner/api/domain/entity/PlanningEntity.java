@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.domain;
+package org.drools.planner.api.domain.entity;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.security.PrivateKey;
 import java.util.Comparator;
 
-import org.drools.planner.core.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.api.domain.variable.PlanningVariable;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;

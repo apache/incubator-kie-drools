@@ -1,4 +1,4 @@
-package org.drools.planner.core.domain.entity;
+package org.drools.planner.api.domain.entity;
 
 import org.drools.planner.core.solution.Solution;
 

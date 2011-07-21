@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.domain;
+package org.drools.planner.api.domain.solution;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.core.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a property on a {@link Solution} is a collection of planning entities.
+ * Specifies that a property on a {@link Solution} is a planning entity.
  * <p/>
- * Every element in the planning entity collection should have the {@link PlanningEntity} annotation.
- * Every initialized element in the planning entity collection will be inserted in the WorkingMemory.
+ * The planning entity should have the {@link PlanningEntity} annotation.
+ * An initialized planning entity will be inserted in the WorkingMemory.
  */
 @Target({METHOD})
 @Retention(RUNTIME)
-public @interface PlanningEntityCollectionProperty {
+public @interface PlanningEntityProperty {
 
     // TODO factory for dynamic length entity collections
     // PlanningEntityFactory factory() default Void.class;

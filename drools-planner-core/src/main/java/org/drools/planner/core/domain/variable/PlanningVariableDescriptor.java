@@ -7,8 +7,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-import org.drools.planner.core.domain.PlanningVariable;
-import org.drools.planner.core.domain.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;

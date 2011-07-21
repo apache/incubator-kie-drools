@@ -1,4 +1,4 @@
-package org.drools.planner.core.domain.variable;
+package org.drools.planner.api.domain.variable;
 
 import org.drools.planner.core.solution.Solution;
 

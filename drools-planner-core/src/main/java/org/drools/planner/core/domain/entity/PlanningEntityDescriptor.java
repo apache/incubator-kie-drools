@@ -10,8 +10,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.planner.core.domain.PlanningEntity;
-import org.drools.planner.core.domain.PlanningVariable;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 

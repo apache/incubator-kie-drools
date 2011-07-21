@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.planner.core.domain.PlanningEntityCollectionProperty;
-import org.drools.planner.core.domain.PlanningEntityProperty;
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.drools.planner.api.domain.solution.PlanningEntityProperty;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
