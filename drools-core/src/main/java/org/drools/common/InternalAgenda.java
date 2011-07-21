@@ -63,6 +63,10 @@ public interface InternalAgenda
      * @return true if the activation was really added, and not ignored in cases of lock-on-active or no-loop
      */
     public boolean addActivation(final AgendaItem activation);
+    
+    public void removeActivation(final AgendaItem activation);
+    
+    public void modifyActivation(final AgendaItem activation);    
 
     public void addAgendaGroup(final AgendaGroup agendaGroup);
 

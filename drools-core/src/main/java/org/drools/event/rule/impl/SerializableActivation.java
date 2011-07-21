@@ -40,6 +40,7 @@ public class SerializableActivation
     private Declaration[]                     declarations;
     private List< ? extends FactHandle>       factHandles;
     private PropagationContext                propgationContext;
+    private boolean                           active;
 
     public SerializableActivation() {
         
@@ -56,6 +57,7 @@ public class SerializableActivation
         } else {
             throw new RuntimeException("Unable to get declarations " + activation);
         }
+        this.active = activation.isActive();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -97,4 +99,8 @@ public class SerializableActivation
         }
         return Collections.unmodifiableList( decls );
     }
+    
+    public boolean isActive() {
+        return active;
+    }        
 }

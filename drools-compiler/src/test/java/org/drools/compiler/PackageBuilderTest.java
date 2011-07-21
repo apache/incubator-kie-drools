@@ -1289,6 +1289,20 @@ public class PackageBuilderTest extends DroolsTestCase {
             // TODO Auto-generated method stub
             return null;
         }
+
+        public InternalFactHandle getFactHandle() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public boolean isAdded() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+        
+        public boolean isActive() {
+            return isActivated();
+        }            
     }
 
     class MockTuple

@@ -88,8 +88,6 @@ public class BuildContext {
 
     private boolean                          objectTypeNodeMemoryEnabled;
 
-    private boolean                          terminalNodeMemoryEnabled;
-
     /** This one is slightly different as alphaMemory can be adaptive, only turning on for new rule attachments */
     private boolean                          alphaNodeMemoryAllowed;
     

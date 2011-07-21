@@ -19,6 +19,7 @@ package org.drools.spi;
 import java.io.Serializable;
 
 import org.drools.common.ActivationGroupNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationNode;
 import org.drools.core.util.LinkedList;
@@ -102,5 +103,7 @@ public interface Activation
     public ActivationNode getActivationNode();
 
     public void setActivationNode(ActivationNode ruleFlowGroupNode);
+    
+    InternalFactHandle getFactHandle();
     
 }

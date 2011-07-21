@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.event.AfterActivationFiredEvent;
@@ -164,5 +165,19 @@ class MockActivation
         // TODO Auto-generated method stub
         return null;
     }
+
+    public InternalFactHandle getFactHandle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isAdded() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    public boolean isActive() {
+        return isActivated();
+    }        
 
 }
