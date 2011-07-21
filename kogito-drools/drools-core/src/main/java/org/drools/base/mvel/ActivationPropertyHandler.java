@@ -13,16 +13,17 @@ public class ActivationPropertyHandler implements PropertyHandler {
                               Object obj,
                               VariableResolverFactory variableFactory) {
         AgendaItem item = ( AgendaItem ) obj;
+        if ( "rule".equals( name ) ) {
+            return item.getRule();
+        }
+        
+                
         Declaration declr = item.getRuleTerminalNode().getSubRule().getOuterDeclarations().get( name );
         if ( declr != null ) {
             return declr.getValue( null, item.getTuple().get( declr ).getObject() );
+        } else {
+            return item.getRule().getMetaData().get( name );
         }
-        
-        if ( "rule".equals( name ) ) {
-            throw new IllegalArgumentException( name + " field does not exist on Activation.s" );
-        }
-        
-        return item.getRule();
     }
 
     public Object setProperty(String name,

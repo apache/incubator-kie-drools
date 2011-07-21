@@ -24,7 +24,7 @@ import java.io.Externalizable;
  * @see LinkedList
  */
 public interface LinkedListNode
-    extends
+    extends Entry,
     Externalizable {
 
     /**

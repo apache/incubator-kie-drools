@@ -239,6 +239,17 @@ public class RuleFlowGroupImpl
     public boolean isEmpty() {
         return this.list.isEmpty();
     }
+    
+    public Activation[] getActivations() {
+        Activation[] activations = new Activation[ list.size() ];
+        final Iterator it = this.list.iterator();
+        int i = 0;
+        for ( ActivationNode node = (ActivationNode) it.next(); node != null; node = (ActivationNode) it.next() ) {
+            activations[i++] =  node.getActivation();
+        }        
+        
+        return activations;
+    }
 
     public java.util.Iterator iterator() {
         return this.list.javaUtilIterator();

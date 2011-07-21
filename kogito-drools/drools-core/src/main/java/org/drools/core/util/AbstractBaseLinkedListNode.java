@@ -78,4 +78,8 @@ public class AbstractBaseLinkedListNode
     public void setPrevious(final LinkedListNode previous) {
         this.previous = previous;
     }
+
+    public void setNext(Entry next) {
+        this.next = ( LinkedListNode ) next;
+    }
 }

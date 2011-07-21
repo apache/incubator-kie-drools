@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.Queue;
@@ -154,4 +155,18 @@ public class BaseQueueable
         // TODO Auto-generated method stub
         return null;
     }
+
+    public InternalFactHandle getFactHandle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isAdded() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    public boolean isActive() {
+        return isActivated();
+    }    
 }

@@ -25,6 +25,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.mvel.ActivationPropertyHandler;
+import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.common.AgendaItem;
 import org.drools.common.InstanceNotEqualsConstraint;
 import org.drools.common.InternalRuleBase;
@@ -45,6 +46,7 @@ import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.VariableConstraint;
+import org.drools.runtime.rule.Activation;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
@@ -85,10 +87,10 @@ public class PatternBuilder
         // Set pattern offset to the appropriate value
         pattern.setOffset( context.getCurrentPatternOffset() );
         
-        if ( ClassObjectType.AgendaItem_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+        if ( ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
             PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
             if ( handler == null ) {
-                PropertyHandlerFactory.registerPropertyHandler( AgendaItem.class, new ActivationPropertyHandler() );
+                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class, new ActivationPropertyHandler() );
             }
         }
 

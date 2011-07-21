@@ -16,8 +16,10 @@
 
 package org.drools.spi;
 
-import java.io.Serializable;
 import java.util.Iterator;
+
+import org.drools.core.util.Entry;
+import org.drools.core.util.LinkedList;
 
 public interface ActivationGroup
     extends
@@ -27,6 +29,8 @@ public interface ActivationGroup
     public void addActivation(Activation activation);
 
     public void removeActivation(Activation activation);
+    
+    public LinkedList getList();
 
     public Iterator iterator();
 

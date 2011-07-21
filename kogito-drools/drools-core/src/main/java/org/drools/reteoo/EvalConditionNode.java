@@ -150,6 +150,10 @@ public class EvalConditionNode extends LeftTupleSource
     public EvalCondition getCondition() {
         return this.condition;
     }
+    
+    public LeftTupleSource getLeftTupleSource() {
+        return this.tupleSource;
+    }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.reteoo.impl.TupleSink

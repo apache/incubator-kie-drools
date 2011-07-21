@@ -171,6 +171,8 @@ public class AgendaTest extends DroolsTestCase {
         node2.assertLeftTuple( tuple,
                                context1,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         // make sure we have an activation in the current focus
         assertEquals( 1,
@@ -264,6 +266,8 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        
+        agenda.unstageActivations();
 
         // check there is an item to fire
         assertEquals( 1,
@@ -297,6 +301,8 @@ public class AgendaTest extends DroolsTestCase {
                               context,
                               workingMemory );
 
+        agenda.unstageActivations();
+        
         // check we have an item to fire
         assertEquals( 1,
                       agenda.getFocus().size() );
@@ -427,6 +433,8 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple,
                                context0,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         // check focus is main
         final AgendaGroup main = agenda.getAgendaGroup( AgendaGroup.MAIN );
@@ -438,6 +446,8 @@ public class AgendaTest extends DroolsTestCase {
         node2.assertLeftTuple( tuple,
                                context2,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         // main is still focus and this tuple went to agendaGroup 2
         assertEquals( 1,
@@ -455,6 +465,8 @@ public class AgendaTest extends DroolsTestCase {
         node2.assertLeftTuple( tuple,
                                context2,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         // main is still focus so shouldn't have increased
         assertEquals( 1,
@@ -483,6 +495,8 @@ public class AgendaTest extends DroolsTestCase {
         node3.assertLeftTuple( tuple,
                                context3,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         assertEquals( 1,
                       agenda.getFocus().size() );
@@ -490,6 +504,8 @@ public class AgendaTest extends DroolsTestCase {
         node3.assertLeftTuple( tuple,
                                context3,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         // agendaGroup3 now has 2 activations
         assertEquals( 2,
@@ -622,6 +638,8 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        
+        agenda.unstageActivations();
 
         // check activation as added to the agendaGroup
         assertEquals( 1,
@@ -645,6 +663,8 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        
+        agenda.unstageActivations();
 
         assertEquals( 1,
                       agendaGroup.size() );
@@ -701,6 +721,9 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        
+        agenda.unstageActivations();
+        
         assertEquals( 1,
                       agendaGroup.size() );
 
@@ -710,6 +733,7 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        agenda.unstageActivations();
         assertEquals( 2,
                       agendaGroup.size() );
     }
@@ -819,6 +843,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
         final ActivationGroup activationGroup0 = agenda.getActivationGroup( "activation-group-0" );
         assertEquals( 1,
                       activationGroup0.size() );
@@ -834,6 +859,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
         assertEquals( 1,
                       activationGroup0.size() );
 
@@ -841,6 +867,7 @@ public class AgendaTest extends DroolsTestCase {
         node1.assertLeftTuple( tuple,
                                context1,
                                workingMemory );
+        agenda.unstageActivations();
         assertEquals( 2,
                       activationGroup0.size() );
 
@@ -881,6 +908,7 @@ public class AgendaTest extends DroolsTestCase {
         node3.assertLeftTuple( tuple,
                                context3,
                                workingMemory );
+        agenda.unstageActivations();
 
         // activation-group-0 should be populated again
         assertEquals( 2,
@@ -1036,6 +1064,7 @@ public class AgendaTest extends DroolsTestCase {
         node2.assertLeftTuple( tuple3,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
 
         // RuleFlowGroups should be populated, but the agenda shouldn't be
         assertEquals( 2,
@@ -1205,6 +1234,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 1,
@@ -1344,6 +1374,7 @@ public class AgendaTest extends DroolsTestCase {
         node1.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 2,
@@ -1439,6 +1470,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 2,
@@ -1544,6 +1576,8 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple0,
                                context0,
                                workingMemory );
+        
+        workingMemory.fireAllRules();        
 
         // RuleFlowGroup should be populated, but the agenda shouldn't be
         assertEquals( 1,
@@ -1580,6 +1614,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple1,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
         agenda.activateRuleFlowGroup( "rule-flow-group-0" );
         assertEquals( 1,
                       ruleFlowGroup0.size() );
@@ -1604,6 +1639,7 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple2,
                                context0,
                                workingMemory );
+        agenda.unstageActivations();
         assertEquals( 1,
                       ruleFlowGroup0.size() );
         assertEquals( 0,
@@ -1719,6 +1755,7 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        agenda.unstageActivations();
         assertEquals( 1,
                       ruleFlowGroup.size() );
 
@@ -1728,6 +1765,7 @@ public class AgendaTest extends DroolsTestCase {
         node.assertLeftTuple( tuple,
                               context,
                               workingMemory );
+        agenda.unstageActivations();
         assertEquals( 2,
                       ruleFlowGroup.size() );
     }
@@ -1857,6 +1895,8 @@ public class AgendaTest extends DroolsTestCase {
         node0.assertLeftTuple( tuple,
                                context0,
                                workingMemory );
+        
+        agenda.unstageActivations();
 
         // check focus is main
         final AgendaGroup main = agenda.getAgendaGroup( AgendaGroup.MAIN );
@@ -1868,6 +1908,7 @@ public class AgendaTest extends DroolsTestCase {
         node2.assertLeftTuple( tuple,
                                context2,
                                workingMemory );
+        agenda.unstageActivations();
 
         // main is still focus and this tuple went to agendaGroup1
         assertEquals( 1,
@@ -1885,6 +1926,7 @@ public class AgendaTest extends DroolsTestCase {
         node2.assertLeftTuple( tuple,
                                context2,
                                workingMemory );
+        agenda.unstageActivations();
 
         // main is still focus so shouldn't have increased
         assertEquals( 1,
@@ -1911,6 +1953,7 @@ public class AgendaTest extends DroolsTestCase {
         node3.assertLeftTuple( tuple,
                                context3,
                                workingMemory );
+        agenda.unstageActivations();
 
         assertEquals( 1,
                       agenda.getFocus().size() );
@@ -1918,7 +1961,8 @@ public class AgendaTest extends DroolsTestCase {
         node3.assertLeftTuple( tuple,
                                context3,
                                workingMemory );
-
+        agenda.unstageActivations();
+        
         // agendaGroup2 now has 2 activations
         assertEquals( 2,
                       agenda.getFocus().size() );

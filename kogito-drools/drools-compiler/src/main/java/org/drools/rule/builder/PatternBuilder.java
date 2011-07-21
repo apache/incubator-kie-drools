@@ -36,7 +36,10 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompileable;
+import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
+import org.drools.common.AgendaItem;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
@@ -87,6 +90,7 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.runtime.rule.Activation;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Constraint.ConstraintType;
@@ -100,6 +104,8 @@ import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
 
 /**
@@ -225,6 +231,13 @@ public class PatternBuilder
                                    null );
         }
 
+        if ( ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
+            if ( handler == null ) {
+                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class, new ActivationPropertyHandler() );
+            }
+        }
+        
         if ( duplicateBindings ) {
             if ( patternDescr.isUnification() ) {
                 // rewrite existing bindings into == constraints, so it unifies
@@ -493,7 +506,7 @@ public class PatternBuilder
 
             // Either it's a complex expression, so do as predicate
             // Or it's a Map and we have to treat it as a special case
-            if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) || ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
                                          expr,

@@ -71,7 +71,9 @@ public class EntryPointNode extends ObjectSource
      */
     private Map<ObjectType, ObjectTypeNode> objectTypeNodes;
     
-    private ObjectTypeNode queryNode;    
+    private ObjectTypeNode queryNode;
+    
+    private ObjectTypeNode activationNode;   
 
     // ------------------------------------------------------------
     // Constructors
@@ -172,7 +174,52 @@ public class EntryPointNode extends ObjectSource
              // There may be no queries defined
              this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
          }       
-     }     
+     }   
+    
+    public void assertActivation(final InternalFactHandle factHandle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+        if ( activationNode == null ) {
+            this.activationNode = objectTypeNodes.get( ClassObjectType.Activation_ObjectType );
+        }
+        
+        if ( activationNode != null ) {
+            // There may be no queries defined
+            this.activationNode.assertObject( factHandle, context, workingMemory );
+        }       
+    }
+    
+    public void retractActivation(final InternalFactHandle factHandle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+        if ( activationNode == null ) {
+            this.activationNode = objectTypeNodes.get( ClassObjectType.Activation_ObjectType );
+        }
+        
+        if ( activationNode != null ) {
+            // There may be no queries defined
+            this.activationNode.retractObject( factHandle, context, workingMemory );
+        }       
+    }    
+    
+    public void modifyActivation(final InternalFactHandle factHandle,
+                            final PropagationContext context,
+                            final InternalWorkingMemory workingMemory) {
+         if ( activationNode == null ) {
+             this.activationNode = objectTypeNodes.get( ClassObjectType.Activation_ObjectType );
+         }
+         
+         if ( activationNode != null ) {
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple() );
+             factHandle.setFirstLeftTuple( null );
+             factHandle.setFirstRightTuple( null );
+             factHandle.setLastLeftTuple( null );
+             factHandle.setLastRightTuple( null );
+             
+             // There may be no queries defined
+             this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+         }       
+     }      
 
     public void assertObject(final InternalFactHandle handle,
                              final PropagationContext context,

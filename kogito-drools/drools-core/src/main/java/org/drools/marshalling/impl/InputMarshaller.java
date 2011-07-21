@@ -347,8 +347,10 @@ public class InputMarshaller {
                                  handle );
             handles[i] = handle;
 
-            context.wm.getObjectStore().addHandle( handle,
-                                                   handle.getObject() );
+            if ( handle.getObject() != null ) {
+                context.wm.getObjectStore().addHandle( handle,
+                                                       handle.getObject() );
+            }
 
             readRightTuples( handle,
                              context );
@@ -360,7 +362,8 @@ public class InputMarshaller {
         // add handles to object type nodes
         for ( InternalFactHandle handle : handles ) {
             Object object = handle.getObject();
-            ClassObjectType objectType = new ClassObjectType( object.getClass() );
+            
+            ClassObjectType objectType = new ClassObjectType( ( object != null ) ? object.getClass() : AgendaItem.class );
             ObjectTypeNode objectTypeNode = objectTypeNodes.get( objectType );
             if (objectTypeNode != null) {
                 ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
@@ -393,8 +396,13 @@ public class InputMarshaller {
         long recency = context.stream.readLong();
 
         int strategyIndex = context.stream.readInt();
-        ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
-        Object object = strategy.read( context.stream );
+        Object object;
+        if ( strategyIndex >= 0 ) {
+            ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+            object = strategy.read( context.stream );
+        } else {
+            object = null;
+        }
         
         WorkingMemoryEntryPoint entryPoint = null;
         if(context.readBoolean()){
@@ -756,6 +764,12 @@ public class InputMarshaller {
 
         boolean activated = stream.readBoolean();
         activation.setActivated( activated );
+        
+        if ( stream.readBoolean() ) {            
+            InternalFactHandle handle = context.handles.get( stream.readInt() );
+            activation.setFactHandle( handle );
+            handle.setObject( activation );
+        }
 
         InternalAgendaGroup agendaGroup;
         if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {

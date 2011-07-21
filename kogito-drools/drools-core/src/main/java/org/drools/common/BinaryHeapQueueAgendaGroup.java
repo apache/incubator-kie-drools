@@ -37,14 +37,14 @@ public class BinaryHeapQueueAgendaGroup
     implements
     InternalAgendaGroup {
 
-    private static final long     serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-    private String          name;
+    private String            name;
 
     /** Items in the agenda. */
-    private BinaryHeapQueue queue;
+    private BinaryHeapQueue   queue;
 
-    private boolean               active;
+    private boolean           active;
 
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
@@ -56,23 +56,23 @@ public class BinaryHeapQueueAgendaGroup
 
     }
 
-
-    public BinaryHeapQueueAgendaGroup(final String name, final InternalRuleBase ruleBase) {
+    public BinaryHeapQueueAgendaGroup(final String name,
+                                      final InternalRuleBase ruleBase) {
         this.name = name;
         this.queue = new BinaryHeapQueue( ruleBase.getConfiguration().getConflictResolver() );
     }
-    
-    
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        name    = (String)in.readObject();
-        queue   = (BinaryHeapQueue)in.readObject();
-        active  = in.readBoolean();
+
+    public void readExternal(ObjectInput in) throws IOException,
+                                            ClassNotFoundException {
+        name = (String) in.readObject();
+        queue = (BinaryHeapQueue) in.readObject();
+        active = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
-        out.writeObject(queue);
-        out.writeBoolean(active);
+        out.writeObject( name );
+        out.writeObject( queue );
+        out.writeBoolean( active );
     }
 
     /* (non-Javadoc)
@@ -85,7 +85,7 @@ public class BinaryHeapQueueAgendaGroup
     public void clear() {
         this.queue.clear();
     }
-    
+
     public Activation[] getAndClear() {
         return this.queue.getAndClear();
     }

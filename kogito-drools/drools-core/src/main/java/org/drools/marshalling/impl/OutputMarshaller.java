@@ -25,14 +25,18 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.InitialFact;
 import org.drools.base.ClassObjectType;
+import org.drools.common.ActivationGroupNode;
+import org.drools.common.ActiveActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EqualityKey;
+import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -80,6 +84,7 @@ public class OutputMarshaller {
 
     public static void writeSession(MarshallerWriteContext context) throws IOException {
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
+        wm.getAgenda().unstageActivations();
         
         final boolean multithread = wm.isPartitionManagersActive();
         // is multi-thread active?
@@ -256,10 +261,18 @@ public class OutputMarshaller {
         InternalWorkingMemory wm = context.wm;
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
 
-        writeInitialFactHandleRightTuples( context );
+        writeInitialFactHandleRightTuples( context );        
 
-        stream.writeInt( wm.getObjectStore().size() );
+        
 
+        ActiveActivationIterator it = ActiveActivationIterator.iterator( wm );
+        List<InternalFactHandle> list = new ArrayList<InternalFactHandle>(100);
+        for ( Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
+            list.add(  item.getFactHandle() );
+        }
+        
+        stream.writeInt( wm.getObjectStore().size() + list.size() );
+        
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
             //stream.writeShort( PersisterEnums.FACT_HANDLE );
@@ -272,6 +285,19 @@ public class OutputMarshaller {
             writeRightTuples( handle,
                               context );
         }
+        
+        for ( InternalFactHandle handle : list) {
+            Object object = handle.getObject();
+            handle.setObject( null );  // we must set it to null as we don't want to write out the Activation
+            writeFactHandle( context,
+                             stream,
+                             objectMarshallingStrategyStore,
+                             handle );
+            handle.setObject( object ); // restore object
+            writeRightTuples( handle,
+                              context );  
+        }        
+        
 
         writeInitialFactHandleLeftTuples( context );
 
@@ -280,7 +306,7 @@ public class OutputMarshaller {
         writePropagationContexts( context );
 
         writeActivations( context );
-    }
+    }   
 
     private static void writeFactHandle(MarshallerWriteContext context,
                                         ObjectOutputStream stream,
@@ -295,15 +321,20 @@ public class OutputMarshaller {
         //context.out.println( handle.getObject() );
 
         Object object = handle.getObject();
-
-        int index = objectMarshallingStrategyStore.getStrategy( object );
         
-        ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
-
-        stream.writeInt( index );
-
-        strategy.write( stream,
-                        object );
+        if ( object != null ) {
+            int index = objectMarshallingStrategyStore.getStrategy( object );
+            
+            ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
+    
+            stream.writeInt( index );
+    
+            strategy.write( stream,
+                            object );
+        } else {
+            stream.writeInt( -1 );
+        }
+        
         if( handle.getEntryPoint() instanceof InternalWorkingMemoryEntryPoint ){
             String entryPoint = ((InternalWorkingMemoryEntryPoint)handle.getEntryPoint()).getEntryPoint().getEntryPointId();
             if(entryPoint!=null && !entryPoint.equals("")){
@@ -698,6 +729,13 @@ public class OutputMarshaller {
 
         stream.writeBoolean( agendaItem.isActivated() );
         //context.out.println( "AgendaItem bool:" + agendaItem.isActivated() );
+        
+        if ( agendaItem.getFactHandle() != null ) {
+            stream.writeBoolean( true );
+            stream.writeInt( agendaItem.getFactHandle() .getId() );
+        } else {
+            stream.writeBoolean( false );
+        }
 
         org.drools.core.util.LinkedList list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {

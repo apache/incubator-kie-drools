@@ -6,15 +6,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.drools.base.mvel.ActivationPropertyHandler;
+import org.drools.common.AgendaItem;
 import org.drools.compiler.AnalysisResult;
+import org.drools.core.util.Queueable;
 import org.drools.core.util.StringUtils;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.runtime.rule.Activation;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
@@ -147,7 +153,7 @@ public class AbstractJavaRuleBuilder {
                                         final BaseDescr descrLookup) {
         
         TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
-
+  
         context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
                                                            null,
                                                            new MapVariableResolverFactory( vars ),
@@ -166,5 +172,6 @@ public class AbstractJavaRuleBuilder {
                                              invokerLookup );
         context.getDescrLookups().put( invokerClassName,
                                            descrLookup );
+                
     }
 }

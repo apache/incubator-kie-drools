@@ -91,7 +91,7 @@ public class DefaultFactHandle
         this.entryPoint = wmEntryPoint;
         this.recency = recency;
         this.object = object;
-        this.objectHashCode = object.hashCode();
+        this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
         setIdentityHashCode();
     }
 
@@ -220,6 +220,7 @@ public class DefaultFactHandle
 
     public void setObject(final Object object) {
         this.object = object;
+        this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
         setIdentityHashCode();
     }
 

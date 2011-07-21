@@ -219,6 +219,10 @@ public class ReteooBuilder
         return this.rules.get( rule );
     }
 
+    public synchronized Map<Rule, BaseNode[]> getTerminalNodes() {
+        return this.rules;
+    }
+    
     public synchronized void removeRule(final Rule rule) {
         // reset working memories for potential propagation
         InternalWorkingMemory[] workingMemories = this.ruleBase.getWorkingMemories();

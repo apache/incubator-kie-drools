@@ -28,7 +28,6 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
-import org.drools.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.Tuple;
 import org.mvel2.MVEL;
@@ -96,7 +95,7 @@ public class MVELPredicateExpression
         if ( pkg != null ) {
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
             factory.setNextFactory( data.getFunctionFactory() );
-        }
+        }               
 
         final Boolean result = (Boolean) MVEL.executeExpression( this.expr,
                                                                  object,

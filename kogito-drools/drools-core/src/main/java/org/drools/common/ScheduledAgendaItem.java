@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RuleTerminalNode;
@@ -76,7 +77,11 @@ public class ScheduledAgendaItem extends AgendaItem
 
     public void setNext(final LinkedListNode next) {
         this.next = next;
-    }
+    }    
+
+    public void setNext(Entry next) {
+        this.next = (LinkedListNode) next;        
+    }    
 
     public LinkedListNode getPrevious() {
         return this.previous;
@@ -101,4 +106,5 @@ public class ScheduledAgendaItem extends AgendaItem
     public String toString() {
         return "[ScheduledActivation rule=" + getRule().getName() + ", tuple=" + getTuple() + "]";
     }
+
 }

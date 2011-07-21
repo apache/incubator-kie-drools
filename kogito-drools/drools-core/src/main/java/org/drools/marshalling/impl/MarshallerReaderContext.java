@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BaseNode;
@@ -57,6 +59,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final boolean                            marshalProcessInstances;
     public final boolean                            marshalWorkItems;
     public final Environment                        env;
+
     public MarshallerReaderContext(InputStream stream,
                                    InternalRuleBase ruleBase,
                                    Map<Integer, BaseNode> sinks,

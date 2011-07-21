@@ -9,7 +9,6 @@ rule "test eval"
         cell2 : Cell(value2:value < value1)
         eval (true)
     then
-        System.out.println("setting value to " + (value2 + 1));
         cell2.setValue(value2 + 1);
         update(cell2);
 end

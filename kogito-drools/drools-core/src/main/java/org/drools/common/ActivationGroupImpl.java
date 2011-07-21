@@ -16,6 +16,7 @@
 
 package org.drools.common;
 
+import org.drools.core.util.Entry;
 import org.drools.core.util.LinkedList;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -63,6 +64,10 @@ public class ActivationGroupImpl
 
     public void clear() {
         this.list.clear();
+    }
+
+    public LinkedList getList() {
+        return list;
     }
 
 }

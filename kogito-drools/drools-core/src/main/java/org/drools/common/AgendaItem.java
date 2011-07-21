@@ -85,6 +85,8 @@ public class AgendaItem
     private ActivationGroupNode activationGroupNode;
 
     private ActivationNode      activationNode;
+    
+    private InternalFactHandle  factHandle;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -118,35 +120,9 @@ public class AgendaItem
     // ------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        tuple = (LeftTuple) in.readObject();
-        salience = in.readInt();
-        sequenence = in.readInt();
-        rtn = ( RuleTerminalNode ) in.readObject();
-        context = (PropagationContext) in.readObject();
-        activationNumber = in.readLong();
-        queue = (Queue) in.readObject();
-        index = in.readInt();
-        justified = (LinkedList) in.readObject();
-        activated = in.readBoolean();
-        agendaGroup = (InternalAgendaGroup) in.readObject();
-        activationGroupNode = (ActivationGroupNode) in.readObject();
-        activationNode = (ActivationNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( tuple );
-        out.writeInt( salience );
-        out.writeInt( sequenence );
-        out.writeObject( rtn );
-        out.writeObject( context );
-        out.writeLong( activationNumber );
-        out.writeObject( queue );
-        out.writeInt( index );
-        out.writeObject( justified );
-        out.writeBoolean( activated );
-        out.writeObject( agendaGroup );
-        out.writeObject( activationGroupNode );
-        out.writeObject( activationNode );
     }
 
     public PropagationContext getPropagationContext() {
@@ -189,6 +165,14 @@ public class AgendaItem
 
     public void setSequenence(int sequenence) {
         this.sequenence = sequenence;
+    }
+
+    public InternalFactHandle getFactHandle() {
+        return factHandle;
+    }
+
+    public void setFactHandle(InternalFactHandle factHandle) {
+        this.factHandle = factHandle;
     }
 
     /*
@@ -351,4 +335,9 @@ public class AgendaItem
         }
         return Collections.unmodifiableList( declarations );
     }
+
+    public boolean isActive() {
+        return isActivated();
+    }    
+    
 }
