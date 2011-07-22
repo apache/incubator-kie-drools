@@ -35,6 +35,10 @@ public class PlanningEntitySelector extends SolverPhaseLifecycleListenerAdapter
         this.resetInitializedPlanningEntities = resetInitializedPlanningEntities;
     }
 
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         validateConfiguration();

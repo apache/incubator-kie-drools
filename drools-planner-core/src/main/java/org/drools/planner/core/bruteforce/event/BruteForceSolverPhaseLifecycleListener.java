@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.value;
+package org.drools.planner.core.bruteforce.event;
 
-public enum PlanningValueSelectionPromotion {
-    NONE,
-    PROMOTE,
-    DEMOTE;
+import java.util.EventListener;
+
+import org.drools.planner.core.bruteforce.BruteForceSolverPhaseScope;
+import org.drools.planner.core.bruteforce.BruteForceStepScope;
+
+public interface BruteForceSolverPhaseLifecycleListener extends EventListener {
+
+    void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope);
+
+    void stepTaken(BruteForceStepScope bruteForceStepScope);
+
+    void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope);
+
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.heuristic.selector.value;
+package org.drools.planner.core.heuristic.selector.variable;
 
 public enum PlanningValueSelectionOrder {
     ORIGINAL,

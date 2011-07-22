@@ -19,6 +19,7 @@ package org.drools.planner.config.bruteforce;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.config.EnvironmentMode;
+import org.drools.planner.core.bruteforce.BruteForceEntityWalker;
 import org.drools.planner.core.bruteforce.BruteForceSolverPhase;
 import org.drools.planner.core.bruteforce.DefaultBruteForceSolverPhase;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -39,6 +40,7 @@ public class BruteForceSolverPhaseConfig extends SolverPhaseConfig {
             SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition, Termination solverTermination) {
         DefaultBruteForceSolverPhase bruteForceSolverPhase = new DefaultBruteForceSolverPhase();
         configureSolverPhase(bruteForceSolverPhase, environmentMode, scoreDefinition, solverTermination);
+        bruteForceSolverPhase.setBruteForceEntityWalker(new BruteForceEntityWalker(solutionDescriptor));
         return bruteForceSolverPhase;
     }
 

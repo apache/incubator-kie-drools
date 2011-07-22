@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.bruteforce;
 
+import org.drools.planner.core.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.AbstractSolverPhase;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -23,9 +24,14 @@ import org.drools.planner.core.solver.DefaultSolverScope;
 /**
  * Default implementation of {@link BruteForceSolverPhase}.
  */
-public class DefaultBruteForceSolverPhase extends AbstractSolverPhase implements BruteForceSolverPhase {
+public class DefaultBruteForceSolverPhase extends AbstractSolverPhase
+        implements BruteForceSolverPhase, BruteForceSolverPhaseLifecycleListener {
 
-    protected BruteForceSolutionIterator bruteForceSolutionIterator = new BruteForceSolutionIterator();
+    protected BruteForceEntityWalker bruteForceEntityWalker;
+
+    public void setBruteForceEntityWalker(BruteForceEntityWalker bruteForceEntityWalker) {
+        this.bruteForceEntityWalker = bruteForceEntityWalker;
+    }
 
     // ************************************************************************
     // Worker methods
@@ -36,8 +42,8 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase implements
         phaseStarted(bruteForceSolverPhaseScope);
 
         BruteForceStepScope bruteForceStepScope = createNextStepScope(bruteForceSolverPhaseScope, null);
-        while (!termination.isPhaseTerminated(bruteForceSolverPhaseScope) && bruteForceSolutionIterator.hasNext()) {
-            bruteForceSolutionIterator.next();
+        while (!termination.isPhaseTerminated(bruteForceSolverPhaseScope) && bruteForceEntityWalker.hasWalk()) {
+            bruteForceEntityWalker.walk();
             Score score = bruteForceSolverPhaseScope.calculateScoreFromWorkingMemory();
             bruteForceStepScope.setScore(score);
             stepTaken(bruteForceStepScope);
@@ -61,11 +67,12 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase implements
 
     public void phaseStarted(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
         super.phaseStarted(bruteForceSolverPhaseScope);
-        bruteForceSolutionIterator.phaseStarted(bruteForceSolverPhaseScope);
+        bruteForceEntityWalker.phaseStarted(bruteForceSolverPhaseScope);
     }
 
     public void stepTaken(BruteForceStepScope bruteForceStepScope) {
-        bestSolutionRecaller.extractBestSolution(bruteForceStepScope);
+        super.stepTaken(bruteForceStepScope);
+        bruteForceEntityWalker.stepTaken(bruteForceStepScope);
         BruteForceSolverPhaseScope bruteForceSolverPhaseScope = bruteForceStepScope.getBruteForceSolverPhaseScope();
         logger.debug("Step index ({}), time spend ({}), score ({}), {} best score ({}).",
                 new Object[]{bruteForceStepScope.getStepIndex(),
@@ -76,7 +83,7 @@ public class DefaultBruteForceSolverPhase extends AbstractSolverPhase implements
 
     public void phaseEnded(BruteForceSolverPhaseScope bruteForceSolverPhaseScope) {
         super.phaseEnded(bruteForceSolverPhaseScope);
-        bruteForceSolutionIterator.phaseEnded(bruteForceSolverPhaseScope);
+        bruteForceEntityWalker.phaseEnded(bruteForceSolverPhaseScope);
         logger.info("Brute force phase ended at step index ({}) for best score ({}).",
                 bruteForceSolverPhaseScope.getLastCompletedStepScope().getStepIndex(),
                 bruteForceSolverPhaseScope.getBestScore());

@@ -27,10 +27,12 @@ import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitS
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyFitType;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyGreedyFitType;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
+import org.drools.planner.core.heuristic.selector.variable.PlanningValueWalker;
+import org.drools.planner.core.heuristic.selector.variable.PlanningVariableWalker;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
@@ -43,7 +45,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     @XStreamImplicit(itemFieldName = "greedyFitPlanningEntity")
     protected List<GreedyFitPlanningEntityConfig> greedyFitPlanningEntityConfigList = null;
 
-    private PickEarlyFitType pickEarlyFitType = null;
+    private PickEarlyGreedyFitType pickEarlyGreedyFitType = null;
 
     public List<GreedyFitPlanningEntityConfig> getGreedyFitPlanningEntityConfigList() {
         return greedyFitPlanningEntityConfigList;
@@ -53,12 +55,12 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         this.greedyFitPlanningEntityConfigList = greedyFitPlanningEntityConfigList;
     }
 
-    public PickEarlyFitType getPickEarlyFitType() {
-        return pickEarlyFitType;
+    public PickEarlyGreedyFitType getPickEarlyGreedyFitType() {
+        return pickEarlyGreedyFitType;
     }
 
-    public void setPickEarlyFitType(PickEarlyFitType pickEarlyFitType) {
-        this.pickEarlyFitType = pickEarlyFitType;
+    public void setPickEarlyGreedyFitType(PickEarlyGreedyFitType pickEarlyGreedyFitType) {
+        this.pickEarlyGreedyFitType = pickEarlyGreedyFitType;
     }
 
     // ************************************************************************
@@ -70,7 +72,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
         configureSolverPhase(greedySolverPhase, environmentMode, scoreDefinition, solverTermination);
         greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(solutionDescriptor));
-        greedySolverPhase.setGreedyDecider(buildGreedyDecider(environmentMode));
+        greedySolverPhase.setGreedyDecider(buildGreedyDecider(solutionDescriptor, environmentMode));
         if (environmentMode == EnvironmentMode.DEBUG || environmentMode == EnvironmentMode.TRACE) {
             greedySolverPhase.setAssertStepScoreIsUncorrupted(true);
         }
@@ -87,11 +89,19 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         return greedyPlanningEntitySelector;
     }
 
-    private GreedyDecider buildGreedyDecider(EnvironmentMode environmentMode) {
+    private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
-        PickEarlyFitType pickEarlyFitType = (this.pickEarlyFitType == null)
-                ? PickEarlyFitType.NEVER : this.pickEarlyFitType;
-        greedyDecider.setPickEarlyFitType(pickEarlyFitType);
+        PickEarlyGreedyFitType pickEarlyGreedyFitType = (this.pickEarlyGreedyFitType == null)
+                ? PickEarlyGreedyFitType.NEVER : this.pickEarlyGreedyFitType;
+
+        // TODO very broken =================
+        PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(null); // TODO broken
+        List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
+        planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
+        greedyDecider.setPlanningVariableWalker(planningVariableWalker); // TODO broken
+        // TODO very broken =================
+        
+        greedyDecider.setPickEarlyGreedyFitType(pickEarlyGreedyFitType);
         if (environmentMode == EnvironmentMode.TRACE) {
             greedyDecider.setAssertMoveScoreIsUncorrupted(true);
         }
@@ -109,8 +119,8 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
             mergedList.addAll(greedyFitPlanningEntityConfigList);
             greedyFitPlanningEntityConfigList = mergedList;
         }
-        if (pickEarlyFitType == null) {
-            pickEarlyFitType = inheritedConfig.getPickEarlyFitType();
+        if (pickEarlyGreedyFitType == null) {
+            pickEarlyGreedyFitType = inheritedConfig.getPickEarlyGreedyFitType();
         }
     }
 

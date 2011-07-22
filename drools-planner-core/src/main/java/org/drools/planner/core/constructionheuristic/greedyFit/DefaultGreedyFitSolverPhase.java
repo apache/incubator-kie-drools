@@ -87,19 +87,28 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
         return greedyFitStepScope;
     }
 
+    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
+        super.phaseStarted(greedyFitSolverPhaseScope);
+        greedyPlanningEntitySelector.phaseStarted(greedyFitSolverPhaseScope);
+        greedyDecider.phaseStarted(greedyFitSolverPhaseScope);
+    }
+
     public void beforeDeciding(GreedyFitStepScope greedyFitStepScope) {
         super.beforeDeciding(greedyFitStepScope);
         greedyPlanningEntitySelector.beforeDeciding(greedyFitStepScope);
+        greedyDecider.beforeDeciding(greedyFitStepScope);
     }
 
     public void stepDecided(GreedyFitStepScope greedyFitStepScope) {
         super.stepDecided(greedyFitStepScope);
         greedyPlanningEntitySelector.stepDecided(greedyFitStepScope);
+        greedyDecider.stepDecided(greedyFitStepScope);
     }
 
     public void stepTaken(GreedyFitStepScope greedyFitStepScope) {
         super.stepTaken(greedyFitStepScope);
         greedyPlanningEntitySelector.stepTaken(greedyFitStepScope);
+        greedyDecider.stepTaken(greedyFitStepScope);
         logger.info("Step index ({}), time spend ({}), score ({}), initialized planning entity ({}).",
                 new Object[]{greedyFitStepScope.getStepIndex(),
                         greedyFitStepScope.getGreedyFitSolverPhaseScope().calculateSolverTimeMillisSpend(),
@@ -107,14 +116,10 @@ public class DefaultGreedyFitSolverPhase extends AbstractSolverPhase implements 
                         greedyFitStepScope.getPlanningEntity()});
     }
 
-    public void phaseStarted(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
-        super.phaseStarted(greedyFitSolverPhaseScope);
-        greedyPlanningEntitySelector.phaseStarted(greedyFitSolverPhaseScope);
-    }
-
     public void phaseEnded(GreedyFitSolverPhaseScope greedyFitSolverPhaseScope) {
         super.phaseEnded(greedyFitSolverPhaseScope);
         greedyPlanningEntitySelector.phaseEnded(greedyFitSolverPhaseScope);
+        greedyDecider.phaseEnded(greedyFitSolverPhaseScope);
         logger.info("Greedy phase ended at step index ({}) for best score ({}).",
                 greedyFitSolverPhaseScope.getLastCompletedStepScope().getStepIndex(),
                 greedyFitSolverPhaseScope.getBestScore());

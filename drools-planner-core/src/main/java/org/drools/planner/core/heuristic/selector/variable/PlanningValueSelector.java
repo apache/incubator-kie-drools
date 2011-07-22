@@ -1,11 +1,9 @@
-package org.drools.planner.core.heuristic.selector.value;
+package org.drools.planner.core.heuristic.selector.variable;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.domain.variable.PlanningValueSorter;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
@@ -20,8 +18,8 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter
     private PlanningVariableDescriptor planningVariableDescriptor;
 
     private PlanningValueSelectionOrder selectionOrder = PlanningValueSelectionOrder.ORIGINAL;
-    private PlanningValueSelectionPromotion selectionPromotion = PlanningValueSelectionPromotion.NONE;
-    private boolean roundRobinSelection = false;
+    private PlanningValueSelectionPromotion selectionPromotion = PlanningValueSelectionPromotion.NONE; // TODO
+    private boolean roundRobinSelection = false; // TODO
 
     private List<Object> selectedPlanningValueList = null;
 
@@ -40,6 +38,10 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter
     public void setRoundRobinSelection(boolean roundRobinSelection) {
         this.roundRobinSelection = roundRobinSelection;
     }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {

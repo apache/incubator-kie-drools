@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.constructionheuristic.greedyFit.decider;
 
-public enum PickEarlyFitType {
+public enum PickEarlyGreedyFitType {
     NEVER,
     FIRST_LAST_STEP_SCORE_IMPROVING_OR_EQUAL;
 }
