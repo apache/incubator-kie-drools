@@ -10,4 +10,4 @@
 /*.iml
 
 # test database
-/JPADroolsFlow.h2.db
+/JPADroolsFlow.*.db
