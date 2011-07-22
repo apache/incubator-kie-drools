@@ -125,6 +125,11 @@ public class InputMarshaller {
 
         readAgenda( context,
                     agenda );
+        
+        // RuleFlowGroups need to reference the session
+        for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
+            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
+        }
 
         context.wm = session;
         
