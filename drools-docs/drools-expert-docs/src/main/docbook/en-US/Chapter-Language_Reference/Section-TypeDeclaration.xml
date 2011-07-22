@@ -233,7 +233,171 @@
 end
 </programlisting>
 
-    <para></para>
+    <section>
+      <title>Predefined class level annotations</title>
+
+      <para>Some annotations have predefined semantics that are interpreted by
+      the engine. The following is a list of some of these predefined
+      annotations and their meaning.</para>
+
+      <section>
+        <title>@role( &lt;fact | event&gt; )</title>
+
+        <para>See Drools Fusion documentation for details.</para>
+      </section>
+
+      <section>
+        <title>@typesafe( &lt;boolean&gt; )</title>
+
+        <para>By default all type declarations are compiled with type safety
+        enabled; @typesafe( false ) provides a means to override this
+        behaviour by permitting a fall-back, to type unsafe evaluation where
+        all constraints are generated as MVEL constraints and executed
+        dynamically. This can be important when dealing with collections that
+        do not have any generics or mixed type collections.</para>
+      </section>
+
+      <section>
+        <title>@timestamp( &lt;attribute name&gt; )</title>
+
+        <para>See Drools Fusion documentation for details.</para>
+      </section>
+
+      <section>
+        <title>@duration( &lt;attribute name&gt; )</title>
+
+        <para>See Drools Fusion documentation for details.</para>
+      </section>
+
+      <section>
+        <title>@expires( &lt;time interval&gt; )</title>
+
+        <para>See Drools Fusion documentation for details.</para>
+      </section>
+
+      <section>
+        <title>@propertyChangeSupport</title>
+
+        <para>Facts that implement support for property changes as defined in
+        the Javabean(tm) spec, now can be annotated so that the engine
+        register itself to listen for changes on fact properties. The boolean
+        parameter that was used in the insert() method in the Drools 4 API is
+        deprecated and does not exist in the drools-api module.</para>
+
+        <example>
+          <title>@propertyChangeSupport</title>
+
+          <programlisting>declare Person
+  @propertyChangeSupport
+end</programlisting>
+        </example>
+      </section>
+    </section>
+
+    <section>
+      <title>Predefined attribute level annotations</title>
+
+      <para>As noted before, Drools also supports annotations in type
+      attributes. Here is a list of predefined attribute annotations.</para>
+
+      <section>
+        <title>@key</title>
+
+        <para>Declaring an attribute as a key attribute has 2 major effects on
+        generated types:</para>
+
+        <para><orderedlist>
+            <listitem>
+              <para>The attribute will be used as a key identifier for the
+              type, and as so, the generated class will implement the equals()
+              and hashCode() methods taking the attribute into account when
+              comparing instances of this type.</para>
+            </listitem>
+
+            <listitem>
+              <para>Drools will generate a constructor using all the key
+              attributes as parameters.</para>
+            </listitem>
+          </orderedlist>For instance:</para>
+
+        <example>
+          <title>example of @key declarations for a type</title>
+
+          <programlisting>declare Person
+    firstName : String @key
+    lastName : String @key
+    age : int
+end
+</programlisting>
+        </example>
+
+        <para>For the previous example, Drools will generate equals() and
+        hashCode() methods that will check the firstName and lastName
+        attributes to determine if two instances of Person are equal to each
+        other, but will not check the age attribute. It will also generate a
+        constructutor taking firstName and lastName as parameters, allowing
+        one to create instances with a code like this:</para>
+
+        <example>
+          <title>creating an instance using the key constructor</title>
+
+          <programlisting>Person person = new Person( "John", "Doe" );</programlisting>
+        </example>
+      </section>
+
+      <section>
+        <title>@position</title>
+
+        <para>Patterns support positional arguments on type
+        declarations.</para>
+
+        <para>Positional arguments are ones where you don't need to specify
+        the field name, as the position maps to a known named field. i.e.
+        Person( name == "mark" ) can be rewritten as Person( "mark"; ). The
+        semicolon ';' is important so that the engine knows that everything
+        before it is a positional argument. Otherwise we might assume it was a
+        boolean expression, which is how it could be interpretted after the
+        semicolon. You can mix positional and named arguments on a pattern by
+        using the semicolon ';' to separate them. Any variables used in a
+        positional that have not yet been bound will be bound to the field
+        that maps to that position.</para>
+
+        <programlisting>declare Cheese
+    name : String
+    shop : String
+    price : int
+end
+</programlisting>
+
+        <para>The default order is the declared order, but this can be
+        overiden using @position</para>
+
+        <programlisting>declare Cheese
+    name : String @position(1)
+    shop : String @position(2)
+    price : int @position(0)
+end
+</programlisting>
+
+        <para>The @Position annotation, in the org.drools.definition.type
+        package, can be used to annotate original pojos on the classpath.
+        Currently only fields on classes can be annotated. Inheritence of
+        classes is supported, but not interfaces of methods yet.</para>
+
+        <para>Example patterns, with two constraints and a binding. Remember
+        semicolon ';' is used to differentiate the positional section from the
+        named argument section. Variables and literals and expressions using
+        just literals are supported in posional arguments, but not
+        variables.</para>
+
+        <programlisting>
+Cheese( "stilton", "Cheese Shop", p; )
+Cheese( "stilton", "Cheese Shop"; p : price )
+Cheese( "stilton"; shop == "Cheese Shop", p : price )
+Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
+</programlisting>
+      </section>
+    </section>
   </section>
 
   <section>
