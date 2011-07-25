@@ -31,6 +31,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -47,6 +48,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
@@ -111,6 +115,7 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
@@ -160,6 +165,7 @@ import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidRulePackage;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.runtime.Environment;
@@ -9076,6 +9082,73 @@ public class MiscTest {
         knowledgeSession.dispose();
     }
 
+    @Test
+    public void testGUVNOR578_2() throws Exception {
+        MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
+
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/primespoc.jar" ) );
+
+        JarEntry entry = null;
+        byte[] buf = new byte[1024];
+        int len = 0;
+        while ( (entry = jis.getNextJarEntry()) != null ) {
+            if ( !entry.isDirectory() ) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                while ( (len = jis.read( buf )) >= 0 ) {
+                    out.write( buf,
+                               0,
+                               len );
+                }
+                loader.addResource( entry.getName(),
+                                    out.toByteArray() );
+            }
+        }
+
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add( jis );
+
+        Properties properties = new Properties();
+        properties.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
+                                "foo.bar" );
+        PackageBuilder builder = new PackageBuilder( new PackageBuilderConfiguration( properties,
+                                                                                      loader ) );
+
+        PackageDescr pc = new PackageDescr( "foo.bar" );
+        builder.addPackage( pc );
+
+        String header = "import fr.gouv.agriculture.dag.agorha.business.primes.SousPeriodePrimeAgent\n";
+
+        builder.addPackageFromDrl( new StringReader( header ) );
+        assertFalse( builder.hasErrors() );
+
+        String passingRule = "rule \"rule1\"\n"
+                             + "dialect \"mvel\"\n"
+                             + "when\n"
+                             + "SousPeriodePrimeAgent( echelle == \"abc\" )"
+                             + "then\n"
+                             + "end\n";
+
+        String failingRule = "rule \"rule2\"\n"
+                             + "dialect \"mvel\"\n"
+                             + "when\n"
+                             + "SousPeriodePrimeAgent( quotiteRemuneration == 123 , echelle == \"abc\" )"
+                             + "then\n"
+                             + "end\n";
+
+        builder.addPackageFromDrl( new StringReader( passingRule ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        builder.addPackageFromDrl( new StringReader( failingRule ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+    }
+    
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {

@@ -46,68 +46,68 @@ import org.mvel2.asm.Type;
  */
 public class ClassFieldInspector {
 
-    private final Map<String, Integer>    fieldNames    = new HashMap<String, Integer>();
-    private final Map<String, Class <?>>  fieldTypes    = new HashMap<String, Class <?>>();
-    private final Map<String, Field>      fieldTypesField= new HashMap<String, Field>();
-    private final Map<String, Method>     getterMethods = new HashMap<String, Method>();
-    private final Map<String, Method>     setterMethods = new HashMap<String, Method>();
-    private final Set<String>             nonGetters    = new HashSet<String>();
-    private       Class< ? >              classUnderInspection = null;
+    private final Map<String, Integer>    fieldNames           = new HashMap<String, Integer>();
+    private final Map<String, Class< ? >> fieldTypes           = new HashMap<String, Class< ? >>();
+    private final Map<String, Field>      fieldTypesField      = new HashMap<String, Field>();
+    private final Map<String, Method>     getterMethods        = new HashMap<String, Method>();
+    private final Map<String, Method>     setterMethods        = new HashMap<String, Method>();
+    private final Set<String>             nonGetters           = new HashSet<String>();
+    private Class< ? >                    classUnderInspection = null;
 
     /**
      * @param classUnderInspection The class that the fields to be shadowed are extracted for.
      * @throws IOException
      */
     public ClassFieldInspector(final Class< ? > classUnderInspection) throws IOException {
-        this(classUnderInspection,
+        this( classUnderInspection,
                 true );
     }
 
     public ClassFieldInspector(final Class< ? > classUnderInspection,
                                final boolean includeFinalMethods) throws IOException {
         this.classUnderInspection = classUnderInspection;
-        final String name = getResourcePath(classUnderInspection);
+        final String name = getResourcePath( classUnderInspection );
         final InputStream stream = classUnderInspection.getResourceAsStream( name );
 
         if ( stream != null ) {
             try {
-                processClassWithByteCode(classUnderInspection,
-                        stream,
-                        includeFinalMethods );
+                processClassWithByteCode( classUnderInspection,
+                                          stream,
+                                          includeFinalMethods );
             } finally {
                 stream.close();
             }
         } else {
-            processClassWithoutByteCode(classUnderInspection,
-                    includeFinalMethods );
+            processClassWithoutByteCode( classUnderInspection,
+                                         includeFinalMethods );
         }
     }
 
     /** Walk up the inheritance hierarchy recursively, reading in fields */
-    private void processClassWithByteCode(final Class< ? > clazz,
-                                          final InputStream stream,
-                                          final boolean includeFinalMethods) throws IOException {
+    private void processClassWithByteCode( final Class< ? > clazz,
+                                           final InputStream stream,
+                                           final boolean includeFinalMethods ) throws IOException {
 
         final ClassReader reader = new ClassReader( stream );
         final ClassFieldVisitor visitor = new ClassFieldVisitor( clazz,
-                includeFinalMethods,
-                this );
+                                                                 includeFinalMethods,
+                                                                 this );
         reader.accept( visitor,
-                0 );
+                       0 );
         if ( clazz.getSuperclass() != null ) {
             final String name = getResourcePath( clazz.getSuperclass() );
             final InputStream parentStream = clazz.getResourceAsStream( name );
             if ( parentStream != null ) {
                 try {
                     processClassWithByteCode( clazz.getSuperclass(),
-                            parentStream,
-                            includeFinalMethods );
+                                              parentStream,
+                                              includeFinalMethods );
                 } finally {
                     parentStream.close();
                 }
             } else {
                 processClassWithoutByteCode( clazz.getSuperclass(),
-                        includeFinalMethods );
+                                             includeFinalMethods );
             }
         }
         if ( clazz.isInterface() ) {
@@ -118,21 +118,21 @@ public class ClassFieldInspector {
                 if ( parentStream != null ) {
                     try {
                         processClassWithByteCode( interfaces[i],
-                                parentStream,
-                                includeFinalMethods );
+                                                  parentStream,
+                                                  includeFinalMethods );
                     } finally {
                         parentStream.close();
                     }
                 } else {
                     processClassWithoutByteCode( interfaces[i],
-                            includeFinalMethods );
+                                                 includeFinalMethods );
                 }
             }
         }
     }
 
-    private void processClassWithoutByteCode(final Class< ? > clazz,
-                                             final boolean includeFinalMethods) {
+    private void processClassWithoutByteCode( final Class< ? > clazz,
+                                              final boolean includeFinalMethods ) {
         final Method[] methods = clazz.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
             // modifiers mask  
@@ -144,14 +144,14 @@ public class ClassFieldInspector {
                 // want public methods that start with 'get' or 'is' and have no args, and return a value
                 final int fieldIndex = this.fieldNames.size();
                 addToMapping( methods[i],
-                        fieldIndex);
+                              fieldIndex );
 
             } else if ( ((methods[i].getModifiers() & mask) == Opcodes.ACC_PUBLIC) && (methods[i].getParameterTypes().length == 1) && (methods[i].getName().startsWith( "set" )) ) {
 
                 // want public methods that start with 'set' and have one arg
                 final int fieldIndex = this.fieldNames.size();
                 addToMapping( methods[i],
-                        fieldIndex );
+                              fieldIndex );
 
             }
         }
@@ -160,7 +160,7 @@ public class ClassFieldInspector {
     /**
      * Convert it to a form so we can load the bytes from the classpath.
      */
-    private String getResourcePath(final Class< ? > clazz) {
+    private String getResourcePath( final Class< ? > clazz ) {
         return "/" + clazz.getCanonicalName() + ".class";
     }
 
@@ -172,7 +172,6 @@ public class ClassFieldInspector {
         return this.fieldNames;
     }
 
-
     /**
      * sotty:
      * Checks whether a returned field is actually a getter or not
@@ -180,8 +179,8 @@ public class ClassFieldInspector {
      * @param name the field to test
      * @return true id the name does not correspond to a getter field
      */
-    public boolean isNonGetter(String name) {
-        return nonGetters.contains(name);
+    public boolean isNonGetter( String name ) {
+        return nonGetters.contains( name );
     }
 
     /**
@@ -194,7 +193,7 @@ public class ClassFieldInspector {
     /**
      * @return A mapping of field types (unboxed).
      */
-    public Map<String,Class <?>> getFieldTypes() {
+    public Map<String, Class< ? >> getFieldTypes() {
 
         return this.fieldTypes;
     }
@@ -213,8 +212,8 @@ public class ClassFieldInspector {
         return this.setterMethods;
     }
 
-    private void addToMapping(final Method method,
-                              final int index) {
+    private void addToMapping( final Method method,
+                               final int index ) {
         final String name = method.getName();
         int offset;
         if ( name.startsWith( "is" ) ) {
@@ -225,28 +224,28 @@ public class ClassFieldInspector {
             offset = 0;
         }
         final String fieldName = calcFieldName( name,
-                offset );
+                                                offset );
         if ( this.fieldNames.containsKey( fieldName ) ) {
             //only want it once, the first one thats found
             if ( offset != 0 && this.nonGetters.contains( fieldName ) ) {
                 //replace the non getter method with the getter one
                 Integer oldIndex = removeOldField( fieldName );
                 storeField( method,
-                        oldIndex,
-                        fieldName );
+                            oldIndex,
+                            fieldName );
                 storeGetterSetter( method,
-                        fieldName );
+                                   fieldName );
                 this.nonGetters.remove( fieldName );
             } else if ( offset != 0 ) {
                 storeGetterSetter( method,
-                        fieldName );
+                                   fieldName );
             }
         } else {
             storeField( method,
-                    new Integer( index ),
-                    fieldName );
+                        new Integer( index ),
+                        fieldName );
             storeGetterSetter( method,
-                    fieldName );
+                               fieldName );
 
             if ( offset == 0 ) {
                 // only if it is a non-standard getter method
@@ -255,7 +254,7 @@ public class ClassFieldInspector {
         }
     }
 
-    private Integer removeOldField(final String fieldName) {
+    private Integer removeOldField( final String fieldName ) {
         Integer index = this.fieldNames.remove( fieldName );
         this.fieldTypes.remove( fieldName );
         this.getterMethods.remove( fieldName );
@@ -263,48 +262,48 @@ public class ClassFieldInspector {
 
     }
 
-    private void storeField(final Method method,
-                            final Integer index,
-                            final String fieldName) {
+    private void storeField( final Method method,
+                             final Integer index,
+                             final String fieldName ) {
         this.fieldNames.put( fieldName,
-                index );
+                             index );
     }
 
     /**
      * @param method
      * @param fieldName
      */
-    private void storeGetterSetter(final Method method,
-                                   final String fieldName) {
+    private void storeGetterSetter( final Method method,
+                                    final String fieldName ) {
         Field f = null;
         try {
-            f =  classUnderInspection.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
+            f = classUnderInspection.getDeclaredField( fieldName );
+        } catch ( NoSuchFieldException e ) {
             // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        if ( method.getName().startsWith( "set" ) && method.getParameterTypes().length == 1) {
+        if ( method.getName().startsWith( "set" ) && method.getParameterTypes().length == 1 ) {
             this.setterMethods.put( fieldName,
-                    method );
+                                    method );
             if ( !fieldTypes.containsKey( fieldName ) ) {
                 this.fieldTypes.put( fieldName,
-                        method.getParameterTypes()[0] );
+                                     method.getParameterTypes()[0] );
             }
             if ( !fieldTypesField.containsKey( fieldName ) ) {
                 this.fieldTypesField.put( fieldName,
-                        f );
+                                          f );
             }
-        } else {
+        } else if( ! void.class.isAssignableFrom( method.getReturnType() ) ) {
             this.getterMethods.put( fieldName,
-                    method );
+                                    method );
             this.fieldTypes.put( fieldName,
-                    method.getReturnType() );
+                                 method.getReturnType() );
             this.fieldTypesField.put( fieldName,
-                    f );
+                                      f );
         }
     }
 
-    private String calcFieldName(String name,
-                                 final int offset) {
+    private String calcFieldName( String name,
+                                  final int offset ) {
         name = name.substring( offset );
         return Introspector.decapitalize( name );
     }
@@ -328,11 +327,11 @@ public class ClassFieldInspector {
             this.inspector = inspector;
         }
 
-        public MethodVisitor visitMethod(final int access,
-                                         final String name,
-                                         final String desc,
-                                         final String signature,
-                                         final String[] exceptions) {
+        public MethodVisitor visitMethod( final int access,
+                                          final String name,
+                                          final String desc,
+                                          final String signature,
+                                          final String[] exceptions ) {
             //only want public methods
             //and have no args, and return a value
             final int mask = this.includeFinalMethods ? Opcodes.ACC_PUBLIC : Opcodes.ACC_PUBLIC | Opcodes.ACC_FINAL;
@@ -340,88 +339,90 @@ public class ClassFieldInspector {
                 try {
                     if ( desc.startsWith( "()" ) && (!name.equals( "<init>" )) && (!name.equals( "<clinit>" )) ) {// && ( name.startsWith("get") || name.startsWith("is") ) ) {
                         final Method method = this.clazz.getMethod( name,
-                                (Class[]) null );
+                                                                    (Class[]) null );
                         if ( method.getReturnType() != void.class ) {
                             final int fieldIndex = this.inspector.fieldNames.size();
                             this.inspector.addToMapping( method,
-                                    fieldIndex );
+                                                         fieldIndex );
                         }
                     } else if ( name.startsWith( "set" ) ) {
                         // I found no safe way of getting the method object from the descriptor, so doing the other way around
                         Method[] methods = this.clazz.getMethods();
-                        for( int i = 0; i < methods.length; i++ ) {
-                            if( desc.equals( Type.getMethodDescriptor( methods[i] ) ) ) {
+                        for ( int i = 0; i < methods.length; i++ ) {
+                            if ( name.equals( methods[i].getName() ) && desc.equals( Type.getMethodDescriptor( methods[i] ) ) ) {
                                 final int fieldIndex = this.inspector.fieldNames.size();
                                 this.inspector.addToMapping( methods[i],
-                                        fieldIndex );
+                                                             fieldIndex );
+                                break;
                             }
                         }
                     }
                 } catch ( final Exception e ) {
-                    throw new RuntimeDroolsException( "Error getting field access method: "+name+": "+e.getMessage(), e );
+                    throw new RuntimeDroolsException( "Error getting field access method: " + name + ": " + e.getMessage(),
+                                                      e );
                 }
             }
             return null;
         }
 
-        public void visit(final int arg0,
-                          final int arg1,
-                          final String arg2,
-                          final String arg3,
-                          final String[] arg4,
-                          final String arg5) {
+        public void visit( final int arg0,
+                           final int arg1,
+                           final String arg2,
+                           final String arg3,
+                           final String[] arg4,
+                           final String arg5 ) {
         }
 
-        public void visitInnerClass(final String arg0,
-                                    final String arg1,
-                                    final String arg2,
-                                    final int arg3) {
+        public void visitInnerClass( final String arg0,
+                                     final String arg1,
+                                     final String arg2,
+                                     final int arg3 ) {
         }
 
-        public void visitField(final int access,
-                               final String arg1,
-                               final String arg2,
-                               final Object arg3,
-                               final Attribute arg4) {
+        public void visitField( final int access,
+                                final String arg1,
+                                final String arg2,
+                                final Object arg3,
+                                final Attribute arg4 ) {
         }
 
-        public void visitAttribute(final Attribute arg0) {
+        public void visitAttribute( final Attribute arg0 ) {
         }
 
         public void visitEnd() {
         }
 
-        public void visit(final int arg0,
-                          final int arg1,
-                          final String arg2,
-                          final String arg3,
-                          final String arg4,
-                          final String[] arg5) {
+        public void visit( final int arg0,
+                           final int arg1,
+                           final String arg2,
+                           final String arg3,
+                           final String arg4,
+                           final String[] arg5 ) {
 
         }
 
-        public void visitSource(final String arg0,
-                                final String arg1) {
+        public void visitSource( final String arg0,
+                                 final String arg1 ) {
 
         }
 
-        public void visitOuterClass(final String arg0,
-                                    final String arg1,
-                                    final String arg2) {
+        public void visitOuterClass( final String arg0,
+                                     final String arg1,
+                                     final String arg2 ) {
 
         }
 
-        public AnnotationVisitor visitAnnotation(final String arg0,
-                                                 final boolean arg1) {
+        public AnnotationVisitor visitAnnotation( final String arg0,
+                                                  final boolean arg1 ) {
 
             return new ClassFieldAnnotationVisitor();
         }
 
-        public FieldVisitor visitField(final int arg0,
-                                       final String arg1,
-                                       final String arg2,
-                                       final String arg3,
-                                       final Object arg4) {
+        public FieldVisitor visitField( final int arg0,
+                                        final String arg1,
+                                        final String arg2,
+                                        final String arg3,
+                                        final Object arg4 ) {
 
             return null;
         }
@@ -436,21 +437,21 @@ public class ClassFieldInspector {
             implements
             AnnotationVisitor {
 
-        public void visit(final String arg0,
-                          final Object arg1) {
+        public void visit( final String arg0,
+                           final Object arg1 ) {
         }
 
-        public void visitEnum(final String arg0,
-                              final String arg1,
-                              final String arg2) {
+        public void visitEnum( final String arg0,
+                               final String arg1,
+                               final String arg2 ) {
         }
 
-        public AnnotationVisitor visitAnnotation(final String arg0,
-                                                 final String arg1) {
+        public AnnotationVisitor visitAnnotation( final String arg0,
+                                                  final String arg1 ) {
             return new ClassFieldAnnotationVisitor();
         }
 
-        public AnnotationVisitor visitArray(final String arg0) {
+        public AnnotationVisitor visitArray( final String arg0 ) {
             return new ClassFieldAnnotationVisitor();
         }
 
