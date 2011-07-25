@@ -443,52 +443,6 @@
   </section>
 
   <section>
-    <title>The Guided Editor (Rule GUI)</title>
-
-    <para>A new feature of the Drools IDE (since version 4) is the guided
-    editor for rules. This is similar to the web based editor that is
-    available in the BRMS. It allows you to build rules in a GUI-driven
-    fashion, based on your object model.</para>
-
-    <figure>
-      <title>The guided editor</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center"
-                     fileref="images/Chapter-IDE/guidededitor1.png"
-                     format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>To create a rule this way, use the wizard menu. It will create an
-    instance of a .brl file and open it in the guided editor. This editor
-    works based on a .package file in the same directory as the .brl file. In
-    this "package" file you have the package name and import statements - just
-    like you would at the top of a normal DRL file. First time you create a
-    brl rule you will need to populate the package file with the fact classes
-    you are interested in. Once you have this, the guided editor will be able
-    to prompt you with facts and their fields so that you can build rules
-    graphically.</para>
-
-    <para>The guided editor works off the model classes (or fact classes) that
-    you configure. It then is able to "render" to DRL the rule that you have
-    entered graphically. You can do this visually - and use it as a basis for
-    learning DRL, or you can use it and build rules of the brl directly. One
-    way to do this is by using the drools-ant module, which is an ant task
-    that creates all the rule assets in a folder, as a rule package, so that
-    you can then deploy it as a binary file. Alternatively, you can use the
-    following snippet of code to convert the brl to a drl rule.</para>
-
-    <programlisting language="java">BRXMLPersistence read = BRXMLPersistence.getInstance();
-BRDRLPersistence write = BRDRLPersistence.getInstance();
-String brl = ... // read from the .brl file as needed...
-String outputDRL = write.marshall(read.unmarshal(brl));
-// Pass the outputDRL to the PackageBuilder, as usual</programlisting>
-  </section>
-
-  <section>
     <title>Drools Views</title>
 
     <para>When debugging an application using a Drools engine, these views can
