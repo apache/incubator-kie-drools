@@ -42,5 +42,6 @@ public interface KnowledgeAgentConfiguration
 
     public boolean isUseKBaseClassLoaderForCompiling();
 
+    public int     getValidationTimeout();
 
 }
