@@ -51,20 +51,108 @@
       <title>Improved Knowledge Bases view</title>
 
       <para>Thanks to the help of a community member the tree-view shown in
-      the Knowledge Bases view has been improved. The view no longer repeats
-      intermediate level sub-package names that are empty.</para>
+      the Knowledge Bases view has been improved. </para>
+
+      <para>We also took the opportunity to make a few improvements of our
+      own.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The view no longer repeats intermediate level sub-package
+          names that are empty (community led effort).</para>
+        </listitem>
+
+        <listitem>
+          <para>The package view can be viewed hierarchically, as has been the
+          default up to 5.2.0.Final.</para>
+        </listitem>
+
+        <listitem>
+          <para>The package view can now also be viewed "flat" with no
+          nesting</para>
+        </listitem>
+
+        <listitem>
+          <para>The tree's nodes can be fully expanded or collapsed.</para>
+        </listitem>
+      </itemizedlist>
 
       <figure>
-        <title>Improved Knowledge Bases view</title>
+        <title>Hierarchical view</title>
 
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/Chapter-Release_Notes/improved-knowledgebases-view.png"
+                       fileref="images/Chapter-Release_Notes/improved-knowledgebases-view1.png"
                        format="PNG"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
+
+      <figure>
+        <title>Flat view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/improved-knowledgebases-view2.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Asset Viewer</title>
+
+      <para>Guvnor continues to grow and improve with every passing release.
+      One of the requirements we have is to move Guvnor away from a pure
+      "Rules" or "Knowledge" repository management and authoring environment
+      to a more generic one, in which consumers of different technologies can
+      tailor their experience to their domain's requirements. </para>
+
+      <para>One of the more noticable changes we are making to support this
+      has been to de-couple asset types and groups from the code. What was
+      once previously static code is now defined by compile-time
+      configuration. Due to limitations in GWT (no client-side reflection),
+      the technology with which Guvnor is implemented, we are unfortunately
+      not able to offer runtime configuration at this moment.</para>
+
+      <para>The asset groups are configurable within source file;
+      src/main/resources/drools-asseteditors.xml. This file is used at GWT
+      compile time to wire-up asset types with their respective editor, group
+      and group icon. An example extract from the foregoing file looks like
+      this:- </para>
+
+      <programlisting>&lt;asseteditor&gt;
+    &lt;class&gt;org.drools.guvnor.client.modeldriven.ui.RuleModeller&lt;/class&gt;
+    &lt;format&gt;brl&lt;/format&gt;
+    &lt;icon&gt;images.ruleAsset()&lt;/icon&gt; &lt;title&gt;constants.BusinessRuleAssets()&lt;/title&gt;
+&lt;/asseteditor&gt;</programlisting>
+
+      <para>To emphasis the separation, asset groups have become their own
+      "editor" appearing as a tab in Guvnor's main, central panel. </para>
+
+      <figure>
+        <title>Asset Viewer</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/asset-viewer.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The format of the new screen is being trialled for 5.3.0.Beta1.
+      There has been some discussion whether a single table containing all
+      assets would be better - with collapsible rows to group different types
+      of asset. The immediate problem with this approach is however that
+      finding different asset types on a "paged table" becomes more cumbersome
+      for the user; as they'd have to sort by type and page through.</para>
+
+      <para>We therefore ask for community feedback.</para>
     </section>
 
     <section>
