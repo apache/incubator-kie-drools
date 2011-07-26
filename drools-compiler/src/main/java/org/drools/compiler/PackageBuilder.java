@@ -683,7 +683,7 @@ public class PackageBuilder {
                           packageDescrsForPackage );
         }
         packageDescrsForPackage.add( packageDescr );
-        List<ImportDescr> imports = new ArrayList<ImportDescr>();
+        Set<ImportDescr> imports = new HashSet<ImportDescr>();
         for ( PackageDescr pd : packageDescrsForPackage ) {
             imports.addAll( pd.getImports() );
         }
@@ -1573,7 +1573,7 @@ public class PackageBuilder {
 
             // Go on with the build
             TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-            if ( resource != null && ((InternalResource) resource).hasURL() ) {
+            if ( resource != null ) {
                 type.setResource( this.resource );
             }
 
@@ -1974,7 +1974,7 @@ public class PackageBuilder {
 
         this.results.addAll( context.getErrors() );
 
-        if ( resource != null && ((InternalResource) resource).hasURL() ) {
+        if ( resource != null ) {
             context.getRule().setResource( resource );
         }
 

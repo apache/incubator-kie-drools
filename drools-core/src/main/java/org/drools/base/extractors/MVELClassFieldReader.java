@@ -20,23 +20,14 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
-import org.drools.base.AccessorKey;
 import org.drools.base.ValueType;
-import org.drools.base.ClassFieldAccessorCache.CacheEntry;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.MVELDialectRuntimeData;
-import org.drools.spi.InternalReadAccessor;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
-import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableStatement;
-import org.mvel2.compiler.ExpressionCompiler;
 
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
@@ -154,5 +145,36 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
                                        object  );
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + ((className == null) ? 0 : className.hashCode());
+        result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+        result = prime * result + (typesafe ? 1231 : 1237);
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj ) return true;
+        if ( !super.equals( obj ) ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        MVELClassFieldReader other = (MVELClassFieldReader) obj;
+        if ( className == null ) {
+            if ( other.className != null ) return false;
+        } else if ( !className.equals( other.className ) ) return false;
+        if ( expr == null ) {
+            if ( other.expr != null ) return false;
+        } else if ( !expr.equals( other.expr ) ) return false;
+        if ( typesafe != other.typesafe ) return false;
+        return true;
+    }
 
 }

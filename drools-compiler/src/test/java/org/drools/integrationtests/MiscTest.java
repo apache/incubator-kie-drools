@@ -31,6 +31,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -47,6 +48,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
@@ -100,6 +104,7 @@ import org.drools.StockTick;
 import org.drools.TestParam;
 import org.drools.Win;
 import org.drools.WorkingMemory;
+import org.drools.audit.WorkingMemoryConsoleLogger;
 import org.drools.base.RuleNameEndsWithAgendaFilter;
 import org.drools.base.RuleNameEqualsAgendaFilter;
 import org.drools.base.RuleNameMatchesAgendaFilter;
@@ -110,6 +115,7 @@ import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
@@ -144,7 +150,6 @@ import org.drools.event.WorkingMemoryEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.InputStreamResource;
 import org.drools.lang.DrlDumper;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.PackageDescr;
@@ -160,9 +165,13 @@ import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.InvalidRulePackage;
+import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.runtime.*;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.Globals;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
@@ -1935,14 +1944,15 @@ public class MiscTest {
         rule += "end";
 
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        builder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+        builder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ),
+                     ResourceType.DRL );
 
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         try {
-            knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
-        } catch (Exception e) {
+            knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
+        } catch ( Exception e ) {
             e.printStackTrace();
-            fail("Should execute with out exceptions");
+            fail( "Should execute with out exceptions" );
         }
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
@@ -4636,15 +4646,15 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( "b" );
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
@@ -4654,7 +4664,7 @@ public class MiscTest {
     }
 
     @Test
-    @Ignore( "Requires fixing of mvel regression reported at https://github.com/mvel/mvel/pull/4")
+    @Ignore("Requires fixing of mvel regression reported at https://github.com/mvel/mvel/pull/4")
     public void testMethodCalls() throws Exception {
         final String text = "package org.drools\n" +
                             "rule \"method calls\"\n" +
@@ -4664,13 +4674,13 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
@@ -4690,7 +4700,7 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
@@ -4711,15 +4721,15 @@ public class MiscTest {
                             "end";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( text );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.insert( "b" );
-        
+
         ksession.insert( new Person( "mark",
                                      50 ) );
         int rules = ksession.fireAllRules();
         assertEquals( 0,
                       rules );
-        
+
         ksession.insert( new Person( "bob",
                                      18 ) );
         rules = ksession.fireAllRules();
@@ -4836,6 +4846,42 @@ public class MiscTest {
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( map ) );
+    }
+
+    @Test
+    public void testMapNullConstraint() throws Exception {
+        KnowledgeBase kbase = loadKnowledgeBase( "test_mapNullConstraints.drl" );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        new WorkingMemoryConsoleLogger( ksession );
+
+        Map addresses = new HashMap();
+        addresses.put( "home",
+                       new Address( "home street" ) );
+        Person bob = new Person( "Bob" );
+        bob.setNamedAddresses( addresses );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> arg = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 4 ) ).afterActivationFired( arg.capture() );
+        org.drools.event.rule.AfterActivationFiredEvent aaf = arg.getAllValues().get( 0 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "1. home != null" ) );
+        aaf = arg.getAllValues().get( 1 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "2. not home == null" ) );
+
+        aaf = arg.getAllValues().get( 2 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "7. work == null" ) );
+        aaf = arg.getAllValues().get( 3 );
+        assertThat( aaf.getActivation().getRule().getName(),
+                    is( "8. not work != null" ) );
     }
 
     @Test
@@ -5548,9 +5594,9 @@ public class MiscTest {
         ksession.setGlobal( "list",
                             list );
 
-        Person p = new Person( "ackbar");
+        Person p = new Person( "ackbar" );
         org.drools.runtime.rule.FactHandle ph = ksession.insert( p );
-        org.drools.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );        
+        org.drools.runtime.rule.FactHandle sh = ksession.insert( "ackbar" );
         ksession.fireAllRules();
         ksession.dispose();
 
@@ -5559,8 +5605,8 @@ public class MiscTest {
         assertEquals( "ackbar",
                       list.get( 0 ) );
         ksession.retract( ph );
-    }    
-    
+    }
+
     @Test
     public void testRuleReplacement() throws Exception {
         // test rule replacement
@@ -8943,7 +8989,7 @@ public class MiscTest {
         assertEquals( 1,
                       rules );
     }
-    
+
     @Test
     public void testMethodConstraint() {
         String str = "package org.drools\n" +
@@ -8964,7 +9010,7 @@ public class MiscTest {
         assertEquals( 1,
                       rules );
     }
-    
+
     @Test
     public void testComplexOperator() {
         String str = "package org.drools\n" +
@@ -8991,7 +9037,7 @@ public class MiscTest {
         assertEquals( 2,
                       rules );
     }
-    
+
     @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
@@ -9036,6 +9082,73 @@ public class MiscTest {
         knowledgeSession.dispose();
     }
 
+    @Test
+    public void testGUVNOR578_2() throws Exception {
+        MapBackedClassLoader loader = new MapBackedClassLoader( this.getClass().getClassLoader() );
+
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/primespoc.jar" ) );
+
+        JarEntry entry = null;
+        byte[] buf = new byte[1024];
+        int len = 0;
+        while ( (entry = jis.getNextJarEntry()) != null ) {
+            if ( !entry.isDirectory() ) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                while ( (len = jis.read( buf )) >= 0 ) {
+                    out.write( buf,
+                               0,
+                               len );
+                }
+                loader.addResource( entry.getName(),
+                                    out.toByteArray() );
+            }
+        }
+
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add( jis );
+
+        Properties properties = new Properties();
+        properties.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
+                                "foo.bar" );
+        PackageBuilder builder = new PackageBuilder( new PackageBuilderConfiguration( properties,
+                                                                                      loader ) );
+
+        PackageDescr pc = new PackageDescr( "foo.bar" );
+        builder.addPackage( pc );
+
+        String header = "import fr.gouv.agriculture.dag.agorha.business.primes.SousPeriodePrimeAgent\n";
+
+        builder.addPackageFromDrl( new StringReader( header ) );
+        assertFalse( builder.hasErrors() );
+
+        String passingRule = "rule \"rule1\"\n"
+                             + "dialect \"mvel\"\n"
+                             + "when\n"
+                             + "SousPeriodePrimeAgent( echelle == \"abc\" )"
+                             + "then\n"
+                             + "end\n";
+
+        String failingRule = "rule \"rule2\"\n"
+                             + "dialect \"mvel\"\n"
+                             + "when\n"
+                             + "SousPeriodePrimeAgent( quotiteRemuneration == 123 , echelle == \"abc\" )"
+                             + "then\n"
+                             + "end\n";
+
+        builder.addPackageFromDrl( new StringReader( passingRule ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        builder.addPackageFromDrl( new StringReader( failingRule ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+    }
+    
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
