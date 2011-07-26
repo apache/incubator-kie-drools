@@ -51,7 +51,7 @@
       <title>Improved Knowledge Bases view</title>
 
       <para>Thanks to the help of a community member the tree-view shown in
-      the Knowledge Bases view has been improved. </para>
+      the Knowledge Bases view has been improved.</para>
 
       <para>We also took the opportunity to make a few improvements of our
       own.</para>
@@ -109,7 +109,7 @@
       One of the requirements we have is to move Guvnor away from a pure
       "Rules" or "Knowledge" repository management and authoring environment
       to a more generic one, in which consumers of different technologies can
-      tailor their experience to their domain's requirements. </para>
+      tailor their experience to their domain's requirements.</para>
 
       <para>One of the more noticable changes we are making to support this
       has been to de-couple asset types and groups from the code. What was
@@ -122,7 +122,7 @@
       src/main/resources/drools-asseteditors.xml. This file is used at GWT
       compile time to wire-up asset types with their respective editor, group
       and group icon. An example extract from the foregoing file looks like
-      this:- </para>
+      this:-</para>
 
       <programlisting>&lt;asseteditor&gt;
     &lt;class&gt;org.drools.guvnor.client.modeldriven.ui.RuleModeller&lt;/class&gt;
@@ -131,7 +131,7 @@
 &lt;/asseteditor&gt;</programlisting>
 
       <para>To emphasis the separation, asset groups have become their own
-      "editor" appearing as a tab in Guvnor's main, central panel. </para>
+      "editor" appearing as a tab in Guvnor's main, central panel.</para>
 
       <figure>
         <title>Asset Viewer</title>
@@ -140,7 +140,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/asset-viewer.png"
-                       format="PNG"></imagedata>
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
