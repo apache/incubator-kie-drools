@@ -31,16 +31,29 @@ import javax.persistence.Persistence;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.WorkingMemory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
+import org.drools.event.ActivationCancelledEvent;
+import org.drools.event.ActivationCreatedEvent;
+import org.drools.event.AfterActivationFiredEvent;
+import org.drools.event.AgendaEventListener;
+import org.drools.event.AgendaGroupPoppedEvent;
+import org.drools.event.AgendaGroupPushedEvent;
+import org.drools.event.BeforeActivationFiredEvent;
+import org.drools.event.RuleFlowGroupActivatedEvent;
+import org.drools.event.RuleFlowGroupDeactivatedEvent;
+import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.marshalling.impl.ProcessMarshallerFactory;
@@ -179,6 +192,43 @@ public class CommandDelegate {
 			ksession.getWorkItemManager().registerWorkItemHandler(
 				"Human Task", handler);
 			handler.connect();
+			final org.drools.event.AgendaEventListener agendaEventListener = new org.drools.event.AgendaEventListener() {
+	            public void activationCreated(ActivationCreatedEvent event,
+                        WorkingMemory workingMemory){
+	            }
+	            public void activationCancelled(ActivationCancelledEvent event,
+                          WorkingMemory workingMemory){
+	            }
+	            public void beforeActivationFired(BeforeActivationFiredEvent event,
+                            WorkingMemory workingMemory) {
+	            }
+	            public void afterActivationFired(AfterActivationFiredEvent event,
+                           WorkingMemory workingMemory) {
+	            }
+	            public void agendaGroupPopped(AgendaGroupPoppedEvent event,
+                        WorkingMemory workingMemory) {
+	            }
+
+	            public void agendaGroupPushed(AgendaGroupPushedEvent event,
+                        WorkingMemory workingMemory) {
+	            }
+	            public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event,
+                                   WorkingMemory workingMemory) {
+	            }
+	            public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event, 
+                        WorkingMemory workingMemory) {
+                    workingMemory.fireAllRules();
+                }
+	            public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                     WorkingMemory workingMemory) {
+	            }
+	            public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event,
+                                    WorkingMemory workingMemory) {
+	            }
+	        };
+	        ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
+	                .getCommandService().getContext()).getStatefulKnowledgesession() )
+	                .session.addEventListener(agendaEventListener);
 			System.out.println("Successfully loaded default package from Guvnor");
 			return ksession;
 		} catch (Throwable t) {
