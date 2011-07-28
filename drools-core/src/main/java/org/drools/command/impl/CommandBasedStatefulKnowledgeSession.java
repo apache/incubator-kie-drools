@@ -26,6 +26,7 @@ import org.drools.command.Command;
 import org.drools.command.CommandService;
 import org.drools.command.ExecuteCommand;
 import org.drools.command.GetSessionClockCommand;
+import org.drools.command.Interceptor;
 import org.drools.command.runtime.AddEventListenerCommand;
 import org.drools.command.runtime.DisposeCommand;
 import org.drools.command.runtime.GetCalendarsCommand;
@@ -507,6 +508,11 @@ public class CommandBasedStatefulKnowledgeSession
     
     public KnowledgeSessionConfiguration getSessionConfiguration() {
         return ((KnowledgeCommandContext) commandService.getContext()).getStatefulKnowledgesession().getSessionConfiguration();
+    }
+
+    public void addInterceptor(Interceptor interceptor) {
+    	interceptor.setNext(this.commandService);
+    	this.commandService = interceptor;
     }
 
 }
