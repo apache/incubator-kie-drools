@@ -1,9 +1,7 @@
 package org.drools.persistence.session;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
@@ -16,23 +14,17 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.event.process.ProcessCompletedEvent;
-import org.drools.event.process.ProcessEvent;
-import org.drools.event.process.ProcessEventListener;
-import org.drools.event.process.ProcessNodeLeftEvent;
-import org.drools.event.process.ProcessNodeTriggeredEvent;
-import org.drools.event.process.ProcessStartedEvent;
+import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.command.impl.FireAllRulesInterceptor;
+import org.drools.command.impl.LoggingInterceptor;
 import org.drools.io.ResourceFactory;
-import org.drools.io.impl.ClassPathResource;
+import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.drools.runtime.process.ProcessInstance;
-import org.drools.runtime.process.WorkItem;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -753,5 +745,51 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 //        processInstance = ksession.getProcessInstance( processInstance.getId() );
 //        assertNull( processInstance );
 //    }
+    
+    public void testInterceptor() {
+        String str = "";
+        str += "package org.drools.test\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "  Integer(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( 1 );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        SingleSessionCommandService sscs = (SingleSessionCommandService)
+        	((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+        sscs.addInterceptor(new LoggingInterceptor());
+        sscs.addInterceptor(new FireAllRulesInterceptor());
+        sscs.addInterceptor(new LoggingInterceptor());
+        List<?> list = new ArrayList<Object>();
+        ksession.setGlobal( "list", list );
+        ksession.insert( 1 );
+        ksession.insert( 2 );
+        ksession.insert( 3 );
+        ksession.getWorkItemManager().completeWorkItem(0, null);
+        assertEquals( 3, list.size() );
+    }
     
 }

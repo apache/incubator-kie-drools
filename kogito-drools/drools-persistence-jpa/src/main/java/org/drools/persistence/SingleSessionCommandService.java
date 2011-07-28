@@ -10,8 +10,11 @@ import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.command.Command;
+import org.drools.command.CommandService;
 import org.drools.command.Context;
+import org.drools.command.Interceptor;
 import org.drools.command.impl.ContextImpl;
+import org.drools.command.impl.DefaultCommandService;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.command.runtime.DisposeCommand;
@@ -42,6 +45,7 @@ public class SingleSessionCommandService
     private StatefulKnowledgeSession    ksession;
     private Environment                 env;
     private KnowledgeCommandContext     kContext;
+    private CommandService              commandService;
 
     private TransactionManager          txm;
     private PersistenceContextManager                  jpm;
@@ -107,6 +111,8 @@ public class SingleSessionCommandService
                                                      this.ksession,
                                                      null );
 
+        this.commandService = new DefaultCommandService(kContext);
+        
         ((JpaJDKTimerService) ((InternalKnowledgeRuntime) ksession).getTimerService()).setCommandService( this );
         
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
@@ -192,7 +198,7 @@ public class SingleSessionCommandService
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
         this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
                                                              this.ksession );
-
+        
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
 
@@ -210,6 +216,7 @@ public class SingleSessionCommandService
                                                          null );
         }
 
+        this.commandService = new DefaultCommandService(kContext);
     }
     
     public void initTransactionManager(Environment env) {
@@ -289,7 +296,7 @@ public class SingleSessionCommandService
             //this.appScopedEntityManager.joinTransaction();
             registerRollbackSync();
 
-            T result = ((GenericCommand<T>) command).execute( this.kContext );
+            T result = commandService.execute((GenericCommand<T>) command);
 
             txm.commit();
 
@@ -370,6 +377,11 @@ public class SingleSessionCommandService
 
         }
 
+    }
+    
+    public void addInterceptor(Interceptor interceptor) {
+    	interceptor.setNext(this.commandService);
+    	this.commandService = interceptor;
     }
 
     private void rollback() {
