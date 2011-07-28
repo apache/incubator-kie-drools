@@ -5,8 +5,6 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CatchLinkNode;
 import org.xml.sax.Attributes;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class CatchLinkNodeHandler extends AbstractNodeHandler implements
 		Handler {
 
@@ -16,7 +14,7 @@ public class CatchLinkNodeHandler extends AbstractNodeHandler implements
 
 	@Override
 	protected Node createNode(Attributes attrs) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -6,8 +6,6 @@ import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.xml.sax.Attributes;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class ThrowLinkNodeHandler extends AbstractNodeHandler {
 
 	public Class<?> generateNodeFor() {
@@ -16,7 +14,7 @@ public class ThrowLinkNodeHandler extends AbstractNodeHandler {
 
 	@Override
 	protected Node createNode(Attributes attrs) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
