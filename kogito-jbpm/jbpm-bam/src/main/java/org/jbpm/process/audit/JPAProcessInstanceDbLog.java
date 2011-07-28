@@ -162,8 +162,10 @@ public class JPAProcessInstanceDbLog {
 	}
 	
 	public void dispose() {
-		em.close();
-		em = null;
+		if (em != null) {
+			em.close();
+			em = null;
+		}
 		if (emf != null) {
 			emf.close();
 		}
