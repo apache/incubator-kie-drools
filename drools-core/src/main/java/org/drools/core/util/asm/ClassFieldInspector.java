@@ -269,6 +269,17 @@ public class ClassFieldInspector {
         this.fieldNames.put( fieldName,
                 index );
     }
+    
+    //class.getDeclaredField(String) doesn't walk the inheritance tree; this does
+    private Map<String, Field> getAllFields(Class<?> type) {
+        Map<String, Field> fields = new HashMap<String, Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            for(Field f : c.getDeclaredFields()) {
+                fields.put(f.getName(), f);
+            }
+        }
+        return fields;
+    }
 
     /**
      * @param method
@@ -277,12 +288,8 @@ public class ClassFieldInspector {
     private void storeGetterSetter(final Method method,
                                    final String fieldName) {
         Field f = null;
-        try {
-            f =  classUnderInspection.getDeclaredField(fieldName);
-        } catch (NoSuchFieldException e) {
-            // e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        if ( method.getName().startsWith( "set" ) && method.getParameterTypes().length == 1) {
+        f = getAllFields( classUnderInspection ).get( fieldName );
+        if ( method.getName().startsWith( "set" ) && method.getParameterTypes().length == 1 ) {
             this.setterMethods.put( fieldName,
                     method );
             if ( !fieldTypes.containsKey( fieldName ) ) {
