@@ -76,7 +76,7 @@
      them to be empty so that Maven applies them via filtering to the resources. 
      -->
   <properties>
-    <maven.btm.maxPoolSize>5</maven.btm.maxPoolSize>
+    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
