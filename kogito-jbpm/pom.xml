@@ -26,6 +26,12 @@
   <description>jBPM: a Business Process Management (BPM) Suite</description>
   <url>http://www.jboss.org/jbpm/</url>
 
+  <properties>
+    <!-- Undo the hack on the droolsjbpm-parent pom because Drools 5.3.0 is released without a jBPM release -->
+    <jbpm.version>5.2.0-SNAPSHOT</jbpm.version>
+    <jbpm.osgi.version>5.2.0.SNAPSHOT</jbpm.osgi.version>
+  </properties>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
