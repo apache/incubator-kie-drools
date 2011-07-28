@@ -50,6 +50,7 @@ import org.drools.lang.api.PatternContainerDescrBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
+import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 
@@ -640,12 +641,17 @@ public class ParserHelper {
                 DeclareDescrBuilder declare = ctxBuilder == null ?
                                               DescrFactory.newPackage().newDeclare() :
                                               ((PackageDescrBuilder) ctxBuilder).newDeclare();
+                return (T) declare;
+            } else if ( TypeDeclarationDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                TypeDeclarationDescrBuilder declare = ctxBuilder == null ?
+                                                      DescrFactory.newPackage().newDeclare().type() :
+                                                      ((DeclareDescrBuilder) ctxBuilder).type();
                 pushParaphrases( DroolsParaphraseTypes.TYPE_DECLARE );
                 beginSentence( DroolsSentenceType.TYPE_DECLARATION );
                 setStart( declare );
                 return (T) declare;
             } else if ( FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
-                FieldDescrBuilder field = ((DeclareDescrBuilder) ctxBuilder).newField( param );
+                FieldDescrBuilder field = ((TypeDeclarationDescrBuilder) ctxBuilder).newField( param );
                 setStart( field );
                 return (T) field;
             } else if ( FunctionDescrBuilder.class.isAssignableFrom( clazz ) ) {

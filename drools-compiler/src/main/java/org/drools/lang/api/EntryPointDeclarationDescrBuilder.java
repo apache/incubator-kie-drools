@@ -16,29 +16,22 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 
 /**
- *  A descriptor builder for declare statements
- *  
+ * An interface for the entry point declaration descriptor builder
  */
-public interface DeclareDescrBuilder
+public interface EntryPointDeclarationDescrBuilder
     extends
-    DescrBuilder<PackageDescrBuilder, PackageDescr > {
+    DescrBuilder<PackageDescrBuilder, EntryPointDeclarationDescr> {
 
     /**
-     * Declares a new entry point
+     * Adds an entry point id to the list of declared entry points
      * 
-     * @return the parent PackageDescrBuilder
-     */
-    public EntryPointDeclarationDescrBuilder entryPoint();
-
-    /**
-     * Declares a new type
+     * @param name the name of the entry point to be declared
      * 
-     * @param type
-     * @return
+     * @return itself
      */
-    public TypeDeclarationDescrBuilder type();
+    public EntryPointDeclarationDescrBuilder addEntryPoint( String name );
 
 }

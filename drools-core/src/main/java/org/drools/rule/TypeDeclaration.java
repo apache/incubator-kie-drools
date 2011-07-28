@@ -274,24 +274,30 @@ public class TypeDeclaration
         return matches;
     }
 
-    public boolean equals(Object obj) {
-        if ( obj == this ) {
-            return true;
-        } else if ( obj instanceof TypeDeclaration ) {
-            TypeDeclaration that = (TypeDeclaration) obj;
-            return isObjectEqual( typeName,
-                                  that.typeName ) && role == that.role && format == that.format && isObjectEqual( timestampAttribute,
-                                                                                                                  that.timestampAttribute ) && isObjectEqual( durationAttribute,
-                                                                                                                                                              that.durationAttribute ) && typeClass == that.typeClass
-                   && isObjectEqual( typeTemplate,
-                                     that.typeTemplate );
-        }
-        return false;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((typeName == null) ? 0 : typeName.hashCode());
+        return result;
     }
 
-    private static boolean isObjectEqual(Object a,
-                                         Object b) {
-        return a == b || a != null && a.equals( b );
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        TypeDeclaration other = (TypeDeclaration) obj;
+        if ( typeName == null ) {
+            if ( other.typeName != null ) return false;
+        } else if ( !typeName.equals( other.typeName ) ) return false;
+        return true;
     }
 
     public InternalReadAccessor getDurationExtractor() {
@@ -406,5 +412,4 @@ public class TypeDeclaration
     public void setNovel(boolean novel) {
         this.novel = novel;
     }
-
 }
