@@ -156,7 +156,7 @@
     </section>
 
     <section>
-      <title>Guvnor enumation improvements</title>
+      <title>Guvnor enumeration improvements</title>
 
       <para>Previously Guvnor enumerations that had a "display value" and a
       "DRL value" (i.e. the value substituted for the display value when DRL
