@@ -38,7 +38,9 @@ import org.drools.agent.KnowledgeAgentFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.Context;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.ProcessBuilderFactory;
@@ -47,7 +49,6 @@ import org.drools.definition.process.Process;
 import org.drools.event.ActivationCancelledEvent;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaGroupPoppedEvent;
 import org.drools.event.AgendaGroupPushedEvent;
 import org.drools.event.BeforeActivationFiredEvent;
@@ -331,24 +332,30 @@ public class CommandDelegate {
 	 * @param processInstanceId
 	 * @param variables
 	 */
-	public void setProcessInstanceVariables(String processInstanceId, Map<String, Object> variables) {
-		ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
-		if (processInstance != null) {
-			VariableScopeInstance variableScope = (VariableScopeInstance) 
-				((org.jbpm.process.instance.ProcessInstance) processInstance)
-					.getContextInstance(VariableScope.VARIABLE_SCOPE);
-			if (variableScope == null) {
-				throw new IllegalArgumentException(
-					"Could not find variable scope for process instance " + processInstanceId);
+	public void setProcessInstanceVariables(final String processInstanceId, final Map<String, Object> variables) {
+		((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().execute(new GenericCommand<Void>() {
+			public Void execute(Context context) {
+				StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+				ProcessInstance processInstance = ksession.getProcessInstance(new Long(processInstanceId));
+				if (processInstance != null) {
+					VariableScopeInstance variableScope = (VariableScopeInstance) 
+						((org.jbpm.process.instance.ProcessInstance) processInstance)
+							.getContextInstance(VariableScope.VARIABLE_SCOPE);
+					if (variableScope == null) {
+						throw new IllegalArgumentException(
+							"Could not find variable scope for process instance " + processInstanceId);
+					}
+					for (Map.Entry<String, Object> entry: variables.entrySet()) {
+						variableScope.setVariable(entry.getKey(), entry.getValue());
+					}
+				} else {
+					throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
+				}
+				return null;
 			}
-			for (Map.Entry<String, Object> entry: variables.entrySet()) {
-				variableScope.setVariable(entry.getKey(), entry.getValue());
-			}
-		} else {
-			throw new IllegalArgumentException("Could not find process instance " + processInstanceId);
-		}
-	}
-	
+			
+		});
+	}	
 	public void signalExecution(String executionId, String signal) {
 		ksession.getProcessInstance(new Long(executionId))
 			.signalEvent("signal", signal);
