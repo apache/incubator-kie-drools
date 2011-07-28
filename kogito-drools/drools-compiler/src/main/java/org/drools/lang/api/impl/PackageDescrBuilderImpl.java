@@ -65,7 +65,6 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
 
     public DeclareDescrBuilder newDeclare() {
         DeclareDescrBuilder declare = new DeclareDescrBuilderImpl( this );
-        descr.addTypeDeclaration( declare.getDescr() );
         return declare;
     }
 

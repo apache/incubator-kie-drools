@@ -1,40 +1,30 @@
 package org.drools.lang.api.impl;
 
-import org.drools.lang.api.AnnotationDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
-import org.drools.lang.api.FieldDescrBuilder;
+import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
-import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.api.TypeDeclarationDescrBuilder;
+import org.drools.lang.descr.PackageDescr;
 
-public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, TypeDeclarationDescr>
+public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, PackageDescr>
     implements
     DeclareDescrBuilder {
 
     protected DeclareDescrBuilderImpl( PackageDescrBuilder parent ) {
-        super( parent, new TypeDeclarationDescr() );
+        super( parent, parent.getDescr() );
     }
 
-    public DeclareDescrBuilder type( String type ) {
-        descr.setTypeName( type );
-        return this;
+    public EntryPointDeclarationDescrBuilder entryPoint() {
+        EntryPointDeclarationDescrBuilder epb = new EntryPointDeclarationDescrBuilderImpl( parent);
+        descr.addEntryPointDeclaration( epb.getDescr() );
+        return epb;
     }
 
-
-    public DeclareDescrBuilder superType( String type ) {
-        descr.setSuperTypeName( type );
-        return this;
+    public TypeDeclarationDescrBuilder type() {
+        TypeDeclarationDescrBuilder tddb = new TypeDeclarationDescrBuilderImpl( parent );
+        descr.addTypeDeclaration( tddb.getDescr() );
+        return tddb;
     }
 
-    public AnnotationDescrBuilder<DeclareDescrBuilder> newAnnotation( String name ) {
-        AnnotationDescrBuilder<DeclareDescrBuilder> annotation = new AnnotationDescrBuilderImpl<DeclareDescrBuilder>( this, name );
-        descr.addAnnotation( annotation.getDescr() );
-        return annotation;
-    }
-
-    public FieldDescrBuilder newField( String name ) {
-        FieldDescrBuilder field = new FieldDescrBuilderImpl( this, name );
-        descr.addField( field.getDescr() );
-        return field;
-    }
 
 }

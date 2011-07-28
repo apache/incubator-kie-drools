@@ -21,7 +21,9 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.definition.KnowledgeDescr;
 import org.drools.rule.Namespaceable;
@@ -30,17 +32,18 @@ public class PackageDescr extends BaseDescr
     implements
     Namespaceable,
     KnowledgeDescr {
-    private static final long          serialVersionUID = 510l;
-    private String                     namespace;
-    private String                     documentation;
+    private static final long               serialVersionUID       = 530l;
+    private String                          namespace;
+    private String                          documentation;
 
-    private List<ImportDescr>          imports          = Collections.emptyList();
-    private List<FunctionImportDescr>  functionImports  = Collections.emptyList();
-    private List<AttributeDescr>       attributes       = Collections.emptyList();
-    private List<GlobalDescr>          globals          = Collections.emptyList();
-    private List<FunctionDescr>        functions        = Collections.emptyList();
-    private List<RuleDescr>            rules            = Collections.emptyList();
-    private List<TypeDeclarationDescr> typeDeclarations = Collections.emptyList();
+    private List<ImportDescr>               imports                = Collections.emptyList();
+    private List<FunctionImportDescr>       functionImports        = Collections.emptyList();
+    private List<AttributeDescr>            attributes             = Collections.emptyList();
+    private List<GlobalDescr>               globals                = Collections.emptyList();
+    private List<FunctionDescr>             functions              = Collections.emptyList();
+    private List<RuleDescr>                 rules                  = Collections.emptyList();
+    private List<TypeDeclarationDescr>      typeDeclarations       = Collections.emptyList();
+    private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
 
     public PackageDescr() {
     }
@@ -57,8 +60,8 @@ public class PackageDescr extends BaseDescr
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    public void readExternal( ObjectInput in ) throws IOException,
+                                              ClassNotFoundException {
         super.readExternal( in );
         namespace = (String) in.readUTF();
         documentation = (String) in.readUTF();
@@ -70,7 +73,7 @@ public class PackageDescr extends BaseDescr
         rules = (List<RuleDescr>) in.readObject();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeUTF( namespace );
         out.writeUTF( documentation );
@@ -86,7 +89,7 @@ public class PackageDescr extends BaseDescr
         return this.namespace;
     }
 
-    public void setNamespace(String namespace) {
+    public void setNamespace( String namespace ) {
         this.namespace = namespace;
     }
 
@@ -98,7 +101,7 @@ public class PackageDescr extends BaseDescr
         return this.documentation;
     }
 
-    public void addImport(final ImportDescr importEntry) {
+    public void addImport( final ImportDescr importEntry ) {
         if ( this.imports == Collections.EMPTY_LIST ) {
             this.imports = new ArrayList<ImportDescr>();
         }
@@ -109,7 +112,7 @@ public class PackageDescr extends BaseDescr
         return this.imports;
     }
 
-    public void addFunctionImport(final FunctionImportDescr importFunction) {
+    public void addFunctionImport( final FunctionImportDescr importFunction ) {
         if ( this.functionImports == Collections.EMPTY_LIST ) {
             this.functionImports = new ArrayList<FunctionImportDescr>();
         }
@@ -120,7 +123,7 @@ public class PackageDescr extends BaseDescr
         return this.functionImports;
     }
 
-    public void addGlobal(final GlobalDescr global) {
+    public void addGlobal( final GlobalDescr global ) {
         if ( this.globals == Collections.EMPTY_LIST ) {
             this.globals = new ArrayList<GlobalDescr>();
         }
@@ -131,7 +134,7 @@ public class PackageDescr extends BaseDescr
         return this.globals;
     }
 
-    public void addAttribute(final AttributeDescr attribute) {
+    public void addAttribute( final AttributeDescr attribute ) {
         if ( this.attributes == Collections.EMPTY_LIST ) {
             this.attributes = new ArrayList<AttributeDescr>();
         }
@@ -141,11 +144,11 @@ public class PackageDescr extends BaseDescr
     public List<AttributeDescr> getAttributes() {
         return this.attributes;
     }
-    
+
     public AttributeDescr getAttribute( String name ) {
-        if( name != null ) {
-            for( AttributeDescr attr : this.attributes ) {
-                if( name.equals( attr.getName() ) ) {
+        if ( name != null ) {
+            for ( AttributeDescr attr : this.attributes ) {
+                if ( name.equals( attr.getName() ) ) {
                     return attr;
                 }
             }
@@ -153,7 +156,7 @@ public class PackageDescr extends BaseDescr
         return null;
     }
 
-    public void addFunction(final FunctionDescr function) {
+    public void addFunction( final FunctionDescr function ) {
         if ( this.functions == Collections.EMPTY_LIST ) {
             this.functions = new ArrayList<FunctionDescr>( 1 );
         }
@@ -164,7 +167,7 @@ public class PackageDescr extends BaseDescr
         return this.functions;
     }
 
-    public void addRule(final RuleDescr rule) {
+    public void addRule( final RuleDescr rule ) {
         if ( this.rules == Collections.EMPTY_LIST ) {
             this.rules = new ArrayList<RuleDescr>( 1 );
         }
@@ -182,7 +185,7 @@ public class PackageDescr extends BaseDescr
         return this.rules;
     }
 
-    public void addTypeDeclaration(TypeDeclarationDescr declaration) {
+    public void addTypeDeclaration( TypeDeclarationDescr declaration ) {
         if ( this.typeDeclarations == Collections.EMPTY_LIST ) {
             this.typeDeclarations = new ArrayList<TypeDeclarationDescr>();
         }
@@ -191,5 +194,16 @@ public class PackageDescr extends BaseDescr
 
     public List<TypeDeclarationDescr> getTypeDeclarations() {
         return this.typeDeclarations;
+    }
+
+    public void addEntryPointDeclaration( EntryPointDeclarationDescr epDescr ) {
+        if ( this.entryPointDeclarations == Collections.EMPTY_SET ) {
+            this.entryPointDeclarations = new HashSet<EntryPointDeclarationDescr>();
+        }
+        this.entryPointDeclarations.add( epDescr );
+    }
+    
+    public Set<EntryPointDeclarationDescr> getEntryPointDeclarations() {
+        return this.entryPointDeclarations;
     }
 }

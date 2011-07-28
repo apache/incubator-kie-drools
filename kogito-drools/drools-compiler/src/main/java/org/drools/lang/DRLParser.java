@@ -38,6 +38,7 @@ import org.drools.lang.api.CollectDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
+import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.ForallDescrBuilder;
@@ -50,11 +51,13 @@ import org.drools.lang.api.PatternContainerDescrBuilder;
 import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
+import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.ConditionalElementDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.ExistsDescr;
 import org.drools.lang.descr.FunctionDescr;
 import org.drools.lang.descr.GlobalDescr;
@@ -410,20 +413,20 @@ public class DRLParser {
      * ------------------------------------------------------------------------------------------------ */
 
     /**
-     * declare := DECLARE qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
-     *               annotation* 
-     *               field*
+     * declare := DECLARE 
+     *               | (ENTRY-POINT) => entryPointDeclaration
+     *               | typeDeclaration
      *            END
      * 
      * @return
      * @throws RecognitionException
      */
-    public TypeDeclarationDescr declare( PackageDescrBuilder pkg ) throws RecognitionException {
-        DeclareDescrBuilder declare = null;
+    public BaseDescr declare( PackageDescrBuilder pkg ) throws RecognitionException {
+        BaseDescr declaration = null;
         try {
-            declare = helper.start( pkg,
-                                    DeclareDescrBuilder.class,
-                                    null );
+            DeclareDescrBuilder declare = helper.start( pkg,
+                                                        DeclareDescrBuilder.class,
+                                                        null );
 
             // 'declare'
             match( input,
@@ -432,11 +435,127 @@ public class DRLParser {
                    null,
                    DroolsEditorType.KEYWORD );
             if ( state.failed ) return null;
+            
+            if( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
+                // entry point declaration
+            } else {
+                // type declaration
+                declaration = typeDeclaration( declare );
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        }
+        return declaration;
+    }
+
+    /**
+     * entryPointDeclaration := ENTRY-POINT  stringId (COMMA stringId)* END?
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public EntryPointDeclarationDescr entryPointDeclaration( DeclareDescrBuilder ddb ) throws RecognitionException {
+        EntryPointDeclarationDescrBuilder declare = null;
+        try {
+            declare = helper.start( ddb,
+                                    EntryPointDeclarationDescrBuilder.class,
+                                    null );
+
+            String ep = "";
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.ENTRY,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            match( input,
+                   DRLLexer.MINUS,
+                   null,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.POINT,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            ep = stringId();
+            if ( state.failed ) return null;
+            if( state.backtracking == 0 ) {
+                declare.addEntryPoint( ep );
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+                // (COMMA stringId)*
+                match( input,
+                       DRLLexer.MINUS,
+                       null,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+                
+                ep = stringId();
+                if ( state.failed ) return null;
+                if( state.backtracking == 0 ) {
+                    declare.addEntryPoint( ep );
+                }
+            }
+
+            if( helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
+                // END?
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.END,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+            }
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( EntryPointDeclarationDescrBuilder.class,
+                        declare );
+        }
+        return (declare != null) ? declare.getDescr() : null;
+    }
+
+    /**
+     * typeDeclaration := [TYPE] qualifiedIdentifier (EXTENDS qualifiedIdentifier)?
+     *                         annotation* 
+     *                         field*
+     *                     END
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public TypeDeclarationDescr typeDeclaration( DeclareDescrBuilder ddb ) throws RecognitionException {
+        TypeDeclarationDescrBuilder declare = null;
+        try {
+            declare = helper.start( ddb,
+                                    TypeDeclarationDescrBuilder.class,
+                                    null );
+
+            if( helper.validateIdentifierKey( DroolsSoftKeywords.TYPE ) ) {
+                // 'type'
+                match( input,
+                       DRLLexer.ID,
+                       DroolsSoftKeywords.TYPE,
+                       null,
+                       DroolsEditorType.KEYWORD );
+                if ( state.failed ) return null;
+            }
 
             // type may be qualified when adding metadata
             String type = qualifiedIdentifier();
             if ( state.failed ) return null;
-            if ( state.backtracking == 0 ) declare.type( type );
+            if ( state.backtracking == 0 ) declare.name( type );
 
             if ( helper.validateIdentifierKey( DroolsSoftKeywords.EXTENDS ) ) {
                 match( input,
@@ -475,7 +594,7 @@ public class DRLParser {
         } catch ( RecognitionException re ) {
             reportError( re );
         } finally {
-            helper.end( DeclareDescrBuilder.class,
+            helper.end( TypeDeclarationDescrBuilder.class,
                         declare );
         }
         return (declare != null) ? declare.getDescr() : null;
@@ -484,7 +603,7 @@ public class DRLParser {
     /**
      * field := label qualifiedIdentifier (EQUALS_ASSIGN conditionalExpression)? annotation* SEMICOLON?
      */
-    private void field( DeclareDescrBuilder declare ) {
+    private void field( TypeDeclarationDescrBuilder declare ) {
         FieldDescrBuilder field = null;
         String fname = null;
         try {

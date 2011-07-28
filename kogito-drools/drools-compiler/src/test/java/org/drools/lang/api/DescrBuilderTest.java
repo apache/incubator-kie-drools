@@ -181,7 +181,7 @@ public class DescrBuilderTest {
         PackageDescr pkg = DescrFactory.newPackage()
                 .name( "org.beans" )
                 // declare
-                .newDeclare().type( "StockTick" )
+                .newDeclare().type().name(  "StockTick" )
                     .newAnnotation( "role" ).value( "event" ).end()
                     .newAnnotation( "author" ).value( "bob" ).end()
                     .newField( "symbol" ).type( "String" ).end()

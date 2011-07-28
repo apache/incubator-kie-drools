@@ -1,17 +1,17 @@
 package org.drools.lang.api.impl;
 
 import org.drools.lang.api.AnnotationDescrBuilder;
-import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
+import org.drools.lang.api.TypeDeclarationDescrBuilder;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.rule.TypeDeclaration;
 
-public class FieldDescrBuilderImpl extends BaseDescrBuilderImpl<DeclareDescrBuilder, TypeFieldDescr>
+public class FieldDescrBuilderImpl extends BaseDescrBuilderImpl<TypeDeclarationDescrBuilder, TypeFieldDescr>
     implements
     FieldDescrBuilder {
 
-    protected FieldDescrBuilderImpl( DeclareDescrBuilder parent, String name ) {
+    protected FieldDescrBuilderImpl( TypeDeclarationDescrBuilder parent, String name ) {
         super( parent, new TypeFieldDescr( name ) );
     }
 
