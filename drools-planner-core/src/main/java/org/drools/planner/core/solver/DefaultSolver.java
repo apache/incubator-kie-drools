@@ -34,6 +34,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,28 +65,12 @@ public class DefaultSolver implements Solver {
         this.randomSeed = randomSeed;
     }
 
-    public void setSolutionDescriptor(SolutionDescriptor solutionDescriptor) {
-        solverScope.setSolutionDescriptor(solutionDescriptor);
-    }
-
-    public RuleBase getRuleBase() {
-        return solverScope.getRuleBase();
-    }
-
-    public void setRuleBase(RuleBase ruleBase) {
-        solverScope.setRuleBase(ruleBase);
+    public void setSolutionDirector(DefaultSolutionDirector solutionDirector) {
+        solverScope.setSolutionDirector(solutionDirector);
     }
 
     public ScoreDefinition getScoreDefinition() {
         return solverScope.getScoreDefinition();
-    }
-
-    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
-        solverScope.setScoreDefinition(scoreDefinition);
-    }
-
-    public void setScoreCalculator(ScoreCalculator scoreCalculator) {
-        solverScope.setWorkingScoreCalculator(scoreCalculator);
     }
 
     public void setBasicPlumbingTermination(BasicPlumbingTermination basicPlumbingTermination) {
@@ -110,7 +95,7 @@ public class DefaultSolver implements Solver {
     }
 
     public void setStartingSolution(Solution startingSolution) {
-        solverScope.setWorkingSolution(startingSolution);
+        solverScope.getSolutionDirector().setWorkingSolution(startingSolution);
     }
 
     public Solution getBestSolution() {

@@ -151,7 +151,7 @@ public class DefaultDecider implements Decider {
                                 + "Unequal lastCompletedStepScore (" + lastCompletedStepScore + ") and undoScore ("
                                 + undoScore + ").\n"
                                 + moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getSolverScope()
-                                        .buildConstraintOccurrenceSummary());
+                                        .getSolutionDirector().buildConstraintOccurrenceSummary());
             }
         }
         logger.debug("    Move score ({}), accept chance ({}) for move ({}).",

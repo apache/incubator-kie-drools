@@ -22,6 +22,7 @@ import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
+import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.junit.Test;
 
@@ -116,7 +117,9 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
     private LocalSearchSolverPhaseScope createLocalSearchSolverPhaseScope() {
         DefaultSolverScope solverScope = new DefaultSolverScope();
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = new LocalSearchSolverPhaseScope(solverScope);
-        solverScope.setScoreDefinition(new HardAndSoftScoreDefinition());
+        DefaultSolutionDirector solutionDirector = new DefaultSolutionDirector();
+        solutionDirector.setScoreDefinition(new HardAndSoftScoreDefinition());
+        solverScope.setSolutionDirector(solutionDirector);
         solverScope.setBestScore(DefaultHardAndSoftScore.valueOf(-11, -200));
         localSearchSolverPhaseScope.setBestSolutionStepIndex(1000);
         LocalSearchStepScope lastLocalSearchStepScope = new LocalSearchStepScope(localSearchSolverPhaseScope);

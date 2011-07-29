@@ -36,56 +36,40 @@ import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DefaultSolverScope {
 
-    public static final String GLOBAL_SCORE_CALCULATOR_KEY = "scoreCalculator";
-
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolutionDescriptor solutionDescriptor;
-
-    protected RuleBase ruleBase;
-    protected ScoreDefinition scoreDefinition;
+    protected DefaultSolutionDirector solutionDirector;
 
     protected boolean restartSolver = false;
     protected long startingSystemTimeMillis;
 
-    protected Solution workingSolution;
-    protected StatefulSession workingMemory;
-    protected ScoreCalculator workingScoreCalculator;
     protected Random workingRandom;
 
     protected Score startingScore; // TODO after initialization => ambiguous with setStartingSolution
-    protected long calculateCount;
 
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me
 
+    public DefaultSolutionDirector getSolutionDirector() {
+        return solutionDirector;
+    }
+
+    public void setSolutionDirector(DefaultSolutionDirector solutionDirector) {
+        this.solutionDirector = solutionDirector;
+    }
+
     public SolutionDescriptor getSolutionDescriptor() {
-        return solutionDescriptor;
-    }
-
-    public void setSolutionDescriptor(SolutionDescriptor solutionDescriptor) {
-        this.solutionDescriptor = solutionDescriptor;
-    }
-
-    public RuleBase getRuleBase() {
-        return ruleBase;
-    }
-
-    public void setRuleBase(RuleBase ruleBase) {
-        this.ruleBase = ruleBase;
+        return solutionDirector.getSolutionDescriptor();
     }
 
     public ScoreDefinition getScoreDefinition() {
-        return scoreDefinition;
-    }
-
-    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
-        this.scoreDefinition = scoreDefinition;
+        return solutionDirector.getScoreDefinition();
     }
 
     public long getStartingSystemTimeMillis() {
@@ -105,24 +89,31 @@ public class DefaultSolverScope {
     }
 
     public Solution getWorkingSolution() {
-        return workingSolution;
+        return solutionDirector.getWorkingSolution();
     }
 
-    public void setWorkingSolution(Solution workingSolution) {
-        this.workingSolution = workingSolution;
-        resetWorkingMemory();
+    public Collection<Object> getWorkingFacts() {
+        return solutionDirector.getWorkingFacts();
+    }
+
+    public List<Object> getWorkingPlanningEntityList() {
+        return solutionDirector.getWorkingPlanningEntityList();
+    }
+
+    public boolean isWorkingSolutionInitialized() {
+        return solutionDirector.isWorkingSolutionInitialized();
     }
 
     public WorkingMemory getWorkingMemory() {
-        return workingMemory;
+        return solutionDirector.getWorkingMemory();
     }
 
-    public ScoreCalculator getWorkingScoreCalculator() {
-        return workingScoreCalculator;
+    public Score calculateScoreFromWorkingMemory() {
+        return solutionDirector.calculateScoreFromWorkingMemory();
     }
 
-    public void setWorkingScoreCalculator(ScoreCalculator workingScoreCalculator) {
-        this.workingScoreCalculator = workingScoreCalculator;
+    public void assertWorkingScore(Score presumedScore) {
+        solutionDirector.assertWorkingScore(presumedScore);
     }
 
     public Random getWorkingRandom() {
@@ -142,7 +133,7 @@ public class DefaultSolverScope {
     }
 
     public long getCalculateCount() {
-        return calculateCount;
+        return solutionDirector.getCalculateCount();
     }
 
     public Solution getBestSolution() {
@@ -167,147 +158,12 @@ public class DefaultSolverScope {
 
     public void reset() {
         startingSystemTimeMillis = System.currentTimeMillis();
-        calculateCount = 0L;
+        solutionDirector.resetCalculateCount();
     }
 
     public long calculateTimeMillisSpend() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
-    }
-
-    public Collection<Object> getWorkingFacts() {
-        return solutionDescriptor.getAllFacts(workingSolution);
-    }
-
-    public List<Object> getWorkingPlanningEntityList() {
-        return solutionDescriptor.getPlanningEntityList(workingSolution);
-    }
-
-    public boolean isWorkingSolutionInitialized() {
-        return solutionDescriptor.isInitialized(workingSolution);
-    }
-
-    public Score calculateScoreFromWorkingMemory() {
-        workingMemory.fireAllRules();
-        Score score = workingScoreCalculator.calculateScore();
-        workingSolution.setScore(score);
-        calculateCount++;
-        return score;
-    }
-
-    private void resetWorkingMemory() {
-        if (workingMemory != null) {
-            workingMemory.dispose();
-        }
-        workingMemory = ruleBase.newStatefulSession();
-        workingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, workingScoreCalculator);
-        for (Object fact : getWorkingFacts()) {
-            workingMemory.insert(fact);
-        }
-    }
-
-    /**
-     * @param presumedScore never null
-     */
-    public void assertWorkingScore(Score presumedScore) {
-        StatefulSession tmpWorkingMemory = ruleBase.newStatefulSession();
-        ScoreCalculator tmpScoreCalculator = workingScoreCalculator.clone();
-        tmpWorkingMemory.setGlobal(GLOBAL_SCORE_CALCULATOR_KEY, tmpScoreCalculator);
-        for (Object fact : getWorkingFacts()) {
-            tmpWorkingMemory.insert(fact);
-        }
-        tmpWorkingMemory.fireAllRules();
-        Score realScore = tmpScoreCalculator.calculateScore();
-        tmpWorkingMemory.dispose();
-        if (!presumedScore.equals(realScore)) {
-            throw new IllegalStateException(
-                    "The presumedScore (" + presumedScore + ") is corrupted because it is not the realScore  ("
-                            + realScore + ").\n"
-                            + "Presumed workingMemory:\n" + buildConstraintOccurrenceSummary(workingMemory)
-                            + "Real workingMemory:\n" + buildConstraintOccurrenceSummary(tmpWorkingMemory));
-        }
-    }
-
-    /**
-     * Calls {@link #buildConstraintOccurrenceSummary(WorkingMemory)} with the current {@link #workingMemory}.
-     * @return never null
-     */
-    public String buildConstraintOccurrenceSummary() {
-        return buildConstraintOccurrenceSummary(workingMemory);
-    }
-
-    /**
-     * TODO Refactor this with the ConstraintOccurrenceTotal class: https://jira.jboss.org/jira/browse/JBRULES-2510
-     * @param summaryWorkingMemory sometimes null
-     * @return never null
-     */
-    public String buildConstraintOccurrenceSummary(WorkingMemory summaryWorkingMemory) {
-        logger.trace("Building ConstraintOccurrence summary");
-        if (summaryWorkingMemory == null) {
-            return "  The workingMemory is null.";
-        }
-        Map<String, SummaryLine> summaryLineMap = new TreeMap<String, SummaryLine>();
-        Iterator<ConstraintOccurrence> it = (Iterator<ConstraintOccurrence>) summaryWorkingMemory.iterateObjects(
-                new ClassObjectFilter(ConstraintOccurrence.class));
-        while (it.hasNext()) {
-            ConstraintOccurrence occurrence = it.next();
-            logger.trace("Adding ConstraintOccurrence ({})", occurrence);
-            SummaryLine summaryLine = summaryLineMap.get(occurrence.getRuleId());
-            if (summaryLine == null) {
-                summaryLine = new SummaryLine();
-                summaryLineMap.put(occurrence.getRuleId(), summaryLine);
-            }
-            summaryLine.increment();
-            if (occurrence instanceof IntConstraintOccurrence) {
-                summaryLine.addWeight(((IntConstraintOccurrence) occurrence).getWeight());
-            } else if (occurrence instanceof DoubleConstraintOccurrence) {
-                summaryLine.addWeight(((DoubleConstraintOccurrence) occurrence).getWeight());
-            } else if (occurrence instanceof UnweightedConstraintOccurrence) {
-                summaryLine.addWeight(1);
-            } else {
-                throw new IllegalStateException("Cannot determine occurrenceScore of ConstraintOccurrence class: "
-                        + occurrence.getClass());
-            }
-        }
-        StringBuilder summary = new StringBuilder();
-        for (Map.Entry<String, SummaryLine> summaryLineEntry : summaryLineMap.entrySet()) {
-            SummaryLine summaryLine = summaryLineEntry.getValue();
-            summary.append("  Score rule (").append(summaryLineEntry.getKey()).append(") has count (")
-                    .append(summaryLine.getCount()).append(") and weight total (")
-                    .append(summaryLine.getWeightTotal()).append(").\n");
-        }
-        return summary.toString();
-    }
-
-    private class SummaryLine {
-        private int count = 0;
-        private Number weightTotal = null;
-
-        public int getCount() {
-            return count;
-        }
-
-        public Number getWeightTotal() {
-            return weightTotal;
-        }
-
-        public void increment() {
-            count++;
-        }
-
-        public void addWeight(Integer weight) {
-            if (weightTotal == null) {
-                weightTotal = 0;
-            }
-            weightTotal = ((Integer) weightTotal) + weight;
-        }
-
-        public void addWeight(Double weight) {
-            if (weightTotal == null) {
-                weightTotal = 0.0;
-            }
-            weightTotal = ((Double) weightTotal) + weight;
-        }
     }
 
 }
