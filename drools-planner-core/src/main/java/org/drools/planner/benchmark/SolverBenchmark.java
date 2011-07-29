@@ -94,7 +94,7 @@ public class SolverBenchmark {
         if (unsolvedSolutionFileList == null) {
             unsolvedSolutionFileList = inheritedSolverBenchmark.getUnsolvedSolutionFileList();
         } else if (inheritedSolverBenchmark.getUnsolvedSolutionFileList() != null) {
-            // The inherited unsolvedSolutionFiles should be before the non-inherited unsolvedSolutionFiles.
+            // The inherited unsolvedSolutionFiles should be before the non-inherited one
             List<File> mergedList = new ArrayList<File>(inheritedSolverBenchmark.getUnsolvedSolutionFileList());
             for (File unsolvedSolutionFile : unsolvedSolutionFileList) {
                 if (!mergedList.contains(unsolvedSolutionFile)) {

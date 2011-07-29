@@ -31,35 +31,7 @@
   <!--<solverBenchmark>-->
     <!--<name>curriculumcourse_tabuSearch</name>-->
     <!--<unsolvedSolutionFile>data/curriculumcourse/unsolved/comp08.xml</unsolvedSolutionFile>-->
-    <!--<solver>-->
-      <!--<scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>-->
-      <!--<scoreDefinition>-->
-        <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
-      <!--</scoreDefinition>-->
-      <!--<startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>-->
-      <!--<termination>-->
-        <!--<maximumMinutesSpend>5</maximumMinutesSpend>-->
-      <!--</termination>-->
-      <!--<selector>-->
-        <!--<selector>-->
-          <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-        <!--<selector>-->
-          <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-        <!--<selector>-->
-          <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-      <!--</selector>-->
-      <!--<acceptor>-->
-        <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-        <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-      <!--</acceptor>-->
-      <!--<forager>-->
-        <!--<pickEarlyType>NEVER</pickEarlyType>-->
-        <!--<minimalAcceptedSelection>900</minimalAcceptedSelection>-->
-      <!--</forager>-->
-    <!--</solver>-->
+    <!-- ... -->
   <!--</solverBenchmark>-->
   <solverBenchmark>
     <name>examination_tabuSearch</name>
@@ -69,10 +41,12 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
       <selector>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
@@ -103,10 +77,12 @@
       <!--<scoreDefinition>-->
         <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
       <!--</scoreDefinition>-->
-      <!--<startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>-->
       <!--<termination>-->
         <!--<maximumMinutesSpend>5</maximumMinutesSpend>-->
       <!--</termination>-->
+      <!--<customSolverPhase>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</customSolverPhaseCommandClass>-->
+      <!--</customSolverPhase>-->
       <!--<selector>-->
         <!--<selector>-->
           <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>-->
@@ -130,10 +106,12 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
       <selector>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
@@ -162,10 +140,12 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
       <selector>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>

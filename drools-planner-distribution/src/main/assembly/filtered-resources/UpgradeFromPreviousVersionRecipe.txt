@@ -852,7 +852,7 @@ After in *.java:
 Therefor it's now possible to start planning from a partially initialized starting solution,
 for example during real-time re-planning after facts change.
 
-[MAJOR] The StartingSolutionInitializer no longer has a isSolutionInitialized(AbstractSolverScope) method
+[MAJOR] The StartingSolutionInitializer no longer has a isSolutionInitialized(AbstractSolverScope) method.
 Before in *StartingSolutionInitializer.java:
     public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
@@ -870,6 +870,8 @@ After in *StartingSolutionInitializer.java:
         ...
 
     }
+Note that you'll probably want to remove the StartingSolutionInitializer altogether
+and replace it by a greedy construction heuristic (see below).
 
 [MAJOR] The planning entity collection in the Solution can never be null,
 but some (or all) of its planning entity's can be uninitialized.
@@ -999,14 +1001,45 @@ Warning for *SolverBenchmarkConfig.xml:
 Instead, there's now out-of-the-box support for several greedy construction heuristics.
 These implementations are fast, scalable and configurable. They require little or no domain specific code.
 They also support features like terminateEarly, logging, partially initialized starting solutions, ...
-Alternatively, you can also replace it with your own construction heuristic,
-which is similar to how writing your own StartingSolutionInitializer was.
+Alternatively, you can also refactor it to a CustomSolverPhaseCommand,
+which is has the same freedom (to write lots of custom code) as a StartingSolutionInitializer had.
 
 [MAJOR] Replacing the StartingSolutionInitializer by a greedy construction heuristics (recommended)
 TODO
 
-[MINOR] Replacing the StartingSolutionInitializer by a custom construction heuristic
-TODO
+[MINOR] Replacing the StartingSolutionInitializer by a CustomSolverPhaseCommand (not recommended)
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>...</termination>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <termination>...</termination>
+    <customSolverPhase>
+      <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+    </customSolverPhase>
+Before in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+
+        public void initializeSolution(DefaultSolverScope solverScope) {
+            // Initialize the solution
+            ... solverScope.getWorkingMemory() ...
+            ... solverScope.calculateScoreFromWorkingMemory() ...
+        }
+
+        ...
+    }
+After in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer implements CustomSolverPhaseCommand {
+
+        protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+        public void changeWorkingSolution(SolutionDirector solutionDirector) {
+            // Initialize the solution
+            ... solutionDirectorsolverScope.getWorkingMemory() ...
+            ... solutionDirector.calculateScoreFromWorkingMemory() ...
+        }
+
+        ...
+    }
 
 [MINOR] The AbstractMoveFactory lifecycle methods have changed signature.
 If you overwrote them (which is unlikely as most implements use CachedMoveFactory), you'll need to adjust them.

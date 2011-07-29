@@ -7,12 +7,12 @@
   <scoreDefinition>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
   </scoreDefinition>
-  <!-- Real world problems require to use of <startingSolutionInitializerClass>. -->
   <termination>
     <terminationCompositionStyle>OR</terminationCompositionStyle>
     <maximumStepCount>100</maximumStepCount>
     <scoreAttained>0</scoreAttained>
   </termination>
+  <!-- Real world problems require to use of <greedyFit>. -->
   <localSearch>
     <selector>
       <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>

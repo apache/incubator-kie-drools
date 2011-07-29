@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solution.initializer;
+package org.drools.planner.core.phase.custom;
 
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.phase.AbstractSolverPhase;
+import org.drools.planner.core.phase.SolverPhase;
 
-@Deprecated
-public interface StartingSolutionInitializer {
-
-    void initializeSolution(DefaultSolverScope solverScope);
+/**
+ * A CustomSolverPhase is a {@link SolverPhase} which uses the brute force algorithm
+ * @see SolverPhase
+ * @see AbstractSolverPhase
+ * @see DefaultCustomSolverPhase
+ */
+public interface CustomSolverPhase extends SolverPhase {
 
 }

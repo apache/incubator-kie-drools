@@ -21,7 +21,6 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <!--
           Official benchmark maximumSecondsSpend allowed on:
@@ -30,6 +29,9 @@
         -->
         <maximumSecondsSpend>429</maximumSecondsSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 

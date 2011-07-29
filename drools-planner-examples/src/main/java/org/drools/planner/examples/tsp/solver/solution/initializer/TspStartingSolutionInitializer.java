@@ -22,26 +22,30 @@ import java.util.List;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.tsp.domain.City;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class TspStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+public class TspStartingSolutionInitializer implements CustomSolverPhaseCommand {
 
-    public void initializeSolution(DefaultSolverScope solverScope) {
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solverScope.getWorkingSolution();
-        initializeCityAssignmentList(solverScope, travelingSalesmanTour);
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+    public void changeWorkingSolution(SolutionDirector solutionDirector) {
+        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solutionDirector.getWorkingSolution();
+        initializeCityAssignmentList(solutionDirector, travelingSalesmanTour);
     }
 
-    private void initializeCityAssignmentList(DefaultSolverScope solverScope,
+    private void initializeCityAssignmentList(SolutionDirector solutionDirector,
             TravelingSalesmanTour travelingSalesmanTour) {
         City startCity = travelingSalesmanTour.getStartCity();
-        WorkingMemory workingMemory = solverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
         List<CityAssignment> cityAssignmentList = createCityAssignmentList(travelingSalesmanTour);
         List<CityAssignment> assignedCityAssignmentList = null;
@@ -75,7 +79,7 @@ public class TspStartingSolutionInitializer extends AbstractStartingSolutionInit
                     workingMemory.update(afterCityAssignmentFactHandle, afterCityAssignment);
                     workingMemory.update(beforeCityAssignmentFactHandle, beforeCityAssignment);
                     // Calculate score
-                    Score score = solverScope.calculateScoreFromWorkingMemory();
+                    Score score = solutionDirector.calculateScoreFromWorkingMemory();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
                         bestAfterCityAssignment = afterCityAssignment;

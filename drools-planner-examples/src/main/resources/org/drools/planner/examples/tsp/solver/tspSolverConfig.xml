@@ -7,10 +7,12 @@
   <scoreDefinition>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
   </scoreDefinition>
-  <startingSolutionInitializerClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspStartingSolutionInitializer</startingSolutionInitializerClass>
   <termination>
     <maximumMinutesSpend>10</maximumMinutesSpend>
   </termination>
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspStartingSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
   <localSearch>
     <selector>
       <moveFactoryClass>org.drools.planner.examples.tsp.solver.move.factory.SubTourChangeMoveFactory</moveFactoryClass>

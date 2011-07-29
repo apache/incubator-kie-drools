@@ -26,30 +26,34 @@ import java.util.Set;
 
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Room;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class PatientAdmissionScheduleStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+public class PatientAdmissionScheduleStartingSolutionInitializer implements CustomSolverPhaseCommand {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean checkSameBedInSameNight = true;
 
-    public void initializeSolution(DefaultSolverScope solverScope) {
+    public void changeWorkingSolution(SolutionDirector solutionDirector) {
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule)
-                solverScope.getWorkingSolution();
-        initializeBedDesignationList(solverScope, patientAdmissionSchedule);
+                solutionDirector.getWorkingSolution();
+        initializeBedDesignationList(solutionDirector, patientAdmissionSchedule);
     }
 
-    private void initializeBedDesignationList(DefaultSolverScope solverScope,
+    private void initializeBedDesignationList(SolutionDirector solutionDirector,
             PatientAdmissionSchedule patientAdmissionSchedule) {
-        WorkingMemory workingMemory = solverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         Map<Bed, Set<Integer>> bedToTakenNightIndexSetMap = null;
         if (checkSameBedInSameNight) {
@@ -59,7 +63,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
         // Assign one admissionPart at a time
         List<Bed> bedListInPriority = new ArrayList(patientAdmissionSchedule.getBedList());
         for (BedDesignation bedDesignation : bedDesignationList) {
-            Score unscheduledScore = solverScope.calculateScoreFromWorkingMemory();
+            Score unscheduledScore = solutionDirector.calculateScoreFromWorkingMemory();
             int firstNightIndex = bedDesignation.getAdmissionPart().getFirstNight().getIndex();
             int lastNightIndex = bedDesignation.getAdmissionPart().getLastNight().getIndex();
             boolean perfectMatch = false;
@@ -92,7 +96,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer extends Abstrac
                 } else {
                     workingMemory.update(bedDesignationHandle, bedDesignation);
                 }
-                Score score = solverScope.calculateScoreFromWorkingMemory();
+                Score score = solutionDirector.calculateScoreFromWorkingMemory();
                 if (score.compareTo(unscheduledScore) < 0) {
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;

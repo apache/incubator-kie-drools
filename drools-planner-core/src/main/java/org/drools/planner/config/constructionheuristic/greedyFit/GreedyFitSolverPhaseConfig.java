@@ -45,7 +45,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     @XStreamImplicit(itemFieldName = "greedyFitPlanningEntity")
     protected List<GreedyFitPlanningEntityConfig> greedyFitPlanningEntityConfigList = null;
 
-    private PickEarlyGreedyFitType pickEarlyGreedyFitType = null;
+    protected PickEarlyGreedyFitType pickEarlyGreedyFitType = null;
 
     public List<GreedyFitPlanningEntityConfig> getGreedyFitPlanningEntityConfigList() {
         return greedyFitPlanningEntityConfigList;
@@ -113,9 +113,9 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         if (greedyFitPlanningEntityConfigList == null) {
             greedyFitPlanningEntityConfigList = inheritedConfig.getGreedyFitPlanningEntityConfigList();
         } else if (inheritedConfig.getGreedyFitPlanningEntityConfigList() != null) {
-            // The inherited greedyFitPlanningEntityConfigList should be before the non-inherited greedyFitPlanningEntityConfigList.
-            List<GreedyFitPlanningEntityConfig> mergedList
-                    = new ArrayList<GreedyFitPlanningEntityConfig>(inheritedConfig.getGreedyFitPlanningEntityConfigList());
+            // The inherited greedyFitPlanningEntityConfigList should be before the non-inherited one
+            List<GreedyFitPlanningEntityConfig> mergedList = new ArrayList<GreedyFitPlanningEntityConfig>(
+                    inheritedConfig.getGreedyFitPlanningEntityConfigList());
             mergedList.addAll(greedyFitPlanningEntityConfigList);
             greedyFitPlanningEntityConfigList = mergedList;
         }

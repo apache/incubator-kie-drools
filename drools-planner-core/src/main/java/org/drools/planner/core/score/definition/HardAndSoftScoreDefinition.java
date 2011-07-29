@@ -22,7 +22,7 @@ import org.drools.planner.core.score.Score;
 
 public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndSoftScore> {
 
-    private double hardScoreTimeGradientWeight = 0.75;
+    private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
     private HardAndSoftScore perfectMaximumScore = new DefaultHardAndSoftScore(0, 0);
     private HardAndSoftScore perfectMinimumScore = new DefaultHardAndSoftScore(Integer.MIN_VALUE, Integer.MIN_VALUE);

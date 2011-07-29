@@ -7,7 +7,6 @@
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
-  <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
   <termination>
     <!--
       Official benchmark maximumSecondsSpend allowed on:
@@ -18,6 +17,9 @@
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
     <!--<maximumStepCount>100</maximumStepCount>-->
   </termination>
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
   <localSearch>
     <!--<deciderScoreComparatorFactory>-->
       <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->

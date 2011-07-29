@@ -14,10 +14,12 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <maximumStepCount>100</maximumStepCount>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 

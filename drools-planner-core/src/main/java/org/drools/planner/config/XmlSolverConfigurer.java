@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.drools.planner.config.constructionheuristic.greedyFit.GreedyFitSolverPhaseConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
+import org.drools.planner.config.phase.custom.CustomSolverPhaseConfig;
 import org.drools.planner.config.solver.SolverConfig;
 import org.drools.planner.core.Solver;
 
@@ -42,6 +43,7 @@ public class XmlSolverConfigurer {
         XStream xStream = new XStream(new PureJavaReflectionProvider(new FieldDictionary(new NativeFieldKeySorter())));
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(SolverConfig.class);
+        xStream.processAnnotations(CustomSolverPhaseConfig.class);
         xStream.processAnnotations(BruteForceSolverPhaseConfig.class);
         xStream.processAnnotations(GreedyFitSolverPhaseConfig.class);
         xStream.processAnnotations(LocalSearchSolverPhaseConfig.class);

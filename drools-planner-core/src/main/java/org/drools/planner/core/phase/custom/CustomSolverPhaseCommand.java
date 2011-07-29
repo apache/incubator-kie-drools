@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.solution.initializer;
+package org.drools.planner.core.phase.custom;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.drools.planner.core.solution.director.SolutionDirector;
 
-@Deprecated
-public abstract class AbstractStartingSolutionInitializer implements StartingSolutionInitializer {
+public interface CustomSolverPhaseCommand {
 
-    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
-
-    // ************************************************************************
-    // Worker methods
-    // ************************************************************************
+    void changeWorkingSolution(SolutionDirector solutionDirector);
 
 }

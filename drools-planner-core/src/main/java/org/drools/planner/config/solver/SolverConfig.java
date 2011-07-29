@@ -177,9 +177,9 @@ public class SolverConfig {
         solver.setTermination(termination);
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         solver.setBestSolutionRecaller(bestSolutionRecaller);
-        if (solverPhaseConfigList == null) {
+        if (solverPhaseConfigList == null || solverPhaseConfigList.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Configure <phases> in the solver configuration.");
+                    "Configure at least 1 phase (for example <localSearch>) in the solver configuration.");
         }
         List<SolverPhase> solverPhaseList = new ArrayList<SolverPhase>(solverPhaseConfigList.size());
         for (SolverPhaseConfig solverPhaseConfig : solverPhaseConfigList) {
@@ -197,7 +197,7 @@ public class SolverConfig {
             throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
         }
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
-        if (planningEntityClassSet == null) {
+        if (planningEntityClassSet == null || planningEntityClassSet.isEmpty()) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
         }
@@ -288,9 +288,9 @@ public class SolverConfig {
         if (solverPhaseConfigList == null) {
             solverPhaseConfigList = inheritedConfig.getSolverPhaseConfigList();
         } else if (inheritedConfig.getSolverPhaseConfigList() != null) {
-            // The inherited solverPhaseConfigList should be before the non-inherited solverPhaseConfigList.
-            List<SolverPhaseConfig> mergedList
-                    = new ArrayList<SolverPhaseConfig>(inheritedConfig.getSolverPhaseConfigList());
+            // The inherited solverPhaseConfigList should be before the non-inherited one
+            List<SolverPhaseConfig> mergedList = new ArrayList<SolverPhaseConfig>(
+                    inheritedConfig.getSolverPhaseConfigList());
             mergedList.addAll(solverPhaseConfigList);
             solverPhaseConfigList = mergedList;
         }

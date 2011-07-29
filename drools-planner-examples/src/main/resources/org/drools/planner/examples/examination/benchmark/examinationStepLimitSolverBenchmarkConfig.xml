@@ -14,10 +14,12 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <maximumStepCount>70</maximumStepCount>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 

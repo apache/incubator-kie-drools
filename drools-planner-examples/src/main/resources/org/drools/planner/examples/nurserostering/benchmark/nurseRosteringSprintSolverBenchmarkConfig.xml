@@ -35,7 +35,6 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <!--
           Official benchmark maximumSecondsSpend allowed on:
@@ -43,6 +42,9 @@
         -->
         <maximumSecondsSpend>11</maximumSecondsSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 

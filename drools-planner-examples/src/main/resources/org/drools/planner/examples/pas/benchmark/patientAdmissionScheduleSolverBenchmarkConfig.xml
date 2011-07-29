@@ -25,7 +25,6 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
       <termination>
         <!--
            On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
@@ -33,6 +32,9 @@
         -->
         <maximumSecondsSpend>3720</maximumSecondsSpend>
       </termination>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>
 

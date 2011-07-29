@@ -30,10 +30,10 @@ public class GreedyFitPlanningEntityConfig {
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-    private Class<?> planningEntityClass = null;
+    protected Class<?> planningEntityClass = null;
 
-    private PlanningEntitySelectionOrder selectionOrder = null;
-    private Boolean resetInitializedPlanningEntities = null;
+    protected PlanningEntitySelectionOrder selectionOrder = null;
+    protected Boolean resetInitializedPlanningEntities = null;
 
     public PlanningEntitySelectionOrder getSelectionOrder() {
         return selectionOrder;
