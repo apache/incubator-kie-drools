@@ -170,8 +170,6 @@ public class SolverConfig {
         solutionDirector.setRuleBase(buildRuleBase());
         ScoreDefinition scoreDefinition = scoreDefinitionConfig.buildScoreDefinition();
         solutionDirector.setScoreDefinition(scoreDefinition);
-        // TODO remove when the rule that sums the final score can be written as a single rule
-        solutionDirector.setWorkingScoreCalculator(scoreDefinitionConfig.buildScoreCalculator());
         solver.setSolutionDirector(solutionDirector);
         Termination termination = terminationConfig.buildTermination(scoreDefinition, basicPlumbingTermination);
         solver.setTermination(termination);

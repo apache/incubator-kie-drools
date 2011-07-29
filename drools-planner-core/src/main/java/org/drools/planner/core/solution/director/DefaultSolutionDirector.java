@@ -65,6 +65,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
 
     public void setScoreDefinition(ScoreDefinition scoreDefinition) {
         this.scoreDefinition = scoreDefinition;
+        workingScoreCalculator = scoreDefinition.buildScoreCalculator();
     }
 
     public Solution getWorkingSolution() {
@@ -78,14 +79,6 @@ public class DefaultSolutionDirector implements SolutionDirector {
 
     public WorkingMemory getWorkingMemory() {
         return workingMemory;
-    }
-
-    public ScoreCalculator getWorkingScoreCalculator() {
-        return workingScoreCalculator;
-    }
-
-    public void setWorkingScoreCalculator(ScoreCalculator workingScoreCalculator) {
-        this.workingScoreCalculator = workingScoreCalculator;
     }
 
     public long getCalculateCount() {

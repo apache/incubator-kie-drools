@@ -19,6 +19,8 @@ package org.drools.planner.core.score.definition;
 import org.drools.planner.core.score.DefaultSimpleDoubleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleDoubleScore;
+import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.score.calculator.SimpleDoubleScoreCalculator;
 
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 
@@ -64,6 +66,10 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
 
     public Double translateScoreToGraphValue(SimpleDoubleScore score) {
         return score.getScore();
+    }
+
+    public ScoreCalculator buildScoreCalculator() {
+        return new SimpleDoubleScoreCalculator();
     }
 
 }

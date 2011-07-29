@@ -30,6 +30,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
 import org.drools.planner.core.solution.director.DefaultSolutionDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.app.LoggingTest;
@@ -46,7 +47,7 @@ public class ExaminationScoreRulesTest extends LoggingTest {
     public void moveRoom() {
         DefaultSolutionDirector solutionDirector = new DefaultSolutionDirector();
         solutionDirector.setRuleBase(buildRuleBase());
-        solutionDirector.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());
+        solutionDirector.setScoreDefinition(new HardAndSoftScoreDefinition());
         Examination examination = (Examination) new ExaminationDaoImpl().readSolution(getClass().getResourceAsStream(
                 "/org/drools/planner/examples/examination/data/testExaminationScoreRules.xml"));
         solutionDirector.setWorkingSolution(examination);

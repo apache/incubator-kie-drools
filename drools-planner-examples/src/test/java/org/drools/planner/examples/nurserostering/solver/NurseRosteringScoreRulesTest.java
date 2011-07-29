@@ -49,7 +49,7 @@ public class NurseRosteringScoreRulesTest extends LoggingTest {
     public void switchEmployeeAndUndo() {
         DefaultSolutionDirector solutionDirector = new DefaultSolutionDirector();
         solutionDirector.setRuleBase(buildRuleBase());
-        solutionDirector.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());
+        solutionDirector.setScoreDefinition(new HardAndSoftScoreDefinition());
         NurseRoster nurseRoster = (NurseRoster) new NurseRosteringDaoImpl().readSolution(getClass().getResourceAsStream(
                 "/org/drools/planner/examples/nurserostering/data/testNurseRosteringScoreRules.xml"));
         solutionDirector.setWorkingSolution(nurseRoster);

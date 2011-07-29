@@ -17,6 +17,7 @@
 package org.drools.planner.core.score.definition;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 
@@ -68,5 +69,11 @@ public interface ScoreDefinition<S extends Score> {
      * @return null if should not be shown on the graph
      */
     Double translateScoreToGraphValue(S score);
+
+    /**
+     * TODO remove when the rule that sums the final score can be written as a single rule and ScoreCalculator is dead
+     * @return never null
+     */
+    ScoreCalculator buildScoreCalculator();
 
 }

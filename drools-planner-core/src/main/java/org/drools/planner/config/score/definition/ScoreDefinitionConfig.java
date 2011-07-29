@@ -91,27 +91,6 @@ public class ScoreDefinitionConfig {
         }
     }
 
-    /**
-     * @TODO score-in-solution refactor
-     */
-    public ScoreCalculator buildScoreCalculator() {
-        if (scoreDefinitionType != null) {
-            switch (scoreDefinitionType) {
-                case SIMPLE:
-                    return new SimpleScoreCalculator();
-                case SIMPLE_DOUBLE:
-                    return new SimpleDoubleScoreCalculator();
-                case HARD_AND_SOFT:
-                    return new DefaultHardAndSoftConstraintScoreCalculator();
-                default:
-                    throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
-                            + ") is not implemented");
-            }
-        } else {
-            return new SimpleScoreCalculator();
-        }
-    }
-
     public void inherit(ScoreDefinitionConfig inheritedConfig) {
         if (scoreDefinition == null && scoreDefinitionClass == null && scoreDefinitionType == null) {
             scoreDefinition = inheritedConfig.getScoreDefinition();
