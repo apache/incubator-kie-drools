@@ -19,6 +19,7 @@ package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
 import org.drools.planner.core.solver.DefaultSolverScope;
@@ -67,7 +68,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
         // Above hardScoreActivationThreshold 1
         localSearchStepScope = nextStepScope(localSearchStepScope);
         deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
-        assertEquals(1000, ((HardPenaltyDeciderScoreComparator)
+        assertEquals(1000, ((FlatteningHardAndSoftScoreComparator)
                 deciderScoreComparatorFactory.createDeciderScoreComparator()).getHardWeight());
         deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
         localSearchStepScope.setScore(DefaultHardAndSoftScore.valueOf(-10, -200));
@@ -75,7 +76,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
         // Above hardScoreActivationThreshold 2
         localSearchStepScope = nextStepScope(localSearchStepScope);
         deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
-        assertEquals(900, ((HardPenaltyDeciderScoreComparator)
+        assertEquals(900, ((FlatteningHardAndSoftScoreComparator)
                 deciderScoreComparatorFactory.createDeciderScoreComparator()).getHardWeight());
         deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
         localSearchStepScope.setScore(DefaultHardAndSoftScore.valueOf(-10, -200));
@@ -83,7 +84,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
         // Above hardScoreActivationThreshold 3
         localSearchStepScope = nextStepScope(localSearchStepScope);
         deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
-        assertEquals(810, ((HardPenaltyDeciderScoreComparator)
+        assertEquals(810, ((FlatteningHardAndSoftScoreComparator)
                 deciderScoreComparatorFactory.createDeciderScoreComparator()).getHardWeight());
         deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
         localSearchStepScope.setScore(DefaultHardAndSoftScore.valueOf(-10, -200));
@@ -98,7 +99,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactoryTest {
         // Above hardScoreActivationThreshold 5
         localSearchStepScope = nextStepScope(localSearchStepScope);
         deciderScoreComparatorFactory.beforeDeciding(localSearchStepScope);
-        assertEquals(1000, ((HardPenaltyDeciderScoreComparator)
+        assertEquals(1000, ((FlatteningHardAndSoftScoreComparator)
                 deciderScoreComparatorFactory.createDeciderScoreComparator()).getHardWeight());
         deciderScoreComparatorFactory.stepDecided(localSearchStepScope);
         localSearchStepScope.setScore(DefaultHardAndSoftScore.valueOf(-10, -200));

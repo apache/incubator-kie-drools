@@ -22,6 +22,7 @@ import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 
 /**
@@ -120,7 +121,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
 
     public Comparator<Score> createDeciderScoreComparator() {
         if (shiftingPenaltyActive) {
-            return new HardPenaltyDeciderScoreComparator(hardWeight);
+            return new FlatteningHardAndSoftScoreComparator(hardWeight);
         } else {
             return naturalDeciderScoreComparator;
         }
