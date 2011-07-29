@@ -37,10 +37,12 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     // Worker methods
     // ************************************************************************
 
+    @Override
     public SimpleScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
+    @Override
     public SimpleScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }

@@ -52,10 +52,12 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
     // Worker methods
     // ************************************************************************
 
+    @Override
     public HardAndSoftScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
+    @Override
     public HardAndSoftScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }
