@@ -93,7 +93,7 @@ public class NQueensPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Integer> yList = getNQueens().createNList();
+            List<Integer> yList = getNQueens().getColumnList();
             JComboBox yListField = new JComboBox(yList.toArray());
             yListField.setSelectedItem(queen.getY());
             int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), yListField, "Select y",

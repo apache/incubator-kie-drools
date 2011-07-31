@@ -37,7 +37,7 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
     }
 
     @PlanningVariable
-    @ValueRangeFromSolutionProperty(propertyName = "yList")
+    @ValueRangeFromSolutionProperty(propertyName = "columnList")
     public int getY() {
         return y;
     }

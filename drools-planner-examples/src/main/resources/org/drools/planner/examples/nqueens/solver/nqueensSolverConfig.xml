@@ -8,8 +8,6 @@
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
   </scoreDefinition>
   <termination>
-    <terminationCompositionStyle>OR</terminationCompositionStyle>
-    <maximumStepCount>100</maximumStepCount>
     <scoreAttained>0</scoreAttained>
   </termination>
   <!-- Real world problems require to use of <greedyFit>. -->

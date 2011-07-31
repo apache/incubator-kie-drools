@@ -53,25 +53,16 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
         return queenList.size();
     }
 
-    public List<Integer> getYList() {
+    /**
+     * @return a list of every possible y
+     */
+    public List<Integer> getColumnList() {
         int n = getN();
         List<Integer> yList = new ArrayList<Integer>(n);
         for (int i = 0; i < n; i++) {
             yList.add(i);
         }
         return yList;
-    }
-
-    /**
-     * @return a list of every possible n
-     */
-    public List<Integer> createNList() {
-        int n = getN();
-        List<Integer> nList = new ArrayList<Integer>(n);
-        for (int i = 0; i < n; i++) {
-            nList.add(i);
-        }
-        return nList;
     }
 
     public Collection<? extends Object> getProblemFacts() {

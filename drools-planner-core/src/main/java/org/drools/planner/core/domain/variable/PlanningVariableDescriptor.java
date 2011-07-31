@@ -100,13 +100,21 @@ public class PlanningVariableDescriptor {
         rangePropertyDescriptor = planningEntityDescriptor.getSolutionDescriptor()
                 .getPropertyDescriptor(solutionPropertyName);
         if (rangePropertyDescriptor == null) {
-            throw new IllegalArgumentException("The planningEntityClass ("
+            String exceptionMessage = "The planningEntityClass ("
                     + planningEntityDescriptor.getPlanningEntityClass()
                     + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
                     + ") that refers to a solutionClass ("
                     + planningEntityDescriptor.getSolutionDescriptor().getSolutionClass()
                     + ") solutionProperty (" + solutionPropertyName
-                    + ") that does not exist.");
+                    + ") that does not exist.";
+            if (solutionPropertyName.length() >= 2 && Character.isUpperCase(solutionPropertyName.charAt(1))) {
+                String correctedSolutionPropertyName = solutionPropertyName.substring(0, 1).toUpperCase()
+                        + solutionPropertyName.substring(1);
+                exceptionMessage += " But it probably needs to be correctedSolutionPropertyName ("
+                        + correctedSolutionPropertyName + ") instead because the JavaBeans spec states" +
+                        " the first letter should be a upper case if the second is upper case.";
+            }
+            throw new IllegalArgumentException(exceptionMessage);
         }
         if (!Collection.class.isAssignableFrom(rangePropertyDescriptor.getPropertyType())) {
             throw new IllegalArgumentException("The planningEntityClass ("
