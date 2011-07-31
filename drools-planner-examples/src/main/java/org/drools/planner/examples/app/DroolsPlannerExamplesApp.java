@@ -88,7 +88,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new ExaminationApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Patient admission schedule (hospital bed planning)") {
+        contentPane.add(new JButton(new AbstractAction("Patient admission scheduling (hospital bed planning)") {
             public void actionPerformed(ActionEvent e) {
                 new PatientAdmissionScheduleApp().init(false);
             }
