@@ -20,7 +20,7 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
 
-public class Field extends VerifierComponent
+public class Field extends VerifierComponent<BaseDescr>
     implements
     Cause {
   
