@@ -36,6 +36,8 @@
   <xi:include href="Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.xml" />
   <xi:include href="Chapter-Planner_configuration/Chapter-Planner_configuration.xml" />
   <xi:include href="Chapter-Score_calculation/Chapter-Score_calculation.xml" />
+  <xi:include href="Chapter-Exact_methods/Chapter-Exact_methods.xml" />
+  <xi:include href="Chapter-Construction_heuristics/Chapter-Construction_heuristics.xml" />
   <xi:include href="Chapter-Local_search/Chapter-Local_search.xml" />
   <xi:include href="Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.xml" />
   <xi:include href="Chapter-Repeated_planning/Chapter-Repeated_planning.xml" />

@@ -9,70 +9,10 @@
   <section>
     <title>Types of solvers</title>
 
+    <para>TODO remove this section</para>
+
     <para>Different solvers solve problems in different ways. Each type has advantages and disadvantages. We 'll roughly
     discuss a few of the solver types here. You can safely skip this section.</para>
-
-    <section>
-      <title>Brute force</title>
-
-      <para>Brute force creates and evaluates every possible solution, usually by creating a search tree.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It knows when it has found an optimal solution. If there is more then 1 optimal solution, it finds all
-          optimal solutions.</para>
-        </listitem>
-
-        <listitem>
-          <para>It is straightforward and simple to implement.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It performs and scales horribly. Mostly unusable for a real-world problem due to time
-          limitations.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Brute force is currently not implemented in Drools Planner. But we have plans to implement it in the future,
-      as a reference for validating the output of the other solver types.</para>
-    </section>
-
-    <section>
-      <title>Branch and bound</title>
-
-      <para>Branch and bound is an improvement over brute force, as it prunes away subsets of solutions which cannot
-      have a better solution than the best solution already found at that point.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It knows when it has found an optimal solution. If there is more then 1 optimal solution, it can find
-          all optimal solutions if needed.</para>
-        </listitem>
-
-        <listitem>
-          <para>It can determine the bounds of a problem, which gives an indication of the quality of a solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It still scales very badly. Mostly unusable for a real-world problem due to time limitations.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Branch and bound is currently not implemented in Drools Planner. But we have plans to implement it in the
-      future, as a reference for validating the output of the other solver types.</para>
-    </section>
 
     <section>
       <title>Simplex</title>
@@ -187,8 +127,8 @@
     minimal number of atoms in the known universe (10^80).</para>
 
     <para>The cold, hard reality is that <emphasis role="bold">for most real-world planning problems we will not find
-    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we improve upon the solutions created by
-    human planners (which is easy) or other systems.</para>
+    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we do better than the solutions created
+    by human planners (which is easy) and other software.</para>
 
     <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
     (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
