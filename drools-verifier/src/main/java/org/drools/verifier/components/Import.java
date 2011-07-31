@@ -17,13 +17,14 @@
 package org.drools.verifier.components;
 
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.ImportDescr;
 
-public class Import extends PackageComponent {
+public class Import extends PackageComponent<ImportDescr> {
 
     private String name;
     private String shortName;
 
-    public Import(BaseDescr descr, RulePackage rulePackage) {
+    public Import(ImportDescr descr, RulePackage rulePackage) {
         super(descr, rulePackage );
     }
 

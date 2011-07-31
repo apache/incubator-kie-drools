@@ -70,8 +70,12 @@ public class PackageDescrVisitorTest {
         for (VerifierComponent verifierComponent : all) {
             String path = verifierComponent.getPath();
 
-            //            System.out.println( "-" + verifierComponent );
-
+                        System.out.println( "-" + verifierComponent);
+                        if(verifierComponent.getDescr()!=null)
+                        System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + + verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
+                        else
+                          System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName());
+                        
             if (names.contains(path)) {
                 fail("Dublicate path " + path);
             } else {
@@ -106,6 +110,13 @@ public class PackageDescrVisitorTest {
         for (VerifierComponent verifierComponent : all) {
             //            System.out.println( verifierComponent );
 
+          System.out.println( "-" + verifierComponent);
+          if(verifierComponent.getDescr()!=null)
+          System.out.println(" \n\t\t => " + verifierComponent.getDescr().getLine() + ":" + + verifierComponent.getDescr().getEndLine() + " " + verifierComponent.getDescr().getText());
+          else
+            System.out.println(" \n\t\t => null for " + verifierComponent.getClass().getSimpleName());
+
+          
             if (verifierComponent.getVerifierComponentType().equals(VerifierComponentType.SUB_PATTERN)) {
                 SubPattern subPattern = (SubPattern) verifierComponent;
                 if ("Test 1".equals(subPattern.getRuleName())) {
