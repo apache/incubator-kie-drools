@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.verifier.components.LiteralRestriction;
 import org.drools.verifier.components.OperatorDescrType;
 import org.drools.verifier.components.Pattern;
@@ -59,7 +60,7 @@ public class SolversTest {
 
         VerifierRule rule = new VerifierRule(descr, rulePackage );
         rule.setName( "testRule" );
-        Pattern pattern = new Pattern( rule );
+        Pattern pattern = new Pattern(new PatternDescr(), rule );
 
         Restriction r = LiteralRestriction.createRestriction( pattern,
                                                               "" );
@@ -69,7 +70,6 @@ public class SolversTest {
                                                                "" );
         Restriction r4 = LiteralRestriction.createRestriction( pattern,
                                                                "" );
-
         Solvers solvers = new Solvers();
 
         solvers.startRuleSolver( rule );
