@@ -25,14 +25,14 @@ import org.drools.verifier.report.components.Cause;
 
 /** 
  */
-public abstract class VerifierComponent
+public abstract class VerifierComponent<D extends BaseDescr>
     implements
     Comparable<VerifierComponent>,
     Cause {
 
-    private BaseDescr descr;
+    private D descr;
     
-    public VerifierComponent(BaseDescr descr) {
+    public VerifierComponent(D descr) {
         this.descr = descr;
     }
     
@@ -53,7 +53,7 @@ public abstract class VerifierComponent
         return this.getClass().getName() + " " + getPath();
     }
 
-    public BaseDescr getDescr() {
+    public D getDescr() {
         return descr;
     }
 }

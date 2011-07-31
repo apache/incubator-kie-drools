@@ -18,6 +18,9 @@ package org.drools.verifier.components;
 
 import java.io.Serializable;
 
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.RuleDescr;
+
 public class RuleOperatorDescr extends RuleComponent
     implements
     Serializable {
@@ -25,9 +28,10 @@ public class RuleOperatorDescr extends RuleComponent
 
     private OperatorDescrType type;
 
-    public RuleOperatorDescr(VerifierRule rule,
+    public RuleOperatorDescr(BaseDescr descr, VerifierRule rule,
                              OperatorDescrType operatorType) {
-        super( rule );
+        super( descr, rule.getPackageName(),
+            rule.getName() );
         this.type = operatorType;
     }
 
