@@ -70,7 +70,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             data.add(objectType);
         }
 
-        pattern = new Pattern(rule);
+        pattern = new Pattern(descr, rule);
         if (parent != null) {
             pattern.setParentPath(parent.getPath());
             pattern.setParentType(parent.getVerifierComponentType());
@@ -97,7 +97,7 @@ public class PatternDescrVisitor extends ConditionalElementDescrVisitor {
             visit(descr.getSource());
         } else {
             if (workingMemory == null) {
-                workingMemory = new WorkingMemory(descr);
+                workingMemory = new WorkingMemory();
                 data.add(workingMemory);
             }
             pattern.setSourcePath(workingMemory.getPath());

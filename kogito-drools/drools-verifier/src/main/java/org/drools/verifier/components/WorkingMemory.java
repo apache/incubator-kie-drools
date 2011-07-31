@@ -21,8 +21,8 @@ import org.drools.lang.descr.BaseDescr;
 public class WorkingMemory extends VerifierComponentSource {
 
   
-    public WorkingMemory(BaseDescr descr) {
-        super(descr);
+    public WorkingMemory() {
+        super(new BaseDescr());
     }
   
     @Override

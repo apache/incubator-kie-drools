@@ -26,7 +26,7 @@ import com.google.common.collect.TreeMultimap;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 
-public class ObjectType extends VerifierComponent
+public class ObjectType extends VerifierComponent<BaseDescr>
     implements
     Serializable {
     private static final long   serialVersionUID = 510l;

@@ -16,9 +16,10 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.PatternDescr;
 import org.drools.verifier.report.components.Cause;
 
-public class Pattern extends RuleComponent
+public class Pattern extends RuleComponent<PatternDescr>
     implements
     Cause {
 
@@ -33,8 +34,9 @@ public class Pattern extends RuleComponent
     private boolean               isPatternExists  = false;
     private boolean               isPatternForall  = false;
 
-    public Pattern(VerifierRule rule) {
-        super( rule );
+    public Pattern(PatternDescr descr, VerifierRule rule) {
+        super(descr, rule.getPackageName(),
+            rule.getName()  );
     }
 
     @Override

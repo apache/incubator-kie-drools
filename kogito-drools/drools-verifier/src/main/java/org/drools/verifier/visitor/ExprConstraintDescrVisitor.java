@@ -74,7 +74,7 @@ public class ExprConstraintDescrVisitor {
     }
 
     private void createField(RelationalExprDescr descr, String fieldName) {
-        field = new Field(descr);
+        field = new Field(pattern.getDescr());
         field.setName(fieldName);
         field.setObjectTypePath(pattern.getObjectTypePath());
         field.setObjectTypeName(pattern.getName());

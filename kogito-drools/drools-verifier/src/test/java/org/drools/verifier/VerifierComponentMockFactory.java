@@ -17,6 +17,7 @@
 package org.drools.verifier;
 
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.verifier.components.Pattern;
 import org.drools.verifier.components.RulePackage;
 import org.drools.verifier.components.VerifierRule;
@@ -57,7 +58,7 @@ public class VerifierComponentMockFactory {
     }
 
     public static Pattern createPattern(int i) {
-        Pattern pattern = new Pattern(  createRule( i ) );
+        Pattern pattern = new Pattern( new PatternDescr("objectType" + i, "testPattern" + i ),  createRule( i ) );
         pattern.setObjectTypePath( "objectType" + i );
 
         pattern.setName( "testPattern" + i );

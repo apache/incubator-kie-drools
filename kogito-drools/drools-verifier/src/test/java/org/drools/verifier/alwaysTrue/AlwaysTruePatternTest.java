@@ -23,6 +23,7 @@ import java.util.Iterator;
 import org.drools.StatelessSession;
 import org.drools.StatelessSessionResult;
 import org.drools.base.RuleNameMatchesAgendaFilter;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.verifier.TestBaseOld;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -177,7 +178,7 @@ public class AlwaysTruePatternTest extends TestBaseOld {
         AlwaysTrue alwaysTrue2 = new AlwaysTrue( pp2 );
 
         // This pattern is okay.
-        Pattern pattern2 = new Pattern( rule1 );
+        Pattern pattern2 = new Pattern(new PatternDescr("objectType2", "testPattern2" ), rule1 );
         pattern2.setName( "testPattern2" );
 
         SubPattern pp3 = new SubPattern( pattern2,

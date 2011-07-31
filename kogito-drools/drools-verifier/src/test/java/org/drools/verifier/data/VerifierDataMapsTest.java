@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.EnumField;
@@ -102,7 +103,7 @@ public class VerifierDataMapsTest {
 
         saveVerifierComponentAndGet( new InlineEvalDescr( pattern ) );
         saveVerifierComponentAndGet( new ObjectType(new PackageDescr("testPackage1")) );
-        saveVerifierComponentAndGet( new RuleOperatorDescr( rule,
+        saveVerifierComponentAndGet( new RuleOperatorDescr( new AndDescr(), rule,
                                                             OperatorDescrType.AND ) );
         saveVerifierComponentAndGet( new PatternOperatorDescr( pattern,
                                                                OperatorDescrType.AND ) );
