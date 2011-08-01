@@ -7,7 +7,7 @@
 
   <info>
     <title>jBPM User Guide</title>
-    <releaseinfo>5.2.0-SNAPSHOT</releaseinfo>
+    <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
         <orgname><link xlink:href="http://www.jboss.org/jbpm">The jBPM team</link></orgname>
