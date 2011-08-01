@@ -66,6 +66,7 @@
     <module>jbpm-persistence-jpa</module>
     <module>jbpm-bam</module>
     <module>jbpm-bpmn2</module>
+    <module>jbpm-bpmn2-emfextmodel</module>
     <module>jbpm-workitems</module>
     <module>jbpm-human-task</module>
     <module>jbpm-gwt</module>
