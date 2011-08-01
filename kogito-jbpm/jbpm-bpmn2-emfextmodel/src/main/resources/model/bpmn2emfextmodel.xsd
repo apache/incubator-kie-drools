@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.jbpm.org/bpmn2/emfextmodel"
+  elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:jbpm="http://www.jbpm.org/bpmn2/emfextmodel">
+
+  <attribute name="packageName">
+    <simpleType>
+      <restriction base="string" />
+    </simpleType>
+  </attribute>
+
+  <attribute name="version">
+    <simpleType>
+      <restriction base="integer">
+        <minInclusive value="0" />
+      </restriction>
+    </simpleType>
+  </attribute>
+
+  <attribute name="ruleFlowGroup">
+    <simpleType>
+      <restriction base="string" />
+    </simpleType>
+  </attribute>
+  
+  <attribute name="taskName">
+    <simpleType>
+      <restriction base="string" />
+    </simpleType>
+  </attribute>
+
+  <attributeGroup name="onxscriptattributes">
+    <attribute name="scriptFormat" type="string" use="required" />
+  </attributeGroup>
+
+  <element name="onEntry-script">
+    <complexType>
+      <sequence>
+        <element name="script" minOccurs="1" maxOccurs="1"
+          type="string" />
+      </sequence>
+      <attributeGroup ref="jbpm:onxscriptattributes" />
+    </complexType>
+  </element>
+
+  <element name="onExit-script">
+    <complexType>
+      <sequence>
+        <element name="script" minOccurs="1" maxOccurs="1"
+          type="string" />
+      </sequence>
+      <attributeGroup ref="jbpm:onxscriptattributes" />
+    </complexType>
+  </element>
+  
+</schema>
