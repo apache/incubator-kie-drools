@@ -7,7 +7,7 @@
 
   <info>
     <title>Drools Fusion User Guide</title>
-    <releaseinfo>5.3.0-SNAPSHOT</releaseinfo>
+    <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
         <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss Drools team</link></orgname>
