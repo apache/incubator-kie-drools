@@ -43,9 +43,11 @@ public class GetFactHandleCommand
     public FactHandle execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
         InternalFactHandle factHandle = (InternalFactHandle) ksession.getFactHandle( object );
-        if ( factHandle != null && disconnected){
+        if ( factHandle != null) {
             InternalFactHandle handle = factHandle.clone();
-            handle.disconnect();
+            if (disconnected) {
+                handle.disconnect();
+            }
             return handle;
         }
         return null;
