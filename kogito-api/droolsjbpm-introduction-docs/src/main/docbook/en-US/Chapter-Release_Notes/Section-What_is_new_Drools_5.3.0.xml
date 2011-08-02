@@ -169,11 +169,54 @@
     </section>
 
     <section>
-      <title>Guided decision table - remove sorting</title>
+      <title>Guvnor Guided Decision Table</title>
 
-      <para>You are now able to restore the original sort order of a column by
-      clicking on the sort icon through: ascending, descending and
-      none.</para>
+      <para>A couple of minor enhancements have been made to Guvnor's guided
+      decision table editor:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Removal of sorting</para>
+
+          <para>You are now able to restore the original sort order of a
+          column by clicking on the sort icon through: ascending, descending
+          and none.</para>
+        </listitem>
+
+        <listitem>
+          <para>Formulae and Predicates support value lists</para>
+
+          <para>Up until now only literal value columns could take advantage
+          of value lists; either "Guvnor enums" or the Decision Table's
+          "Optional value list". This been rectified with this release
+          bringing the advantage of pre-defined choices for these types of
+          fields to the business user.</para>
+
+          <figure>
+            <title>Defining a predicate with a value list</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/dtable-predicate-value-list1.png"
+                           format="PNG" scalefit="0"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <figure>
+            <title>Using the predicate column</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                           fileref="images/Chapter-Release_Notes/dtable-predicate-value-list2.png"
+                           format="PNG" scalefit="0"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </listitem>
+      </itemizedlist>
     </section>
   </section>
 </section>
