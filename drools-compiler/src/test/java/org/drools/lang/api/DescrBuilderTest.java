@@ -181,7 +181,7 @@ public class DescrBuilderTest {
         PackageDescr pkg = DescrFactory.newPackage()
                 .name( "org.beans" )
                 // declare
-                .newDeclare().type().name(  "StockTick" )
+                .newDeclare().type().name( "StockTick" )
                     .newAnnotation( "role" ).value( "event" ).end()
                     .newAnnotation( "author" ).value( "bob" ).end()
                     .newField( "symbol" ).type( "String" ).end()
@@ -213,8 +213,41 @@ public class DescrBuilderTest {
         assertEquals( "RHT",
                       stType.get( st,
                                   "symbol" ) );
-        
+
         //stType.getAnnotation("author"); TODO: implement support for this
+
+    }
+
+    @Test
+    public void testDeclareEntryPoint() throws InstantiationException,
+                                       IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                // declare
+                .newDeclare().entryPoint()
+                    .addEntryPoint( "ep1" )
+                    .addEntryPoint( "ep2" )
+                .end()
+                .newDeclare().entryPoint()
+                    .addEntryPoint( "ep3" )
+                .end()
+                .getDescr();
+
+        assertEquals( 2,
+                      pkg.getEntryPointDeclarations().size() );
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        assertEquals( 3,
+                      kbase.getEntryPointIds().size() );
+        
+        
+
 
     }
 
