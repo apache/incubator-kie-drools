@@ -113,8 +113,7 @@ public class EntryPoint extends ConditionalElement
     }
 
     /**
-     * Returns this entry point ID
-     * @return
+     * {@inheritDoc}
      */
     public String getEntryPointId() {
         return this.entryPointId;
