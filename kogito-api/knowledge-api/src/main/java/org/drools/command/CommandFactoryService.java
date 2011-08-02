@@ -97,8 +97,12 @@ public interface CommandFactoryService {
 
     Command newAbortWorkItem(long workItemId);
 
-    public Command newKBuilderSetPropertyCommand(String id, String name, String value);
+    Command newKBuilderSetPropertyCommand(String id, String name, String value);
 
-    public Command newNewKnowledgeBuilderConfigurationCommand(String localId);
+    Command newNewKnowledgeBuilderConfigurationCommand(String localId);
+
+    Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm);
+
+    Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
 
 }
