@@ -37,6 +37,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.PlanningFactChange;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
@@ -160,8 +161,10 @@ public class CloudBalancingPanel extends SolutionPanel {
     public void deleteComputer(final CloudComputer cloudComputer) {
         logger.info("Scheduling deleting of computer ({}).", cloudComputer.getLabel());
         solutionBusiness.doPlanningFactChange(new PlanningFactChange() {
-            public void doChange(Solution solution, WorkingMemory workingMemory) {
-                CloudBalance cloudBalance = (CloudBalance) solution;
+            public void doChange(SolutionDirector solutionDirector) {
+                CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
+                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+                // First remove the planning fact from all planning entities that use it
                 for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
                     if (ObjectUtils.equals(cloudAssignment.getCloudComputer(), cloudComputer)) {
                         FactHandle cloudAssignmentHandle = workingMemory.getFactHandle(cloudAssignment);
@@ -169,6 +172,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                         workingMemory.retract(cloudAssignmentHandle);
                     }
                 }
+                // Next remove it the planning fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getCloudComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingCloudComputer = it.next();
                     if (ObjectUtils.equals(workingCloudComputer, cloudComputer)) {

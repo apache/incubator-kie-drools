@@ -33,71 +33,83 @@
 
     <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solverBenchmarkSuite&gt;
-    &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
+  &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
+  &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
 
-    &lt;inheritedSolverBenchmark&gt;
-        &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/unsolvedSolutionFile&gt;
-        &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/unsolvedSolutionFile&gt;
-        &lt;localSearchSolver&gt;
-            &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-            &lt;scoreDefinition&gt;
-                &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-            &lt;/scoreDefinition&gt;
-            &lt;termination&gt;
-                &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
-            &lt;/termination&gt;
-            &lt;selector&gt;
-                &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
-            &lt;/selector&gt;
-            &lt;forager&gt;
-                &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-            &lt;/forager&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/inheritedSolverBenchmark&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/unsolvedSolutionFile&gt;
+    &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/unsolvedSolutionFile&gt;
+    &lt;solver&gt;
+      &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+      &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+      &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+      &lt;scoreDefinition&gt;
+        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+      &lt;/scoreDefinition&gt;
+      &lt;termination&gt;
+        &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
+      &lt;/termination&gt;
+    &lt;/solver&gt;
+  &lt;/inheritedSolverBenchmark&gt;
 
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Solution tabu&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Move tabu 5&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeMoveTabuSize&gt;5&lt;/completeMoveTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Move tabu 7&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Solution tabu and move tabu 7&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-            &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Solution tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Move tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;completeMoveTabuSize&gt;5&lt;/completeMoveTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Property tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
-    <para>This benchmarker will try 4 configurations (1 solution tabu, 2 move tabu's and 1 solution-move tabu) on 2 data
-    sets (32 and 64 queens), so it will run 8 solvers.</para>
+    <para>This benchmarker will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
+    (32 and 64 queens), so it will run 6 solvers.</para>
 
     <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example a local search
     solver) and one or more <literal>unsolvedSolutionFile</literal> entities. It will run the solver configuration on
     each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent. The common
     part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
-    <literal>inheritedSolverBenchmark</literal> entity, but they can still be overwritten per
+    <literal>inheritedSolverBenchmark</literal> entity, but that can still be overwritten per
     <literal>solverBenchmark</literal> entity.</para>
 
     <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). A summary
@@ -125,9 +137,9 @@
     line:</para>
 
     <programlisting language="xml">&lt;solverBenchmarkSuite&gt;
-    &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
-    &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
-    ...
+  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
+  &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
+  ...
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
     <para>Multiple <literal>solverStatisticType</literal> entries are allowed. Some statistic types might influence

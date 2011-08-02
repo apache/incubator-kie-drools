@@ -235,13 +235,22 @@
     ...
 &lt;/localSearchSolver&gt;</programlisting>
 
-      <para>There are 3 environment modes:</para>
+      <para>There are 4 environment modes:</para>
+
+      <section>
+        <title>TRACE</title>
+
+        <para>The trace mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
+        assert that the delta based score is uncorrupted) to fail-fast on rule engine bugs.</para>
+
+        <para>The trace mode is very slow (because it doesn't rely on delta based score calculation).</para>
+      </section>
 
       <section>
         <title>DEBUG</title>
 
-        <para>The debug mode is reproducible (see the reproducible mode) and also turns on assertions (such as assert
-        that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
+        <para>The debug mode is reproducible (see the reproducible mode) and also turns on most assertions (such as
+        assert that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
         ...</para>
 
         <para>The debug mode is slow.</para>

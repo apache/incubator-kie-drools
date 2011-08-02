@@ -216,7 +216,7 @@ public class SolutionBusiness {
         if (solver.isSolving()) {
             solver.addPlanningFactChange(planningFactChange);
         } else {
-            planningFactChange.doChange(solverScope.getWorkingSolution(), solverScope.getWorkingMemory());
+            planningFactChange.doChange(solverScope.getSolutionDirector());
         }
     }
 

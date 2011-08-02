@@ -4,6 +4,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
 
 /**
  * A PlanningFactChange represents a change in 1 or more planning facts of a solution.
@@ -20,9 +21,10 @@ public interface PlanningFactChange {
      * Does the Move and updates the {@link Solution} and its {@link WorkingMemory} accordingly.
      * When the solution is modified, the {@link WorkingMemory}'s {@link FactHandle}s should be correctly notified,
      * otherwise the score(s) calculated will be corrupted.
-     * @param solution never null, the solution which contains the planning facts (and planning entities) to change
-     * @param workingMemory never null, the {@link WorkingMemory} that needs to get notified of the changes.
+     * @param solutionDirector never null.
+     * Contains the working {@link Solution} which contains the planning facts (and planning entities) to change.
+     * Also contains the {@link WorkingMemory} that needs to get notified of those changes.
      */
-    void doChange(Solution solution, WorkingMemory workingMemory);
-    
+    void doChange(SolutionDirector solutionDirector);
+
 }

@@ -14,13 +14,27 @@
         <scoreDefinitionType>SIMPLE</scoreDefinitionType>
       </scoreDefinition>
       <termination>
-        <terminationCompositionStyle>OR</terminationCompositionStyle>
-        <maximumSecondsSpend>10</maximumSecondsSpend>
-        <scoreAttained>0</scoreAttained>
+        <maximumSecondsSpend>20</maximumSecondsSpend>
       </termination>
     </solver>
   </inheritedSolverBenchmark>
 
+  <solverBenchmark>
+    <name>Solution tabu</name>
+    <solver>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
   <solverBenchmark>
     <name>Move tabu</name>
     <solver>
@@ -38,30 +52,14 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Undo move tabu</name>
+    <name>Property tabu</name>
     <solver>
       <localSearch>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeUndoMoveTabuSize>5</completeUndoMoveTabuSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>Solution tabu</name>
-    <solver>
-      <localSearch>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
-        </selector>
-        <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>5</completePropertyTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

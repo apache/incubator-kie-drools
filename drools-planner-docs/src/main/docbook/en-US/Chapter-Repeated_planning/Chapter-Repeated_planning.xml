@@ -42,8 +42,8 @@
     <title>Backup planning</title>
 
     <para>Backup planning is the technique of adding extra score constraints to create space in the planning for when
-    things go wrong. Create a backup plan in the plan. For example: try to assign an employee as the spare employee
-    (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...</para>
+    things go wrong. That creates a backup plan in the plan. For example: try to assign an employee as the spare
+    employee (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...</para>
 
     <para>Then, when things go wrong (one of the employees calls in sick), change the planning facts on the original
     solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from
@@ -54,15 +54,18 @@
   <section>
     <title>Continuous planning (windowed planning)</title>
 
-    <para>Continuous planning is the technique of planning one or more upcoming planning windows. The first upcoming
-    planning window is considered stable (unlikely to change), while later upcoming planning windows are considered
-    draft (likely to change during the next planning effort). Distant future planning windows are not planned at
-    all.</para>
+    <para>Continuous planning is the technique of planning one or more upcoming planning windows at the same time and
+    repeating that process every week (or every day). Because time infinite, there are an infinite future windows, so
+    planning all future windows is impossible. Instead we plan only a number of upcoming planning windows.</para>
 
-    <para>Past planning windows have locked planning entities: the planning entities can no longer be changed (they are
-    locked in place), but some of them are still needed in the working memory, as they might affect some of the score
-    constraints that apply on the upcoming planning entities. For example: when an employee should not work more than 5
-    days in a row, he shouldn't work today and tomorrow if he worked the past 4 days already.</para>
+    <para>Past planning windows are immutable. The first upcoming planning window is considered stable (unlikely to
+    change), while later upcoming planning windows are considered draft (likely to change during the next planning
+    effort). Distant future planning windows are not planned at all.</para>
+
+    <para>Past planning windows have <emphasis>locked</emphasis> planning entities: the planning entities can no longer
+    be changed (they are locked in place), but some of them are still needed in the working memory, as they might affect
+    some of the score constraints that apply on the upcoming planning entities. For example: when an employee should not
+    work more than 5 days in a row, he shouldn't work today and tomorrow if he worked the past 4 days already.</para>
 
     <para>Sometimes some planning entities are semi-locked: they can be changed, but occur a certain score penalty if
     they differ from their original place. For example: avoid rescheduling hospital beds less than 2 days before the
@@ -79,17 +82,89 @@
         </imageobject>
       </mediaobject>
     </figure>
+
+    <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
+    planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
   </section>
 
   <section>
     <title>Real-time planning (event based planning)</title>
 
-    <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows
-    to lower the burden of real-time planning.</para>
+    <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows to
+    lower the burden of real-time planning. Don't configure any <literal>Termination</literal>, just terminate early
+    when you need the results or subscribe to the <literal>BestSolutionChangedEvent</literal> (the latter doesn't
+    guarantee yet that every <literal>PlanningFactChange</literal> has been processed).</para>
 
-    <para>While the planner is running, an outside event might want to change one of the planning facts, for example
-    an airplane is delayed and needs the runway at a later time. Do not change the planning fact instances used by the
-    planner while the planner is running. Instead, just terminate the planner early, then change its planning fact
-    instances and restart the planner again.</para>
+    <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the planning
+    facts, for example an airplane is delayed and needs the runway at a later time. Do not change the planning fact
+    instances used by the <literal>Solver</literal> while it is solving, as that will corrupt it. Instead, add a
+    <literal>PlanningFactChange</literal> to the <literal>Solver</literal> which it will execute as soon as the timing
+    is right.</para>
+
+    <programlisting>public interface Solver {
+
+   ...
+
+   boolean addPlanningFactChange(PlanningFactChange planningFactChange);
+
+   ...
+
+}</programlisting>
+
+    <programlisting>public interface PlanningFactChange {
+
+    void doChange(SolutionDirector solutionDirector);
+
+}</programlisting>
+
+    <para>Here's an example:</para>
+
+    <programlisting>    public void deleteComputer(final CloudComputer cloudComputer) {
+        solver.addPlanningFactChange(new PlanningFactChange() {
+            public void doChange(SolutionDirector solutionDirector) {
+                CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
+                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+                // First remove the planning fact from all planning entities that use it
+                for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
+                    if (ObjectUtils.equals(cloudAssignment.getCloudComputer(), cloudComputer)) {
+                        FactHandle cloudAssignmentHandle = workingMemory.getFactHandle(cloudAssignment);
+                        cloudAssignment.setCloudComputer(null);
+                        workingMemory.retract(cloudAssignmentHandle);
+                    }
+                }
+                // Next remove it the planning fact itself
+                for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getCloudComputerList().iterator(); it.hasNext(); ) {
+                    CloudComputer workingCloudComputer = it.next();
+                    if (ObjectUtils.equals(workingCloudComputer, cloudComputer)) {
+                        FactHandle cloudComputerHandle = workingMemory.getFactHandle(workingCloudComputer);
+                        workingMemory.retract(cloudComputerHandle);
+                        it.remove(); // remove from list
+                        break;
+                    }
+                }
+            }
+        });
+    }</programlisting>
+
+    <warning>
+      <para>Any change on the planning facts or planning entities in a <literal>PlanningFactChange</literal> must be
+      done on the instances of the <literal>Solution</literal> of
+      <literal>solutionDirector.getWorkingSolution()</literal>.</para>
+    </warning>
+
+    <warning>
+      <para>Any change on the planning facts or planning entities in a <literal>PlanningFactChange</literal> must be
+      told to the <literal>WorkingMemory</literal> of <literal>solutionDirector.getWorkingMemory()</literal>.</para>
+    </warning>
+
+    <note>
+      <para>Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized
+      solution. That's fine, as long as the first solver phase can handle it. All construction heuristics solver phases
+      can handle that, so it's recommended to configure such a solver phase as the first phase.</para>
+    </note>
+
+    <para>In essence, the <literal>Solver</literal> will stop, run the <literal>PlanningFactChange</literal> and
+    restart. Each solver phase will be run again. Each configured <literal>Termination</literal> (except
+    <literal>terminateEarly</literal>) will reset.</para>
   </section>
 </chapter>

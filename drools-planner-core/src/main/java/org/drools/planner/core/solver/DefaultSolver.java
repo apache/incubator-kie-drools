@@ -206,7 +206,7 @@ public class DefaultSolver implements Solver {
     }
 
     private Score doPlanningFactChange(PlanningFactChange planningFactChange) {
-        planningFactChange.doChange(solverScope.getWorkingSolution(), solverScope.getWorkingMemory());
+        planningFactChange.doChange(solverScope.getSolutionDirector());
         Score score = solverScope.calculateScoreFromWorkingMemory();
         logger.debug("PlanningFactChange done with new score ({}).", score);
         return score;
