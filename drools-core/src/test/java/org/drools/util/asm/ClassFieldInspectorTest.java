@@ -89,6 +89,8 @@ public class ClassFieldInspectorTest {
         ClassFieldInspector ext = new ClassFieldInspector( BeanInherit.class );
         assertEquals( 5,
                       ext.getFieldNames().size() );
+        assertNotNull( ext.getFieldTypesField().get( "text" ) );
+        assertNotNull( ext.getFieldTypesField().get( "number" ) );
 
         ext = new ClassFieldInspector( InterfaceChildImpl.class );
         assertEquals( 8,
@@ -96,12 +98,15 @@ public class ClassFieldInspectorTest {
 
         // test inheritence from abstract class
         assertNotNull( ext.getFieldNames().get( "HTML" ) );
+        assertNotNull( ext.getFieldTypesField().get( "HTML" ) );
 
         // check normal field on child class
         assertNotNull( ext.getFieldNames().get( "baz" ) );
+        assertNotNull( ext.getFieldTypesField().get( "baz" ) );
 
         // test inheritence from an interface
         assertNotNull( ext.getFieldNames().get( "URI" ) );
+        assertNotNull( ext.getFieldTypesField().get( "URI" ) );
     }
 
     @Test

@@ -2450,52 +2450,52 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateAction.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateAction.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateClause.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateClause.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateFunction.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateFunction.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateInit.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateInit.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateResult.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateResult.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateReverse.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateReverse.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AccumulateSteps.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AccumulateSteps.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Accumulations.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Accumulations.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AdditiveExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AdditiveExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Annotation.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Annotation.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2505,47 +2505,47 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ArrayCreatorRest.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayCreatorRest.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ArrayInitializer.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ArrayInitializer.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/AssignmentOperator.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/AssignmentOperator.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/BindingPattern.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/BindingPattern.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Block.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Block.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/BooleanLiteral.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/BooleanLiteral.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/CompilationUnit.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/CompilationUnit.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalAnd.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalAnd.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementAccumulate.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementAccumulate.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2555,52 +2555,52 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementExists.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementExists.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementForall.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementForall.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementNot.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElementNot.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElement.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalElement.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOrExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOrExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ConditionalOr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Constraints.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Constraints.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/CreatedName.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/CreatedName.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Creator.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Creator.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2610,52 +2610,52 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Digit.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Digit.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocationSuffix.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocationSuffix.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocation.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ExplicitGenericInvocation.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Exponent.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Exponent.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ExpressionList.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ExpressionList.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Expression.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Expression.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Field.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Field.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Fraction.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Fraction.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FromAccumulateClause.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/FromAccumulateClause.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FromClause.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/FromClause.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2665,57 +2665,57 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/FunctionDefinition.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/FunctionDefinition.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/GlobalDefinition.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/GlobalDefinition.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/IdentifierSuffix.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/IdentifierSuffix.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ImportDefinition.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ImportDefinition.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/InExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InlineListExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineListExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InlineMapExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/InlineMapExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InnerCreator.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/InnerCreator.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/InstanceOfExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/InstanceOfExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/IntLiteral.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/IntLiteral.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Literal.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Literal.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2725,57 +2725,57 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/NonWildcardTypeArguments.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/NonWildcardTypeArguments.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/OrRestriction.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/OrRestriction.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/OverClause.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/OverClause.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Parameters.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Parameters.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Pattern.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Pattern.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Placeholders.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Placeholders.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Primary.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Primary.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/PrimitiveType.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/PrimitiveType.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/QualifiedName.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/QualifiedName.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/QueryDefinition.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryDefinition.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/QueryOptions.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/QueryOptions.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2785,57 +2785,57 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RealTypeSuffix.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RealTypeSuffix.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RelationalExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RelationalOperator.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RelationalOperator.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RhsStatement.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RhsStatement.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleAttributes.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttributes.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleAttribute.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleAttribute.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleDefinition.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleDefinition.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/RuleOptions.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/RuleOptions.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Selector.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Selector.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ShiftExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ShiftExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/SingleRestriction.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/SingleRestriction.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
@@ -2845,67 +2845,67 @@ eval( isValid( p1, p2 ) )</programlisting>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/StringId.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/StringId.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/SuperSuffix.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/SuperSuffix.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/ThenPart.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/ThenPart.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeArguments.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArguments.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeArgument.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeArgument.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeDefinition.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeDefinition.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/TypeOptions.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/TypeOptions.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Type.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Type.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/UnaryExprNotPlusMinus.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExprNotPlusMinus.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/UnaryExpr.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/UnaryExpr.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/Value.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/Value.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/VariableInitializer.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/VariableInitializer.png" format="PNG"/>
         </imageobject>
       </mediaobject>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-Language_Reference/WhenPart.svg" format="SVG"/>
+          <imagedata fileref="images/Chapter-Language_Reference/WhenPart.png" format="PNG"/>
         </imageobject>
       </mediaobject>
 
