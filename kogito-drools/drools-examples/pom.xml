@@ -110,4 +110,49 @@
       <artifactId>xstream</artifactId>
     </dependency>
   </dependencies>
+  <profiles>
+    <profile>
+      <id>soaProfile</id>
+      <activation>
+        <property>
+          <name>soa</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>soa_overlay</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <tasks>
+                    <replace file="${basedir}/src/main/java/org/drools/examples/DroolsExamplesApp.java" >
+                      <replacefilter token="Drools examples" value="JBoss BRMS examples" />
+                    </replace>      
+                    <replace file="${basedir}/src/main/java/org/drools/examples/sudoku/SudokuExample.java" >
+                      <replacefilter token="Drools Sudoku Example" value="JBoss BRMS Sudoku Example" />
+                    </replace>      
+
+                    <replace file="${basedir}/src/main/java/org/drools/benchmark/DroolsBenchmarkExamplesApp.java" >
+                      <replacefilter token="Drools Benchmark example" value="JBoss BRMS Benchmark example" />
+                    </replace>      
+
+                    <replace file="${basedir}/src/main/java/org/drools/tutorials/banking/BankingExamplesApp.java" >
+                      <replacefilter token="Drools Banking tutorial" value="JBoss BRMS Banking tutorial" />
+                    </replace>      
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
