@@ -119,4 +119,73 @@ public class BPMN2EmfExtTest extends TestCase {
         assertEquals("script", scriptType.getScript());
         assertEquals("format", scriptType.getScriptFormat());
     }
+    
+    public void testImportElement() throws Exception {
+        // write
+        XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+        inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        inResource.setEncoding("UTF-8");
+        DocumentRoot documentRoot = EmfextmodelFactory.eINSTANCE.createDocumentRoot();
+        ImportType root = EmfextmodelFactory.eINSTANCE.createImportType();
+        root.setName("import");
+        documentRoot.setImport(root);
+        inResource.getContents().add(documentRoot);
+        
+        StringWriter stringWriter = new StringWriter();
+        inResource.save(stringWriter, null);
+        assertNotNull(stringWriter.getBuffer().toString());
+        if(stringWriter.getBuffer().toString().length() < 1) {
+            fail("generated xml is empty");
+        }
+        
+        // read
+        XMLResource outResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+        outResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        outResource.setEncoding("UTF-8");
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put( XMLResource.OPTION_ENCODING, "UTF-8" );
+        InputStream is = new ByteArrayInputStream(stringWriter.getBuffer().toString().getBytes("UTF-8"));
+        outResource.load(is, options);
+        
+        DocumentRoot outRoot = (DocumentRoot) outResource.getContents().get(0);
+        assertNotNull(outRoot.getImport());
+        ImportType importType = outRoot.getImport();
+        assertEquals("import", importType.getName());
+    }
+    
+    public void testGlobalElement() throws Exception {
+        // write
+        XMLResource inResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+        inResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        inResource.setEncoding("UTF-8");
+        DocumentRoot documentRoot = EmfextmodelFactory.eINSTANCE.createDocumentRoot();
+        GlobalType root = EmfextmodelFactory.eINSTANCE.createGlobalType();
+        root.setIdentifier("identifier");
+        root.setType("type");
+        documentRoot.setGlobal(root);
+        inResource.getContents().add(documentRoot);
+        
+        StringWriter stringWriter = new StringWriter();
+        inResource.save(stringWriter, null);
+        assertNotNull(stringWriter.getBuffer().toString());
+        if(stringWriter.getBuffer().toString().length() < 1) {
+            fail("generated xml is empty");
+        }
+        
+        // read
+        XMLResource outResource = (XMLResource) resourceSet.createResource(URI.createURI("inputStream://dummyUriWithValidSuffix.xml"));
+        outResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING, "UTF-8");
+        outResource.setEncoding("UTF-8");
+        Map<String, Object> options = new HashMap<String, Object>();
+        options.put( XMLResource.OPTION_ENCODING, "UTF-8" );
+        InputStream is = new ByteArrayInputStream(stringWriter.getBuffer().toString().getBytes("UTF-8"));
+        outResource.load(is, options);
+        
+        DocumentRoot outRoot = (DocumentRoot) outResource.getContents().get(0);
+        assertNotNull(outRoot.getImport());
+        GlobalType globalType = outRoot.getGlobal();
+        assertEquals("identifier", globalType.getIdentifier());
+        assertEquals("type", globalType.getType());
+    }
+    
 }

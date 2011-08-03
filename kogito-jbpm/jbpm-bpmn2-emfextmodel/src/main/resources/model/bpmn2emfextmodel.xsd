@@ -28,9 +28,18 @@
       <restriction base="string" />
     </simpleType>
   </attribute>
-
+  
   <attributeGroup name="onxscriptattributes">
     <attribute name="scriptFormat" type="string" use="required" />
+  </attributeGroup>
+
+  <attributeGroup name="importattributes">
+    <attribute name="name" type="string" use="required"/>
+  </attributeGroup>
+  
+  <attributeGroup name="globalattributes">
+    <attribute name="identifier" type="string" use="required"/>
+    <attribute name="type" type="string" use="required"/>
   </attributeGroup>
 
   <element name="onEntry-script">
@@ -50,6 +59,18 @@
           type="string" />
       </sequence>
       <attributeGroup ref="jbpm:onxscriptattributes" />
+    </complexType>
+  </element>
+  
+  <element name="import">
+    <complexType>
+      <attributeGroup ref="jbpm:importattributes" />   
+    </complexType>
+  </element>
+  
+  <element name="global">
+    <complexType>
+      <attributeGroup ref="jbpm:globalattributes" />   
     </complexType>
   </element>
   

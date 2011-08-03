@@ -25,6 +25,8 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getMixed <em>Mixed</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getXMLNSPrefixMap <em>XMLNS Prefix Map</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
+ *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getGlobal <em>Global</em>}</li>
+ *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getImport <em>Import</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getPackageName <em>Package Name</em>}</li>
@@ -91,6 +93,60 @@ public interface DocumentRoot extends EObject {
      * @generated
      */
     EMap<String, String> getXSISchemaLocation();
+
+    /**
+     * Returns the value of the '<em><b>Global</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Global</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Global</em>' containment reference.
+     * @see #setGlobal(GlobalType)
+     * @see org.jbpm.bpmn2.emfextmodel.EmfextmodelPackage#getDocumentRoot_Global()
+     * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='global' namespace='##targetNamespace'"
+     * @generated
+     */
+    GlobalType getGlobal();
+
+    /**
+     * Sets the value of the '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getGlobal <em>Global</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Global</em>' containment reference.
+     * @see #getGlobal()
+     * @generated
+     */
+    void setGlobal(GlobalType value);
+
+    /**
+     * Returns the value of the '<em><b>Import</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Import</em>' containment reference isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Import</em>' containment reference.
+     * @see #setImport(ImportType)
+     * @see org.jbpm.bpmn2.emfextmodel.EmfextmodelPackage#getDocumentRoot_Import()
+     * @model containment="true" upper="-2" transient="true" volatile="true" derived="true"
+     *        extendedMetaData="kind='element' name='import' namespace='##targetNamespace'"
+     * @generated
+     */
+    ImportType getImport();
+
+    /**
+     * Sets the value of the '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getImport <em>Import</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Import</em>' containment reference.
+     * @see #getImport()
+     * @generated
+     */
+    void setImport(ImportType value);
 
     /**
      * Returns the value of the '<em><b>On Entry Script</b></em>' containment reference.

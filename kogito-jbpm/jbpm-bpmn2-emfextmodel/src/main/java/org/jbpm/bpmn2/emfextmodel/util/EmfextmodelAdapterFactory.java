@@ -76,6 +76,14 @@ public class EmfextmodelAdapterFactory extends AdapterFactoryImpl {
                 return createDocumentRootAdapter();
             }
             @Override
+            public Adapter caseGlobalType(GlobalType object) {
+                return createGlobalTypeAdapter();
+            }
+            @Override
+            public Adapter caseImportType(ImportType object) {
+                return createImportTypeAdapter();
+            }
+            @Override
             public Adapter caseOnEntryScriptType(OnEntryScriptType object) {
                 return createOnEntryScriptTypeAdapter();
             }
@@ -114,6 +122,34 @@ public class EmfextmodelAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createDocumentRootAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.jbpm.bpmn2.emfextmodel.GlobalType <em>Global Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.jbpm.bpmn2.emfextmodel.GlobalType
+     * @generated
+     */
+    public Adapter createGlobalTypeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link org.jbpm.bpmn2.emfextmodel.ImportType <em>Import Type</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see org.jbpm.bpmn2.emfextmodel.ImportType
+     * @generated
+     */
+    public Adapter createImportTypeAdapter() {
         return null;
     }
 

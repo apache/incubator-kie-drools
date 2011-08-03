@@ -104,6 +104,10 @@ public class EmfextmodelValidator extends EObjectValidator {
         switch (classifierID) {
             case EmfextmodelPackage.DOCUMENT_ROOT:
                 return validateDocumentRoot((DocumentRoot)value, diagnostics, context);
+            case EmfextmodelPackage.GLOBAL_TYPE:
+                return validateGlobalType((GlobalType)value, diagnostics, context);
+            case EmfextmodelPackage.IMPORT_TYPE:
+                return validateImportType((ImportType)value, diagnostics, context);
             case EmfextmodelPackage.ON_ENTRY_SCRIPT_TYPE:
                 return validateOnEntryScriptType((OnEntryScriptType)value, diagnostics, context);
             case EmfextmodelPackage.ON_EXIT_SCRIPT_TYPE:
@@ -128,6 +132,24 @@ public class EmfextmodelValidator extends EObjectValidator {
      */
     public boolean validateDocumentRoot(DocumentRoot documentRoot, DiagnosticChain diagnostics, Map<Object, Object> context) {
         return validate_EveryDefaultConstraint(documentRoot, diagnostics, context);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean validateGlobalType(GlobalType globalType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+        return validate_EveryDefaultConstraint(globalType, diagnostics, context);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean validateImportType(ImportType importType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+        return validate_EveryDefaultConstraint(importType, diagnostics, context);
     }
 
     /**

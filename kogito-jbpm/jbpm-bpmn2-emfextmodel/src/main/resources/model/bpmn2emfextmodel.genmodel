@@ -16,12 +16,21 @@
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/mixed"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/xMLNSPrefixMap"/>
       <genFeatures property="None" notify="false" createChild="false" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/xSISchemaLocation"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/global"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/import"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/onEntryScript"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/onExitScript"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/packageName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/ruleFlowGroup"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/taskName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/version"/>
+    </genClasses>
+    <genClasses ecoreClass="emfextmodel.ecore#//GlobalType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//GlobalType/identifier"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//GlobalType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="emfextmodel.ecore#//ImportType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//ImportType/name"/>
     </genClasses>
     <genClasses ecoreClass="emfextmodel.ecore#//OnEntryScriptType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//OnEntryScriptType/script"/>

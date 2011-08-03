@@ -22,6 +22,8 @@ import org.eclipse.emf.ecore.xml.type.XMLTypePackage;
 import org.jbpm.bpmn2.emfextmodel.DocumentRoot;
 import org.jbpm.bpmn2.emfextmodel.EmfextmodelFactory;
 import org.jbpm.bpmn2.emfextmodel.EmfextmodelPackage;
+import org.jbpm.bpmn2.emfextmodel.GlobalType;
+import org.jbpm.bpmn2.emfextmodel.ImportType;
 import org.jbpm.bpmn2.emfextmodel.OnEntryScriptType;
 import org.jbpm.bpmn2.emfextmodel.OnExitScriptType;
 
@@ -40,6 +42,20 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * @generated
      */
     private EClass documentRootEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass globalTypeEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass importTypeEClass = null;
 
     /**
      * <!-- begin-user-doc -->
@@ -197,7 +213,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_OnEntryScript() {
+    public EReference getDocumentRoot_Global() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(3);
     }
 
@@ -206,7 +222,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getDocumentRoot_OnExitScript() {
+    public EReference getDocumentRoot_Import() {
         return (EReference)documentRootEClass.getEStructuralFeatures().get(4);
     }
 
@@ -215,25 +231,25 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getDocumentRoot_OnEntryScript() {
+        return (EReference)documentRootEClass.getEStructuralFeatures().get(5);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getDocumentRoot_OnExitScript() {
+        return (EReference)documentRootEClass.getEStructuralFeatures().get(6);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EAttribute getDocumentRoot_PackageName() {
-        return (EAttribute)documentRootEClass.getEStructuralFeatures().get(5);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EAttribute getDocumentRoot_RuleFlowGroup() {
-        return (EAttribute)documentRootEClass.getEStructuralFeatures().get(6);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EAttribute getDocumentRoot_TaskName() {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(7);
     }
 
@@ -242,8 +258,71 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getDocumentRoot_Version() {
+    public EAttribute getDocumentRoot_RuleFlowGroup() {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(8);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getDocumentRoot_TaskName() {
+        return (EAttribute)documentRootEClass.getEStructuralFeatures().get(9);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getDocumentRoot_Version() {
+        return (EAttribute)documentRootEClass.getEStructuralFeatures().get(10);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getGlobalType() {
+        return globalTypeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getGlobalType_Identifier() {
+        return (EAttribute)globalTypeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getGlobalType_Type() {
+        return (EAttribute)globalTypeEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getImportType() {
+        return importTypeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getImportType_Name() {
+        return (EAttribute)importTypeEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -368,12 +447,21 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__MIXED);
         createEReference(documentRootEClass, DOCUMENT_ROOT__XMLNS_PREFIX_MAP);
         createEReference(documentRootEClass, DOCUMENT_ROOT__XSI_SCHEMA_LOCATION);
+        createEReference(documentRootEClass, DOCUMENT_ROOT__GLOBAL);
+        createEReference(documentRootEClass, DOCUMENT_ROOT__IMPORT);
         createEReference(documentRootEClass, DOCUMENT_ROOT__ON_ENTRY_SCRIPT);
         createEReference(documentRootEClass, DOCUMENT_ROOT__ON_EXIT_SCRIPT);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__PACKAGE_NAME);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__RULE_FLOW_GROUP);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__TASK_NAME);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__VERSION);
+
+        globalTypeEClass = createEClass(GLOBAL_TYPE);
+        createEAttribute(globalTypeEClass, GLOBAL_TYPE__IDENTIFIER);
+        createEAttribute(globalTypeEClass, GLOBAL_TYPE__TYPE);
+
+        importTypeEClass = createEClass(IMPORT_TYPE);
+        createEAttribute(importTypeEClass, IMPORT_TYPE__NAME);
 
         onEntryScriptTypeEClass = createEClass(ON_ENTRY_SCRIPT_TYPE);
         createEAttribute(onEntryScriptTypeEClass, ON_ENTRY_SCRIPT_TYPE__SCRIPT);
@@ -427,12 +515,21 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
         initEAttribute(getDocumentRoot_Mixed(), ecorePackage.getEFeatureMapEntry(), "mixed", null, 0, -1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XMLNSPrefixMap(), ecorePackage.getEStringToStringMapEntry(), null, "xMLNSPrefixMap", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_XSISchemaLocation(), ecorePackage.getEStringToStringMapEntry(), null, "xSISchemaLocation", null, 0, -1, null, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Global(), this.getGlobalType(), null, "global", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
+        initEReference(getDocumentRoot_Import(), this.getImportType(), null, "import", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_OnEntryScript(), this.getOnEntryScriptType(), null, "onEntryScript", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_OnExitScript(), this.getOnExitScriptType(), null, "onExitScript", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_PackageName(), this.getPackageNameType(), "packageName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_RuleFlowGroup(), this.getRuleFlowGroupType(), "ruleFlowGroup", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_TaskName(), this.getTaskNameType(), "taskName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_Version(), this.getVersionType(), "version", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(globalTypeEClass, GlobalType.class, "GlobalType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getGlobalType_Identifier(), theXMLTypePackage.getString(), "identifier", null, 1, 1, GlobalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getGlobalType_Type(), theXMLTypePackage.getString(), "type", null, 1, 1, GlobalType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(importTypeEClass, ImportType.class, "ImportType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getImportType_Name(), theXMLTypePackage.getString(), "name", null, 1, 1, ImportType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(onEntryScriptTypeEClass, OnEntryScriptType.class, "OnEntryScriptType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getOnEntryScriptType_Script(), theXMLTypePackage.getString(), "script", null, 1, 1, OnEntryScriptType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -493,6 +590,22 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
              "name", "xsi:schemaLocation"
            });		
         addAnnotation
+          (getDocumentRoot_Global(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "global",
+             "namespace", "##targetNamespace"
+           });		
+        addAnnotation
+          (getDocumentRoot_Import(), 
+           source, 
+           new String[] {
+             "kind", "element",
+             "name", "import",
+             "namespace", "##targetNamespace"
+           });		
+        addAnnotation
           (getDocumentRoot_OnEntryScript(), 
            source, 
            new String[] {
@@ -539,6 +652,41 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
              "kind", "attribute",
              "name", "version",
              "namespace", "##targetNamespace"
+           });		
+        addAnnotation
+          (globalTypeEClass, 
+           source, 
+           new String[] {
+             "name", "global_._type",
+             "kind", "empty"
+           });		
+        addAnnotation
+          (getGlobalType_Identifier(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "identifier"
+           });		
+        addAnnotation
+          (getGlobalType_Type(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "type"
+           });		
+        addAnnotation
+          (importTypeEClass, 
+           source, 
+           new String[] {
+             "name", "import_._type",
+             "kind", "empty"
+           });		
+        addAnnotation
+          (getImportType_Name(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "name"
            });		
         addAnnotation
           (onEntryScriptTypeEClass, 

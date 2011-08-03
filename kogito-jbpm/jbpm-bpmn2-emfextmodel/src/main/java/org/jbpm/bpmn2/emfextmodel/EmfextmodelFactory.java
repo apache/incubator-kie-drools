@@ -35,6 +35,24 @@ public interface EmfextmodelFactory extends EFactory {
     DocumentRoot createDocumentRoot();
 
     /**
+     * Returns a new object of class '<em>Global Type</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Global Type</em>'.
+     * @generated
+     */
+    GlobalType createGlobalType();
+
+    /**
+     * Returns a new object of class '<em>Import Type</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Import Type</em>'.
+     * @generated
+     */
+    ImportType createImportType();
+
+    /**
      * Returns a new object of class '<em>On Entry Script Type</em>'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

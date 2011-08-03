@@ -98,13 +98,31 @@ public interface EmfextmodelPackage extends EPackage {
     int DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = 2;
 
     /**
+     * The feature id for the '<em><b>Global</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DOCUMENT_ROOT__GLOBAL = 3;
+
+    /**
+     * The feature id for the '<em><b>Import</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DOCUMENT_ROOT__IMPORT = 4;
+
+    /**
      * The feature id for the '<em><b>On Entry Script</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = 3;
+    int DOCUMENT_ROOT__ON_ENTRY_SCRIPT = 5;
 
     /**
      * The feature id for the '<em><b>On Exit Script</b></em>' containment reference.
@@ -113,7 +131,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__ON_EXIT_SCRIPT = 4;
+    int DOCUMENT_ROOT__ON_EXIT_SCRIPT = 6;
 
     /**
      * The feature id for the '<em><b>Package Name</b></em>' attribute.
@@ -122,7 +140,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__PACKAGE_NAME = 5;
+    int DOCUMENT_ROOT__PACKAGE_NAME = 7;
 
     /**
      * The feature id for the '<em><b>Rule Flow Group</b></em>' attribute.
@@ -131,7 +149,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__RULE_FLOW_GROUP = 6;
+    int DOCUMENT_ROOT__RULE_FLOW_GROUP = 8;
 
     /**
      * The feature id for the '<em><b>Task Name</b></em>' attribute.
@@ -140,7 +158,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__TASK_NAME = 7;
+    int DOCUMENT_ROOT__TASK_NAME = 9;
 
     /**
      * The feature id for the '<em><b>Version</b></em>' attribute.
@@ -149,7 +167,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__VERSION = 8;
+    int DOCUMENT_ROOT__VERSION = 10;
 
     /**
      * The number of structural features of the '<em>Document Root</em>' class.
@@ -158,7 +176,72 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT_FEATURE_COUNT = 9;
+    int DOCUMENT_ROOT_FEATURE_COUNT = 11;
+
+    /**
+     * The meta object id for the '{@link org.jbpm.bpmn2.emfextmodel.impl.GlobalTypeImpl <em>Global Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.jbpm.bpmn2.emfextmodel.impl.GlobalTypeImpl
+     * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getGlobalType()
+     * @generated
+     */
+    int GLOBAL_TYPE = 1;
+
+    /**
+     * The feature id for the '<em><b>Identifier</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_TYPE__IDENTIFIER = 0;
+
+    /**
+     * The feature id for the '<em><b>Type</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_TYPE__TYPE = 1;
+
+    /**
+     * The number of structural features of the '<em>Global Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GLOBAL_TYPE_FEATURE_COUNT = 2;
+
+    /**
+     * The meta object id for the '{@link org.jbpm.bpmn2.emfextmodel.impl.ImportTypeImpl <em>Import Type</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.jbpm.bpmn2.emfextmodel.impl.ImportTypeImpl
+     * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getImportType()
+     * @generated
+     */
+    int IMPORT_TYPE = 2;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT_TYPE__NAME = 0;
+
+    /**
+     * The number of structural features of the '<em>Import Type</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT_TYPE_FEATURE_COUNT = 1;
 
     /**
      * The meta object id for the '{@link org.jbpm.bpmn2.emfextmodel.impl.OnEntryScriptTypeImpl <em>On Entry Script Type</em>}' class.
@@ -168,7 +251,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getOnEntryScriptType()
      * @generated
      */
-    int ON_ENTRY_SCRIPT_TYPE = 1;
+    int ON_ENTRY_SCRIPT_TYPE = 3;
 
     /**
      * The feature id for the '<em><b>Script</b></em>' attribute.
@@ -205,7 +288,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getOnExitScriptType()
      * @generated
      */
-    int ON_EXIT_SCRIPT_TYPE = 2;
+    int ON_EXIT_SCRIPT_TYPE = 4;
 
     /**
      * The feature id for the '<em><b>Script</b></em>' attribute.
@@ -242,7 +325,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getPackageNameType()
      * @generated
      */
-    int PACKAGE_NAME_TYPE = 3;
+    int PACKAGE_NAME_TYPE = 5;
 
     /**
      * The meta object id for the '<em>Rule Flow Group Type</em>' data type.
@@ -252,7 +335,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getRuleFlowGroupType()
      * @generated
      */
-    int RULE_FLOW_GROUP_TYPE = 4;
+    int RULE_FLOW_GROUP_TYPE = 6;
 
     /**
      * The meta object id for the '<em>Task Name Type</em>' data type.
@@ -262,7 +345,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getTaskNameType()
      * @generated
      */
-    int TASK_NAME_TYPE = 5;
+    int TASK_NAME_TYPE = 7;
 
     /**
      * The meta object id for the '<em>Version Type</em>' data type.
@@ -272,7 +355,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getVersionType()
      * @generated
      */
-    int VERSION_TYPE = 6;
+    int VERSION_TYPE = 8;
 
 
     /**
@@ -317,6 +400,28 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      */
     EReference getDocumentRoot_XSISchemaLocation();
+
+    /**
+     * Returns the meta object for the containment reference '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getGlobal <em>Global</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference '<em>Global</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.DocumentRoot#getGlobal()
+     * @see #getDocumentRoot()
+     * @generated
+     */
+    EReference getDocumentRoot_Global();
+
+    /**
+     * Returns the meta object for the containment reference '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getImport <em>Import</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the containment reference '<em>Import</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.DocumentRoot#getImport()
+     * @see #getDocumentRoot()
+     * @generated
+     */
+    EReference getDocumentRoot_Import();
 
     /**
      * Returns the meta object for the containment reference '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}'.
@@ -383,6 +488,59 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      */
     EAttribute getDocumentRoot_Version();
+
+    /**
+     * Returns the meta object for class '{@link org.jbpm.bpmn2.emfextmodel.GlobalType <em>Global Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Global Type</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.GlobalType
+     * @generated
+     */
+    EClass getGlobalType();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.jbpm.bpmn2.emfextmodel.GlobalType#getIdentifier <em>Identifier</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Identifier</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.GlobalType#getIdentifier()
+     * @see #getGlobalType()
+     * @generated
+     */
+    EAttribute getGlobalType_Identifier();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.jbpm.bpmn2.emfextmodel.GlobalType#getType <em>Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Type</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.GlobalType#getType()
+     * @see #getGlobalType()
+     * @generated
+     */
+    EAttribute getGlobalType_Type();
+
+    /**
+     * Returns the meta object for class '{@link org.jbpm.bpmn2.emfextmodel.ImportType <em>Import Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Import Type</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.ImportType
+     * @generated
+     */
+    EClass getImportType();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.jbpm.bpmn2.emfextmodel.ImportType#getName <em>Name</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Name</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.ImportType#getName()
+     * @see #getImportType()
+     * @generated
+     */
+    EAttribute getImportType_Name();
 
     /**
      * Returns the meta object for class '{@link org.jbpm.bpmn2.emfextmodel.OnEntryScriptType <em>On Entry Script Type</em>}'.
@@ -553,6 +711,22 @@ public interface EmfextmodelPackage extends EPackage {
         EReference DOCUMENT_ROOT__XSI_SCHEMA_LOCATION = eINSTANCE.getDocumentRoot_XSISchemaLocation();
 
         /**
+         * The meta object literal for the '<em><b>Global</b></em>' containment reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference DOCUMENT_ROOT__GLOBAL = eINSTANCE.getDocumentRoot_Global();
+
+        /**
+         * The meta object literal for the '<em><b>Import</b></em>' containment reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference DOCUMENT_ROOT__IMPORT = eINSTANCE.getDocumentRoot_Import();
+
+        /**
          * The meta object literal for the '<em><b>On Entry Script</b></em>' containment reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -599,6 +773,50 @@ public interface EmfextmodelPackage extends EPackage {
          * @generated
          */
         EAttribute DOCUMENT_ROOT__VERSION = eINSTANCE.getDocumentRoot_Version();
+
+        /**
+         * The meta object literal for the '{@link org.jbpm.bpmn2.emfextmodel.impl.GlobalTypeImpl <em>Global Type</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.jbpm.bpmn2.emfextmodel.impl.GlobalTypeImpl
+         * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getGlobalType()
+         * @generated
+         */
+        EClass GLOBAL_TYPE = eINSTANCE.getGlobalType();
+
+        /**
+         * The meta object literal for the '<em><b>Identifier</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute GLOBAL_TYPE__IDENTIFIER = eINSTANCE.getGlobalType_Identifier();
+
+        /**
+         * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute GLOBAL_TYPE__TYPE = eINSTANCE.getGlobalType_Type();
+
+        /**
+         * The meta object literal for the '{@link org.jbpm.bpmn2.emfextmodel.impl.ImportTypeImpl <em>Import Type</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see org.jbpm.bpmn2.emfextmodel.impl.ImportTypeImpl
+         * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getImportType()
+         * @generated
+         */
+        EClass IMPORT_TYPE = eINSTANCE.getImportType();
+
+        /**
+         * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute IMPORT_TYPE__NAME = eINSTANCE.getImportType_Name();
 
         /**
          * The meta object literal for the '{@link org.jbpm.bpmn2.emfextmodel.impl.OnEntryScriptTypeImpl <em>On Entry Script Type</em>}' class.

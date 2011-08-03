@@ -29,6 +29,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.jbpm.bpmn2.emfextmodel.DocumentRoot;
 import org.jbpm.bpmn2.emfextmodel.EmfextmodelPackage;
+import org.jbpm.bpmn2.emfextmodel.GlobalType;
+import org.jbpm.bpmn2.emfextmodel.ImportType;
 import org.jbpm.bpmn2.emfextmodel.OnEntryScriptType;
 import org.jbpm.bpmn2.emfextmodel.OnExitScriptType;
 
@@ -42,6 +44,8 @@ import org.jbpm.bpmn2.emfextmodel.OnExitScriptType;
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getMixed <em>Mixed</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getXMLNSPrefixMap <em>XMLNS Prefix Map</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getXSISchemaLocation <em>XSI Schema Location</em>}</li>
+ *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getGlobal <em>Global</em>}</li>
+ *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getImport <em>Import</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getPackageName <em>Package Name</em>}</li>
@@ -224,6 +228,60 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
+    public GlobalType getGlobal() {
+        return (GlobalType)getMixed().get(EmfextmodelPackage.Literals.DOCUMENT_ROOT__GLOBAL, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NotificationChain basicSetGlobal(GlobalType newGlobal, NotificationChain msgs) {
+        return ((FeatureMap.Internal)getMixed()).basicAdd(EmfextmodelPackage.Literals.DOCUMENT_ROOT__GLOBAL, newGlobal, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setGlobal(GlobalType newGlobal) {
+        ((FeatureMap.Internal)getMixed()).set(EmfextmodelPackage.Literals.DOCUMENT_ROOT__GLOBAL, newGlobal);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ImportType getImport() {
+        return (ImportType)getMixed().get(EmfextmodelPackage.Literals.DOCUMENT_ROOT__IMPORT, true);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NotificationChain basicSetImport(ImportType newImport, NotificationChain msgs) {
+        return ((FeatureMap.Internal)getMixed()).basicAdd(EmfextmodelPackage.Literals.DOCUMENT_ROOT__IMPORT, newImport, msgs);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setImport(ImportType newImport) {
+        ((FeatureMap.Internal)getMixed()).set(EmfextmodelPackage.Literals.DOCUMENT_ROOT__IMPORT, newImport);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public OnEntryScriptType getOnEntryScript() {
         return (OnEntryScriptType)getMixed().get(EmfextmodelPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT, true);
     }
@@ -371,6 +429,10 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return ((InternalEList<?>)getXMLNSPrefixMap()).basicRemove(otherEnd, msgs);
             case EmfextmodelPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 return ((InternalEList<?>)getXSISchemaLocation()).basicRemove(otherEnd, msgs);
+            case EmfextmodelPackage.DOCUMENT_ROOT__GLOBAL:
+                return basicSetGlobal(null, msgs);
+            case EmfextmodelPackage.DOCUMENT_ROOT__IMPORT:
+                return basicSetImport(null, msgs);
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
                 return basicSetOnEntryScript(null, msgs);
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
@@ -396,6 +458,10 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case EmfextmodelPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 if (coreType) return getXSISchemaLocation();
                 else return getXSISchemaLocation().map();
+            case EmfextmodelPackage.DOCUMENT_ROOT__GLOBAL:
+                return getGlobal();
+            case EmfextmodelPackage.DOCUMENT_ROOT__IMPORT:
+                return getImport();
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
                 return getOnEntryScript();
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:
@@ -428,6 +494,12 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return;
             case EmfextmodelPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 ((EStructuralFeature.Setting)getXSISchemaLocation()).set(newValue);
+                return;
+            case EmfextmodelPackage.DOCUMENT_ROOT__GLOBAL:
+                setGlobal((GlobalType)newValue);
+                return;
+            case EmfextmodelPackage.DOCUMENT_ROOT__IMPORT:
+                setImport((ImportType)newValue);
                 return;
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
                 setOnEntryScript((OnEntryScriptType)newValue);
@@ -468,6 +540,12 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case EmfextmodelPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 getXSISchemaLocation().clear();
                 return;
+            case EmfextmodelPackage.DOCUMENT_ROOT__GLOBAL:
+                setGlobal((GlobalType)null);
+                return;
+            case EmfextmodelPackage.DOCUMENT_ROOT__IMPORT:
+                setImport((ImportType)null);
+                return;
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
                 setOnEntryScript((OnEntryScriptType)null);
                 return;
@@ -504,6 +582,10 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return xMLNSPrefixMap != null && !xMLNSPrefixMap.isEmpty();
             case EmfextmodelPackage.DOCUMENT_ROOT__XSI_SCHEMA_LOCATION:
                 return xSISchemaLocation != null && !xSISchemaLocation.isEmpty();
+            case EmfextmodelPackage.DOCUMENT_ROOT__GLOBAL:
+                return getGlobal() != null;
+            case EmfextmodelPackage.DOCUMENT_ROOT__IMPORT:
+                return getImport() != null;
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_ENTRY_SCRIPT:
                 return getOnEntryScript() != null;
             case EmfextmodelPackage.DOCUMENT_ROOT__ON_EXIT_SCRIPT:

@@ -67,6 +67,8 @@ public class EmfextmodelFactoryImpl extends EFactoryImpl implements EmfextmodelF
     public EObject create(EClass eClass) {
         switch (eClass.getClassifierID()) {
             case EmfextmodelPackage.DOCUMENT_ROOT: return createDocumentRoot();
+            case EmfextmodelPackage.GLOBAL_TYPE: return createGlobalType();
+            case EmfextmodelPackage.IMPORT_TYPE: return createImportType();
             case EmfextmodelPackage.ON_ENTRY_SCRIPT_TYPE: return createOnEntryScriptType();
             case EmfextmodelPackage.ON_EXIT_SCRIPT_TYPE: return createOnExitScriptType();
             default:
@@ -124,6 +126,26 @@ public class EmfextmodelFactoryImpl extends EFactoryImpl implements EmfextmodelF
     public DocumentRoot createDocumentRoot() {
         DocumentRootImpl documentRoot = new DocumentRootImpl();
         return documentRoot;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public GlobalType createGlobalType() {
+        GlobalTypeImpl globalType = new GlobalTypeImpl();
+        return globalType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ImportType createImportType() {
+        ImportTypeImpl importType = new ImportTypeImpl();
+        return importType;
     }
 
     /**

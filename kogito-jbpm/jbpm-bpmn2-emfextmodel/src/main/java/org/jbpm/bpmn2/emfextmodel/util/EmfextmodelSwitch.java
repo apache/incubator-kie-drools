@@ -93,6 +93,18 @@ public class EmfextmodelSwitch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case EmfextmodelPackage.GLOBAL_TYPE: {
+                GlobalType globalType = (GlobalType)theEObject;
+                T result = caseGlobalType(globalType);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case EmfextmodelPackage.IMPORT_TYPE: {
+                ImportType importType = (ImportType)theEObject;
+                T result = caseImportType(importType);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             case EmfextmodelPackage.ON_ENTRY_SCRIPT_TYPE: {
                 OnEntryScriptType onEntryScriptType = (OnEntryScriptType)theEObject;
                 T result = caseOnEntryScriptType(onEntryScriptType);
@@ -121,6 +133,36 @@ public class EmfextmodelSwitch<T> {
      * @generated
      */
     public T caseDocumentRoot(DocumentRoot object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Global Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Global Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseGlobalType(GlobalType object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Import Type</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Import Type</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseImportType(ImportType object) {
         return null;
     }
 
