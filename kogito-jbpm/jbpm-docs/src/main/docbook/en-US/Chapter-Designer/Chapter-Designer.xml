@@ -220,14 +220,19 @@
     </section>
     
     <section>
-    <title>Browser and JBoss AS compatibility</title>
-    <para>Browser compatibility:
+    <title>Requirements</title>
+    <para>Java:
+    	<itemizedlist>
+        <listitem>Java 6</listitem>
+      </itemizedlist>
+    </para>
+    <para>Browsers:
       <itemizedlist>
         <listitem>Mozilla Firefox (including 6)</listitem>
         <listitem>Google Chrome</listitem>
       </itemizedlist>
     </para>
-    <para>JBoss AS compatibility:
+    <para>JBoss AS:
       <itemizedlist>
         <listitem>Designer war is currently compatible with JBoss AS 4.x and 5.1</listitem>
         <listitem>Next version of designer will include support for JBoss AS7</listitem>
