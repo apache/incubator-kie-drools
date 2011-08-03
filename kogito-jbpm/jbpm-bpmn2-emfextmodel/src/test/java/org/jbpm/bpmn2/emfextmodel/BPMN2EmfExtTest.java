@@ -182,7 +182,7 @@ public class BPMN2EmfExtTest extends TestCase {
         outResource.load(is, options);
         
         DocumentRoot outRoot = (DocumentRoot) outResource.getContents().get(0);
-        assertNotNull(outRoot.getImport());
+        assertNotNull(outRoot.getGlobal());
         GlobalType globalType = outRoot.getGlobal();
         assertEquals("identifier", globalType.getIdentifier());
         assertEquals("type", globalType.getType());
