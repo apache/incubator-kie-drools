@@ -352,23 +352,39 @@ public class DefaultAgenda
 
         // All activations started off staged, they are unstaged if they are blocked or 
         // allowed to move onto the actual agenda for firing.
-        ActivationGroup activationGroup = getStageActivationsGroup();        
+        ActivationGroup activationGroup = getStageActivationsGroup();  
         activationGroup.addActivation( activation );
        
         return true;
     }
     
     public void removeActivation(final AgendaItem activation) {              
-        workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );       
+        workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
+        
+        
+        if ( activation.getActivationGroupNode() != null && activation.getActivationGroupNode() == activation.getActivationGroupNode().getActivationGroup() ) {
+            activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+        }
+                
     }  
     
-    public void modifyActivation(final AgendaItem activation) {           
+    public void modifyActivation(final AgendaItem activation, boolean previouslyActive) {           
         InternalFactHandle factHandle = activation.getFactHandle();
         workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
         
+        if  (previouslyActive) {
+            // already activated
+            return;
+        }
+        
         // All activations started off staged, they are unstaged if they are blocked or 
         // allowed to move onto the actual agenda for firing.
-        ActivationGroup activationGroup = getStageActivationsGroup();        
+        ActivationGroup activationGroup = getStageActivationsGroup();  
+        if ( activation.getActivationGroupNode() != null && activation.getActivationGroupNode().getActivationGroup() == activationGroup ) {
+            // already staged, so return
+            return;
+        }
+      
         activationGroup.addActivation( activation );        
     }     
     

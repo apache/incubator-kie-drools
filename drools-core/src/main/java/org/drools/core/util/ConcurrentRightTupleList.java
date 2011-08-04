@@ -57,6 +57,10 @@ public class ConcurrentRightTupleList
         this.index = index;
         this.hashCode = hashCode;
     }
+    
+    public FastIterator fullFastIterator(RightTuple rightTuple) {
+        return LinkedList.fastIterator; // contains no state, so ok to be static
+    }    
 
     public RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle ) {
         return this.first.get();
