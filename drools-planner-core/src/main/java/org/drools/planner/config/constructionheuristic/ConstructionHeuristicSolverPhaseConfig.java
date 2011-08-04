@@ -91,10 +91,10 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
                 // TODO throw exception
             }
             // TODO support detailed configuration
-            throw new UnsupportedOperationException("Detailed configuration is not yet implemented");
+            throw new UnsupportedOperationException("Detailed configuration is not yet implemented.");
         } else {
             throw new IllegalArgumentException("A constructionHeuristic requires configuration, " +
-                    "for example a constructionHeuristicType..");
+                    "for example a constructionHeuristicType.");
         }
     }
 
