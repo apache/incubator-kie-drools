@@ -8,7 +8,7 @@ import org.drools.planner.core.score.Score;
 public class DefaultGreedyDecider implements GreedyDecider {
 
     private PlanningVariableWalker planningVariableWalker;
-    private PickEarlyGreedyFitType pickEarlyGreedyFitType;
+    private ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType;
 
     protected boolean assertMoveScoreIsUncorrupted = false;
 
@@ -16,8 +16,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
         this.planningVariableWalker = planningVariableWalker;
     }
 
-    public void setPickEarlyGreedyFitType(PickEarlyGreedyFitType pickEarlyGreedyFitType) {
-        this.pickEarlyGreedyFitType = pickEarlyGreedyFitType;
+    public void setConstructionHeuristicPickEarlyType(
+            ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType) {
+        this.constructionHeuristicPickEarlyType = constructionHeuristicPickEarlyType;
     }
 
     public void setAssertMoveScoreIsUncorrupted(boolean assertMoveScoreIsUncorrupted) {
@@ -51,7 +52,9 @@ public class DefaultGreedyDecider implements GreedyDecider {
                 greedyFitStepScope.setVariableToValueMap(planningVariableWalker.getVariableToValueMap());
                 maxScore = score;
             }
-            if (pickEarlyGreedyFitType == PickEarlyGreedyFitType.FIRST_LAST_STEP_SCORE_IMPROVING_OR_EQUAL
+            if (constructionHeuristicPickEarlyType
+                    == ConstructionHeuristicPickEarlyType.FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING
+                    && lastStepScore != null
                     && score.compareTo(lastStepScore) >= 0) {
                 break;
             }

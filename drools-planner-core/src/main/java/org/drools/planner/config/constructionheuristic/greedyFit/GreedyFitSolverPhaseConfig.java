@@ -26,9 +26,9 @@ import org.drools.planner.config.EnvironmentMode;
 import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.core.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
 import org.drools.planner.core.constructionheuristic.greedyFit.GreedyFitSolverPhase;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
 import org.drools.planner.core.constructionheuristic.greedyFit.decider.GreedyDecider;
-import org.drools.planner.core.constructionheuristic.greedyFit.decider.PickEarlyGreedyFitType;
 import org.drools.planner.core.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
@@ -50,7 +50,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
     @XStreamImplicit(itemFieldName = "greedyFitPlanningEntity")
     protected List<GreedyFitPlanningEntityConfig> greedyFitPlanningEntityConfigList = null;
 
-    protected PickEarlyGreedyFitType pickEarlyGreedyFitType = null;
+    protected ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = null;
 
     public List<GreedyFitPlanningEntityConfig> getGreedyFitPlanningEntityConfigList() {
         return greedyFitPlanningEntityConfigList;
@@ -60,12 +60,12 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         this.greedyFitPlanningEntityConfigList = greedyFitPlanningEntityConfigList;
     }
 
-    public PickEarlyGreedyFitType getPickEarlyGreedyFitType() {
-        return pickEarlyGreedyFitType;
+    public ConstructionHeuristicPickEarlyType getConstructionHeuristicPickEarlyType() {
+        return constructionHeuristicPickEarlyType;
     }
 
-    public void setPickEarlyGreedyFitType(PickEarlyGreedyFitType pickEarlyGreedyFitType) {
-        this.pickEarlyGreedyFitType = pickEarlyGreedyFitType;
+    public void setConstructionHeuristicPickEarlyType(ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType) {
+        this.constructionHeuristicPickEarlyType = constructionHeuristicPickEarlyType;
     }
 
     // ************************************************************************
@@ -96,8 +96,8 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
 
     private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
         DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
-        PickEarlyGreedyFitType pickEarlyGreedyFitType = (this.pickEarlyGreedyFitType == null)
-                ? PickEarlyGreedyFitType.NEVER : this.pickEarlyGreedyFitType;
+        ConstructionHeuristicPickEarlyType constructionHeuristicPickEarlyType = (this.constructionHeuristicPickEarlyType == null)
+                ? ConstructionHeuristicPickEarlyType.NEVER : this.constructionHeuristicPickEarlyType;
 
         Set<Class<?>> planningEntityImplementationClassSet = solutionDescriptor.getPlanningEntityImplementationClassSet();
         if (planningEntityImplementationClassSet.size() != 1) {
@@ -120,7 +120,7 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
         planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
         greedyDecider.setPlanningVariableWalker(planningVariableWalker);
         
-        greedyDecider.setPickEarlyGreedyFitType(pickEarlyGreedyFitType);
+        greedyDecider.setConstructionHeuristicPickEarlyType(constructionHeuristicPickEarlyType);
         if (environmentMode == EnvironmentMode.TRACE) {
             greedyDecider.setAssertMoveScoreIsUncorrupted(true);
         }
@@ -138,8 +138,8 @@ public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
             mergedList.addAll(greedyFitPlanningEntityConfigList);
             greedyFitPlanningEntityConfigList = mergedList;
         }
-        if (pickEarlyGreedyFitType == null) {
-            pickEarlyGreedyFitType = inheritedConfig.getPickEarlyGreedyFitType();
+        if (constructionHeuristicPickEarlyType == null) {
+            constructionHeuristicPickEarlyType = inheritedConfig.getConstructionHeuristicPickEarlyType();
         }
     }
 
