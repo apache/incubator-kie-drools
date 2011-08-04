@@ -115,7 +115,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
         
         atomicFH = ksession.execute(CommandFactory.fromExternalFactHandleCommand(externalForm));
-        
+        assertNotNull(atomicFH);
         value.addAndGet(1);
         ksession.update(atomicFH, value);
         
