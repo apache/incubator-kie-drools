@@ -10,6 +10,7 @@ import java.util.List;
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.api.domain.variable.ValueRangeUndefined;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
 import org.drools.planner.core.solution.Solution;
@@ -84,6 +85,8 @@ public class PlanningVariableDescriptor {
         Method propertyGetter = variablePropertyDescriptor.getReadMethod();
         if (propertyGetter.isAnnotationPresent(ValueRangeFromSolutionProperty.class)) {
             processValueRangeSolutionPropertyAnnotation(propertyGetter.getAnnotation(ValueRangeFromSolutionProperty.class));
+        } else if (propertyGetter.isAnnotationPresent(ValueRangeUndefined.class)) {
+            processValueRangeUndefinedAnnotation(propertyGetter.getAnnotation(ValueRangeUndefined.class));
         } else {
             // TODO Support plugging in other ValueRange implementations
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -127,6 +130,11 @@ public class PlanningVariableDescriptor {
         }
     }
 
+    private void processValueRangeUndefinedAnnotation(ValueRangeUndefined valueRangeUndefined) {
+        // TODO extract to RangeValue interface
+        rangePropertyDescriptor = null;
+    }
+
     public PlanningEntityDescriptor getPlanningEntityDescriptor() {
         return planningEntityDescriptor;
     }
@@ -158,8 +166,14 @@ public class PlanningVariableDescriptor {
         DescriptorUtils.executeSetter(variablePropertyDescriptor, bean, value);
     }
 
-    // TODO extract to RangeValue interface
     private Collection<?> extractPlanningValueCollection(Solution solution) {
+        // TODO extract to RangeValue interface
+        if (rangePropertyDescriptor == null) {
+            throw new IllegalStateException("The planningEntityClass ("
+                    + planningEntityDescriptor.getPlanningEntityClass()
+                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+                    + ") which uses a @ValueRangeUndefined instead of a @ValueRangeFromSolutionProperty.");
+        }
         return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, solution);
     }
 

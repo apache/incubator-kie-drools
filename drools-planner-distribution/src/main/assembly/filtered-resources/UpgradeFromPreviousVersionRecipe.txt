@@ -709,8 +709,10 @@ Read the manual to understand the "planning variable" concept better.
 
 [MAJOR] You need to annotate your planning variable property(ies) with the @PlanningVariable annotation.
 Furthermore, you need to annotate a @ValueRange* annotation on to define the allowed values.
-Commonly, you 'll use @ValueRangeFromSolutionProperty which specifies a property name on the solution
+Commonly, you 'll use @ValueRangeFromSolutionProperty (recommended) which specifies a property name on the solution
 which returns a collection of the allowed values for that variable.
+If you can't use @ValueRangeFromSolutionProperty, use @ValueRangeUndefined instead (not recommended),
+but that will exclude you from using construction heuristics.
 Before in *.java:
     @PlanningEntity
     public class Lecture ... {
