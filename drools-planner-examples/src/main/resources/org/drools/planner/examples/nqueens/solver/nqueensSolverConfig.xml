@@ -10,7 +10,7 @@
   <termination>
     <scoreAttained>0</scoreAttained>
   </termination>
-  <!-- Real world problems require to use of <greedyFit>. -->
+  <!-- Real world problems require to use of <constructionHeuristic>. -->
   <localSearch>
     <selector>
       <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>

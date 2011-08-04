@@ -118,7 +118,7 @@ public class SelectorConfig {
             selector.setTopSize(topSize);
             return selector;
         } else {
-            throw new IllegalArgumentException("A selector with a moveFactory or moveFactory class is required.");
+            throw new IllegalArgumentException("A selector requires configuration, for example a moveFactoryClass.");
         }
     }
 
