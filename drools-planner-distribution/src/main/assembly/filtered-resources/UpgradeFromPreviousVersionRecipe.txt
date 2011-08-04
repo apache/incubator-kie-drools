@@ -873,7 +873,7 @@ After in *StartingSolutionInitializer.java:
 
     }
 Note that you'll probably want to remove the StartingSolutionInitializer altogether
-and replace it by a greedy construction heuristic (see below).
+and replace it by a construction heuristic (see below).
 
 [MAJOR] The planning entity collection in the Solution can never be null,
 but some (or all) of its planning entity's can be uninitialized.
@@ -943,7 +943,7 @@ After in *.java:
 
 [README] Phasing: a Solver can now have multiple phases.
 Each phase runs an algorithm, such as local search (tabu search, simulated annealing, ...),
-greedy fit (best fit decreasing, ...), ...
+construction heuristic (first fit, first fit decreasing, best fit decreasing, ...), ...
 The phasing algorithms are executed sequentially.
 For example, it's now easy to do 5 minutes of simulated annealing, followed by 5 minutes of tabu search.
 
@@ -1000,14 +1000,30 @@ Warning for *SolverBenchmarkConfig.xml:
   but instead add an extra localSearch phase, which will result in 2 separate, sequential localSearch phases.
 
 [README] The StartingSolutionInitializer interface has been removed.
-Instead, there's now out-of-the-box support for several greedy construction heuristics.
+Instead, there's now out-of-the-box support for several construction heuristics.
 These implementations are fast, scalable and configurable. They require little or no domain specific code.
 They also support features like terminateEarly, logging, partially initialized starting solutions, ...
 Alternatively, you can also refactor it to a CustomSolverPhaseCommand,
 which is has the same freedom (to write lots of custom code) as a StartingSolutionInitializer had.
 
-[MAJOR] Replacing the StartingSolutionInitializer by a greedy construction heuristics (recommended)
-TODO
+[MAJOR] Replacing the StartingSolutionInitializer by a construction heuristics (recommended)
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>...</termination>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <termination>...</termination>
+    <constructionHeuristic>
+      <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      <!-- Speedup that can be applied to most, but not all use cases (see manual): -->
+      <!-- <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType> -->
+    </constructionHeuristic>
+But it's better to use the constructionHeuristicType FIRST_FIT_DECREASING instead,
+however you'll need to implement create a difficultyComparatorClass or difficultyWeightFactoryClass
+and configure that on your planning entity class:
+    @PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
+    public class CloudAssignment ...
+    @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
+    public class Lecture ...
 
 [MINOR] Replacing the StartingSolutionInitializer by a CustomSolverPhaseCommand (not recommended)
 Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
