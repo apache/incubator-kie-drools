@@ -25,6 +25,7 @@ import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelection
 import org.drools.planner.core.heuristic.selector.entity.PlanningEntitySelector;
 
 @XStreamAlias("greedyFitPlanningEntity")
+@Deprecated // Use ConstructionHeuristicSolverPhaseConfig
 public class GreedyFitPlanningEntityConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited

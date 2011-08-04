@@ -25,6 +25,7 @@ import org.drools.planner.core.phase.SolverPhase;
  * @see AbstractSolverPhase
  * @see DefaultGreedyFitSolverPhase
  */
+// TODO rename GreedyFitSolverPhase to ConstructionHeuristicSolverPhase
 public interface GreedyFitSolverPhase extends SolverPhase {
 
 }

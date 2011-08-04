@@ -41,6 +41,7 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.termination.Termination;
 
 @XStreamAlias("greedyFit")
+@Deprecated // Use ConstructionHeuristicSolverPhaseConfig
 public class GreedyFitSolverPhaseConfig extends SolverPhaseConfig {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited

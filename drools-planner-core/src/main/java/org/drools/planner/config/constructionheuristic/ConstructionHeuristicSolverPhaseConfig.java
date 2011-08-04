@@ -74,6 +74,7 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
     // Builder methods
     // ************************************************************************
 
+    // TODO rename GreedyFitSolverPhase to ConstructionHeuristicSolverPhase
     public GreedyFitSolverPhase buildSolverPhase(EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor,
             ScoreDefinition scoreDefinition, Termination solverTermination) {
         if (constructionHeuristicType != null) {
