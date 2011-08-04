@@ -26,6 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LeftTupleIterator;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
@@ -63,7 +64,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     protected boolean         tupleMemoryEnabled;
 
-    private AccumulateNode    accumulateNode;
+    private BetaNode    betaNode;
     
     private LeftTupleSinkNode previousTupleSinkNode;
     
@@ -98,20 +99,20 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        accumulateNode = (AccumulateNode) in.readObject();
+        betaNode = (BetaNode) in.readObject();
         tupleSource = (LeftTupleSource) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject(   accumulateNode  );
+        out.writeObject(   betaNode  );
         out.writeObject( tupleSource );
         out.writeBoolean( tupleMemoryEnabled );
     }
 
-    public AccumulateNode getAccumulateNode() {
-        return accumulateNode;
+    public BetaNode getBetaNode() {
+        return betaNode;
     }
     /**
      * Attaches this node into the network.
@@ -122,7 +123,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     
     @Override
     public void addTupleSink(LeftTupleSink tupleSink) {
-        this.accumulateNode = (AccumulateNode) tupleSink;
+        this.betaNode = (BetaNode) tupleSink;
     }
 
     public void attach(final InternalWorkingMemory[] workingMemories) {
@@ -166,13 +167,13 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, accumulateNode)  );
+        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, betaNode)  );
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, true, accumulateNode)  );
+        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, true, betaNode)  );
     }
 
     public void modifyLeftTuple(InternalFactHandle factHandle,
@@ -199,7 +200,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {        
-        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, accumulateNode)  );
+        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, betaNode)  );
     }
 
     /**
@@ -223,17 +224,25 @@ public class QueryRiaFixerNode extends LeftTupleSource
         return false; 
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
-     */
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final RiaQueryFixerNodeAdapter adapter = new RiaQueryFixerNodeAdapter( this,
-                                                                                   sink );
-        this.tupleSource.updateSink( adapter,
-                                     context,
-                                     workingMemory );
+        LeftTupleIterator it = LeftTupleIterator.iterator( workingMemory, this );
+        
+        for ( LeftTuple leftTuple =  ( LeftTuple ) it.next(); leftTuple != null; leftTuple =  ( LeftTuple ) it.next() ) {
+            LeftTuple childLeftTuple = leftTuple.getFirstChild();
+            while ( childLeftTuple != null ) {
+                RightTuple rightParent = childLeftTuple.getRightParent();            
+                sink.assertLeftTuple( sink.createLeftTuple( leftTuple, rightParent, childLeftTuple, null, sink, true ),
+                                      context,
+                                      workingMemory );  
+                
+                while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
+                    // skip to the next child that has a different right parent
+                    childLeftTuple = childLeftTuple.getLeftParentNext();
+                }
+            }
+        }
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -297,19 +306,19 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
+        return this.betaNode.createLeftTuple( factHandle, this.betaNode, leftTupleMemoryEnabled  );
     }    
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new LeftTupleImpl(leftTuple,sink, leftTupleMemoryEnabled );
+        return this.betaNode.createLeftTuple( leftTuple, this.betaNode, leftTupleMemoryEnabled  );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      LeftTupleSink sink) {
-        return new LeftTupleImpl(leftTuple, rightTuple, sink );
+        return this.betaNode.createLeftTuple( leftTuple, rightTuple, this.betaNode );
     }   
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
@@ -318,114 +327,17 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                      LeftTuple currentRightChild,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        return this.betaNode.createLeftTuple( leftTuple, rightTuple, currentLeftChild, currentRightChild,  this.betaNode, leftTupleMemoryEnabled  );        
     }      
 
-    /**
-     * Used with the updateSink method, so that the parent LeftTupleSource
-     * can  update the  TupleSink
-     */
-    private static class RiaQueryFixerNodeAdapter
-        implements
-        LeftTupleSink, LeftTupleSinkAdapter {
-        private final QueryRiaFixerNode node;
-        private final LeftTupleSink     sink;
-
-        public RiaQueryFixerNodeAdapter(final QueryRiaFixerNode node,
-                                          final LeftTupleSink sink) {
-            this.node = node;
-            this.sink = sink;
-        }
-
-        public void assertLeftTuple(final LeftTuple leftTuple,
-                                    final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory) {
-        }
-        
-        
-
-        public short getType() {
-            return 0;
-        }
-
-        public boolean isLeftTupleMemoryEnabled() {
-            return false;
-        }
-
-        public void modifyLeftTuple(InternalFactHandle factHandle,
-                                    ModifyPreviousTuples modifyPreviousTuples,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void modifyLeftTuple(LeftTuple leftTuple,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void retractLeftTuple(LeftTuple leftTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void readExternal(ObjectInput arg0) throws IOException,
-                                                  ClassNotFoundException {
-        }
-
-        public void writeExternal(ObjectOutput arg0) throws IOException {
-        }
-
-        public int getId() {
-            return 0;
-        }
-
-        public RuleBasePartitionId getPartitionId() {
-            return sink.getPartitionId();
-        }
-
-        public LeftTupleSink getRealSink() {
-            return this.node;
-        }
-        
-        public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                         LeftTupleSink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new QueryRiaFixerNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
-        }    
-        
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         LeftTupleSink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new QueryRiaFixerNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
-        }
-
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTupleSink sink) {
-            return new QueryRiaFixerNodeLeftTuple(leftTuple, rightTuple, sink );
-        }   
-        
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTuple currentLeftChild,
-                                         LeftTuple currentRightChild,
-                                         LeftTupleSink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new QueryRiaFixerNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-        }               
-
-    }
 
     @Override
     public boolean isInUse() {
-        return this.accumulateNode != null;
+        return this.betaNode != null;
+    }
+
+    public LeftTupleSource getLeftTupleSource() {
+        return this.tupleSource;
     }
 
 }

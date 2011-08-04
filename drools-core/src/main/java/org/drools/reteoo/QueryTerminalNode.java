@@ -115,6 +115,10 @@ public final class QueryTerminalNode extends BaseNode
         return this.query;
     }
 
+    public LeftTupleSource getLeftTupleSource() {
+        return this.tupleSource;
+    }      
+    
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // org.drools.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -356,6 +360,6 @@ public final class QueryTerminalNode extends BaseNode
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-    }            
+    }          
 
 }

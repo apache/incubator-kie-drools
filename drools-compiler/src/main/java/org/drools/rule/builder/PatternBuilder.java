@@ -72,6 +72,7 @@ import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -185,7 +186,8 @@ public class PatternBuilder
                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
                 rce = qeBuilder.build( context,
                                         descr,
-                                        prefixPattern );
+                                        prefixPattern,
+                                        (Query) context.getRule() );
             }
 
             if ( rce == null ) {
@@ -195,14 +197,40 @@ public class PatternBuilder
                     QueryElementBuilder qeBuilder = new QueryElementBuilder();
                     rce = qeBuilder.build( context,
                                            descr,
-                                           prefixPattern );
-                } else {
-                    // this isn't a query either, so log an error
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  patternDescr,
-                                                                  null,
-                                                                  "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
+                                           prefixPattern,
+                                           (Query) rule );
                 }
+                
+                // try package imports
+                for ( String importName : context.getDialect().getTypeResolver().getImports() ) {
+                    importName = importName.trim();
+                    int pos = importName.indexOf( '*' );
+                    if ( pos >= 0 ) {
+                        String pkgName = importName.substring( 0, pos-1 );
+                        PackageRegistry pkgReg = context.getPackageBuilder().getPackageRegistry( pkgName );
+                        if ( pkgReg != null ) {
+                            rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
+                            if ( rule != null && rule instanceof Query ) {
+                                // it's a query so delegate to the QueryElementBuilder
+                                QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                                rce = qeBuilder.build( context,
+                                                       descr,
+                                                       prefixPattern,
+                                                       (Query) rule);
+                                break;
+                            }                           
+                        }
+                    }
+                }
+                
+            }
+            
+            if ( rce == null ) {
+                // this isn't a query either, so log an error
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              patternDescr,
+                                                              null,
+                                                              "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
             }
             return rce;
         }

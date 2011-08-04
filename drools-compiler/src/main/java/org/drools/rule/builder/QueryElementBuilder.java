@@ -36,18 +36,20 @@ public class QueryElementBuilder
                            descr,
                            null );
     }
+    
+    public RuleConditionElement build( RuleBuildContext context,
+                                       BaseDescr descr,
+                                       Pattern prefixPattern ) {
+        throw new UnsupportedOperationException();
+        
+    }
 
     @SuppressWarnings("unchecked")
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
-                                       Pattern prefixPattern ) {
+                                       Pattern prefixPattern,
+                                       Query query) {
         PatternDescr patternDescr = (PatternDescr) descr;
-
-        Query query = (Query) context.getPkg().getRule( patternDescr.getObjectType() );
-        if ( query == null ) {
-            // we already checked this before, so we know it's either in the package or recursive on itself
-            query = (Query) context.getRule();
-        }
 
         Declaration[] params = query.getParameters();
 

@@ -176,6 +176,10 @@ public class RightTupleList
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
     
+    public FastIterator fullFastIterator(RightTuple rightTuple) {
+        return LinkedList.fastIterator; // contains no state, so ok to be static
+    }
+    
     public Iterator iterator() {
         if ( this.iterator == null ) {
             this.iterator = new TupleHashTableIterator();

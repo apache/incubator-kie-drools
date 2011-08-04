@@ -144,8 +144,9 @@ public class FromNode extends LeftTupleSource
                                           rightTuple,
                                           context,
                                           workingMemory,
-                                          memory );
-            if ( this.tupleMemoryEnabled ) {
+                                          memory,
+                                          useLeftMemory );
+            if ( useLeftMemory ) {
                 addToCreatedHandlesMap( matches,
                                         rightTuple );
             }
@@ -239,7 +240,8 @@ public class FromNode extends LeftTupleSource
                                           rightTuple,
                                           context,
                                           workingMemory,
-                                          memory );
+                                          memory,
+                                          true );
             addToCreatedHandlesMap( newMatches,
                                     rightTuple );
         }
@@ -260,7 +262,8 @@ public class FromNode extends LeftTupleSource
                                               final RightTuple rightTuple,
                                               final PropagationContext context,
                                               final InternalWorkingMemory workingMemory,
-                                              final FromMemory memory) {
+                                              final FromMemory memory,
+                                              final boolean useLeftMemory) {
         boolean isAllowed = true;
         if ( this.alphaConstraints != null ) {
             // First alpha node filters
@@ -286,14 +289,14 @@ public class FromNode extends LeftTupleSource
                                                     null,
                                                     context,
                                                     workingMemory,
-                                                    this.tupleMemoryEnabled );
+                                                    useLeftMemory );
             } else {
                 // this is an existing match, so propagate as a modify
                 this.sink.propagateModifyChildLeftTuple( rightTuple.firstChild,
                                                          leftTuple,
                                                          context,
                                                          workingMemory,
-                                                         this.tupleMemoryEnabled );
+                                                         useLeftMemory );
             }
         } else {
             retractMatchAndDestroyHandle( leftTuple,
@@ -548,5 +551,9 @@ public class FromNode extends LeftTupleSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }
+
+    public LeftTupleSource getLeftTupleSource() {
+        return this.tupleSource;
     }      
 }

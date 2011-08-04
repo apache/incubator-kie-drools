@@ -114,12 +114,23 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     public FastIterator fullFastIterator() {
         return new FullFastIterator( this.table );
     }
+    
+    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+        final int hashCode = this.index.hashCodeOf( leftTuple );
+
+        final int row = indexOf( hashCode,
+                                   this.table.length );
+        return new FullFastIterator( this.table, row );
+    }    
 
     public static class FullFastIterator implements FastIterator {
         private Entry[]           table;
         private int               row;
         
-        
+        public FullFastIterator(Entry[] table, int row) {
+            this.table = table;
+            this.row = row + 1;
+        }        
         
         public FullFastIterator(Entry[] table) {
             this.table = table;
