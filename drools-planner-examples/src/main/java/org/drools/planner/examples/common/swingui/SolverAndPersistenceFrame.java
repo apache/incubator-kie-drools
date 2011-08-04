@@ -90,19 +90,13 @@ public class SolverAndPersistenceFrame extends JFrame {
     private void registerListeners() {
         solutionBusiness.addSolverEventLister(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
-System.out.println("bestSolutionChanged - " + event.getNewBestSolution().getScore());
+                // TODO the screen refresh is not always in sync with the best score
+                // TODO event.getNewBestSolution() should probably be cloned, but that alone is not enough
                 latestBestSolutionReference.getAndSet(event.getNewBestSolution());
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-//try {
-//    Thread.sleep(500);
-//} catch (InterruptedException e) {
-//    e.printStackTrace();
-//}
-System.out.println("invokeLater");
                         Solution latestBestSolution = latestBestSolutionReference.getAndSet(null);
                         if (latestBestSolution != null) {
-System.out.println("invokeLater - " + latestBestSolution.getScore());
                             if (refreshScreenDuringSolvingCheckBox.isSelected()) {
                                 solutionPanel.updatePanel(solutionBusiness.getSolution());
                                 validate(); // TODO remove me?
