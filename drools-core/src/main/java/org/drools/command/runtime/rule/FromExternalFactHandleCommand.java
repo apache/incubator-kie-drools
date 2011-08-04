@@ -25,9 +25,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 
-public class FromExternalFactHandleCommand
-    implements
-    GenericCommand<FactHandle> {
+public class FromExternalFactHandleCommand implements GenericCommand<FactHandle> {
 
     private String factHandleExternalForm;
     private boolean disconnected;
@@ -42,10 +40,13 @@ public class FromExternalFactHandleCommand
     }
 
     public FactHandle execute(Context context) {
-        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context)
+                .getStatefulKnowledgesession();
         Collection<FactHandle> factHandles = ksession.getFactHandles();
+        int fhId = Integer.parseInt(factHandleExternalForm.split(":")[1]);
         for (FactHandle factHandle : factHandles) {
-            if (factHandle.toExternalForm().equals(factHandleExternalForm)) {
+            if (factHandle instanceof InternalFactHandle
+                    && ((InternalFactHandle) factHandle).getId() == fhId) {
                 InternalFactHandle fhClone = ((InternalFactHandle) factHandle).clone();
                 if (disconnected) {
                     fhClone.disconnect();
