@@ -32,22 +32,28 @@ public class QueryElementFactHandle
     InternalFactHandle {
     private Object object;
     private int id;
+    private int identityHashCode;
     private long recency;
 
     protected QueryElementFactHandle() {}
 
     public QueryElementFactHandle(Object object, int id, long recency) {
+        this( object, id, DefaultFactHandle.determineIdentityHashCode( object ), recency );
+    }
+
+    public QueryElementFactHandle(Object object, int id, int identityHashCode, long recency) {
         this.object = object;
         this.id = id;
         this.recency = recency;
-    }
-
+        this.identityHashCode = identityHashCode;
+    }    
+    
     public int getId() {
         return this.id;
     }
 
     public int getIdentityHashCode() {
-        return this.object.hashCode();
+        return this.identityHashCode;
     }
 
     public int getObjectHashCode() {

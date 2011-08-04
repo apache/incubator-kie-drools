@@ -60,8 +60,8 @@ public class RuleTerminalNodeLeftTuple
     // Constructors
     // ------------------------------------------------------------
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                         LeftTupleSink sink,
-                         boolean leftTupleMemoryEnabled) {
+                                     final LeftTupleSink sink,
+                                     final boolean leftTupleMemoryEnabled) {
         this.handle = factHandle;
 
         if ( leftTupleMemoryEnabled ) {
@@ -80,8 +80,8 @@ public class RuleTerminalNodeLeftTuple
     }
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                         LeftTupleSink sink,
-                         boolean leftTupleMemoryEnabled) {
+                                     final LeftTupleSink sink,
+                                     final boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
         this.parent = leftTuple.getParent();
         this.handle = leftTuple.getHandle();
@@ -101,13 +101,14 @@ public class RuleTerminalNodeLeftTuple
     }
     
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                         RightTuple rightTuple,
-                         LeftTupleSink sink) {
+                                     final RightTuple rightTuple,
+                                     final LeftTupleSink sink) {
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
         this.handle = rightTuple.getFactHandle();
 
         this.leftParent = leftTuple;
+        
         // insert at the end f the list
         if ( leftTuple.getLastChild() != null ) {
             this.leftParentPrevious = leftTuple.getLastChild();
@@ -130,9 +131,9 @@ public class RuleTerminalNodeLeftTuple
     }    
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                     final RightTuple rightTuple,
-                     final LeftTupleSink sink,
-                     final boolean leftTupleMemoryEnabled) {
+                                     final RightTuple rightTuple,
+                                     final LeftTupleSink sink,
+                                     final boolean leftTupleMemoryEnabled) {
         this( leftTuple,
               rightTuple,
               null,
@@ -142,11 +143,11 @@ public class RuleTerminalNodeLeftTuple
     }
     
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                     final RightTuple rightTuple,
-                     final LeftTuple currentLeftChild,
-                     final LeftTuple currentRightChild,
-                     final LeftTupleSink sink,
-                     final boolean leftTupleMemoryEnabled) {
+                                     final RightTuple rightTuple,
+                                     final LeftTuple currentLeftChild,
+                                     final LeftTuple currentRightChild,
+                                     final LeftTupleSink sink,
+                                     final boolean leftTupleMemoryEnabled) {
         this.handle = rightTuple.getFactHandle();
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;

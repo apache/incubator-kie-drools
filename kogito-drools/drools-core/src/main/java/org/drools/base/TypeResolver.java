@@ -19,7 +19,7 @@ package org.drools.base;
 import java.util.Set;
 
 public interface TypeResolver {
-    public Set getImports();
+    public Set<String> getImports();
 
     public void addImport(String importEntry);
 

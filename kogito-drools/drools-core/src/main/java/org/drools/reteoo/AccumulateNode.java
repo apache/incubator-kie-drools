@@ -186,7 +186,7 @@ public class AccumulateNode extends BetaNode {
                                        workingMemory,
                                        memory,
                                        accresult,
-                                       true );
+                                       useLeftMemory );
         } // else evaluation is already scheduled, so do nothing
 
     }
@@ -201,11 +201,14 @@ public class AccumulateNode extends BetaNode {
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory ) {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
-        if ( leftTuple.getMemory() != null ) {
-            memory.betaMemory.getLeftTupleMemory().remove( leftTuple );            
-        } else {
-            return;
-        }
+//        if ( leftTuple.getMemory() != null ) {
+//            memory.betaMemory.getLeftTupleMemory().remove( leftTuple );            
+//        } else {
+//            return;
+//        }
+        
+        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );        
+        
         final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
         leftTuple.setObject( null );
 

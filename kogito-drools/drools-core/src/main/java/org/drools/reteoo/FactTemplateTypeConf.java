@@ -44,6 +44,8 @@ public class FactTemplateTypeConf
     private ObjectTypeNode[]  cache;
     
     private boolean          tmsEnabled;
+    
+    EntryPoint entryPoint;
 
 
     public FactTemplateTypeConf() {
@@ -53,7 +55,7 @@ public class FactTemplateTypeConf
                                 final FactTemplate factTemplate,
                                 final InternalRuleBase ruleBase) {
         this.factTemplate = factTemplate;
-
+        this.entryPoint = entryPoint;
         ObjectType objectType = new FactTemplateObjectType( factTemplate );
         this.concreteObjectTypeNode = (ObjectTypeNode) ruleBase.getRete().getObjectTypeNodes( entryPoint ).get( objectType );
         if ( this.concreteObjectTypeNode == null ) {
@@ -136,6 +138,10 @@ public class FactTemplateTypeConf
 
     public void enableTMS() {
         this.tmsEnabled = true;
+    }
+
+    public EntryPoint getEntryPoint() {
+        return this.entryPoint;
     }
 
 }

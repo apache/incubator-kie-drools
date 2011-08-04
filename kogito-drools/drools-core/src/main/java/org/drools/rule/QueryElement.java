@@ -158,7 +158,42 @@ public class QueryElement extends ConditionalElement
                    ", requiredDeclarations=" + Arrays.toString( requiredDeclarations ) + "]";
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode( argTemplate );
+        result = prime * result + Arrays.hashCode( declIndexes );
+        result = prime * result + (openQuery ? 1231 : 1237);
+        result = prime * result + ((queryName == null) ? 0 : queryName.hashCode());
+        result = prime * result + Arrays.hashCode( requiredDeclarations );
+        result = prime * result + ((resultPattern == null) ? 0 : resultPattern.hashCode());
+        result = prime * result + Arrays.hashCode( variableIndexes );
+        return result;
+    }
 
-
+    @Override
+    public boolean equals(Object obj) {
+        if ( this == obj ) return true;
+        if ( obj == null ) return false;
+        if ( getClass() != obj.getClass() ) return false;
+        QueryElement other = (QueryElement) obj;
+        if ( !Arrays.equals( argTemplate,
+                             other.argTemplate ) ) return false;
+        if ( !Arrays.equals( declIndexes,
+                             other.declIndexes ) ) return false;
+        if ( openQuery != other.openQuery ) return false;
+        if ( queryName == null ) {
+            if ( other.queryName != null ) return false;
+        } else if ( !queryName.equals( other.queryName ) ) return false;
+        if ( !Arrays.equals( requiredDeclarations,
+                             other.requiredDeclarations ) ) return false;
+        if ( resultPattern == null ) {
+            if ( other.resultPattern != null ) return false;
+        } else if ( !resultPattern.equals( other.resultPattern ) ) return false;
+        if ( !Arrays.equals( variableIndexes,
+                             other.variableIndexes ) ) return false;
+        return true;
+    }
 
 }

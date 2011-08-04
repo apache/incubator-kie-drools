@@ -364,6 +364,10 @@ public class RightInputAdapterNode extends ObjectSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }
+
+    public LeftTupleSource getLeftTupleSource() {
+        return this.tupleSource;
     }           
 
 }

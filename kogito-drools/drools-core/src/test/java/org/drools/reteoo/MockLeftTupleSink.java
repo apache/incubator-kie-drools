@@ -208,6 +208,11 @@ public class MockLeftTupleSink extends LeftTupleSource
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }
+
+    public LeftTupleSource getLeftTupleSource() {
+        // TODO Auto-generated method stub
+        return null;
     }            
 
 }

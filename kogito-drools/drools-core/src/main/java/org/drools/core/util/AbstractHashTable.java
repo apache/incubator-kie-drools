@@ -241,7 +241,7 @@ public abstract class AbstractHashTable
     //        return index;
     //    }
 
-    protected int indexOf(final int hashCode,
+    protected static int indexOf(final int hashCode,
                           final int dataSize) {
         return hashCode & (dataSize - 1);
     }

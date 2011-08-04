@@ -45,7 +45,9 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
+import org.drools.common.TupleStartEqualsConstraint;
 import org.drools.common.WorkingMemoryAction;
+import org.drools.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.RightTupleList;
 import org.drools.definition.rule.Query;
@@ -295,6 +297,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                               propagationContext,
                                               this );
 
+            propagationContext.evaluateActionQueue( this );
+            
             getFactHandleFactory().destroyFactHandle( factHandle );
 
         } finally {
@@ -474,9 +478,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     // remove it from the object store and clean up resources
                     ((EventFactHandle) factHandle).getEntryPoint().retract( factHandle );
                 }
-                context.evaluateActionQueue( workingMemory );  
+                context.evaluateActionQueue( workingMemory );
             }
-            
+
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {
@@ -494,113 +498,117 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         }
     }
-    
+
     public static class EvaluateResultConstraints
-    implements
-    WorkingMemoryAction {
-        
-        private ActivitySource source;
-        private LeftTuple leftTuple;
-        private PropagationContext context;
+        implements
+        WorkingMemoryAction {
+
+        private ActivitySource        source;
+        private LeftTuple             leftTuple;
+        private PropagationContext    context;
         private InternalWorkingMemory workingMemory;
-        private AccumulateMemory memory;
-        private AccumulateContext accctx;
-        private boolean useLeftMemory;
-        private AccumulateNode node;
+        private AccumulateMemory      memory;
+        private AccumulateContext     accctx;
+        private boolean               useLeftMemory;
+        private AccumulateNode        node;
 
-    public EvaluateResultConstraints(PropagationContext context) {
-        this.context = context;
+        public EvaluateResultConstraints(PropagationContext context) {
+            this.context = context;
+        }
+
+        public EvaluateResultConstraints(ActivitySource source,
+                                         LeftTuple leftTuple,
+                                         PropagationContext context,
+                                         InternalWorkingMemory workingMemory,
+                                         AccumulateMemory memory,
+                                         AccumulateContext accctx,
+                                         boolean useLeftMemory,
+                                         AccumulateNode node) {
+            this.source = source;
+            this.leftTuple = leftTuple;
+            this.context = context;
+            this.workingMemory = workingMemory;
+            this.memory = memory;
+            this.accctx = accctx;
+            this.useLeftMemory = useLeftMemory;
+            this.node = node;
+        }
+
+        public EvaluateResultConstraints(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
+            //            this.factHandle = context.handles.get( context.readInt() );
+            //
+            //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
+            //            varIndexes = new int[context.readInt()];
+            //            for ( int i = 0; i < varIndexes.length; i++ ) {
+            //                varIndexes[i] = context.readInt();
+            //            }
+            //            node = (QueryElementNode) context.sinks.get( context.readInt() );
+            //            try {
+            //                srcVarIndexes = (List<Integer>) context.readObject();
+            //            } catch ( ClassNotFoundException e ) {
+            //                throw new RuntimeException( "Unable to Marshal",
+            //                                            e );
+            //            }
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
+            //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
+            //
+            //            context.writeInt( this.factHandle.getId() );
+            //
+            //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
+            //
+            //            context.writeInt( varIndexes.length );
+            //            for ( int i : varIndexes ) {
+            //                context.writeInt( varIndexes[i] );
+            //            }
+            //
+            //            context.writeObject( node.getId() );
+            //
+            //            context.writeObject( srcVarIndexes );
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+            accctx.setAction( null );
+            node.evaluateResultConstraints( source,
+                                            leftTuple,
+                                            context,
+                                            workingMemory,
+                                            memory,
+                                            accctx,
+                                            useLeftMemory );
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
+        }
+
+        public ActivitySource getSource() {
+            return source;
+        }
+
+        public void setSource(ActivitySource source) {
+            this.source = source;
+        }
+
+        public String toString() {
+            return "[ResumeInsertAction leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            // TODO Auto-generated method stub
+
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            // TODO Auto-generated method stub
+
+        }
     }
-
-    public EvaluateResultConstraints(ActivitySource source,
-                                     LeftTuple leftTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory,
-                                     AccumulateMemory memory,
-                                     AccumulateContext accctx,
-                                     boolean useLeftMemory,
-                                     AccumulateNode node) {
-        this.source = source;
-        this.leftTuple = leftTuple;
-        this.context = context;
-        this.workingMemory = workingMemory;
-        this.memory = memory;
-        this.accctx = accctx;
-        this.useLeftMemory = useLeftMemory;
-        this.node = node;
-    }
-
-
-
-    public EvaluateResultConstraints(MarshallerReaderContext context) throws IOException {
-        throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-        //            this.factHandle = context.handles.get( context.readInt() );
-        //
-        //            this.leftTuple = context.terminalTupleMap.get( context.readInt() );
-        //            varIndexes = new int[context.readInt()];
-        //            for ( int i = 0; i < varIndexes.length; i++ ) {
-        //                varIndexes[i] = context.readInt();
-        //            }
-        //            node = (QueryElementNode) context.sinks.get( context.readInt() );
-        //            try {
-        //                srcVarIndexes = (List<Integer>) context.readObject();
-        //            } catch ( ClassNotFoundException e ) {
-        //                throw new RuntimeException( "Unable to Marshal",
-        //                                            e );
-        //            }
-    }
-
-    public void write(MarshallerWriteContext context) throws IOException {
-        throw new UnsupportedOperationException( "Should not be present in network on serialisation" );
-        //            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
-        //
-        //            context.writeInt( this.factHandle.getId() );
-        //
-        //            context.writeInt( context.terminalTupleMap.get( this.leftTuple ) );
-        //
-        //            context.writeInt( varIndexes.length );
-        //            for ( int i : varIndexes ) {
-        //                context.writeInt( varIndexes[i] );
-        //            }
-        //
-        //            context.writeObject( node.getId() );
-        //
-        //            context.writeObject( srcVarIndexes );
-    }
-
-    public void execute(InternalWorkingMemory workingMemory) {
-        final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
-        accctx.setAction( null );        
-        node.evaluateResultConstraints( source, leftTuple, context, workingMemory, memory, accctx, useLeftMemory );
-    }
-
-    public void execute(InternalKnowledgeRuntime kruntime) {
-        execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
-    }
-
-    public ActivitySource getSource() {
-        return source;
-    }
-    
-    public void setSource(ActivitySource source) {
-        this.source = source;
-    }
-
-    public String toString() {
-        return "[ResumeInsertAction leftTuple=" + leftTuple + "]\n";
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-        // TODO Auto-generated method stub
-
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        // TODO Auto-generated method stub
-
-    }
-}    
 
     public static class QueryInsertAction
         implements
@@ -617,9 +625,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public QueryInsertAction(PropagationContext context,
-                                        InternalFactHandle factHandle,
-                                        LeftTuple leftTuple,
-                                        QueryElementNode node) {
+                                 InternalFactHandle factHandle,
+                                 LeftTuple leftTuple,
+                                 QueryElementNode node) {
             this.context = context;
             this.factHandle = factHandle;
             this.leftTuple = leftTuple;
@@ -705,9 +713,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public QueryUpdateAction(PropagationContext context,
-                                    InternalFactHandle factHandle,
-                                    LeftTuple leftTuple,
-                                    QueryElementNode node) {
+                                 InternalFactHandle factHandle,
+                                 LeftTuple leftTuple,
+                                 QueryElementNode node) {
             this.context = context;
             this.factHandle = factHandle;
             this.leftTuple = leftTuple;
@@ -788,8 +796,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public QueryRetractAction(PropagationContext context,
-                                    LeftTuple leftTuple,
-                                    QueryElementNode node) {
+                                  LeftTuple leftTuple,
+                                  QueryElementNode node) {
             this.context = context;
             this.leftTuple = leftTuple;
             this.node = node;
@@ -815,7 +823,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                                                  context,
                                                                  workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( workingMemory.getEntryPoint(),
                                                                                                                                        factHandle.getObject() ),
-                                                                                                                                       workingMemory );
+                                                                 workingMemory );
                 //workingMemory.getFactHandleFactory().destroyFactHandle( factHandle );
             } else {
                 // get child left tuples, as there is no open query
@@ -823,7 +831,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                     node.getSinkPropagator().propagateRetractLeftTuple( leftTuple,
                                                                         context,
                                                                         workingMemory );
-                }                
+                }
             }
         }
 
@@ -848,8 +856,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     }
 
     public static class QueryResultInsertAction
-            implements
-            WorkingMemoryAction {
+        implements
+        WorkingMemoryAction {
 
         private PropagationContext context;
 
@@ -864,9 +872,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public QueryResultInsertAction(PropagationContext context,
-                                                      InternalFactHandle factHandle,
-                                                      LeftTuple leftTuple,
-                                                      QueryElementNode node) {
+                                       InternalFactHandle factHandle,
+                                       LeftTuple leftTuple,
+                                       QueryElementNode node) {
             this.context = context;
             this.factHandle = factHandle;
             this.leftTuple = leftTuple;
@@ -896,9 +904,9 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                 rightTuples.remove( rightTuple );
                 for ( LeftTuple childLeftTuple = rightTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getRightParentNext() ) {
                     node.getSinkPropagator().doPropagateAssertLeftTuple( context,
-                                                                           workingMemory,
-                                                                           childLeftTuple,
-                                                                           childLeftTuple.getLeftTupleSink() );
+                                                                         workingMemory,
+                                                                         childLeftTuple,
+                                                                         childLeftTuple.getLeftTupleSink() );
                 }
                 rightTuple = tmp;
             }
@@ -928,7 +936,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                    ClassNotFoundException {
+                                                ClassNotFoundException {
             // TODO Auto-generated method stub
 
         }
@@ -1163,6 +1171,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
+            leftTuple.setLeftTupleSink( this.node );
             if ( leftTuple.getFirstChild() == null ) {
                 this.node.assertLeftTuple( leftTuple,
                                            context,
@@ -1179,24 +1188,36 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                                                                  true );
                 }
             }
-            //
-            //            Object node = workingMemory.getNodeMemory( this.node );
-            //
-            //            RightTupleMemory rightMemory = null;
-            //            if ( node instanceof BetaMemory ) {
-            //                rightMemory = ((BetaMemory) node).getRightTupleMemory();
-            //            } else if ( node instanceof AccumulateMemory ) {
-            //                rightMemory = ((AccumulateMemory) node).betaMemory.getRightTupleMemory();
-            //            }
-            //
-            //            FastIterator rightIt = rightMemory.fastIterator();
-            //            RightTuple temp = null;
-            //            for ( RightTuple rightTuple = rightMemory.getFirst( leftTuple,
-            //                                                                        (InternalFactHandle) context.getFactHandle() ); rightTuple != null; ) {
-            //                temp = (RightTuple) rightIt.next( rightTuple );
-            //                rightMemory.remove( rightTuple );
-            //                rightTuple = temp;
-            //            }
+
+            if ( leftTuple.getLeftParent() == null ) {
+                // It's not an open query, as we aren't recording parent chains, so we need to clear out right memory
+
+                Object node = workingMemory.getNodeMemory( this.node );
+
+                RightTupleMemory rightMemory = null;
+                if ( node instanceof BetaMemory ) {
+                    rightMemory = ((BetaMemory) node).getRightTupleMemory();
+                } else if ( node instanceof AccumulateMemory ) {
+                    rightMemory = ((AccumulateMemory) node).betaMemory.getRightTupleMemory();
+                }
+
+                
+                final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+                TupleStartEqualsConstraintContextEntry contextEntry = new TupleStartEqualsConstraintContextEntry();
+                contextEntry.updateFromTuple( workingMemory, leftTuple );
+                
+                FastIterator rightIt = rightMemory.fastIterator();
+                RightTuple temp = null;
+                for ( RightTuple rightTuple = rightMemory.getFirst( leftTuple,
+                                                                    (InternalFactHandle) context.getFactHandle() ); rightTuple != null; ) {
+                    temp = (RightTuple) rightIt.next( rightTuple );
+                    
+                    if ( constraint.isAllowedCachedLeft( contextEntry, rightTuple.getFactHandle() ) ) {
+                        rightMemory.remove( rightTuple );
+                    }                                        
+                    rightTuple = temp;
+                }
+            }
         }
 
         public void execute(InternalKnowledgeRuntime kruntime) {

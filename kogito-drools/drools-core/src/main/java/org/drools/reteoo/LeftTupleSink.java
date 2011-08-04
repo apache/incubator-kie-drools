@@ -61,6 +61,8 @@ public interface LeftTupleSink
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory);
+    
+    public LeftTupleSource getLeftTupleSource();
 
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,

@@ -179,29 +179,28 @@ public class RuleTerminalNode extends BaseNode
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        createActivations(leftTuple, context, workingMemory);
+        boolean fire = createActivations(leftTuple, context, workingMemory, false);
         // Can be null if no Activation was created, only add it to the agenda if it's not a control rule.
-        if ( leftTuple.getObject() != null && rule.getSalience().getValue( leftTuple, rule, workingMemory )  != 101 ) {
+        if ( fire && rule.getSalience().getValue( leftTuple, rule, workingMemory )  != 101 ) {
             final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
             agenda.addActivation( (AgendaItem) leftTuple.getObject() );            
         }
     }
     
-    public void createActivations(final LeftTuple tuple,
+    public boolean createActivations(final LeftTuple tuple,
                                      final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
-        tuple.setObject( null ); // null the previous Activation
-        
+                                     final InternalWorkingMemory workingMemory,
+                                     final boolean reuseActivation) {        
         //check if the rule is effective
         if ( !this.rule.isEffective( tuple,
                                      workingMemory ) ) {
-            return;
+            return false;
         }
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
-            return;
+            return false;
         }
         
         
@@ -219,23 +218,27 @@ public class RuleTerminalNode extends BaseNode
             tuple.increaseActivationCountForEvents();  
             agenda.increaseActiveActivations();
             agenda.fireActivation( item );  // Control rules fire straight away.       
-            return;
+            return true;
         }
 
 
         AgendaItem item = null;
         final Timer timer = this.rule.getTimer();
         if ( timer != null ) {
-            item = agenda.createScheduledAgendaItem( tuple,
-                                                     context,
-                                                     this );            
+            if ( reuseActivation ) {
+                item = ( AgendaItem ) tuple.getObject();                
+            } else {
+                item = agenda.createScheduledAgendaItem( tuple,
+                                                         context,
+                                                         this );                
+            }            
         } else {
             if ( rule.getCalendars() != null ) {
                 // for normal activations check for Calendar inclusion here, scheduled activations check on each trigger point
                 long timestamp = workingMemory.getSessionClock().getCurrentTime();
                 for ( String cal : rule.getCalendars() ) {
                     if ( !workingMemory.getCalendars().get( cal ).isTimeIncluded( timestamp ) ) {
-                        return;
+                        return false;
                     }
                 }
             }                                
@@ -246,7 +249,7 @@ public class RuleTerminalNode extends BaseNode
                 // do not add the activation if the rule is "lock-on-active" and the
                 // AgendaGroup is active
                 if ( rule.isLockOnActive() && agendaGroup.isActive() ) {
-                    return;
+                    return false;
                 }
             } else {
                 // There is a RuleFlowNode so add it there, instead of the Agenda
@@ -255,16 +258,24 @@ public class RuleTerminalNode extends BaseNode
                 // do not add the activation if the rule is "lock-on-active" and the
                 // RuleFlowGroup is active
                 if ( rule.isLockOnActive() && rfg.isActive() ) {
-                    return;
+                    return false;
                 }
             }            
             
-            item = agenda.createAgendaItem( tuple,
-                                            rule.getSalience().getValue( tuple,
-                                                                         this.rule,
-                                                                         workingMemory ),
-                                            context,
-                                            this);
+            if ( reuseActivation ) {
+                item = ( AgendaItem ) tuple.getObject();
+                item.setSalience( rule.getSalience().getValue( tuple,
+                                                               this.rule,
+                                                               workingMemory ) );
+                item.setPropagationContext( context );                                
+            } else {
+                item = agenda.createAgendaItem( tuple,
+                                                rule.getSalience().getValue( tuple,
+                                                                             this.rule,
+                                                                             workingMemory ),
+                                                context,
+                                                this);
+            }              
             
             item.setAgendaGroup( agendaGroup );   
         }
@@ -277,7 +288,8 @@ public class RuleTerminalNode extends BaseNode
         item.setSequenence( this.sequence );                
         
         ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCreated( item,
-                                                                                      workingMemory );             
+                                                                                      workingMemory ); 
+        return true;
     }
 
 
@@ -292,21 +304,29 @@ public class RuleTerminalNode extends BaseNode
         if ( originalAcitvation != null && originalAcitvation.isActivated() ) {
             // already activated, do nothing
             // although we need to notify the inserted Activation, as it's declarations may have changed.
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject() );            
+            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), true );            
+            return;
+        }   
+        
+        // if the current Rule is no-loop and the origin rule is the same then return
+        if ( this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() ) ) {
+            agenda.increaseDormantActivations();
             return;
         }        
         
-        // This activation is currently dormant and about to reactivated, so decrease the dormant count.
-        agenda.decreaseDormantActivations();
-        
-        createActivations(leftTuple, context, workingMemory);
-        if ( leftTuple.getObject() != null && rule.getSalience().getValue( leftTuple, rule, workingMemory ) != 101 ) {            
+        boolean fire = createActivations(leftTuple, context, workingMemory, true);
+        // If it's still the same activation then we had a noloop or effective date blocking it from re-activating
+        if ( fire && rule.getSalience().getValue( leftTuple, rule, workingMemory ) != 101 ) {            
             // now get the original facthandle and set the new activation on it before notifying the WM
             InternalFactHandle factHandle = originalAcitvation.getFactHandle();
             AgendaItem newActivation = ( AgendaItem ) leftTuple.getObject();
             newActivation.setFactHandle( factHandle );
             factHandle.setObject( newActivation );
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject() );            
+            
+            // This activation is currently dormant and about to reactivated, so decrease the dormant count.
+            agenda.decreaseDormantActivations();
+            
+            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );            
         }        
     }
     

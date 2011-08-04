@@ -87,17 +87,21 @@ public class DefaultFactHandle
                              final Object object,
                              final long recency,
                              final WorkingMemoryEntryPoint wmEntryPoint) {
+        this(id, determineIdentityHashCode(object), object, recency, wmEntryPoint);
+    }
+    
+    public DefaultFactHandle(final int id,
+                             final int identityHashCode,
+                             final Object object,
+                             final long recency,
+                             final WorkingMemoryEntryPoint wmEntryPoint) {
         this.id = id;
         this.entryPoint = wmEntryPoint;
         this.recency = recency;
         this.object = object;
         this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
-        setIdentityHashCode();
-    }
-
-    public DefaultFactHandle(String externalFormat) {
-        createFromExternalFormat( externalFormat );
-    }
+        this.identityHashCode = identityHashCode;
+    }    
 
     public DefaultFactHandle(int id,
                              String wmEntryPointId,
@@ -113,6 +117,10 @@ public class DefaultFactHandle
         this.object = object;
         this.disconnected = true;
     }
+    
+    public DefaultFactHandle(String externalFormat) {
+        createFromExternalFormat( externalFormat );
+    }    
         
     // ----------------------------------------------------------------------
     // Instance members
@@ -156,8 +164,8 @@ public class DefaultFactHandle
         return this.identityHashCode;
     }
     
-    private void setIdentityHashCode() {
-        this.identityHashCode = System.identityHashCode( this.object );
+    public static int determineIdentityHashCode(Object object) {
+        return System.identityHashCode( object );
     }
     
     protected void setObjectHashCode( int hashCode ) {
@@ -221,7 +229,7 @@ public class DefaultFactHandle
     public void setObject(final Object object) {
         this.object = object;
         this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
-        setIdentityHashCode();
+        this.identityHashCode = determineIdentityHashCode(object);
     }
 
     /**

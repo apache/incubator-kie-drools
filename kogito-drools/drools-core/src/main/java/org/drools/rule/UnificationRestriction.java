@@ -62,10 +62,7 @@ public class UnificationRestriction
                              InternalFactHandle handle,
                              InternalWorkingMemory workingMemory,
                              ContextEntry context) {
-        if ( ((UnificationContextEntry)context).getVariable() == null ) {
-            return this.vr.isAllowed( extractor, handle, workingMemory, ((UnificationContextEntry)context).getContextEntry() );
-        }
-        return true;
+        throw new UnsupportedOperationException( "Should not be called" );
     }
 
     public boolean isAllowedCachedLeft(ContextEntry context,
@@ -78,7 +75,10 @@ public class UnificationRestriction
 
     public boolean isAllowedCachedRight(LeftTuple tuple,
                                         ContextEntry context) {
-        if ( ((UnificationContextEntry)context).getVariable() == null ) {
+        DroolsQuery query = ( DroolsQuery ) tuple.get( 0 ).getObject(); 
+        Variable v = query.getVariables()[ ((UnificationContextEntry)context).getReader().getIndex() ];     
+        
+        if ( v == null ) {
             return this.vr.isAllowedCachedRight( tuple, ((UnificationContextEntry)context).getContextEntry() );
         }
         return true;
@@ -149,6 +149,13 @@ public class UnificationRestriction
             return this.contextEntry;
         }
         
+        
+        
+
+        public ArrayElementReader getReader() {
+            return reader;
+        }
+
 
         public ContextEntry getNext() {
             return this.contextEntry.getNext();
@@ -160,6 +167,7 @@ public class UnificationRestriction
 
         public void resetTuple() {
             this.contextEntry.resetTuple();
+            this.variable = null;
         }
 
         public void setNext(ContextEntry entry) {

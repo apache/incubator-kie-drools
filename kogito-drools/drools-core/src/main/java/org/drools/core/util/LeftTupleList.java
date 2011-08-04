@@ -151,6 +151,11 @@ public class LeftTupleList
     public FastIterator fullFastIterator() {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }
+    
+
+    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+        return LinkedList.fastIterator; // contains no state, so ok to be static
+    }    
 
     public Iterator iterator() {
         if ( this.iterator == null ) {
@@ -226,4 +231,5 @@ public class LeftTupleList
 
         return builder.toString();
     }
+
 }
