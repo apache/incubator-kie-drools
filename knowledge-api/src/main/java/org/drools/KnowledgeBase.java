@@ -17,6 +17,7 @@
 package org.drools;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.process.Process;
@@ -207,5 +208,12 @@ public interface KnowledgeBase
      *     The StatelessKnowledgeSession.
      */
     StatelessKnowledgeSession newStatelessKnowledgeSession();
+
+    /**
+     * Returns the set of the entry points declared and/or used  in this knowledge base
+     *  
+     * @return
+     */
+    Set<String> getEntryPointIds();
 
 }
