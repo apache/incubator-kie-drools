@@ -160,11 +160,11 @@
     <note>
       <para>Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized
       solution. That's fine, as long as the first solver phase can handle it. All construction heuristics solver phases
-      can handle that, so it's recommended to configure such a solver phase as the first phase.</para>
+      can handle that, so it's recommended to configure such a <literal>SolverPhase</literal> as the first phase.</para>
     </note>
 
     <para>In essence, the <literal>Solver</literal> will stop, run the <literal>PlanningFactChange</literal> and
-    restart. Each solver phase will be run again. Each configured <literal>Termination</literal> (except
-    <literal>terminateEarly</literal>) will reset.</para>
+    restart. Each <literal>SolverPhase</literal> will be run again. Each configured <literal>Termination</literal>
+    (except <literal>terminateEarly</literal>) will reset.</para>
   </section>
 </chapter>

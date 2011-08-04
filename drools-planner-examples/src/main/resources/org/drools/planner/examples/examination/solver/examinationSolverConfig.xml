@@ -15,7 +15,6 @@
     -->
     <maximumSecondsSpend>429</maximumSecondsSpend>
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
-    <!--<maximumStepCount>100</maximumStepCount>-->
   </termination>
   <customSolverPhase>
     <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
