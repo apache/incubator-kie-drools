@@ -315,13 +315,14 @@ public class RuleTerminalNode extends BaseNode
         }        
         
         boolean fire = createActivations(leftTuple, context, workingMemory, true);
-        // If it's still the same activation then we had a noloop or effective date blocking it from re-activating
         if ( fire && rule.getSalience().getValue( leftTuple, rule, workingMemory ) != 101 ) {            
             // now get the original facthandle and set the new activation on it before notifying the WM
-            InternalFactHandle factHandle = originalAcitvation.getFactHandle();
-            AgendaItem newActivation = ( AgendaItem ) leftTuple.getObject();
-            newActivation.setFactHandle( factHandle );
-            factHandle.setObject( newActivation );
+            if ( agenda.isDeclarativeAgenda() ) {
+                InternalFactHandle factHandle = originalAcitvation.getFactHandle();
+                AgendaItem newActivation = ( AgendaItem ) leftTuple.getObject();
+                newActivation.setFactHandle( factHandle );
+                factHandle.setObject( newActivation );
+            }
             
             // This activation is currently dormant and about to reactivated, so decrease the dormant count.
             agenda.decreaseDormantActivations();
@@ -364,7 +365,7 @@ public class RuleTerminalNode extends BaseNode
         
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
         
-        if ( activation.getFactHandle() == null ) {
+        if ( agenda.isDeclarativeAgenda() && activation.getFactHandle() == null ) {
             // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
             agenda.decreaseDormantActivations(); // because we know ControlRules fire straight away and then become dormant
             return; 

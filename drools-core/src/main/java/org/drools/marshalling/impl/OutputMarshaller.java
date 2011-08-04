@@ -38,6 +38,7 @@ import org.drools.common.ActiveActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EqualityKey;
+import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -272,13 +273,17 @@ public class OutputMarshaller {
 
         writeInitialFactHandleRightTuples( context );
 
-        ActivationIterator it = ActivationIterator.iterator( wm );
-        List<InternalFactHandle> matchFactHandles = new ArrayList<InternalFactHandle>( 100 );
-        for ( Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
-            matchFactHandles.add( item.getFactHandle() );
+        List<InternalFactHandle> matchFactHandles = null;
+        
+        if ( ((InternalAgenda) wm.getAgenda()).isDeclarativeAgenda() ) {
+            ActivationIterator it = ActivationIterator.iterator( wm );
+            matchFactHandles = new ArrayList<InternalFactHandle>( 100 );
+            for ( Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
+                matchFactHandles.add( item.getFactHandle() );
+            }
         }
 
-        stream.writeInt( wm.getObjectStore().size() + matchFactHandles.size() );
+        stream.writeInt( wm.getObjectStore().size() + ((matchFactHandles == null) ? 0 : matchFactHandles.size()) );
 
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
@@ -293,16 +298,18 @@ public class OutputMarshaller {
                               context );
         }
 
-        for ( InternalFactHandle handle : orderFacts( matchFactHandles ) ) {
-            Object object = handle.getObject();
-            handle.setObject( null ); // we must set it to null as we don't want to write out the Activation
-            writeFactHandle( context,
-                             stream,
-                             objectMarshallingStrategyStore,
-                             handle );
-            handle.setObject( object ); // restore object
-            writeRightTuples( handle,
-                              context );
+        if ( matchFactHandles != null ) {
+            for ( InternalFactHandle handle : orderFacts( matchFactHandles ) ) {
+                Object object = handle.getObject();
+                handle.setObject( null ); // we must set it to null as we don't want to write out the Activation
+                writeFactHandle( context,
+                                 stream,
+                                 objectMarshallingStrategyStore,
+                                 handle );
+                handle.setObject( object ); // restore object
+                writeRightTuples( handle,
+                                  context );
+            }
         }
 
         writeInitialFactHandleLeftTuples( context );
@@ -310,8 +317,14 @@ public class OutputMarshaller {
         //writeLeftTuples( context );
         writeLeftTuples( context,
                          orderFacts( wm.getObjectStore() ) );
-        writeLeftTuples( context,
-                         orderFacts( matchFactHandles ) );
+        
+        if ( matchFactHandles != null ) {
+            stream.writeBoolean( true );
+            writeLeftTuples( context,
+                             orderFacts( matchFactHandles ) );
+        } else {
+            stream.writeBoolean( false );
+        }
 
         writePropagationContexts( context );
 

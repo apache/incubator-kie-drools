@@ -69,6 +69,8 @@ public interface InternalAgenda
     public void modifyActivation(final AgendaItem activation, boolean previouslyActive);    
 
     public void addAgendaGroup(final AgendaGroup agendaGroup);
+    
+    public boolean isDeclarativeAgenda();
 
     public void increaseActiveActivations();
 

@@ -372,7 +372,9 @@ public class InputMarshaller {
 
         readLeftTuples( context ); // object store
         
-        readLeftTuples( context ); // activation fact handles
+        if ( stream.readBoolean() ) {
+            readLeftTuples( context ); // activation fact handles
+        }
  
         readPropagationContexts( context );
 
