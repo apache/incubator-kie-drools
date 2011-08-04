@@ -47,7 +47,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>FIRST_FIT_DECREASINGT_pickEarly</name>
+    <name>FIRST_FIT_DECREASING_pickEarly</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -64,7 +64,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>BEST_FITT_pickEarly</name>
+    <name>BEST_FIT_pickEarly</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
