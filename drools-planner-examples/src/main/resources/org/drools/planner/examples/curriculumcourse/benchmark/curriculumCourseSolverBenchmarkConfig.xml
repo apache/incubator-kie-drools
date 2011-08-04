@@ -34,11 +34,9 @@
         <!--&ndash;&gt;-->
         <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
       <!--</termination>-->
-      <greedyFit>
-        <greedyFitPlanningEntity>
-          <selectionOrder>DECREASING_DIFFICULTY</selectionOrder>
-        </greedyFitPlanningEntity>
-      </greedyFit>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
 
