@@ -211,6 +211,9 @@ public abstract class MapPersistenceTest {
         String processId = "myProcess";
         String workName = "someWork";
 
+        int knowledgeSessionsCountBeforeTest = getKnowledgeSessionsCount(); 
+        int processInstancesBeforeTest = getProcessInstancesCount();
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
                 .addProcess( ProcessCreatorForHelp.newProcessWithOneWork( processId,
@@ -228,8 +231,8 @@ public abstract class MapPersistenceTest {
         } catch ( RuntimeException re ) {
         }
         
-        Assert.assertEquals( 1, getKnowledgeSessionsCount() );
-        Assert.assertEquals( 0, getProcessInstancesCount() );
+        Assert.assertEquals( knowledgeSessionsCountBeforeTest + 1, getKnowledgeSessionsCount() );
+        Assert.assertEquals( processInstancesBeforeTest, getProcessInstancesCount() );
     }
     
     @Test
@@ -238,6 +241,9 @@ public abstract class MapPersistenceTest {
         String subProcessId = "subProcess";
         String workName = "MyWork";
 
+        int knowledgeSessionsCountBeforeTest = getKnowledgeSessionsCount(); 
+        int processInstancesBeforeTest = getProcessInstancesCount();
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ((AbstractRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase())
                 .addProcess( ProcessCreatorForHelp.newProcessWithOneWork(subProcessId, workName));
@@ -255,8 +261,8 @@ public abstract class MapPersistenceTest {
             ksession.startProcess(processId);
             Assert.fail();
         } catch ( RuntimeException re ) {
-            Assert.assertEquals( 1, getKnowledgeSessionsCount() );
-            Assert.assertEquals( 0, getProcessInstancesCount() );
+            Assert.assertEquals( knowledgeSessionsCountBeforeTest + 1, getKnowledgeSessionsCount() );
+            Assert.assertEquals( processInstancesBeforeTest, getProcessInstancesCount() );
         }
     }
 
@@ -269,7 +275,7 @@ public abstract class MapPersistenceTest {
     protected abstract int getProcessInstancesCount();
 
     protected abstract int getKnowledgeSessionsCount();
-
+   
     private static class DummyWorkItemHandler
         implements
         WorkItemHandler {

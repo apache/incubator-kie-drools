@@ -11,7 +11,6 @@ import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.map.EnvironmentBuilder;
-import org.drools.persistence.map.KnowledgeSessionStorageEnvironmentBuilder;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -72,7 +71,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
     private static class SimpleProcessStorage
         implements
         ProcessStorage {
-        private Map<Integer, SessionInfo>         ksessions = new HashMap<Integer, SessionInfo>();
+        private Map<Integer, SessionInfo>      ksessions = new HashMap<Integer, SessionInfo>();
         private Map<Long, ProcessInstanceInfo> processes = new HashMap<Long, ProcessInstanceInfo>();
         private Map<Long, WorkItemInfo>        workItems = new HashMap<Long, WorkItemInfo>();
 

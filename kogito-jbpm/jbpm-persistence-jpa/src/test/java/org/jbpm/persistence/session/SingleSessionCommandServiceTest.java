@@ -1,6 +1,7 @@
 package org.jbpm.persistence.session;
 
-import java.sql.SQLException;
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -34,8 +35,6 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
@@ -61,54 +60,16 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
 	private PoolingDataSource ds1;
 	private EntityManagerFactory emf;
-	private static Server h2Server;
     
     static {
-    	try {
-			DeleteDbFiles.execute("", "JPADroolsFlow", true);
-			h2Server = Server.createTcpServer(new String[0]);
-			h2Server.start();
-		} catch (SQLException e) {
-			throw new RuntimeException("can't start h2 server db",e);
-		}
 		DOMConfigurator.configure(SingleSessionCommandServiceTest.class.getResource("/log4j.xml"));
     }
     
-    @Override
-    protected void finalize() throws Throwable {
-    	if (h2Server != null) {
-    		h2Server.stop();
-    	}
-    	DeleteDbFiles.execute("", "JPADroolsFlow", true);
-    	super.finalize();
-    }
-    
     protected void setUp() {
-    	
-        ds1 = new PoolingDataSource();
-        ds1.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
-    	ds1.setUniqueName("jdbc/testDS1");
-    	ds1.setMaxPoolSize(5);
-    	ds1.setAllowLocalTransactions(true);
-    	ds1.getDriverProperties().setProperty("driverClassName", "org.h2.Driver");
-    	ds1.getDriverProperties().setProperty("url", "jdbc:h2:tcp://localhost/JPADroolsFlow");
-    	ds1.getDriverProperties().setProperty("user", "sa");
-    	ds1.getDriverProperties().setProperty("password", "");
+        ds1 = setupPoolingDataSource();
         
-        
-//        ds1.setUniqueName( "jdbc/testDS1" );
-//        ds1.setClassName( "org.h2.Driver" );
-//        ds1.setMaxPoolSize( 3 );
-//        ds1.setAllowLocalTransactions( true );
-//        ds1.getDriverProperties().put( "user",
-//                                       "sa" );
-//        ds1.getDriverProperties().put( "password",
-//                                       "" );
-//        ds1.getDriverProperties().put( "URL",
-//                                       "jdbc:h2:tcp://localhost/JPADroolsFlow" );
         ds1.init();
-
-        emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
 
     protected void tearDown() {

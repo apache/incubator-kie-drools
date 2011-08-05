@@ -16,6 +16,13 @@
   <description>jBPM BPMN2</description>
 
   <build>
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
+    
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -72,6 +79,13 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-persistence-jpa</artifactId>
+      <type>test-jar</type>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

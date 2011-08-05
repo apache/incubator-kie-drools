@@ -16,14 +16,43 @@
   <description>jBPM JPA Persistence</description>
 
   <build>
+    <testResources>
+        <testResource>
+            <!-- neccesary in order to apply database/H2 properties -->
+            <directory>src/test/resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
+  
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
+        <executions>
+          <execution>
+            <id>jar</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifestFile>META-INF/MANIFEST.MF</manifestFile>
+              </archive>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-jar</id>
+            <goals>
+                <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <forceCreation>true</forceCreation>
+              <includes>
+                <include>**/util/*.class</include>
+                <include>**/persistence.xml</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -110,5 +139,5 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-
+  
 </project>

@@ -16,6 +16,8 @@
 
 package org.jbpm.process.audit;
 
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,22 +50,14 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 
     PoolingDataSource ds1;
+    EntityManagerFactory emf;
 
     @Override
     protected void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        ds1 = setupPoolingDataSource();
         ds1.init();
-
+        
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
 
     @Override
@@ -72,10 +66,10 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
     }
 
 	public void testLogger1() throws Exception {
+	    
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -90,13 +84,17 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow");
+	    int initialProcessInstanceSize = processInstances.size();
+	    
         // start process instance
         long processInstanceId = session.startProcess("com.sample.ruleflow").getId();
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow'");
-        List<ProcessInstanceLog> processInstances =
-        	log.findProcessInstances("com.sample.ruleflow");
-        assertEquals(1, processInstances.size());
+        processInstances = log.findProcessInstances("com.sample.ruleflow");
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(0);
         System.out.print(processInstance);
         System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
@@ -122,7 +120,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -137,14 +134,18 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow");
+	    int initialProcessInstanceSize = processInstances.size();
+	    
         // start process instance
         session.startProcess("com.sample.ruleflow");
         session.startProcess("com.sample.ruleflow");
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow'");
-        List<ProcessInstanceLog> processInstances =
-        	log.findProcessInstances("com.sample.ruleflow");
-        assertEquals(2, processInstances.size());
+        processInstances = log.findProcessInstances("com.sample.ruleflow");
+        assertEquals(initialProcessInstanceSize + 2, processInstances.size());
         for (ProcessInstanceLog processInstance: processInstances) {
             System.out.print(processInstance);
             System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
@@ -163,7 +164,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -178,13 +178,17 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         JPAProcessInstanceDbLog log = new JPAProcessInstanceDbLog(env);
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
 
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow");
+	    int initialProcessInstanceSize = processInstances.size();
+	    
         // start process instance
         long processInstanceId = session.startProcess("com.sample.ruleflow2").getId();
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow2'");
-        List<ProcessInstanceLog> processInstances =
-        	log.findProcessInstances("com.sample.ruleflow2");
-        assertEquals(1, processInstances.size());
+        processInstances = log.findProcessInstances("com.sample.ruleflow2");
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(0);
         System.out.print(processInstance);
         System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
@@ -209,7 +213,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -232,6 +235,11 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 			}
 		});
         
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow");
+	    int initialProcessInstanceSize = processInstances.size();
+	    
         // start process instance
 		Map<String, Object> params = new HashMap<String, Object>();
 		List<String> list = new ArrayList<String>();
@@ -242,9 +250,9 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 		long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow3'");
-        List<ProcessInstanceLog> processInstances =
+        processInstances =
         	log.findProcessInstances("com.sample.ruleflow3");
-        assertEquals(1, processInstances.size());
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(0);
         System.out.print(processInstance);
         System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());
@@ -270,7 +278,6 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
         // load the process
         KnowledgeBase kbase = createKnowledgeBase();
         // create a new session
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
         Environment env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
                  emf );
@@ -293,6 +300,11 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 			}
 		});
         
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances =
+        	log.findProcessInstances("com.sample.ruleflow");
+	    int initialProcessInstanceSize = processInstances.size();
+        
         // start process instance
 		Map<String, Object> params = new HashMap<String, Object>();
 		List<String> list = new ArrayList<String>();
@@ -307,9 +319,8 @@ public class JPAWorkingMemoryDbLoggerTest extends JbpmTestCase {
 		long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
         
         System.out.println("Checking process instances for process 'com.sample.ruleflow3'");
-        List<ProcessInstanceLog> processInstances =
-        	log.findProcessInstances("com.sample.ruleflow3");
-        assertEquals(1, processInstances.size());
+        processInstances = log.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
         ProcessInstanceLog processInstance = processInstances.get(0);
         System.out.print(processInstance);
         System.out.println(" -> " + processInstance.getStart() + " - " + processInstance.getEnd());

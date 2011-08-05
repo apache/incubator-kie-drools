@@ -1,5 +1,6 @@
 package org.jbpm.persistence.session;
 
+import static org.jbpm.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -80,21 +82,10 @@ public class VariablePersistenceStrategyTest extends JbpmTestCase {
 
     @Before
     public void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
+        ds1 = setupPoolingDataSource();
         ds1.init();
         
-        emf = Persistence.createEntityManagerFactory("org.drools.persistence.jpa");
-
+        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
     }
 
     @After
