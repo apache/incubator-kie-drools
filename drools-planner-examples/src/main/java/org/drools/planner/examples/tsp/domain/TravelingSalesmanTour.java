@@ -92,10 +92,6 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (cityAssignmentList != null);
-    }
-
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);

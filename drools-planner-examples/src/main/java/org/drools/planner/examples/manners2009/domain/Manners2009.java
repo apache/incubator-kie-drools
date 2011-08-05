@@ -99,10 +99,6 @@ public class Manners2009 extends AbstractPersistable implements Solution<SimpleS
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (seatDesignationList != null);
-    }
-
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(EnumSet.allOf(JobType.class));

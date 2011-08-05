@@ -126,10 +126,6 @@ public class TrailerRoutingSchedule extends AbstractPersistable implements Solut
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (orderAssignmentList != null);
-    }
-
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(locationList);

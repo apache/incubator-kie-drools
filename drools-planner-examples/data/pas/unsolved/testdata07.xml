@@ -29091,4 +29091,2082 @@
     <PreferredPatientEquipment reference="5066"/>
     <PreferredPatientEquipment reference="5067"/>
   </preferredPatientEquipmentList>
+  <bedDesignationList id="5590">
+    <BedDesignation id="5591">
+      <id>0</id>
+      <admissionPart reference="5069"/>
+    </BedDesignation>
+    <BedDesignation id="5592">
+      <id>1</id>
+      <admissionPart reference="5070"/>
+    </BedDesignation>
+    <BedDesignation id="5593">
+      <id>2</id>
+      <admissionPart reference="5071"/>
+    </BedDesignation>
+    <BedDesignation id="5594">
+      <id>3</id>
+      <admissionPart reference="5072"/>
+    </BedDesignation>
+    <BedDesignation id="5595">
+      <id>4</id>
+      <admissionPart reference="5073"/>
+    </BedDesignation>
+    <BedDesignation id="5596">
+      <id>5</id>
+      <admissionPart reference="5074"/>
+    </BedDesignation>
+    <BedDesignation id="5597">
+      <id>6</id>
+      <admissionPart reference="5075"/>
+    </BedDesignation>
+    <BedDesignation id="5598">
+      <id>7</id>
+      <admissionPart reference="5076"/>
+    </BedDesignation>
+    <BedDesignation id="5599">
+      <id>8</id>
+      <admissionPart reference="5077"/>
+    </BedDesignation>
+    <BedDesignation id="5600">
+      <id>9</id>
+      <admissionPart reference="5078"/>
+    </BedDesignation>
+    <BedDesignation id="5601">
+      <id>10</id>
+      <admissionPart reference="5079"/>
+    </BedDesignation>
+    <BedDesignation id="5602">
+      <id>11</id>
+      <admissionPart reference="5080"/>
+    </BedDesignation>
+    <BedDesignation id="5603">
+      <id>12</id>
+      <admissionPart reference="5081"/>
+    </BedDesignation>
+    <BedDesignation id="5604">
+      <id>13</id>
+      <admissionPart reference="5082"/>
+    </BedDesignation>
+    <BedDesignation id="5605">
+      <id>14</id>
+      <admissionPart reference="5083"/>
+    </BedDesignation>
+    <BedDesignation id="5606">
+      <id>15</id>
+      <admissionPart reference="5084"/>
+    </BedDesignation>
+    <BedDesignation id="5607">
+      <id>16</id>
+      <admissionPart reference="5085"/>
+    </BedDesignation>
+    <BedDesignation id="5608">
+      <id>17</id>
+      <admissionPart reference="5086"/>
+    </BedDesignation>
+    <BedDesignation id="5609">
+      <id>18</id>
+      <admissionPart reference="5087"/>
+    </BedDesignation>
+    <BedDesignation id="5610">
+      <id>19</id>
+      <admissionPart reference="5088"/>
+    </BedDesignation>
+    <BedDesignation id="5611">
+      <id>20</id>
+      <admissionPart reference="5089"/>
+    </BedDesignation>
+    <BedDesignation id="5612">
+      <id>21</id>
+      <admissionPart reference="5090"/>
+    </BedDesignation>
+    <BedDesignation id="5613">
+      <id>22</id>
+      <admissionPart reference="5091"/>
+    </BedDesignation>
+    <BedDesignation id="5614">
+      <id>23</id>
+      <admissionPart reference="5092"/>
+    </BedDesignation>
+    <BedDesignation id="5615">
+      <id>24</id>
+      <admissionPart reference="5093"/>
+    </BedDesignation>
+    <BedDesignation id="5616">
+      <id>25</id>
+      <admissionPart reference="5094"/>
+    </BedDesignation>
+    <BedDesignation id="5617">
+      <id>26</id>
+      <admissionPart reference="5095"/>
+    </BedDesignation>
+    <BedDesignation id="5618">
+      <id>27</id>
+      <admissionPart reference="5096"/>
+    </BedDesignation>
+    <BedDesignation id="5619">
+      <id>28</id>
+      <admissionPart reference="5097"/>
+    </BedDesignation>
+    <BedDesignation id="5620">
+      <id>29</id>
+      <admissionPart reference="5098"/>
+    </BedDesignation>
+    <BedDesignation id="5621">
+      <id>30</id>
+      <admissionPart reference="5099"/>
+    </BedDesignation>
+    <BedDesignation id="5622">
+      <id>31</id>
+      <admissionPart reference="5100"/>
+    </BedDesignation>
+    <BedDesignation id="5623">
+      <id>32</id>
+      <admissionPart reference="5101"/>
+    </BedDesignation>
+    <BedDesignation id="5624">
+      <id>33</id>
+      <admissionPart reference="5102"/>
+    </BedDesignation>
+    <BedDesignation id="5625">
+      <id>34</id>
+      <admissionPart reference="5103"/>
+    </BedDesignation>
+    <BedDesignation id="5626">
+      <id>35</id>
+      <admissionPart reference="5104"/>
+    </BedDesignation>
+    <BedDesignation id="5627">
+      <id>36</id>
+      <admissionPart reference="5105"/>
+    </BedDesignation>
+    <BedDesignation id="5628">
+      <id>37</id>
+      <admissionPart reference="5106"/>
+    </BedDesignation>
+    <BedDesignation id="5629">
+      <id>38</id>
+      <admissionPart reference="5107"/>
+    </BedDesignation>
+    <BedDesignation id="5630">
+      <id>39</id>
+      <admissionPart reference="5108"/>
+    </BedDesignation>
+    <BedDesignation id="5631">
+      <id>40</id>
+      <admissionPart reference="5109"/>
+    </BedDesignation>
+    <BedDesignation id="5632">
+      <id>41</id>
+      <admissionPart reference="5110"/>
+    </BedDesignation>
+    <BedDesignation id="5633">
+      <id>42</id>
+      <admissionPart reference="5111"/>
+    </BedDesignation>
+    <BedDesignation id="5634">
+      <id>43</id>
+      <admissionPart reference="5112"/>
+    </BedDesignation>
+    <BedDesignation id="5635">
+      <id>44</id>
+      <admissionPart reference="5113"/>
+    </BedDesignation>
+    <BedDesignation id="5636">
+      <id>45</id>
+      <admissionPart reference="5114"/>
+    </BedDesignation>
+    <BedDesignation id="5637">
+      <id>46</id>
+      <admissionPart reference="5115"/>
+    </BedDesignation>
+    <BedDesignation id="5638">
+      <id>47</id>
+      <admissionPart reference="5116"/>
+    </BedDesignation>
+    <BedDesignation id="5639">
+      <id>48</id>
+      <admissionPart reference="5117"/>
+    </BedDesignation>
+    <BedDesignation id="5640">
+      <id>49</id>
+      <admissionPart reference="5118"/>
+    </BedDesignation>
+    <BedDesignation id="5641">
+      <id>50</id>
+      <admissionPart reference="5119"/>
+    </BedDesignation>
+    <BedDesignation id="5642">
+      <id>51</id>
+      <admissionPart reference="5120"/>
+    </BedDesignation>
+    <BedDesignation id="5643">
+      <id>52</id>
+      <admissionPart reference="5121"/>
+    </BedDesignation>
+    <BedDesignation id="5644">
+      <id>53</id>
+      <admissionPart reference="5122"/>
+    </BedDesignation>
+    <BedDesignation id="5645">
+      <id>54</id>
+      <admissionPart reference="5123"/>
+    </BedDesignation>
+    <BedDesignation id="5646">
+      <id>55</id>
+      <admissionPart reference="5124"/>
+    </BedDesignation>
+    <BedDesignation id="5647">
+      <id>56</id>
+      <admissionPart reference="5125"/>
+    </BedDesignation>
+    <BedDesignation id="5648">
+      <id>57</id>
+      <admissionPart reference="5126"/>
+    </BedDesignation>
+    <BedDesignation id="5649">
+      <id>58</id>
+      <admissionPart reference="5127"/>
+    </BedDesignation>
+    <BedDesignation id="5650">
+      <id>59</id>
+      <admissionPart reference="5128"/>
+    </BedDesignation>
+    <BedDesignation id="5651">
+      <id>60</id>
+      <admissionPart reference="5129"/>
+    </BedDesignation>
+    <BedDesignation id="5652">
+      <id>61</id>
+      <admissionPart reference="5130"/>
+    </BedDesignation>
+    <BedDesignation id="5653">
+      <id>62</id>
+      <admissionPart reference="5131"/>
+    </BedDesignation>
+    <BedDesignation id="5654">
+      <id>63</id>
+      <admissionPart reference="5132"/>
+    </BedDesignation>
+    <BedDesignation id="5655">
+      <id>64</id>
+      <admissionPart reference="5133"/>
+    </BedDesignation>
+    <BedDesignation id="5656">
+      <id>65</id>
+      <admissionPart reference="5134"/>
+    </BedDesignation>
+    <BedDesignation id="5657">
+      <id>66</id>
+      <admissionPart reference="5135"/>
+    </BedDesignation>
+    <BedDesignation id="5658">
+      <id>67</id>
+      <admissionPart reference="5136"/>
+    </BedDesignation>
+    <BedDesignation id="5659">
+      <id>68</id>
+      <admissionPart reference="5137"/>
+    </BedDesignation>
+    <BedDesignation id="5660">
+      <id>69</id>
+      <admissionPart reference="5138"/>
+    </BedDesignation>
+    <BedDesignation id="5661">
+      <id>70</id>
+      <admissionPart reference="5139"/>
+    </BedDesignation>
+    <BedDesignation id="5662">
+      <id>71</id>
+      <admissionPart reference="5140"/>
+    </BedDesignation>
+    <BedDesignation id="5663">
+      <id>72</id>
+      <admissionPart reference="5141"/>
+    </BedDesignation>
+    <BedDesignation id="5664">
+      <id>73</id>
+      <admissionPart reference="5142"/>
+    </BedDesignation>
+    <BedDesignation id="5665">
+      <id>74</id>
+      <admissionPart reference="5143"/>
+    </BedDesignation>
+    <BedDesignation id="5666">
+      <id>75</id>
+      <admissionPart reference="5144"/>
+    </BedDesignation>
+    <BedDesignation id="5667">
+      <id>76</id>
+      <admissionPart reference="5145"/>
+    </BedDesignation>
+    <BedDesignation id="5668">
+      <id>77</id>
+      <admissionPart reference="5146"/>
+    </BedDesignation>
+    <BedDesignation id="5669">
+      <id>78</id>
+      <admissionPart reference="5147"/>
+    </BedDesignation>
+    <BedDesignation id="5670">
+      <id>79</id>
+      <admissionPart reference="5148"/>
+    </BedDesignation>
+    <BedDesignation id="5671">
+      <id>80</id>
+      <admissionPart reference="5149"/>
+    </BedDesignation>
+    <BedDesignation id="5672">
+      <id>81</id>
+      <admissionPart reference="5150"/>
+    </BedDesignation>
+    <BedDesignation id="5673">
+      <id>82</id>
+      <admissionPart reference="5151"/>
+    </BedDesignation>
+    <BedDesignation id="5674">
+      <id>83</id>
+      <admissionPart reference="5152"/>
+    </BedDesignation>
+    <BedDesignation id="5675">
+      <id>84</id>
+      <admissionPart reference="5153"/>
+    </BedDesignation>
+    <BedDesignation id="5676">
+      <id>85</id>
+      <admissionPart reference="5154"/>
+    </BedDesignation>
+    <BedDesignation id="5677">
+      <id>86</id>
+      <admissionPart reference="5155"/>
+    </BedDesignation>
+    <BedDesignation id="5678">
+      <id>87</id>
+      <admissionPart reference="5156"/>
+    </BedDesignation>
+    <BedDesignation id="5679">
+      <id>88</id>
+      <admissionPart reference="5157"/>
+    </BedDesignation>
+    <BedDesignation id="5680">
+      <id>89</id>
+      <admissionPart reference="5158"/>
+    </BedDesignation>
+    <BedDesignation id="5681">
+      <id>90</id>
+      <admissionPart reference="5159"/>
+    </BedDesignation>
+    <BedDesignation id="5682">
+      <id>91</id>
+      <admissionPart reference="5160"/>
+    </BedDesignation>
+    <BedDesignation id="5683">
+      <id>92</id>
+      <admissionPart reference="5161"/>
+    </BedDesignation>
+    <BedDesignation id="5684">
+      <id>93</id>
+      <admissionPart reference="5162"/>
+    </BedDesignation>
+    <BedDesignation id="5685">
+      <id>94</id>
+      <admissionPart reference="5163"/>
+    </BedDesignation>
+    <BedDesignation id="5686">
+      <id>95</id>
+      <admissionPart reference="5164"/>
+    </BedDesignation>
+    <BedDesignation id="5687">
+      <id>96</id>
+      <admissionPart reference="5165"/>
+    </BedDesignation>
+    <BedDesignation id="5688">
+      <id>97</id>
+      <admissionPart reference="5166"/>
+    </BedDesignation>
+    <BedDesignation id="5689">
+      <id>98</id>
+      <admissionPart reference="5167"/>
+    </BedDesignation>
+    <BedDesignation id="5690">
+      <id>99</id>
+      <admissionPart reference="5168"/>
+    </BedDesignation>
+    <BedDesignation id="5691">
+      <id>100</id>
+      <admissionPart reference="5169"/>
+    </BedDesignation>
+    <BedDesignation id="5692">
+      <id>101</id>
+      <admissionPart reference="5170"/>
+    </BedDesignation>
+    <BedDesignation id="5693">
+      <id>102</id>
+      <admissionPart reference="5171"/>
+    </BedDesignation>
+    <BedDesignation id="5694">
+      <id>103</id>
+      <admissionPart reference="5172"/>
+    </BedDesignation>
+    <BedDesignation id="5695">
+      <id>104</id>
+      <admissionPart reference="5173"/>
+    </BedDesignation>
+    <BedDesignation id="5696">
+      <id>105</id>
+      <admissionPart reference="5174"/>
+    </BedDesignation>
+    <BedDesignation id="5697">
+      <id>106</id>
+      <admissionPart reference="5175"/>
+    </BedDesignation>
+    <BedDesignation id="5698">
+      <id>107</id>
+      <admissionPart reference="5176"/>
+    </BedDesignation>
+    <BedDesignation id="5699">
+      <id>108</id>
+      <admissionPart reference="5177"/>
+    </BedDesignation>
+    <BedDesignation id="5700">
+      <id>109</id>
+      <admissionPart reference="5178"/>
+    </BedDesignation>
+    <BedDesignation id="5701">
+      <id>110</id>
+      <admissionPart reference="5179"/>
+    </BedDesignation>
+    <BedDesignation id="5702">
+      <id>111</id>
+      <admissionPart reference="5180"/>
+    </BedDesignation>
+    <BedDesignation id="5703">
+      <id>112</id>
+      <admissionPart reference="5181"/>
+    </BedDesignation>
+    <BedDesignation id="5704">
+      <id>113</id>
+      <admissionPart reference="5182"/>
+    </BedDesignation>
+    <BedDesignation id="5705">
+      <id>114</id>
+      <admissionPart reference="5183"/>
+    </BedDesignation>
+    <BedDesignation id="5706">
+      <id>115</id>
+      <admissionPart reference="5184"/>
+    </BedDesignation>
+    <BedDesignation id="5707">
+      <id>116</id>
+      <admissionPart reference="5185"/>
+    </BedDesignation>
+    <BedDesignation id="5708">
+      <id>117</id>
+      <admissionPart reference="5186"/>
+    </BedDesignation>
+    <BedDesignation id="5709">
+      <id>118</id>
+      <admissionPart reference="5187"/>
+    </BedDesignation>
+    <BedDesignation id="5710">
+      <id>119</id>
+      <admissionPart reference="5188"/>
+    </BedDesignation>
+    <BedDesignation id="5711">
+      <id>120</id>
+      <admissionPart reference="5189"/>
+    </BedDesignation>
+    <BedDesignation id="5712">
+      <id>121</id>
+      <admissionPart reference="5190"/>
+    </BedDesignation>
+    <BedDesignation id="5713">
+      <id>122</id>
+      <admissionPart reference="5191"/>
+    </BedDesignation>
+    <BedDesignation id="5714">
+      <id>123</id>
+      <admissionPart reference="5192"/>
+    </BedDesignation>
+    <BedDesignation id="5715">
+      <id>124</id>
+      <admissionPart reference="5193"/>
+    </BedDesignation>
+    <BedDesignation id="5716">
+      <id>125</id>
+      <admissionPart reference="5194"/>
+    </BedDesignation>
+    <BedDesignation id="5717">
+      <id>126</id>
+      <admissionPart reference="5195"/>
+    </BedDesignation>
+    <BedDesignation id="5718">
+      <id>127</id>
+      <admissionPart reference="5196"/>
+    </BedDesignation>
+    <BedDesignation id="5719">
+      <id>128</id>
+      <admissionPart reference="5197"/>
+    </BedDesignation>
+    <BedDesignation id="5720">
+      <id>129</id>
+      <admissionPart reference="5198"/>
+    </BedDesignation>
+    <BedDesignation id="5721">
+      <id>130</id>
+      <admissionPart reference="5199"/>
+    </BedDesignation>
+    <BedDesignation id="5722">
+      <id>131</id>
+      <admissionPart reference="5200"/>
+    </BedDesignation>
+    <BedDesignation id="5723">
+      <id>132</id>
+      <admissionPart reference="5201"/>
+    </BedDesignation>
+    <BedDesignation id="5724">
+      <id>133</id>
+      <admissionPart reference="5202"/>
+    </BedDesignation>
+    <BedDesignation id="5725">
+      <id>134</id>
+      <admissionPart reference="5203"/>
+    </BedDesignation>
+    <BedDesignation id="5726">
+      <id>135</id>
+      <admissionPart reference="5204"/>
+    </BedDesignation>
+    <BedDesignation id="5727">
+      <id>136</id>
+      <admissionPart reference="5205"/>
+    </BedDesignation>
+    <BedDesignation id="5728">
+      <id>137</id>
+      <admissionPart reference="5206"/>
+    </BedDesignation>
+    <BedDesignation id="5729">
+      <id>138</id>
+      <admissionPart reference="5207"/>
+    </BedDesignation>
+    <BedDesignation id="5730">
+      <id>139</id>
+      <admissionPart reference="5208"/>
+    </BedDesignation>
+    <BedDesignation id="5731">
+      <id>140</id>
+      <admissionPart reference="5209"/>
+    </BedDesignation>
+    <BedDesignation id="5732">
+      <id>141</id>
+      <admissionPart reference="5210"/>
+    </BedDesignation>
+    <BedDesignation id="5733">
+      <id>142</id>
+      <admissionPart reference="5211"/>
+    </BedDesignation>
+    <BedDesignation id="5734">
+      <id>143</id>
+      <admissionPart reference="5212"/>
+    </BedDesignation>
+    <BedDesignation id="5735">
+      <id>144</id>
+      <admissionPart reference="5213"/>
+    </BedDesignation>
+    <BedDesignation id="5736">
+      <id>145</id>
+      <admissionPart reference="5214"/>
+    </BedDesignation>
+    <BedDesignation id="5737">
+      <id>146</id>
+      <admissionPart reference="5215"/>
+    </BedDesignation>
+    <BedDesignation id="5738">
+      <id>147</id>
+      <admissionPart reference="5216"/>
+    </BedDesignation>
+    <BedDesignation id="5739">
+      <id>148</id>
+      <admissionPart reference="5217"/>
+    </BedDesignation>
+    <BedDesignation id="5740">
+      <id>149</id>
+      <admissionPart reference="5218"/>
+    </BedDesignation>
+    <BedDesignation id="5741">
+      <id>150</id>
+      <admissionPart reference="5219"/>
+    </BedDesignation>
+    <BedDesignation id="5742">
+      <id>151</id>
+      <admissionPart reference="5220"/>
+    </BedDesignation>
+    <BedDesignation id="5743">
+      <id>152</id>
+      <admissionPart reference="5221"/>
+    </BedDesignation>
+    <BedDesignation id="5744">
+      <id>153</id>
+      <admissionPart reference="5222"/>
+    </BedDesignation>
+    <BedDesignation id="5745">
+      <id>154</id>
+      <admissionPart reference="5223"/>
+    </BedDesignation>
+    <BedDesignation id="5746">
+      <id>155</id>
+      <admissionPart reference="5224"/>
+    </BedDesignation>
+    <BedDesignation id="5747">
+      <id>156</id>
+      <admissionPart reference="5225"/>
+    </BedDesignation>
+    <BedDesignation id="5748">
+      <id>157</id>
+      <admissionPart reference="5226"/>
+    </BedDesignation>
+    <BedDesignation id="5749">
+      <id>158</id>
+      <admissionPart reference="5227"/>
+    </BedDesignation>
+    <BedDesignation id="5750">
+      <id>159</id>
+      <admissionPart reference="5228"/>
+    </BedDesignation>
+    <BedDesignation id="5751">
+      <id>160</id>
+      <admissionPart reference="5229"/>
+    </BedDesignation>
+    <BedDesignation id="5752">
+      <id>161</id>
+      <admissionPart reference="5230"/>
+    </BedDesignation>
+    <BedDesignation id="5753">
+      <id>162</id>
+      <admissionPart reference="5231"/>
+    </BedDesignation>
+    <BedDesignation id="5754">
+      <id>163</id>
+      <admissionPart reference="5232"/>
+    </BedDesignation>
+    <BedDesignation id="5755">
+      <id>164</id>
+      <admissionPart reference="5233"/>
+    </BedDesignation>
+    <BedDesignation id="5756">
+      <id>165</id>
+      <admissionPart reference="5234"/>
+    </BedDesignation>
+    <BedDesignation id="5757">
+      <id>166</id>
+      <admissionPart reference="5235"/>
+    </BedDesignation>
+    <BedDesignation id="5758">
+      <id>167</id>
+      <admissionPart reference="5236"/>
+    </BedDesignation>
+    <BedDesignation id="5759">
+      <id>168</id>
+      <admissionPart reference="5237"/>
+    </BedDesignation>
+    <BedDesignation id="5760">
+      <id>169</id>
+      <admissionPart reference="5238"/>
+    </BedDesignation>
+    <BedDesignation id="5761">
+      <id>170</id>
+      <admissionPart reference="5239"/>
+    </BedDesignation>
+    <BedDesignation id="5762">
+      <id>171</id>
+      <admissionPart reference="5240"/>
+    </BedDesignation>
+    <BedDesignation id="5763">
+      <id>172</id>
+      <admissionPart reference="5241"/>
+    </BedDesignation>
+    <BedDesignation id="5764">
+      <id>173</id>
+      <admissionPart reference="5242"/>
+    </BedDesignation>
+    <BedDesignation id="5765">
+      <id>174</id>
+      <admissionPart reference="5243"/>
+    </BedDesignation>
+    <BedDesignation id="5766">
+      <id>175</id>
+      <admissionPart reference="5244"/>
+    </BedDesignation>
+    <BedDesignation id="5767">
+      <id>176</id>
+      <admissionPart reference="5245"/>
+    </BedDesignation>
+    <BedDesignation id="5768">
+      <id>177</id>
+      <admissionPart reference="5246"/>
+    </BedDesignation>
+    <BedDesignation id="5769">
+      <id>178</id>
+      <admissionPart reference="5247"/>
+    </BedDesignation>
+    <BedDesignation id="5770">
+      <id>179</id>
+      <admissionPart reference="5248"/>
+    </BedDesignation>
+    <BedDesignation id="5771">
+      <id>180</id>
+      <admissionPart reference="5249"/>
+    </BedDesignation>
+    <BedDesignation id="5772">
+      <id>181</id>
+      <admissionPart reference="5250"/>
+    </BedDesignation>
+    <BedDesignation id="5773">
+      <id>182</id>
+      <admissionPart reference="5251"/>
+    </BedDesignation>
+    <BedDesignation id="5774">
+      <id>183</id>
+      <admissionPart reference="5252"/>
+    </BedDesignation>
+    <BedDesignation id="5775">
+      <id>184</id>
+      <admissionPart reference="5253"/>
+    </BedDesignation>
+    <BedDesignation id="5776">
+      <id>185</id>
+      <admissionPart reference="5254"/>
+    </BedDesignation>
+    <BedDesignation id="5777">
+      <id>186</id>
+      <admissionPart reference="5255"/>
+    </BedDesignation>
+    <BedDesignation id="5778">
+      <id>187</id>
+      <admissionPart reference="5256"/>
+    </BedDesignation>
+    <BedDesignation id="5779">
+      <id>188</id>
+      <admissionPart reference="5257"/>
+    </BedDesignation>
+    <BedDesignation id="5780">
+      <id>189</id>
+      <admissionPart reference="5258"/>
+    </BedDesignation>
+    <BedDesignation id="5781">
+      <id>190</id>
+      <admissionPart reference="5259"/>
+    </BedDesignation>
+    <BedDesignation id="5782">
+      <id>191</id>
+      <admissionPart reference="5260"/>
+    </BedDesignation>
+    <BedDesignation id="5783">
+      <id>192</id>
+      <admissionPart reference="5261"/>
+    </BedDesignation>
+    <BedDesignation id="5784">
+      <id>193</id>
+      <admissionPart reference="5262"/>
+    </BedDesignation>
+    <BedDesignation id="5785">
+      <id>194</id>
+      <admissionPart reference="5263"/>
+    </BedDesignation>
+    <BedDesignation id="5786">
+      <id>195</id>
+      <admissionPart reference="5264"/>
+    </BedDesignation>
+    <BedDesignation id="5787">
+      <id>196</id>
+      <admissionPart reference="5265"/>
+    </BedDesignation>
+    <BedDesignation id="5788">
+      <id>197</id>
+      <admissionPart reference="5266"/>
+    </BedDesignation>
+    <BedDesignation id="5789">
+      <id>198</id>
+      <admissionPart reference="5267"/>
+    </BedDesignation>
+    <BedDesignation id="5790">
+      <id>199</id>
+      <admissionPart reference="5268"/>
+    </BedDesignation>
+    <BedDesignation id="5791">
+      <id>200</id>
+      <admissionPart reference="5269"/>
+    </BedDesignation>
+    <BedDesignation id="5792">
+      <id>201</id>
+      <admissionPart reference="5270"/>
+    </BedDesignation>
+    <BedDesignation id="5793">
+      <id>202</id>
+      <admissionPart reference="5271"/>
+    </BedDesignation>
+    <BedDesignation id="5794">
+      <id>203</id>
+      <admissionPart reference="5272"/>
+    </BedDesignation>
+    <BedDesignation id="5795">
+      <id>204</id>
+      <admissionPart reference="5273"/>
+    </BedDesignation>
+    <BedDesignation id="5796">
+      <id>205</id>
+      <admissionPart reference="5274"/>
+    </BedDesignation>
+    <BedDesignation id="5797">
+      <id>206</id>
+      <admissionPart reference="5275"/>
+    </BedDesignation>
+    <BedDesignation id="5798">
+      <id>207</id>
+      <admissionPart reference="5276"/>
+    </BedDesignation>
+    <BedDesignation id="5799">
+      <id>208</id>
+      <admissionPart reference="5277"/>
+    </BedDesignation>
+    <BedDesignation id="5800">
+      <id>209</id>
+      <admissionPart reference="5278"/>
+    </BedDesignation>
+    <BedDesignation id="5801">
+      <id>210</id>
+      <admissionPart reference="5279"/>
+    </BedDesignation>
+    <BedDesignation id="5802">
+      <id>211</id>
+      <admissionPart reference="5280"/>
+    </BedDesignation>
+    <BedDesignation id="5803">
+      <id>212</id>
+      <admissionPart reference="5281"/>
+    </BedDesignation>
+    <BedDesignation id="5804">
+      <id>213</id>
+      <admissionPart reference="5282"/>
+    </BedDesignation>
+    <BedDesignation id="5805">
+      <id>214</id>
+      <admissionPart reference="5283"/>
+    </BedDesignation>
+    <BedDesignation id="5806">
+      <id>215</id>
+      <admissionPart reference="5284"/>
+    </BedDesignation>
+    <BedDesignation id="5807">
+      <id>216</id>
+      <admissionPart reference="5285"/>
+    </BedDesignation>
+    <BedDesignation id="5808">
+      <id>217</id>
+      <admissionPart reference="5286"/>
+    </BedDesignation>
+    <BedDesignation id="5809">
+      <id>218</id>
+      <admissionPart reference="5287"/>
+    </BedDesignation>
+    <BedDesignation id="5810">
+      <id>219</id>
+      <admissionPart reference="5288"/>
+    </BedDesignation>
+    <BedDesignation id="5811">
+      <id>220</id>
+      <admissionPart reference="5289"/>
+    </BedDesignation>
+    <BedDesignation id="5812">
+      <id>221</id>
+      <admissionPart reference="5290"/>
+    </BedDesignation>
+    <BedDesignation id="5813">
+      <id>222</id>
+      <admissionPart reference="5291"/>
+    </BedDesignation>
+    <BedDesignation id="5814">
+      <id>223</id>
+      <admissionPart reference="5292"/>
+    </BedDesignation>
+    <BedDesignation id="5815">
+      <id>224</id>
+      <admissionPart reference="5293"/>
+    </BedDesignation>
+    <BedDesignation id="5816">
+      <id>225</id>
+      <admissionPart reference="5294"/>
+    </BedDesignation>
+    <BedDesignation id="5817">
+      <id>226</id>
+      <admissionPart reference="5295"/>
+    </BedDesignation>
+    <BedDesignation id="5818">
+      <id>227</id>
+      <admissionPart reference="5296"/>
+    </BedDesignation>
+    <BedDesignation id="5819">
+      <id>228</id>
+      <admissionPart reference="5297"/>
+    </BedDesignation>
+    <BedDesignation id="5820">
+      <id>229</id>
+      <admissionPart reference="5298"/>
+    </BedDesignation>
+    <BedDesignation id="5821">
+      <id>230</id>
+      <admissionPart reference="5299"/>
+    </BedDesignation>
+    <BedDesignation id="5822">
+      <id>231</id>
+      <admissionPart reference="5300"/>
+    </BedDesignation>
+    <BedDesignation id="5823">
+      <id>232</id>
+      <admissionPart reference="5301"/>
+    </BedDesignation>
+    <BedDesignation id="5824">
+      <id>233</id>
+      <admissionPart reference="5302"/>
+    </BedDesignation>
+    <BedDesignation id="5825">
+      <id>234</id>
+      <admissionPart reference="5303"/>
+    </BedDesignation>
+    <BedDesignation id="5826">
+      <id>235</id>
+      <admissionPart reference="5304"/>
+    </BedDesignation>
+    <BedDesignation id="5827">
+      <id>236</id>
+      <admissionPart reference="5305"/>
+    </BedDesignation>
+    <BedDesignation id="5828">
+      <id>237</id>
+      <admissionPart reference="5306"/>
+    </BedDesignation>
+    <BedDesignation id="5829">
+      <id>238</id>
+      <admissionPart reference="5307"/>
+    </BedDesignation>
+    <BedDesignation id="5830">
+      <id>239</id>
+      <admissionPart reference="5308"/>
+    </BedDesignation>
+    <BedDesignation id="5831">
+      <id>240</id>
+      <admissionPart reference="5309"/>
+    </BedDesignation>
+    <BedDesignation id="5832">
+      <id>241</id>
+      <admissionPart reference="5310"/>
+    </BedDesignation>
+    <BedDesignation id="5833">
+      <id>242</id>
+      <admissionPart reference="5311"/>
+    </BedDesignation>
+    <BedDesignation id="5834">
+      <id>243</id>
+      <admissionPart reference="5312"/>
+    </BedDesignation>
+    <BedDesignation id="5835">
+      <id>244</id>
+      <admissionPart reference="5313"/>
+    </BedDesignation>
+    <BedDesignation id="5836">
+      <id>245</id>
+      <admissionPart reference="5314"/>
+    </BedDesignation>
+    <BedDesignation id="5837">
+      <id>246</id>
+      <admissionPart reference="5315"/>
+    </BedDesignation>
+    <BedDesignation id="5838">
+      <id>247</id>
+      <admissionPart reference="5316"/>
+    </BedDesignation>
+    <BedDesignation id="5839">
+      <id>248</id>
+      <admissionPart reference="5317"/>
+    </BedDesignation>
+    <BedDesignation id="5840">
+      <id>249</id>
+      <admissionPart reference="5318"/>
+    </BedDesignation>
+    <BedDesignation id="5841">
+      <id>250</id>
+      <admissionPart reference="5319"/>
+    </BedDesignation>
+    <BedDesignation id="5842">
+      <id>251</id>
+      <admissionPart reference="5320"/>
+    </BedDesignation>
+    <BedDesignation id="5843">
+      <id>252</id>
+      <admissionPart reference="5321"/>
+    </BedDesignation>
+    <BedDesignation id="5844">
+      <id>253</id>
+      <admissionPart reference="5322"/>
+    </BedDesignation>
+    <BedDesignation id="5845">
+      <id>254</id>
+      <admissionPart reference="5323"/>
+    </BedDesignation>
+    <BedDesignation id="5846">
+      <id>255</id>
+      <admissionPart reference="5324"/>
+    </BedDesignation>
+    <BedDesignation id="5847">
+      <id>256</id>
+      <admissionPart reference="5325"/>
+    </BedDesignation>
+    <BedDesignation id="5848">
+      <id>257</id>
+      <admissionPart reference="5326"/>
+    </BedDesignation>
+    <BedDesignation id="5849">
+      <id>258</id>
+      <admissionPart reference="5327"/>
+    </BedDesignation>
+    <BedDesignation id="5850">
+      <id>259</id>
+      <admissionPart reference="5328"/>
+    </BedDesignation>
+    <BedDesignation id="5851">
+      <id>260</id>
+      <admissionPart reference="5329"/>
+    </BedDesignation>
+    <BedDesignation id="5852">
+      <id>261</id>
+      <admissionPart reference="5330"/>
+    </BedDesignation>
+    <BedDesignation id="5853">
+      <id>262</id>
+      <admissionPart reference="5331"/>
+    </BedDesignation>
+    <BedDesignation id="5854">
+      <id>263</id>
+      <admissionPart reference="5332"/>
+    </BedDesignation>
+    <BedDesignation id="5855">
+      <id>264</id>
+      <admissionPart reference="5333"/>
+    </BedDesignation>
+    <BedDesignation id="5856">
+      <id>265</id>
+      <admissionPart reference="5334"/>
+    </BedDesignation>
+    <BedDesignation id="5857">
+      <id>266</id>
+      <admissionPart reference="5335"/>
+    </BedDesignation>
+    <BedDesignation id="5858">
+      <id>267</id>
+      <admissionPart reference="5336"/>
+    </BedDesignation>
+    <BedDesignation id="5859">
+      <id>268</id>
+      <admissionPart reference="5337"/>
+    </BedDesignation>
+    <BedDesignation id="5860">
+      <id>269</id>
+      <admissionPart reference="5338"/>
+    </BedDesignation>
+    <BedDesignation id="5861">
+      <id>270</id>
+      <admissionPart reference="5339"/>
+    </BedDesignation>
+    <BedDesignation id="5862">
+      <id>271</id>
+      <admissionPart reference="5340"/>
+    </BedDesignation>
+    <BedDesignation id="5863">
+      <id>272</id>
+      <admissionPart reference="5341"/>
+    </BedDesignation>
+    <BedDesignation id="5864">
+      <id>273</id>
+      <admissionPart reference="5342"/>
+    </BedDesignation>
+    <BedDesignation id="5865">
+      <id>274</id>
+      <admissionPart reference="5343"/>
+    </BedDesignation>
+    <BedDesignation id="5866">
+      <id>275</id>
+      <admissionPart reference="5344"/>
+    </BedDesignation>
+    <BedDesignation id="5867">
+      <id>276</id>
+      <admissionPart reference="5345"/>
+    </BedDesignation>
+    <BedDesignation id="5868">
+      <id>277</id>
+      <admissionPart reference="5346"/>
+    </BedDesignation>
+    <BedDesignation id="5869">
+      <id>278</id>
+      <admissionPart reference="5347"/>
+    </BedDesignation>
+    <BedDesignation id="5870">
+      <id>279</id>
+      <admissionPart reference="5348"/>
+    </BedDesignation>
+    <BedDesignation id="5871">
+      <id>280</id>
+      <admissionPart reference="5349"/>
+    </BedDesignation>
+    <BedDesignation id="5872">
+      <id>281</id>
+      <admissionPart reference="5350"/>
+    </BedDesignation>
+    <BedDesignation id="5873">
+      <id>282</id>
+      <admissionPart reference="5351"/>
+    </BedDesignation>
+    <BedDesignation id="5874">
+      <id>283</id>
+      <admissionPart reference="5352"/>
+    </BedDesignation>
+    <BedDesignation id="5875">
+      <id>284</id>
+      <admissionPart reference="5353"/>
+    </BedDesignation>
+    <BedDesignation id="5876">
+      <id>285</id>
+      <admissionPart reference="5354"/>
+    </BedDesignation>
+    <BedDesignation id="5877">
+      <id>286</id>
+      <admissionPart reference="5355"/>
+    </BedDesignation>
+    <BedDesignation id="5878">
+      <id>287</id>
+      <admissionPart reference="5356"/>
+    </BedDesignation>
+    <BedDesignation id="5879">
+      <id>288</id>
+      <admissionPart reference="5357"/>
+    </BedDesignation>
+    <BedDesignation id="5880">
+      <id>289</id>
+      <admissionPart reference="5358"/>
+    </BedDesignation>
+    <BedDesignation id="5881">
+      <id>290</id>
+      <admissionPart reference="5359"/>
+    </BedDesignation>
+    <BedDesignation id="5882">
+      <id>291</id>
+      <admissionPart reference="5360"/>
+    </BedDesignation>
+    <BedDesignation id="5883">
+      <id>292</id>
+      <admissionPart reference="5361"/>
+    </BedDesignation>
+    <BedDesignation id="5884">
+      <id>293</id>
+      <admissionPart reference="5362"/>
+    </BedDesignation>
+    <BedDesignation id="5885">
+      <id>294</id>
+      <admissionPart reference="5363"/>
+    </BedDesignation>
+    <BedDesignation id="5886">
+      <id>295</id>
+      <admissionPart reference="5364"/>
+    </BedDesignation>
+    <BedDesignation id="5887">
+      <id>296</id>
+      <admissionPart reference="5365"/>
+    </BedDesignation>
+    <BedDesignation id="5888">
+      <id>297</id>
+      <admissionPart reference="5366"/>
+    </BedDesignation>
+    <BedDesignation id="5889">
+      <id>298</id>
+      <admissionPart reference="5367"/>
+    </BedDesignation>
+    <BedDesignation id="5890">
+      <id>299</id>
+      <admissionPart reference="5368"/>
+    </BedDesignation>
+    <BedDesignation id="5891">
+      <id>300</id>
+      <admissionPart reference="5369"/>
+    </BedDesignation>
+    <BedDesignation id="5892">
+      <id>301</id>
+      <admissionPart reference="5370"/>
+    </BedDesignation>
+    <BedDesignation id="5893">
+      <id>302</id>
+      <admissionPart reference="5371"/>
+    </BedDesignation>
+    <BedDesignation id="5894">
+      <id>303</id>
+      <admissionPart reference="5372"/>
+    </BedDesignation>
+    <BedDesignation id="5895">
+      <id>304</id>
+      <admissionPart reference="5373"/>
+    </BedDesignation>
+    <BedDesignation id="5896">
+      <id>305</id>
+      <admissionPart reference="5374"/>
+    </BedDesignation>
+    <BedDesignation id="5897">
+      <id>306</id>
+      <admissionPart reference="5375"/>
+    </BedDesignation>
+    <BedDesignation id="5898">
+      <id>307</id>
+      <admissionPart reference="5376"/>
+    </BedDesignation>
+    <BedDesignation id="5899">
+      <id>308</id>
+      <admissionPart reference="5377"/>
+    </BedDesignation>
+    <BedDesignation id="5900">
+      <id>309</id>
+      <admissionPart reference="5378"/>
+    </BedDesignation>
+    <BedDesignation id="5901">
+      <id>310</id>
+      <admissionPart reference="5379"/>
+    </BedDesignation>
+    <BedDesignation id="5902">
+      <id>311</id>
+      <admissionPart reference="5380"/>
+    </BedDesignation>
+    <BedDesignation id="5903">
+      <id>312</id>
+      <admissionPart reference="5381"/>
+    </BedDesignation>
+    <BedDesignation id="5904">
+      <id>313</id>
+      <admissionPart reference="5382"/>
+    </BedDesignation>
+    <BedDesignation id="5905">
+      <id>314</id>
+      <admissionPart reference="5383"/>
+    </BedDesignation>
+    <BedDesignation id="5906">
+      <id>315</id>
+      <admissionPart reference="5384"/>
+    </BedDesignation>
+    <BedDesignation id="5907">
+      <id>316</id>
+      <admissionPart reference="5385"/>
+    </BedDesignation>
+    <BedDesignation id="5908">
+      <id>317</id>
+      <admissionPart reference="5386"/>
+    </BedDesignation>
+    <BedDesignation id="5909">
+      <id>318</id>
+      <admissionPart reference="5387"/>
+    </BedDesignation>
+    <BedDesignation id="5910">
+      <id>319</id>
+      <admissionPart reference="5388"/>
+    </BedDesignation>
+    <BedDesignation id="5911">
+      <id>320</id>
+      <admissionPart reference="5389"/>
+    </BedDesignation>
+    <BedDesignation id="5912">
+      <id>321</id>
+      <admissionPart reference="5390"/>
+    </BedDesignation>
+    <BedDesignation id="5913">
+      <id>322</id>
+      <admissionPart reference="5391"/>
+    </BedDesignation>
+    <BedDesignation id="5914">
+      <id>323</id>
+      <admissionPart reference="5392"/>
+    </BedDesignation>
+    <BedDesignation id="5915">
+      <id>324</id>
+      <admissionPart reference="5393"/>
+    </BedDesignation>
+    <BedDesignation id="5916">
+      <id>325</id>
+      <admissionPart reference="5394"/>
+    </BedDesignation>
+    <BedDesignation id="5917">
+      <id>326</id>
+      <admissionPart reference="5395"/>
+    </BedDesignation>
+    <BedDesignation id="5918">
+      <id>327</id>
+      <admissionPart reference="5396"/>
+    </BedDesignation>
+    <BedDesignation id="5919">
+      <id>328</id>
+      <admissionPart reference="5397"/>
+    </BedDesignation>
+    <BedDesignation id="5920">
+      <id>329</id>
+      <admissionPart reference="5398"/>
+    </BedDesignation>
+    <BedDesignation id="5921">
+      <id>330</id>
+      <admissionPart reference="5399"/>
+    </BedDesignation>
+    <BedDesignation id="5922">
+      <id>331</id>
+      <admissionPart reference="5400"/>
+    </BedDesignation>
+    <BedDesignation id="5923">
+      <id>332</id>
+      <admissionPart reference="5401"/>
+    </BedDesignation>
+    <BedDesignation id="5924">
+      <id>333</id>
+      <admissionPart reference="5402"/>
+    </BedDesignation>
+    <BedDesignation id="5925">
+      <id>334</id>
+      <admissionPart reference="5403"/>
+    </BedDesignation>
+    <BedDesignation id="5926">
+      <id>335</id>
+      <admissionPart reference="5404"/>
+    </BedDesignation>
+    <BedDesignation id="5927">
+      <id>336</id>
+      <admissionPart reference="5405"/>
+    </BedDesignation>
+    <BedDesignation id="5928">
+      <id>337</id>
+      <admissionPart reference="5406"/>
+    </BedDesignation>
+    <BedDesignation id="5929">
+      <id>338</id>
+      <admissionPart reference="5407"/>
+    </BedDesignation>
+    <BedDesignation id="5930">
+      <id>339</id>
+      <admissionPart reference="5408"/>
+    </BedDesignation>
+    <BedDesignation id="5931">
+      <id>340</id>
+      <admissionPart reference="5409"/>
+    </BedDesignation>
+    <BedDesignation id="5932">
+      <id>341</id>
+      <admissionPart reference="5410"/>
+    </BedDesignation>
+    <BedDesignation id="5933">
+      <id>342</id>
+      <admissionPart reference="5411"/>
+    </BedDesignation>
+    <BedDesignation id="5934">
+      <id>343</id>
+      <admissionPart reference="5412"/>
+    </BedDesignation>
+    <BedDesignation id="5935">
+      <id>344</id>
+      <admissionPart reference="5413"/>
+    </BedDesignation>
+    <BedDesignation id="5936">
+      <id>345</id>
+      <admissionPart reference="5414"/>
+    </BedDesignation>
+    <BedDesignation id="5937">
+      <id>346</id>
+      <admissionPart reference="5415"/>
+    </BedDesignation>
+    <BedDesignation id="5938">
+      <id>347</id>
+      <admissionPart reference="5416"/>
+    </BedDesignation>
+    <BedDesignation id="5939">
+      <id>348</id>
+      <admissionPart reference="5417"/>
+    </BedDesignation>
+    <BedDesignation id="5940">
+      <id>349</id>
+      <admissionPart reference="5418"/>
+    </BedDesignation>
+    <BedDesignation id="5941">
+      <id>350</id>
+      <admissionPart reference="5419"/>
+    </BedDesignation>
+    <BedDesignation id="5942">
+      <id>351</id>
+      <admissionPart reference="5420"/>
+    </BedDesignation>
+    <BedDesignation id="5943">
+      <id>352</id>
+      <admissionPart reference="5421"/>
+    </BedDesignation>
+    <BedDesignation id="5944">
+      <id>353</id>
+      <admissionPart reference="5422"/>
+    </BedDesignation>
+    <BedDesignation id="5945">
+      <id>354</id>
+      <admissionPart reference="5423"/>
+    </BedDesignation>
+    <BedDesignation id="5946">
+      <id>355</id>
+      <admissionPart reference="5424"/>
+    </BedDesignation>
+    <BedDesignation id="5947">
+      <id>356</id>
+      <admissionPart reference="5425"/>
+    </BedDesignation>
+    <BedDesignation id="5948">
+      <id>357</id>
+      <admissionPart reference="5426"/>
+    </BedDesignation>
+    <BedDesignation id="5949">
+      <id>358</id>
+      <admissionPart reference="5427"/>
+    </BedDesignation>
+    <BedDesignation id="5950">
+      <id>359</id>
+      <admissionPart reference="5428"/>
+    </BedDesignation>
+    <BedDesignation id="5951">
+      <id>360</id>
+      <admissionPart reference="5429"/>
+    </BedDesignation>
+    <BedDesignation id="5952">
+      <id>361</id>
+      <admissionPart reference="5430"/>
+    </BedDesignation>
+    <BedDesignation id="5953">
+      <id>362</id>
+      <admissionPart reference="5431"/>
+    </BedDesignation>
+    <BedDesignation id="5954">
+      <id>363</id>
+      <admissionPart reference="5432"/>
+    </BedDesignation>
+    <BedDesignation id="5955">
+      <id>364</id>
+      <admissionPart reference="5433"/>
+    </BedDesignation>
+    <BedDesignation id="5956">
+      <id>365</id>
+      <admissionPart reference="5434"/>
+    </BedDesignation>
+    <BedDesignation id="5957">
+      <id>366</id>
+      <admissionPart reference="5435"/>
+    </BedDesignation>
+    <BedDesignation id="5958">
+      <id>367</id>
+      <admissionPart reference="5436"/>
+    </BedDesignation>
+    <BedDesignation id="5959">
+      <id>368</id>
+      <admissionPart reference="5437"/>
+    </BedDesignation>
+    <BedDesignation id="5960">
+      <id>369</id>
+      <admissionPart reference="5438"/>
+    </BedDesignation>
+    <BedDesignation id="5961">
+      <id>370</id>
+      <admissionPart reference="5439"/>
+    </BedDesignation>
+    <BedDesignation id="5962">
+      <id>371</id>
+      <admissionPart reference="5440"/>
+    </BedDesignation>
+    <BedDesignation id="5963">
+      <id>372</id>
+      <admissionPart reference="5441"/>
+    </BedDesignation>
+    <BedDesignation id="5964">
+      <id>373</id>
+      <admissionPart reference="5442"/>
+    </BedDesignation>
+    <BedDesignation id="5965">
+      <id>374</id>
+      <admissionPart reference="5443"/>
+    </BedDesignation>
+    <BedDesignation id="5966">
+      <id>375</id>
+      <admissionPart reference="5444"/>
+    </BedDesignation>
+    <BedDesignation id="5967">
+      <id>376</id>
+      <admissionPart reference="5445"/>
+    </BedDesignation>
+    <BedDesignation id="5968">
+      <id>377</id>
+      <admissionPart reference="5446"/>
+    </BedDesignation>
+    <BedDesignation id="5969">
+      <id>378</id>
+      <admissionPart reference="5447"/>
+    </BedDesignation>
+    <BedDesignation id="5970">
+      <id>379</id>
+      <admissionPart reference="5448"/>
+    </BedDesignation>
+    <BedDesignation id="5971">
+      <id>380</id>
+      <admissionPart reference="5449"/>
+    </BedDesignation>
+    <BedDesignation id="5972">
+      <id>381</id>
+      <admissionPart reference="5450"/>
+    </BedDesignation>
+    <BedDesignation id="5973">
+      <id>382</id>
+      <admissionPart reference="5451"/>
+    </BedDesignation>
+    <BedDesignation id="5974">
+      <id>383</id>
+      <admissionPart reference="5452"/>
+    </BedDesignation>
+    <BedDesignation id="5975">
+      <id>384</id>
+      <admissionPart reference="5453"/>
+    </BedDesignation>
+    <BedDesignation id="5976">
+      <id>385</id>
+      <admissionPart reference="5454"/>
+    </BedDesignation>
+    <BedDesignation id="5977">
+      <id>386</id>
+      <admissionPart reference="5455"/>
+    </BedDesignation>
+    <BedDesignation id="5978">
+      <id>387</id>
+      <admissionPart reference="5456"/>
+    </BedDesignation>
+    <BedDesignation id="5979">
+      <id>388</id>
+      <admissionPart reference="5457"/>
+    </BedDesignation>
+    <BedDesignation id="5980">
+      <id>389</id>
+      <admissionPart reference="5458"/>
+    </BedDesignation>
+    <BedDesignation id="5981">
+      <id>390</id>
+      <admissionPart reference="5459"/>
+    </BedDesignation>
+    <BedDesignation id="5982">
+      <id>391</id>
+      <admissionPart reference="5460"/>
+    </BedDesignation>
+    <BedDesignation id="5983">
+      <id>392</id>
+      <admissionPart reference="5461"/>
+    </BedDesignation>
+    <BedDesignation id="5984">
+      <id>393</id>
+      <admissionPart reference="5462"/>
+    </BedDesignation>
+    <BedDesignation id="5985">
+      <id>394</id>
+      <admissionPart reference="5463"/>
+    </BedDesignation>
+    <BedDesignation id="5986">
+      <id>395</id>
+      <admissionPart reference="5464"/>
+    </BedDesignation>
+    <BedDesignation id="5987">
+      <id>396</id>
+      <admissionPart reference="5465"/>
+    </BedDesignation>
+    <BedDesignation id="5988">
+      <id>397</id>
+      <admissionPart reference="5466"/>
+    </BedDesignation>
+    <BedDesignation id="5989">
+      <id>398</id>
+      <admissionPart reference="5467"/>
+    </BedDesignation>
+    <BedDesignation id="5990">
+      <id>399</id>
+      <admissionPart reference="5468"/>
+    </BedDesignation>
+    <BedDesignation id="5991">
+      <id>400</id>
+      <admissionPart reference="5469"/>
+    </BedDesignation>
+    <BedDesignation id="5992">
+      <id>401</id>
+      <admissionPart reference="5470"/>
+    </BedDesignation>
+    <BedDesignation id="5993">
+      <id>402</id>
+      <admissionPart reference="5471"/>
+    </BedDesignation>
+    <BedDesignation id="5994">
+      <id>403</id>
+      <admissionPart reference="5472"/>
+    </BedDesignation>
+    <BedDesignation id="5995">
+      <id>404</id>
+      <admissionPart reference="5473"/>
+    </BedDesignation>
+    <BedDesignation id="5996">
+      <id>405</id>
+      <admissionPart reference="5474"/>
+    </BedDesignation>
+    <BedDesignation id="5997">
+      <id>406</id>
+      <admissionPart reference="5475"/>
+    </BedDesignation>
+    <BedDesignation id="5998">
+      <id>407</id>
+      <admissionPart reference="5476"/>
+    </BedDesignation>
+    <BedDesignation id="5999">
+      <id>408</id>
+      <admissionPart reference="5477"/>
+    </BedDesignation>
+    <BedDesignation id="6000">
+      <id>409</id>
+      <admissionPart reference="5478"/>
+    </BedDesignation>
+    <BedDesignation id="6001">
+      <id>410</id>
+      <admissionPart reference="5479"/>
+    </BedDesignation>
+    <BedDesignation id="6002">
+      <id>411</id>
+      <admissionPart reference="5480"/>
+    </BedDesignation>
+    <BedDesignation id="6003">
+      <id>412</id>
+      <admissionPart reference="5481"/>
+    </BedDesignation>
+    <BedDesignation id="6004">
+      <id>413</id>
+      <admissionPart reference="5482"/>
+    </BedDesignation>
+    <BedDesignation id="6005">
+      <id>414</id>
+      <admissionPart reference="5483"/>
+    </BedDesignation>
+    <BedDesignation id="6006">
+      <id>415</id>
+      <admissionPart reference="5484"/>
+    </BedDesignation>
+    <BedDesignation id="6007">
+      <id>416</id>
+      <admissionPart reference="5485"/>
+    </BedDesignation>
+    <BedDesignation id="6008">
+      <id>417</id>
+      <admissionPart reference="5486"/>
+    </BedDesignation>
+    <BedDesignation id="6009">
+      <id>418</id>
+      <admissionPart reference="5487"/>
+    </BedDesignation>
+    <BedDesignation id="6010">
+      <id>419</id>
+      <admissionPart reference="5488"/>
+    </BedDesignation>
+    <BedDesignation id="6011">
+      <id>420</id>
+      <admissionPart reference="5489"/>
+    </BedDesignation>
+    <BedDesignation id="6012">
+      <id>421</id>
+      <admissionPart reference="5490"/>
+    </BedDesignation>
+    <BedDesignation id="6013">
+      <id>422</id>
+      <admissionPart reference="5491"/>
+    </BedDesignation>
+    <BedDesignation id="6014">
+      <id>423</id>
+      <admissionPart reference="5492"/>
+    </BedDesignation>
+    <BedDesignation id="6015">
+      <id>424</id>
+      <admissionPart reference="5493"/>
+    </BedDesignation>
+    <BedDesignation id="6016">
+      <id>425</id>
+      <admissionPart reference="5494"/>
+    </BedDesignation>
+    <BedDesignation id="6017">
+      <id>426</id>
+      <admissionPart reference="5495"/>
+    </BedDesignation>
+    <BedDesignation id="6018">
+      <id>427</id>
+      <admissionPart reference="5496"/>
+    </BedDesignation>
+    <BedDesignation id="6019">
+      <id>428</id>
+      <admissionPart reference="5497"/>
+    </BedDesignation>
+    <BedDesignation id="6020">
+      <id>429</id>
+      <admissionPart reference="5498"/>
+    </BedDesignation>
+    <BedDesignation id="6021">
+      <id>430</id>
+      <admissionPart reference="5499"/>
+    </BedDesignation>
+    <BedDesignation id="6022">
+      <id>431</id>
+      <admissionPart reference="5500"/>
+    </BedDesignation>
+    <BedDesignation id="6023">
+      <id>432</id>
+      <admissionPart reference="5501"/>
+    </BedDesignation>
+    <BedDesignation id="6024">
+      <id>433</id>
+      <admissionPart reference="5502"/>
+    </BedDesignation>
+    <BedDesignation id="6025">
+      <id>434</id>
+      <admissionPart reference="5503"/>
+    </BedDesignation>
+    <BedDesignation id="6026">
+      <id>435</id>
+      <admissionPart reference="5504"/>
+    </BedDesignation>
+    <BedDesignation id="6027">
+      <id>436</id>
+      <admissionPart reference="5505"/>
+    </BedDesignation>
+    <BedDesignation id="6028">
+      <id>437</id>
+      <admissionPart reference="5506"/>
+    </BedDesignation>
+    <BedDesignation id="6029">
+      <id>438</id>
+      <admissionPart reference="5507"/>
+    </BedDesignation>
+    <BedDesignation id="6030">
+      <id>439</id>
+      <admissionPart reference="5508"/>
+    </BedDesignation>
+    <BedDesignation id="6031">
+      <id>440</id>
+      <admissionPart reference="5509"/>
+    </BedDesignation>
+    <BedDesignation id="6032">
+      <id>441</id>
+      <admissionPart reference="5510"/>
+    </BedDesignation>
+    <BedDesignation id="6033">
+      <id>442</id>
+      <admissionPart reference="5511"/>
+    </BedDesignation>
+    <BedDesignation id="6034">
+      <id>443</id>
+      <admissionPart reference="5512"/>
+    </BedDesignation>
+    <BedDesignation id="6035">
+      <id>444</id>
+      <admissionPart reference="5513"/>
+    </BedDesignation>
+    <BedDesignation id="6036">
+      <id>445</id>
+      <admissionPart reference="5514"/>
+    </BedDesignation>
+    <BedDesignation id="6037">
+      <id>446</id>
+      <admissionPart reference="5515"/>
+    </BedDesignation>
+    <BedDesignation id="6038">
+      <id>447</id>
+      <admissionPart reference="5516"/>
+    </BedDesignation>
+    <BedDesignation id="6039">
+      <id>448</id>
+      <admissionPart reference="5517"/>
+    </BedDesignation>
+    <BedDesignation id="6040">
+      <id>449</id>
+      <admissionPart reference="5518"/>
+    </BedDesignation>
+    <BedDesignation id="6041">
+      <id>450</id>
+      <admissionPart reference="5519"/>
+    </BedDesignation>
+    <BedDesignation id="6042">
+      <id>451</id>
+      <admissionPart reference="5520"/>
+    </BedDesignation>
+    <BedDesignation id="6043">
+      <id>452</id>
+      <admissionPart reference="5521"/>
+    </BedDesignation>
+    <BedDesignation id="6044">
+      <id>453</id>
+      <admissionPart reference="5522"/>
+    </BedDesignation>
+    <BedDesignation id="6045">
+      <id>454</id>
+      <admissionPart reference="5523"/>
+    </BedDesignation>
+    <BedDesignation id="6046">
+      <id>455</id>
+      <admissionPart reference="5524"/>
+    </BedDesignation>
+    <BedDesignation id="6047">
+      <id>456</id>
+      <admissionPart reference="5525"/>
+    </BedDesignation>
+    <BedDesignation id="6048">
+      <id>457</id>
+      <admissionPart reference="5526"/>
+    </BedDesignation>
+    <BedDesignation id="6049">
+      <id>458</id>
+      <admissionPart reference="5527"/>
+    </BedDesignation>
+    <BedDesignation id="6050">
+      <id>459</id>
+      <admissionPart reference="5528"/>
+    </BedDesignation>
+    <BedDesignation id="6051">
+      <id>460</id>
+      <admissionPart reference="5529"/>
+    </BedDesignation>
+    <BedDesignation id="6052">
+      <id>461</id>
+      <admissionPart reference="5530"/>
+    </BedDesignation>
+    <BedDesignation id="6053">
+      <id>462</id>
+      <admissionPart reference="5531"/>
+    </BedDesignation>
+    <BedDesignation id="6054">
+      <id>463</id>
+      <admissionPart reference="5532"/>
+    </BedDesignation>
+    <BedDesignation id="6055">
+      <id>464</id>
+      <admissionPart reference="5533"/>
+    </BedDesignation>
+    <BedDesignation id="6056">
+      <id>465</id>
+      <admissionPart reference="5534"/>
+    </BedDesignation>
+    <BedDesignation id="6057">
+      <id>466</id>
+      <admissionPart reference="5535"/>
+    </BedDesignation>
+    <BedDesignation id="6058">
+      <id>467</id>
+      <admissionPart reference="5536"/>
+    </BedDesignation>
+    <BedDesignation id="6059">
+      <id>468</id>
+      <admissionPart reference="5537"/>
+    </BedDesignation>
+    <BedDesignation id="6060">
+      <id>469</id>
+      <admissionPart reference="5538"/>
+    </BedDesignation>
+    <BedDesignation id="6061">
+      <id>470</id>
+      <admissionPart reference="5539"/>
+    </BedDesignation>
+    <BedDesignation id="6062">
+      <id>471</id>
+      <admissionPart reference="5540"/>
+    </BedDesignation>
+    <BedDesignation id="6063">
+      <id>472</id>
+      <admissionPart reference="5541"/>
+    </BedDesignation>
+    <BedDesignation id="6064">
+      <id>473</id>
+      <admissionPart reference="5542"/>
+    </BedDesignation>
+    <BedDesignation id="6065">
+      <id>474</id>
+      <admissionPart reference="5543"/>
+    </BedDesignation>
+    <BedDesignation id="6066">
+      <id>475</id>
+      <admissionPart reference="5544"/>
+    </BedDesignation>
+    <BedDesignation id="6067">
+      <id>476</id>
+      <admissionPart reference="5545"/>
+    </BedDesignation>
+    <BedDesignation id="6068">
+      <id>477</id>
+      <admissionPart reference="5546"/>
+    </BedDesignation>
+    <BedDesignation id="6069">
+      <id>478</id>
+      <admissionPart reference="5547"/>
+    </BedDesignation>
+    <BedDesignation id="6070">
+      <id>479</id>
+      <admissionPart reference="5548"/>
+    </BedDesignation>
+    <BedDesignation id="6071">
+      <id>480</id>
+      <admissionPart reference="5549"/>
+    </BedDesignation>
+    <BedDesignation id="6072">
+      <id>481</id>
+      <admissionPart reference="5550"/>
+    </BedDesignation>
+    <BedDesignation id="6073">
+      <id>482</id>
+      <admissionPart reference="5551"/>
+    </BedDesignation>
+    <BedDesignation id="6074">
+      <id>483</id>
+      <admissionPart reference="5552"/>
+    </BedDesignation>
+    <BedDesignation id="6075">
+      <id>484</id>
+      <admissionPart reference="5553"/>
+    </BedDesignation>
+    <BedDesignation id="6076">
+      <id>485</id>
+      <admissionPart reference="5554"/>
+    </BedDesignation>
+    <BedDesignation id="6077">
+      <id>486</id>
+      <admissionPart reference="5555"/>
+    </BedDesignation>
+    <BedDesignation id="6078">
+      <id>487</id>
+      <admissionPart reference="5556"/>
+    </BedDesignation>
+    <BedDesignation id="6079">
+      <id>488</id>
+      <admissionPart reference="5557"/>
+    </BedDesignation>
+    <BedDesignation id="6080">
+      <id>489</id>
+      <admissionPart reference="5558"/>
+    </BedDesignation>
+    <BedDesignation id="6081">
+      <id>490</id>
+      <admissionPart reference="5559"/>
+    </BedDesignation>
+    <BedDesignation id="6082">
+      <id>491</id>
+      <admissionPart reference="5560"/>
+    </BedDesignation>
+    <BedDesignation id="6083">
+      <id>492</id>
+      <admissionPart reference="5561"/>
+    </BedDesignation>
+    <BedDesignation id="6084">
+      <id>493</id>
+      <admissionPart reference="5562"/>
+    </BedDesignation>
+    <BedDesignation id="6085">
+      <id>494</id>
+      <admissionPart reference="5563"/>
+    </BedDesignation>
+    <BedDesignation id="6086">
+      <id>495</id>
+      <admissionPart reference="5564"/>
+    </BedDesignation>
+    <BedDesignation id="6087">
+      <id>496</id>
+      <admissionPart reference="5565"/>
+    </BedDesignation>
+    <BedDesignation id="6088">
+      <id>497</id>
+      <admissionPart reference="5566"/>
+    </BedDesignation>
+    <BedDesignation id="6089">
+      <id>498</id>
+      <admissionPart reference="5567"/>
+    </BedDesignation>
+    <BedDesignation id="6090">
+      <id>499</id>
+      <admissionPart reference="5568"/>
+    </BedDesignation>
+    <BedDesignation id="6091">
+      <id>500</id>
+      <admissionPart reference="5569"/>
+    </BedDesignation>
+    <BedDesignation id="6092">
+      <id>501</id>
+      <admissionPart reference="5570"/>
+    </BedDesignation>
+    <BedDesignation id="6093">
+      <id>502</id>
+      <admissionPart reference="5571"/>
+    </BedDesignation>
+    <BedDesignation id="6094">
+      <id>503</id>
+      <admissionPart reference="5572"/>
+    </BedDesignation>
+    <BedDesignation id="6095">
+      <id>504</id>
+      <admissionPart reference="5573"/>
+    </BedDesignation>
+    <BedDesignation id="6096">
+      <id>505</id>
+      <admissionPart reference="5574"/>
+    </BedDesignation>
+    <BedDesignation id="6097">
+      <id>506</id>
+      <admissionPart reference="5575"/>
+    </BedDesignation>
+    <BedDesignation id="6098">
+      <id>507</id>
+      <admissionPart reference="5576"/>
+    </BedDesignation>
+    <BedDesignation id="6099">
+      <id>508</id>
+      <admissionPart reference="5577"/>
+    </BedDesignation>
+    <BedDesignation id="6100">
+      <id>509</id>
+      <admissionPart reference="5578"/>
+    </BedDesignation>
+    <BedDesignation id="6101">
+      <id>510</id>
+      <admissionPart reference="5579"/>
+    </BedDesignation>
+    <BedDesignation id="6102">
+      <id>511</id>
+      <admissionPart reference="5580"/>
+    </BedDesignation>
+    <BedDesignation id="6103">
+      <id>512</id>
+      <admissionPart reference="5581"/>
+    </BedDesignation>
+    <BedDesignation id="6104">
+      <id>513</id>
+      <admissionPart reference="5582"/>
+    </BedDesignation>
+    <BedDesignation id="6105">
+      <id>514</id>
+      <admissionPart reference="5583"/>
+    </BedDesignation>
+    <BedDesignation id="6106">
+      <id>515</id>
+      <admissionPart reference="5584"/>
+    </BedDesignation>
+    <BedDesignation id="6107">
+      <id>516</id>
+      <admissionPart reference="5585"/>
+    </BedDesignation>
+    <BedDesignation id="6108">
+      <id>517</id>
+      <admissionPart reference="5586"/>
+    </BedDesignation>
+    <BedDesignation id="6109">
+      <id>518</id>
+      <admissionPart reference="5587"/>
+    </BedDesignation>
+  </bedDesignationList>
 </PatientAdmissionSchedule>

@@ -61,8 +61,9 @@ public class Manners2009Panel extends SolutionPanel {
         removeAll();
         Manners2009 manners2009 = (Manners2009) solution;
         gridLayout.setColumns((int) Math.ceil(Math.sqrt(manners2009.getTableList().size())));
-        Map<Table, JPanel> tablePanelMap = new HashMap<Table, JPanel>(manners2009.getTableList().size());
         Map<Seat, SeatPanel> seatPanelMap = new HashMap<Seat, SeatPanel>(manners2009.getSeatList().size());
+        SeatPanel unassignedPanel = new SeatPanel(null);
+        seatPanelMap.put(null, unassignedPanel);
         for (Table table : manners2009.getTableList()) {
             // Formula: 4(columns - 1) = tableSize
             int edgeLength = (int) Math.ceil(((double) (table.getSeatList().size() + 4)) / 4.0);
@@ -72,7 +73,6 @@ public class Manners2009Panel extends SolutionPanel {
                     BorderFactory.createTitledBorder("Table " + table.getTableIndex())
             ));
             add(tablePanel);
-            tablePanelMap.put(table, tablePanel);
             for (int y = 0; y < edgeLength; y++) {
                 for (int x = 0; x < edgeLength; x++) {
                     int index;
@@ -98,11 +98,9 @@ public class Manners2009Panel extends SolutionPanel {
                 }
             }
         }
-        if (manners2009.isInitialized()) {
-            for (SeatDesignation seatDesignation : manners2009.getSeatDesignationList()) {
-                SeatPanel seatPanel = seatPanelMap.get(seatDesignation.getSeat());
-                seatPanel.addSeatDesignation(seatDesignation);
-            }
+        for (SeatDesignation seatDesignation : manners2009.getSeatDesignationList()) {
+            SeatPanel seatPanel = seatPanelMap.get(seatDesignation.getSeat());
+            seatPanel.addSeatDesignation(seatDesignation);
         }
     }
 
@@ -113,8 +111,8 @@ public class Manners2009Panel extends SolutionPanel {
             setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(Color.DARK_GRAY),
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JLabel seatLabel = new JLabel("Seat " + seat.getSeatIndexInTable(), SwingConstants.CENTER);
-            add(seatLabel);
+            String seatLabelText = seat == null ? "Unassigned" : "Seat " + seat.getSeatIndexInTable();
+            add(new JLabel(seatLabelText, SwingConstants.CENTER));
         }
 
         public void addSeatDesignation(SeatDesignation seatDesignation) {

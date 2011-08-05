@@ -57,16 +57,14 @@ public class TspListPanel extends JPanel {
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
-        if (travelingSalesmanTour.isInitialized()) {
-            for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-                JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
-                JButton button = new JButton(new CityAssignmentAction(cityAssignment));
-                cityAssignmentPanel.add(button);
-                JLabel distanceLabel = new JLabel("Distance to next: "
-                        + cityAssignment.getDistanceToNextCityAssignment());
-                cityAssignmentPanel.add(distanceLabel);
-                add(cityAssignmentPanel);
-            }
+        for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
+            JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
+            JButton button = new JButton(new CityAssignmentAction(cityAssignment));
+            cityAssignmentPanel.add(button);
+            JLabel distanceLabel = new JLabel("Distance to next: "
+                    + cityAssignment.getDistanceToNextCityAssignment());
+            cityAssignmentPanel.add(distanceLabel);
+            add(cityAssignmentPanel);
         }
     }
 

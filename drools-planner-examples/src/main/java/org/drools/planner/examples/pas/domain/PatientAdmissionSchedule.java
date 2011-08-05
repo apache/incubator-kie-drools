@@ -171,10 +171,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (bedDesignationList != null);
-    }
-
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(specialismList);

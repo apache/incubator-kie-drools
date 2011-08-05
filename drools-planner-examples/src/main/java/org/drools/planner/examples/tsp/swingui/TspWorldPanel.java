@@ -60,16 +60,14 @@ public class TspWorldPanel extends JPanel {
             g.fillRect(x - 1, y - 1, 3, 3);
         }
         g.setColor(Color.BLACK);
-        if (travelingSalesmanTour.isInitialized()) {
-            for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-                City city1 = cityAssignment.getCity();
-                int x1 = translator.translateLongitude(city1.getLongitude());
-                int y1 = translator.translateLatitude(city1.getLatitude());
-                City city2 = cityAssignment.getNextCityAssignment().getCity();
-                int x2 = translator.translateLongitude(city2.getLongitude());
-                int y2 = translator.translateLatitude(city2.getLatitude());
-                g.drawLine(x1, y1, x2, y2);
-            }
+        for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
+            City city1 = cityAssignment.getCity();
+            int x1 = translator.translateLongitude(city1.getLongitude());
+            int y1 = translator.translateLatitude(city1.getLatitude());
+            City city2 = cityAssignment.getNextCityAssignment().getCity();
+            int x2 = translator.translateLongitude(city2.getLongitude());
+            int y2 = translator.translateLatitude(city2.getLatitude());
+            g.drawLine(x1, y1, x2, y2);
         }
         repaint();
     }
