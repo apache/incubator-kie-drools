@@ -1004,7 +1004,7 @@ Instead, there's now out-of-the-box support for several construction heuristics.
 These implementations are fast, scalable and configurable. They require little or no domain specific code.
 They also support features like terminateEarly, logging, partially initialized starting solutions, ...
 Alternatively, you can also refactor it to a CustomSolverPhaseCommand,
-which is has the same freedom (to write lots of custom code) as a StartingSolutionInitializer had.
+which has the same freedom (to write lots of custom code) as a StartingSolutionInitializer had.
 
 [MAJOR] Replacing the StartingSolutionInitializer by a construction heuristics (recommended)
 Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
