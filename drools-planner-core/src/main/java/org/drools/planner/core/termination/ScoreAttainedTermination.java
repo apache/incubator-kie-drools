@@ -44,7 +44,7 @@ public class ScoreAttainedTermination extends AbstractTermination {
     }
 
     private boolean isTerminated(Score bestScore) {
-        return bestScore.compareTo(scoreAttained) >= 0;
+        return bestScore != null && bestScore.compareTo(scoreAttained) >= 0;
     }
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
