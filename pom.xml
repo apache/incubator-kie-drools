@@ -11,7 +11,8 @@
   </parent>
 
   <groupId>org.drools</groupId>
-  <artifactId>drools-multiproject</artifactId><!-- TODO rename to drools once parent pom has been moved -->
+  <!-- TODO rename to drools once parent pom has been moved -->
+  <artifactId>drools-multiproject</artifactId>
   <packaging>pom</packaging>
 
   <name>Drools multiproject</name>
