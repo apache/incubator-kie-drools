@@ -17,7 +17,6 @@
 package org.drools.planner.core.termination;
 
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
-import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solver.DefaultSolverScope;
 
@@ -48,15 +47,16 @@ public class ScoreAttainedTermination extends AbstractTermination {
     }
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
-        Score startingScore = solverScope.getStartingScore();
+        Score startingInitializedScore = solverScope.getStartingInitializedScore();
         Score bestScore = solverScope.getBestScore();
-        return solverScope.getScoreDefinition().calculateTimeGradient(startingScore, scoreAttained, bestScore);
+        return solverScope.getScoreDefinition().calculateTimeGradient(
+                startingInitializedScore, scoreAttained, bestScore);
     }
 
     public double calculatePhaseTimeGradient(AbstractSolverPhaseScope solverPhaseScope) {
-        Score startingScore = solverPhaseScope.getStartingScore();
+        Score startingInitializedScore = solverPhaseScope.getStartingScore();
         Score bestScore = solverPhaseScope.getBestScore();
-        return solverPhaseScope.getScoreDefinition().calculateTimeGradient(startingScore, scoreAttained, bestScore);
+        return solverPhaseScope.getScoreDefinition().calculateTimeGradient(startingInitializedScore, scoreAttained, bestScore);
     }
 
 }

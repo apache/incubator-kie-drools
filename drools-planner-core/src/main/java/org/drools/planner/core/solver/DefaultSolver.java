@@ -22,16 +22,13 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.RuleBase;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
-import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.SolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.DefaultSolutionDirector;
@@ -159,7 +156,7 @@ public class DefaultSolver implements Solver {
         }
         bestSolutionRecaller.solvingStarted(solverScope);
         logger.info("Starting with time spend ({}), score ({}), new best score ({}).",
-                new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingScore(),
+                new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
                         solverScope.getBestScore()});
     }
 

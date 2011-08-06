@@ -17,23 +17,12 @@
 package org.drools.planner.core.solver;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
-import org.drools.ClassObjectFilter;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
-import org.drools.planner.core.score.constraint.ConstraintOccurrence;
-import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
-import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.DefaultSolutionDirector;
@@ -51,7 +40,7 @@ public class DefaultSolverScope {
 
     protected Random workingRandom;
 
-    protected Score startingScore; // TODO after initialization => ambiguous with setStartingSolution
+    protected Score startingInitializedScore; // TODO after initialization => ambiguous with setStartingSolution
 
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me
@@ -124,12 +113,12 @@ public class DefaultSolverScope {
         this.workingRandom = workingRandom;
     }
 
-    public Score getStartingScore() {
-        return startingScore;
+    public Score getStartingInitializedScore() {
+        return startingInitializedScore;
     }
 
-    public void setStartingScore(Score startingScore) {
-        this.startingScore = startingScore;
+    public void setStartingInitializedScore(Score startingInitializedScore) {
+        this.startingInitializedScore = startingInitializedScore;
     }
 
     public long getCalculateCount() {
