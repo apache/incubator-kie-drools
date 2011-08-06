@@ -41,6 +41,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
@@ -168,7 +169,12 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     }
 
     private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
-        XYSeriesCollection seriesCollection = new XYSeriesCollection();
+        NumberAxis xAxis = new NumberAxis("Time millis spend");
+        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
+        NumberAxis yAxis = new NumberAxis("Score");
+        yAxis.setAutoRangeIncludesZero(false);
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        int seriesIndex = 0;
         for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
             XYSeries series = new XYSeries(configName);
@@ -181,14 +187,19 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
                     series.add(timeMillisSpend, scoreGraphValue);
                 }
             }
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
+            plot.setDataset(seriesIndex, seriesCollection);
+            XYItemRenderer renderer;
+            // No direct lines between 2 points
+            renderer = new XYStepRenderer();
+            if (statisticPointList.size() <= 1) {
+                // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
+                renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+            }
+            plot.setRenderer(seriesIndex, renderer);
+            seriesIndex++;
         }
-        NumberAxis xAxis = new NumberAxis("Time millis spend");
-        xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
-        NumberAxis yAxis = new NumberAxis("Score");
-        yAxis.setAutoRangeIncludesZero(false);
-        XYItemRenderer renderer = new XYStepRenderer();
-        XYPlot plot = new XYPlot(seriesCollection, xAxis, yAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart(baseName + " best score statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
