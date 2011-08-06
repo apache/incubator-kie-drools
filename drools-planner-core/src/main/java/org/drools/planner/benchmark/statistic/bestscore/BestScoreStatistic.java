@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -50,7 +51,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
     private Map<String, BestScoreStatisticListener> bestScoreStatisticListenerMap
-            = new HashMap<String, BestScoreStatisticListener>();
+            = new LinkedHashMap<String, BestScoreStatisticListener>();
     private ScoreDefinition scoreDefinition = null;
 
     public void addListener(Solver solver, String configName) {
@@ -170,17 +171,17 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, BestScoreStatisticListener> listenerEntry : bestScoreStatisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            XYSeries configSeries = new XYSeries(configName);
+            XYSeries series = new XYSeries(configName);
             List<BestScoreStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
             for (BestScoreStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
                 Score score = statisticPoint.getScore();
                 Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
                 if (scoreGraphValue != null) {
-                    configSeries.add(timeMillisSpend, scoreGraphValue);
+                    series.add(timeMillisSpend, scoreGraphValue);
                 }
             }
-            seriesCollection.addSeries(configSeries);
+            seriesCollection.addSeries(series);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
