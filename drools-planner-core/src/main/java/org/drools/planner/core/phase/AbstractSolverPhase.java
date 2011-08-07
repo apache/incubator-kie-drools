@@ -23,6 +23,7 @@ import org.drools.planner.core.localsearch.DefaultLocalSearchSolverPhase;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListener;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleSupport;
 import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.core.termination.Termination;
 import org.slf4j.Logger;
@@ -78,7 +79,11 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
         DefaultSolverScope solverScope = solverPhaseScope.getSolverScope();
         // At the end of the phase, the best solution should be in the working memory for the next phase
-        solverScope.getSolutionDirector().setWorkingSolution(solverScope.getBestSolution());
+        // TODO WORKAROUND because the best solution might not be initialized yet (and than it's currently null)
+        Solution bestSolution = solverScope.getBestSolution();
+        if (bestSolution != null) {
+            solverScope.getSolutionDirector().setWorkingSolution(bestSolution);
+        }
         termination.phaseEnded(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
     }

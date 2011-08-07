@@ -144,4 +144,12 @@ public class SolverBenchmark {
         return getTotalScore().divide(solverBenchmarkResultList.size());
     }
 
+    public void validate() {
+        if (unsolvedSolutionFileList == null || unsolvedSolutionFileList.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Configure at least 1 <unsolvedSolutionFile> for the <solverBenchmark> (" + name
+                            + ") directly or indirectly by inheriting it.");
+        }
+    }
+
 }

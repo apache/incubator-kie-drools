@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.drools.planner.config.phase.SolverPhaseConfig;
 import org.drools.planner.core.termination.AbstractCompositeTermination;
 import org.drools.planner.core.termination.AndCompositeTermination;
 import org.drools.planner.core.termination.OrCompositeTermination;
@@ -31,9 +33,8 @@ import org.drools.planner.core.termination.UnimprovedStepCountTermination;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 
 @XStreamAlias("termination")
-public class TerminationConfig {
+public class TerminationConfig implements Cloneable {
 
-    private Termination termination = null; // TODO make into a list
     private Class<Termination> terminationClass = null;
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
@@ -46,13 +47,8 @@ public class TerminationConfig {
     private String scoreAttained = null;
     private Integer maximumUnimprovedStepCount = null;
 
-    public Termination getTermination() {
-        return termination;
-    }
-
-    public void setTermination(Termination termination) {
-        this.termination = termination;
-    }
+    @XStreamImplicit(itemFieldName = "termination")
+    private List<TerminationConfig> terminationConfigList = null;
 
     public Class<Termination> getTerminationClass() {
         return terminationClass;
@@ -126,15 +122,28 @@ public class TerminationConfig {
         this.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
     }
 
+    public List<TerminationConfig> getTerminationConfigList() {
+        return terminationConfigList;
+    }
+
+    public void setTerminationConfigList(List<TerminationConfig> terminationConfigList) {
+        this.terminationConfigList = terminationConfigList;
+    }
+    
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public Termination buildTermination(ScoreDefinition scoreDefinition, Termination chainedTermination) {
-        List<Termination> terminationList = new ArrayList<Termination>();
-        if (termination != null) {
-            terminationList.add(termination);
+        Termination termination = buildTermination(scoreDefinition);
+        if (termination == null) {
+            return chainedTermination;
         }
+        return new OrCompositeTermination(chainedTermination, termination);
+    }
+
+    public Termination buildTermination(ScoreDefinition scoreDefinition) {
+        List<Termination> terminationList = new ArrayList<Termination>();
         if (terminationClass != null) {
             try {
                 terminationList.add(terminationClass.newInstance());
@@ -151,24 +160,10 @@ public class TerminationConfig {
             termination.setMaximumStepCount(maximumStepCount);
             terminationList.add(termination);
         }
-        if (maximumTimeMillisSpend != null) {
+        Long maximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
+        if (maximumTimeMillisSpendTotal != null) {
             TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(maximumTimeMillisSpend);
-            terminationList.add(termination);
-        }
-        if (maximumSecondsSpend != null) {
-            TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(maximumSecondsSpend * 1000L);
-            terminationList.add(termination);
-        }
-        if (maximumMinutesSpend != null) {
-            TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(maximumMinutesSpend * 60000L);
-            terminationList.add(termination);
-        }
-        if (maximumHoursSpend != null) {
-            TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
-            termination.setMaximumTimeMillisSpend(maximumHoursSpend * 3600000L);
+            termination.setMaximumTimeMillisSpend(maximumTimeMillisSpendTotal);
             terminationList.add(termination);
         }
         if (scoreAttained != null) {
@@ -181,8 +176,16 @@ public class TerminationConfig {
             termination.setMaximumUnimprovedStepCount(maximumUnimprovedStepCount);
             terminationList.add(termination);
         }
+        if (terminationConfigList != null && terminationConfigList.isEmpty()) {
+            for (TerminationConfig terminationConfig : terminationConfigList) {
+                Termination termination = terminationConfig.buildTermination(scoreDefinition);
+                if (termination != null) {
+                    terminationList.add(termination);
+                }
+            }
+        }
         if (terminationList.size() == 1) {
-            return new OrCompositeTermination(chainedTermination, terminationList.get(0));
+            return terminationList.get(0);
         } else if (terminationList.size() > 1) {
             AbstractCompositeTermination compositeTermination;
             if (terminationCompositionStyle == null || terminationCompositionStyle == TerminationCompositionStyle.OR) {
@@ -194,17 +197,44 @@ public class TerminationConfig {
                         + ") is not implemented");
             }
             compositeTermination.setTerminationList(terminationList);
-            return new OrCompositeTermination(chainedTermination, compositeTermination);
+            return compositeTermination;
         } else {
-            return chainedTermination;
+            return null;
+        }
+    }
+
+    public Long calculateMaximumTimeMillisSpendTotal() {
+        if (maximumTimeMillisSpend == null && maximumSecondsSpend == null && maximumMinutesSpend == null
+                && maximumHoursSpend == null) {
+            return null;
+        }
+        long maximumTimeMillisSpendTotal = 0L;
+        if (maximumTimeMillisSpend != null) {
+            maximumTimeMillisSpendTotal += maximumTimeMillisSpend;
+        }
+        if (maximumSecondsSpend != null) {
+            maximumTimeMillisSpendTotal += maximumSecondsSpend * 1000L;
+        }
+        if (maximumMinutesSpend != null) {
+            maximumTimeMillisSpendTotal += maximumMinutesSpend * 60000L;
+        }
+        if (maximumHoursSpend != null) {
+            maximumTimeMillisSpendTotal += maximumHoursSpend * 3600000L;
+        }
+        return maximumTimeMillisSpendTotal;
+    }
+
+    public void shortenMaximumTimeMillisSpendTotal(long maximumTimeMillisSpendTotal) {
+        Long oldMaximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
+        if (oldMaximumTimeMillisSpendTotal == null || maximumTimeMillisSpendTotal < oldMaximumTimeMillisSpendTotal) {
+            maximumTimeMillisSpend = maximumTimeMillisSpendTotal;
+            maximumSecondsSpend = null;
+            maximumMinutesSpend = null;
+            maximumHoursSpend = null;
         }
     }
 
     public void inherit(TerminationConfig inheritedConfig) {
-        // inherited terminations get compositely added
-        if (termination == null) {
-            termination = inheritedConfig.getTermination();
-        }
         if (terminationClass == null) {
             terminationClass = inheritedConfig.getTerminationClass();
         }
@@ -232,6 +262,39 @@ public class TerminationConfig {
         if (maximumUnimprovedStepCount == null) {
             maximumUnimprovedStepCount = inheritedConfig.getMaximumUnimprovedStepCount();
         }
+        if (terminationConfigList == null) {
+            terminationConfigList = inheritedConfig.getTerminationConfigList();
+        } else if (inheritedConfig.getTerminationConfigList() != null) {
+            // The inherited terminationConfigList should be before the non-inherited one
+            List<TerminationConfig> mergedList = new ArrayList<TerminationConfig>(
+                    inheritedConfig.getTerminationConfigList());
+            mergedList.addAll(terminationConfigList);
+            terminationConfigList = mergedList;
+        }
+    }
+
+    @Override
+    public TerminationConfig clone() {
+        TerminationConfig clone = new TerminationConfig();
+        clone.terminationClass = terminationClass;
+        clone.terminationCompositionStyle = terminationCompositionStyle;
+        clone.maximumStepCount = maximumStepCount;
+        clone.maximumTimeMillisSpend = maximumTimeMillisSpend;
+        clone.maximumSecondsSpend = maximumSecondsSpend;
+        clone.maximumMinutesSpend = maximumMinutesSpend;
+        clone.maximumHoursSpend = maximumHoursSpend;
+        clone.scoreAttained = scoreAttained;
+        clone.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
+        if (terminationConfigList != null) {
+            List<TerminationConfig> clonedTerminationConfigList = new ArrayList<TerminationConfig>(
+                    terminationConfigList.size());
+            for (TerminationConfig terminationConfig : terminationConfigList) {
+                TerminationConfig clonedTerminationConfig = terminationConfig.clone();
+                clonedTerminationConfigList.add(clonedTerminationConfig);
+            }
+            clone.terminationConfigList = clonedTerminationConfigList;
+        }
+        return clone;
     }
 
     public enum TerminationCompositionStyle {

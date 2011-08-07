@@ -2,6 +2,7 @@
 <solverBenchmarkSuite>
   <benchmarkDirectory>local/data/cloudbalancing</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/unsolvedCloudBalance100-100.xml</unsolvedSolutionFile>
