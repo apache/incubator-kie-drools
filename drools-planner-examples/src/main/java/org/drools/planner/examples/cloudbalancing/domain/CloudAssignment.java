@@ -23,8 +23,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
-import org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudAssignmentDifficultyComparator;
-import org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudComputerStrengthComparator;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudAssignmentDifficultyComparator;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)

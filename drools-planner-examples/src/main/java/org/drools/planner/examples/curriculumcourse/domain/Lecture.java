@@ -26,9 +26,9 @@ import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.LectureDifficultyWeightFactory;
-import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.PeriodStrengthWeightFactory;
-import org.drools.planner.examples.curriculumcourse.solver.solution.initializer.RoomStrengthWeightFactory;
+import org.drools.planner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
+import org.drools.planner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
+import org.drools.planner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")

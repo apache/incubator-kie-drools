@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.solver.solution.initializer;
+package org.drools.planner.examples.cloudbalancing.domain.solver;
 
 import java.util.Comparator;
 

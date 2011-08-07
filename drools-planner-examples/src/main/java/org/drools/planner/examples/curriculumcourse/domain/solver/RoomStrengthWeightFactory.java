@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.curriculumcourse.solver.solution.initializer;
+package org.drools.planner.examples.curriculumcourse.domain.solver;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
