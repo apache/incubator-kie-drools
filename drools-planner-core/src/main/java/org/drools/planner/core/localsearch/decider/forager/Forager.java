@@ -18,16 +18,16 @@ package org.drools.planner.core.localsearch.decider.forager;
 
 import java.util.List;
 
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.MoveScope;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.move.Move;
 
 /**
  * A Forager collects the accepted moves and picks the next step from those for the Decider.
  * @see AbstractForager
  */
-public interface Forager extends LocalSearchSolverLifecycleListener {
+public interface Forager extends LocalSearchSolverPhaseLifecycleListener {
 
     void addMove(MoveScope moveScope);
 

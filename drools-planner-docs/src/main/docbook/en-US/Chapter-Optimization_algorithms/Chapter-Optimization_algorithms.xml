@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Optimization algorithms</title>
+
+  <section>
+    <title>Introduction</title>
+
+    <para>In number of possible solutions for a planning problem can be mind blowing. For example:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>4 queens has 256 possible solutions (<literal>n ^ n</literal>) and 2 optimal solutions.</para>
+      </listitem>
+
+      <listitem>
+        <para>5 queens has 3125 possible solutions (<literal>n ^ n</literal>) and 1 optimal solution.</para>
+      </listitem>
+
+      <listitem>
+        <para>8 queens has 16777216 possible solutions (<literal>n ^ n</literal>) and 92 optimal solutions.</para>
+      </listitem>
+
+      <listitem>
+        <para>Most real-life planning problems have an incredible number of possible solutions and only 1 or a few
+        optimal solutions.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>An optimization algorithm that checks every possible solution (even with pruning) can easily run for billions
+    of years on a single real-life planning problem. Most of the time, we are happy with a feasible solution found in a
+    limited amount of time.</para>
+
+    <para>The combination of Drools Planner's optimization algorithms and the Drools Expert rule engine turn out to be a
+    very efficient, because:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>A rule engine such as Drools Expert is <emphasis role="bold">great for calculating the score</emphasis> of
+        a solution of a planning problem. It make it easy and scalable to add additional soft or hard constraints such
+        as "a teacher shouldn't teach more then 7 hours a day". It does delta based score calculation without any extra
+        code. However it tends to be not suited to use to actually find new solutions.</para>
+      </listitem>
+
+      <listitem>
+        <para>An optimization algorithm is <emphasis role="bold">great at finding new improving solutions</emphasis> for
+        a planning problem, without necessarily brute-forcing every possibility. However it needs to know the score of a
+        solution and offers no support in calculating that score efficiently.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Drools Planner's implementation combines both. On top of that, it also offers additional support for
+    benchmarking, etc.</para>
+  </section>
+
+  <section>
+    <title>Algorithms overview</title>
+
+    <para>todo</para>
+  </section>
+
+  <section>
+    <title><literal>SolverPhase</literal></title>
+
+    <para>A <literal>Solver</literal> can use multiple optimization algorithms in sequence. <emphasis role="bold">Each
+    optimization algorithm is represented by a <literal>SolverPhase</literal>.</emphasis> There is never more than 1
+    <literal>SolverPhase</literal> solving at the same time.</para>
+
+    <note>
+      <para>Some <literal>SolverPhase</literal> implementations can combine techniques from multiple optimization
+      algorithms, but they are still just 1 <literal>SolverPhase</literal>. For example: a local search
+      <literal>SolverPhase</literal> can do simulated annealing with property tabu.</para>
+    </note>
+
+    <para>Here's a configuration that runs 3 phases in sequence:</para>
+
+    <programlisting>&lt;solver&gt;
+  ...
+  &lt;customSolverPhase&gt;&lt;!-- Phase 1 --&gt;
+    ... &lt;!-- custom construction heuristic --&gt;
+  &lt;/customSolverPhase&gt;
+  &lt;localSearch&gt;&lt;!-- Phase 2 --&gt;
+    ... &lt;!-- simulated annealing --&gt;
+  &lt;/localSearch&gt;
+  &lt;localSearch&gt;&lt;!-- Phase 3 --&gt;
+    ... &lt;!-- Tabu search --&gt;
+  &lt;/localSearch&gt;
+&lt;/solver&gt;</programlisting>
+
+    <para>When the first phase terminates, the second phase starts, and so on. When the last phase terminates, the
+    <literal>Solver</literal> terminates.</para>
+
+    <para>Some phases (especially construction heuristics) will terminate automatically. Other phases (especially
+    metaheuristics) will only terminate if the phase is configured to terminate:</para>
+
+    <programlisting>&lt;solver&gt;
+  ...
+  &lt;termination&gt;&lt;!-- Solver termination --&gt;
+    &lt;maximumSecondsSpend&gt;90&lt;/maximumSecondsSpend&gt;
+  &lt;/termination&gt;
+  &lt;localSearch&gt;
+    &lt;termination&gt;&lt;!-- Phase termination --&gt;
+      &lt;maximumSecondsSpend&gt;60&lt;/maximumSecondsSpend&gt;&lt;!-- Let the next phase run too, before the solver terminates --&gt;
+    &lt;/termination&gt;
+    ...
+  &lt;/localSearch&gt;
+  &lt;localSearch&gt;
+    ...
+  &lt;/localSearch&gt;
+&lt;/solver&gt;</programlisting>
+
+    <para>If the <literal>Solver</literal> terminates (before the last phase terminates itself), the current phase is
+    terminated and all subsequent phases won't run.</para>
+  </section>
+
+  <section>
+    <title>Which optimization algorithms should I use?</title>
+
+    <para>The <emphasis>best</emphasis> optimization algorithms configuration for your use case depends heavily on your
+    use case. Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration, probably
+    much better than what you're used to.</para>
+
+    <para>Start with a quick configuration like this as this involves little or no code:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>First Fit</para>
+      </listitem>
+    </orderedlist>
+
+    <para>Next, implement planning entity difficulty comparison and turn it into:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>First Fit Decreasing</para>
+      </listitem>
+    </orderedlist>
+
+    <para>Next, implement moves and add tabu search:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>First Fit Decreasing</para>
+      </listitem>
+
+      <listitem>
+        <para>Tabu search (use property tabu 5 or move tabu 7)</para>
+      </listitem>
+    </orderedlist>
+
+    <para>At this point <emphasis>the free lunch is over</emphasis>. The result is probably more than good enough, but
+    we can do better. Use the Benchmarker and try a couple of simulated annealing configurations:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>First Fit Decreasing</para>
+      </listitem>
+
+      <listitem>
+        <para>Simulated annealing (try several starting temperatures)</para>
+      </listitem>
+    </orderedlist>
+
+    <para>And try this too:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>First Fit Decreasing</para>
+      </listitem>
+
+      <listitem>
+        <para>Simulated annealing (relatively long time)</para>
+      </listitem>
+
+      <listitem>
+        <para>Tabu search (relatively short time)</para>
+      </listitem>
+    </orderedlist>
+  </section>
+
+  <section>
+    <title>Custom SolverPhase</title>
+
+    <para>Between phases or before the first phase, you might want to execute a custom action on the
+    <literal>Solution</literal> to get a better score. Yet you'll still want to reuse the score calculation. For
+    example, to implement a custom construction heuristic without implementing an entire
+    <literal>SolverPhase</literal>.</para>
+
+    <note>
+      <para>Most of the time, a custom construction heuristic is not worth the hassle. The supported constructions
+      heuristics are configurable (so you can tweak them with the benchmarker), <literal>Termination</literal> aware and
+      support partially initialized solutions too.</para>
+    </note>
+
+    <para>Implement the <literal>CustomSolverPhaseCommand</literal> interface :</para>
+
+    <programlisting>public interface CustomSolverPhaseCommand {
+
+    void changeWorkingSolution(SolutionDirector solutionDirector);
+
+}</programlisting>
+
+    <para>For example:</para>
+
+    <programlisting>public class ExaminationStartingSolutionInitializer implements CustomSolverPhaseCommand {
+
+    public void changeWorkingSolution(SolutionDirector solutionDirector) {
+        Examination examination = (Examination) solutionDirector.getWorkingSolution();
+        for (Exam exam : examination.getExamList()) {
+            Score unscheduledScore = solutionDirector.calculateScoreFromWorkingMemory();
+            ...
+            for (Period period : examination.getPeriodList()) {
+                exam.setPeriod(period)
+                workingMemory.update(examHandle, exam);
+                Score score = solutionDirector.calculateScoreFromWorkingMemory();
+                ...
+            }
+            ...
+        }
+    }
+
+}</programlisting>
+
+    <warning>
+      <para>Any change on the planning entities in a <literal>CustomSolverPhaseCommand</literal> must be told to the
+      <literal>WorkingMemory</literal> of <literal>solutionDirector.getWorkingMemory()</literal>.</para>
+    </warning>
+
+    <warning>
+      <para>Do not change any of the planning facts in a <literal>CustomSolverPhaseCommand</literal>. That will corrupt
+      the <literal>Solver</literal> because any previous score or solution was for a different problem. If you want to
+      do that, see the section about Real-time planning instead.</para>
+    </warning>
+
+    <para>And configure it like this:</para>
+
+    <programlisting>&lt;solver&gt;
+  ...
+  &lt;customSolverPhase&gt;
+    &lt;customSolverPhaseCommandClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/customSolverPhaseCommandClass&gt;
+  &lt;/customSolverPhase&gt;
+  ... &lt;!-- Other phases --&gt;
+&lt;/solver&gt;</programlisting>
+
+    <para>It's possible to configure multiple <literal>customSolverPhaseCommandClass</literal> instances, which will be
+    run in sequence.</para>
+
+    <note>
+      <para>If the changes of a <literal>CustomSolverPhaseCommand</literal> don't result in a better score, the best
+      solution won't be changed (so effectively nothing will have changed for the next <literal>SolverPhase</literal> or
+      <literal>CustomSolverPhaseCommand</literal>). TODO: we might want to change this behaviour?</para>
+    </note>
+
+    <note>
+      <para>If the <literal>Solver</literal> or <literal>SolverPhase</literal> wants to terminate while a
+      <literal>CustomSolverPhaseCommand</literal> is still running, it will wait to terminate until the
+      <literal>CustomSolverPhaseCommand</literal> is done. </para>
+    </note>
+  </section>
+</chapter>

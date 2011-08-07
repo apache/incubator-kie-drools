@@ -28,7 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.tsp.domain.CityAssignment;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
@@ -47,9 +47,9 @@ public class TspListPanel extends JPanel {
         setLayout(new GridLayout(0, 1));
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        TravelingSalesmanTour travelingSalesmanTour = tspPanel.getTravelingSalesmanTour();
+        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
         JLabel headerLabel = new JLabel("Tour of " + travelingSalesmanTour.getName());
         headerLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.DARK_GRAY),
@@ -57,16 +57,14 @@ public class TspListPanel extends JPanel {
         headerLabel.setBackground(HEADER_COLOR);
         headerLabel.setOpaque(true);
         add(headerLabel);
-        if (travelingSalesmanTour.isInitialized()) {
-            for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
-                JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
-                JButton button = new JButton(new CityAssignmentAction(cityAssignment));
-                cityAssignmentPanel.add(button);
-                JLabel distanceLabel = new JLabel("Distance to next: "
-                        + cityAssignment.getDistanceToNextCityAssignment());
-                cityAssignmentPanel.add(distanceLabel);
-                add(cityAssignmentPanel);
-            }
+        for (CityAssignment cityAssignment : travelingSalesmanTour.getCityAssignmentList()) {
+            JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
+            JButton button = new JButton(new CityAssignmentAction(cityAssignment));
+            cityAssignmentPanel.add(button);
+            JLabel distanceLabel = new JLabel("Distance to next: "
+                    + cityAssignment.getDistanceToNextCityAssignment());
+            cityAssignmentPanel.add(distanceLabel);
+            add(cityAssignmentPanel);
         }
     }
 
@@ -90,7 +88,7 @@ public class TspListPanel extends JPanel {
             if (result == JOptionPane.OK_OPTION) {
                 CityAssignment toAfterCityAssignment = (CityAssignment) afterCityAssignmentListField.getSelectedItem();
                 tspPanel.doMove(new SubTourChangeMove(cityAssignment, cityAssignment, toAfterCityAssignment));
-                tspPanel.getWorkflowFrame().updateScreen();
+                tspPanel.getWorkflowFrame().resetScreen();
             }
         }
 

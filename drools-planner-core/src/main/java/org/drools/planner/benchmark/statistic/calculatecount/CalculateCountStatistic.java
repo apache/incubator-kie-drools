@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -34,7 +35,8 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.localsearch.LocalSearchSolver;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
+import org.drools.planner.core.solver.DefaultSolver;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -49,7 +51,7 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
     private Map<String, CalculateCountStatisticListener> statisticListenerMap
-            = new HashMap<String, CalculateCountStatisticListener>();
+            = new LinkedHashMap<String, CalculateCountStatisticListener>();
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -58,13 +60,13 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         }
         configNameList.add(configName);
         CalculateCountStatisticListener statisticListener = new CalculateCountStatisticListener();
-        ((LocalSearchSolver) solver).addLocalSearchSolverLifecycleListener(statisticListener);
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(statisticListener);
         statisticListenerMap.put(configName, statisticListener);
     }
 
     public void removeListener(Solver solver, String configName) {
         CalculateCountStatisticListener statisticListener = statisticListenerMap.get(configName);
-        ((LocalSearchSolver) solver).removeLocalSearchSolverLifecycleListener(statisticListener);
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(statisticListener);
     }
 
     // ************************************************************************
@@ -156,14 +158,14 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, CalculateCountStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            XYSeries configSeries = new XYSeries(configName);
+            XYSeries series = new XYSeries(configName);
             List<CalculateCountStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
             for (CalculateCountStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
                 long calculateCountPerSecond = statisticPoint.getCalculateCountPerSecond();
-                configSeries.add(timeMillisSpend, calculateCountPerSecond);
+                series.add(timeMillisSpend, calculateCountPerSecond);
             }
-            seriesCollection.addSeries(configSeries);
+            seriesCollection.addSeries(series);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());

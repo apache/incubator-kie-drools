@@ -17,128 +17,174 @@
 package org.drools.planner.examples.cloudbalancing.swingui;
 
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.GroupLayout;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
+import org.apache.commons.lang.ObjectUtils;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
+import org.drools.planner.core.solver.PlanningFactChange;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
-import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.ShiftDate;
-import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 /**
  * TODO this code is highly unoptimized
  */
 public class CloudBalancingPanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = Color.YELLOW;
-    private static final int TEXT_AREA_ROWS = 4;
-    private static final int TEXT_AREA_COLUMNS = 14;
+    public static final Color[] PROCESS_COLORS = {
+            Color.GREEN, Color.YELLOW, Color.BLUE, Color.RED, Color.CYAN, Color.ORANGE, Color.MAGENTA
+    };
+
+    private JPanel computersPanel;
+
+    private CloudComputerPanel unassignedPanel;
+    private Map<CloudComputer, CloudComputerPanel> cloudComputerToPanelMap;
+    private Map<CloudAssignment, CloudComputerPanel> cloudAssignmentToPanelMap;
 
     public CloudBalancingPanel() {
-        setLayout(new GridLayout(0, 1));
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        JPanel headerPanel = createHeaderPanel();
+        JPanel computersPanel = createComputersPanel();
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(headerPanel).addComponent(computersPanel));
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(headerPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE)
+                .addComponent(computersPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE,
+                        GroupLayout.PREFERRED_SIZE));
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new GridLayout(0, 5));
+        JLabel emptyLabel = new JLabel("");
+        headerPanel.add(emptyLabel);
+        JLabel cpuPowerLabel = new JLabel("CPU power");
+        headerPanel.add(cpuPowerLabel);
+        JLabel memoryLabel = new JLabel("Memory");
+        headerPanel.add(memoryLabel);
+        JLabel networkBandwidthLabel = new JLabel("Network bandwidth");
+        headerPanel.add(networkBandwidthLabel);
+        JLabel costLabel = new JLabel("Cost");
+        headerPanel.add(costLabel);
+        return headerPanel;
+    }
+
+    private JPanel createComputersPanel() {
+        computersPanel = new JPanel(new GridLayout(0, 1));
+        unassignedPanel = new CloudComputerPanel(this, null);
+        computersPanel.add(unassignedPanel);
+        cloudComputerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
+        cloudComputerToPanelMap.put(null, unassignedPanel);
+        cloudAssignmentToPanelMap = new LinkedHashMap<CloudAssignment, CloudComputerPanel>();
+        return computersPanel;
     }
 
     private CloudBalance getCloudBalance() {
         return (CloudBalance) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
-        removeAll();
-        CloudBalance cloudBalance = getCloudBalance();
-        add(createHeaderPanel());
-        List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
-        Map<CloudComputer, CloudComputerPanel> computerToPanelMap
-                = new HashMap<CloudComputer, CloudComputerPanel>(cloudComputerList.size());
-        for (CloudComputer cloudComputer : cloudComputerList) {
-            CloudComputerPanel cloudComputerPanel = new CloudComputerPanel(cloudComputer);
-            computerToPanelMap.put(cloudComputer, cloudComputerPanel);
-            add(cloudComputerPanel);
-        }
-        if (cloudBalance.isInitialized()) {
-            for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
-                CloudComputer cloudComputer = cloudAssignment.getCloudComputer();
-                CloudComputerPanel cloudComputerPanel = computerToPanelMap.get(cloudComputer);
-                cloudComputerPanel.addCloudAssignment(cloudAssignment);
+    public void resetPanel(Solution solution) {
+        for (CloudComputerPanel cloudComputerCloudComputerPanel : cloudComputerToPanelMap.values()) {
+            if (cloudComputerCloudComputerPanel.getCloudComputer() != null) {
+                computersPanel.remove(cloudComputerCloudComputerPanel);
             }
         }
+        cloudComputerToPanelMap.clear();
+        cloudComputerToPanelMap.put(null, unassignedPanel);
+        cloudAssignmentToPanelMap.clear();
+        unassignedPanel.clearCloudAssignments();
+        updatePanel(solution);
     }
 
-    private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        headerPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        JTextArea cloudComputerLabel = new JTextArea("CloudComputer", TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
-        cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        cloudComputerLabel.setBackground(HEADER_COLOR);
-        cloudComputerLabel.setEditable(false);
-        headerPanel.add(cloudComputerLabel);
-        JTextArea cloudProcessLabel = new JTextArea("CloudProcess", TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
-        cloudProcessLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        cloudProcessLabel.setEditable(false);
-        headerPanel.add(cloudProcessLabel);
-        return headerPanel;
+    @Override
+    public void updatePanel(Solution solution) {
+        CloudBalance cloudBalance = (CloudBalance) solution;
+        Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<CloudComputer>(cloudComputerToPanelMap.keySet());
+        deadCloudComputerSet.remove(null);
+        for (CloudComputer cloudComputer : ((CloudBalance) solution).getCloudComputerList()) {
+            deadCloudComputerSet.remove(cloudComputer);
+            CloudComputerPanel cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
+            if (cloudComputerPanel == null) {
+                cloudComputerPanel = new CloudComputerPanel(this, cloudComputer);
+                computersPanel.add(cloudComputerPanel);
+                cloudComputerToPanelMap.put(cloudComputer, cloudComputerPanel);
+            }
+        }
+        Set<CloudAssignment> deadCloudAssignmentSet = new LinkedHashSet<CloudAssignment>(
+                cloudAssignmentToPanelMap.keySet());
+        for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
+            deadCloudAssignmentSet.remove(cloudAssignment);
+            CloudComputerPanel cloudComputerPanel = cloudAssignmentToPanelMap.get(cloudAssignment);
+            CloudComputer cloudComputer = cloudAssignment.getCloudComputer();
+            if (cloudComputerPanel != null
+                    && !ObjectUtils.equals(cloudComputerPanel.getCloudComputer(), cloudComputer)) {
+                cloudAssignmentToPanelMap.remove(cloudAssignment);
+                cloudComputerPanel.removeCloudAssignment(cloudAssignment);
+                cloudComputerPanel = null;
+            }
+            if (cloudComputerPanel == null) {
+                cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
+                cloudComputerPanel.addCloudAssignment(cloudAssignment);
+                cloudAssignmentToPanelMap.put(cloudAssignment, cloudComputerPanel);
+            }
+        }
+        for (CloudAssignment deadCloudAssignment : deadCloudAssignmentSet) {
+            CloudComputerPanel deadCloudComputerPanel = cloudAssignmentToPanelMap.remove(deadCloudAssignment);
+            deadCloudComputerPanel.removeCloudAssignment(deadCloudAssignment);
+        }
+        for (CloudComputer deadCloudComputer : deadCloudComputerSet) {
+            CloudComputerPanel deadCloudComputerPanel = cloudComputerToPanelMap.remove(deadCloudComputer);
+            computersPanel.remove(deadCloudComputerPanel);
+        }
     }
 
-    private class CloudComputerPanel extends JPanel {
-
-        private final CloudComputer cloudComputer;
-
-        public CloudComputerPanel(CloudComputer cloudComputer) {
-            setLayout(new FlowLayout(FlowLayout.LEFT));
-            this.cloudComputer = cloudComputer;
-            setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JTextArea cloudComputerLabel = new JTextArea(cloudComputer.getLabel(), TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
-            cloudComputerLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            cloudComputerLabel.setBackground(HEADER_COLOR);
-            cloudComputerLabel.setEditable(false);
-            add(cloudComputerLabel);
-        }
-
-        public void addCloudAssignment(CloudAssignment cloudAssignment) {
-            JPanel cloudAssignmentPanel = new JPanel();
-            cloudAssignmentPanel.setLayout(new BoxLayout(cloudAssignmentPanel, BoxLayout.X_AXIS));
-            cloudAssignmentPanel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            JTextArea cloudAssignmentLabel = new JTextArea(cloudAssignment.getLabel(), TEXT_AREA_ROWS, TEXT_AREA_COLUMNS);
-            cloudAssignmentLabel.setEditable(false);
-            cloudAssignmentPanel.add(cloudAssignmentLabel);
-            JButton button = new JButton(new CloudAssignmentAction(cloudAssignment));
-            cloudAssignmentPanel.add(button);
-            add(cloudAssignmentPanel);
-        }
-
+    public void deleteComputer(final CloudComputer cloudComputer) {
+        logger.info("Scheduling deleting of computer ({}).", cloudComputer.getLabel());
+        solutionBusiness.doPlanningFactChange(new PlanningFactChange() {
+            public void doChange(SolutionDirector solutionDirector) {
+                CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
+                WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+                // First remove the planning fact from all planning entities that use it
+                for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
+                    if (ObjectUtils.equals(cloudAssignment.getCloudComputer(), cloudComputer)) {
+                        FactHandle cloudAssignmentHandle = workingMemory.getFactHandle(cloudAssignment);
+                        cloudAssignment.setCloudComputer(null);
+                        workingMemory.retract(cloudAssignmentHandle);
+                    }
+                }
+                // Next remove it the planning fact itself
+                for (Iterator<CloudComputer> it = cloudBalance.getCloudComputerList().iterator(); it.hasNext(); ) {
+                    CloudComputer workingCloudComputer = it.next();
+                    if (ObjectUtils.equals(workingCloudComputer, cloudComputer)) {
+                        FactHandle cloudComputerHandle = workingMemory.getFactHandle(workingCloudComputer);
+                        workingMemory.retract(cloudComputerHandle);
+                        it.remove(); // remove from list
+                        break;
+                    }
+                }
+            }
+        });
+        updatePanel(solutionBusiness.getSolution());
     }
 
     private class CloudAssignmentAction extends AbstractAction {
@@ -159,7 +205,7 @@ public class CloudBalancingPanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toCloudComputer = (CloudComputer) cloudComputerListField.getSelectedItem();
                 solutionBusiness.doMove(new CloudComputerChangeMove(cloudAssignment, toCloudComputer));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

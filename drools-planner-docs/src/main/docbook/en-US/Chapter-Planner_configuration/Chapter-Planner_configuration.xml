@@ -9,70 +9,10 @@
   <section>
     <title>Types of solvers</title>
 
+    <para>TODO remove this section</para>
+
     <para>Different solvers solve problems in different ways. Each type has advantages and disadvantages. We 'll roughly
     discuss a few of the solver types here. You can safely skip this section.</para>
-
-    <section>
-      <title>Brute force</title>
-
-      <para>Brute force creates and evaluates every possible solution, usually by creating a search tree.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It knows when it has found an optimal solution. If there is more then 1 optimal solution, it finds all
-          optimal solutions.</para>
-        </listitem>
-
-        <listitem>
-          <para>It is straightforward and simple to implement.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It performs and scales horribly. Mostly unusable for a real-world problem due to time
-          limitations.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Brute force is currently not implemented in Drools Planner. But we have plans to implement it in the future,
-      as a reference for validating the output of the other solver types.</para>
-    </section>
-
-    <section>
-      <title>Branch and bound</title>
-
-      <para>Branch and bound is an improvement over brute force, as it prunes away subsets of solutions which cannot
-      have a better solution than the best solution already found at that point.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It knows when it has found an optimal solution. If there is more then 1 optimal solution, it can find
-          all optimal solutions if needed.</para>
-        </listitem>
-
-        <listitem>
-          <para>It can determine the bounds of a problem, which gives an indication of the quality of a solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It still scales very badly. Mostly unusable for a real-world problem due to time limitations.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Branch and bound is currently not implemented in Drools Planner. But we have plans to implement it in the
-      future, as a reference for validating the output of the other solver types.</para>
-    </section>
 
     <section>
       <title>Simplex</title>
@@ -187,8 +127,8 @@
     minimal number of atoms in the known universe (10^80).</para>
 
     <para>The cold, hard reality is that <emphasis role="bold">for most real-world planning problems we will not find
-    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we improve upon the solutions created by
-    human planners (which is easy) or other systems.</para>
+    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we do better than the solutions created
+    by human planners (which is easy) and other software.</para>
 
     <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
     (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
@@ -295,13 +235,22 @@
     ...
 &lt;/localSearchSolver&gt;</programlisting>
 
-      <para>There are 3 environment modes:</para>
+      <para>There are 4 environment modes:</para>
+
+      <section>
+        <title>TRACE</title>
+
+        <para>The trace mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
+        assert that the delta based score is uncorrupted) to fail-fast on rule engine bugs.</para>
+
+        <para>The trace mode is very slow (because it doesn't rely on delta based score calculation).</para>
+      </section>
 
       <section>
         <title>DEBUG</title>
 
-        <para>The debug mode is reproducible (see the reproducible mode) and also turns on assertions (such as assert
-        that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
+        <para>The debug mode is reproducible (see the reproducible mode) and also turns on most assertions (such as
+        assert that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
         ...</para>
 
         <para>The debug mode is slow.</para>
@@ -493,61 +442,6 @@
 
       <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
       possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
-    </section>
-
-    <section>
-      <title>StartingSolutionInitializer</title>
-
-      <para>For large problems, a simple filler algorithm like <literal>createNQueens(int)</literal> doesn't suffice. A
-      (local search) solver starting from a bad starting solution wastes a lot of time to reach a solution which an
-      initializer algorithm can generate in a fraction of that time.</para>
-
-      <para>An initializer algorithm usually works something like this:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It sorts the unplanned elements in a queue according to some general rules, for example by exam student
-          size.</para>
-        </listitem>
-
-        <listitem>
-          <para>Next, it plans them in the order they come from the queue. Each element is put the best, still available
-          spot.</para>
-        </listitem>
-
-        <listitem>
-          <para>It doesn't change an already planned element. It exits when the queue is empty and all elements are
-          planned.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Such an algorithm is very deterministic: it's really fast, but you can't give it more time to generate an
-      even better solution. In some cases the solution it generates will be feasible, but in most cases it won't. You
-      'll need a real solver to get to a feasible or more optimal solution. Nevertheless you 'll want to such an
-      initializer to give the real solver a serious head start. You can do this by implementing the
-      <literal>StartingSolutionInitializer</literal> interface:</para>
-
-      <programlisting language="java">public interface StartingSolutionInitializer extends SolverAware {
-
-    boolean isSolutionInitialized(Solution solution);
-
-    void initializeSolution(Solution solution);
-
-}</programlisting>
-
-      <para>You'll need to set a (uninitialized) solution on the solver. Once the solver starts, it will first call the
-      <literal>StartingSolutionInitializer</literal> to initialize the solution. If the
-      <literal>StartingSolutionInitializer</literal> adds, edits or removes facts it needs to notify the workingMemory
-      about this. It can use score calculation during its initialization process.</para>
-
-      <para>Here's an example on how you add the <literal>StartingSolutionInitializer</literal> to the
-      configuration:</para>
-
-      <programlisting language="xml">&lt;localSearchSolver&gt;
-    ...
-    &lt;startingSolutionInitializerClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/startingSolutionInitializerClass&gt;
-    ...
-&lt;/localSearchSolver&gt;</programlisting>
     </section>
   </section>
 

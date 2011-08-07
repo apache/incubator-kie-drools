@@ -1,42 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <!--
-            Official benchmark maximumSecondsSpend allowed on:
-            - ge0ffrey's main pc: sprint 11, medium 700, long 42000
-        -->
-        <maximumSecondsSpend>700</maximumSecondsSpend>
-        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
-        <!--<maximumStepCount>100</maximumStepCount>-->
-    </termination>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
+  <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <!--
+      Official benchmark maximumSecondsSpend allowed on:
+      - ge0ffrey's main pc: sprint 11, medium 700, long 42000
+    -->
+    <maximumSecondsSpend>700</maximumSecondsSpend>
+    <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+    <!--<maximumStepCount>100</maximumStepCount>-->
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
     <selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-        </selector>
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-        </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+      </selector>
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength2MoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSequenceSwitchLength3MoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
     <acceptor>
       <completeSolutionTabuSize>1000</completeSolutionTabuSize>
       <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <minimalAcceptedSelection>800</minimalAcceptedSelection>
+      <minimalAcceptedSelection>800</minimalAcceptedSelection>
     </forager>
-</localSearchSolver>
+  </localSearch>
+</solver>

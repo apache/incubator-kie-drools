@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
 import org.drools.planner.core.solution.Solution;
@@ -40,8 +40,8 @@ public class SmartTravelingTournamentMoveFactory extends AbstractMoveFactory {
     private List<Move> cachedMoveList;
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        TravelingTournament travelingTournament = (TravelingTournament) localSearchSolverScope.getWorkingSolution();
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        TravelingTournament travelingTournament = (TravelingTournament) localSearchSolverPhaseScope.getWorkingSolution();
         cachedMoveList = new ArrayList<Move>(travelingTournament.getMatchList().size() / 2);
         addCachedHomeAwaySwapMoves(travelingTournament);
     }

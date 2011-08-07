@@ -20,9 +20,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
+import org.drools.planner.examples.nurserostering.domain.solver.AssignmentDifficultyComparator;
+import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 
+@PlanningEntity(difficultyComparatorClass = AssignmentDifficultyComparator.class)
 @XStreamAlias("Assignment")
 public class Assignment extends AbstractPersistable implements Comparable<Assignment> {
 
@@ -39,6 +45,8 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
         this.shift = shift;
     }
 
+    @PlanningVariable(strengthComparatorClass = EmployeeStrengthComparator.class)
+    @ValueRangeFromSolutionProperty(propertyName = "employeeList")
     public Employee getEmployee() {
         return employee;
     }

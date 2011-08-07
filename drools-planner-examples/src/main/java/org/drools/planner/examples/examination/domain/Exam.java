@@ -20,10 +20,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.examination.domain.solver.ExamBefore;
 import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
+@PlanningEntity
 @XStreamAlias("Exam")
 public class Exam extends AbstractPersistable implements Comparable<Exam> {
 
@@ -61,6 +65,8 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
         this.examBefore = examBefore;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "periodList")
     public Period getPeriod() {
         return period;
     }
@@ -69,6 +75,8 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
         this.period = period;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "roomList")
     public Room getRoom() {
         return room;
     }

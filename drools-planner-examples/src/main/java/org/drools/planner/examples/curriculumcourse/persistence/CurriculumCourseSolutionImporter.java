@@ -17,6 +17,7 @@
 package org.drools.planner.examples.curriculumcourse.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.curriculumcourse.domain.Curriculum;
 import org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule;
 import org.drools.planner.examples.curriculumcourse.domain.Day;
+import org.drools.planner.examples.curriculumcourse.domain.Lecture;
 import org.drools.planner.examples.curriculumcourse.domain.Period;
 import org.drools.planner.examples.curriculumcourse.domain.Room;
 import org.drools.planner.examples.curriculumcourse.domain.Teacher;
@@ -63,19 +65,19 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
             schedule.setId(0L);
             // Name: ToyExample
-            schedule.setName(readParam("Name:"));
+            schedule.setName(readStringValue("Name:"));
             // Courses: 4
-            int courseListSize = Integer.parseInt(readParam("Courses:"));
+            int courseListSize = readIntegerValue("Courses:");
             // Rooms: 2
-            int roomListSize = Integer.parseInt(readParam("Rooms:"));
+            int roomListSize = readIntegerValue("Rooms:");
             // Days: 5
-            int dayListSize = Integer.parseInt(readParam("Days:"));
+            int dayListSize = readIntegerValue("Days:");
             // Periods_per_day: 4
-            int timeslotListSize = Integer.parseInt(readParam("Periods_per_day:"));
+            int timeslotListSize = readIntegerValue("Periods_per_day:");
             // Curricula: 2
-            int curriculumListSize = Integer.parseInt(readParam("Curricula:"));
+            int curriculumListSize = readIntegerValue("Curricula:");
             // Constraints: 8
-            int unavailablePeriodConstraintListSize = Integer.parseInt(readParam("Constraints:"));
+            int unavailablePeriodConstraintListSize = readIntegerValue("Constraints:");
 
             Map<String, Course> courseMap = readCourseListAndTeacherList(
                     schedule, courseListSize);
@@ -87,7 +89,9 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                     schedule, courseMap, curriculumListSize);
             readUnavailablePeriodConstraintList(
                     schedule, courseMap, periodMap, unavailablePeriodConstraintListSize);
-            readHeader("END.");
+            readEmptyLine();
+            readConstantLine("END.");
+            createLectureList(schedule);
 
             logger.info("CurriculumCourseSchedule with {} teachers, {} curricula, {} courses, {} periods, {} rooms" +
                     " and {} unavailable period constraints.",
@@ -97,8 +101,12 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                             schedule.getPeriodList().size(),
                             schedule.getRoomList().size(),
                             schedule.getUnavailablePeriodConstraintList().size()});
-
-            // Note: lectureList stays null, that's work for the StartingSolutionInitializer
+            int possibleForOneLectureSize = schedule.getPeriodList().size() * schedule.getRoomList().size();
+            BigInteger possibleSolutionSize = BigInteger.valueOf(possibleForOneLectureSize).pow(
+                    schedule.getLectureList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("CurriculumCourseSchedule with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return schedule;
         }
 
@@ -107,16 +115,14 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             Map<String, Course> courseMap = new HashMap<String, Course>(courseListSize);
             Map<String, Teacher> teacherMap = new HashMap<String, Teacher>();
             List<Course> courseList = new ArrayList<Course>(courseListSize);
-            readHeader("COURSES:");
+            readEmptyLine();
+            readConstantLine("COURSES:");
             for (int i = 0; i < courseListSize; i++) {
                 Course course = new Course();
                 course.setId((long) i);
                 // Courses: <CourseID> <Teacher> <# Lectures> <MinWorkingDays> <# Students>
                 String line = bufferedReader.readLine();
-                String[] lineTokens = line.split(SPLIT_REGEX);
-                if (lineTokens.length != 5) {
-                    throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 4 tokens.");
-                }
+                String[] lineTokens = splitBySpacesOrTabs(line, 5);
                 course.setCode(lineTokens[0]);
                 course.setTeacher(findOrCreateTeacher(teacherMap, lineTokens[1]));
                 course.setLectureSize(Integer.parseInt(lineTokens[2]));
@@ -146,17 +152,15 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
 
         private void readRoomList(CurriculumCourseSchedule schedule, int roomListSize)
                 throws IOException {
-            readHeader("ROOMS:");
+            readEmptyLine();
+            readConstantLine("ROOMS:");
             List<Room> roomList = new ArrayList<Room>(roomListSize);
             for (int i = 0; i < roomListSize; i++) {
                 Room room = new Room();
                 room.setId((long) i);
                 // Rooms: <RoomID> <Capacity>
                 String line = bufferedReader.readLine();
-                String[] lineTokens = line.split(SPLIT_REGEX);
-                if (lineTokens.length != 2) {
-                    throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 2 tokens.");
-                }
+                String[] lineTokens = splitBySpacesOrTabs(line, 2);
                 room.setCode(lineTokens[0]);
                 room.setCapacity(Integer.parseInt(lineTokens[1]));
                 roomList.add(room);
@@ -201,14 +205,15 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
 
         private void readCurriculumList(CurriculumCourseSchedule schedule,
                 Map<String, Course> courseMap, int curriculumListSize) throws IOException {
-            readHeader("CURRICULA:");
+            readEmptyLine();
+            readConstantLine("CURRICULA:");
             List<Curriculum> curriculumList = new ArrayList<Curriculum>(curriculumListSize);
             for (int i = 0; i < curriculumListSize; i++) {
                 Curriculum curriculum = new Curriculum();
                 curriculum.setId((long) i);
                 // Curricula: <CurriculumID> <# Courses> <MemberID> ... <MemberID>
                 String line = bufferedReader.readLine();
-                String[] lineTokens = line.split(SPLIT_REGEX);
+                String[] lineTokens = splitBySpacesOrTabs(line);
                 if (lineTokens.length < 2) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to contain at least 2 tokens.");
@@ -235,7 +240,8 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
         private void readUnavailablePeriodConstraintList(CurriculumCourseSchedule schedule,
                 Map<String, Course> courseMap, Map<List<Integer>, Period> periodMap, int unavailablePeriodConstraintListSize)
                 throws IOException {
-            readHeader("UNAVAILABILITY_CONSTRAINTS:");
+            readEmptyLine();
+            readConstantLine("UNAVAILABILITY_CONSTRAINTS:");
             List<UnavailablePeriodConstraint> constraintList = new ArrayList<UnavailablePeriodConstraint>(
                     unavailablePeriodConstraintListSize);
             for (int i = 0; i < unavailablePeriodConstraintListSize; i++) {
@@ -243,10 +249,7 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
                 constraint.setId((long) i);
                 // Unavailability_Constraints: <CourseID> <Day> <Day_Period>
                 String line = bufferedReader.readLine();
-                String[] lineTokens = line.split(SPLIT_REGEX);
-                if (lineTokens.length != 3) {
-                    throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 3 tokens.");
-                }
+                String[] lineTokens = splitBySpacesOrTabs(line, 3);
                 constraint.setCourse(courseMap.get(lineTokens[0]));
                 int dayIndex = Integer.parseInt(lineTokens[1]);
                 int timeslotIndex = Integer.parseInt(lineTokens[2]);
@@ -261,26 +264,22 @@ public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporte
             schedule.setUnavailablePeriodConstraintList(constraintList);
         }
 
-        private String readParam(String key) throws IOException {
-            String line = bufferedReader.readLine();
-            String[] lineTokens = line.split(SPLIT_REGEX);
-            if (lineTokens.length != 2 || !lineTokens[0].equals(key)) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain 2 tokens"
-                        + " and start with \"" + key + "\".");
+        private void createLectureList(CurriculumCourseSchedule schedule) {
+            List<Course> courseList = schedule.getCourseList();
+            List<Lecture> lectureList = new ArrayList<Lecture>(courseList.size());
+            long id = 0L;
+            for (Course course : courseList) {
+                for (int i = 0; i < course.getLectureSize(); i++) {
+                    Lecture lecture = new Lecture();
+                    lecture.setId((long) id);
+                    id++;
+                    lecture.setCourse(course);
+                    lecture.setLectureIndexInCourse(i);
+                    // Notice that we leave the PlanningVariable properties on null
+                    lectureList.add(lecture);
+                }
             }
-            return lineTokens[1];
-        }
-
-        private void readHeader(String header) throws IOException {
-            String line = bufferedReader.readLine();
-            if (line.length() != 0) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to be empty"
-                        + " and be followed with a line \"" + header + "\".");
-            }
-            line = bufferedReader.readLine();
-            if (!line.equals(header)) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to be \"" + header + "\".");
-            }
+            schedule.setLectureList(lectureList);
         }
 
     }

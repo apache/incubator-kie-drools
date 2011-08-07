@@ -16,15 +16,15 @@
 
 package org.drools.planner.config.score.definition;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.calculator.SimpleDoubleScoreCalculator;
+import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.definition.SimpleDoubleScoreDefinition;
 import org.drools.planner.core.score.definition.SimpleScoreDefinition;
-import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
-import org.drools.planner.core.score.calculator.ScoreCalculator;
-import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
-import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("scoreDefinition")
 public class ScoreDefinitionConfig {
@@ -88,27 +88,6 @@ public class ScoreDefinitionConfig {
             }
         } else {
             return new SimpleScoreDefinition();
-        }
-    }
-
-    /**
-     * @TODO score-in-solution refactor
-     */
-    public ScoreCalculator buildScoreCalculator() {
-        if (scoreDefinitionType != null) {
-            switch (scoreDefinitionType) {
-                case SIMPLE:
-                    return new SimpleScoreCalculator();
-                case SIMPLE_DOUBLE:
-                    return new SimpleDoubleScoreCalculator();
-                case HARD_AND_SOFT:
-                    return new DefaultHardAndSoftConstraintScoreCalculator();
-                default:
-                    throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
-                            + ") is not implemented");
-            }
-        } else {
-            return new SimpleScoreCalculator();
         }
     }
 

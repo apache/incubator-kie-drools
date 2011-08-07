@@ -19,8 +19,10 @@ package org.drools.planner.core.score.calculator;
 import org.drools.planner.core.score.Score;
 
 /**
- * Evaluates a solution based on its WorkingMemory (which is part of the rule production system).
- * @TODO score-in-solution refactor
+ * A wrapper for the elements of a Score, injected as a global in the WorkingMemory
+ * to avoid a performance problem in Drools Expert with using 2 or more accumulates in the same rule.
+ * <p/>
+ * TODO remove when the rule that sums the final score can be written as a single rule and ScoreCalculator is dead
  */
 public interface ScoreCalculator extends Cloneable {
 

@@ -60,8 +60,12 @@ public class CloudComputer extends AbstractPersistable implements Comparable<Clo
         this.cost = cost;
     }
 
+    public int getMultiplicand() {
+        return cpuPower * memory * networkBandwidth;
+    }
+
     public String getLabel() {
-        return "Computer " + id + ", hardware:\nCPU: " + cpuPower + " GHz\nRAM: " + memory + " GB\nNetwork: " + networkBandwidth + " GB";
+        return "Computer " + id;
     }
 
     public int compareTo(CloudComputer other) {

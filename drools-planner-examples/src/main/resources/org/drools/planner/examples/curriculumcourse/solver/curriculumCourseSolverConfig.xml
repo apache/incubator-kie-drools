@@ -1,59 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.curriculumcourse.solver.solution.initializer.CurriculumCourseStartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <!--
-            Official benchmark maximumSecondsSpend allowed on:
-            ge0ffrey's main pc: 429
-            ge0ffrey's old pc: 1152
-        -->
-        <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
-        <!--<maximumStepCount>100</maximumStepCount>-->
-    </termination>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <!--
+      Official benchmark maximumSecondsSpend allowed on:
+      ge0ffrey's main pc: 429
+      ge0ffrey's old pc: 1152
+    -->
+    <maximumSecondsSpend>429</maximumSecondsSpend>
+    <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+    <!--<maximumStepCount>100</maximumStepCount>-->
+  </termination>
+
+  <constructionHeuristic>
+    <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+    <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
+  </constructionHeuristic>
+  <localSearch>
     <selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-        </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
     <acceptor>
-        <completePropertyTabuSize>10</completePropertyTabuSize>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+      <completePropertyTabuSize>10</completePropertyTabuSize>
+      <completeSolutionTabuSize>1500</completeSolutionTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
-    <!-- Great deluge experiments: -->
-    <!--<selector>-->
-    <!--<selector>-->
-    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
-    <!--<selector>-->
-    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
-    <!--</selector>-->
-    <!--<selector>-->
-    <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
-    <!--<shuffle>true</shuffle>-->
-    <!--</selector>-->
-    <!--</selector>-->
-    <!--<acceptor>-->
-    <!--<greatDelugeWaterLevelUpperBoundRate>1.30</greatDelugeWaterLevelUpperBoundRate>-->
-    <!--<greatDelugeWaterRisingRate>0.000000143</greatDelugeWaterRisingRate>-->
-    <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-    <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
-    <!--</forager>-->
-</localSearchSolver>
+  </localSearch>
+</solver>

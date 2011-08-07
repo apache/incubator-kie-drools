@@ -23,34 +23,32 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.solution.initializer.AbstractStartingSolutionInitializer;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class NurseRosteringStartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+public class NurseRosteringStartingSolutionInitializer implements CustomSolverPhaseCommand {
 
-    @Override
-    public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
-        NurseRoster nurseRoster = (NurseRoster) abstractSolverScope.getWorkingSolution();
-        return nurseRoster.isInitialized();
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+    public void changeWorkingSolution(SolutionDirector solutionDirector) {
+        NurseRoster nurseRoster = (NurseRoster) solutionDirector.getWorkingSolution();
+        initializeAssignmentList(solutionDirector, nurseRoster);
     }
 
-    public void initializeSolution(AbstractSolverScope abstractSolverScope) {
-        NurseRoster nurseRoster = (NurseRoster) abstractSolverScope.getWorkingSolution();
-        initializeAssignmentList(abstractSolverScope, nurseRoster);
-    }
-
-    private void initializeAssignmentList(AbstractSolverScope abstractSolverScope,
+    private void initializeAssignmentList(SolutionDirector solutionDirector,
             NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
-        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
         List<Assignment> assignmentList = createAssignmentList(nurseRoster);
         for (Assignment assignment : assignmentList) {
@@ -64,7 +62,7 @@ public class NurseRosteringStartingSolutionInitializer extends AbstractStartingS
                 } else {
                     workingMemory.update(assignmentHandle, assignment);
                 }
-                Score score = abstractSolverScope.calculateScoreFromWorkingMemory();
+                Score score = solutionDirector.calculateScoreFromWorkingMemory();
                 if (score.compareTo(bestScore) > 0) {
                     bestScore = score;
                     bestEmployee = employee;

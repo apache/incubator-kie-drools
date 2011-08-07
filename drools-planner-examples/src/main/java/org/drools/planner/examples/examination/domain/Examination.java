@@ -23,9 +23,9 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.score.HardAndSoftScore;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.examination.domain.solver.TopicConflict;
 
@@ -102,6 +102,7 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.roomHardConstraintList = roomHardConstraintList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<Exam> getExamList() {
         return examList;
     }
@@ -118,11 +119,7 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (examList != null);
-    }
-
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(institutionalWeighting);
         // Student isn't used in the DRL at the moment
@@ -133,11 +130,9 @@ public class Examination extends AbstractPersistable implements Solution<HardAnd
         facts.addAll(roomList);
         facts.addAll(periodHardConstraintList);
         facts.addAll(roomHardConstraintList);
-        if (isInitialized()) {
-            facts.addAll(examList);
-        }
         // A faster alternative to a insertLogicalTopicConflicts rule.
         facts.addAll(calculateTopicConflictList());
+        // Do not add the planning entity's (examList) because that will be done automatically
         return facts;
     }
 

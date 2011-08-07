@@ -34,8 +34,9 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.AbstractSolver;
-import org.drools.planner.core.solver.AbstractSolverScope;
+import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.solver.PlanningFactChange;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
@@ -58,7 +59,7 @@ public class SolutionBusiness {
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
-    private AbstractSolverScope abstractSolverScope;
+    private DefaultSolverScope solverScope; // TODO HACK Planner internal API: don't do this
 
     public void setSolutionDao(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
@@ -133,7 +134,7 @@ public class SolutionBusiness {
 
     public void setSolver(Solver solver) {
         this.solver = solver;
-        this.abstractSolverScope = ((AbstractSolver) solver).getAbstractSolverScope();
+        this.solverScope = ((DefaultSolver) solver).getSolverScope();
     }
 
     public List<File> getUnsolvedFileList() {
@@ -149,11 +150,11 @@ public class SolutionBusiness {
     }
 
     public Solution getSolution() {
-        return abstractSolverScope.getWorkingSolution();
+        return solverScope.getWorkingSolution(); // TODO HACK Planner internal API: don't do this
     }
 
     public Score getScore() {
-        return abstractSolverScope.calculateScoreFromWorkingMemory();
+        return solverScope.calculateScoreFromWorkingMemory(); // TODO HACK Planner internal API: don't do this
     }
 
     public void addSolverEventLister(SolverEventListener eventListener) {
@@ -162,7 +163,7 @@ public class SolutionBusiness {
 
     public List<ScoreDetail> getScoreDetailList() {
         Map<String, ScoreDetail> scoreDetailMap = new HashMap<String, ScoreDetail>();
-        WorkingMemory workingMemory = abstractSolverScope.getWorkingMemory();
+        WorkingMemory workingMemory = solverScope.getWorkingMemory();
         if (workingMemory == null) {
             return Collections.emptyList();
         }
@@ -193,28 +194,37 @@ public class SolutionBusiness {
     }
 
     public void saveSolution(File file) {
-        Solution solution = abstractSolverScope.getWorkingSolution();
+        Solution solution = solverScope.getWorkingSolution();
         solutionDao.writeSolution(solution, file);
     }
 
     public void exportSolution(File file) {
-        Solution solution = abstractSolverScope.getWorkingSolution();
+        Solution solution = solverScope.getWorkingSolution();
         exporter.writeSolution(solution, file);
     }
 
     public void doMove(Move move) {
-        if (!move.isMoveDoable(abstractSolverScope.getWorkingMemory())) {
+        if (!move.isMoveDoable(solverScope.getWorkingMemory())) {
             logger.info("Not doing user move ({}) because it is not doable.", move);
             return;
         }
         logger.info("Doing user move ({}).", move);
-        move.doMove(abstractSolverScope.getWorkingMemory());
+        move.doMove(solverScope.getWorkingMemory());
+    }
+
+    public void doPlanningFactChange(PlanningFactChange planningFactChange) {
+        if (solver.isSolving()) {
+            solver.addPlanningFactChange(planningFactChange);
+        } else {
+            planningFactChange.doChange(solverScope.getSolutionDirector());
+        }
     }
 
     public void solve() {
         solver.solve();
-        Solution solution = solver.getBestSolution();
-        solver.setStartingSolution(solution);
+        // Normally we would do this as the point:
+        // Solution solution = solver.getBestSolution();
+        // but since this class is hacking DefaultSolverScope, it doesn't have to.
     }
 
     public void terminateSolvingEarly() {

@@ -16,11 +16,15 @@
 
 package org.drools.planner.core;
 
+import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
+import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.event.SolverEventListener;
+import org.drools.planner.core.solver.PlanningFactChange;
+import org.drools.planner.core.termination.Termination;
 
 /**
  * A Solver solves planning problems.
@@ -55,13 +59,19 @@ public interface Solver {
     void solve();
 
     /**
+     * This method is thread-safe.
+     * @return true if the {@link #solve()} method is still running.
+     */
+    boolean isSolving();
+
+    /**
      * Notifies the solver that it should stop at its earliest convenience.
-     * This method returns immediatly, but it takes an undetermined time
+     * This method returns immediately, but it takes an undetermined time
      * for the {@link #solve()} to actually return.
      * <p/>
      * This method is thread-safe.
      * @return true if successful
-     * @see #isTerminatedEarly()
+     * @see #isTerminateEarly()
      * @see Future#cancel(boolean)
      */
     boolean terminateEarly();
@@ -71,7 +81,20 @@ public interface Solver {
      * @return true if terminateEarly has been called since the {@Solver} started.
      * @see Future#isCancelled()
      */
-    boolean isTerminatedEarly();
+    boolean isTerminateEarly();
+
+    /**
+     * Schedules a {@link PlanningFactChange} to be processed.
+     * <p/>
+     * As a side-effect this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
+     * but not {@link #terminateEarly()}.
+     * <p/>
+     * Follows specifications of {@link BlockingQueue#add(Object)} with by default
+     * a capacity of {@link Integer#MAX_VALUE}.
+     * @param planningFactChange never null
+     * @return <tt>true</tt> (as specified by {@link Collection#add})
+     */
+    boolean addPlanningFactChange(PlanningFactChange planningFactChange);
 
     /**
      * @param eventListener never null

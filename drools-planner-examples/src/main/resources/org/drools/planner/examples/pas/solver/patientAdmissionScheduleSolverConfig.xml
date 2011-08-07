@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <!--
-           On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
-           On Peter Demeester's PC: 300 (short run), 3000 (long run).
-        -->
-        <maximumSecondsSpend>3720</maximumSecondsSpend>
-    </termination>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <!--
+       On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
+       On Peter Demeester's PC: 300 (short run), 3000 (long run).
+    -->
+    <maximumSecondsSpend>3720</maximumSecondsSpend>
+  </termination>
+  <customSolverPhase>
+    <!-- TODO use BEST_FIT_DECREASING instead (saves up to 10 minutes ), but deal with the extra scoreDRL problem -->
+    <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
+  <localSearch>
     <selector>
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-        <!--<selector>-->
-            <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
-        <!--</selector>-->
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
-        </selector>
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedChangeMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <!--<selector>-->
+        <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationSwitchMoveFactory</moveFactoryClass>-->
+      <!--</selector>-->
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
     <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>500</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
-</localSearchSolver>
+  </localSearch>
+</solver>

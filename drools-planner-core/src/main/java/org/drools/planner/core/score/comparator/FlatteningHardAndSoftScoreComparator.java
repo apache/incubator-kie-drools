@@ -22,7 +22,7 @@ import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 
 /**
- * Compares 2 HardAndSoftScore after flattening: the hard multiplied by a hardWeight gets added to the soft.
+ * Compares 2 HardAndSoftScore based on the calculation the hard multiplied by a weight to the soft.
  */
 public class FlatteningHardAndSoftScoreComparator implements Comparator<Score> {
 
@@ -30,6 +30,10 @@ public class FlatteningHardAndSoftScoreComparator implements Comparator<Score> {
 
     public FlatteningHardAndSoftScoreComparator(int hardWeight) {
         this.hardWeight = hardWeight;
+    }
+
+    public int getHardWeight() {
+        return hardWeight;
     }
 
     public int compare(Score s1, Score s2) {

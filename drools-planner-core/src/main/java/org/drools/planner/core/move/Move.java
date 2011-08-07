@@ -23,22 +23,22 @@ import org.drools.planner.core.move.factory.MoveFactory;
 import org.drools.planner.core.solution.Solution;
 
 /**
- * A Move represents a change in the solution.
- * </p>
- * Ussually the move holds a direct pointer to the part of the solution
+ * A Move represents a change of 1 or more planning variables of 1 or more planning entities in the solution.
+ * <p/>
+ * Usually the move holds a direct reference to each planning entity of the solution
  * that it will change when {@link #doMove(WorkingMemory)} is called.
  * On that change it should also notify the {@link WorkingMemory} accordingly.
- * </p>
+ * <p/>
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()}.
  */
 public interface Move {
 
     /**
-     * Called before a move is evaluated to decide wheter the move can be done and evaluated.
+     * Called before a move is evaluated to decide whether the move can be done and evaluated.
      * A Move isn't doable if:
      * <ul>
      * <li>Either doing it would change nothing in the solution.</li>
-     * <li>Either it's simply not possible to do.</li>
+     * <li>Either it's simply not possible to do (for example due to build-in hard constraints).</li>
      * </ul>
      * Although you could filter out non-doable moves in for example the {@link MoveFactory},
      * this is not needed as the {@link Solver} will do it for you.
@@ -59,7 +59,7 @@ public interface Move {
      * Does the Move and updates the {@link Solution} and its {@link WorkingMemory} accordingly.
      * When the solution is modified, the {@link WorkingMemory}'s {@link FactHandle}s should be correctly notified,
      * otherwise the score(s) calculated will be corrupted.
-     * @param workingMemory the {@link WorkingMemory} that needs to get notified of the changes.
+     * @param workingMemory never null, the {@link WorkingMemory} that needs to get notified of the changes.
      */
     void doMove(WorkingMemory workingMemory);
 

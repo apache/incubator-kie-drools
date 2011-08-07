@@ -18,10 +18,11 @@ package org.drools.planner.examples.nqueens.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
@@ -31,6 +32,7 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
 
     private SimpleScore score;
 
+    @PlanningEntityCollectionProperty
     public List<Queen> getQueenList() {
         return queenList;
     }
@@ -52,19 +54,20 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
     }
 
     /**
-     * @return a list of every possible n
+     * @return a list of every possible y
      */
-    public List<Integer> createNList() {
+    public List<Integer> getColumnList() {
         int n = getN();
-        List<Integer> nList = new ArrayList<Integer>(n);
+        List<Integer> yList = new ArrayList<Integer>(n);
         for (int i = 0; i < n; i++) {
-            nList.add(i);
+            yList.add(i);
         }
-        return nList;
+        return yList;
     }
 
-    public Collection<? extends Object> getFacts() {
-        return queenList;
+    public Collection<? extends Object> getProblemFacts() {
+        // Do not add the planning entity's (queenList) because that will be done automatically
+        return Collections.emptyList();
     }
 
     /**

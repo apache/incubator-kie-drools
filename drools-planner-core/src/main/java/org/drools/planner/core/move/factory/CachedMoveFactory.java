@@ -19,7 +19,7 @@ package org.drools.planner.core.move.factory;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.solution.Solution;
 
@@ -32,8 +32,8 @@ public abstract class CachedMoveFactory extends AbstractMoveFactory {
     }
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        cachedMoveList = createCachedMoveList(localSearchSolverScope.getWorkingSolution());
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        cachedMoveList = createCachedMoveList(localSearchSolverPhaseScope.getWorkingSolution());
     }
 
     public abstract List<Move> createCachedMoveList(Solution solution);

@@ -1304,4 +1304,406 @@
       <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
     </CloudProcess>
   </cloudProcessList>
+  <cloudAssignmentList id="204">
+    <CloudAssignment id="205">
+      <id>0</id>
+      <cloudProcess reference="104"/>
+    </CloudAssignment>
+    <CloudAssignment id="206">
+      <id>1</id>
+      <cloudProcess reference="105"/>
+    </CloudAssignment>
+    <CloudAssignment id="207">
+      <id>2</id>
+      <cloudProcess reference="106"/>
+    </CloudAssignment>
+    <CloudAssignment id="208">
+      <id>3</id>
+      <cloudProcess reference="107"/>
+    </CloudAssignment>
+    <CloudAssignment id="209">
+      <id>4</id>
+      <cloudProcess reference="108"/>
+    </CloudAssignment>
+    <CloudAssignment id="210">
+      <id>5</id>
+      <cloudProcess reference="109"/>
+    </CloudAssignment>
+    <CloudAssignment id="211">
+      <id>6</id>
+      <cloudProcess reference="110"/>
+    </CloudAssignment>
+    <CloudAssignment id="212">
+      <id>7</id>
+      <cloudProcess reference="111"/>
+    </CloudAssignment>
+    <CloudAssignment id="213">
+      <id>8</id>
+      <cloudProcess reference="112"/>
+    </CloudAssignment>
+    <CloudAssignment id="214">
+      <id>9</id>
+      <cloudProcess reference="113"/>
+    </CloudAssignment>
+    <CloudAssignment id="215">
+      <id>10</id>
+      <cloudProcess reference="114"/>
+    </CloudAssignment>
+    <CloudAssignment id="216">
+      <id>11</id>
+      <cloudProcess reference="115"/>
+    </CloudAssignment>
+    <CloudAssignment id="217">
+      <id>12</id>
+      <cloudProcess reference="116"/>
+    </CloudAssignment>
+    <CloudAssignment id="218">
+      <id>13</id>
+      <cloudProcess reference="117"/>
+    </CloudAssignment>
+    <CloudAssignment id="219">
+      <id>14</id>
+      <cloudProcess reference="118"/>
+    </CloudAssignment>
+    <CloudAssignment id="220">
+      <id>15</id>
+      <cloudProcess reference="119"/>
+    </CloudAssignment>
+    <CloudAssignment id="221">
+      <id>16</id>
+      <cloudProcess reference="120"/>
+    </CloudAssignment>
+    <CloudAssignment id="222">
+      <id>17</id>
+      <cloudProcess reference="121"/>
+    </CloudAssignment>
+    <CloudAssignment id="223">
+      <id>18</id>
+      <cloudProcess reference="122"/>
+    </CloudAssignment>
+    <CloudAssignment id="224">
+      <id>19</id>
+      <cloudProcess reference="123"/>
+    </CloudAssignment>
+    <CloudAssignment id="225">
+      <id>20</id>
+      <cloudProcess reference="124"/>
+    </CloudAssignment>
+    <CloudAssignment id="226">
+      <id>21</id>
+      <cloudProcess reference="125"/>
+    </CloudAssignment>
+    <CloudAssignment id="227">
+      <id>22</id>
+      <cloudProcess reference="126"/>
+    </CloudAssignment>
+    <CloudAssignment id="228">
+      <id>23</id>
+      <cloudProcess reference="127"/>
+    </CloudAssignment>
+    <CloudAssignment id="229">
+      <id>24</id>
+      <cloudProcess reference="128"/>
+    </CloudAssignment>
+    <CloudAssignment id="230">
+      <id>25</id>
+      <cloudProcess reference="129"/>
+    </CloudAssignment>
+    <CloudAssignment id="231">
+      <id>26</id>
+      <cloudProcess reference="130"/>
+    </CloudAssignment>
+    <CloudAssignment id="232">
+      <id>27</id>
+      <cloudProcess reference="131"/>
+    </CloudAssignment>
+    <CloudAssignment id="233">
+      <id>28</id>
+      <cloudProcess reference="132"/>
+    </CloudAssignment>
+    <CloudAssignment id="234">
+      <id>29</id>
+      <cloudProcess reference="133"/>
+    </CloudAssignment>
+    <CloudAssignment id="235">
+      <id>30</id>
+      <cloudProcess reference="134"/>
+    </CloudAssignment>
+    <CloudAssignment id="236">
+      <id>31</id>
+      <cloudProcess reference="135"/>
+    </CloudAssignment>
+    <CloudAssignment id="237">
+      <id>32</id>
+      <cloudProcess reference="136"/>
+    </CloudAssignment>
+    <CloudAssignment id="238">
+      <id>33</id>
+      <cloudProcess reference="137"/>
+    </CloudAssignment>
+    <CloudAssignment id="239">
+      <id>34</id>
+      <cloudProcess reference="138"/>
+    </CloudAssignment>
+    <CloudAssignment id="240">
+      <id>35</id>
+      <cloudProcess reference="139"/>
+    </CloudAssignment>
+    <CloudAssignment id="241">
+      <id>36</id>
+      <cloudProcess reference="140"/>
+    </CloudAssignment>
+    <CloudAssignment id="242">
+      <id>37</id>
+      <cloudProcess reference="141"/>
+    </CloudAssignment>
+    <CloudAssignment id="243">
+      <id>38</id>
+      <cloudProcess reference="142"/>
+    </CloudAssignment>
+    <CloudAssignment id="244">
+      <id>39</id>
+      <cloudProcess reference="143"/>
+    </CloudAssignment>
+    <CloudAssignment id="245">
+      <id>40</id>
+      <cloudProcess reference="144"/>
+    </CloudAssignment>
+    <CloudAssignment id="246">
+      <id>41</id>
+      <cloudProcess reference="145"/>
+    </CloudAssignment>
+    <CloudAssignment id="247">
+      <id>42</id>
+      <cloudProcess reference="146"/>
+    </CloudAssignment>
+    <CloudAssignment id="248">
+      <id>43</id>
+      <cloudProcess reference="147"/>
+    </CloudAssignment>
+    <CloudAssignment id="249">
+      <id>44</id>
+      <cloudProcess reference="148"/>
+    </CloudAssignment>
+    <CloudAssignment id="250">
+      <id>45</id>
+      <cloudProcess reference="149"/>
+    </CloudAssignment>
+    <CloudAssignment id="251">
+      <id>46</id>
+      <cloudProcess reference="150"/>
+    </CloudAssignment>
+    <CloudAssignment id="252">
+      <id>47</id>
+      <cloudProcess reference="151"/>
+    </CloudAssignment>
+    <CloudAssignment id="253">
+      <id>48</id>
+      <cloudProcess reference="152"/>
+    </CloudAssignment>
+    <CloudAssignment id="254">
+      <id>49</id>
+      <cloudProcess reference="153"/>
+    </CloudAssignment>
+    <CloudAssignment id="255">
+      <id>50</id>
+      <cloudProcess reference="154"/>
+    </CloudAssignment>
+    <CloudAssignment id="256">
+      <id>51</id>
+      <cloudProcess reference="155"/>
+    </CloudAssignment>
+    <CloudAssignment id="257">
+      <id>52</id>
+      <cloudProcess reference="156"/>
+    </CloudAssignment>
+    <CloudAssignment id="258">
+      <id>53</id>
+      <cloudProcess reference="157"/>
+    </CloudAssignment>
+    <CloudAssignment id="259">
+      <id>54</id>
+      <cloudProcess reference="158"/>
+    </CloudAssignment>
+    <CloudAssignment id="260">
+      <id>55</id>
+      <cloudProcess reference="159"/>
+    </CloudAssignment>
+    <CloudAssignment id="261">
+      <id>56</id>
+      <cloudProcess reference="160"/>
+    </CloudAssignment>
+    <CloudAssignment id="262">
+      <id>57</id>
+      <cloudProcess reference="161"/>
+    </CloudAssignment>
+    <CloudAssignment id="263">
+      <id>58</id>
+      <cloudProcess reference="162"/>
+    </CloudAssignment>
+    <CloudAssignment id="264">
+      <id>59</id>
+      <cloudProcess reference="163"/>
+    </CloudAssignment>
+    <CloudAssignment id="265">
+      <id>60</id>
+      <cloudProcess reference="164"/>
+    </CloudAssignment>
+    <CloudAssignment id="266">
+      <id>61</id>
+      <cloudProcess reference="165"/>
+    </CloudAssignment>
+    <CloudAssignment id="267">
+      <id>62</id>
+      <cloudProcess reference="166"/>
+    </CloudAssignment>
+    <CloudAssignment id="268">
+      <id>63</id>
+      <cloudProcess reference="167"/>
+    </CloudAssignment>
+    <CloudAssignment id="269">
+      <id>64</id>
+      <cloudProcess reference="168"/>
+    </CloudAssignment>
+    <CloudAssignment id="270">
+      <id>65</id>
+      <cloudProcess reference="169"/>
+    </CloudAssignment>
+    <CloudAssignment id="271">
+      <id>66</id>
+      <cloudProcess reference="170"/>
+    </CloudAssignment>
+    <CloudAssignment id="272">
+      <id>67</id>
+      <cloudProcess reference="171"/>
+    </CloudAssignment>
+    <CloudAssignment id="273">
+      <id>68</id>
+      <cloudProcess reference="172"/>
+    </CloudAssignment>
+    <CloudAssignment id="274">
+      <id>69</id>
+      <cloudProcess reference="173"/>
+    </CloudAssignment>
+    <CloudAssignment id="275">
+      <id>70</id>
+      <cloudProcess reference="174"/>
+    </CloudAssignment>
+    <CloudAssignment id="276">
+      <id>71</id>
+      <cloudProcess reference="175"/>
+    </CloudAssignment>
+    <CloudAssignment id="277">
+      <id>72</id>
+      <cloudProcess reference="176"/>
+    </CloudAssignment>
+    <CloudAssignment id="278">
+      <id>73</id>
+      <cloudProcess reference="177"/>
+    </CloudAssignment>
+    <CloudAssignment id="279">
+      <id>74</id>
+      <cloudProcess reference="178"/>
+    </CloudAssignment>
+    <CloudAssignment id="280">
+      <id>75</id>
+      <cloudProcess reference="179"/>
+    </CloudAssignment>
+    <CloudAssignment id="281">
+      <id>76</id>
+      <cloudProcess reference="180"/>
+    </CloudAssignment>
+    <CloudAssignment id="282">
+      <id>77</id>
+      <cloudProcess reference="181"/>
+    </CloudAssignment>
+    <CloudAssignment id="283">
+      <id>78</id>
+      <cloudProcess reference="182"/>
+    </CloudAssignment>
+    <CloudAssignment id="284">
+      <id>79</id>
+      <cloudProcess reference="183"/>
+    </CloudAssignment>
+    <CloudAssignment id="285">
+      <id>80</id>
+      <cloudProcess reference="184"/>
+    </CloudAssignment>
+    <CloudAssignment id="286">
+      <id>81</id>
+      <cloudProcess reference="185"/>
+    </CloudAssignment>
+    <CloudAssignment id="287">
+      <id>82</id>
+      <cloudProcess reference="186"/>
+    </CloudAssignment>
+    <CloudAssignment id="288">
+      <id>83</id>
+      <cloudProcess reference="187"/>
+    </CloudAssignment>
+    <CloudAssignment id="289">
+      <id>84</id>
+      <cloudProcess reference="188"/>
+    </CloudAssignment>
+    <CloudAssignment id="290">
+      <id>85</id>
+      <cloudProcess reference="189"/>
+    </CloudAssignment>
+    <CloudAssignment id="291">
+      <id>86</id>
+      <cloudProcess reference="190"/>
+    </CloudAssignment>
+    <CloudAssignment id="292">
+      <id>87</id>
+      <cloudProcess reference="191"/>
+    </CloudAssignment>
+    <CloudAssignment id="293">
+      <id>88</id>
+      <cloudProcess reference="192"/>
+    </CloudAssignment>
+    <CloudAssignment id="294">
+      <id>89</id>
+      <cloudProcess reference="193"/>
+    </CloudAssignment>
+    <CloudAssignment id="295">
+      <id>90</id>
+      <cloudProcess reference="194"/>
+    </CloudAssignment>
+    <CloudAssignment id="296">
+      <id>91</id>
+      <cloudProcess reference="195"/>
+    </CloudAssignment>
+    <CloudAssignment id="297">
+      <id>92</id>
+      <cloudProcess reference="196"/>
+    </CloudAssignment>
+    <CloudAssignment id="298">
+      <id>93</id>
+      <cloudProcess reference="197"/>
+    </CloudAssignment>
+    <CloudAssignment id="299">
+      <id>94</id>
+      <cloudProcess reference="198"/>
+    </CloudAssignment>
+    <CloudAssignment id="300">
+      <id>95</id>
+      <cloudProcess reference="199"/>
+    </CloudAssignment>
+    <CloudAssignment id="301">
+      <id>96</id>
+      <cloudProcess reference="200"/>
+    </CloudAssignment>
+    <CloudAssignment id="302">
+      <id>97</id>
+      <cloudProcess reference="201"/>
+    </CloudAssignment>
+    <CloudAssignment id="303">
+      <id>98</id>
+      <cloudProcess reference="202"/>
+    </CloudAssignment>
+    <CloudAssignment id="304">
+      <id>99</id>
+      <cloudProcess reference="203"/>
+    </CloudAssignment>
+  </cloudAssignmentList>
 </CloudBalance>

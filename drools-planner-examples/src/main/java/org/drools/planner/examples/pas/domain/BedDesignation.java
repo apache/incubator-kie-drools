@@ -20,8 +20,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.pas.domain.solver.BedDesignationDifficultyWeightFactory;
+import org.drools.planner.examples.pas.domain.solver.BedStrengthComparator;
 
+@PlanningEntity(difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
 @XStreamAlias("BedDesignation")
 public class BedDesignation extends AbstractPersistable implements Comparable<BedDesignation> {
 
@@ -36,6 +42,8 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
         this.admissionPart = admissionPart;
     }
 
+    @PlanningVariable(strengthComparatorClass = BedStrengthComparator.class)
+    @ValueRangeFromSolutionProperty(propertyName = "bedList")
     public Bed getBed() {
         return bed;
     }

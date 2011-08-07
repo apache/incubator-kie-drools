@@ -9,6 +9,7 @@ on how likely your code is going to be affected by this change:
 - [MAJOR] Very likely affects your code.
 - [MINOR] Probably does not affect your code (especially if you followed the examples), unless you have hacks.
 - [RECOMMENDED] Not a backward incompatible change, but you probably want to do this.
+- [README] Read this to better understand why the following MAJOR change was made.
 
 From 5.0.0-m2 to 5.0.0
 ----------------------
@@ -657,3 +658,478 @@ Before in *AcceptorConfig.java:
     public Acceptor buildAcceptor(ScoreDefinition scoreDefinition) {
 After in *AcceptorConfig.java:
     public Acceptor buildAcceptor(EnvironmentMode environmentMode, ScoreDefinition scoreDefinition) {
+
+[MAJOR] You need to define your solution class in the configuration now:
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+      <scoreDrl>...</scoreDrl>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+      <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
+      <scoreDrl>...</scoreDrl>
+
+[README] Understand the concept of a "planning entity" class.
+The class (or classes) that change during planning (and do not implement Solution) are a planning entity.
+For example: ShiftAssignment, BedDesignation, Queen, CloudAssignment, ...
+The other domain classes are considered normal planning facts,
+for example Shift, Employee, Bed, Room, Department, ...
+They do not change during planning (at least not without pausing the solver).
+Read the manual to understand the "planning entity" concept better.
+
+[MAJOR] You need to define your planning entity class(es) in the configuration now:
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+      <solutionClass>...</solutionClass>
+      <scoreDrl>...</scoreDrl>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <localSearchSolver>
+      <solutionClass>...</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+      <scoreDrl>...</scoreDrl>
+
+[MAJOR] You need to annotate your planning entity class(es) with the @PlanningEntity annotation
+Before in *.java:
+    public class Lecture ... {
+        ...
+    }
+After in *.java:
+    @PlanningEntity
+    public class Lecture ... {
+        ...
+    }
+
+[README] Understand the concept of a "planning variable" property.
+The property (or properties) on a planning entity class that are changed (through their setter) during planning
+are planning variables.
+For example: ShiftAssignment.getEmployee(), BedDesignation.getBed(), Queen.getY(), ...
+Note that most planning entities have 1 property which defines the planning entity
+and that property is NOT a planning variable.
+For example: ShiftAssignment.getShift(), BedDesignation.getAdmissionPart(), Queen.getX(), ...
+Read the manual to understand the "planning variable" concept better.
+
+[MAJOR] You need to annotate your planning variable property(ies) with the @PlanningVariable annotation.
+Furthermore, you need to annotate a @ValueRange* annotation on to define the allowed values.
+Commonly, you 'll use @ValueRangeFromSolutionProperty (recommended) which specifies a property name on the solution
+which returns a collection of the allowed values for that variable.
+If you can't use @ValueRangeFromSolutionProperty, use @ValueRangeUndefined instead (not recommended),
+but that will exclude you from using construction heuristics.
+Before in *.java:
+    @PlanningEntity
+    public class Lecture ... {
+
+        private Course course;
+        private int lectureIndexInCourse;
+
+        // Changed by moves, between score calculations.
+        private Period period;
+        private Room room;
+
+        public Course getCourse() {...}
+        public void setCourse(Course course) {...}
+
+        public int getLectureIndexInCourse() {...}
+        public void setLectureIndexInCourse(int lectureIndexInCourse) {...}
+
+        public Period getPeriod() {...}
+        public void setPeriod(Period period) {...}
+
+        public Room getRoom() {...}
+        public void setRoom(Room room) {...}
+
+        ...
+
+        public int getStudentSize() {
+            return course.getStudentSize();
+        }
+
+        public Day getDay() {
+            return period.getDay();
+        }
+
+    }
+After in *.java:
+    @PlanningEntity
+    public class Lecture ... {
+
+        private Course course;
+        private int lectureIndexInCourse;
+
+        // Changed by moves, between score calculations.
+        private Period period;
+        private Room room;
+
+        // This is not a PlanningVariable: it defines the planning entity
+        public Course getCourse() {...}
+        public void setCourse(Course course) {...}
+
+        // This is not a PlanningVariable: it defines the planning entity
+        public int getLectureIndexInCourse() {...}
+        public void setLectureIndexInCourse(int lectureIndexInCourse) {...}
+
+        @PlanningVariable
+        @ValueRangeFromSolutionProperty(propertyName = "periodList")
+        public Period getPeriod() {...}
+        public void setPeriod(Period period) {...}
+
+        @PlanningVariable
+        @ValueRangeFromSolutionProperty(propertyName = "roomList")
+        public Room getRoom() {...}
+        public void setRoom(Room room) {...}
+
+        ...
+
+        // This is not a PlanningVariable: no setter
+        public int getStudentSize() {
+            return course.getStudentSize();
+        }
+
+        // This is not a PlanningVariable: no setter
+        public Day getDay() {
+            return period.getDay();
+        }
+
+    }
+
+[MAJOR] Annotate every property on your Solution that returns a collection of planning entities
+with @PlanningEntityCollectionProperty.
+Before in *.java:
+    public class CurriculumCourseSchedule ... implements Solution<...> {
+
+        private List<Lecture> lectureList;
+
+        ...
+
+        public List<Lecture> getLectureList() {...}
+        public void setLectureList(List<Lecture> lectureList) {...}
+
+    }
+After in *.java:
+    public class CurriculumCourseSchedule ... implements Solution<...> {
+
+        private List<Lecture> lectureList;
+
+        ...
+
+        @PlanningEntityCollectionProperty
+        public List<Lecture> getLectureList() {...}
+        public void setLectureList(List<Lecture> lectureList) {...}
+
+    }
+If you have a property that returns a single planning entity (instead of a collection), use @PlanningEntityProperty.
+
+[MAJOR] The method getFacts() is renamed to getProblemFacts() and should no longer include planning entities.
+Every planning entity is now automatically inserted into the working memory if and only if it is initialized.
+When it's initialized later, it's also automatically inserted.
+Remove the adding of the planning entities in the getFacts() method.
+Before in *.java:
+    public class ... implements Solution<...> {
+
+        public Collection<? extends Object> getFacts() {
+            List<Object> facts = new ArrayList<Object>();
+            facts.addAll(teacherList);
+            ...
+            facts.addAll(calculateTopicConflictList());
+            if (isInitialized()) {
+                facts.addAll(lectureList);
+            }
+            return facts;
+        }
+
+    }
+After in *.java:
+    public class ... implements Solution<...> {
+
+        public Collection<? extends Object> getProblemFacts() {
+            List<Object> facts = new ArrayList<Object>();
+            facts.addAll(teacherList);
+            ...
+            facts.addAll(calculateTopicConflictList());
+            // Do not add the planning entity's (lectureList) because that will be done automatically
+            return facts;
+        }
+
+    }
+
+[README] A planning entity is considered uninitialized if one if at least on of its planning variables is null.
+Therefor it's now possible to start planning from a partially initialized starting solution,
+for example during real-time re-planning after facts change.
+
+[MAJOR] The StartingSolutionInitializer no longer has a isSolutionInitialized(AbstractSolverScope) method.
+Before in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+
+        @Override
+        public boolean isSolutionInitialized(AbstractSolverScope abstractSolverScope) {
+            ...
+        }
+
+        ...
+
+    }
+After in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+
+        ...
+
+    }
+Note that you'll probably want to remove the StartingSolutionInitializer altogether
+and replace it by a construction heuristic (see below).
+
+[MAJOR] The planning entity collection in the Solution can never be null,
+but some (or all) of its planning entity's can be uninitialized.
+So create them before setting the starting solution, instead of in your StartingSolutionInitializer.
+Before in *.java:
+    public class ... {
+
+        public void ...() {
+            CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
+            schedule.setTeacherList(teacherList);
+            schedule.setCourseList(courseList);
+            ...
+            solver.setStartingSolution(schedule);
+        }
+
+    }
+After in *.java:
+    public class ... {
+
+        public void ...() {
+            CurriculumCourseSchedule schedule = new CurriculumCourseSchedule();
+            schedule.setTeacherList(teacherList);
+            schedule.setCourseList(courseList);
+            ...
+            createLectureList(schedule);
+            solver.setStartingSolution(schedule);
+        }
+
+        private void createLectureList(CurriculumCourseSchedule schedule) {
+            List<Course> courseList = schedule.getCourseList();
+            List<Lecture> lectureList = new ArrayList<Lecture>(courseList.size());
+            long id = 0L;
+            for (Course course : courseList) {
+                for (int i = 0; i < course.getLectureSize(); i++) {
+                    Lecture lecture = new Lecture();
+                    lecture.setId((long) id);
+                    id++;
+                    lecture.setCourse(course);
+                    // Make sure to set all non PlanningVariable properties
+                    lecture.setLectureIndexInCourse(i);
+                    // Notice that we leave the PlanningVariable properties on null
+                    lectureList.add(lecture);
+                }
+            }
+            schedule.setLectureList(lectureList);
+        }
+
+    }
+
+[RECOMMENDED] Remove the isInitialized() from Solution if you copied that from the examples.
+Before in *.java:
+    public class ... implements Solution<...> {
+
+        public boolean isInitialized() {
+            return (lectureList != null);
+        }
+        
+        ...
+
+    }
+After in *.java:
+    public class ... implements Solution<...> {
+
+        ...
+
+    }
+
+[README] Phasing: a Solver can now have multiple phases.
+Each phase runs an algorithm, such as local search (tabu search, simulated annealing, ...),
+construction heuristic (first fit, first fit decreasing, best fit decreasing, ...), ...
+The phasing algorithms are executed sequentially.
+For example, it's now easy to do 5 minutes of simulated annealing, followed by 5 minutes of tabu search.
+
+[MAJOR] The local search solver is now a local search solver phase.
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <localSearchSolver>
+        ...
+      <termination>
+        ...
+      </termination>
+      <selector>
+        ...
+      </selector>
+      <acceptor>
+        ...
+      </acceptor>
+      <forager>
+        ...
+      </forager>
+    </localSearchSolver>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <solver>
+        ...
+      <termination>
+        ...
+      </termination>
+      <localSearch>
+        <selector>
+          ...
+        </selector>
+        <acceptor>
+          ...
+        </acceptor>
+        <forager>
+          ...
+        </forager>
+      </localSearch>
+    </solver>
+Note: it's also possible to set a termination per phase.
+Warning: some terminations are not supported on the solver level, only on the phase level. For example maximumStepCount:
+    <termination>
+      <maximumStepCount>100</maximumStepCount><!-- ERROR -->
+    </termination>
+    <localSearch>
+      <termination>
+        <maximumStepCount>100</maximumStepCount><!-- OK -->
+      </termination>
+      ...
+    </localSearch>
+Warning for *SolverBenchmarkConfig.xml:
+  If the <inheritedSolverBenchmark> contains a <selector>, <acceptor> or <forager>,
+  that can no longer be inherited individually. Copy the <selector>, <acceptor> or <forager> to every <solverBenchmark>.
+  Because a benchmark specific <localSearch> will not overwrite the inheriting <localSearch>,
+  but instead add an extra localSearch phase, which will result in 2 separate, sequential localSearch phases.
+
+[README] The StartingSolutionInitializer interface has been removed.
+Instead, there's now out-of-the-box support for several construction heuristics.
+These implementations are fast, scalable and configurable. They require little or no domain specific code.
+They also support features like terminateEarly, logging, partially initialized starting solutions, ...
+Alternatively, you can also refactor it to a CustomSolverPhaseCommand,
+which has the same freedom (to write lots of custom code) as a StartingSolutionInitializer had.
+
+[MAJOR] Replacing the StartingSolutionInitializer by a construction heuristics (recommended)
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>...</termination>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <termination>...</termination>
+    <constructionHeuristic>
+      <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      <!-- Speedup that can be applied to most, but not all use cases (see manual): -->
+      <!-- <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType> -->
+    </constructionHeuristic>
+But it's better to use the constructionHeuristicType FIRST_FIT_DECREASING instead,
+however you'll need to implement create a difficultyComparatorClass or difficultyWeightFactoryClass
+and configure that on your planning entity class:
+    @PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
+    public class CloudAssignment ...
+    @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
+    public class Lecture ...
+
+[MINOR] Replacing the StartingSolutionInitializer by a CustomSolverPhaseCommand (not recommended)
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
+    <termination>...</termination>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <termination>...</termination>
+    <customSolverPhase>
+      <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+    </customSolverPhase>
+Before in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
+
+        public void initializeSolution(DefaultSolverScope solverScope) {
+            // Initialize the solution
+            ... solverScope.getWorkingMemory() ...
+            ... solverScope.calculateScoreFromWorkingMemory() ...
+        }
+
+        ...
+    }
+After in *StartingSolutionInitializer.java:
+    public class ...StartingSolutionInitializer implements CustomSolverPhaseCommand {
+
+        protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+
+        public void changeWorkingSolution(SolutionDirector solutionDirector) {
+            // Initialize the solution
+            ... solutionDirectorsolverScope.getWorkingMemory() ...
+            ... solutionDirector.calculateScoreFromWorkingMemory() ...
+        }
+
+        ...
+    }
+
+[MINOR] The AbstractMoveFactory lifecycle methods have changed signature.
+If you overwrote them (which is unlikely as most implements use CachedMoveFactory), you'll need to adjust them.
+Before in *MoveFactory.java:
+    public class ...MoveFactory extends AbstractMoveFactory {
+
+        @Override
+        public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+            ...
+        }
+
+        ...
+    }
+After in *MoveFactory.java:
+    public class ... extends AbstractMoveFactory {
+
+        @Override
+        public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+            ...
+        }
+
+        ...
+    }
+Similar for solvingEnded(LocalSearchSolverScope), which is now phaseEnded(LocalSearchSolverPhaseScope)
+
+[MINOR] The Selector, Acceptor and Forager method have changed signature.
+If you implemented a custom Selector, Acceptor or Forager, you 'll need to adjust them.
+Before in *Selector.java, *Acceptor.java or *Forager.java:
+    public class ...Selector extends AbstractSelector {
+
+        @Override
+        public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+            ...
+        }
+
+        ...
+    }
+After in *Selector.java, *Acceptor.java or *Forager.java:
+    public class ...Selector extends AbstractSelector {
+
+        @Override
+        public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+            ...
+        }
+
+        ...
+    }
+Similar for solvingEnded(LocalSearchSolverScope), which is now phaseEnded(LocalSearchSolverPhaseScope)
+
+[MINOR] TerminationConfig and Termination moved to another package.
+Before in  *.java:
+    import org.drools.planner.config.localsearch.termination.TerminationConfig;
+    import org.drools.planner.core.localsearch.termination.Termination;
+After in  *.java:
+    import org.drools.planner.config.termination.TerminationConfig;
+    import org.drools.planner.core.termination.Termination;
+If you implemented a custom Termination: the interface has been changed to separate solver and phase termination.
+
+[MINOR] SolverConfig has been moved to another package.
+Before in *.java:
+    import org.drools.planner.config.SolverConfig;
+After in *.java:
+    import org.drools.planner.config.solver.SolverConfig;
+
+[MINOR] Solver.isTerminatedEarly() has been renamed to Solver.isTerminateEarly()
+Before in  *.java:
+    ... solver.isTerminatedEarly() ...
+After in  *.java:
+    ... solver.isTerminateEarly() ...
+
+[MINOR] HardPenaltyDeciderScoreComparator has been replaced by FlatteningHardAndSoftScoreComparator
+Before in  *.java:
+    ... HardPenaltyDeciderScoreComparator ...
+After in  *.java:
+    ... FlatteningHardAndSoftScoreComparator ...

@@ -32,6 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
@@ -55,9 +56,9 @@ public class NQueensPanel extends SolutionPanel {
         return (NQueens) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        NQueens nQueens = getNQueens();
+        NQueens nQueens = (NQueens) solution;
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
         setLayout(new GridLayout(n, n));
@@ -92,7 +93,7 @@ public class NQueensPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Integer> yList = getNQueens().createNList();
+            List<Integer> yList = getNQueens().getColumnList();
             JComboBox yListField = new JComboBox(yList.toArray());
             yListField.setSelectedItem(queen.getY());
             int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), yListField, "Select y",
@@ -101,7 +102,7 @@ public class NQueensPanel extends SolutionPanel {
                 int toY = (Integer) yListField.getSelectedItem();
                 Move move = new YChangeMove(queen, toY);
                 solutionBusiness.doMove(move);
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

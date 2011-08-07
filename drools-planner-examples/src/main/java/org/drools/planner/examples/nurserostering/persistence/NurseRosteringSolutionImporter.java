@@ -17,6 +17,7 @@
 package org.drools.planner.examples.nurserostering.persistence;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +33,7 @@ import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
@@ -109,6 +111,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
             readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
             readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
+            createAssignmentList(nurseRoster);
 
             logger.info("NurseRoster {} with {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
                     " {} shiftDates, {} shifts and {} requests.",
@@ -123,7 +126,11 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                             nurseRoster.getDayOffRequestList().size() + nurseRoster.getDayOnRequestList().size()
                                     + nurseRoster.getShiftOffRequestList().size() + nurseRoster.getShiftOnRequestList().size()
                     });
-
+            BigInteger possibleSolutionSize = BigInteger.valueOf(nurseRoster.getEmployeeList().size()).pow(
+                    nurseRoster.getShiftList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("NurseRoster with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return nurseRoster;
         }
 
@@ -988,6 +995,23 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
                 }
             }
             nurseRoster.setShiftOnRequestList(shiftOnRequestList);
+        }
+
+        private void createAssignmentList(NurseRoster nurseRoster) {
+            List<Shift> shiftList = nurseRoster.getShiftList();
+            List<Assignment> assignmentList = new ArrayList<Assignment>(shiftList.size());
+            long id = 0L;
+            for (Shift shift : shiftList) {
+                for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
+                    Assignment assignment = new Assignment();
+                    assignment.setId((long) id);
+                    id++;
+                    assignment.setShift(shift);
+                    // Notice that we leave the PlanningVariable properties on null
+                    assignmentList.add(assignment);
+                }
+            }
+            nurseRoster.setAssignmentList(assignmentList);
         }
 
     }

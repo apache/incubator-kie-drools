@@ -20,7 +20,7 @@ public enum GenderLimitation {
     ANY_GENDER("N"), // mixed
     MALE_ONLY("M"),
     FEMALE_ONLY("F"),
-    SAME_GENDER("D"); // dependend on the first
+    SAME_GENDER("D"); // dependent on the first
 
     public static GenderLimitation valueOfCode(String code) {
         for (GenderLimitation gender : GenderLimitation.values()) {

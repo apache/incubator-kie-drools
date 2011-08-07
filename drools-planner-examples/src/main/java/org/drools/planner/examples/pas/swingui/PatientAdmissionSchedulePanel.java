@@ -31,6 +31,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Night;
@@ -56,9 +57,9 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         return (PatientAdmissionSchedule) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        PatientAdmissionSchedule patientAdmissionSchedule = getPatientAdmissionSchedule();
+        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
         gridLayout.setColumns(patientAdmissionSchedule.getNightList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Department_Room_Bed  \\  Night");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
@@ -78,31 +79,35 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         }
         Map<Bed, Map<Night, BedNightPanel>> bedNightPanelMap = new HashMap<Bed, Map<Night, BedNightPanel>>();
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            JLabel bedLabel = new JLabel(bed.toString());
-            bedLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            bedLabel.setBackground(HEADER_COLOR);
-            bedLabel.setOpaque(true);
-            add(bedLabel);
-            Map<Night, BedNightPanel> nightPanelMap = new HashMap<Night, BedNightPanel>();
-            bedNightPanelMap.put(bed, nightPanelMap);
-            for (Night night : patientAdmissionSchedule.getNightList()) {
-                BedNightPanel bedNightPanel = new BedNightPanel();
-                add(bedNightPanel);
-                nightPanelMap.put(night, bedNightPanel);
-            }
+            createBedLine(patientAdmissionSchedule, bedNightPanelMap, bed);
         }
-        if (patientAdmissionSchedule.isInitialized()) {
-            for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
-                for (Night night : patientAdmissionSchedule.getNightList()) {
-                    if (bedDesignation.getAdmissionPart().getFirstNight().getIndex() <= night.getIndex()
-                            && night.getIndex() <= bedDesignation.getAdmissionPart().getLastNight().getIndex()) {
-                        BedNightPanel bedNightPanel = bedNightPanelMap.get(bedDesignation.getBed()).get(night);
-                        bedNightPanel.addBedDesignation(bedDesignation);
-                    }
+        createBedLine(patientAdmissionSchedule, bedNightPanelMap, null);
+        for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
+            for (Night night : patientAdmissionSchedule.getNightList()) {
+                if (bedDesignation.getAdmissionPart().getFirstNight().getIndex() <= night.getIndex()
+                        && night.getIndex() <= bedDesignation.getAdmissionPart().getLastNight().getIndex()) {
+                    BedNightPanel bedNightPanel = bedNightPanelMap.get(bedDesignation.getBed()).get(night);
+                    bedNightPanel.addBedDesignation(bedDesignation);
                 }
             }
+        }
+    }
+
+    private void createBedLine(PatientAdmissionSchedule patientAdmissionSchedule,
+            Map<Bed, Map<Night, BedNightPanel>> bedNightPanelMap, Bed bed) {
+        JLabel bedLabel = new JLabel(bed == null ? "Unassigned" : bed.toString());
+        bedLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        bedLabel.setBackground(HEADER_COLOR);
+        bedLabel.setOpaque(true);
+        add(bedLabel);
+        Map<Night, BedNightPanel> nightPanelMap = new HashMap<Night, BedNightPanel>();
+        bedNightPanelMap.put(bed, nightPanelMap);
+        for (Night night : patientAdmissionSchedule.getNightList()) {
+            BedNightPanel bedNightPanel = new BedNightPanel();
+            add(bedNightPanel);
+            nightPanelMap.put(night, bedNightPanel);
         }
     }
 
@@ -142,7 +147,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 Bed toBed = (Bed) bedListField.getSelectedItem();
                 solutionBusiness.doMove(new BedChangeMove(bedDesignation, toBed));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

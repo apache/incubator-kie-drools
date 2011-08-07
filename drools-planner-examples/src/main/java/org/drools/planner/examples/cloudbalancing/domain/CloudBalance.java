@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
@@ -54,6 +54,7 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         this.cloudProcessList = cloudProcessList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<CloudAssignment> getCloudAssignmentList() {
         return cloudAssignmentList;
     }
@@ -70,18 +71,11 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (cloudAssignmentList != null);
-    }
-
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cloudComputerList);
         facts.addAll(cloudProcessList);
-
-        if (isInitialized()) {
-            facts.addAll(cloudAssignmentList);
-        }
+        // Do not add the planning entity's (cloudAssignmentList) because that will be done automatically
         return facts;
     }
 

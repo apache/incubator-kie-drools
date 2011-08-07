@@ -223,6 +223,22 @@ rule "constraintsBroken"
     then
         scoreCalculator.setScore(- (5 * $multipleQueensHorizontal) - $multipleQueensAscendingDiagonal - $multipleQueensDescendingDiagonal);
 end</programlisting>
+
+    <section>
+      <title>Implementing a custom Score</title>
+
+      <para>To implement a custom Score, you 'll also need to implement a custom <literal>ScoreDefinition</literal>.
+      Extend <literal>AbstractScoreDefinition</literal> (preferable by copy pasting
+      <literal>HardAndSoftScoreDefinition</literal> or <literal>SimpleScoreDefinition</literal>) and start from
+      there.</para>
+
+      <para>Next, hook you custom <literal>ScoreDefinition</literal> in your
+      <filename>SolverConfig.xml</filename>:</para>
+
+      <programlisting language="xml">    &lt;scoreDefinition&gt;
+        &lt;scoreDefinitionClass&gt;org.drools.planner.examples.my.score.definition.MyScoreDefinition&lt;/scoreDefinitionClass&gt;
+    &lt;/scoreDefinition&gt;</programlisting>
+    </section>
   </section>
 
   <section>

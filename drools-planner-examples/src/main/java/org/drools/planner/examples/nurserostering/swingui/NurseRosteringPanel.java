@@ -31,11 +31,13 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Employee;
+import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 /**
@@ -56,9 +58,9 @@ public class NurseRosteringPanel extends SolutionPanel {
         return (NurseRoster) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        NurseRoster nurseRoster = getNurseRoster();
+        NurseRoster nurseRoster = (NurseRoster) solution;
         gridLayout.setColumns(nurseRoster.getShiftDateList().size() + 1);
         JLabel headerCornerLabel = new JLabel("E \\ SD");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
@@ -78,32 +80,38 @@ public class NurseRosteringPanel extends SolutionPanel {
         }
         Map<Employee, Map<ShiftDate, EmployeeShiftDatePanel>> employeeShiftDatePanelMap = new HashMap<Employee, Map<ShiftDate, EmployeeShiftDatePanel>>();
         for (Employee employee : nurseRoster.getEmployeeList()) {
-            JLabel employeeLabel = new JLabel(employee.toString());
-            employeeLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            employeeLabel.setBackground(HEADER_COLOR);
-            employeeLabel.setOpaque(true);
-            add(employeeLabel);
-            Map<ShiftDate, EmployeeShiftDatePanel> shiftDatePanelMap = new HashMap<ShiftDate, EmployeeShiftDatePanel>();
-            employeeShiftDatePanelMap.put(employee, shiftDatePanelMap);
-            for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
-                EmployeeShiftDatePanel employeeShiftDatePanel = new EmployeeShiftDatePanel();
-                if (employee.getContract().getWeekendDefinition().isWeekend(shiftDate.getDayOfWeek())) {
-                    employeeShiftDatePanel.setBackground(Color.LIGHT_GRAY);
-                }
-                employeeShiftDatePanel.setToolTipText("employee " + employee.getCode()
-                        + " on dayIndex " + shiftDate.getDayIndex());
-                add(employeeShiftDatePanel);
-                shiftDatePanelMap.put(shiftDate, employeeShiftDatePanel);
-            }
+            createEmployeeLine(nurseRoster, employeeShiftDatePanelMap, employee);
         }
-        if (nurseRoster.isInitialized()) {
-            for (Assignment assignment : nurseRoster.getAssignmentList()) {
-                Employee employee = assignment.getEmployee();
-                EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(assignment.getShiftDate());
-                employeeShiftDatePanel.addAssignment(assignment);
+        createEmployeeLine(nurseRoster, employeeShiftDatePanelMap, null);
+        for (Assignment assignment : nurseRoster.getAssignmentList()) {
+            Employee employee = assignment.getEmployee();
+            EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(assignment.getShiftDate());
+            employeeShiftDatePanel.addAssignment(assignment);
+        }
+    }
+
+    private void createEmployeeLine(NurseRoster nurseRoster, Map<Employee,
+            Map<ShiftDate, EmployeeShiftDatePanel>> employeeShiftDatePanelMap, Employee employee) {
+        JLabel employeeLabel = new JLabel(employee == null ? "Unassigned" : employee.toString());
+        employeeLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.DARK_GRAY),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        employeeLabel.setBackground(HEADER_COLOR);
+        employeeLabel.setOpaque(true);
+        add(employeeLabel);
+        Map<ShiftDate, EmployeeShiftDatePanel> shiftDatePanelMap = new HashMap<ShiftDate, EmployeeShiftDatePanel>();
+        employeeShiftDatePanelMap.put(employee, shiftDatePanelMap);
+        for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
+            EmployeeShiftDatePanel employeeShiftDatePanel = new EmployeeShiftDatePanel();
+            WeekendDefinition weekendDefinition = (employee == null) ? WeekendDefinition.SATURDAY_SUNDAY
+                    : employee.getContract().getWeekendDefinition();
+            if (weekendDefinition.isWeekend(shiftDate.getDayOfWeek())) {
+                employeeShiftDatePanel.setBackground(Color.LIGHT_GRAY);
             }
+            employeeShiftDatePanel.setToolTipText((employee == null ? "Unassigned" : "employee " + employee.getCode())
+                    + " on dayIndex " + shiftDate.getDayIndex());
+            add(employeeShiftDatePanel);
+            shiftDatePanelMap.put(shiftDate, employeeShiftDatePanel);
         }
     }
 
@@ -141,7 +149,7 @@ public class NurseRosteringPanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 Employee toEmployee = (Employee) employeeListField.getSelectedItem();
                 solutionBusiness.doMove(new EmployeeChangeMove(assignment, toEmployee));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

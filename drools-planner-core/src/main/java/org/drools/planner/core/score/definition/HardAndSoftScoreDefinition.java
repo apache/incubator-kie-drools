@@ -19,10 +19,12 @@ package org.drools.planner.core.score.definition;
 import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.calculator.ScoreCalculator;
 
 public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndSoftScore> {
 
-    private double hardScoreTimeGradientWeight = 0.75;
+    private double hardScoreTimeGradientWeight = 0.75; // TODO this is a guess
 
     private HardAndSoftScore perfectMaximumScore = new DefaultHardAndSoftScore(0, 0);
     private HardAndSoftScore perfectMinimumScore = new DefaultHardAndSoftScore(Integer.MIN_VALUE, Integer.MIN_VALUE);
@@ -52,10 +54,12 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
     // Worker methods
     // ************************************************************************
 
+    @Override
     public HardAndSoftScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
+    @Override
     public HardAndSoftScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }
@@ -102,6 +106,10 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
         } else {
             return null;
         }
+    }
+
+    public ScoreCalculator buildScoreCalculator() {
+        return new DefaultHardAndSoftConstraintScoreCalculator();
     }
 
 }

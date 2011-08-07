@@ -17,10 +17,12 @@
 package org.drools.planner.examples.cloudbalancing.persistence;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
@@ -101,6 +103,9 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     public void generate() {
+        writeCloudBalance(5, 7);
+        writeCloudBalance(6, 8);
+        writeCloudBalance(7, 10);
         writeCloudBalance(10, 15);
         writeCloudBalance(100, 100);
         writeCloudBalance(100, 200);
@@ -124,12 +129,20 @@ public class CloudBalancingGenerator extends LoggingMain {
         random = new Random(37);
         CloudBalance cloudBalance = new CloudBalance();
         cloudBalance.setId(0L);
-        cloudBalance.setCloudComputerList(createCloudComputerList(cloudComputerListSize));
-        cloudBalance.setCloudProcessList(createCloudProcessList(cloudProcessListSize));
+        createCloudComputerList(cloudBalance,cloudComputerListSize);
+        createCloudProcessList(cloudBalance, cloudProcessListSize);
+        createCloudAssignmentList(cloudBalance);
+        logger.info("CloudBalance {} with {} computers and {} processes.",
+                cloudBalance.getCloudComputerList().size(), cloudBalance.getCloudProcessList().size());
+        BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getCloudComputerList().size()).pow(
+                cloudBalance.getCloudAssignmentList().size());
+        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+        logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                flooredPossibleSolutionSize, possibleSolutionSize);
         return cloudBalance;
     }
 
-    private List<CloudComputer> createCloudComputerList(int cloudComputerListSize) {
+    private void createCloudComputerList(CloudBalance cloudBalance, int cloudComputerListSize) {
         List<CloudComputer> cloudComputerList = new ArrayList<CloudComputer>(cloudComputerListSize);
         for (int i = 0; i < cloudComputerListSize; i++) {
             CloudComputer cloudComputer = new CloudComputer();
@@ -143,13 +156,13 @@ public class CloudBalancingGenerator extends LoggingMain {
             int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
                     + MEMORY_PRICES[memoryPricesIndex].getCost()
                     + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
-            logger.info("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
+            logger.debug("Created cloudComputer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
                     + " networkBandwidthPricesIndex({}).",
                     new Object[]{cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex});
             cloudComputer.setCost(cost);
             cloudComputerList.add(cloudComputer);
         }
-        return cloudComputerList;
+        cloudBalance.setCloudComputerList(cloudComputerList);
     }
 
     private int distortIndex(int referenceIndex, int length) {
@@ -168,7 +181,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         return index;
     }
 
-    private List<CloudProcess> createCloudProcessList(int cloudProcessListSize) {
+    private void createCloudProcessList(CloudBalance cloudBalance, int cloudProcessListSize) {
         List<CloudProcess> cloudProcessList = new ArrayList<CloudProcess>(cloudProcessListSize);
         for (int i = 0; i < cloudProcessListSize; i++) {
             CloudProcess cloudProcess = new CloudProcess();
@@ -179,12 +192,12 @@ public class CloudBalancingGenerator extends LoggingMain {
             cloudProcess.setMinimalMemory(minimalMemory);
             int minimalNetworkBandwidth = generateRandom(MAXIMUM_MINIMAL_NETWORK_BANDWIDTH);
             cloudProcess.setMinimalNetworkBandwidth(minimalNetworkBandwidth);
-            logger.info("Created CloudProcess with minimalCpuPower ({}), minimalMemory({}),"
+            logger.debug("Created CloudProcess with minimalCpuPower ({}), minimalMemory({}),"
                     + " minimalNetworkBandwidth({}).",
                     new Object[]{minimalCpuPower, minimalMemory, minimalNetworkBandwidth});
             cloudProcessList.add(cloudProcess);
         }
-        return cloudProcessList;
+        cloudBalance.setCloudProcessList(cloudProcessList);
     }
 
     private int generateRandom(int maximumValue) {
@@ -199,6 +212,21 @@ public class CloudBalancingGenerator extends LoggingMain {
             throw new IllegalArgumentException("Invalid generated value (" + value + ")");
         }
         return value;
+    }
+
+    private void createCloudAssignmentList(CloudBalance cloudBalance) {
+        List<CloudProcess> cloudProcessList = cloudBalance.getCloudProcessList();
+        List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>(cloudProcessList.size());
+        long id = 0L;
+        for (CloudProcess cloudProcess : cloudProcessList) {
+            CloudAssignment cloudAssignment = new CloudAssignment();
+            cloudAssignment.setId(id);
+            cloudAssignment.setCloudProcess(cloudProcess);
+            // Notice that we leave the PlanningVariable properties on null
+            cloudAssignmentList.add(cloudAssignment);
+            id++;
+        }
+        cloudBalance.setCloudAssignmentList(cloudAssignmentList);
     }
 
 }

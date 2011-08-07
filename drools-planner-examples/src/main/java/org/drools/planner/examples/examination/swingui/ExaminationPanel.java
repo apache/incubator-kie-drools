@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
@@ -57,9 +58,9 @@ public class ExaminationPanel extends SolutionPanel {
         return (Examination) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        Examination examination = getExamination();
+        Examination examination = (Examination) solution;
         gridLayout.setColumns(examination.getRoomList().size() + 1);
         JLabel headerCornerLabel = new JLabel("Period         \\         Room");
         headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
@@ -94,9 +95,11 @@ public class ExaminationPanel extends SolutionPanel {
                 roomPanelMap.put(room, periodRoomPanel);
             }
         }
-        if (examination.isInitialized()) {
-            for (Exam exam : examination.getExamList()) {
-                PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(exam.getPeriod()).get(exam.getRoom());
+        for (Exam exam : examination.getExamList()) {
+            Period period = exam.getPeriod();
+            Room room = exam.getRoom();
+            if (period != null && room != null) {
+                PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(period).get(room);
                 periodRoomPanel.addExam(exam);
             }
         }
@@ -144,7 +147,7 @@ public class ExaminationPanel extends SolutionPanel {
                 solutionBusiness.doMove(new PeriodChangeMove(exam, toPeriod));
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 solutionBusiness.doMove(new RoomChangeMove(exam, toRoom));
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/simple/simpleTravelingTournamentScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <termination>
-        <maximumHoursSpend>2</maximumHoursSpend>
-    </termination>
+<solver>
+  <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/simple/simpleTravelingTournamentScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <maximumHoursSpend>2</maximumHoursSpend>
+  </termination>
+  <localSearch>
     <selector>
-        <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
+      <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.simple.move.factory.SimpleTravelingTournamentMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+      <completeSolutionTabuSize>1500</completeSolutionTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
+      <pickEarlyType>NEVER</pickEarlyType>
     </forager>
-</localSearchSolver>
+  </localSearch>
+</solver>

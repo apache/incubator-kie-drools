@@ -110,18 +110,15 @@ public class SelectorConfig {
             }
             MoveFactorySelector selector = new MoveFactorySelector();
             selector.setMoveFactory(initializedMoveFactory);
-            if (shuffle != null) {
-                selector.setShuffle(shuffle.booleanValue());
-            } else {
-                selector.setShuffle(true);
-            }
+            boolean shuffleValue = (shuffle == null) ?  true : shuffle.booleanValue();
+            selector.setShuffle(shuffleValue);
             return selector;
         } else if (topSize != null) {
             TopListSelector selector = new TopListSelector();
             selector.setTopSize(topSize);
             return selector;
         } else {
-            throw new IllegalArgumentException("A selector with a moveFactory or moveFactory class is required.");
+            throw new IllegalArgumentException("A selector requires configuration, for example a moveFactoryClass.");
         }
     }
 

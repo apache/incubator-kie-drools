@@ -19,10 +19,11 @@ package org.drools.planner.benchmark.statistic.calculatecount;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListenerAdapter;
+import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.drools.planner.core.phase.step.AbstractStepScope;
+import org.drools.planner.core.solver.DefaultSolverScope;
 
-public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleListenerAdapter {
+public class CalculateCountStatisticListener extends SolverPhaseLifecycleListenerAdapter {
 
     private long timeMillisThresholdInterval;
     private long nextTimeMillisThreshold;
@@ -50,12 +51,13 @@ public class CalculateCountStatisticListener extends LocalSearchSolverLifecycleL
     }
 
     @Override
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        long timeMillisSpend = localSearchStepScope.getLocalSearchSolverScope().calculateTimeMillisSpend();
+    public void stepTaken(AbstractStepScope stepScope) {
+        long timeMillisSpend = stepScope.getSolverPhaseScope().calculateSolverTimeMillisSpend();
         if (timeMillisSpend >= nextTimeMillisThreshold) {
             long timeMillisSpendInterval = timeMillisSpend - lastTimeMillisSpend;
 
-            long calculateCount = localSearchStepScope.getLocalSearchSolverScope().getCalculateCount();
+            DefaultSolverScope solverScope = stepScope.getSolverPhaseScope().getSolverScope();
+            long calculateCount = solverScope.getCalculateCount();
             long calculateCountInterval = calculateCount - lastCalculateCount;
             long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpendInterval;
             statisticPointList.add(new CalculateCountStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));

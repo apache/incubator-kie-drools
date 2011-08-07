@@ -63,11 +63,12 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new Manners2009App().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
-            public void actionPerformed(ActionEvent e) {
-                new TspApp().init(false);
-            }
-        }));
+        // TODO TSP needs to be rewritten
+//        contentPane.add(new JButton(new AbstractAction("Traveling salesman problem (TSP)") {
+//            public void actionPerformed(ActionEvent e) {
+//                new TspApp().init(false);
+//            }
+//        }));
         contentPane.add(new JButton(new AbstractAction("Traveling tournament problem (TTP)") {
             public void actionPerformed(ActionEvent e) {
                 new SmartTravelingTournamentApp().init(false);
@@ -88,7 +89,7 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new ExaminationApp().init(false);
             }
         }));
-        contentPane.add(new JButton(new AbstractAction("Patient admission schedule (hospital bed planning)") {
+        contentPane.add(new JButton(new AbstractAction("Patient admission scheduling (hospital bed planning)") {
             public void actionPerformed(ActionEvent e) {
                 new PatientAdmissionScheduleApp().init(false);
             }

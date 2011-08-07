@@ -22,8 +22,15 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.curriculumcourse.domain.solver.LectureDifficultyWeightFactory;
+import org.drools.planner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
+import org.drools.planner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
 
+@PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
 
@@ -50,6 +57,8 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.lectureIndexInCourse = lectureIndexInCourse;
     }
 
+    @PlanningVariable(strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
+    @ValueRangeFromSolutionProperty(propertyName = "periodList")
     public Period getPeriod() {
         return period;
     }
@@ -58,6 +67,8 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
         this.period = period;
     }
 
+    @PlanningVariable(strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
+    @ValueRangeFromSolutionProperty(propertyName = "roomList")
     public Room getRoom() {
         return room;
     }

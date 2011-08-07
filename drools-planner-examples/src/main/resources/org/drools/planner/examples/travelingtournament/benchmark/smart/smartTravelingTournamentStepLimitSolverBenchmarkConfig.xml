@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solverBenchmarkSuite>
-    <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
-    <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <benchmarkDirectory>local/data/travelingtournament/smart</benchmarkDirectory>
+  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
-    <inheritedSolverBenchmark>
-        <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
-    </inheritedSolverBenchmark>
+  <inheritedSolverBenchmark>
+    <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
+  </inheritedSolverBenchmark>
 
-    <solverBenchmark>
-        <localSearchSolver>
-            <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
-            <scoreDefinition>
-                <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-            </scoreDefinition>
-            <termination>
-                <maximumStepCount>100</maximumStepCount>
-            </termination>
-            <selector>
-                <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-            </selector>
-            <acceptor>
-                <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-                <completeMoveTabuSize>7</completeMoveTabuSize>
-            </acceptor>
-            <forager>
-                <pickEarlyType>NEVER</pickEarlyType>
-            </forager>
-        </localSearchSolver>
-    </solverBenchmark>
+  <solverBenchmark>
+    <solver>
+      <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
+      <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+      <termination>
+        <maximumStepCount>100</maximumStepCount>
+      </termination>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
 </solverBenchmarkSuite>

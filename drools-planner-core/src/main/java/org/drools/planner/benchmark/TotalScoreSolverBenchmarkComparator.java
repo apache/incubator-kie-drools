@@ -19,7 +19,6 @@ package org.drools.planner.benchmark;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.core.score.Score;
 
 public class TotalScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark> {
 

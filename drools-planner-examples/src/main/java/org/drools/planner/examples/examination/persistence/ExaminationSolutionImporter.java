@@ -27,12 +27,15 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Examination;
 import org.drools.planner.examples.examination.domain.InstitutionalWeighting;
 import org.drools.planner.examples.examination.domain.Period;
@@ -43,6 +46,8 @@ import org.drools.planner.examples.examination.domain.RoomHardConstraint;
 import org.drools.planner.examples.examination.domain.RoomHardConstraintType;
 import org.drools.planner.examples.examination.domain.Student;
 import org.drools.planner.examples.examination.domain.Topic;
+import org.drools.planner.examples.examination.domain.solver.ExamBefore;
+import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
 public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -87,7 +92,7 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             tagFrontLoadLargeTopics(examination);
             tagFrontLoadLastPeriods(examination);
 
-            // Note: examList stays null, that's work for the StartingSolutionInitializer
+            createExamList(examination);
 
             logger.info("Examination with {} students, {} topics/exams, {} periods, {} rooms, {} period constraints" +
                     " and {} room constraints.",
@@ -344,6 +349,54 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             for (Period period : periodList.subList(minimumPeriodId, periodList.size())) {
                 period.setFrontLoadLast(true);
             }
+        }
+
+        private void createExamList(Examination examination) {
+            List<Topic> topicList = examination.getTopicList();
+            List<Exam> examList = new ArrayList<Exam>(topicList.size());
+            Map<Topic, Exam> topicToExamMap = new HashMap<Topic, Exam>(topicList.size());
+            for (Topic topic : topicList) {
+                Exam exam = new Exam();
+                exam.setId(topic.getId());
+                exam.setTopic(topic);
+                // Notice that we leave the PlanningVariable properties on null
+                examList.add(exam);
+                topicToExamMap.put(topic, exam);
+            }
+            for (PeriodHardConstraint periodHardConstraint : examination.getPeriodHardConstraintList()) {
+                if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.EXAM_COINCIDENCE) {
+                    Exam leftExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
+                    Exam rightExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+
+                    Set<Exam> newCoincidenceExamSet = new LinkedHashSet<Exam>(4);
+                    ExamCoincidence leftExamCoincidence = leftExam.getExamCoincidence();
+                    if (leftExamCoincidence != null) {
+                        newCoincidenceExamSet.addAll(leftExamCoincidence.getCoincidenceExamSet());
+                    } else {
+                        newCoincidenceExamSet.add(leftExam);
+                    }
+                    ExamCoincidence rightExamCoincidence = rightExam.getExamCoincidence();
+                    if (rightExamCoincidence != null) {
+                        newCoincidenceExamSet.addAll(rightExamCoincidence.getCoincidenceExamSet());
+                    } else {
+                        newCoincidenceExamSet.add(rightExam);
+                    }
+                    ExamCoincidence newExamCoincidence = new ExamCoincidence(newCoincidenceExamSet);
+                    for (Exam exam : newCoincidenceExamSet) {
+                        exam.setExamCoincidence(newExamCoincidence);
+                    }
+                } else if (periodHardConstraint.getPeriodHardConstraintType() == PeriodHardConstraintType.AFTER) {
+                    Exam afterExam = topicToExamMap.get(periodHardConstraint.getLeftSideTopic());
+                    Exam beforeExam = topicToExamMap.get(periodHardConstraint.getRightSideTopic());
+                    ExamBefore examBefore = beforeExam.getExamBefore();
+                    if (examBefore == null) {
+                        examBefore = new ExamBefore(new LinkedHashSet<Exam>(2));
+                        beforeExam.setExamBefore(examBefore);
+                    }
+                    examBefore.getAfterExamSet().add(afterExam);
+                }
+            }
+            examination.setExamList(examList);
         }
 
     }

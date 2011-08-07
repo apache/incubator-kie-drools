@@ -1,61 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <!--
-            Official benchmark maximumSecondsSpend allowed on:
-            - ge0ffrey's main pc: 429
-            - ge0ffrey's old pc: 1152
-        -->
-        <maximumSecondsSpend>429</maximumSecondsSpend>
-        <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
-        <!--<maximumStepCount>100</maximumStepCount>-->
-    </termination>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <!--
+      Official benchmark maximumSecondsSpend allowed on:
+      - ge0ffrey's main pc: 429
+      - ge0ffrey's old pc: 1152
+    -->
+    <maximumSecondsSpend>429</maximumSecondsSpend>
+    <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
+  </termination>
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
+  <localSearch>
     <!--<deciderScoreComparatorFactory>-->
-        <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
-        <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
-        <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
-        <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
-        <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
-        <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
-        <!--<startingHardWeight>1000</startingHardWeight>-->
+      <!--<deciderScoreComparatorFactoryType>SHIFTING_HARD_PENALTY</deciderScoreComparatorFactoryType>-->
+      <!--<hardScoreActivationThreshold>0</hardScoreActivationThreshold>-->
+      <!--<successiveNoHardChangeMinimum>2</successiveNoHardChangeMinimum>-->
+      <!--<successiveNoHardChangeMaximum>20</successiveNoHardChangeMaximum>-->
+      <!--<successiveNoHardChangeRepetitionMultiplicand>20.0</successiveNoHardChangeRepetitionMultiplicand>-->
+      <!--<hardWeightSurvivalRatio>0.2</hardWeightSurvivalRatio>-->
+      <!--<startingHardWeight>1000</startingHardWeight>-->
     <!--</deciderScoreComparatorFactory>-->
     <selector>
-        <!--<selector>-->
-            <!--<topSize>10</topSize>-->
-        <!--</selector>-->
-        <!--<selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>-->
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-        </selector>
+      <!--<selector>-->
+        <!--<topSize>10</topSize>-->
+      <!--</selector>-->
+      <!--<selector class="org.drools.planner.examples.examination.solver.selector.AllMovesOfOneExamSelectorConfig"/>-->
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
     <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completePropertyTabuSize>10</completePropertyTabuSize>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completePropertyTabuSize>10</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>1400</minimalAcceptedSelection><!-- TODO tweak me -->
     </forager>
     <!--<selector>-->
-        <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
-        <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
+      <!--<moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeExaminationMoveFactory</moveFactoryClass>-->
+      <!--<shuffleMovesEveryStep>true</shuffleMovesEveryStep>-->
     <!--</selector>-->
     <!--<acceptor>-->
-        <!--<acceptorType>SIMULATED_ANNEALING</acceptorType>-->
+      <!--<acceptorType>SIMULATED_ANNEALING</acceptorType>-->
     <!--</acceptor>-->
     <!--<forager>-->
-        <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+      <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
     <!--</forager>-->
-</localSearchSolver>
+  </localSearch>
+</solver>

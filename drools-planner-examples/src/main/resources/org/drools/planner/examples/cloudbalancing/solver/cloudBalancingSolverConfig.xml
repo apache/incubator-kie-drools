@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <environmentMode>DEBUG</environmentMode>
-    <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingStartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <maximumSecondsSpend>120</maximumSecondsSpend>
-    </termination>
+<solver>
+  <environmentMode>DEBUG</environmentMode>
+  <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudAssignment</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <maximumSecondsSpend>120</maximumSecondsSpend>
+  </termination>
+  <!--<bruteForce>-->
+  <!--</bruteForce>-->
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+  </constructionHeuristic>
+  <localSearch>
     <selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
-        </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
+      </selector>
     </selector>
     <acceptor>
       <completeSolutionTabuSize>1000</completeSolutionTabuSize>
       <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+      <minimalAcceptedSelection>1000</minimalAcceptedSelection>
     </forager>
-</localSearchSolver>
-<!--<bruteForceSolver>-->
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <!--<scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>-->
-    <!--<scoreDefinition>-->
-        <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
-    <!--</scoreDefinition>-->
-    <!--<startingSolutionInitializerClass>org.drools.planner.examples.cloudbalancing.solver.solution.initializer.CloudBalancingStartingSolutionInitializer</startingSolutionInitializerClass>-->
-<!--</bruteForceSolver>-->
+  </localSearch>
+</solver>

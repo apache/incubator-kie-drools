@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
@@ -61,15 +61,15 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        periodChangeMoveFactory.solvingStarted(localSearchSolverScope);
-        roomChangeMoveFactory.solvingStarted(localSearchSolverScope);
-        examSwitchMoveFactory.solvingStarted(localSearchSolverScope);
-        createCachedExamToMoveMap(localSearchSolverScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        periodChangeMoveFactory.phaseStarted(localSearchSolverPhaseScope);
+        roomChangeMoveFactory.phaseStarted(localSearchSolverPhaseScope);
+        examSwitchMoveFactory.phaseStarted(localSearchSolverPhaseScope);
+        createCachedExamToMoveMap(localSearchSolverPhaseScope);
     }
 
-    private void createCachedExamToMoveMap(LocalSearchSolverScope localSearchSolverScope) {
-        Examination examination = (Examination) localSearchSolverScope.getWorkingSolution();
+    private void createCachedExamToMoveMap(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        Examination examination = (Examination) localSearchSolverPhaseScope.getWorkingSolution();
         int examListSize = examination.getExamList().size();
         List<Move> cachedPeriodChangeMoveList = periodChangeMoveFactory.getCachedMoveList();
         List<Move> cachedRoomChangeMoveList = roomChangeMoveFactory.getCachedMoveList();
@@ -133,10 +133,10 @@ public class AllMovesOfOneExamSelector extends AbstractSelector {
     }
 
     @Override
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
-        periodChangeMoveFactory.solvingEnded(localSearchSolverScope);
-        roomChangeMoveFactory.solvingEnded(localSearchSolverScope);
-        examSwitchMoveFactory.solvingEnded(localSearchSolverScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        periodChangeMoveFactory.phaseEnded(localSearchSolverPhaseScope);
+        roomChangeMoveFactory.phaseEnded(localSearchSolverPhaseScope);
+        examSwitchMoveFactory.phaseEnded(localSearchSolverPhaseScope);
     }
 
 }

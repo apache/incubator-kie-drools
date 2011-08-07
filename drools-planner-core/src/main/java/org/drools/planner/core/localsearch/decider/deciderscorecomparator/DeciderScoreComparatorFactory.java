@@ -18,8 +18,8 @@ package org.drools.planner.core.localsearch.decider.deciderscorecomparator;
 
 import java.util.Comparator;
 
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListener;
 
 /**
  * A DeciderScoreComparatorFactory creates a new DeciderScoreComparator each step,
@@ -27,7 +27,7 @@ import org.drools.planner.core.localsearch.event.LocalSearchSolverLifecycleListe
  * That Score Comparator can consider shifting penalty, aging penalty, ...
  * in which case it differs from the natural ordering of scores.
  */
-public interface DeciderScoreComparatorFactory extends LocalSearchSolverLifecycleListener {
+public interface DeciderScoreComparatorFactory extends LocalSearchSolverPhaseLifecycleListener {
 
     /**
      * @return never null

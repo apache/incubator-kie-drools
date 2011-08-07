@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.travelingtournament.domain.Day;
 import org.drools.planner.examples.travelingtournament.domain.Match;
@@ -51,9 +52,9 @@ public class TravelingTournamentPanel extends SolutionPanel {
         return (TravelingTournament) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
+    public void resetPanel(Solution solution) {
         removeAll();
-        TravelingTournament travelingTournament = getTravelingTournament();
+        TravelingTournament travelingTournament = (TravelingTournament) solution;
         Map<Day, DayPanel> dayPanelMap = new HashMap<Day, DayPanel>();
         for (Day day : travelingTournament.getDayList()) {
             TravelingTournamentPanel.DayPanel dayPanel = new DayPanel();
@@ -101,7 +102,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
                 Day toDay = (Day) dayListField.getSelectedItem();
                 Move move = new DayChangeMove(match, toDay);
                 solutionBusiness.doMove(move);
-                workflowFrame.updateScreen();
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

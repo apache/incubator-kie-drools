@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.drools.planner.core.move.Move;
@@ -51,8 +51,8 @@ public class MoveFactorySelector extends AbstractSelector {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        moveFactory.solvingStarted(localSearchSolverScope);
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        moveFactory.phaseStarted(localSearchSolverPhaseScope);
     }
 
     @Override
@@ -83,8 +83,8 @@ public class MoveFactorySelector extends AbstractSelector {
     }
 
     @Override
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
-        moveFactory.solvingEnded(localSearchSolverScope);
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
+        moveFactory.phaseEnded(localSearchSolverPhaseScope);
     }
 
 }

@@ -18,6 +18,6 @@ package org.drools.planner.core.localsearch;
 
 public interface LocalSearchSolverAware {
 
-    void setLocalSearchSolver(LocalSearchSolver localSearchSolver);
+    void setLocalSearchSolverPhase(LocalSearchSolverPhase localSearchSolverPhase);
 
 }

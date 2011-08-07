@@ -20,11 +20,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.drools.planner.core.annotations.PlanningValueProperty;
-import org.drools.planner.core.annotations.PlanningVariableClass;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudAssignmentDifficultyComparator;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@PlanningVariableClass // NOTE: DO NOT USE THIS YET
+@PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
 @XStreamAlias("CloudAssignment")
 public class CloudAssignment extends AbstractPersistable implements Comparable<CloudAssignment> {
 
@@ -41,11 +44,12 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
         this.cloudProcess = cloudProcess;
     }
 
+    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
+    @ValueRangeFromSolutionProperty(propertyName = "cloudComputerList")
     public CloudComputer getCloudComputer() {
         return cloudComputer;
     }
 
-    @PlanningValueProperty // TODO move to getter NOTE: DO NOT USE THIS YET
     public void setCloudComputer(CloudComputer cloudComputer) {
         this.cloudComputer = cloudComputer;
     }

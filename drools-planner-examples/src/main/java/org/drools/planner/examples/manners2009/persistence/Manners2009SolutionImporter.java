@@ -32,6 +32,7 @@ import org.drools.planner.examples.manners2009.domain.Job;
 import org.drools.planner.examples.manners2009.domain.JobType;
 import org.drools.planner.examples.manners2009.domain.Manners2009;
 import org.drools.planner.examples.manners2009.domain.Seat;
+import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 import org.drools.planner.examples.manners2009.domain.Table;
 
 public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
@@ -56,6 +57,7 @@ public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
 
             readTableListAndSeatList(manners2009);
             readJobListGuestListAndHobbyPracticianList(manners2009);
+            createSeatDesignationList(manners2009);
 
             logger.info("Manners2009 with {} jobs, {} guests, {} hobby practicians, {} tables and {} seats.",
                     new Object[]{manners2009.getJobList().size(),
@@ -155,6 +157,21 @@ public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
             manners2009.setJobList(new ArrayList<Job>(jobMap.values()));
             manners2009.setGuestList(guestList);
             manners2009.setHobbyPracticianList(hobbyPracticianList);
+        }
+
+        private void createSeatDesignationList(Manners2009 manners2009) {
+            List<Guest> guestList = manners2009.getGuestList();
+            List<SeatDesignation> seatDesignationList = new ArrayList<SeatDesignation>(guestList.size());
+            long id = 0L;
+            for (Guest guest : guestList) {
+                SeatDesignation seatDesignation = new SeatDesignation();
+                seatDesignation.setId((long) id);
+                id++;
+                seatDesignation.setGuest(guest);
+                // Notice that we leave the PlanningVariable properties on null
+                seatDesignationList.add(seatDesignation);
+            }
+            manners2009.setSeatDesignationList(seatDesignationList);
         }
 
     }

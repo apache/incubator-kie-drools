@@ -32,15 +32,15 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Map;
-
+import java.util.Set;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import com.thoughtworks.xstream.XStream;
@@ -49,14 +49,17 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
 import org.drools.planner.benchmark.statistic.memoryuse.MemoryUseStatistic;
+import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.benchmark.statistic.SolverStatistic;
+import org.drools.planner.core.termination.TimeMillisSpendTermination;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
@@ -65,11 +68,14 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.slf4j.LoggerFactory;
 
 @XStreamAlias("solverBenchmarkSuite")
 public class SolverBenchmarkSuite {
 
     public static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+
+    protected final transient org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
     private File solvedSolutionFilesDirectory = null;
@@ -77,6 +83,11 @@ public class SolverBenchmarkSuite {
     @XStreamImplicit(itemFieldName = "solverStatisticType")
     private List<SolverStatisticType> solverStatisticTypeList = null;
     private Comparator<SolverBenchmark> solverBenchmarkComparator = null;
+
+    private Long warmUpTimeMillisSpend = null;
+    private Long warmUpSecondsSpend = null;
+    private Long warmUpMinutesSpend = null;
+    private Long warmUpHoursSpend = null;
 
     private SolverBenchmark inheritedSolverBenchmark = null;
 
@@ -126,6 +137,38 @@ public class SolverBenchmarkSuite {
         this.solverBenchmarkComparator = solverBenchmarkComparator;
     }
 
+    public Long getWarmUpTimeMillisSpend() {
+        return warmUpTimeMillisSpend;
+    }
+
+    public void setWarmUpTimeMillisSpend(Long warmUpTimeMillisSpend) {
+        this.warmUpTimeMillisSpend = warmUpTimeMillisSpend;
+    }
+
+    public Long getWarmUpSecondsSpend() {
+        return warmUpSecondsSpend;
+    }
+
+    public void setWarmUpSecondsSpend(Long warmUpSecondsSpend) {
+        this.warmUpSecondsSpend = warmUpSecondsSpend;
+    }
+
+    public Long getWarmUpMinutesSpend() {
+        return warmUpMinutesSpend;
+    }
+
+    public void setWarmUpMinutesSpend(Long warmUpMinutesSpend) {
+        this.warmUpMinutesSpend = warmUpMinutesSpend;
+    }
+
+    public Long getWarmUpHoursSpend() {
+        return warmUpHoursSpend;
+    }
+
+    public void setWarmUpHoursSpend(Long warmUpHoursSpend) {
+        this.warmUpHoursSpend = warmUpHoursSpend;
+    }
+
     public List<SolverBenchmark> getSolverBenchmarkList() {
         return solverBenchmarkList;
     }
@@ -139,6 +182,10 @@ public class SolverBenchmarkSuite {
     // ************************************************************************
 
     public void benchmarkingStarted() {
+        if (solverBenchmarkList == null || solverBenchmarkList.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Configure at least 1 <solverBenchmark> in the <solverBenchmarkSuite> configuration.");
+        }
         Set<String> nameSet = new HashSet<String>(solverBenchmarkList.size());
         Set<SolverBenchmark> noNameBenchmarkSet = new LinkedHashSet<SolverBenchmark>(solverBenchmarkList.size());
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
@@ -154,6 +201,7 @@ public class SolverBenchmarkSuite {
             if (inheritedSolverBenchmark != null) {
                 solverBenchmark.inherit(inheritedSolverBenchmark);
             }
+            solverBenchmark.validate();
             solverBenchmark.resetSolverBenchmarkResultList();
         }
         int generatedNameIndex = 0;
@@ -206,9 +254,59 @@ public class SolverBenchmarkSuite {
         benchmarkingStarted();
         // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
         Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, List<SolverStatistic>>();
+        if (warmUpTimeMillisSpend != null || warmUpSecondsSpend != null || warmUpMinutesSpend != null
+                || warmUpHoursSpend != null) {
+            logger.info("================================================================================");
+            logger.info("Warming up");
+            logger.info("================================================================================");
+            long warmUpTimeMillisSpendTotal = 0L;
+            if (warmUpTimeMillisSpend != null) {
+                warmUpTimeMillisSpendTotal += warmUpTimeMillisSpend;
+            }
+            if (warmUpSecondsSpend != null) {
+                warmUpTimeMillisSpendTotal += warmUpSecondsSpend * 1000L;
+            }
+            if (warmUpMinutesSpend != null) {
+                warmUpTimeMillisSpendTotal += warmUpMinutesSpend * 60000L;
+            }
+            if (warmUpHoursSpend != null) {
+                warmUpTimeMillisSpendTotal += warmUpHoursSpend * 3600000L;
+            }
+            long startingTimeMillis = System.currentTimeMillis();
+            long timeLeft = warmUpTimeMillisSpendTotal;
+            Iterator<SolverBenchmark> solverBenchmarkIt = solverBenchmarkList.iterator();
+            int overallResultIndex = 0;
+            while (timeLeft > 0L) {
+                if (!solverBenchmarkIt.hasNext()) {
+                    solverBenchmarkIt = solverBenchmarkList.iterator();
+                    overallResultIndex++;
+                }
+                SolverBenchmark solverBenchmark = solverBenchmarkIt.next();
+                List<SolverBenchmarkResult> solverBenchmarkResultList = solverBenchmark.getSolverBenchmarkResultList();
+                int resultIndex = overallResultIndex % solverBenchmarkResultList.size();
+                SolverBenchmarkResult result = solverBenchmarkResultList.get(resultIndex);
+                TerminationConfig originalTerminationConfig = solverBenchmark.getSolverConfig().getTerminationConfig();
+                TerminationConfig tmpTerminationConfig = originalTerminationConfig.clone();
+                tmpTerminationConfig.shortenMaximumTimeMillisSpendTotal(timeLeft);
+                solverBenchmark.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
+                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+                File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
+                Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
+                solver.setStartingSolution(unsolvedSolution);
+                solver.solve();
+                solverBenchmark.getSolverConfig().setTerminationConfig(originalTerminationConfig);
+                long timeSpend = System.currentTimeMillis() - startingTimeMillis;
+                timeLeft = warmUpTimeMillisSpendTotal - timeSpend;
+            }
+            logger.info("================================================================================");
+            logger.info("Finished warmUp");
+            logger.info("================================================================================");
+        }
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            Solver solver = solverBenchmark.getLocalSearchSolverConfig().buildSolver();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
+                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+                
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
                 solver.setStartingSolution(unsolvedSolution);
@@ -321,7 +419,7 @@ public class SolverBenchmarkSuite {
     private CharSequence writeBestScoreSummaryChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            ScoreDefinition scoreDefinition = solverBenchmark.getLocalSearchSolverConfig().getScoreDefinitionConfig()
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 Score score = result.getScore();

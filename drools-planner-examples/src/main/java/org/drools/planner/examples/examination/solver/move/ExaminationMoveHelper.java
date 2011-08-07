@@ -17,7 +17,7 @@
 package org.drools.planner.examples.examination.solver.move;
 
 import org.drools.WorkingMemory;
-import org.drools.runtime.rule.FactHandle;
+import org.drools.FactHandle;
 import org.drools.planner.examples.examination.domain.Exam;
 import org.drools.planner.examples.examination.domain.Period;
 import org.drools.planner.examples.examination.domain.Room;

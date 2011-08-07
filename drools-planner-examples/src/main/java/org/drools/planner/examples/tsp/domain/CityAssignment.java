@@ -20,8 +20,12 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 @XStreamAlias("CityAssignment")
 public class CityAssignment extends AbstractPersistable implements Comparable<CityAssignment> {
 
@@ -39,6 +43,9 @@ public class CityAssignment extends AbstractPersistable implements Comparable<Ci
         this.city = city;
     }
 
+    // TODO FIXME this isn't a planning variable
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "cityAssignmentList")
     public CityAssignment getPreviousCityAssignment() {
         return previousCityAssignment;
     }
@@ -47,6 +54,8 @@ public class CityAssignment extends AbstractPersistable implements Comparable<Ci
         this.previousCityAssignment = previousCityAssignment;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "cityAssignmentList")
     public CityAssignment getNextCityAssignment() {
         return nextCityAssignment;
     }

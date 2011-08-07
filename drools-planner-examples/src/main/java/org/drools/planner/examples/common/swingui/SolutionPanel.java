@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,11 +34,11 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected WorkflowFrame workflowFrame;
+    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
     protected SolutionBusiness solutionBusiness;
 
-    public void setWorkflowFrame(WorkflowFrame workflowFrame) {
-        this.workflowFrame = workflowFrame;
+    public void setSolverAndPersistenceFrame(SolverAndPersistenceFrame solverAndPersistenceFrame) {
+        this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
@@ -48,7 +49,11 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
         return true;
     }
 
-    public abstract void resetPanel();
+    public abstract void resetPanel(Solution solution);
+
+    public void updatePanel(Solution solution) {
+        resetPanel(solution);
+    }
 
     public Dimension getPreferredScrollableViewportSize() {
         return PREFERRED_SCROLLABLE_VIEWPORT_SIZE;

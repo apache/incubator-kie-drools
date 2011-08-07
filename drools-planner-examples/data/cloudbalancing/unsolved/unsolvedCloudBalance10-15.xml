@@ -164,4 +164,66 @@
       <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
     </CloudProcess>
   </cloudProcessList>
+  <cloudAssignmentList id="29">
+    <CloudAssignment id="30">
+      <id>0</id>
+      <cloudProcess reference="14"/>
+    </CloudAssignment>
+    <CloudAssignment id="31">
+      <id>1</id>
+      <cloudProcess reference="15"/>
+    </CloudAssignment>
+    <CloudAssignment id="32">
+      <id>2</id>
+      <cloudProcess reference="16"/>
+    </CloudAssignment>
+    <CloudAssignment id="33">
+      <id>3</id>
+      <cloudProcess reference="17"/>
+    </CloudAssignment>
+    <CloudAssignment id="34">
+      <id>4</id>
+      <cloudProcess reference="18"/>
+    </CloudAssignment>
+    <CloudAssignment id="35">
+      <id>5</id>
+      <cloudProcess reference="19"/>
+    </CloudAssignment>
+    <CloudAssignment id="36">
+      <id>6</id>
+      <cloudProcess reference="20"/>
+    </CloudAssignment>
+    <CloudAssignment id="37">
+      <id>7</id>
+      <cloudProcess reference="21"/>
+    </CloudAssignment>
+    <CloudAssignment id="38">
+      <id>8</id>
+      <cloudProcess reference="22"/>
+    </CloudAssignment>
+    <CloudAssignment id="39">
+      <id>9</id>
+      <cloudProcess reference="23"/>
+    </CloudAssignment>
+    <CloudAssignment id="40">
+      <id>10</id>
+      <cloudProcess reference="24"/>
+    </CloudAssignment>
+    <CloudAssignment id="41">
+      <id>11</id>
+      <cloudProcess reference="25"/>
+    </CloudAssignment>
+    <CloudAssignment id="42">
+      <id>12</id>
+      <cloudProcess reference="26"/>
+    </CloudAssignment>
+    <CloudAssignment id="43">
+      <id>13</id>
+      <cloudProcess reference="27"/>
+    </CloudAssignment>
+    <CloudAssignment id="44">
+      <id>14</id>
+      <cloudProcess reference="28"/>
+    </CloudAssignment>
+  </cloudAssignmentList>
 </CloudBalance>

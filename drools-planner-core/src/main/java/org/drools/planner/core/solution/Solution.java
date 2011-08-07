@@ -18,8 +18,8 @@ package org.drools.planner.core.solution;
 
 import java.util.Collection;
 
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.score.Score;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.
@@ -48,9 +48,12 @@ public interface Solution<S extends Score> {
     /**
      * Called by the {@link Solver} when the solution needs to be asserted into an empty WorkingMemory.
      * These facts can be used by the score rules.
-     * @return never null (although an empty collection is allowed), all the facts of this solution
+     * Do not include the planning entities as facts: they are automatically inserted into the WorkingMemory
+     * if and only if they are initialized. When they are initialized later, they are also automatically inserted.
+     * @return never null (although an empty collection is allowed),
+     *         all the facts of this solution except for the planning entities
      */
-    Collection<? extends Object> getFacts();
+    Collection<? extends Object> getProblemFacts();
 
     /**
      * Called by the {@link Solver} when the solution needs to be cloned,

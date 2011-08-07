@@ -17,6 +17,9 @@
 package org.drools.planner.core.score.definition;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.solver.DefaultSolverScope;
+import org.drools.planner.core.termination.Termination;
 
 /**
  * A ScoreDefinition knows how to compare scores and what the perfect maximum/minimum Score is.
@@ -53,6 +56,7 @@ public interface ScoreDefinition<S extends Score> {
     Score parseScore(String scoreString);
 
     /**
+     * See explanation in {@link Termination#calculateSolverTimeGradient(DefaultSolverScope)}.
      * @param startScore never null
      * @param endScore never null
      * @param score never null
@@ -65,5 +69,11 @@ public interface ScoreDefinition<S extends Score> {
      * @return null if should not be shown on the graph
      */
     Double translateScoreToGraphValue(S score);
+
+    /**
+     * TODO remove when the rule that sums the final score can be written as a single rule and ScoreCalculator is dead
+     * @return never null
+     */
+    ScoreCalculator buildScoreCalculator();
 
 }

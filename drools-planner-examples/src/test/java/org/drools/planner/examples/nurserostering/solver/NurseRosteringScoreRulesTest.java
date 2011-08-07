@@ -27,9 +27,12 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.calculator.DefaultHardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
+import org.drools.planner.core.solution.director.DefaultSolutionDirector;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.drools.planner.examples.common.app.LoggingTest;
 import org.drools.planner.examples.nurserostering.domain.Assignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
@@ -44,15 +47,15 @@ public class NurseRosteringScoreRulesTest extends LoggingTest {
 
     @Test
     public void switchEmployeeAndUndo() {
-        LocalSearchSolverScope localSearchSolverScope = new LocalSearchSolverScope();
-        localSearchSolverScope.setRuleBase(buildRuleBase());
-        localSearchSolverScope.setWorkingScoreCalculator(new DefaultHardAndSoftConstraintScoreCalculator());
+        DefaultSolutionDirector solutionDirector = new DefaultSolutionDirector();
+        solutionDirector.setRuleBase(buildRuleBase());
+        solutionDirector.setScoreDefinition(new HardAndSoftScoreDefinition());
         NurseRoster nurseRoster = (NurseRoster) new NurseRosteringDaoImpl().readSolution(getClass().getResourceAsStream(
                 "/org/drools/planner/examples/nurserostering/data/testNurseRosteringScoreRules.xml"));
-        localSearchSolverScope.setWorkingSolution(nurseRoster);
-        WorkingMemory workingMemory = localSearchSolverScope.getWorkingMemory();
+        solutionDirector.setWorkingSolution(nurseRoster);
+        WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
-        Score firstScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+        Score firstScore = solutionDirector.calculateScoreFromWorkingMemory();
         // do AssignmentSwitchMove
         Employee leftEmployee = findEmployeeById(nurseRoster, 0L);
         Assignment leftAssignment = findAssignmentById(nurseRoster, 200204001L);
@@ -62,11 +65,11 @@ public class NurseRosteringScoreRulesTest extends LoggingTest {
         assertEquals(rightEmployee, rightAssignment.getEmployee());
         NurseRosteringMoveHelper.moveEmployee(workingMemory, leftAssignment, rightEmployee);
         NurseRosteringMoveHelper.moveEmployee(workingMemory, rightAssignment, leftEmployee);
-        localSearchSolverScope.calculateScoreFromWorkingMemory();
+        solutionDirector.calculateScoreFromWorkingMemory();
         // undo AssignmentSwitchMove;
         NurseRosteringMoveHelper.moveEmployee(workingMemory, rightAssignment, rightEmployee);
         NurseRosteringMoveHelper.moveEmployee(workingMemory, leftAssignment, leftEmployee);
-        Score secondScore = localSearchSolverScope.calculateScoreFromWorkingMemory();
+        Score secondScore = solutionDirector.calculateScoreFromWorkingMemory();
         assertEquals(firstScore, secondScore);
     }
 

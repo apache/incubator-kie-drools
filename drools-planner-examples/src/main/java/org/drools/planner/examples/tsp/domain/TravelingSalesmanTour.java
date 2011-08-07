@@ -25,6 +25,7 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
@@ -65,6 +66,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.startCity = startCity;
     }
 
+    @PlanningEntityCollectionProperty
     public List<CityAssignment> getCityAssignmentList() {
         return cityAssignmentList;
     }
@@ -73,6 +75,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.cityAssignmentList = cityAssignmentList;
     }
 
+    // Not annotated as a planning entity because it already included in cityAssignmentList
     public CityAssignment getStartCityAssignment() {
         return startCityAssignment;
     }
@@ -89,18 +92,11 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (cityAssignmentList != null);
-    }
-
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cityList);
         facts.add(startCity);
-        if (isInitialized()) {
-            facts.addAll(cityAssignmentList);
-            facts.add(startCityAssignment);
-        }
+        // Do not add the planning entity's (cityAssignmentList) because that will be done automatically
         return facts;
     }
 

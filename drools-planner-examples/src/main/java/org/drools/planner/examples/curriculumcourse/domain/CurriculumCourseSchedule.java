@@ -23,8 +23,8 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
@@ -119,6 +119,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         this.unavailablePeriodConstraintList = unavailablePeriodConstraintList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<Lecture> getLectureList() {
         return lectureList;
     }
@@ -135,13 +136,9 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         this.score = score;
     }
 
-    public boolean isInitialized() {
-        return (lectureList != null);
-    }
-
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
-        facts.add(teacherList);
+        facts.addAll(teacherList);
         facts.addAll(curriculumList);
         facts.addAll(courseList);
         facts.addAll(dayList);
@@ -149,9 +146,7 @@ public class CurriculumCourseSchedule extends AbstractPersistable implements Sol
         facts.addAll(periodList);
         facts.addAll(roomList);
         facts.addAll(unavailablePeriodConstraintList);
-        if (isInitialized()) {
-            facts.addAll(lectureList);
-        }
+        // Do not add the planning entity's (lectureList) because that will be done automatically
         return facts;
     }
 

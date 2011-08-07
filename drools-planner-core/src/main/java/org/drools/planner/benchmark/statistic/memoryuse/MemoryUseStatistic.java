@@ -26,6 +26,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -34,7 +35,8 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.core.Solver;
-import org.drools.planner.core.localsearch.LocalSearchSolver;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
+import org.drools.planner.core.solver.DefaultSolver;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -49,7 +51,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
     private List<String> configNameList = new ArrayList<String>();
     // key is the configName
     private Map<String, MemoryUseStatisticListener> statisticListenerMap
-            = new HashMap<String, MemoryUseStatisticListener>();
+            = new LinkedHashMap<String, MemoryUseStatisticListener>();
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -58,13 +60,13 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         }
         configNameList.add(configName);
         MemoryUseStatisticListener statisticListener = new MemoryUseStatisticListener();
-        ((LocalSearchSolver) solver).addLocalSearchSolverLifecycleListener(statisticListener);
+        ((DefaultSolver) solver).addSolverPhaseLifecycleListener(statisticListener);
         statisticListenerMap.put(configName, statisticListener);
     }
 
     public void removeListener(Solver solver, String configName) {
         MemoryUseStatisticListener statisticListener = statisticListenerMap.get(configName);
-        ((LocalSearchSolver) solver).removeLocalSearchSolverLifecycleListener(statisticListener);
+        ((DefaultSolver) solver).removeSolverPhaseLifecycleListener(statisticListener);
     }
 
     // ************************************************************************
@@ -160,17 +162,17 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, MemoryUseStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
-            XYSeries configUsedSeries = new XYSeries(configName + " used");
-            XYSeries configMaxSeries = new XYSeries(configName + " max");
+            XYSeries usedSeries = new XYSeries(configName + " used");
+            XYSeries maxSeries = new XYSeries(configName + " max");
             List<MemoryUseStatisticPoint> statisticPointList = listenerEntry.getValue().getStatisticPointList();
             for (MemoryUseStatisticPoint statisticPoint : statisticPointList) {
                 long timeMillisSpend = statisticPoint.getTimeMillisSpend();
                 MemoryUseMeasurement memoryUseMeasurement = statisticPoint.getMemoryUseMeasurement();
-                configUsedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
-                configMaxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
+                usedSeries.add(timeMillisSpend, memoryUseMeasurement.getUsedMemory());
+                maxSeries.add(timeMillisSpend, memoryUseMeasurement.getMaxMemory());
             }
-            seriesCollection.addSeries(configUsedSeries);
-            seriesCollection.addSeries(configMaxSeries);
+            seriesCollection.addSeries(usedSeries);
+            seriesCollection.addSeries(maxSeries);
         }
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());

@@ -17,26 +17,14 @@
 package org.drools.planner.examples.tsp.swingui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.drools.planner.core.move.Move;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.common.swingui.WorkflowFrame;
-import org.drools.planner.examples.tsp.domain.CityAssignment;
+import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
-import org.drools.planner.examples.tsp.solver.move.SubTourChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -67,17 +55,17 @@ public class TspPanel extends SolutionPanel {
         return (TravelingSalesmanTour) solutionBusiness.getSolution();
     }
 
-    public void resetPanel() {
-        tspWorldPanel.resetPanel();
-        tspListPanel.resetPanel();
+    public void resetPanel(Solution solution) {
+        tspWorldPanel.resetPanel(solution);
+        tspListPanel.resetPanel(solution);
     }
 
     public void doMove(Move move) {
         solutionBusiness.doMove(move);
     }
 
-    public WorkflowFrame getWorkflowFrame() {
-        return workflowFrame;
+    public SolverAndPersistenceFrame getWorkflowFrame() {
+        return solverAndPersistenceFrame;
     }
 
 }

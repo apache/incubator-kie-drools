@@ -19,6 +19,8 @@ package org.drools.planner.core.score.definition;
 import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.SimpleScore;
+import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
 
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
 
@@ -37,10 +39,12 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
     // Worker methods
     // ************************************************************************
 
+    @Override
     public SimpleScore getPerfectMaximumScore() {
         return perfectMaximumScore;
     }
 
+    @Override
     public SimpleScore getPerfectMinimumScore() {
         return perfectMinimumScore;
     }
@@ -62,6 +66,10 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
 
     public Double translateScoreToGraphValue(SimpleScore score) {
         return Double.valueOf(score.getScore());
+    }
+
+    public ScoreCalculator buildScoreCalculator() {
+        return new SimpleScoreCalculator();
     }
 
 }

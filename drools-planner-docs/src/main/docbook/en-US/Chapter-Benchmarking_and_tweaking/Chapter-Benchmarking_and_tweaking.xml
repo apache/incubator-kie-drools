@@ -21,102 +21,145 @@
   <section>
     <title>Building a Benchmarker</title>
 
-    <para>You can build a <literal>Benchmarker</literal> instance with the<literal>XmlSolverBenchmarker</literal>.
-    Configure it with a benchmarker configuration xml file:</para>
+    <section>
+      <title>Building a basic Benchmarker</title>
 
-    <programlisting language="java">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
+      <para>You can build a <literal>Benchmarker</literal> instance with the<literal>XmlSolverBenchmarker</literal>.
+      Configure it with a benchmarker configuration xml file:</para>
+
+      <programlisting language="java">    XmlSolverBenchmarker benchmarker = new XmlSolverBenchmarker();
     benchmarker.configure("/org/drools/planner/examples/nqueens/benchmark/nqueensSolverBenchmarkConfig.xml");
     benchmarker.benchmark();
     benchmarker.writeResults(resultFile);</programlisting>
 
-    <para>A basic benchmarker configuration file looks something like this:</para>
+      <para>A basic benchmarker configuration file looks something like this:</para>
 
-    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solverBenchmarkSuite&gt;
-    &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
+  &lt;benchmarkDirectory&gt;local/data/nqueens&lt;/benchmarkDirectory&gt;
+  &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
+  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
 
-    &lt;inheritedSolverBenchmark&gt;
-        &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/unsolvedSolutionFile&gt;
-        &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/unsolvedSolutionFile&gt;
-        &lt;localSearchSolver&gt;
-            &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-            &lt;scoreDefinition&gt;
-                &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-            &lt;/scoreDefinition&gt;
-            &lt;termination&gt;
-                &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
-            &lt;/termination&gt;
-            &lt;selector&gt;
-                &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
-            &lt;/selector&gt;
-            &lt;forager&gt;
-                &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-            &lt;/forager&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/inheritedSolverBenchmark&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens32.xml&lt;/unsolvedSolutionFile&gt;
+    &lt;unsolvedSolutionFile&gt;data/nqueens/unsolved/unsolvedNQueens64.xml&lt;/unsolvedSolutionFile&gt;
+    &lt;solver&gt;
+      &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+      &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+      &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+      &lt;scoreDefinition&gt;
+        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+      &lt;/scoreDefinition&gt;
+      &lt;termination&gt;
+        &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
+      &lt;/termination&gt;
+    &lt;/solver&gt;
+  &lt;/inheritedSolverBenchmark&gt;
 
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Solution tabu&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Move tabu 5&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeMoveTabuSize&gt;5&lt;/completeMoveTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Move tabu 7&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
-    &lt;solverBenchmark&gt;
-        &lt;name&gt;Solution tabu and move tabu 7&lt;/name&gt;
-        &lt;localSearchSolver&gt;
-            &lt;acceptor&gt;
-            &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-            &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
-            &lt;/acceptor&gt;
-        &lt;/localSearchSolver&gt;
-    &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Solution tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Move tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;completeMoveTabuSize&gt;5&lt;/completeMoveTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;Property tabu&lt;/name&gt;
+    &lt;solver&gt;
+      &lt;localSearch&gt;
+        &lt;selector&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+        &lt;/selector&gt;
+        &lt;acceptor&gt;
+          &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
+        &lt;/acceptor&gt;
+        &lt;forager&gt;
+          &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+        &lt;/forager&gt;
+      &lt;/localSearch&gt;
+    &lt;/solver&gt;
+  &lt;/solverBenchmark&gt;
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
-    <para>This benchmarker will try 4 configurations (1 solution tabu, 2 move tabu's and 1 solution-move tabu) on 2 data
-    sets (32 and 64 queens), so it will run 8 solvers.</para>
+      <para>This benchmarker will try 3 configurations (1 solution tabu, 1 move tabu and 1 property tabu) on 2 data sets
+      (32 and 64 queens), so it will run 6 solvers.</para>
 
-    <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example a local search
-    solver) and one or more <literal>unsolvedSolutionFile</literal> entities. It will run the solver configuration on
-    each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent. The common
-    part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
-    <literal>inheritedSolverBenchmark</literal> entity, but they can still be overwritten per
-    <literal>solverBenchmark</literal> entity.</para>
+      <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example a local search
+      solver) and one or more <literal>unsolvedSolutionFile</literal> entities. It will run the solver configuration on
+      each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent. The common
+      part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
+      <literal>inheritedSolverBenchmark</literal> entity, but that can still be overwritten per
+      <literal>solverBenchmark</literal> entity.</para>
 
-    <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). A summary
-    statistic and the best solution of each solver run will be written in that directory. Here is an example of a
-    summary statistic:</para>
+      <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). The best
+      solution of each solver run and a handy overview HTML webpage will be written in that directory.</para>
+    </section>
 
-    <figure>
-      <title>Summary statistic</title>
+    <section>
+      <title>Warming up the hotspot compiler</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
+      <para>Without a warmup, the results of the first (or first few) benchmarks are not reliable, because they will
+      have lost CPU time on hotspot JIT compilation (and possibly DRL compilation too).</para>
+
+      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
+      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
+
+      <programlisting>&lt;solverBenchmarkSuite&gt;
+  ...
+  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
+  ...
+&lt;/solverBenchmarkSuite&gt;</programlisting>
+    </section>
   </section>
 
   <section>
-    <title>Statistics (graph and CSV)</title>
+    <title>Summary statistics</title>
+
+    <section>
+      <title>Best score summary</title>
+
+      <para>A summary statistic of each solver run will be written in the <literal>benchmarkDirectory</literal>. Here is
+      an example of a summary statistic:</para>
+
+      <figure>
+        <title>Summary statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+
+  <section>
+    <title>Statistics per data set (graph and CSV)</title>
 
     <para>The benchmarker supports outputting statistics as graphs and CSV (comma separated values) files to the
     <literal>benchmarkDirectory</literal>.</para>
@@ -125,9 +168,9 @@
     line:</para>
 
     <programlisting language="xml">&lt;solverBenchmarkSuite&gt;
-    &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
-    &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
-    ...
+  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
+  &lt;solverStatisticType&gt;BEST_SOLUTION_CHANGED&lt;/solverStatisticType&gt;
+  ...
 &lt;/solverBenchmarkSuite&gt;</programlisting>
 
     <para>Multiple <literal>solverStatisticType</literal> entries are allowed. Some statistic types might influence

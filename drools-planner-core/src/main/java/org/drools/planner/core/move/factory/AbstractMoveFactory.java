@@ -16,7 +16,7 @@
 
 package org.drools.planner.core.move.factory;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public abstract class AbstractMoveFactory implements MoveFactory {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 
@@ -52,7 +52,7 @@ public abstract class AbstractMoveFactory implements MoveFactory {
         // Hook which can be optionally overwritten by subclasses.
     }
 
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
+    public void phaseEnded(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         // Hook which can be optionally overwritten by subclasses.
     }
 

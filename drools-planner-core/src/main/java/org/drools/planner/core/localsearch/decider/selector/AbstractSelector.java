@@ -16,9 +16,10 @@
 
 package org.drools.planner.core.localsearch.decider.selector;
 
-import org.drools.planner.core.localsearch.LocalSearchSolverScope;
+import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
 import org.drools.planner.core.localsearch.decider.Decider;
+import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycleListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link Selector}.
  * @see Selector
  */
-public abstract class AbstractSelector implements Selector {
+public abstract class AbstractSelector extends LocalSearchSolverPhaseLifecycleListenerAdapter implements Selector {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -39,25 +40,5 @@ public abstract class AbstractSelector implements Selector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    public void solvingStarted(LocalSearchSolverScope localSearchSolverScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void beforeDeciding(LocalSearchStepScope localSearchStepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void stepDecided(LocalSearchStepScope localSearchStepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void stepTaken(LocalSearchStepScope localSearchStepScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
-
-    public void solvingEnded(LocalSearchSolverScope localSearchSolverScope) {
-        // Hook which can be optionally overwritten by subclasses.
-    }
 
 }

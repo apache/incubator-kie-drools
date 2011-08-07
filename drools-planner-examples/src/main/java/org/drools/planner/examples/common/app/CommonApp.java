@@ -24,16 +24,16 @@ import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.common.swingui.WorkflowFrame;
+import org.drools.planner.examples.common.swingui.SolverAndPersistenceFrame;
 
 public abstract class CommonApp extends LoggingMain {
 
-    private WorkflowFrame workflowFrame;
+    private SolverAndPersistenceFrame solverAndPersistenceFrame;
     private SolutionBusiness solutionBusiness;
 
     public CommonApp() {
         solutionBusiness = createSolutionBusiness();
-        workflowFrame = new WorkflowFrame(solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName());
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame(solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName());
     }
 
     public void init() {
@@ -41,9 +41,9 @@ public abstract class CommonApp extends LoggingMain {
     }
 
     public void init(boolean exitOnClose) {
-        workflowFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-        workflowFrame.init();
-        workflowFrame.setVisible(true);
+        solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
+        solverAndPersistenceFrame.init();
+        solverAndPersistenceFrame.setVisible(true);
     }
 
     public SolutionBusiness createSolutionBusiness() {

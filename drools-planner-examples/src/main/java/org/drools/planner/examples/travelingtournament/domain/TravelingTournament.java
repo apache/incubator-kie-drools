@@ -22,8 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
@@ -52,6 +52,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         this.teamList = teamList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<Match> getMatchList() {
         return matchList;
     }
@@ -72,11 +73,11 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         return teamList.size();
     }
 
-    public Collection<? extends Object> getFacts() {
+    public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(dayList);
         facts.addAll(teamList);
-        facts.addAll(matchList);
+        // Do not add the planning entity's (matchList) because that will be done automatically
         return facts;
     }
 

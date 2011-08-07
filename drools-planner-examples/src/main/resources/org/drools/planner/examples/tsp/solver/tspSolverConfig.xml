@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<localSearchSolver>
-    <!--<environmentMode>DEBUG</environmentMode>-->
-    <scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
-    <scoreDefinition>
-        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-    </scoreDefinition>
-    <startingSolutionInitializerClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspStartingSolutionInitializer</startingSolutionInitializerClass>
-    <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-    </termination>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+  <solutionClass>org.drools.planner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.tsp.domain.CityAssignment</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/tsp/solver/tspScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+  </scoreDefinition>
+  <termination>
+    <maximumMinutesSpend>10</maximumMinutesSpend>
+  </termination>
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspStartingSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
+  <localSearch>
     <selector>
-        <moveFactoryClass>org.drools.planner.examples.tsp.solver.move.factory.SubTourChangeMoveFactory</moveFactoryClass>
+      <moveFactoryClass>org.drools.planner.examples.tsp.solver.move.factory.SubTourChangeMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completePropertyTabuSize>7</completePropertyTabuSize>
+      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <completePropertyTabuSize>7</completePropertyTabuSize>
     </acceptor>
     <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>10000</minimalAcceptedSelection>
+      <pickEarlyType>NEVER</pickEarlyType>
+      <minimalAcceptedSelection>10000</minimalAcceptedSelection>
     </forager>
-</localSearchSolver>
+  </localSearch>
+</solver>

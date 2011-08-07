@@ -19,8 +19,12 @@ package org.drools.planner.examples.travelingtournament.domain;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity
 public class Match extends AbstractPersistable implements Comparable<Match> {
 
     private Team homeTeam;
@@ -44,6 +48,8 @@ public class Match extends AbstractPersistable implements Comparable<Match> {
         this.awayTeam = awayTeam;
     }
 
+    @PlanningVariable
+    @ValueRangeFromSolutionProperty(propertyName = "dayList")
     public Day getDay() {
         return day;
     }
