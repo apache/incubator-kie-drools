@@ -27,28 +27,12 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>FIRST_FIT_pickEarly</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>FIRST_FIT_DECREASING</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>FIRST_FIT_DECREASING_pickEarly</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -61,28 +45,12 @@
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>BEST_FIT_pickEarly</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>BEST_FIT_DECREASING</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>BEST_FIT_DECREASING_pickEarly</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
