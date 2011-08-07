@@ -2,6 +2,7 @@
 <solverBenchmarkSuite>
   <benchmarkDirectory>local/data/pas</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/pas/unsolved/testdata01.xml</unsolvedSolutionFile>

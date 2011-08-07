@@ -2,6 +2,7 @@
 <solverBenchmarkSuite>
   <benchmarkDirectory>local/data/nurserostering</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/nurserostering/unsolved/long01.xml</unsolvedSolutionFile>

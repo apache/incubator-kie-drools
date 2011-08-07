@@ -2,6 +2,7 @@
 <solverBenchmarkSuite>
   <benchmarkDirectory>local/data/examination</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set1.xml</unsolvedSolutionFile>

@@ -2,6 +2,7 @@
 <solverBenchmarkSuite>
   <benchmarkDirectory>local/data/curriculumcourse</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
     <unsolvedSolutionFile>data/curriculumcourse/unsolved/comp01.xml</unsolvedSolutionFile>
@@ -34,119 +35,188 @@
         <!--&ndash;&gt;-->
         <!--<maximumSecondsSpend>429</maximumSecondsSpend>-->
       <!--</termination>-->
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>propertyTabu10</name>
+    <name>FIRST_FIT</name>
     <solver>
-      <localSearch>
-        <termination>
-          <!--<maximumMinutesSpend>6</maximumMinutesSpend>-->
-          <maximumSecondsSpend>30</maximumSecondsSpend>
-        </termination>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <completePropertyTabuSize>10</completePropertyTabuSize>
-          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>simulatedAnnealing100</name>
+    <name>FIRST_FIT_pickEarly</name>
     <solver>
-      <localSearch>
-        <termination>
-          <!--<maximumMinutesSpend>6</maximumMinutesSpend>-->
-          <maximumSecondsSpend>30</maximumSecondsSpend>
-        </termination>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/100soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>simulatedAnnealing100-propertyTabu10</name>
+    <name>FIRST_FIT_DECREASING</name>
     <solver>
-      <localSearch>
-        <termination>
-          <!--<maximumMinutesSpend>3</maximumMinutesSpend>-->
-          <maximumSecondsSpend>15</maximumSecondsSpend>
-        </termination>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/100soft</simulatedAnnealingStartingTemperature>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-      <localSearch>
-        <termination>
-          <!--<maximumMinutesSpend>3</maximumMinutesSpend>-->
-          <maximumSecondsSpend>15</maximumSecondsSpend>
-        </termination>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <completePropertyTabuSize>10</completePropertyTabuSize>
-          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>900</minimalAcceptedSelection><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </solverBenchmark>
+  <solverBenchmark>
+    <name>FIRST_FIT_DECREASING_pickEarly</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT_pickEarly</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT_DECREASING</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT_DECREASING_pickEarly</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+
+  <!--<solverBenchmark>-->
+    <!--<name>propertyTabu10</name>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<termination>-->
+          <!--&lt;!&ndash;<maximumMinutesSpend>6</maximumMinutesSpend>&ndash;&gt;-->
+          <!--<maximumSecondsSpend>30</maximumSecondsSpend>-->
+        <!--</termination>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+          <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>900</minimalAcceptedSelection>&lt;!&ndash; TODO tweak me &ndash;&gt;-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>simulatedAnnealing100</name>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<termination>-->
+          <!--&lt;!&ndash;<maximumMinutesSpend>6</maximumMinutesSpend>&ndash;&gt;-->
+          <!--<maximumSecondsSpend>30</maximumSecondsSpend>-->
+        <!--</termination>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<simulatedAnnealingStartingTemperature>0hard/100soft</simulatedAnnealingStartingTemperature>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>simulatedAnnealing100-propertyTabu10</name>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<termination>-->
+          <!--&lt;!&ndash;<maximumMinutesSpend>3</maximumMinutesSpend>&ndash;&gt;-->
+          <!--<maximumSecondsSpend>15</maximumSecondsSpend>-->
+        <!--</termination>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<simulatedAnnealingStartingTemperature>0hard/100soft</simulatedAnnealingStartingTemperature>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+      <!--<localSearch>-->
+        <!--<termination>-->
+          <!--&lt;!&ndash;<maximumMinutesSpend>3</maximumMinutesSpend>&ndash;&gt;-->
+          <!--<maximumSecondsSpend>15</maximumSecondsSpend>-->
+        <!--</termination>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.curriculumcourse.solver.move.factory.LectureSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+          <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>900</minimalAcceptedSelection>&lt;!&ndash; TODO tweak me &ndash;&gt;-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
 </solverBenchmarkSuite>
