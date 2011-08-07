@@ -49,7 +49,7 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
 // Not yet applicable: RoomMaintenance constraint
 
-// In seperate drl or build-in: Two patients in the same bed for a number of nights
+// In separate drl or build-in: Two patients in the same bed for a number of nights
 
 // ############################################################################
 // Soft constraints
