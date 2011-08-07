@@ -173,7 +173,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                 if (departmentSpecialismTokens.length % 2 != 0) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to contain even number of tokens (" + departmentSpecialismTokens.length
-                            + ") after 1st pipeline (|) seperated by a space ( ).");
+                            + ") after 1st pipeline (|) separated by a space ( ).");
                 }
                 for (int j = 0; j < departmentSpecialismTokens.length; j += 2) {
                     long specialismId = Long.parseLong(departmentSpecialismTokens[j + 1]);
@@ -241,7 +241,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                 if (roomSpecialismTokens.length % 2 != 0) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") is expected to contain even number of tokens (" + roomSpecialismTokens.length
-                            + ") after 4th pipeline (|) seperated by a space ( ).");
+                            + ") after 4th pipeline (|) separated by a space ( ).");
                 }
                 List<RoomSpecialism> roomSpecialismListOfRoom = new ArrayList<RoomSpecialism>(roomSpecialismTokens.length / 2);
                 for (int j = 0; j < roomSpecialismTokens.length; j += 2) {
