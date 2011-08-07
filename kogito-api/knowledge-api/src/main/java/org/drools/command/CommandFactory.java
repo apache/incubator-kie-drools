@@ -363,12 +363,4 @@ public class CommandFactory {
     public static Command newNewKnowledgeBuilderConfigurationCommand(String localId) {
         return getCommandFactoryProvider().newNewKnowledgeBuilderConfigurationCommand(localId);
     }
-    
-    public static Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm) {
-        return getCommandFactoryProvider().fromExternalFactHandleCommand(factHandleExternalForm);
-    }
-
-    public static Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected) { 
-        return getCommandFactoryProvider().fromExternalFactHandleCommand(factHandleExternalForm, disconnected);
-    }
 }
