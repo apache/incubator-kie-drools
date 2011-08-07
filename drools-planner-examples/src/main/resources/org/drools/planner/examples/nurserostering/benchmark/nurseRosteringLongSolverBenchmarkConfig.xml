@@ -33,9 +33,9 @@
         -->
         <maximumSecondsSpend>42000</maximumSecondsSpend>
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
 

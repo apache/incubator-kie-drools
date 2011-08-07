@@ -36,86 +36,127 @@
         <maximumSecondsSpend>700</maximumSecondsSpend>
         <!--<scoreAttained>0hard/-999999999soft</scoreAttained>-->
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>BEST_FIT</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>tabuSearch-moveTabu</name>
+    <name>StartingSolutionInitializer</name>
     <solver>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>800</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>tabuSearch-propertyTabu</name>
+    <name>FIRST_FIT</name>
     <solver>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>11</completePropertyTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>800</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>simulatedAnnealing</name>
+    <name>FIRST_FIT_DECREASING</name>
     <solver>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-          <completePropertyTabuSize>5</completePropertyTabuSize>
-        </acceptor>
-        <forager>
-          <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-          <minimalAcceptedSelection>4</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT_DECREASING</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+
+  <!--<solverBenchmark>-->
+    <!--<name>tabuSearch-moveTabu</name>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+          <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>tabuSearch-propertyTabu</name>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+          <!--<completePropertyTabuSize>11</completePropertyTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>simulatedAnnealing</name>-->
+    <!--<solver>-->
+      <!--<localSearch>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>-->
+          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--&lt;!&ndash;<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>&ndash;&gt;-->
+          <!--<minimalAcceptedSelection>4</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

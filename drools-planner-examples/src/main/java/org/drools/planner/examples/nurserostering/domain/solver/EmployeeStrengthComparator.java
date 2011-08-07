@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.domain.solver;
+package org.drools.planner.examples.nurserostering.domain.solver;
 
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
-import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.drools.planner.examples.nurserostering.domain.Employee;
 
-public class CloudComputerStrengthComparator implements Comparator<Object> {
+public class EmployeeStrengthComparator implements Comparator<Object> {
 
     public int compare(Object a, Object b) {
-        return compare((CloudComputer) a, (CloudComputer) b);
+        return compare((Employee) a, (Employee) b);
     }
 
-    public int compare(CloudComputer a, CloudComputer b) {
+    public int compare(Employee a, Employee b) {
+        // TODO refactor to DifficultyWeightFactory and use getContract().getContractLineList()
+        // to sum maximumValue and minimumValue etc
         return new CompareToBuilder()
-                .append(a.getMultiplicand(), b.getMultiplicand())
-                .append(b.getCost(), a.getCost()) // Descending (but this is debatable)
+                .append(b.getWeekendLength(), a.getWeekendLength()) // Descending
                 .append(a.getId(), b.getId())
                 .toComparison();
     }

@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.domain.solver;
+package org.drools.planner.examples.nurserostering.domain.solver;
 
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
-import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
+import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.Shift;
 
-public class CloudComputerStrengthComparator implements Comparator<Object> {
+public class AssignmentDifficultyComparator implements Comparator<Object> {
 
     public int compare(Object a, Object b) {
-        return compare((CloudComputer) a, (CloudComputer) b);
+        return compare((Assignment) a, (Assignment) b);
     }
 
-    public int compare(CloudComputer a, CloudComputer b) {
+    public int compare(Assignment a, Assignment b) {
+        Shift aShift = a.getShift();
+        Shift bShift = b.getShift();
         return new CompareToBuilder()
-                .append(a.getMultiplicand(), b.getMultiplicand())
-                .append(b.getCost(), a.getCost()) // Descending (but this is debatable)
-                .append(a.getId(), b.getId())
-                .toComparison();
+                    .append(bShift.getShiftDate(), aShift.getShiftDate()) // Descending
+                    .append(aShift.getRequiredEmployeeSize(), bShift.getRequiredEmployeeSize())
+                    .append(bShift.getShiftType(), aShift.getShiftType()) // Descending
+                    .toComparison();
     }
 
 }

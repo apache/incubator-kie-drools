@@ -30,6 +30,7 @@ public class CloudAssignmentDifficultyComparator implements Comparator<Object> {
     public int compare(CloudAssignment a, CloudAssignment b) {
         return new CompareToBuilder()
                 .append(a.getCloudProcess().getMinimalMultiplicand(), b.getCloudProcess().getMinimalMultiplicand())
+                .append(a.getCloudProcess().getId(), b.getCloudProcess().getId())
                 .toComparison();
     }
 
