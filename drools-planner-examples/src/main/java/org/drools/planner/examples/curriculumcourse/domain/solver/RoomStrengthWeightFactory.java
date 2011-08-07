@@ -46,4 +46,5 @@ public class RoomStrengthWeightFactory implements PlanningValueStrengthWeightFac
         }
 
     }
+
 }

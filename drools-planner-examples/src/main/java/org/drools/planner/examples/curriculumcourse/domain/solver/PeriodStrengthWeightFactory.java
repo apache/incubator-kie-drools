@@ -58,4 +58,5 @@ public class PeriodStrengthWeightFactory implements PlanningValueStrengthWeightF
         }
 
     }
+
 }

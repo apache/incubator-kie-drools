@@ -63,4 +63,5 @@ public class LectureDifficultyWeightFactory implements PlanningEntityDifficultyW
         }
 
     }
+
 }
