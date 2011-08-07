@@ -57,7 +57,7 @@ public class CustomSolverPhaseConfig extends SolverPhaseConfig {
         configureSolverPhase(customSolverPhase, environmentMode, scoreDefinition, solverTermination);
         if (customSolverPhaseCommandClassList == null || customSolverPhaseCommandClassList.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Configure at least 1 <customSolverPhaseCommandClass> in the customSolverPhase configuration.");
+                    "Configure at least 1 <customSolverPhaseCommandClass> in the <customSolverPhase> configuration.");
         }
         List<CustomSolverPhaseCommand> customSolverPhaseCommandList
                 = new ArrayList<CustomSolverPhaseCommand>(customSolverPhaseCommandClassList.size());
