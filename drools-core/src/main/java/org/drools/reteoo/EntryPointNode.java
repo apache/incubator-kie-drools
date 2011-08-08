@@ -173,6 +173,7 @@ public class EntryPointNode extends ObjectSource
              
              // There may be no queries defined
              this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+             modifyPreviousTuples.retractTuples( context, workingMemory );
          }       
      }   
     
@@ -218,7 +219,9 @@ public class EntryPointNode extends ObjectSource
              
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+             modifyPreviousTuples.retractTuples( context, workingMemory );
          }       
+         
      }      
 
     public void assertObject(final InternalFactHandle handle,

@@ -23,8 +23,8 @@ public class AgendaItemTest {
         kcontext.setActivation( item1 );
         
         // set blockers
-        kcontext.block( item2 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item2 );
+        kcontext.blockActivation( item3 );
         
         assertNull( item1.getBlockers() );
         assertEquals( 2, item1.getBlocked().size() );
@@ -33,7 +33,7 @@ public class AgendaItemTest {
         
         kcontext.reset();
         kcontext.setActivation( item2 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item3 );
         assertEquals( 2, item1.getBlocked().size() );
         
         assertEquals( 1, item2.getBlocked().size() );
@@ -60,13 +60,13 @@ public class AgendaItemTest {
         kcontext.setActivation( item1 );
         
         // set blockers 
-        kcontext.block( item2 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item2 );
+        kcontext.blockActivation( item3 );
         
          // set blocked
         kcontext.reset();
         kcontext.setActivation( item2 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item3 );
         
         // Check all references are updated correctly when item1 is retracted
         item1.removeAllBlockersAndBlocked(agenda);
@@ -89,7 +89,7 @@ public class AgendaItemTest {
         assertNull( item1.getBlocked() );
         
         // reblock with item2, so that we can retract item3
-        kcontext.block( item3 );
+        kcontext.blockActivation( item3 );
         assertNull( item2.getBlockers() );        
         assertEquals( 1, item2.getBlocked().size() );
         assertEquals(1, item3.getBlockers().size());
@@ -121,13 +121,13 @@ public class AgendaItemTest {
         // use same data structure as testAddition
         DefaultKnowledgeHelper kcontext = new DefaultKnowledgeHelper( wm );
         kcontext.setActivation( item1 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item3 );
         
         kcontext.reset();
         kcontext.setActivation( item2 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item3 );
 
-        kcontext.unblockAll( item3 );
+        kcontext.unblockAllActivations( item3 );
             
         assertEquals( 0, item3.getBlockers().size() );
         assertNull( item3.getBlocked() );
@@ -155,13 +155,13 @@ public class AgendaItemTest {
         kcontext.setActivation( item1 );
         
         // set blockers 
-        kcontext.block( item2 );
-        kcontext.block( item3 );
+        kcontext.blockActivation( item2 );
+        kcontext.blockActivation( item3 );
         
          // set blocked
         kcontext.reset();
         kcontext.setActivation( item1 );
-        kcontext.block( item4 );
+        kcontext.blockActivation( item4 );
         kcontext.cancelRemainingPreviousLogicalDependencies();
         
         // check only item4 is blocked
