@@ -18,6 +18,10 @@ public class ActivationPropertyHandler implements PropertyHandler {
             return item.getRule();
         }
         
+        if ( "active".equals( name ) ) {
+            return item.isActive();
+        }
+        
         // FIXME hack as MVEL seems to be ignoring indexed variables
         VariableResolver vr = variableFactory.getNextFactory().getVariableResolver( name );
         if ( vr != null ) {
