@@ -58,7 +58,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-flow</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
     <dependency>
@@ -68,7 +67,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-flow-builder</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
     <dependency>
@@ -78,7 +76,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-persistence-jpa</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
     <dependency>
@@ -88,7 +85,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-bpmn2</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
     <dependency>
@@ -98,7 +94,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-bam</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
     <dependency>
@@ -108,7 +103,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-human-task</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
     <dependency>
@@ -118,7 +112,6 @@
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-workitems</artifactId>-->
-      <!--<version>${jbpm.version}</version>-->
       <!--<classifier>sources</classifier>-->
     <!--</dependency>-->
 
