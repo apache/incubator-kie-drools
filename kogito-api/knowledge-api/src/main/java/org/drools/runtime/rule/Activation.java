@@ -66,4 +66,12 @@ public interface Activation {
      */
     Object getDeclarationValue( String declarationId );
     
+    /**
+     * An Activation is considered active if it is on the agenda and has not yet fired.
+     * Once an Activation has fired it is remove from the Agenda an considered dormant.
+     * However remember that the Activation may still be considered "true", i.e. a full match. 
+     * @return
+     */
+    boolean isActive();
+    
 }
