@@ -49,6 +49,7 @@ import org.drools.commons.jci.compilers.EclipseJavaCompiler;
 import org.drools.commons.jci.compilers.JaninoJavaCompiler;
 import org.drools.commons.jci.compilers.JavaCompiler;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListNode;
 import org.drools.facttemplates.Fact;
 import org.drools.integrationtests.SerializationHelper;
 import org.drools.lang.descr.AndDescr;
@@ -1302,6 +1303,31 @@ public class PackageBuilderTest extends DroolsTestCase {
         
         public boolean isActive() {
             return isActivated();
+        }
+
+        public void addBlocked(LogicalDependency node) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public LinkedList getBlocked() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void setBlocked(LinkedList justified) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void addBlocked(LinkedListNode node) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public LinkedList getBlockers() {
+            // TODO Auto-generated method stub
+            return null;
         }            
     }
 

@@ -59,16 +59,12 @@ public class ScheduledAgendaItem extends AgendaItem
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        super.readExternal( in );
-        
-        previous    = (LinkedListNode)in.readObject();
-        next    = (LinkedListNode)in.readObject();
+        super.readExternal( in );        
         agenda    = (InternalAgenda)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
-        out.writeObject(previous);
         out.writeObject(agenda);
     }
     public LinkedListNode getNext() {

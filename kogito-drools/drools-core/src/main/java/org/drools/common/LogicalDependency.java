@@ -16,8 +16,8 @@
 
 package org.drools.common;
 
-import org.drools.FactHandle;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.spi.Activation;
 
 /**
@@ -26,17 +26,25 @@ import org.drools.spi.Activation;
  */
 public class LogicalDependency extends AbstractBaseLinkedListNode {
     private Activation justifier;
-    private FactHandle factHandle;
+    private Object justified;
+    
+    private LinkedListEntry justifierEntry = new LinkedListEntry( this );
+    
+    
 
     public LogicalDependency(final Activation justifier,
-                             final FactHandle factHandle) {
+                             final Object object) {
         super();
         this.justifier = justifier;
-        this.factHandle = factHandle;
+        this.justified = object;
+    }
+    
+    public LinkedListEntry getJustifierEntry() {
+        return this.justifierEntry;
     }
 
-    public FactHandle getFactHandle() {
-        return this.factHandle;
+    public Object getJustified() {
+        return this.justified;
     }
 
     public Activation getJustifier() {
@@ -53,7 +61,7 @@ public class LogicalDependency extends AbstractBaseLinkedListNode {
         }
 
         final LogicalDependency other = (LogicalDependency) object;
-        return (this.getJustifier() == other.getJustifier() && this.getFactHandle() == other.getFactHandle());
+        return (this.getJustifier() == other.getJustifier() && this.justified == other.justified);
     }
 
     public int hashCode() {

@@ -18,6 +18,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.core.reteoo.*;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queueable;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
@@ -381,6 +382,31 @@ public class BinaryHeapQueueTest {
         
         public boolean isActive() {
             return isActivated();
+        }
+
+        public void addBlocked(LogicalDependency node) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public LinkedList getBlocked() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        public void setBlocked(LinkedList justified) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public void addBlocked(LinkedListNode node) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        public LinkedList getBlockers() {
+            // TODO Auto-generated method stub
+            return null;
         }            
     }
 

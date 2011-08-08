@@ -832,8 +832,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             fieldExtactor = (InternalReadAccessor) in.readObject();
             count = in.readInt();
             hashed = in.readBoolean();
-            previous = (LinkedListNode) in.readObject();
-            next = (LinkedListNode) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -841,8 +839,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             out.writeObject( fieldExtactor );
             out.writeInt( count );
             out.writeBoolean( hashed );
-            out.writeObject( previous );
-            out.writeObject( next );
         }
 
         public InternalReadAccessor getFieldExtractor() {

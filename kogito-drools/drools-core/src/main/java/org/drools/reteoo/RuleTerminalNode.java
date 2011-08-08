@@ -79,6 +79,8 @@ public class RuleTerminalNode extends BaseNode
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
+    
+    private boolean           fireDirect;
 
     // ------------------------------------------------------------
     // Constructors
@@ -117,6 +119,7 @@ public class RuleTerminalNode extends BaseNode
             this.declarations[i++] = decls.get( str );
         }
         Arrays.sort( this.declarations, SortDeclarations.instance  );
+        fireDirect = rule.getActivationListener().equals( "direct" );
     }
 
     // ------------------------------------------------------------
@@ -133,6 +136,7 @@ public class RuleTerminalNode extends BaseNode
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
+        fireDirect = rule.getActivationListener().equals( "direct" );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -181,7 +185,7 @@ public class RuleTerminalNode extends BaseNode
                                 final InternalWorkingMemory workingMemory) {
         boolean fire = createActivations(leftTuple, context, workingMemory, false);
         // Can be null if no Activation was created, only add it to the agenda if it's not a control rule.
-        if ( fire && rule.getSalience().getValue( leftTuple, rule, workingMemory )  != 101 ) {
+        if ( fire && !fireDirect) {
             final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
             agenda.addActivation( (AgendaItem) leftTuple.getObject() );            
         }
@@ -207,12 +211,17 @@ public class RuleTerminalNode extends BaseNode
         // First process control rules
         // Control rules do increase ActivationCountForEvent and agenda ActivateActivations, they do not currently fire events
         // ControlRules for now re-use the same PropagationContext
-        if ( rule.getSalience().getValue( tuple, rule, workingMemory ) == 101 ) {    
+        if ( fireDirect ) {    
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            final AgendaItem item = agenda.createAgendaItem( tuple,
-                                                             0,
-                                                             context,
-                                                             this);
+            AgendaItem item = null;
+            if ( reuseActivation ) {
+                item = ( AgendaItem ) tuple.getObject();
+            } else {
+                item = agenda.createAgendaItem( tuple,
+                                                0,
+                                                context,
+                                                this);
+            }
             tuple.setObject( item );            
             item.setActivated( true );
             tuple.increaseActivationCountForEvents();  
@@ -298,10 +307,10 @@ public class RuleTerminalNode extends BaseNode
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {        
         // we need the inserted facthandle so we can update the network with new Activation
-        Activation originalAcitvation  = ( Activation ) leftTuple.getObject();
+        Activation match  = ( Activation ) leftTuple.getObject();
 
         InternalAgenda agenda = ( InternalAgenda ) workingMemory.getAgenda();
-        if ( originalAcitvation != null && originalAcitvation.isActivated() ) {
+        if ( match != null && match.isActivated() ) {
             // already activated, do nothing
             // although we need to notify the inserted Activation, as it's declarations may have changed.
             agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), true );            
@@ -315,15 +324,7 @@ public class RuleTerminalNode extends BaseNode
         }        
         
         boolean fire = createActivations(leftTuple, context, workingMemory, true);
-        if ( fire && rule.getSalience().getValue( leftTuple, rule, workingMemory ) != 101 ) {            
-            // now get the original facthandle and set the new activation on it before notifying the WM
-            if ( agenda.isDeclarativeAgenda() ) {
-                InternalFactHandle factHandle = originalAcitvation.getFactHandle();
-                AgendaItem newActivation = ( AgendaItem ) leftTuple.getObject();
-                newActivation.setFactHandle( factHandle );
-                factHandle.setObject( newActivation );
-            }
-            
+        if ( fire && !fireDirect ) {                        
             // This activation is currently dormant and about to reactivated, so decrease the dormant count.
             agenda.decreaseDormantActivations();
             
@@ -365,6 +366,9 @@ public class RuleTerminalNode extends BaseNode
         
         final DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
         
+        AgendaItem item = ( AgendaItem ) activation;
+        item.removeAllBlockersAndBlocked(agenda);
+        
         if ( agenda.isDeclarativeAgenda() && activation.getFactHandle() == null ) {
             // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
             agenda.decreaseDormantActivations(); // because we know ControlRules fire straight away and then become dormant
@@ -401,7 +405,7 @@ public class RuleTerminalNode extends BaseNode
         
         workingMemory.getTruthMaintenanceSystem().removeLogicalDependencies( activation,
                                                                              context,
-                                                                             this.rule );
+                                                                             this.rule );        
     }
     
 

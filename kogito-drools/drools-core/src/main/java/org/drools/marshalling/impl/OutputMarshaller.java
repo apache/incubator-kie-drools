@@ -145,6 +145,9 @@ public class OutputMarshaller {
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {
         InternalWorkingMemory wm = context.wm;
         DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        
+        context.writeInt( agenda.getDormantActivations() );
+        context.writeInt( agenda.getActiveActivations() );
 
         Map<String, ActivationGroup> activationGroups = agenda.getActivationGroupsMap();
 
@@ -861,7 +864,7 @@ public class OutputMarshaller {
         if ( list != null && !list.isEmpty() ) {
             for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
                 stream.writeShort( PersisterEnums.LOGICAL_DEPENDENCY );
-                stream.writeInt( ((InternalFactHandle) node.getFactHandle()).getId() );
+                stream.writeInt( ((InternalFactHandle) node.getJustified()).getId() );
                 //context.out.println( "Logical Depenency : int " + ((InternalFactHandle) node.getFactHandle()).getId() );
             }
         }

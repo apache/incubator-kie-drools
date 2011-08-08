@@ -356,19 +356,29 @@ public class DefaultAgenda
             InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
             workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
             activation.setFactHandle( factHandle );
-    
-            // All activations started off staged, they are unstaged if they are blocked or 
-            // allowed to move onto the actual agenda for firing.
-            ActivationGroup activationGroup = getStageActivationsGroup();  
-            activationGroup.addActivation( activation );
-           
+            
+            if ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) {
+                // All activations started off staged, they are unstaged if they are blocked or 
+                // allowed to move onto the actual agenda for firing.
+                ActivationGroup activationGroup = getStageActivationsGroup();  
+                activationGroup.addActivation( activation );
+            }
+               
             return true;
         } else {
             addActivation( activation, true );
             return true;
         }
-    }
+    } 
     
+    public void setActiveActivations(int activeActivations) {
+        this.activeActivations = activeActivations;
+    }
+
+    public void setDormantActivations(int dormantActivations) {
+        this.dormantActivations = dormantActivations;
+    }
+
     public boolean isDeclarativeAgenda() {
         return declarativeAgenda;
     }
@@ -392,6 +402,11 @@ public class DefaultAgenda
             
             if  (previouslyActive) {
                 // already activated
+                return;
+            }
+            
+            if ( activation.getBlockers() != null && activation.getBlockers().size() > 0 ) {
+                // it's blocked so do nothing
                 return;
             }
             

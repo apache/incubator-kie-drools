@@ -23,6 +23,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.common.ActivationNode;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.LinkedListNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
@@ -83,7 +85,15 @@ public interface Activation
      * Cancel the <code>Activation</code> by removing it from the <code>Agenda</code>. 
      */
     void remove();
+    
+    public void addBlocked(final LinkedListNode node);
+    
+    public LinkedList getBlocked();
 
+    public void setBlocked(LinkedList justified);
+    
+    public LinkedList getBlockers(); 
+    
     public void addLogicalDependency(LogicalDependency node);
 
     public LinkedList getLogicalDependencies();

@@ -832,9 +832,9 @@ public class RuleBaseConfiguration
             return factory;
         } else {
             if ( "query".equals( name )) {
-                return QueryTerminalNodeActivationListenerFactory.INSTANCE;
-            } else             if ( "agenda".equals( name )) {
-                return RuleTerminalNodeActivationListenerFactory.INSTANCE;
+                return QueryActivationListenerFactory.INSTANCE;
+            } else  if ( "agenda".equals( name ) || "direct".equals( name ) ) {
+                return RuleActivationListenerFactory.INSTANCE;
             } 
         } 
         
