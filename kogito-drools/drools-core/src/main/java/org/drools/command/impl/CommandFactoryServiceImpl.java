@@ -35,6 +35,7 @@ import org.drools.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.command.runtime.process.SignalEventCommand;
 import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.command.runtime.rule.FromExternalFactHandleCommand;
 import org.drools.command.runtime.rule.GetObjectCommand;
 import org.drools.command.runtime.rule.GetObjectsCommand;
 import org.drools.command.runtime.rule.InsertElementsCommand;
@@ -189,5 +190,14 @@ public class CommandFactoryServiceImpl implements CommandFactoryService {
     
     public Command newNewKnowledgeBuilderConfigurationCommand(String localId){
         return new NewKnowledgeBuilderConfigurationCommand(localId);
+    }
+    
+    public Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm) {
+        return fromExternalFactHandleCommand(factHandleExternalForm, false);
+    }
+    
+    public Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm,
+            boolean disconnected) {
+        return new FromExternalFactHandleCommand(factHandleExternalForm, disconnected);
     }
 }
