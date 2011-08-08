@@ -404,4 +404,25 @@ end </programlisting>
       and real-time planning.</para>
     </section>
   </section>
+  <section>
+    <title>Drools Integration</title>
+      <section>
+        <title>Event Listeners</title>
+        <para>Drools supports adding 3 types of listeners to KnowledgeSessions -
+          <emphasis>AgendaListener</emphasis>,
+          <emphasis>WorkingMemoryListener</emphasis>,
+          <emphasis>ProcessEventListener</emphasis></para>
+
+        <para>The drools-spring module allows you to configure these listeners
+        to KnowledgeSessions using XML tags. These tags have identical names as
+        the actual listener interfaces i.e.,
+        &lt;drools:agendaEventListener....&gt;,
+        &lt;drools:workingMemoryEventListener....&gt; and
+        &lt;drools:processEventListener....&gt;.</para>
+
+        <para>drools-spring provides features to define the listeners as
+        standalone (individual) listeners and also to define them as a
+        group.</para>
+    </section>
+  </section>
 </section>
