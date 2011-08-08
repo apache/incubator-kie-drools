@@ -10,6 +10,161 @@
   <title>What is New and Noteworthy in Drools 5.3.0</title>
 
   <section>
+    <title>Drools Expert</title>
+
+    <para></para>
+
+    <section>
+      <title>Queries and Backward Chaining</title>
+
+      <para>Queries and Backward Chaining have had extensive bug fixing as it
+      had many cases that didn't work, especially with "open" queries. Anyone
+      using backward chaining queries in 5.2 should stop straight away and
+      start using this.</para>
+    </section>
+
+    <section>
+      <title>Declarative Agenda</title>
+
+      <para>5.3 Introduces the declarative agenda, where rules can be used to
+      control which rules can fire and when. While this wil add a lot more
+      overhead than the simple use of salience, the advantage is it is
+      declarative and thus more readeable and maintainable and should allow
+      more use cases to be achieved in a simpler fashion.</para>
+
+      <para>This feature is off by default and must be explicitley enabled,
+      that is because it is considered highly experimental for the moment and
+      will be subject to change.</para>
+
+      <para></para>
+
+      <example>
+        <title>Enabling the Declararive Agenda</title>
+
+        <programlisting>KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+kconf.setOption( DeclarativeAgendaOption.ENABLED );
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(  kconf );</programlisting>
+      </example>
+
+      <para>The basic idea is:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>All matched rule's Activations are inserted into WorkingMemory
+          as facts. So you can now match against an Activation. The rule's
+          metadata and declarations are available as fields on the Activation
+          object.</para>
+        </listitem>
+
+        <listitem>
+          <para>You can use the kcontext.blockActivation( Activation match )
+          for the current rule to block the selected activation. Only when
+          that rule becomes false will the activation be elegible for firing.
+          If it is already elebible for firing and is later blocked, it will
+          be removed from the agenda until it is unblocked.</para>
+        </listitem>
+
+        <listitem>
+          <para>An activation may have multiple blockers and a count is kept.
+          All blockers must became false for the counter to reach zero to
+          enable the Activation to be elligible for firing.</para>
+        </listitem>
+
+        <listitem>
+          <para>kcontext.unblockAllActivations( $a ) is an over-ride rule that
+          will remove all blockers regardless</para>
+        </listitem>
+
+        <listitem>
+          <para>An activation may also be cancelled, so it never fires with
+          cancelActivation</para>
+        </listitem>
+
+        <listitem>
+          <para>An unblocked Activation is added to the Agenda and obeys
+          normal salience, agenda groups, ruleflow groups etc.</para>
+        </listitem>
+
+        <listitem>
+          <para>@activationListener('direct') allows a rule to fire as soon as
+          it's matched, this is to be used for rules that block/unblock
+          activations, it is not desirable for these rules to have side
+          effects that impact else where. The name may change later, this is
+          actually part of the pluggable terminal node handlers I made, which
+          is an "internal" feature for the moment.</para>
+        </listitem>
+      </itemizedlist>
+
+      <example>
+        <title>New RuleContext methods</title>
+
+        <programlisting>void blockActivation(Activation match);
+void unblockAllActivations(Activation match);
+void cancelActivation(Activation match);</programlisting>
+      </example>
+
+      <para>Here is a basic example that will block all activations from rules
+      that have metadata @department('sales'). They will stay stay blocked
+      until the blockerAllSalesRules rule becomes false, i.e. "go2" is
+      retracted.</para>
+
+      <example>
+        <title>Block rules based on rule metadta</title>
+
+        <programlisting>rule rule1 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule rule2 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule blockerAllSalesRules @activationListener('direct') when 
+     $s : String( this == 'go2' ) 
+     $i : Activation( department == 'sales' ) 
+then 
+    list.add( $i.rule.name + ':' + $s  ); 
+    kcontext.blockActivation( $i ); 
+end 
+
+</programlisting>
+      </example>
+
+      <para>This example shows how you can use active property to count the
+      number of active or inactive (already fired) activations.</para>
+
+      <example>
+        <title>Count the numer of active/inactive Activations</title>
+
+        <programlisting>rule rule1 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule rule2 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule rule3 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule countActivateInActive @activationListener('direct') when 
+     $s : String( this == 'go2' ) 
+     $active : Number( this == 1 ) from accumulate( $a : Activation( department == 'sales', active == true ), count( $a ) )
+     $inActive : Number( this == 2 ) from  accumulate( $a : Activation( department == 'sales', active == false ), count( $a ) )
+then 
+    kcontext.halt( ); 
+end </programlisting>
+      </example>
+    </section>
+  </section>
+
+  <section>
     <title>Guvnor</title>
 
     <section>
