@@ -43,10 +43,22 @@ public interface RuleContext extends KnowledgeContext {
      */
     void insertLogical(Object object);
     
-    void block(Activation match);
+    /** 
+     * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
+     * @param match
+     */
+    void blockActivation(Activation match);
     
-    public void unblockAll(Activation match);
+    /** 
+     * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
+     * @param match
+     */    
+    public void unblockAllActivations(Activation match);
     
+    /** 
+     * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
+     * @param match
+     */    
     public void cancelActivation(Activation match);
     
 }
