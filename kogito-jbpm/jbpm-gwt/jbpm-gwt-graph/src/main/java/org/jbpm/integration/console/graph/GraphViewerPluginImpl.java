@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +50,7 @@ import org.jboss.bpm.console.client.model.DiagramInfo;
 import org.jboss.bpm.console.client.model.DiagramNodeInfo;
 import org.jboss.bpm.console.server.plugin.GraphViewerPlugin;
 import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
+import org.jbpm.integration.console.shared.GuvnorConnectionUtils;  
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceDbLog;
@@ -69,7 +69,7 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 		ProcessInstanceLog processInstance = ProcessInstanceDbLog.findProcessInstance(new Long(instanceId));
 		if (processInstance == null) {
 			throw new IllegalArgumentException("Could not find process instance " + instanceId);
-		}
+		} 
 		Map<String, NodeInstanceLog> nodeInstances = new HashMap<String, NodeInstanceLog>();
 		for (NodeInstanceLog nodeInstance: ProcessInstanceDbLog.findNodeInstances(new Long(instanceId))) {
 			if (nodeInstance.getType() == NodeInstanceLog.TYPE_ENTER) {
@@ -102,9 +102,16 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 
 	public DiagramInfo getDiagramInfo(String processId) {
 		if (kbase == null) {
+		    Properties jbpmconsoleproperties = new Properties();
+            try {
+                jbpmconsoleproperties.load(GraphViewerPluginImpl.class.getResourceAsStream("/jbpm.console.properties"));
+            } catch (IOException e) {
+                throw new RuntimeException("Could not load jbpm.console.properties", e);
+            }
 			try {
+			    GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils(jbpmconsoleproperties);
 				KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default");
-				kagent.applyChangeSet(ResourceFactory.newClassPathResource("ChangeSet.xml"));
+				kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
 				kagent.monitorResourceChangeEvents(false);
 				kbase = kagent.getKnowledgeBase();
 			} catch (Throwable t) {
@@ -188,7 +195,6 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			}
 			return os.toByteArray();
 		}
-		StringBuffer sb = new StringBuffer();
 		Properties properties = new Properties();
 		try {
 			properties.load(GraphViewerPluginImpl.class.getResourceAsStream("/jbpm.console.properties"));
@@ -196,22 +202,8 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			throw new RuntimeException("Could not load jbpm.console.properties", e);
 		}
 		try {
-			sb.append("http://");
-			sb.append(properties.get("jbpm.console.server.host"));
-			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
-			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
-			sb.append(URLEncoder.encode(processId, "UTF-8"));
-			sb.append("-image.png");
-			is = new URL(sb.toString()).openStream();
-			if (is != null) {
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				try {
-					transfer(is, os);
-				} catch (IOException e) {
-					throw new RuntimeException("Could not read process image: " + e.getMessage());
-				}
-				return os.toByteArray();
-			}
+		    GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils(properties);
+		    return guvnorUtils.getProcessImageFromGuvnor(processId);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -237,7 +229,6 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 		if (result != null) {
 			return result;
 		}
-		StringBuffer sb = new StringBuffer();
 		Properties properties = new Properties();
 		try {
 			properties.load(GraphViewerPluginImpl.class.getResourceAsStream("/jbpm.console.properties"));
@@ -245,17 +236,8 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			throw new RuntimeException("Could not load jbpm.console.properties", e);
 		}
 		try {
-			sb.append("http://");
-			sb.append(properties.get("jbpm.console.server.host"));
-			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
-			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
-			sb.append(URLEncoder.encode(id, "UTF-8"));
-			sb.append("-image.png");
-			URL url = new URL(sb.toString());
-			InputStream is = url.openStream();
-			if (is != null) {
-				return url;
-			}
+		    GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils(properties);
+            return  new URL(guvnorUtils.getProcessImageURLFromGuvnor(id));
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

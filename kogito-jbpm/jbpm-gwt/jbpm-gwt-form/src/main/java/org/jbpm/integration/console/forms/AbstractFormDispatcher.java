@@ -24,10 +24,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Properties;
 
@@ -36,6 +34,7 @@ import javax.activation.DataSource;
 
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
+import org.jbpm.integration.console.shared.GuvnorConnectionUtils; 
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -99,23 +98,16 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
         }
 		
         try {
+            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils(properties);
             String templateName;
-            if(templateExistsInRepo(name + "-taskform", properties)) {
+            if(guvnorUtils.templateExistsInRepo(name + "-taskform")) {
                 templateName = name + "-taskform";
-            } else if(templateExistsInRepo(name, properties)) {
+            } else if(guvnorUtils.templateExistsInRepo(name)) {
                 templateName = name;
             } else {
                 return null;
             }
-		
-            StringBuffer sb = new StringBuffer();
-			sb.append("http://");
-			sb.append(properties.get("jbpm.console.server.host"));
-			sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
-			sb.append("/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST/");
-			sb.append(URLEncoder.encode(templateName, "UTF-8"));
-			sb.append(".drl");
-			return new URL(sb.toString()).openStream();
+            return guvnorUtils.getFormTemplateFromGuvnor(templateName);
 		} catch (Throwable t) {
 			t.printStackTrace();
 			return null;
@@ -151,21 +143,5 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 			throw new RuntimeException("Failed to process form template", e);
 		}
 		return merged;
-	}
-	
-	protected boolean templateExistsInRepo(String templateName, Properties properties) throws Exception {
-	    StringBuffer sb = new StringBuffer();
-	    sb.append("http://");
-        sb.append(properties.get("jbpm.console.server.host"));
-        sb.append(":").append(new Integer(properties.getProperty("jbpm.console.server.port")));
-        sb.append("/drools-guvnor/rest/packages/defaultPackage/assets/");
-        sb.append(URLEncoder.encode(templateName, "UTF-8"));
-        
-        URL checkURL = new URL(sb.toString());
-        HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
-        checkConnection.setRequestMethod("GET");
-        checkConnection.setRequestProperty("Accept", "application/atom+xml");
-        checkConnection.connect();
-        return checkConnection.getResponseCode() == 200;
 	}
 }

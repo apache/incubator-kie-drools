@@ -2,6 +2,8 @@
             xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
             xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >
     <add>
-        <resource source='http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/defaultPackage/LATEST' type='PKG' basicAuthentication="enabled" username="admin" password="admin" />
+    	$data:{ d | 
+    		$d$
+    	}$
     </add>
 </change-set>

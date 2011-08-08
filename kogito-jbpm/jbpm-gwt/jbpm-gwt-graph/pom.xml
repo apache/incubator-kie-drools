@@ -39,5 +39,11 @@
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-gwt-shared</artifactId>
+      <version>${jbpm.version}</version>
+      <scope>compile</scope>
+   </dependency>
   </dependencies>
 </project>

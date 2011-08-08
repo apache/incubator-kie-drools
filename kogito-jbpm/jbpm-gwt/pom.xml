@@ -22,6 +22,7 @@
     <module>jbpm-gwt-graph</module>
     <module>jbpm-gwt-console</module>
     <module>jbpm-gwt-console-server</module>
+    <module>jbpm-gwt-shared</module>
   </modules>
 
 </project>
