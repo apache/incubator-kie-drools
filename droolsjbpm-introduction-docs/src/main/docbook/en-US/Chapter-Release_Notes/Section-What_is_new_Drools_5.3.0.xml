@@ -7,12 +7,10 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>What is New and Noteworthy in Drools 5.3.0</title>
+  <title>What is New and Noteworthy in Drools 5.3.0.Beta1</title>
 
   <section>
     <title>Drools Expert</title>
-
-    <para></para>
 
     <section>
       <title>Queries and Backward Chaining</title>
@@ -36,10 +34,8 @@
       that is because it is considered highly experimental for the moment and
       will be subject to change.</para>
 
-      <para></para>
-
       <example>
-        <title>Enabling the Declararive Agenda</title>
+        <title>Enabling the Declarative Agenda</title>
 
         <programlisting>KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 kconf.setOption( DeclarativeAgendaOption.ENABLED );
@@ -266,7 +262,7 @@ end </programlisting>
       to a more generic one, in which consumers of different technologies can
       tailor their experience to their domain's requirements.</para>
 
-      <para>One of the more noticable changes we are making to support this
+      <para>One of the more noticeable changes we are making to support this
       has been to de-couple asset types and groups from the code. What was
       once previously static code is now defined by compile-time
       configuration. Due to limitations in GWT (no client-side reflection),
