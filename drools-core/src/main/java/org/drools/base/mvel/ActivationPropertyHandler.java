@@ -3,6 +3,7 @@ package org.drools.base.mvel;
 import org.drools.common.AgendaItem;
 import org.drools.rule.Declaration;
 import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
 
 public class ActivationPropertyHandler implements PropertyHandler {    
@@ -17,6 +18,11 @@ public class ActivationPropertyHandler implements PropertyHandler {
             return item.getRule();
         }
         
+        // FIXME hack as MVEL seems to be ignoring indexed variables
+        VariableResolver vr = variableFactory.getNextFactory().getVariableResolver( name );
+        if ( vr != null ) {
+            return vr.getValue();
+        }
                 
         Declaration declr = item.getRuleTerminalNode().getSubRule().getOuterDeclarations().get( name );
         if ( declr != null ) {

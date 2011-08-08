@@ -3,7 +3,9 @@ package org.drools.integrationtests;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,10 +24,12 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.Sensor;
+import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.compiler.PackageBuilder;
@@ -42,6 +46,8 @@ import org.drools.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.*;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
+import static org.drools.integrationtests.SerializationHelper.getSerialisedStatefulSession;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -91,9 +97,12 @@ public class TruthMaintenanceTest {
         List list;
 
         ksession.insert( c1 );
-        final FactHandle h = ksession.insert( c2 );
+        FactHandle h = ksession.insert( c2 );
         ksession.insert( c3 );
         ksession.fireAllRules();
+        
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );        
 
         // Check logical Insertions where made for c2 and c3        
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
@@ -116,6 +125,9 @@ public class TruthMaintenanceTest {
         kbase = SerializationHelper.serializeObject( kbase );
 
         ksession.fireAllRules();
+        
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );        
 
         kbase = ksession.getKnowledgeBase();
 
@@ -126,6 +138,9 @@ public class TruthMaintenanceTest {
         assertTrue( list.contains( new Person( c1.getType() ) ) );
         assertTrue( list.contains( new Person( c2.getType() ) ) );
         assertTrue( list.contains( new Person( c3.getType() ) ) );
+        
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );        
 
         // check the packages are correctly populated
         KnowledgePackage[] pkgs = (KnowledgePackage[]) kbase.getKnowledgePackages().toArray( new KnowledgePackage[]{} );
@@ -165,8 +180,11 @@ public class TruthMaintenanceTest {
                      list.contains( new Person( c3.getType() ) ) );
 
         c2.setPrice( 3 );
+        h = getFactHandle( h, ksession );
         ksession.update( h,
                          c2 );
+        ksession = getSerialisedStatefulKnowledgeSession( ksession,
+                                                          true );        
         list = new ArrayList( ksession.getObjects( new ClassObjectFilter( Person.class ) ) );
         assertEquals( "c2 now has a higher price, its logical assertion should  be cancelled",
                       1,
@@ -201,7 +219,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         final List list = new ArrayList();
         session.setGlobal( "list",
@@ -209,25 +227,33 @@ public class TruthMaintenanceTest {
 
         final Cheese brie = new Cheese( "brie",
                                         12 );
-        final FactHandle brieHandle = session.insert( brie );
+        FactHandle brieHandle = session.insert( brie );
 
         final Cheese provolone = new Cheese( "provolone",
                                              12 );
-        final FactHandle provoloneHandle = session.insert( provolone );
+        FactHandle provoloneHandle = session.insert( provolone );
 
         session.fireAllRules();
 
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true ); 
+        
         assertEquals( 3,
                       list.size() );
 
         assertEquals( 3,
                       session.getObjects().size() );
 
+        brieHandle = getFactHandle( brieHandle, session );
         session.retract( brieHandle );
+        
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
 
         assertEquals( 2,
                       session.getObjects().size() );
 
+        provoloneHandle = getFactHandle( provoloneHandle, session );
         session.retract( provoloneHandle );
 
         assertEquals( 0,
@@ -245,25 +271,32 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kpkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         final Cheese cheese1 = new Cheese( "c",
                                            1 );
         final Cheese cheese2 = new Cheese( cheese1.getType(),
                                            1 );
 
-        final FactHandle h1 = session.insert( cheese1 );
+        FactHandle h1 = session.insert( cheese1 );
         session.fireAllRules();
+        
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
+        
         Collection< ? > list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( 1,
                       list.size() );
         // probably dangerous, as contains works with equals, not identity
         assertEquals( cheese1.getType(),
                       list.iterator().next() );
-        // FactHandle ht = workingMemory.getFactHandle(c1.getType());
 
-        final FactHandle h2 = session.insert( cheese2 );
+        FactHandle h2 = session.insert( cheese2 );
         session.fireAllRules();
+        
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
+        
         list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( 1,
                       list.size() );
@@ -273,8 +306,13 @@ public class TruthMaintenanceTest {
         assertEquals( 3,
                       session.getObjects().size() );
 
+        h1 = getFactHandle( h1, session );
         session.retract( h1 );
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
         session.fireAllRules();
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
         list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( "cheese-type " + cheese1.getType() + " was retracted, but should not. Backed by cheese2 => type.",
                       1,
@@ -283,8 +321,13 @@ public class TruthMaintenanceTest {
                       cheese1.getType(),
                       list.iterator().next() );
 
+        h2 = getFactHandle( h2, session );
         session.retract( h2 );
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
         session.fireAllRules();
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );         
         list = session.getObjects( new ClassObjectFilter( cheese1.getType().getClass() ) );
         assertEquals( "cheese-type " + cheese1.getType() + " was not retracted, but should have. Neither  cheese1 => type nor cheese2 => type is true.",
                       0,
@@ -408,16 +451,17 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         List l;
         final Person p = new Person( "person" );
         p.setAge( 2 );
-        final FactHandle h = workingMemory.insert( p );
+        FactHandle h = workingMemory.insert( p );
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );         
         assertEquals( 2,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -427,7 +471,9 @@ public class TruthMaintenanceTest {
         assertEquals( 2,
                       ((CheeseEqual) l.get( 0 )).getPrice() );
 
+        h = getFactHandle( h, workingMemory );
         workingMemory.retract( h );
+        workingMemory = getSerialisedStatefulSession( workingMemory );        
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -451,7 +497,7 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         //        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( workingMemory );
         //        logger.setFileName( "logical" );
@@ -463,9 +509,11 @@ public class TruthMaintenanceTest {
 
         final Sensor sensor = new Sensor( 80,
                                           80 );
-        final FactHandle handle = workingMemory.insert( sensor );
+        FactHandle handle = workingMemory.insert( sensor );
 
         // everything should be normal
+        
+        workingMemory = getSerialisedStatefulSession( workingMemory );        
         workingMemory.fireAllRules();
 
         final List list = IteratorToList.convert( workingMemory.iterateObjects() );
@@ -480,8 +528,12 @@ public class TruthMaintenanceTest {
         // problems should be detected
         sensor.setPressure( 200 );
         sensor.setTemperature( 200 );
+        
+        handle = getFactHandle( handle, workingMemory );
         workingMemory.update( handle,
                               sensor );
+        
+        workingMemory = getSerialisedStatefulSession( workingMemory );
 
         workingMemory.fireAllRules();
         //        logger.writeToDisk();
@@ -503,7 +555,7 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         List list;
 
@@ -514,6 +566,7 @@ public class TruthMaintenanceTest {
                                  cheese );
 
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );        
         list = IteratorToList.convert( workingMemory.iterateObjects() );
         assertEquals( "i was not asserted by not a => i.",
                       1,
@@ -522,7 +575,8 @@ public class TruthMaintenanceTest {
                       cheese,
                       list.get( 0 ) );
 
-        final FactHandle h = workingMemory.insert( a );
+        FactHandle h = workingMemory.insert( a );
+        workingMemory = getSerialisedStatefulSession( workingMemory );      
         // no need to fire rules, assertion alone removes justification for i,
         // so it should be retracted.
         // workingMemory.fireAllRules();
@@ -542,8 +596,11 @@ public class TruthMaintenanceTest {
                       0,
                       workingMemory.getAgenda().agendaSize() );
 
+        h = getFactHandle( h, workingMemory );
         workingMemory.retract( h );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         list = IteratorToList.convert( workingMemory.iterateObjects() );
         assertEquals( "i was not asserted by not a => i.",
                       1,
@@ -597,16 +654,17 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         List l;
         final Person p = new Person( "person" );
         p.setAge( 2 );
-        final FactHandle h = workingMemory.insert( p );
+        FactHandle h = workingMemory.insert( p );
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         assertEquals( 2,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
         l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( CheeseEqual.class ) ) );
@@ -615,7 +673,9 @@ public class TruthMaintenanceTest {
         assertEquals( 3,
                       ((CheeseEqual) l.get( 0 )).getPrice() );
 
+        h = getFactHandle( h, workingMemory );
         workingMemory.retract( h );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
@@ -639,24 +699,26 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         final Person p1 = new Person( "p1",
                                       "stilton",
                                       20 );
         p1.setStatus( "europe" );
-        final FactHandle c1FactHandle = workingMemory.insert( p1 );
+        FactHandle c1FactHandle = workingMemory.insert( p1 );
         final Person p2 = new Person( "p2",
                                       "stilton",
                                       30 );
         p2.setStatus( "europe" );
-        final FactHandle c2FactHandle = workingMemory.insert( p2 );
+        FactHandle c2FactHandle = workingMemory.insert( p2 );
         final Person p3 = new Person( "p3",
                                       "stilton",
                                       40 );
         p3.setStatus( "europe" );
-        final FactHandle c3FactHandle = workingMemory.insert( p3 );
+        FactHandle c3FactHandle = workingMemory.insert( p3 );
         workingMemory.fireAllRules();
+        
+        workingMemory = getSerialisedStatefulSession( workingMemory );
 
         // all 3 in europe, so, 2 cheese
         List cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
@@ -665,54 +727,72 @@ public class TruthMaintenanceTest {
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p3.setStatus( "america" );
+        c3FactHandle = getFactHandle( c3FactHandle, workingMemory );
         workingMemory.update( c3FactHandle,
                               p3 );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
         assertEquals( 1,
                       cheeseList.size() );
 
         // europe=[ 1 ], america=[ 2, 3 ]
         p2.setStatus( "america" );
+        c2FactHandle = getFactHandle( c2FactHandle, workingMemory );
         workingMemory.update( c2FactHandle,
                               p2 );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
         assertEquals( 1,
                       cheeseList.size() );
 
         // europe=[ ], america=[ 1, 2, 3 ]
         p1.setStatus( "america" );
+        c1FactHandle = getFactHandle( c1FactHandle, workingMemory );
         workingMemory.update( c1FactHandle,
                               p1 );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
         assertEquals( 2,
                       cheeseList.size() );
 
         // europe=[ 2 ], america=[ 1, 3 ]
         p2.setStatus( "europe" );
+        c2FactHandle = getFactHandle( c2FactHandle, workingMemory );
         workingMemory.update( c2FactHandle,
                               p2 );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
         assertEquals( 1,
                       cheeseList.size() );
 
         // europe=[ 1, 2 ], america=[ 3 ]
         p1.setStatus( "europe" );
+        c1FactHandle = getFactHandle( c1FactHandle, workingMemory );
         workingMemory.update( c1FactHandle,
                               p1 );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
         assertEquals( 1,
                       cheeseList.size() );
 
         // europe=[ 1, 2, 3 ], america=[ ]
         p3.setStatus( "europe" );
+        c3FactHandle = getFactHandle( c3FactHandle, workingMemory );
         workingMemory.update( c3FactHandle,
                               p3 );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         cheeseList = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( Cheese.class ) ) );
         assertEquals( 2,
                       cheeseList.size() );
@@ -727,7 +807,7 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         final List list = new ArrayList();
         workingMemory.setGlobal( "events",
@@ -736,10 +816,11 @@ public class TruthMaintenanceTest {
         // asserting the sensor object
         final Sensor sensor = new Sensor( 150,
                                           100 );
-        final FactHandle sensorHandle = workingMemory.insert( sensor );
+        FactHandle sensorHandle = workingMemory.insert( sensor );
 
         workingMemory.fireAllRules();
-
+        workingMemory = getSerialisedStatefulSession( workingMemory );
+        
         // alarm must sound
         assertEquals( 2,
                       list.size() );
@@ -748,9 +829,12 @@ public class TruthMaintenanceTest {
 
         // modifying sensor
         sensor.setTemperature( 125 );
+        sensorHandle = getFactHandle( sensorHandle, workingMemory );
         workingMemory.update( sensorHandle,
                               sensor );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
 
         // alarm must continue to sound
         assertEquals( 3,
@@ -760,8 +844,10 @@ public class TruthMaintenanceTest {
 
         // modifying sensor
         sensor.setTemperature( 80 );
+        sensorHandle = getFactHandle( sensorHandle, workingMemory );
         workingMemory.update( sensorHandle,
                               sensor );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         workingMemory.fireAllRules();
 
         // no alarms anymore
@@ -781,7 +867,7 @@ public class TruthMaintenanceTest {
         RuleBase ruleBase = getRuleBase();
         ruleBase.addPackage( pkg );
         ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
+        StatefulSession workingMemory = ruleBase.newStatefulSession();
 
         workingMemory.setGlobal( "ga",
                                  "a" );
@@ -791,13 +877,16 @@ public class TruthMaintenanceTest {
                                  new Short( (short) 3 ) );
 
         workingMemory.fireAllRules();
+        
+        workingMemory = getSerialisedStatefulSession( workingMemory );
 
         List l;
-        final FactHandle h = workingMemory.insert( new Integer( 6 ) );
+        FactHandle h = workingMemory.insert( new Integer( 6 ) );
         assertEquals( 1,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
         workingMemory.fireAllRules();
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( CheeseEqual.class ) ) );
         assertEquals( "There should be 2 CheeseEqual in Working Memory, 1 justified, 1 stated",
                       2,
@@ -805,7 +894,9 @@ public class TruthMaintenanceTest {
         assertEquals( 6,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
+        h = getFactHandle( h, workingMemory );
         workingMemory.retract( h );
+        workingMemory = getSerialisedStatefulSession( workingMemory );
         l = IteratorToList.convert( workingMemory.iterateObjects( new ClassObjectFilter( CheeseEqual.class ) ) );
         assertEquals( "There should be only 1 CheeseEqual in Working Memory, 1 stated (the justified should have been retracted). Check TruthMaintenanceSystem justifiedMap",
                       1,
@@ -835,7 +926,7 @@ public class TruthMaintenanceTest {
         KnowledgeBase kbase = getKnowledgeBase();
         kbase.addKnowledgePackages( pkgs );
         kbase = SerializationHelper.serializeObject( kbase );
-        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
         Sensor sensor1 = new Sensor( 100,
                                      0 );
@@ -848,6 +939,9 @@ public class TruthMaintenanceTest {
         FactHandle sensor3Handle = session.insert( sensor3 );
 
         session.fireAllRules();
+        
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );  
 
         List temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter( Integer.class ) ) );
         assertTrue( temperatureList.contains( Integer.valueOf( 100 ) ) );
@@ -856,12 +950,15 @@ public class TruthMaintenanceTest {
                       temperatureList.size() );
 
         sensor1.setTemperature( 150 );
-        ((StatefulKnowledgeSessionImpl) session).session.update( (org.drools.FactHandle) sensor1Handle,
-                                                                 sensor1 );
+        sensor1Handle =  getFactHandle( (org.drools.FactHandle) sensor1Handle, session );
+        session.update( sensor1Handle, sensor1 );
+
+        session = getSerialisedStatefulKnowledgeSession( session,
+                                                         true );  
         session.fireAllRules();
 
         temperatureList = new ArrayList( session.getObjects( new ClassObjectFilter( Integer.class ) ) );
-        assertFalse( temperatureList.contains( Integer.valueOf( 100 ) ) ); // TODO currently it fails here, because 100 lingers
+        assertFalse( temperatureList.contains( Integer.valueOf( 100 ) ) );
         assertTrue( temperatureList.contains( Integer.valueOf( 150 ) ) );
         assertTrue( temperatureList.contains( Integer.valueOf( 200 ) ) );
         assertEquals( 2,
@@ -963,6 +1060,26 @@ public class TruthMaintenanceTest {
         assertEquals(0,list.size());
  
         //System.err.println(reportWMObjects(kSession));
+    }
+    
+    public InternalFactHandle getFactHandle(FactHandle factHandle,
+                                            StatefulSession session) {
+        Map<Integer, FactHandle> handles = new HashMap<Integer, FactHandle>();
+        for ( FactHandle fh : session.getFactHandles() ) {
+            handles.put( ((InternalFactHandle) fh).getId(),
+                         fh );
+        }
+        return (InternalFactHandle) handles.get( ((InternalFactHandle) factHandle).getId() );
+    }     
+    
+    public InternalFactHandle getFactHandle(FactHandle factHandle,
+                                            StatefulKnowledgeSession ksession) {
+        Map<Integer, FactHandle> handles = new HashMap<Integer, FactHandle>();
+        for ( FactHandle fh : ksession.getFactHandles() ) {
+            handles.put( ((InternalFactHandle) fh).getId(),
+                         fh );
+        }
+        return (InternalFactHandle) handles.get( ((InternalFactHandle) factHandle).getId() );
     }    
 
 }

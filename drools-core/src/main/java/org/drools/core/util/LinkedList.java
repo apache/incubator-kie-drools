@@ -22,6 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.NoSuchElementException;
 
+import org.drools.reteoo.ObjectSinkNode;
+
 /**
  * This is a simple linked linked implementation. Each node must implement </code>LinkedListNode<code> so that it references
  * the node before and after it. This way a node can be removed without having to scan the list to find it. This class
@@ -66,6 +68,20 @@ public class LinkedList
         lastNode    = (LinkedListNode)in.readObject();
         size        = in.readInt();
         iterator    = (LinkedListIterator)in.readObject();
+        
+        LinkedListNode current = firstNode;
+        LinkedListNode previous = null;
+
+        while ( current != lastNode) {
+            LinkedListNode next = (LinkedListNode) in.readObject();
+            current.setPrevious(previous);
+            current.setNext(next);
+            previous = current;
+            current = next;
+        }     
+        
+        // current equals last Node, so set previous (this avoids the null writting in stream
+        current.setPrevious( previous );        
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -73,6 +89,14 @@ public class LinkedList
         out.writeObject(lastNode);
         out.writeInt(size);
         out.writeObject(iterator);
+        
+        if ( firstNode == lastNode ) {
+            // no other nodes
+            return;
+        }        
+        for (LinkedListNode node = firstNode; node != null; node = node.getNext()) {
+            out.writeObject(node.getNext());
+        }          
     }
     /**
      * Add a <code>LinkedListNode</code> to the list. If the <code>LinkedList</code> is empty then the first and

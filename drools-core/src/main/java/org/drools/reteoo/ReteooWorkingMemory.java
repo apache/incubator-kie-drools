@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1249,7 +1250,14 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
     }
 
     public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
-        throw new UnsupportedOperationException( "this is implementedby StatefulKnowledgeImpl" );
+        List list = new ArrayList();
+        
+        for ( Iterator it = iterateFactHandles(); it.hasNext(); ) {
+            FactHandle fh = ( FactHandle) it.next();
+            list.add(  fh );
+        }
+        
+        return list;
     }
 
     public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
