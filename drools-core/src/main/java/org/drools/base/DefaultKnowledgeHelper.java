@@ -120,7 +120,7 @@ public class DefaultKnowledgeHelper
         this.previousBlocked = null;
     }
       
-    public void block(org.drools.runtime.rule.Activation act) {
+    public void blockActivation(org.drools.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
         LogicalDependency dep = null;
@@ -153,7 +153,7 @@ public class DefaultKnowledgeHelper
         }
     }
     
-    public void unblockAll(org.drools.runtime.rule.Activation act) {
+    public void unblockAllActivations(org.drools.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
         

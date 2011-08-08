@@ -246,12 +246,12 @@ public class SequentialKnowledgeHelper
         
     }
 
-    public void block(org.drools.runtime.rule.Activation match) {
+    public void blockActivation(org.drools.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
         
     }
 
-    public void unblockAll(org.drools.runtime.rule.Activation match) {
+    public void unblockAllActivations(org.drools.runtime.rule.Activation match) {
         // TODO Auto-generated method stub
         
     }
