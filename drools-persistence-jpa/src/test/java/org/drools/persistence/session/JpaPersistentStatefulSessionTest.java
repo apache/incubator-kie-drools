@@ -2,6 +2,7 @@ package org.drools.persistence.session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
@@ -16,6 +17,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.command.CommandFactory;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.FireAllRulesInterceptor;
 import org.drools.command.impl.LoggingInterceptor;
@@ -25,6 +27,7 @@ import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -55,6 +58,76 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
         ds1.close();
     }
 
+    public void testFactHandleSerialization() {
+        String str = "";
+        str += "package org.drools.test\n";
+        str += "import java.util.concurrent.atomic.AtomicInteger\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "  $i: AtomicInteger(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( $i );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                 emf );
+        env.set( EnvironmentName.TRANSACTION_MANAGER,
+                 TransactionManagerServices.getTransactionManager() );
+        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        List<?> list = new ArrayList<Object>();
+
+        ksession.setGlobal( "list",
+                            list );
+
+        AtomicInteger value = new AtomicInteger(4);
+        FactHandle atomicFH = ksession.insert( value );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1,
+                      list.size() );
+
+        value.addAndGet(1);
+        ksession.update(atomicFH, value);
+        ksession.fireAllRules();
+        
+        assertEquals( 2,
+                list.size() );
+        String externalForm = atomicFH.toExternalForm();
+        
+        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
+        
+        atomicFH = ksession.execute(CommandFactory.fromExternalFactHandleCommand(externalForm));
+        assertNotNull(atomicFH);
+        value.addAndGet(1);
+        ksession.update(atomicFH, value);
+        
+        ksession.fireAllRules();
+        
+        list = (List<?>) ksession.getGlobal("list");
+        
+        assertEquals( 3,
+                list.size() );
+        
+    }
+    
     public void testLocalTransactionPerStatement() {
         String str = "";
         str += "package org.drools.test\n";
