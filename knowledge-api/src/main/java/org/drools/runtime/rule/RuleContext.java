@@ -43,4 +43,10 @@ public interface RuleContext extends KnowledgeContext {
      */
     void insertLogical(Object object);
     
+    void block(Activation match);
+    
+    public void unblockAll(Activation match);
+    
+    public void cancelActivation(Activation match);
+    
 }

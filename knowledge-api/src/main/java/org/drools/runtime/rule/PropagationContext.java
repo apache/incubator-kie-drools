@@ -37,9 +37,29 @@ public interface PropagationContext {
 
     public long getPropagationNumber();
 
+    /**
+     * The rule that caused the working memory action that created this PropagationContext.
+     * 
+     * If this working memory action was done from java this is null
+     * @return
+     */
     public Rule getRule();
-
+    
+    /**
+     * The facthandle that was inserted, updated or retracted that created the PropagationContext
+     * @return
+     */
     public FactHandle getFactHandle();
 
+    /**
+     * The PropagationContextType, numbers may change between Drools versions. Or we may eventually switch this to an enum.
+     * ASSERTION     = 0;
+     * RETRACTION    = 1;
+     * MODIFICATION  = 2;
+     * RULE_ADDITION = 3;
+     * RULE_REMOVAL  = 4;
+     * EXPIRATION    = 5;
+     * @return
+     */
     public int getType();
 }
