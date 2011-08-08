@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.drools.FactException;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -182,13 +184,13 @@ public class TruthMaintenanceSystem {
     public void removeLogicalDependency(final Activation activation,
                                         final LogicalDependency node,
                                         final PropagationContext context) {
-        final InternalFactHandle handle = (InternalFactHandle) node.getFactHandle();
-        final Set set = (Set) this.justifiedMap.get( handle.getId() );
-        if ( set != null ) {
-            set.remove( node );
+        final InternalFactHandle handle = (InternalFactHandle) node.getJustified();
+        final LinkedList list = (LinkedList) this.justifiedMap.get( handle.getId() );
+        if ( list != null ) {
+            list.remove( node.getJustifierEntry() );
             WorkingMemoryAction action = new LogicalRetractCallback( this,
                                                                      node,
-                                                                     set,
+                                                                     list,
                                                                      handle,
                                                                      context,
                                                                      activation );
@@ -201,7 +203,7 @@ public class TruthMaintenanceSystem {
         WorkingMemoryAction {
         private TruthMaintenanceSystem tms;
         private LogicalDependency      node;
-        private Set                    set;
+        private LinkedList             list;
         private InternalFactHandle     handle;
         private PropagationContext     context;
         private Activation             activation;
@@ -212,13 +214,13 @@ public class TruthMaintenanceSystem {
 
         public LogicalRetractCallback(final TruthMaintenanceSystem tms,
                                       final LogicalDependency node,
-                                      final Set set,
+                                      final LinkedList list,
                                       final InternalFactHandle handle,
                                       final PropagationContext context,
                                       final Activation activation) {
             this.tms = tms;
             this.node = node;
-            this.set = set;
+            this.list = list;
             this.handle = handle;
             this.context = context;
         }
@@ -230,14 +232,14 @@ public class TruthMaintenanceSystem {
             this.context = context.propagationContexts.get( context.readLong() );
             this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
             
-            this.set = ( Set ) this.tms.getJustifiedMap().get( handle.getId() );
-           
-            for ( Iterator it = this.set.iterator(); it.hasNext(); ) {
-                LogicalDependency node = ( LogicalDependency ) it.next();
+            this.list = ( LinkedList ) this.tms.getJustifiedMap().get( handle.getId() );
+            
+            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+                final LogicalDependency node = (LogicalDependency) entry.getObject();
                 if ( node.getJustifier() == this.activation ) {
-                    this.node = node;
-                    break;
-                }
+                   this.node = node;
+                   break;
+                }                
             }
         }
 
@@ -253,7 +255,7 @@ public class TruthMaintenanceSystem {
                                                 ClassNotFoundException {
             tms = (TruthMaintenanceSystem) in.readObject();
             node = (LogicalDependency) in.readObject();
-            set = (Set) in.readObject();
+            list = (LinkedList) in.readObject();
             handle = (InternalFactHandle) in.readObject();
             context = (PropagationContext) in.readObject();
             activation = (Activation) in.readObject();
@@ -262,14 +264,14 @@ public class TruthMaintenanceSystem {
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( tms );
             out.writeObject( node );
-            out.writeObject( set );
+            out.writeObject( list );
             out.writeObject( handle );
             out.writeObject( context );
             out.writeObject( activation );
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            if ( set.isEmpty() ) {
+            if ( list.isEmpty() ) {
                 this.tms.getJustifiedMap().remove( handle.getId() );
                 // this needs to be scheduled so we don't upset the current
                 // working memory operation
@@ -299,10 +301,10 @@ public class TruthMaintenanceSystem {
      * @throws FactException
      */
     public void removeLogicalDependencies(final InternalFactHandle handle) throws FactException {
-        final Set set = (Set) this.justifiedMap.remove( handle.getId() );
-        if ( set != null && !set.isEmpty() ) {
-            for ( final Iterator it = set.iterator(); it.hasNext(); ) {
-                final LogicalDependency node = (LogicalDependency) it.next();
+        final LinkedList list = (LinkedList) this.justifiedMap.remove( handle.getId() );
+        if ( list != null && !list.isEmpty() ) {
+            for ( LinkedListEntry entry = (LinkedListEntry) list.getFirst(); entry != null; entry = (LinkedListEntry) entry.getNext() ) {
+                final LogicalDependency node = (LogicalDependency) entry.getObject();
                 node.getJustifier().getLogicalDependencies().remove( node );
             }
         }
@@ -326,16 +328,17 @@ public class TruthMaintenanceSystem {
         activation.getRule().setHasLogicalDependency( true );
 
         activation.addLogicalDependency( node );
-        Set set = (Set) this.justifiedMap.get( handle.getId() );
-        if ( set == null ) {
+        
+        LinkedList list = (LinkedList) this.justifiedMap.get( handle.getId() );
+        if ( list == null ) {
             if ( context.getType() == PropagationContext.MODIFICATION ) {
                 // if this was a  update, chances  are its trying  to retract a logical assertion
             }
-            set = new HashSet();
+            list = new LinkedList();
             this.justifiedMap.put( handle.getId(),
-                                   set );
+                                   list );
         }
-        set.add( node );
+        list.add( node.getJustifierEntry() );
     }
     
     public void clear() {

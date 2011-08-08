@@ -42,13 +42,9 @@ public class AbstractBaseLinkedListNode
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        previous    = (LinkedListNode)in.readObject();
-        next    = (LinkedListNode)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(previous);
-        out.writeObject(next);
     }
 
     /* (non-Javadoc)

@@ -633,7 +633,7 @@ public class MVELCompilationUnit
         }
     
         public VariableResolver getVariableResolver( String name ) {
-            throw new UnsupportedOperationException();
+            return null;
         }
     
         public boolean isResolveable( String name ) {

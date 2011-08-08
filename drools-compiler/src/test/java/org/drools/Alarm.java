@@ -1,6 +1,8 @@
 package org.drools;
 
-public class Alarm {
+import java.io.Serializable;
+
+public class Alarm implements Serializable {
     private String message;
 
     private int number;

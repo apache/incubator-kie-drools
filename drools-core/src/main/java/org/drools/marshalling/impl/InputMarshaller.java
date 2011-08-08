@@ -255,6 +255,10 @@ public class InputMarshaller {
     public static void readAgenda(MarshallerReaderContext context,
                                   DefaultAgenda agenda) throws IOException {
         ObjectInputStream stream = context.stream;
+        
+        agenda.setDormantActivations( stream.readInt() );
+        agenda.setActiveActivations( stream.readInt() );
+        
         while ( stream.readShort() == PersisterEnums.AGENDA_GROUP ) {
             BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( stream.readUTF(),
                                                                                context.ruleBase );

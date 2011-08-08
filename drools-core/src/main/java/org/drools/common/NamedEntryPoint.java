@@ -191,9 +191,9 @@ public class NamedEntryPoint
                         } else {
                             // this was object is already justified, so just add new logical dependency
                             this.wm.tms.addLogicalDependency( handle,
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
+                                                              activation,
+                                                              activation.getPropagationContext(),
+                                                              rule );
                         }
 
                         return handle;
