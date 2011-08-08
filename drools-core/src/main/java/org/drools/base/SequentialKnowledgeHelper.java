@@ -245,4 +245,19 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
         
     }
+
+    public void blockActivation(org.drools.runtime.rule.Activation match) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void unblockAllActivations(org.drools.runtime.rule.Activation match) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void cancelActivation(org.drools.runtime.rule.Activation match) {
+        // TODO Auto-generated method stub
+        
+    }
 }

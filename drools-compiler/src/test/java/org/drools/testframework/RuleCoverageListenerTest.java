@@ -11,8 +11,10 @@ import static org.junit.Assert.*;
 import org.drools.FactHandle;
 import org.drools.common.ActivationGroupNode;
 import org.drools.common.ActivationNode;
+import org.drools.common.InternalFactHandle;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListNode;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.reteoo.LeftTupleImpl;
 import org.drools.rule.GroupElement;
@@ -164,5 +166,44 @@ class MockActivation
         // TODO Auto-generated method stub
         return null;
     }
+
+    public InternalFactHandle getFactHandle() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public boolean isAdded() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    public boolean isActive() {
+        return isActivated();
+    }
+
+    public void addBlocked(LogicalDependency node) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public LinkedList getBlocked() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public void setBlocked(LinkedList justified) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void addBlocked(LinkedListNode node) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public LinkedList getBlockers() {
+        // TODO Auto-generated method stub
+        return null;
+    }        
 
 }

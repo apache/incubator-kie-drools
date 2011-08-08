@@ -28,13 +28,18 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.AgendaItem;
+import org.drools.common.DefaultAgenda;
+import org.drools.common.EventSupport;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
@@ -50,6 +55,7 @@ import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.Tuple;
 
 public class DefaultKnowledgeHelper
@@ -66,6 +72,8 @@ public class DefaultKnowledgeHelper
     private IdentityHashMap<Object, FactHandle> identityMap;
 
     private LinkedList                          previousJustified;
+    
+    private LinkedList                          previousBlocked;
 
     public DefaultKnowledgeHelper() {
 
@@ -97,7 +105,9 @@ public class DefaultKnowledgeHelper
         this.activation = agendaItem;
         // -- JBRULES-2558: logical inserts must be properly preserved
         this.previousJustified = agendaItem.getLogicalDependencies();
+        this.previousBlocked = agendaItem.getBlocked();
         agendaItem.setLogicalDependencies( null );
+        agendaItem.setBlocked( null );
         // -- JBRULES-2558: end
         this.tuple = agendaItem.getTuple();
     }
@@ -107,6 +117,57 @@ public class DefaultKnowledgeHelper
         this.tuple = null;
         this.identityMap = null;
         this.previousJustified = null;
+        this.previousBlocked = null;
+    }
+      
+    public void blockActivation(org.drools.runtime.rule.Activation act) {
+        AgendaItem targetMatch = ( AgendaItem ) act;
+        // iterate to find previous equal logical insertion
+        LogicalDependency dep = null;
+        if ( this.previousJustified != null ) {
+            for ( dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
+                if ( targetMatch ==  dep.getJustified() ) {
+                    this.previousJustified.remove( dep );
+                    break;
+                }
+            }
+        }
+        
+        if ( dep == null ) {
+            dep = new LogicalDependency( activation, targetMatch );
+        }
+        this.activation.addBlocked(  dep );
+        
+        if ( targetMatch.getBlockers().size() == 1 && targetMatch.isActive()  ) {
+            // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
+            targetMatch.remove();
+
+            if ( targetMatch.getActivationGroupNode() != null ) {
+                targetMatch.getActivationGroupNode().getActivationGroup().removeActivation( targetMatch );
+            }
+
+            if ( targetMatch.getActivationNode() != null ) {
+                final InternalRuleFlowGroup ruleFlowGroup = (InternalRuleFlowGroup) targetMatch.getActivationNode().getParentContainer();
+                ruleFlowGroup.removeActivation( targetMatch );
+            }
+        }
+    }
+    
+    public void unblockAllActivations(org.drools.runtime.rule.Activation act) {
+        AgendaItem targetMatch = ( AgendaItem ) act;
+        boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
+        
+        for ( LinkedListEntry entry = ( LinkedListEntry ) targetMatch.getBlockers().getFirst(); entry != null;  ) {
+            LinkedListEntry tmp = ( LinkedListEntry ) entry.getNext();
+            LogicalDependency dep = ( LogicalDependency ) entry.getObject();
+            ((AgendaItem)dep.getJustifier()).removeBlocked( dep );
+            entry = tmp;
+        }
+        
+        if ( wasBlocked ) {
+            // the match is no longer blocked, so stage it
+            ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
+        }
     }
 
     public void insert(final Object object) {
@@ -138,7 +199,7 @@ public class DefaultKnowledgeHelper
         LogicalDependency dep = null;
         if ( this.previousJustified != null ) {
             for ( dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
-                if ( object.equals( ((InternalFactHandle) dep.getFactHandle()).getObject() ) ) {
+                if ( object.equals( ((InternalFactHandle) dep.getJustified()).getObject() ) ) {
                     this.previousJustified.remove( dep );
                     break;
                 }
@@ -168,6 +229,29 @@ public class DefaultKnowledgeHelper
             for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
                 this.workingMemory.getTruthMaintenanceSystem().removeLogicalDependency( activation, dep, activation.getPropagationContext() );
             }
+        }
+        
+        if ( this.previousBlocked != null ) {
+            for ( LogicalDependency dep = (LogicalDependency) this.previousBlocked.getFirst(); dep != null; ) {
+                LogicalDependency tmp = ( LogicalDependency ) dep.getNext();
+                this.previousBlocked.remove( dep );
+                
+                AgendaItem justified = ( AgendaItem ) dep.getJustified();
+                justified.getBlockers().remove( dep.getJustifierEntry() );
+                if (justified.getBlockers().isEmpty() ) {
+                    // the match is no longer blocked, so stage it
+                    ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( justified );
+                }
+                dep = tmp;
+            }
+        }        
+    }
+    
+    public void cancelActivation(org.drools.runtime.rule.Activation act) {
+        AgendaItem match = ( AgendaItem ) act;
+        if ( match.isActive() ) {
+            LeftTuple leftTuple = match.getTuple();
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) act.getPropagationContext(), workingMemory );
         }
     }
     

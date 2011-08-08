@@ -7,10 +7,12 @@
     <groupId>org.drools</groupId>
     <artifactId>droolsjbpm-parent</artifactId>
     <version>5.3.0-SNAPSHOT</version>
+    <relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>
   </parent>
 
   <groupId>org.drools</groupId>
-  <artifactId>drools-multiproject</artifactId><!-- TODO rename to drools once parent pom has been moved -->
+  <!-- TODO rename to drools once parent pom has been moved -->
+  <artifactId>drools-multiproject</artifactId>
   <packaging>pom</packaging>
 
   <name>Drools multiproject</name>

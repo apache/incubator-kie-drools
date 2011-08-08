@@ -27,6 +27,8 @@ import java.util.List;
 import org.drools.FactHandle;
 import org.drools.base.DroolsQuery;
 import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.LinkedListNode;
 import org.drools.core.util.Queue;
 import org.drools.core.util.Queueable;
 import org.drools.reteoo.LeftTuple;
@@ -77,6 +79,10 @@ public class AgendaItem
     private int                 index;
 
     private LinkedList          justified;
+    
+    private LinkedList          blocked;
+    
+    private LinkedList          blockers;
 
     private boolean             activated;
 
@@ -85,6 +91,8 @@ public class AgendaItem
     private ActivationGroupNode activationGroupNode;
 
     private ActivationNode      activationNode;
+    
+    private InternalFactHandle  factHandle;
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -118,35 +126,9 @@ public class AgendaItem
     // ------------------------------------------------------------
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        tuple = (LeftTuple) in.readObject();
-        salience = in.readInt();
-        sequenence = in.readInt();
-        rtn = ( RuleTerminalNode ) in.readObject();
-        context = (PropagationContext) in.readObject();
-        activationNumber = in.readLong();
-        queue = (Queue) in.readObject();
-        index = in.readInt();
-        justified = (LinkedList) in.readObject();
-        activated = in.readBoolean();
-        agendaGroup = (InternalAgendaGroup) in.readObject();
-        activationGroupNode = (ActivationGroupNode) in.readObject();
-        activationNode = (ActivationNode) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( tuple );
-        out.writeInt( salience );
-        out.writeInt( sequenence );
-        out.writeObject( rtn );
-        out.writeObject( context );
-        out.writeLong( activationNumber );
-        out.writeObject( queue );
-        out.writeInt( index );
-        out.writeObject( justified );
-        out.writeBoolean( activated );
-        out.writeObject( agendaGroup );
-        out.writeObject( activationGroupNode );
-        out.writeObject( activationNode );
     }
 
     public PropagationContext getPropagationContext() {
@@ -191,6 +173,14 @@ public class AgendaItem
         this.sequenence = sequenence;
     }
 
+    public InternalFactHandle getFactHandle() {
+        return factHandle;
+    }
+
+    public void setFactHandle(InternalFactHandle factHandle) {
+        this.factHandle = factHandle;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -199,6 +189,71 @@ public class AgendaItem
     public long getActivationNumber() {
         return this.activationNumber;
     }
+    
+    public void addBlocked(final LinkedListNode node) {        
+        // Adds the blocked to the blockers list
+        if ( this.blocked == null ) {
+            this.blocked = new LinkedList();
+        }
+
+        this.blocked.add( node );
+        LogicalDependency dep = ( LogicalDependency ) node;
+        
+        // now ad the blocker to the blocked's list - we need to check that references are null first
+        AgendaItem blocked = (AgendaItem)dep.getJustified();
+        if ( blocked.blockers == null ) {
+            blocked.blockers = new LinkedList();
+            blocked.blockers.add( dep.getJustifierEntry() );
+        } else if ( dep.getJustifierEntry().getNext() == null && dep.getJustifierEntry().getPrevious() == null && blocked.getBlockers().getFirst() != dep.getJustifierEntry() ) {            
+            blocked.blockers.add( dep.getJustifierEntry() );
+        }
+    }
+    
+    public void removeAllBlockersAndBlocked(DefaultAgenda agenda){
+        if ( this.blockers != null ) {
+            // Iterate and remove this node's logical dependency list from each of it's blockers
+            for ( LinkedListEntry node = ( LinkedListEntry ) blockers.getFirst(); node != null; node = ( LinkedListEntry ) node.getNext() ) {
+                LogicalDependency dep = ( LogicalDependency ) node.getObject();
+                dep.getJustifier().getBlocked().remove( dep );                
+            }
+        }  
+        this.blockers = null;
+        
+        if ( this.blocked != null ) {
+            // Iterate and remove this node's logical dependency list from each of it's blocked
+            for ( LogicalDependency dep = ( LogicalDependency ) blocked.getFirst(); dep != null; ) {
+                LogicalDependency tmp = ( LogicalDependency ) dep.getNext();                
+                removeBlocked( dep );
+                AgendaItem justified = ( AgendaItem ) dep.getJustified();
+                if (justified.getBlockers().isEmpty() ) {
+                    // the match is no longer blocked, so stage it
+                    agenda.getStageActivationsGroup().addActivation( justified );
+                }                
+                dep =  ( LogicalDependency ) tmp;
+            }
+        }
+        this.blocked = null;
+    }
+    
+    public void removeBlocked(final LinkedListNode node) {
+        this.blocked.remove( node );
+        
+        LogicalDependency dep = ( LogicalDependency ) node;
+        AgendaItem blocked = (AgendaItem)dep.getJustified();        
+        blocked.blockers.remove( dep.getJustifierEntry() );
+    }
+    
+    public void setBlocked(LinkedList justified) {
+        this.blocked = justified;
+    }        
+    
+    public LinkedList getBlocked() {
+        return  this.blocked;
+    } 
+    
+    public LinkedList getBlockers() {
+        return  this.blockers;
+    }    
 
     public void addLogicalDependency(final LogicalDependency node) {
         if ( this.justified == null ) {
@@ -351,4 +406,9 @@ public class AgendaItem
         }
         return Collections.unmodifiableList( declarations );
     }
+
+    public boolean isActive() {
+        return isActivated();
+    }
+    
 }

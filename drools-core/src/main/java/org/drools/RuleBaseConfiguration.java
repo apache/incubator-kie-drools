@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.builder.conf.ClassLoaderCacheOption;
+import org.drools.builder.conf.DeclarativeAgendaOption;
 import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AgendaGroupFactory;
 import org.drools.common.ArrayAgendaGroupFactory;
@@ -104,6 +105,7 @@ import org.mvel2.MVEL;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
  * drools.lrUnlinkingEnabled = &lt;true|false&gt; 
+ * drools.declarativeAgendaEnabled =  &lt;true|false&gt; 
  * </pre>
  */
 public class RuleBaseConfiguration
@@ -137,6 +139,8 @@ public class RuleBaseConfiguration
     private boolean                        classLoaderCacheEnabled;
     private boolean                        lrUnlinkingEnabled;
 
+    private boolean                        declarativeAgenda;
+    
     private EventProcessingOption          eventProcessingMode;
 
     // if "true", rulebase builder will try to split 
@@ -188,6 +192,7 @@ public class RuleBaseConfiguration
         out.writeObject( eventProcessingMode );
         out.writeBoolean( classLoaderCacheEnabled );
         out.writeBoolean( lrUnlinkingEnabled );
+        out.writeBoolean(  declarativeAgenda );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -216,6 +221,7 @@ public class RuleBaseConfiguration
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
         lrUnlinkingEnabled = in.readBoolean();
+        declarativeAgenda = in.readBoolean();
     }
 
     /**
@@ -462,7 +468,9 @@ public class RuleBaseConfiguration
                                                                                          "true" ) ) );
         
         setLRUnlinkingEnabled( Boolean.valueOf( this.chainedProperties.getProperty( LRUnlinkingOption.PROPERTY_NAME,
-                                                                                        "false" ) ) );
+                                                                                    "false" ) ) );
+        setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
+                                                                                          "false" ) ) );        
 
     }
 
@@ -738,6 +746,19 @@ public class RuleBaseConfiguration
         }
     }
 
+    
+    public boolean isDeclarativeAgenda() {
+        return this.declarativeAgenda;
+    }
+    
+    /**
+     * Enable declarative agenda
+     * @param enabled
+     */
+    public void setDeclarativeAgendaEnabled(boolean enabled) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.declarativeAgenda = enabled;
+    }    
 
     public List<Map<String, Object>> getWorkDefinitions() {
         if ( this.workDefinitions == null ) {
@@ -811,9 +832,9 @@ public class RuleBaseConfiguration
             return factory;
         } else {
             if ( "query".equals( name )) {
-                return QueryTerminalNodeActivationListenerFactory.INSTANCE;
-            } else             if ( "agenda".equals( name )) {
-                return RuleTerminalNodeActivationListenerFactory.INSTANCE;
+                return QueryActivationListenerFactory.INSTANCE;
+            } else  if ( "agenda".equals( name ) || "direct".equals( name ) ) {
+                return RuleActivationListenerFactory.INSTANCE;
             } 
         } 
         
@@ -1127,6 +1148,8 @@ public class RuleBaseConfiguration
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
         } else if ( LRUnlinkingOption.class.equals( option ) ) {
             return (T) (this.isLRUnlinkingEnabled() ? LRUnlinkingOption.ENABLED : LRUnlinkingOption.DISABLED);
+        } else if ( DeclarativeAgendaOption.class.equals( option )  ) {
+            return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
         return null;
 
@@ -1171,6 +1194,8 @@ public class RuleBaseConfiguration
             setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
         } else if ( option instanceof LRUnlinkingOption ) {
             setLRUnlinkingEnabled( ((LRUnlinkingOption) option).isLRUnlinkingEnabled() );
+        } else if ( option instanceof DeclarativeAgendaOption ) {
+            setDeclarativeAgendaEnabled( ((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled() );
         }
 
     }

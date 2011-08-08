@@ -105,6 +105,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
+import org.drools.runtime.rule.Activation;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.type.DateFormats;
 import org.drools.type.DateFormatsImpl;
@@ -306,6 +307,12 @@ public class PackageBuilder {
         mapType.setTypeClass( Map.class );
         builtinTypes.put( "java.util.Map",
                           mapType );
+        
+        TypeDeclaration activationType = new TypeDeclaration( "Activation" );
+        activationType.setTypesafe( false );
+        activationType.setTypeClass( Activation.class );
+        builtinTypes.put( Activation.class.getCanonicalName(),
+                          activationType );        
 
     }
 
@@ -1140,8 +1147,9 @@ public class PackageBuilder {
 
         // build up a set of all the super classes and interfaces
         Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
-        buildTypeDeclarations( cls,
-                               tdecls );
+        
+        tdecls.add( tdecl );
+        buildTypeDeclarations(cls, tdecls);
 
         // Iterate and for each typedeclr assign it's value if it's not already set
         // We start from the rear as those are the furthest away classes and interfaces

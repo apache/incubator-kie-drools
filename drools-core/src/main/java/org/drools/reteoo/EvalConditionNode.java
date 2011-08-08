@@ -26,6 +26,7 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.LeftTupleIterator;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
@@ -149,6 +150,10 @@ public class EvalConditionNode extends LeftTupleSource
      */
     public EvalCondition getCondition() {
         return this.condition;
+    }
+    
+    public LeftTupleSource getLeftTupleSource() {
+        return this.tupleSource;
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -279,18 +284,25 @@ public class EvalConditionNode extends LeftTupleSource
         return new EvalMemory( this.condition.createContext() );
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.reteoo.BaseNode#updateNewNode(org.drools.reteoo.WorkingMemoryImpl, org.drools.spi.PropagationContext)
-     */
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final LeftTupleSinkUpdateAdapter adapter = new LeftTupleSinkUpdateAdapter( this,
-                                                                                   sink,
-                                                                                   condition );
-        this.tupleSource.updateSink( adapter,
-                                     context,
-                                     workingMemory );
+        LeftTupleIterator it = LeftTupleIterator.iterator( workingMemory, this );
+        
+        for ( LeftTuple leftTuple =  ( LeftTuple ) it.next(); leftTuple != null; leftTuple =  ( LeftTuple ) it.next() ) {
+            LeftTuple childLeftTuple = leftTuple.getFirstChild();
+            while ( childLeftTuple != null ) {
+                RightTuple rightParent = childLeftTuple.getRightParent();            
+                sink.assertLeftTuple( sink.createLeftTuple( leftTuple, rightParent, childLeftTuple, null, sink, true ),
+                                      context,
+                                      workingMemory );  
+                
+                while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
+                    // skip to the next child that has a different right parent
+                    childLeftTuple = childLeftTuple.getLeftParentNext();
+                }
+            }
+        }
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -417,125 +429,6 @@ public class EvalConditionNode extends LeftTupleSource
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( context );
         }
-    }
-
-    /**
-     * Used with the updateSink method, so that the parent LeftTupleSource
-     * can  update the  TupleSink
-     */
-    private static class LeftTupleSinkUpdateAdapter
-        implements
-        LeftTupleSink, LeftTupleSinkAdapter {
-        private final EvalConditionNode node;
-        private final LeftTupleSink     sink;
-        private final EvalCondition     constraint;
-
-        public LeftTupleSinkUpdateAdapter(final EvalConditionNode node,
-                                          final LeftTupleSink sink,
-                                          final EvalCondition constraint) {
-            this.node = node;
-            this.sink = sink;
-            this.constraint = constraint;
-        }
-
-        public void assertLeftTuple(final LeftTuple leftTuple,
-                                    final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory) {
-
-            final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( node );
-            // need to be overridden, because it was pointing to the adapter instead
-            leftTuple.setLeftTupleSink( this.node );
-
-            final boolean allowed = this.constraint.isAllowed( leftTuple,
-                                                               workingMemory,
-                                                               memory.context );
-
-            if ( allowed ) {
-                final LeftTuple tuple = sink.createLeftTuple( leftTuple,
-                                                              this.sink,
-                                                              false );
-                this.sink.assertLeftTuple( tuple,
-                                           context,
-                                           workingMemory );
-            }
-        }
-
-        public short getType() {
-            return 0;
-        }
-
-        public boolean isLeftTupleMemoryEnabled() {
-            return false;
-        }
-
-        public void modifyLeftTuple(InternalFactHandle factHandle,
-                                    ModifyPreviousTuples modifyPreviousTuples,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void modifyLeftTuple(LeftTuple leftTuple,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void retractLeftTuple(LeftTuple leftTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-            throw new UnsupportedOperationException( "LeftTupleSinkUpdateAdapter onlys supports assertLeftTuple method calls" );
-        }
-
-        public void readExternal(ObjectInput arg0) throws IOException,
-                                                  ClassNotFoundException {
-        }
-
-        public void writeExternal(ObjectOutput arg0) throws IOException {
-        }
-
-        public int getId() {
-            return 0;
-        }
-
-        public RuleBasePartitionId getPartitionId() {
-            return sink.getPartitionId();
-        }
-
-        public LeftTupleSink getRealSink() {
-            return this.node;
-        }
-        
-        public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                         LeftTupleSink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new EvalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
-        }    
-        
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         LeftTupleSink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new EvalNodeLeftTuple(leftTuple,sink, leftTupleMemoryEnabled );
-        }
-
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTupleSink sink) {
-            return new EvalNodeLeftTuple(leftTuple, rightTuple, sink );
-        }   
-        
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTuple currentLeftChild,
-                                         LeftTuple currentRightChild,
-                                         LeftTupleSink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-        }      
     }
 
 }

@@ -25,14 +25,21 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.drools.InitialFact;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
+import org.drools.common.ActivationGroupNode;
+import org.drools.common.ActivationIterator;
+import org.drools.common.ActiveActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.EqualityKey;
+import org.drools.common.InternalAgenda;
+import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
@@ -52,14 +59,18 @@ import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.QueryElementNode;
+import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.FromNode.FromMemory;
+import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -73,17 +84,19 @@ public class OutputMarshaller {
     private static ProcessMarshaller createProcessMarshaller() {
         try {
             return ProcessMarshallerFactory.newProcessMarshaller();
-        } catch (IllegalArgumentException e) {
+        } catch ( IllegalArgumentException e ) {
             return null;
         }
     }
 
     public static void writeSession(MarshallerWriteContext context) throws IOException {
+        //context.out.println( "... write session");
         ReteooWorkingMemory wm = (ReteooWorkingMemory) context.wm;
-        
+        wm.getAgenda().unstageActivations();
+
         final boolean multithread = wm.isPartitionManagersActive();
         // is multi-thread active?
-        if( multithread ) {
+        if ( multithread ) {
             context.writeBoolean( true );
             wm.stopPartitionManagers();
         } else {
@@ -107,29 +120,34 @@ public class OutputMarshaller {
         writeFactHandles( context );
 
         writeActionQueue( context );
-        
+
         writeTruthMaintenanceSystem( context );
 
         if ( context.marshalProcessInstances && processMarshaller != null ) {
             processMarshaller.writeProcessInstances( context );
         }
 
-        if ( context.marshalWorkItems  && processMarshaller != null ) {
+        if ( context.marshalWorkItems && processMarshaller != null ) {
             processMarshaller.writeWorkItems( context );
         }
 
         if ( processMarshaller != null ) {
             processMarshaller.writeProcessTimers( context );
         }
-        
-        if( multithread ) {
+
+        if ( multithread ) {
             wm.startPartitionManagers();
         }
+        
+        //context.out.println( "--- write session --- END");
     }
 
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {
         InternalWorkingMemory wm = context.wm;
         DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        
+        context.writeInt( agenda.getDormantActivations() );
+        context.writeInt( agenda.getActiveActivations() );
 
         Map<String, ActivationGroup> activationGroups = agenda.getActivationGroupsMap();
 
@@ -164,7 +182,7 @@ public class OutputMarshaller {
             context.writeBoolean( group.isAutoDeactivate() );
             Map<Long, String> nodeInstances = group.getNodeInstances();
             context.writeInt( nodeInstances.size() );
-            for (Map.Entry<Long, String> entry: nodeInstances.entrySet()) {
+            for ( Map.Entry<Long, String> entry : nodeInstances.entrySet() ) {
                 context.writeLong( entry.getKey() );
                 context.writeUTF( entry.getValue() );
             }
@@ -258,7 +276,17 @@ public class OutputMarshaller {
 
         writeInitialFactHandleRightTuples( context );
 
-        stream.writeInt( wm.getObjectStore().size() );
+        List<InternalFactHandle> matchFactHandles = null;
+        
+        if ( ((InternalAgenda) wm.getAgenda()).isDeclarativeAgenda() ) {
+            ActivationIterator it = ActivationIterator.iterator( wm );
+            matchFactHandles = new ArrayList<InternalFactHandle>( 100 );
+            for ( Activation item = (Activation) it.next(); item != null; item = (Activation) it.next() ) {
+                matchFactHandles.add( item.getFactHandle() );
+            }
+        }
+
+        stream.writeInt( wm.getObjectStore().size() + ((matchFactHandles == null) ? 0 : matchFactHandles.size()) );
 
         // Write out FactHandles
         for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
@@ -273,9 +301,33 @@ public class OutputMarshaller {
                               context );
         }
 
+        if ( matchFactHandles != null ) {
+            for ( InternalFactHandle handle : orderFacts( matchFactHandles ) ) {
+                Object object = handle.getObject();
+                handle.setObject( null ); // we must set it to null as we don't want to write out the Activation
+                writeFactHandle( context,
+                                 stream,
+                                 objectMarshallingStrategyStore,
+                                 handle );
+                handle.setObject( object ); // restore object
+                writeRightTuples( handle,
+                                  context );
+            }
+        }
+
         writeInitialFactHandleLeftTuples( context );
 
-        writeLeftTuples( context );
+        //writeLeftTuples( context );
+        writeLeftTuples( context,
+                         orderFacts( wm.getObjectStore() ) );
+        
+        if ( matchFactHandles != null ) {
+            stream.writeBoolean( true );
+            writeLeftTuples( context,
+                             orderFacts( matchFactHandles ) );
+        } else {
+            stream.writeBoolean( false );
+        }
 
         writePropagationContexts( context );
 
@@ -296,33 +348,42 @@ public class OutputMarshaller {
 
         Object object = handle.getObject();
 
-        int index = objectMarshallingStrategyStore.getStrategy( object );
-        
-        ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
+        if ( object != null ) {
+            int index = objectMarshallingStrategyStore.getStrategy( object );
 
-        stream.writeInt( index );
+            ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
 
-        strategy.write( stream,
-                        object );
-        if( handle.getEntryPoint() instanceof InternalWorkingMemoryEntryPoint ){
-            String entryPoint = ((InternalWorkingMemoryEntryPoint)handle.getEntryPoint()).getEntryPoint().getEntryPointId();
-            if(entryPoint!=null && !entryPoint.equals("")){
-                stream.writeBoolean(true);
-                stream.writeUTF(entryPoint);
+            stream.writeInt( index );
+
+            strategy.write( stream,
+                            object );
+        } else {
+            stream.writeInt( -1 );
+        }
+
+        if ( handle.getEntryPoint() instanceof InternalWorkingMemoryEntryPoint ) {
+            String entryPoint = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getEntryPoint().getEntryPointId();
+            if ( entryPoint != null && !entryPoint.equals( "" ) ) {
+                stream.writeBoolean( true );
+                stream.writeUTF( entryPoint );
             }
-            else{
-                stream.writeBoolean(false);
+            else {
+                stream.writeBoolean( false );
             }
-        }else{
-            stream.writeBoolean(false);
-        }        
+        } else {
+            stream.writeBoolean( false );
+        }
     }
 
     private static void writeFactHandle(MarshallerWriteContext context,
                                         ObjectOutputStream stream,
                                         ObjectMarshallingStrategyStore objectMarshallingStrategyStore,
                                         InternalFactHandle handle) throws IOException {
-        writeFactHandle( context, stream, objectMarshallingStrategyStore, 0, handle );
+        writeFactHandle( context,
+                         stream,
+                         objectMarshallingStrategyStore,
+                         0,
+                         handle );
 
     }
 
@@ -335,6 +396,16 @@ public class OutputMarshaller {
             handles[i++] = (InternalFactHandle) it.next();
         }
 
+        Arrays.sort( handles,
+                     new HandleSorter() );
+
+        return handles;
+    }
+
+    public static InternalFactHandle[] orderFacts(List<InternalFactHandle> handlesList) {
+        // this method is just needed for testing purposes, to allow round tripping
+        int size = handlesList.size();
+        InternalFactHandle[] handles = handlesList.toArray( new InternalFactHandle[size] );
         Arrays.sort( handles,
                      new HandleSorter() );
 
@@ -399,8 +470,8 @@ public class OutputMarshaller {
                                         MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
         //context.out.println( "RightTuples Start" );
-        
-        for (RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+
+        for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
             stream.writeShort( PersisterEnums.RIGHT_TUPLE );
             writeRightTuple( rightTuple,
                              context );
@@ -419,19 +490,20 @@ public class OutputMarshaller {
         //context.out.println( "RightTuple sinkId:" + (rightTuple.getRightTupleSink() != null ? rightTuple.getRightTupleSink().getId() : -1) );
     }
 
-    public static void writeLeftTuples(MarshallerWriteContext context) throws IOException {
+    public static void writeLeftTuples(MarshallerWriteContext context,
+                                       InternalFactHandle[] factHandles) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
 
         // Write out LeftTuples
         //context.out.println( "LeftTuples Start" );
-        for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
+        for ( InternalFactHandle handle : factHandles ) {
             //InternalFactHandle handle = (InternalFactHandle) it.next();
 
             for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
                 stream.writeShort( PersisterEnums.LEFT_TUPLE );
-
-                stream.writeInt( leftTuple.getLeftTupleSink().getId() );
+                int sinkId = leftTuple.getLeftTupleSink().getId() ;
+                stream.writeInt( sinkId );
                 stream.writeInt( handle.getId() );
 
                 //context.out.println( "LeftTuple sinkId:" + leftTuple.getLeftTupleSink().getId() + " handleId:" + handle.getId() );
@@ -440,6 +512,7 @@ public class OutputMarshaller {
                                 true );
             }
         }
+
         stream.writeShort( PersisterEnums.END );
         //context.out.println( "LeftTuples End" );
     }
@@ -458,7 +531,8 @@ public class OutputMarshaller {
                 //context.out.println( "JoinNode" );
                 for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     stream.writeShort( PersisterEnums.RIGHT_TUPLE );
-                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                    int childSinkId = childLeftTuple.getLeftTupleSink().getId();
+                    stream.writeInt( childSinkId );
                     stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
                     //context.out.println( "RightTuple int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
                     writeLeftTuple( childLeftTuple,
@@ -469,6 +543,7 @@ public class OutputMarshaller {
                 //context.out.println( "JoinNode   ---   END" );
                 break;
             }
+            case NodeTypeEnums.QueryRiaFixerNode : 
             case NodeTypeEnums.EvalConditionNode : {
                 //context.out.println( ".... EvalConditionNode" );
                 for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
@@ -482,7 +557,7 @@ public class OutputMarshaller {
                 //context.out.println( "---- EvalConditionNode   ---   END" );
                 break;
             }
-            case NodeTypeEnums.NotNode : 
+            case NodeTypeEnums.NotNode :
             case NodeTypeEnums.ForallNotNode : {
                 if ( leftTuple.getBlocker() == null ) {
                     // is not blocked so has children
@@ -539,7 +614,7 @@ public class OutputMarshaller {
 
                 // then we serialize all the propagated tuples
                 for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
-                    if( leftTuple.getLeftTupleSink().getId() == childLeftTuple.getLeftTupleSink().getId()) {
+                    if ( leftTuple.getLeftTupleSink().getId() == childLeftTuple.getLeftTupleSink().getId() ) {
                         // this is a matching record, so, associate the right tuples
                         //context.out.println( "RightTuple(match) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
                         stream.writeShort( PersisterEnums.RIGHT_TUPLE );
@@ -548,7 +623,8 @@ public class OutputMarshaller {
                         // this is a propagation record
                         //context.out.println( "RightTuple(propagation) int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
                         stream.writeShort( PersisterEnums.LEFT_TUPLE );
-                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        int sinkId = childLeftTuple.getLeftTupleSink().getId();
+                        stream.writeInt( sinkId );
                         writeLeftTuple( childLeftTuple,
                                         context,
                                         recurse );
@@ -567,66 +643,141 @@ public class OutputMarshaller {
                 //context.out.println( "FactHandle id:"+ifh.getId() );
                 stream.writeInt( ifh.getId() );
                 stream.writeLong( ifh.getRecency() );
-                
-                writeRightTuples( ifh, context );
+
+                writeRightTuples( ifh,
+                                  context );
 
                 stream.writeShort( PersisterEnums.END );
                 //context.out.println( "---- RightInputAdapterNode   ---   END" );
                 break;
             }
-            case NodeTypeEnums.FromNode: {
-              //context.out.println( ".... FromNode" );
-              // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
-              FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
+            case NodeTypeEnums.FromNode : {
+                //context.out.println( ".... FromNode" );
+                // FNs generate new fact handles on-demand to wrap objects and need special procedures when serializing to persistent storage
+                FromMemory memory = (FromMemory) context.wm.getNodeMemory( (NodeMemory) sink );
 
-              Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
-              for ( RightTuple rightTuples : matches.values() ) {
-                  // first we serialize the generated fact handle ID
-                  stream.writeShort( PersisterEnums.FACT_HANDLE );
-                  writeFactHandle( context,
-                                   stream,
-                                   context.objectMarshallingStrategyStore,
-                                   rightTuples.getFactHandle() );
-                  writeRightTuples( rightTuples.getFactHandle(), 
-                                    context );
-              }
-              stream.writeShort( PersisterEnums.END );
-              for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
-                  stream.writeShort( PersisterEnums.RIGHT_TUPLE );
-                  stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
-                  stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
-                  //context.out.println( "RightTuple int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
-                  writeLeftTuple( childLeftTuple,
-                                  context,
-                                  recurse );
-              }
-              stream.writeShort( PersisterEnums.END );
-              //context.out.println( "---- FromNode   ---   END" );
-              break;
-          }
-            case NodeTypeEnums.UnificationNode : {
-                //context.out.println( ".... UnificationNode" );
-                for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
-                    stream.writeShort( PersisterEnums.LEFT_TUPLE );
-                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
+                for ( RightTuple rightTuples : matches.values() ) {
+                    // first we serialize the generated fact handle ID
+                    stream.writeShort( PersisterEnums.FACT_HANDLE );
                     writeFactHandle( context,
                                      stream,
                                      context.objectMarshallingStrategyStore,
-                                     1,
-                                     childLeftTuple.getLastHandle() );                    
+                                     rightTuples.getFactHandle() );
+                    writeRightTuples( rightTuples.getFactHandle(),
+                                      context );
+                }
+                stream.writeShort( PersisterEnums.END );
+                for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
+                    stream.writeShort( PersisterEnums.RIGHT_TUPLE );
+                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                    stream.writeInt( childLeftTuple.getRightParent().getFactHandle().getId() );
+                    //context.out.println( "RightTuple int:" + childLeftTuple.getLeftTupleSink().getId() + " int:" + childLeftTuple.getRightParent().getFactHandle().getId() );
                     writeLeftTuple( childLeftTuple,
                                     context,
                                     recurse );
                 }
                 stream.writeShort( PersisterEnums.END );
+                //context.out.println( "---- FromNode   ---   END" );
+                break;
+            }
+            case NodeTypeEnums.UnificationNode : {
+                //context.out.println( ".... UnificationNode" );
+
+                QueryElementNode node = (QueryElementNode) sink;
+                boolean isOpen = node.isOpenQuery();
+
+                context.writeBoolean( isOpen );
+                if ( isOpen ) {
+                    InternalFactHandle factHandle = (InternalFactHandle) leftTuple.getObject();
+                    DroolsQuery query = (DroolsQuery) factHandle.getObject();
+                    
+                    //context.out.println( "factHandle:" +  factHandle );
+                    
+                    factHandle.setObject( null );
+                    writeFactHandle( context,
+                                     stream,
+                                     context.objectMarshallingStrategyStore,
+                                     0,
+                                     factHandle );
+                    factHandle.setObject( query );
+                    writeLeftTuples( context,
+                                     new InternalFactHandle[]{factHandle} );                    
+                } else {
+                    for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
+                        stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        writeFactHandle( context,
+                                         stream,
+                                         context.objectMarshallingStrategyStore,
+                                         1,
+                                         childLeftTuple.getLastHandle() );
+                        writeLeftTuple( childLeftTuple,
+                                        context,
+                                        recurse );
+                    }
+                    stream.writeShort( PersisterEnums.END );
+                }                
                 //context.out.println( "---- EvalConditionNode   ---   END" );
                 break;
-            }            
+            }
             case NodeTypeEnums.RuleTerminalNode : {
                 //context.out.println( "RuleTerminalNode" );
                 int pos = context.terminalTupleMap.size();
                 context.terminalTupleMap.put( leftTuple,
                                               pos );
+                break;
+            }
+            case NodeTypeEnums.QueryTerminalNode : {
+                //context.out.println( ".... QueryTerminalNode" );                
+                //                LeftTuple entry = leftTuple;
+                //
+                //                // find the DroolsQuery object
+                //                while ( entry.getParent() != null ) {
+                //                    entry = entry.getParent();
+                //                }
+                //
+                //                // Now output all the child tuples in the caller network
+                //                DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
+                //                if ( query.getQueryResultCollector() instanceof UnificationNodeViewChangedEventListener ) {
+                //                    context.writeBoolean( true );
+                //                    UnificationNodeViewChangedEventListener collector = (UnificationNodeViewChangedEventListener) query.getQueryResultCollector();
+                //                    leftTuple = collector.getLeftTuple();
+                //        
+                context.writeBoolean( true );
+                RightTuple rightTuple = (RightTuple) leftTuple.getObject();
+                //context.out.println( "rightTuple:" +  rightTuple.getFactHandle() );
+                writeFactHandle( context,
+                                 stream,
+                                 context.objectMarshallingStrategyStore,
+                                 1,
+                                 rightTuple.getFactHandle() );
+                
+                for ( LeftTuple childLeftTuple = rightTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getRightParentNext() ) {
+                    stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                    stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                    writeLeftTuple( childLeftTuple,
+                                    context,
+                                    recurse );
+                }
+
+                //                    for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
+                //                        stream.writeShort( PersisterEnums.LEFT_TUPLE );
+                //                        stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                //                        writeFactHandle( context,
+                //                                         stream,
+                //                                         context.objectMarshallingStrategyStore,
+                //                                         1,
+                //                                         childLeftTuple.getLastHandle() );
+                //                        writeLeftTuple( childLeftTuple,
+                //                                        context,
+                //                                        recurse );
+                //                    }                      
+                //                } else {
+                //                    context.writeBoolean( false );
+                //                }
+                stream.writeShort( PersisterEnums.END );
+                //context.out.println( "---- QueryTerminalNode   ---   END" );
                 break;
             }
         }
@@ -642,12 +793,15 @@ public class OutputMarshaller {
         //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
         if ( entries.length != 0 ) {
             for ( Entry<LeftTuple, Integer> entry : entries ) {
-                if (entry.getKey().getObject() != null) {
+                if ( entry.getKey().getObject() != null ) {
                     LeftTuple leftTuple = entry.getKey();
-                    stream.writeShort(PersisterEnums.ACTIVATION);
-                    writeActivation(context, leftTuple, (AgendaItem) leftTuple
-                            .getObject(), (RuleTerminalNode) leftTuple
-                            .getLeftTupleSink());
+                    stream.writeShort( PersisterEnums.ACTIVATION );
+                    writeActivation( context,
+                                     leftTuple,
+                                     (AgendaItem) leftTuple
+                                             .getObject(),
+                                     (RuleTerminalNode) leftTuple
+                                             .getLeftTupleSink() );
                 }
             }
         }
@@ -699,11 +853,18 @@ public class OutputMarshaller {
         stream.writeBoolean( agendaItem.isActivated() );
         //context.out.println( "AgendaItem bool:" + agendaItem.isActivated() );
 
+        if ( agendaItem.getFactHandle() != null ) {
+            stream.writeBoolean( true );
+            stream.writeInt( agendaItem.getFactHandle().getId() );
+        } else {
+            stream.writeBoolean( false );
+        }
+
         org.drools.core.util.LinkedList list = agendaItem.getLogicalDependencies();
         if ( list != null && !list.isEmpty() ) {
             for ( LogicalDependency node = (LogicalDependency) list.getFirst(); node != null; node = (LogicalDependency) node.getNext() ) {
                 stream.writeShort( PersisterEnums.LOGICAL_DEPENDENCY );
-                stream.writeInt( ((InternalFactHandle) node.getFactHandle()).getId() );
+                stream.writeInt( ((InternalFactHandle) node.getJustified()).getId() );
                 //context.out.println( "Logical Depenency : int " + ((InternalFactHandle) node.getFactHandle()).getId() );
             }
         }
@@ -722,12 +883,14 @@ public class OutputMarshaller {
             Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
             for ( Entry<LeftTuple, Integer> entry : entries ) {
                 LeftTuple leftTuple = entry.getKey();
-                if (leftTuple.getObject() != null) {
-                    PropagationContext pc = ((Activation)leftTuple.getObject()).getPropagationContext();
-                    if (!pcMap.containsKey(pc.getPropagationNumber())) {
-                        stream.writeShort(PersisterEnums.PROPAGATION_CONTEXT);
-                        writePropagationContext(context, pc);
-                        pcMap.put(pc.getPropagationNumber(), pc);
+                if ( leftTuple.getObject() != null ) {
+                    PropagationContext pc = ((Activation) leftTuple.getObject()).getPropagationContext();
+                    if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
+                        stream.writeShort( PersisterEnums.PROPAGATION_CONTEXT );
+                        writePropagationContext( context,
+                                                 pc );
+                        pcMap.put( pc.getPropagationNumber(),
+                                   pc );
                     }
                 }
             }
@@ -753,7 +916,7 @@ public class OutputMarshaller {
         }
 
         LeftTuple tupleOrigin = pc.getLeftTupleOrigin();
-        if ( tupleOrigin != null && tuples.containsKey( tupleOrigin )) {
+        if ( tupleOrigin != null && tuples.containsKey( tupleOrigin ) ) {
             stream.writeBoolean( true );
             stream.writeInt( tuples.get( tupleOrigin ) );
         } else {
@@ -762,7 +925,7 @@ public class OutputMarshaller {
 
         stream.writeLong( pc.getPropagationNumber() );
         if ( pc.getFactHandleOrigin() != null ) {
-            stream.writeInt( ((InternalFactHandle)pc.getFactHandleOrigin()).getId() );
+            stream.writeInt( ((InternalFactHandle) pc.getFactHandleOrigin()).getId() );
         } else {
             stream.writeInt( -1 );
         }
@@ -773,39 +936,39 @@ public class OutputMarshaller {
         stream.writeUTF( pc.getEntryPoint().getEntryPointId() );
     }
 
-    
     public static void writeWorkItem(MarshallerWriteContext context,
-            WorkItem workItem) throws IOException {
+                                     WorkItem workItem) throws IOException {
         ObjectOutputStream stream = context.stream;
-        stream.writeLong(workItem.getId());
-        stream.writeLong(workItem.getProcessInstanceId());
-        stream.writeUTF(workItem.getName());
-        stream.writeInt(workItem.getState());
+        stream.writeLong( workItem.getId() );
+        stream.writeLong( workItem.getProcessInstanceId() );
+        stream.writeUTF( workItem.getName() );
+        stream.writeInt( workItem.getState() );
 
         //Work Item Parameters
-                Map<String, Object> parameters = workItem.getParameters();
-                 Collection<Object> notNullValues = new ArrayList<Object>();
-                for(Object value: parameters.values()){
-                    if(value != null){
-                        notNullValues.add(value);
-                    }
-                }
-                
-                stream.writeInt(notNullValues.size());
-                for (String key : parameters.keySet()) {
-                    Object object = parameters.get(key);
-                    if(object != null){
-                        stream.writeUTF(key);
-                        int index = context.objectMarshallingStrategyStore.getStrategy(object);
-                        stream.writeInt(index);
-                        ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy(index);
-                        if(strategy.accept(object)){
-                            strategy.write(stream, object);
-                        }
-                    }
+        Map<String, Object> parameters = workItem.getParameters();
+        Collection<Object> notNullValues = new ArrayList<Object>();
+        for ( Object value : parameters.values() ) {
+            if ( value != null ) {
+                notNullValues.add( value );
+            }
+        }
 
+        stream.writeInt( notNullValues.size() );
+        for ( String key : parameters.keySet() ) {
+            Object object = parameters.get( key );
+            if ( object != null ) {
+                stream.writeUTF( key );
+                int index = context.objectMarshallingStrategyStore.getStrategy( object );
+                stream.writeInt( index );
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy( index );
+                if ( strategy.accept( object ) ) {
+                    strategy.write( stream,
+                                    object );
                 }
-             
+            }
+
+        }
+
     }
 
 }

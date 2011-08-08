@@ -73,6 +73,8 @@ public class Rule
 
     /** Salience value. */
     private Salience                 salience;
+    
+    private int                      runLevel;
 
     /** The Rule is dirty after patterns have been added */
     private boolean                  dirty;
@@ -132,6 +134,7 @@ public class Rule
         out.writeObject( name );
         out.writeObject( parent );
         out.writeObject( salience );
+        out.writeInt( runLevel );
         out.writeBoolean( dirty );
         out.writeObject( declarations );
         out.writeObject( lhsRoot );
@@ -170,6 +173,7 @@ public class Rule
         name = (String) in.readObject();
         parent = (Rule) in.readObject();
         salience = (Salience) in.readObject();
+        runLevel = in.readInt();
 
         dirty = in.readBoolean();
         declarations = (Map<String, Declaration>) in.readObject();
@@ -221,6 +225,7 @@ public class Rule
         this.semanticallyValid = true;
         this.enabled = EnabledBoolean.ENABLED_TRUE;
         this.salience = SalienceInteger.DEFAULT_SALIENCE;
+        this.runLevel = 1;
         this.metaAttributes = new HashMap<String, Object>();
         setActivationListener( "agenda" );
 
@@ -343,6 +348,14 @@ public class Rule
      */
     public void setSalience(final Salience salience) {
         this.salience = salience;
+    }
+    
+    public int getRunLevel() {
+        return runLevel;
+    }
+
+    public void setRunLevel(int level) {
+        this.runLevel = level;
     }
 
     public String getAgendaGroup() {

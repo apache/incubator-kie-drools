@@ -7,8 +7,8 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 
-public class QueryTerminalNodeActivationListenerFactory implements ActivationListenerFactory  {
-    public static final QueryTerminalNodeActivationListenerFactory INSTANCE = new QueryTerminalNodeActivationListenerFactory();
+public class QueryActivationListenerFactory implements ActivationListenerFactory  {
+    public static final QueryActivationListenerFactory INSTANCE = new QueryActivationListenerFactory();
 
     public TerminalNode createActivationListener(int id,
                                                  LeftTupleSource source,

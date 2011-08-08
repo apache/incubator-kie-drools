@@ -34,12 +34,16 @@ import org.drools.base.DefaultKnowledgeHelper;
 import org.drools.base.SequentialKnowledgeHelper;
 import org.drools.common.RuleFlowGroupImpl.DeactivateCallback;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.Entry;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListNode;
 import org.drools.event.rule.ActivationCancelledCause;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.process.ProcessInstance;
@@ -53,6 +57,7 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
 import org.drools.spi.Tuple;
+import org.drools.time.impl.Timer;
 
 /**
  * Rule-firing Agenda.
@@ -112,6 +117,10 @@ public class DefaultAgenda
     protected volatile AtomicBoolean                            halt             = new AtomicBoolean( false );
 
     private int                                                 activationCounter;
+    
+    private boolean                                             declarativeAgenda;
+    
+    private ObjectTypeConf activationObjectTypeConf;
 
     // ------------------------------------------------------------
     // Constructors
@@ -168,6 +177,8 @@ public class DefaultAgenda
         } else {
             this.consequenceExceptionHandler = (org.drools.runtime.rule.ConsequenceExceptionHandler) object;
         }
+        
+        this.declarativeAgenda =  rb.getConfiguration().isDeclarativeAgenda();
     }
 
     public AgendaItem createAgendaItem(final LeftTuple tuple,
@@ -266,6 +277,7 @@ public class DefaultAgenda
         activeActivations = in.readInt();
         dormantActivations = in.readInt();
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
+        declarativeAgenda = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -282,6 +294,7 @@ public class DefaultAgenda
         out.writeInt( activeActivations );
         out.writeInt( dormantActivations );
         out.writeObject( legacyConsequenceExceptionHandler );
+        out.writeBoolean( declarativeAgenda );
     }
 
     /*
@@ -306,11 +319,11 @@ public class DefaultAgenda
                                       wm );
         this.scheduledActivations.add( item );
 
-        // adds item to activation group if appropriate
-        addItemToActivationGroup( item );
-
     }
 
+    
+    // @TODO make serialisation work
+    private ActivationGroup stagedActivations;
     /**
      * If the item belongs to an activation group, add it
      * 
@@ -322,50 +335,207 @@ public class DefaultAgenda
             this.getActivationGroup( group ).addActivation( item );
         }
     }
-
-    /**
-     * @inheritDoc
-     */
-    public boolean addActivation(final AgendaItem activation) {
-        // set the focus if rule autoFocus is true
-        if ( activation.getRule().getAutoFocus() ) {
-            this.setFocus( activation.getRule().getAgendaGroup() );
+    
+    public ActivationGroup getStageActivationsGroup() {
+        if ( stagedActivations == null ) {
+            stagedActivations = new ActivationGroupImpl( "staged activations");
         }
-
-        // adds item to activation group if appropriate
-        addItemToActivationGroup( activation );
-
-        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( activation.getRule().getAgendaGroup() );
-        activation.setAgendaGroup( agendaGroup );
-
-        if ( activation.getRule().getRuleFlowGroup() == null ) {
-            // No RuleFlowNode so add it directly to the Agenda
-
-            // do not add the activation if the rule is "lock-on-active" and the
-            // AgendaGroup is active
-            if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
-                return false;
-            }
-
-            agendaGroup.add( activation );
-        } else {
-            // There is a RuleFlowNode so add it there, instead of the Agenda
-            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( activation.getRule().getRuleFlowGroup() );
-
-            // do not add the activation if the rule is "lock-on-active" and the
-            // RuleFlowGroup is active
-            if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
-                return false;
-            }
-
-            rfg.addActivation( activation );
-        }
-
-        // making sure we re-evaluate agenda in case we are waiting for activations
-        notifyHalt();
-        return true;
-
+        return stagedActivations;
     }
+
+    
+    
+    public boolean addActivation(final AgendaItem activation) { 
+        if ( declarativeAgenda ) {
+            if (  activationObjectTypeConf == null ) {
+                EntryPoint ep = workingMemory.getEntryPoint();
+                activationObjectTypeConf =  ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
+                                                                                                                                                                                                         activation );
+            }
+            
+            InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
+            workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
+            activation.setFactHandle( factHandle );
+            
+            if ( activation.getBlockers() == null || activation.getBlockers().isEmpty() ) {
+                // All activations started off staged, they are unstaged if they are blocked or 
+                // allowed to move onto the actual agenda for firing.
+                ActivationGroup activationGroup = getStageActivationsGroup();  
+                activationGroup.addActivation( activation );
+            }
+               
+            return true;
+        } else {
+            addActivation( activation, true );
+            return true;
+        }
+    } 
+    
+    public void setActiveActivations(int activeActivations) {
+        this.activeActivations = activeActivations;
+    }
+
+    public void setDormantActivations(int dormantActivations) {
+        this.dormantActivations = dormantActivations;
+    }
+
+    public boolean isDeclarativeAgenda() {
+        return declarativeAgenda;
+    }
+    
+    public void removeActivation(final AgendaItem activation) {    
+        if ( declarativeAgenda ) {
+            workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
+            
+            
+            if ( activation.getActivationGroupNode() != null && activation.getActivationGroupNode() == activation.getActivationGroupNode().getActivationGroup() ) {
+                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
+            }
+        }
+                
+    }  
+    
+    public void modifyActivation(final AgendaItem activation, boolean previouslyActive) {        
+        if ( declarativeAgenda ) {
+            InternalFactHandle factHandle = activation.getFactHandle();
+            workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
+            
+            if  (previouslyActive) {
+                // already activated
+                return;
+            }
+            
+            if ( activation.getBlockers() != null && activation.getBlockers().size() > 0 ) {
+                // it's blocked so do nothing
+                return;
+            }
+            
+            // All activations started off staged, they are unstaged if they are blocked or 
+            // allowed to move onto the actual agenda for firing.
+            ActivationGroup activationGroup = getStageActivationsGroup();  
+            if ( activation.getActivationGroupNode() != null && activation.getActivationGroupNode().getActivationGroup() == activationGroup ) {
+                // already staged, so return
+                return;
+            }
+          
+            activationGroup.addActivation( activation );
+        } else {
+            if ( !previouslyActive ) {
+                addActivation( activation, true );
+            }
+        }
+    }     
+    
+    public void clearAndCancelStagedActivations() {
+        if ( getStageActivationsGroup().isEmpty() ) {
+            return;
+        }        
+        org.drools.core.util.LinkedList list = getStageActivationsGroup().getList();
+
+        final EventSupport eventsupport = (EventSupport) this.workingMemory;
+        for ( Entry entry = list.removeFirst(); entry != null; entry = list.removeFirst() ) {
+            ActivationGroupNode node = (ActivationGroupNode) entry;
+            AgendaItem item = ( AgendaItem ) node.getActivation();  
+            // This must be set to false otherwise modify won't work properly
+            item.setActivated( false );            
+            eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                          this.workingMemory,
+                                                                          ActivationCancelledCause.CLEAR );            
+        }
+    }
+    
+    public void unstageActivations() {
+        if ( !declarativeAgenda || getStageActivationsGroup().isEmpty() ) {
+            return;
+        }        
+        org.drools.core.util.LinkedList list = getStageActivationsGroup().getList();
+
+        for ( Entry entry = list.removeFirst(); entry != null; entry = list.removeFirst() ) {
+            ActivationGroupNode node = (ActivationGroupNode) entry;
+            AgendaItem item = ( AgendaItem ) node.getActivation();
+            item.setActivationGroupNode( null );
+
+            addActivation( item, false );                      
+        }
+        
+        notifyHalt();
+    }
+    
+    private void addActivation(AgendaItem item, boolean notify) {
+        Rule rule = item.getRule();
+        
+        // set the focus if rule autoFocus is true
+        if ( rule.getAutoFocus() ) {
+            this.setFocus( rule.getAgendaGroup() );
+        }              
+                               
+        // adds item to activation group if appropriate
+        addItemToActivationGroup(  item );            
+        
+        final Timer timer = rule.getTimer();
+        if ( timer != null ) {
+            scheduleItem( (ScheduledAgendaItem) item,
+                          workingMemory );
+        } else {                
+            AgendaItem agendaItem =  ( AgendaItem ) item;
+            
+            InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( rule.getAgendaGroup() );
+
+            if ( agendaItem.getRule().getRuleFlowGroup() == null ) {
+                agendaGroup.add( agendaItem );
+            } else {
+                // There is a RuleFlowNode so add it there, instead of the Agenda
+                InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( rule.getRuleFlowGroup() );
+                rfg.addActivation( agendaItem );
+            }
+        }   
+        if ( notify ) {
+            notifyHalt();
+        }
+    }
+    
+//    /**
+//     * @inheritDoc
+//     */
+//    public boolean addActivationx(final AgendaItem activation) {
+//        // set the focus if rule autoFocus is true
+//        if ( activation.getRule().getAutoFocus() ) {
+//            this.setFocus( activation.getRule().getAgendaGroup() );
+//        }
+//
+//        // adds item to activation group if appropriate
+//        addItemToActivationGroup( activation );
+//
+//        InternalAgendaGroup agendaGroup = (InternalAgendaGroup) this.getAgendaGroup( activation.getRule().getAgendaGroup() );
+//        activation.setAgendaGroup( agendaGroup );
+//
+//        if ( activation.getRule().getRuleFlowGroup() == null ) {
+//            // No RuleFlowNode so add it directly to the Agenda
+//
+//            // do not add the activation if the rule is "lock-on-active" and the
+//            // AgendaGroup is active
+//            if ( activation.getRule().isLockOnActive() && agendaGroup.isActive() ) {
+//                return false;
+//            }
+//
+//            agendaGroup.add( activation );
+//        } else {
+//            // There is a RuleFlowNode so add it there, instead of the Agenda
+//            InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) this.getRuleFlowGroup( activation.getRule().getRuleFlowGroup() );
+//
+//            // do not add the activation if the rule is "lock-on-active" and the
+//            // RuleFlowGroup is active
+//            if ( activation.getRule().isLockOnActive() && rfg.isActive() ) {
+//                return false;
+//            }
+//
+//            rfg.addActivation( activation );
+//        }
+//
+//        // making sure we re-evaluate agenda in case we are waiting for activations
+//        notifyHalt();
+//        return true;
+//    }
 
     public void removeScheduleItem(final ScheduledAgendaItem item) {
         this.scheduledActivations.remove( item );
@@ -640,6 +810,10 @@ public class DefaultAgenda
                                             this );
             }
         }
+        
+        // reset staged activations
+        getStageActivationsGroup().clear();
+        
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
@@ -678,6 +852,9 @@ public class DefaultAgenda
             }
         }
 
+        // cancel all staged activations
+        clearAndCancelStagedActivations();
+        
         // cancel all ruleflows
         for ( RuleFlowGroup group : this.ruleFlowGroups.values() ) {
             clearAndCancelAndCancel( group );
@@ -720,8 +897,8 @@ public class DefaultAgenda
             }
 
             // this must be set false before removal from the activationGroup.
-            // Otherwise the activationGroup will also try to cancel the
-            // Actvation
+            // Otherwise the activationGroup will also try to cancel the Actvation
+            // Also modify won't work properly
             item.setActivated( false );
 
             if ( item.getActivationGroupNode() != null ) {
@@ -919,6 +1096,12 @@ public class DefaultAgenda
                     throw new RuntimeException( e );
                 }
             } finally {
+                if ( activation.getFactHandle() != null ) {
+                    // update the Activation in the WM
+                    InternalFactHandle factHandle = activation.getFactHandle();
+                    workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
+                    activation.getPropagationContext().evaluateActionQueue( workingMemory );
+                }
                 // if the tuple contains expired events 
                 for ( LeftTuple tuple = (LeftTuple) activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
                     if ( tuple.getLastHandle().isEvent() ) {
@@ -942,6 +1125,8 @@ public class DefaultAgenda
 
             eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation,
                                                                            this.workingMemory );
+            
+            unstageActivations();
         } finally {
             this.workingMemory.endOperation();
         }
@@ -1030,6 +1215,7 @@ public class DefaultAgenda
     }
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
+        unstageActivations();
         this.halt.set( false );
         while ( continueFiring( -1 ) ) {
             boolean fired = fireNextItem( agendaFilter );
@@ -1051,6 +1237,7 @@ public class DefaultAgenda
 
     public int fireAllRules(AgendaFilter agendaFilter,
                             int fireLimit) {
+        unstageActivations();
         this.halt.set( false );
         int fireCount = 0;
         while ( continueFiring( fireLimit ) && fireNextItem( agendaFilter ) ) {

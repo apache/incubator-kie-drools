@@ -7,9 +7,9 @@ import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 
-public class RuleTerminalNodeActivationListenerFactory implements ActivationListenerFactory  {
+public class RuleActivationListenerFactory implements ActivationListenerFactory  {
     
-    public static final RuleTerminalNodeActivationListenerFactory INSTANCE = new RuleTerminalNodeActivationListenerFactory();
+    public static final RuleActivationListenerFactory INSTANCE = new RuleActivationListenerFactory();
 
     public TerminalNode createActivationListener(int id,
                                                  LeftTupleSource source,

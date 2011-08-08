@@ -36,7 +36,10 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompileable;
+import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
+import org.drools.common.AgendaItem;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
@@ -69,6 +72,7 @@ import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -87,6 +91,7 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.runtime.rule.Activation;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Constraint.ConstraintType;
@@ -100,6 +105,8 @@ import org.drools.time.TimeUtils;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
 
 /**
@@ -179,7 +186,8 @@ public class PatternBuilder
                 QueryElementBuilder qeBuilder = new QueryElementBuilder();
                 rce = qeBuilder.build( context,
                                         descr,
-                                        prefixPattern );
+                                        prefixPattern,
+                                        (Query) context.getRule() );
             }
 
             if ( rce == null ) {
@@ -189,14 +197,40 @@ public class PatternBuilder
                     QueryElementBuilder qeBuilder = new QueryElementBuilder();
                     rce = qeBuilder.build( context,
                                            descr,
-                                           prefixPattern );
-                } else {
-                    // this isn't a query either, so log an error
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  patternDescr,
-                                                                  null,
-                                                                  "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
+                                           prefixPattern,
+                                           (Query) rule );
                 }
+                
+                // try package imports
+                for ( String importName : context.getDialect().getTypeResolver().getImports() ) {
+                    importName = importName.trim();
+                    int pos = importName.indexOf( '*' );
+                    if ( pos >= 0 ) {
+                        String pkgName = importName.substring( 0, pos-1 );
+                        PackageRegistry pkgReg = context.getPackageBuilder().getPackageRegistry( pkgName );
+                        if ( pkgReg != null ) {
+                            rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
+                            if ( rule != null && rule instanceof Query ) {
+                                // it's a query so delegate to the QueryElementBuilder
+                                QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                                rce = qeBuilder.build( context,
+                                                       descr,
+                                                       prefixPattern,
+                                                       (Query) rule);
+                                break;
+                            }                           
+                        }
+                    }
+                }
+                
+            }
+            
+            if ( rce == null ) {
+                // this isn't a query either, so log an error
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              patternDescr,
+                                                              null,
+                                                              "Unable to resolve ObjectType '" + patternDescr.getObjectType() + "'" ) );
             }
             return rce;
         }
@@ -225,6 +259,13 @@ public class PatternBuilder
                                    null );
         }
 
+        if ( ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
+            if ( handler == null ) {
+                PropertyHandlerFactoryFixer.getPropertyHandlerClass().put( AgendaItem.class, new ActivationPropertyHandler() );
+            }
+        }
+        
         if ( duplicateBindings ) {
             if ( patternDescr.isUnification() ) {
                 // rewrite existing bindings into == constraints, so it unifies
@@ -493,7 +534,7 @@ public class PatternBuilder
 
             // Either it's a complex expression, so do as predicate
             // Or it's a Map and we have to treat it as a special case
-            if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
+            if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) || ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
                                          expr,

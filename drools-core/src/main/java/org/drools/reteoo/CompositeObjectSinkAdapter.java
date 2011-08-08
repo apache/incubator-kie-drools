@@ -22,6 +22,7 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
+import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
@@ -831,8 +832,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             fieldExtactor = (InternalReadAccessor) in.readObject();
             count = in.readInt();
             hashed = in.readBoolean();
-            previous = (LinkedListNode) in.readObject();
-            next = (LinkedListNode) in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
@@ -840,8 +839,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             out.writeObject( fieldExtactor );
             out.writeInt( count );
             out.writeBoolean( hashed );
-            out.writeObject( previous );
-            out.writeObject( next );
         }
 
         public InternalReadAccessor getFieldExtractor() {
@@ -890,6 +887,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         public void setPrevious(final LinkedListNode previous) {
             this.previous = previous;
+        }
+
+        public void setNext(Entry next) {
+            this.next = ( LinkedListNode ) next;
         }
     }
 }

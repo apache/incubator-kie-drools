@@ -100,6 +100,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.rootQueryNode;
     }
 
+    public ObjectSource getParentObjectSource() {
+        return this.objectSource;
+    }    
+    
     /* (non-Javadoc)
      * @see org.drools.reteoo.BaseNode#attach()
      */

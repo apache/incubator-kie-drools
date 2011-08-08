@@ -56,12 +56,15 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.UnresolveablePropertyException;
 import org.mvel2.compiler.ExecutableStatement;
+import org.mvel2.integration.PropertyHandler;
+import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.integration.VariableResolver;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.BaseVariableResolverFactory;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
 import org.mvel2.integration.impl.IndexVariableResolver;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
+import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.SimpleVariableSpaceModel;
 
 public class MVELCompilationUnit
@@ -279,14 +282,14 @@ public class MVELCompilationUnit
         return factory;
     }
     
-    public void updateFactory(final Object knowledgeHelper,
-                                              final Rule rule,
-                                              final Object rightObject,
-                                              final LeftTuple tuples,
-                                              final Object[] otherVars,
-                                              final InternalWorkingMemory workingMemory,
-                                              final GlobalResolver globals,
-                                              VariableResolverFactory factory) {
+    public void updateFactory(Object knowledgeHelper,
+                              Rule rule,
+                              Object rightObject,
+                              LeftTuple tuples,
+                              Object[] otherVars,
+                              InternalWorkingMemory workingMemory,
+                              GlobalResolver globals,
+                              VariableResolverFactory factory) {
         int varLength = inputIdentifiers.length;
 
         int i = 0;
@@ -296,6 +299,7 @@ public class MVELCompilationUnit
         factory.getIndexedVariableResolver( i++ ).setValue( knowledgeHelper );
         factory.getIndexedVariableResolver( i++ ).setValue( knowledgeHelper );
         factory.getIndexedVariableResolver( i++ ).setValue( rule );
+
 
         if ( globalIdentifiers != null ) {
             for ( int j = 0, length = globalIdentifiers.length; j < length; j++ ) {
@@ -407,6 +411,12 @@ public class MVELCompilationUnit
                                         final ParserContext parserContext,
                                         final int languageLevel ) {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+        MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
+        MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
+        MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
+        
+        // Just temporary as PropertyHandler is not working with ASM
+        OptimizerFactory.setDefaultOptimizer( OptimizerFactory.SAFE_REFLECTIVE );
 
         if ( MVELDebugHandler.isDebugMode() ) {
             parserContext.setDebugSymbols( true );
@@ -627,7 +637,7 @@ public class MVELCompilationUnit
         }
     
         public VariableResolver getVariableResolver( String name ) {
-            throw new UnsupportedOperationException();
+            return null;
         }
     
         public boolean isResolveable( String name ) {
@@ -715,6 +725,12 @@ public class MVELCompilationUnit
         public void setTiltFlag(boolean tilt) {
             // TODO Auto-generated method stub
             
+        }
+    }
+    
+    public static class PropertyHandlerFactoryFixer extends PropertyHandlerFactory {
+        public static  Map<Class, PropertyHandler> getPropertyHandlerClass() {
+            return propertyHandlerClass;
         }
     }
 

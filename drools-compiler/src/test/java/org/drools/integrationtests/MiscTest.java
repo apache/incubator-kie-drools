@@ -2021,11 +2021,11 @@ public class MiscTest {
         session.insert( cell1 );
         FactHandle cellHandle = session.insert( cell );
 
-        StatefulKnowledgeSession ksesion = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session ),
+        StatefulKnowledgeSession ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( new StatefulKnowledgeSessionImpl( (ReteooWorkingMemory) session ),
                                                                                                       //                                                                                              MarshallerFactory.newIdentityMarshallingStrategy(),
                                                                                                       false );
 
-        ksesion.fireAllRules();
+        session.fireAllRules();
         assertEquals( 9,
                       cell.getValue() );
     }

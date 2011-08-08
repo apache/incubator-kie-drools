@@ -26,6 +26,7 @@ import java.util.Queue;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
 import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
@@ -38,6 +39,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
@@ -62,6 +64,8 @@ import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.NodeTypeEnums;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.QueryElementNode;
+import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
@@ -251,6 +255,10 @@ public class InputMarshaller {
     public static void readAgenda(MarshallerReaderContext context,
                                   DefaultAgenda agenda) throws IOException {
         ObjectInputStream stream = context.stream;
+        
+        agenda.setDormantActivations( stream.readInt() );
+        agenda.setActiveActivations( stream.readInt() );
+        
         while ( stream.readShort() == PersisterEnums.AGENDA_GROUP ) {
             BinaryHeapQueueAgendaGroup group = new BinaryHeapQueueAgendaGroup( stream.readUTF(),
                                                                                context.ruleBase );
@@ -347,26 +355,13 @@ public class InputMarshaller {
                                  handle );
             handles[i] = handle;
 
-            context.wm.getObjectStore().addHandle( handle,
-                                                   handle.getObject() );
+            if ( handle.getObject() != null ) {
+                context.wm.getObjectStore().addHandle( handle,
+                                                       handle.getObject() );
+            }
 
             readRightTuples( handle,
                              context );
-        }
-
-        EntryPointNode node = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT );
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = node.getObjectTypeNodes();
-
-        // add handles to object type nodes
-        for ( InternalFactHandle handle : handles ) {
-            Object object = handle.getObject();
-            ClassObjectType objectType = new ClassObjectType( object.getClass() );
-            ObjectTypeNode objectTypeNode = objectTypeNodes.get( objectType );
-            if (objectTypeNode != null) {
-                ObjectHashSet set = (ObjectHashSet) context.wm.getNodeMemory( objectTypeNode );
-                set.add( handle,
-                         false );
-            }
         }
 
         InternalFactHandle handle = wm.getInitialFactHandle();
@@ -379,22 +374,46 @@ public class InputMarshaller {
                            context );
         }
 
-        readLeftTuples( context );
+        readLeftTuples( context ); // object store
+        
+        if ( stream.readBoolean() ) {
+            readLeftTuples( context ); // activation fact handles
+        }
  
         readPropagationContexts( context );
 
-        readActivations( context );
+        readActivations( context );        
+
+        // add handles to object type nodes
+        for ( InternalFactHandle factHandle : handles ) {
+            Object object = factHandle.getObject();
+            
+            EntryPoint ep =  ((InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint()).getEntryPoint();
+            
+            ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep, object );
+            ObjectTypeNode[] cachedNodes = typeConf.getObjectTypeNodes();
+            for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
+                ObjectHashSet set = (ObjectHashSet) wm.getNodeMemory( cachedNodes[i] );
+                set.add( factHandle,
+                         false ); 
+            }
+        }        
     }
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
         int type = context.stream.readInt();
-        int id = context.stream.readInt();
+        int id = context.stream.readInt();        
         long recency = context.stream.readLong();
 
         int strategyIndex = context.stream.readInt();
-        ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
-        Object object = strategy.read( context.stream );
+        Object object;
+        if ( strategyIndex >= 0 ) {
+            ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+            object = strategy.read( context.stream );
+        } else {
+            object = null;
+        }
         
         WorkingMemoryEntryPoint entryPoint = null;
         if(context.readBoolean()){
@@ -495,7 +514,8 @@ public class InputMarshaller {
                 addToLeftMemory( parentLeftTuple, memory );
 
                 while ( stream.readShort() == PersisterEnums.RIGHT_TUPLE ) {
-                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                    int childSinkId = stream.readInt();
+                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( childSinkId );
                     int factHandleId = stream.readInt();
                     RightTupleKey key = new RightTupleKey( factHandleId,
                                                            sink );
@@ -612,7 +632,8 @@ public class InputMarshaller {
                             break;
                         }
                         case PersisterEnums.LEFT_TUPLE : {
-                            LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                            int sinkId = stream.readInt();
+                            LeftTupleSink childSink = (LeftTupleSink) sinks.get( sinkId );
                             LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
                                                                           accctx.result,
                                                                           childSink,
@@ -680,27 +701,67 @@ public class InputMarshaller {
                 break;
             }
             case NodeTypeEnums.UnificationNode : {
-                while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
-                    LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
-                    // we de-serialize the generated fact handle ID
+                boolean isOpen = context.readBoolean();
+                
+                if ( isOpen ) {
+                    QueryElementNode node = (QueryElementNode) sink;
                     InternalFactHandle handle = readFactHandle( context );
                     context.handles.put( handle.getId(),
-                                         handle );  
-                    RightTuple rightTuple = new RightTuple( handle );
-                    // @TODO check if open query
-                    LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
-                                                                  rightTuple,
-                                                                  childSink,
-                                                                  true );
-                    readLeftTuple( childLeftTuple,
-                                   context );
-                }
+                                         handle );                    
+                    node.createDroolsQuery( parentLeftTuple, handle, context.wm );
+                    readLeftTuples( context );
+                } else {
+                    while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
+                        LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                        // we de-serialize the generated fact handle ID
+                        InternalFactHandle handle = readFactHandle( context );
+                        context.handles.put( handle.getId(),
+                                             handle );  
+                        RightTuple rightTuple = new RightTuple( handle );
+                        // @TODO check if open query
+                        LeftTuple childLeftTuple = new LeftTupleImpl( parentLeftTuple,
+                                                                      rightTuple,
+                                                                      childSink,
+                                                                      true );
+                        readLeftTuple( childLeftTuple,
+                                       context );
+                    }                    
+                }                
                 break;
             }            
             case NodeTypeEnums.RuleTerminalNode : {
                 int pos = context.terminalTupleMap.size();
                 context.terminalTupleMap.put( pos,
                                               parentLeftTuple );
+                break;
+            }
+            case NodeTypeEnums.QueryTerminalNode : {
+                boolean unificationNode = context.readBoolean();
+                if ( unificationNode ) {
+                    // we de-serialize the generated fact handle ID
+                    InternalFactHandle handle = readFactHandle( context );
+                    context.handles.put( handle.getId(),
+                                         handle );  
+                    RightTuple rightTuple = new RightTuple( handle );  
+                    parentLeftTuple.setObject( rightTuple );
+                    
+                    LeftTuple entry = parentLeftTuple;
+
+                    // find the DroolsQuery object
+                    while ( entry.getParent() != null ) {
+                        entry = entry.getParent();
+                    }                                        
+                    DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();      
+                    LeftTuple leftTuple = ((UnificationNodeViewChangedEventListener)query.getQueryResultCollector()).getLeftTuple();
+                    
+                    while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
+                        LeftTupleSink childSink = (LeftTupleSink) sinks.get( stream.readInt() );
+                        // @TODO check if open query!!!
+                        LeftTuple childLeftTuple =  childSink.createLeftTuple( leftTuple, rightTuple, childSink );
+                        readLeftTuple( childLeftTuple,
+                                       context );
+                    }                      
+                }
                 break;
             }
         }
@@ -756,6 +817,12 @@ public class InputMarshaller {
 
         boolean activated = stream.readBoolean();
         activation.setActivated( activated );
+        
+        if ( stream.readBoolean() ) {            
+            InternalFactHandle handle = context.handles.get( stream.readInt() );
+            activation.setFactHandle( handle );
+            handle.setObject( activation );
+        }
 
         InternalAgendaGroup agendaGroup;
         if ( rule.getAgendaGroup() == null || rule.getAgendaGroup().equals( "" ) || rule.getAgendaGroup().equals( AgendaGroup.MAIN ) ) {

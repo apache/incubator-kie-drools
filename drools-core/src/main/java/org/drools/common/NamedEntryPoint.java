@@ -191,9 +191,9 @@ public class NamedEntryPoint
                         } else {
                             // this was object is already justified, so just add new logical dependency
                             this.wm.tms.addLogicalDependency( handle,
-                                                           activation,
-                                                           activation.getPropagationContext(),
-                                                           rule );
+                                                              activation,
+                                                              activation.getPropagationContext(),
+                                                              rule );
                         }
 
                         return handle;
@@ -340,8 +340,13 @@ public class NamedEntryPoint
                                                               handle,
                                                               object,
                                                               this.wm );
-
+        
         this.wm.executeQueuedActions();        
+        
+        if ( rule == null ) {
+            // This is not needed for internal WM actions as the firing rule will unstage
+            ((DefaultAgenda)this.wm.getAgenda()).unstageActivations();
+        }        
     }
 
     public void update(final org.drools.runtime.rule.FactHandle handle,
@@ -466,6 +471,11 @@ public class NamedEntryPoint
                                                               this.wm );
 
            this.wm.executeQueuedActions();
+           
+           if ( rule == null ) {
+               // This is not needed for internal WM actions as the firing rule will unstage
+               ((DefaultAgenda)this.wm.getAgenda()).unstageActivations();
+           }           
         } finally {
             this.wm.endOperation();
             this.lock.unlock();
@@ -570,6 +580,11 @@ public class NamedEntryPoint
             this.handleFactory.destroyFactHandle( handle );
 
             this.wm.executeQueuedActions();
+            
+            if ( rule == null ) {
+                // This is not needed for internal WM actions as the firing rule will unstage
+                ((DefaultAgenda)this.wm.getAgenda()).unstageActivations();
+            }            
         } finally {
             this.wm.endOperation();
             this.lock.unlock();

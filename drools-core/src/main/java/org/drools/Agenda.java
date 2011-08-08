@@ -70,6 +70,8 @@ public interface Agenda extends org.drools.runtime.rule.Agenda {
     public AgendaGroup[] getAgendaGroups();
 
     public AgendaGroup[] getStack();
+    
+    public void unstageActivations();
 
     /**
      * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s

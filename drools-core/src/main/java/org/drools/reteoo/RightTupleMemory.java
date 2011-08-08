@@ -47,6 +47,8 @@ public interface RightTupleMemory {
     public FastIterator fastIterator();
     
     public FastIterator fullFastIterator();
+    
+    public FastIterator fullFastIterator(RightTuple rightTuple);
 
     public boolean isIndexed();
 
