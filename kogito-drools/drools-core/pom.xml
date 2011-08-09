@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
-    <version>5.3.0-SNAPSHOT</version>
+    <version>5.3.0.Beta1</version>
   </parent>
 
   <artifactId>drools-core</artifactId>
@@ -99,32 +98,28 @@
                 <configuration>
                   <tasks if="generategrammars">
                     <path id="base.classpath">
-                      <pathelement
-                          path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar"/>
-                      <pathelement
-                          path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar"/>
-                      <pathelement
-                          path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar"/>
+                      <pathelement path="${user.home}/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar" />
+                      <pathelement path="${user.home}/.m2/repository/org/antlr/stringtemplate/3.2/stringtemplate-3.2.jar" />
+                      <pathelement path="${user.home}/.m2/repository/org/antlr/antlr/3.1.1/antlr-3.1.1.jar" />
                     </path>
-                    <property name="antlr_classpath" refid="maven.compile.classpath"/>
-                    <echo message="Generating Antlr Grammars"/>
+                    <property name="antlr_classpath" refid="maven.compile.classpath" />
+                    <echo message="Generating Antlr Grammars" />
                     <java classname="org.antlr.Tool" fork="true">
-                      <arg
-                          line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g"/>
-                      <classpath refid="base.classpath"/>
+                      <arg line="-lib src/test/resources/org/drools/reteoo/test/parser src/test/resources/org/drools/reteoo/test/parser/NodeTestDSL.g src/test/resources/org/drools/reteoo/test/parser/NodeTestDSLTree.g" />
+                      <classpath refid="base.classpath" />
                     </java>
                     <move todir="src/test/java/org/drools/reteoo/test/parser">
                       <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.java"/>
-                        <exclude name="**/__*"/>
+                        <include name="**/*.java" />
+                        <exclude name="**/__*" />
                       </fileset>
                     </move>
                     <delete>
                       <fileset dir="src/test/resources/org/drools/reteoo/test/parser">
-                        <include name="**/*.tokens"/>
-                        <include name="**/classes"/>
-                        <include name="**/__*"/>
-                        <include name="NodeTestDSL__.g"/>
+                        <include name="**/*.tokens" />
+                        <include name="**/classes" />
+                        <include name="**/__*" />
+                        <include name="NodeTestDSL__.g" />
                       </fileset>
                     </delete>
                   </tasks>
@@ -188,8 +183,7 @@
             <exclude>**/ReteooMannersTest.java</exclude>
             <exclude>**/LeapsWaltzTest.java</exclude>
             <exclude>**/ReteooWaltzTest.java</exclude>
-            <exclude>**/TableTest.java</exclude> </excludes
-          -->
+            <exclude>**/TableTest.java</exclude> </excludes -->
         </configuration>
       </plugin>
       <plugin>
