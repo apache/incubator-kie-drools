@@ -873,24 +873,26 @@ public class OutputMarshaller {
 
     public static void writePropagationContexts(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
-
-        Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[context.terminalTupleMap.size()] );
-        Arrays.sort( entries,
-                     TupleSorter.instance );
-
-        //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
-        if ( entries.length != 0 ) {
-            Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
-            for ( Entry<LeftTuple, Integer> entry : entries ) {
-                LeftTuple leftTuple = entry.getKey();
-                if ( leftTuple.getObject() != null ) {
-                    PropagationContext pc = ((Activation) leftTuple.getObject()).getPropagationContext();
-                    if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
-                        stream.writeShort( PersisterEnums.PROPAGATION_CONTEXT );
-                        writePropagationContext( context,
-                                                 pc );
-                        pcMap.put( pc.getPropagationNumber(),
-                                   pc );
+        
+        if ( context.terminalTupleMap != null && context.terminalTupleMap.size() > 0  ) {
+            Entry<LeftTuple, Integer>[] entries = context.terminalTupleMap.entrySet().toArray( new Entry[context.terminalTupleMap.size()] );
+            Arrays.sort( entries,
+                         TupleSorter.instance );
+    
+            //Map<LeftTuple, Integer> tuples = context.terminalTupleMap;
+            if ( entries.length != 0 ) {
+                Map<Long, PropagationContext> pcMap = new HashMap<Long, PropagationContext>();
+                for ( Entry<LeftTuple, Integer> entry : entries ) {
+                    LeftTuple leftTuple = entry.getKey();
+                    if ( leftTuple.getObject() != null ) {
+                        PropagationContext pc = ((Activation) leftTuple.getObject()).getPropagationContext();
+                        if ( !pcMap.containsKey( pc.getPropagationNumber() ) ) {
+                            stream.writeShort( PersisterEnums.PROPAGATION_CONTEXT );
+                            writePropagationContext( context,
+                                                     pc );
+                            pcMap.put( pc.getPropagationNumber(),
+                                       pc );
+                        }
                     }
                 }
             }
