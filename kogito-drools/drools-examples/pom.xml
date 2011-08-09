@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-multiproject</artifactId>
-    <version>5.3.0.Beta1</version>
+    <version>5.3.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-examples</artifactId>
@@ -72,7 +72,7 @@
             <argument>-Xms1024M</argument>
             <argument>-Xmx1024M</argument>
             <argument>-cp</argument>
-            <classpath />
+            <classpath/>
             <argument>org.drools.benchmark.waltz.WaltzBenchmark</argument>
             <argument>waltz12.dat</argument>
           </arguments>
@@ -129,18 +129,18 @@
                 <phase>process-resources</phase>
                 <configuration>
                   <tasks>
-                    <replace file="${basedir}/src/main/java/org/drools/examples/DroolsExamplesApp.java">
+                    <replace file="${basedir}/src/main/java/org/drools/examples/DroolsExamplesApp.java" >
                       <replacefilter token="Drools examples" value="JBoss BRMS examples" />
                     </replace>      
-                    <replace file="${basedir}/src/main/java/org/drools/examples/sudoku/SudokuExample.java">
+                    <replace file="${basedir}/src/main/java/org/drools/examples/sudoku/SudokuExample.java" >
                       <replacefilter token="Drools Sudoku Example" value="JBoss BRMS Sudoku Example" />
                     </replace>      
 
-                    <replace file="${basedir}/src/main/java/org/drools/benchmark/DroolsBenchmarkExamplesApp.java">
+                    <replace file="${basedir}/src/main/java/org/drools/benchmark/DroolsBenchmarkExamplesApp.java" >
                       <replacefilter token="Drools Benchmark example" value="JBoss BRMS Benchmark example" />
                     </replace>      
 
-                    <replace file="${basedir}/src/main/java/org/drools/tutorials/banking/BankingExamplesApp.java">
+                    <replace file="${basedir}/src/main/java/org/drools/tutorials/banking/BankingExamplesApp.java" >
                       <replacefilter token="Drools Banking tutorial" value="JBoss BRMS Banking tutorial" />
                     </replace>      
                   </tasks>
