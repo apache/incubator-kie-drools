@@ -15,6 +15,13 @@
   <description>JPA implementation for Drools</description>
 
   <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+    
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -195,4 +202,40 @@
     </dependency>    
   </dependencies>
 
+  <!--
+     These are properties used in the database profiles. Some of them must be initialized
+     them to be empty so that Maven applies them via filtering to the resources. 
+     -->
+  <properties>
+    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
+    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
+    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+    <maven.jdbc.db.name/>
+    <maven.jdbc.db.port/>
+    <maven.jdbc.db.server/>     
+    <maven.jdbc.driver.jar/>
+    <maven.jdbc.username>sa</maven.jdbc.username>
+    <maven.jdbc.password></maven.jdbc.password>
+    <maven.jdbc.url>jdbc:h2:tcp://localhost/JPADroolsFlow</maven.jdbc.url>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>database</id>
+       
+      <dependencies>
+        <!--  Add the downloaded jdbc driver jar for the database to the classpath.
+              !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
+        <dependency>
+           <groupId>org.jbpm</groupId>
+           <artifactId>downloaded-jdbc-driver-jar</artifactId>
+           <version>1.0</version>
+           <scope>system</scope>
+           <systemPath>${maven.jdbc.driver.jar}</systemPath>
+        </dependency>  
+      </dependencies>
+    </profile>
+ </profiles>
+    
 </project>
