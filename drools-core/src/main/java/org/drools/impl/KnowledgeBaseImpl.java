@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
@@ -257,6 +258,9 @@ public class KnowledgeBaseImpl
         return this.ruleBase.getPackage( packageName ).getRule( queryName );
     }
     
+    public Set<String> getEntryPointIds() {
+        return this.ruleBase.getEntryPointIds();
+    }
 
     public static class KnowledgeBaseEventListenerWrapper
         implements
