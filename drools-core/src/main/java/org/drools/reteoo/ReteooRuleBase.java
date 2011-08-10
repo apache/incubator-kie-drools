@@ -369,7 +369,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                                                        executor,
                                                                        sessionConfig,
                                                                        environment );
-            session.setKnowledgeRuntime(new StatefulKnowledgeSessionImpl(session));
+            new StatefulKnowledgeSessionImpl(session);
 
             executor.setCommandExecutor( new CommandExecutor( session ) );
 

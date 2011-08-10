@@ -113,8 +113,8 @@ public class StatefulKnowledgeSessionImpl
     public StatefulKnowledgeSessionImpl(ReteooWorkingMemory session,
                                         KnowledgeBase kbase) {
         this.session = session;
-        this.session.setKnowledgeRuntime( this );
         this.kbase = kbase;
+        this.session.setKnowledgeRuntime( this );
     }
     
     public void reset() {
