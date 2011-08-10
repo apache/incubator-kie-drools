@@ -45,6 +45,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	private SignalManager signalManager;
 	private TimerManager timerManager;
 	private ProcessEventSupport processEventSupport;
+	private DefaultKnowledgeBaseEventListener knowledgeBaseListener;
 
 	public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
 		this.kruntime = kruntime;
@@ -198,7 +199,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         for ( Process process : kruntime.getKnowledgeBase().getProcesses() ) {
             initProcessEventListener(process);
         }
-        kruntime.getKnowledgeBase().addEventListener(new DefaultKnowledgeBaseEventListener() {
+        knowledgeBaseListener = new DefaultKnowledgeBaseEventListener() {
         	@Override
         	public void afterProcessAdded(AfterProcessAddedEvent event) {
         		initProcessEventListener(event.getProcess());
@@ -215,7 +216,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         			}
         		}
         	}
-		});
+		};
+        kruntime.getKnowledgeBase().addEventListener(knowledgeBaseListener);
     }
     
     private void initProcessEventListener(Process process) {
@@ -366,6 +368,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	public void dispose() {
         this.processEventSupport.reset();
         this.timerManager.dispose();
+        kruntime.getKnowledgeBase().removeEventListener(knowledgeBaseListener);
+        kruntime = null;
+        workingMemory = null;
 	}
 
 	public void clearProcessInstances() {
