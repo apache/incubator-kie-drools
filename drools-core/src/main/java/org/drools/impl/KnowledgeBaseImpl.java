@@ -173,7 +173,7 @@ public class KnowledgeBaseImpl
         }
         
         ReteooStatefulSession session = (ReteooStatefulSession) this.ruleBase.newStatefulSession( (SessionConfiguration) conf, environment );
-        return new StatefulKnowledgeSessionImpl( session, this );
+        return (StatefulKnowledgeSession) session.getKnowledgeRuntime();
     }
     
     public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions()
