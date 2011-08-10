@@ -276,7 +276,7 @@ ksession.startProcess("com.sample.HelloWorld");</programlisting>
           <entry>sequenceFlow</entry>
           <entry>sourceRef targetRef isImmediate name id</entry>
           <entry>conditionExpression</entry>
-          <entry>priority bendpoints</entry>
+          <entry>priority</entry>
           <entry></entry>
         </row>
       </tbody>
