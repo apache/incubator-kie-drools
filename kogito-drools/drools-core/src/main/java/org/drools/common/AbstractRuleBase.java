@@ -1158,4 +1158,12 @@ abstract public class AbstractRuleBase
     public ClassFieldAccessorCache getClassFieldAccessorCache() {
         return this.classFieldAccessorCache;
     }
+    
+    public Set<String> getEntryPointIds() {
+        Set<String> entryPointIds = new HashSet<String>();
+        for( Package pkg : this.pkgs.values() ) {
+            entryPointIds.addAll( pkg.getEntryPointIds() );
+        }
+        return entryPointIds;
+    }
 }

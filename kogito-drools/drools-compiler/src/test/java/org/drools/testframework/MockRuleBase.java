@@ -6,6 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -183,5 +184,10 @@ public class MockRuleBase implements RuleBase {
                             String queryName) {
         // TODO Auto-generated method stub
         
+    }
+
+    public Set<String> getEntryPointIds() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -80,6 +80,8 @@ public class Package
     private DialectRuntimeRegistry         dialectRuntimeRegistry;
 
     private Map<String, TypeDeclaration>   typeDeclarations;
+    
+    private Set<String>                    entryPointsIds = Collections.emptySet();
 
     private ClassFieldAccessorStore        classFieldAccessorStore;
 
@@ -125,6 +127,7 @@ public class Package
         this.functions = Collections.EMPTY_MAP;
         this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
+        this.entryPointsIds = Collections.emptySet();
     }
 
     /**
@@ -161,6 +164,7 @@ public class Package
         out.writeBoolean( this.valid );
         out.writeObject( this.rules );
         out.writeObject( this.classFieldAccessorStore );
+        out.writeObject( this.entryPointsIds );
         // writing the whole stream as a byte array
         if ( !isDroolsStream ) {
             bytes.flush();
@@ -201,6 +205,7 @@ public class Package
         this.valid = in.readBoolean();
         this.rules = (Map<String, Rule>) in.readObject();
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
+        this.entryPointsIds = (Set<String>) in.readObject();
         if ( !isDroolsStream ) {
             in.close();
         }
@@ -549,5 +554,15 @@ public class Package
         this.classFieldAccessorStore.setClassFieldAccessorCache( classFieldAccessorCache );
     }
 
+    public Set<String> getEntryPointIds() {
+        return entryPointsIds;
+    }
+    
+    public void addEntryPointId( String id ) {
+        if( entryPointsIds == Collections.EMPTY_SET ) {
+            entryPointsIds = new HashSet<String>();
+        }
+        entryPointsIds.add( id );
+    }
 
 }

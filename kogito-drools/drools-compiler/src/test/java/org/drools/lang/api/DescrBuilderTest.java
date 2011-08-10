@@ -246,9 +246,6 @@ public class DescrBuilderTest {
         assertEquals( 3,
                       kbase.getEntryPointIds().size() );
         
-        
-
-
     }
 
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {

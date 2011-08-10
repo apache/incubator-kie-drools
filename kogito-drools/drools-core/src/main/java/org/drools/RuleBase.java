@@ -17,6 +17,7 @@
 package org.drools;
 
 import java.io.Externalizable;
+import java.util.Set;
 
 import org.drools.definition.type.FactType;
 import org.drools.rule.Package;
@@ -168,4 +169,7 @@ public interface RuleBase
      * Then the string you pass in would be "com.company.Driver".
      */
     public FactType getFactType(String string);
+    
+    public Set<String> getEntryPointIds();
+    
 }
