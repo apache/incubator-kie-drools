@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.*;
 
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
@@ -617,6 +618,8 @@ public class JavaDialect
         return this.results;
     }
 
+    private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[ -/:-@\\[-`\\{-\\xff]");
+
     /**
      * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
      * <p/>
@@ -633,27 +636,21 @@ public class JavaDialect
                                             final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        String newName = prefix + "_" + name.replaceAll( "[ -/:-@\\[-`\\{-\\xff]",
-                                                         "_" );
+        final String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
+        final String fileName = packageName.replace('.', '/') + "/" + newName + "_";
 
         // make sure the class name does not exist, if it does increase the counter
         int counter = -1;
-        boolean exists = true;
-        while ( exists ) {
+        while (true) {
 
             counter++;
-            final String fileName = packageName.replaceAll( "\\.",
-                                                            "/" ) + "/" + newName + "_" + counter + "." + ext;
+            final String actualName = fileName + counter + "." + ext;
 
             //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
-            exists = src != null && src.isAvailable( fileName );
+            if (src == null || !src.isAvailable(actualName)) break;
         }
         // we have duplicate file names so append counter
-        if ( counter >= 0 ) {
-            newName = newName + "_" + counter;
-        }
-
-        return newName;
+        return counter >= 0 ? (newName + "_" + counter) : newName;
     }
 
     public String getId() {
