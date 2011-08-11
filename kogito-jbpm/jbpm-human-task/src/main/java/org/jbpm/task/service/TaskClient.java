@@ -39,7 +39,7 @@ import org.jbpm.task.service.TaskClientHandler.SetDocumentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskOperationResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.TaskSummaryResponseHandler;
 
-public class TaskClient  {
+public class TaskClient implements AsyncTaskService{
 
     private final BaseHandler handler;
 	private final AtomicInteger counter;
@@ -53,6 +53,7 @@ public class TaskClient  {
 		this.handler = connector.getHandler();
 	}
 
+    @Override
     public void addTask(Task task, ContentData content, 
                         AddTaskResponseHandler responseHandler) {
     	List<Object> args = new ArrayList<Object>( 2 );
@@ -68,6 +69,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTask(long taskId,
                         GetTaskResponseHandler responseHandler) {
         List<Object> args = new ArrayList<Object>( 1 );
@@ -83,6 +85,7 @@ public class TaskClient  {
 
     }
 
+    @Override
     public void addComment(long taskId,
                            Comment comment,
                            AddCommentResponseHandler responseHandler) {
@@ -99,6 +102,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void deleteComment(long taskId,
                               long commentId,
                               DeleteCommentResponseHandler responseHandler) {
@@ -115,6 +119,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void addAttachment(long taskId,
                               Attachment attachment,
                               Content content,
@@ -133,6 +138,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void deleteAttachment(long taskId,
                                  long attachmentId,
                                  long contentId,
@@ -151,6 +157,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void setDocumentContent(long taskId,
                                    Content content,
                                    SetDocumentResponseHandler responseHandler) {
@@ -167,6 +174,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getContent(long contentId,
                            GetContentResponseHandler responseHandler) {
         List<Object> args = new ArrayList<Object>( 1 );
@@ -181,6 +189,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void claim(long taskId,
                       String userId,
                       TaskOperationResponseHandler responseHandler) {
@@ -198,6 +207,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void claim(long taskId,
 		  		      String userId,
 		  		      List<String> groupIds,
@@ -219,6 +229,7 @@ public class TaskClient  {
 		connector.write( cmd );
 	}
 
+    @Override
     public void start(long taskId,
                       String userId,
                       TaskOperationResponseHandler responseHandler) {
@@ -236,6 +247,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void stop(long taskId,
                      String userId,
                      TaskOperationResponseHandler responseHandler) {
@@ -253,6 +265,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void release(long taskId,
                         String userId,
                         TaskOperationResponseHandler responseHandler) {
@@ -270,6 +283,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void suspend(long taskId,
                         String userId,
                         TaskOperationResponseHandler responseHandler) {
@@ -287,6 +301,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void resume(long taskId,
                        String userId,
                        TaskOperationResponseHandler responseHandler) {
@@ -304,6 +319,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void skip(long taskId,
                      String userId,
                      TaskOperationResponseHandler responseHandler) {
@@ -321,6 +337,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
     
+    @Override
     public void delegate(long taskId,
                          String userId,
                          String targetUserId,
@@ -340,6 +357,7 @@ public class TaskClient  {
         connector.write( cmd );      
     }
     
+    @Override
     public void forward(long taskId,
                         String userId,
                         String targetEntityId,
@@ -359,6 +377,7 @@ public class TaskClient  {
         connector.write( cmd );      
     }    
 
+    @Override
     public void complete(long taskId,
                          String userId,
                          ContentData outputData,
@@ -379,6 +398,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void fail(long taskId,
                      String userId,
                      FaultData faultData,
@@ -399,6 +419,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTasksOwned(String userId,
                               String language,
                               TaskSummaryResponseHandler responseHandler) {
@@ -413,6 +434,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTaskByWorkItemId(long workItemId,
 			                        GetTaskResponseHandler responseHandler) {
 		List<Object> args = new ArrayList<Object>(1);
@@ -425,6 +447,7 @@ public class TaskClient  {
 		connector.write(cmd);
 	}
 
+    @Override
     public void getTasksAssignedAsBusinessAdministrator(String userId,
                                                         String language,
                                                         TaskSummaryResponseHandler responseHandler) {
@@ -439,6 +462,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTasksAssignedAsExcludedOwner(String userId,
                                                 String language,
                                                 TaskSummaryResponseHandler responseHandler) {
@@ -453,6 +477,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTasksAssignedAsPotentialOwner(String userId,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
@@ -467,6 +492,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
@@ -482,6 +508,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
     
+    @Override
     public void getSubTasksAssignedAsPotentialOwner(long parentId, String userId,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
@@ -496,6 +523,7 @@ public class TaskClient  {
                                     responseHandler );
         connector.write( cmd );
     }
+    @Override
     public void getSubTasksByParent(long parentId, TaskSummaryResponseHandler responseHandler) {
         List<Object> args = new ArrayList<Object>( 2 );
         args.add( parentId );
@@ -508,6 +536,7 @@ public class TaskClient  {
                                     responseHandler );
         connector.write( cmd );
     }
+    @Override
     public void getTasksAssignedAsRecipient(String userId,
                                             String language,
                                             TaskSummaryResponseHandler responseHandler) {
@@ -522,6 +551,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTasksAssignedAsTaskInitiator(String userId,
                                                 String language,
                                                 TaskSummaryResponseHandler responseHandler) {
@@ -536,6 +566,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void getTasksAssignedAsTaskStakeholder(String userId,
                                                   String language,
                                                   TaskSummaryResponseHandler responseHandler) {
@@ -550,6 +581,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
 
+    @Override
     public void registerForEvent(EventKey key,
                                  boolean remove,
                                  EventResponseHandler responseHandler) {
@@ -565,6 +597,7 @@ public class TaskClient  {
         connector.write( cmd );
     }
     
+    @Override
     public void query(String qlString, 
     					 Integer size, 
     					 Integer offset, 
@@ -581,6 +614,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void register(long taskId,
     		String userId,
     		TaskOperationResponseHandler responseHandler) {
@@ -598,6 +632,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void remove(long taskId,
     		String userId,
     		TaskOperationResponseHandler responseHandler) {
@@ -615,6 +650,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void nominate(long taskId,
     		String userId,
     		List<OrganizationalEntity> potentialOwners,
@@ -633,6 +669,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
 
+    @Override
     public void activate(long taskId, 
     		String userId,
     		TaskOperationResponseHandler responseHandler) {
@@ -651,6 +688,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void setOutput(long taskId,
     		String userId, 
     		ContentData outputContentData, 
@@ -669,6 +707,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void deleteOutput(long taskId,
     		String userId,
     		TaskOperationResponseHandler responseHandler) {
@@ -685,6 +724,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void setFault(long taskId, 
     		String userId, 
     		FaultData fault, 
@@ -703,6 +743,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void deleteFault(long taskId,
     		String userId,
     		TaskOperationResponseHandler responseHandler) {
@@ -719,6 +760,7 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public void setPriority(long taskId,
     		String userId,
     		int priority,
@@ -737,14 +779,17 @@ public class TaskClient  {
     	connector.write( cmd );
     }
     
+    @Override
     public boolean connect() {
     	return connector.connect();
     }
     
+    @Override
     public boolean connect(String address, int port) {
     	return connector.connect(address, port);
     }
     
+    @Override
     public void disconnect() throws Exception {
     	connector.disconnect();
     }
