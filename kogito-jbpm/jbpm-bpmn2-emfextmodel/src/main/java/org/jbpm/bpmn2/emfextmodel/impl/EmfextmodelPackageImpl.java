@@ -83,6 +83,13 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
+    private EDataType priorityTypeEDataType = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     private EDataType ruleFlowGroupTypeEDataType = null;
 
     /**
@@ -258,7 +265,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getDocumentRoot_RuleFlowGroup() {
+    public EAttribute getDocumentRoot_Priority() {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(8);
     }
 
@@ -267,7 +274,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getDocumentRoot_TaskName() {
+    public EAttribute getDocumentRoot_RuleFlowGroup() {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(9);
     }
 
@@ -276,8 +283,17 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getDocumentRoot_Version() {
+    public EAttribute getDocumentRoot_TaskName() {
         return (EAttribute)documentRootEClass.getEStructuralFeatures().get(10);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getDocumentRoot_Version() {
+        return (EAttribute)documentRootEClass.getEStructuralFeatures().get(11);
     }
 
     /**
@@ -393,6 +409,15 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
      * <!-- end-user-doc -->
      * @generated
      */
+    public EDataType getPriorityType() {
+        return priorityTypeEDataType;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EDataType getRuleFlowGroupType() {
         return ruleFlowGroupTypeEDataType;
     }
@@ -452,6 +477,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
         createEReference(documentRootEClass, DOCUMENT_ROOT__ON_ENTRY_SCRIPT);
         createEReference(documentRootEClass, DOCUMENT_ROOT__ON_EXIT_SCRIPT);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__PACKAGE_NAME);
+        createEAttribute(documentRootEClass, DOCUMENT_ROOT__PRIORITY);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__RULE_FLOW_GROUP);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__TASK_NAME);
         createEAttribute(documentRootEClass, DOCUMENT_ROOT__VERSION);
@@ -473,6 +499,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
 
         // Create data types
         packageNameTypeEDataType = createEDataType(PACKAGE_NAME_TYPE);
+        priorityTypeEDataType = createEDataType(PRIORITY_TYPE);
         ruleFlowGroupTypeEDataType = createEDataType(RULE_FLOW_GROUP_TYPE);
         taskNameTypeEDataType = createEDataType(TASK_NAME_TYPE);
         versionTypeEDataType = createEDataType(VERSION_TYPE);
@@ -520,6 +547,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
         initEReference(getDocumentRoot_OnEntryScript(), this.getOnEntryScriptType(), null, "onEntryScript", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEReference(getDocumentRoot_OnExitScript(), this.getOnExitScriptType(), null, "onExitScript", null, 0, -2, null, IS_TRANSIENT, IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_PackageName(), this.getPackageNameType(), "packageName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getDocumentRoot_Priority(), this.getPriorityType(), "priority", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_RuleFlowGroup(), this.getRuleFlowGroupType(), "ruleFlowGroup", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_TaskName(), this.getTaskNameType(), "taskName", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getDocumentRoot_Version(), this.getVersionType(), "version", null, 0, 1, null, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -541,6 +569,7 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
 
         // Initialize data types
         initEDataType(packageNameTypeEDataType, String.class, "PackageNameType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+        initEDataType(priorityTypeEDataType, BigInteger.class, "PriorityType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(ruleFlowGroupTypeEDataType, String.class, "RuleFlowGroupType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(taskNameTypeEDataType, String.class, "TaskNameType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
         initEDataType(versionTypeEDataType, BigInteger.class, "VersionType", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
@@ -627,6 +656,14 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
            new String[] {
              "kind", "attribute",
              "name", "packageName",
+             "namespace", "##targetNamespace"
+           });		
+        addAnnotation
+          (getDocumentRoot_Priority(), 
+           source, 
+           new String[] {
+             "kind", "attribute",
+             "name", "priority",
              "namespace", "##targetNamespace"
            });		
         addAnnotation
@@ -738,6 +775,14 @@ public class EmfextmodelPackageImpl extends EPackageImpl implements EmfextmodelP
            new String[] {
              "name", "packageName_._type",
              "baseType", "http://www.eclipse.org/emf/2003/XMLType#string"
+           });		
+        addAnnotation
+          (priorityTypeEDataType, 
+           source, 
+           new String[] {
+             "name", "priority_._type",
+             "baseType", "http://www.eclipse.org/emf/2003/XMLType#integer",
+             "minInclusive", "1"
            });		
         addAnnotation
           (ruleFlowGroupTypeEDataType, 

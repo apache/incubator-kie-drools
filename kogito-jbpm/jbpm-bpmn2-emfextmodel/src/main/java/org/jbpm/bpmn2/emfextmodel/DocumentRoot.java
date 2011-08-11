@@ -30,6 +30,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getPackageName <em>Package Name</em>}</li>
+ *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getTaskName <em>Task Name</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getVersion <em>Version</em>}</li>
@@ -228,6 +229,33 @@ public interface DocumentRoot extends EObject {
      * @generated
      */
     void setPackageName(String value);
+
+    /**
+     * Returns the value of the '<em><b>Priority</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Priority</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Priority</em>' attribute.
+     * @see #setPriority(BigInteger)
+     * @see org.jbpm.bpmn2.emfextmodel.EmfextmodelPackage#getDocumentRoot_Priority()
+     * @model dataType="org.jbpm.bpmn2.emfextmodel.PriorityType"
+     *        extendedMetaData="kind='attribute' name='priority' namespace='##targetNamespace'"
+     * @generated
+     */
+    BigInteger getPriority();
+
+    /**
+     * Sets the value of the '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getPriority <em>Priority</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Priority</em>' attribute.
+     * @see #getPriority()
+     * @generated
+     */
+    void setPriority(BigInteger value);
 
     /**
      * Returns the value of the '<em><b>Rule Flow Group</b></em>' attribute.

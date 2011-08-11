@@ -49,6 +49,7 @@ import org.jbpm.bpmn2.emfextmodel.OnExitScriptType;
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getOnEntryScript <em>On Entry Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getOnExitScript <em>On Exit Script</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getPackageName <em>Package Name</em>}</li>
+ *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getPriority <em>Priority</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getRuleFlowGroup <em>Rule Flow Group</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getTaskName <em>Task Name</em>}</li>
  *   <li>{@link org.jbpm.bpmn2.emfextmodel.impl.DocumentRootImpl#getVersion <em>Version</em>}</li>
@@ -107,6 +108,26 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * @ordered
      */
     protected String packageName = PACKAGE_NAME_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getPriority() <em>Priority</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getPriority()
+     * @generated
+     * @ordered
+     */
+    protected static final BigInteger PRIORITY_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getPriority() <em>Priority</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getPriority()
+     * @generated
+     * @ordered
+     */
+    protected BigInteger priority = PRIORITY_EDEFAULT;
 
     /**
      * The default value of the '{@link #getRuleFlowGroup() <em>Rule Flow Group</em>}' attribute.
@@ -357,6 +378,27 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
      * <!-- end-user-doc -->
      * @generated
      */
+    public BigInteger getPriority() {
+        return priority;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setPriority(BigInteger newPriority) {
+        BigInteger oldPriority = priority;
+        priority = newPriority;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, EmfextmodelPackage.DOCUMENT_ROOT__PRIORITY, oldPriority, priority));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public String getRuleFlowGroup() {
         return ruleFlowGroup;
     }
@@ -468,6 +510,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return getOnExitScript();
             case EmfextmodelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
                 return getPackageName();
+            case EmfextmodelPackage.DOCUMENT_ROOT__PRIORITY:
+                return getPriority();
             case EmfextmodelPackage.DOCUMENT_ROOT__RULE_FLOW_GROUP:
                 return getRuleFlowGroup();
             case EmfextmodelPackage.DOCUMENT_ROOT__TASK_NAME:
@@ -509,6 +553,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return;
             case EmfextmodelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
                 setPackageName((String)newValue);
+                return;
+            case EmfextmodelPackage.DOCUMENT_ROOT__PRIORITY:
+                setPriority((BigInteger)newValue);
                 return;
             case EmfextmodelPackage.DOCUMENT_ROOT__RULE_FLOW_GROUP:
                 setRuleFlowGroup((String)newValue);
@@ -555,6 +602,9 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
             case EmfextmodelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
                 setPackageName(PACKAGE_NAME_EDEFAULT);
                 return;
+            case EmfextmodelPackage.DOCUMENT_ROOT__PRIORITY:
+                setPriority(PRIORITY_EDEFAULT);
+                return;
             case EmfextmodelPackage.DOCUMENT_ROOT__RULE_FLOW_GROUP:
                 setRuleFlowGroup(RULE_FLOW_GROUP_EDEFAULT);
                 return;
@@ -592,6 +642,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
                 return getOnExitScript() != null;
             case EmfextmodelPackage.DOCUMENT_ROOT__PACKAGE_NAME:
                 return PACKAGE_NAME_EDEFAULT == null ? packageName != null : !PACKAGE_NAME_EDEFAULT.equals(packageName);
+            case EmfextmodelPackage.DOCUMENT_ROOT__PRIORITY:
+                return PRIORITY_EDEFAULT == null ? priority != null : !PRIORITY_EDEFAULT.equals(priority);
             case EmfextmodelPackage.DOCUMENT_ROOT__RULE_FLOW_GROUP:
                 return RULE_FLOW_GROUP_EDEFAULT == null ? ruleFlowGroup != null : !RULE_FLOW_GROUP_EDEFAULT.equals(ruleFlowGroup);
             case EmfextmodelPackage.DOCUMENT_ROOT__TASK_NAME:
@@ -616,6 +668,8 @@ public class DocumentRootImpl extends EObjectImpl implements DocumentRoot {
         result.append(mixed);
         result.append(", packageName: ");
         result.append(packageName);
+        result.append(", priority: ");
+        result.append(priority);
         result.append(", ruleFlowGroup: ");
         result.append(ruleFlowGroup);
         result.append(", taskName: ");

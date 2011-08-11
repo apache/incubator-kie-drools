@@ -9,6 +9,7 @@
   <genPackages prefix="Emfextmodel" basePackage="org.jbpm.bpmn2" resource="XML" disposableProviderFactory="true"
       ecorePackage="emfextmodel.ecore#/">
     <genDataTypes ecoreDataType="emfextmodel.ecore#//PackageNameType"/>
+    <genDataTypes ecoreDataType="emfextmodel.ecore#//PriorityType"/>
     <genDataTypes ecoreDataType="emfextmodel.ecore#//RuleFlowGroupType"/>
     <genDataTypes ecoreDataType="emfextmodel.ecore#//TaskNameType"/>
     <genDataTypes ecoreDataType="emfextmodel.ecore#//VersionType"/>
@@ -21,6 +22,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/onEntryScript"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference emfextmodel.ecore#//DocumentRoot/onExitScript"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/packageName"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/priority"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/ruleFlowGroup"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/taskName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute emfextmodel.ecore#//DocumentRoot/version"/>

@@ -143,13 +143,22 @@ public interface EmfextmodelPackage extends EPackage {
     int DOCUMENT_ROOT__PACKAGE_NAME = 7;
 
     /**
+     * The feature id for the '<em><b>Priority</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DOCUMENT_ROOT__PRIORITY = 8;
+
+    /**
      * The feature id for the '<em><b>Rule Flow Group</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__RULE_FLOW_GROUP = 8;
+    int DOCUMENT_ROOT__RULE_FLOW_GROUP = 9;
 
     /**
      * The feature id for the '<em><b>Task Name</b></em>' attribute.
@@ -158,7 +167,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__TASK_NAME = 9;
+    int DOCUMENT_ROOT__TASK_NAME = 10;
 
     /**
      * The feature id for the '<em><b>Version</b></em>' attribute.
@@ -167,7 +176,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT__VERSION = 10;
+    int DOCUMENT_ROOT__VERSION = 11;
 
     /**
      * The number of structural features of the '<em>Document Root</em>' class.
@@ -176,7 +185,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int DOCUMENT_ROOT_FEATURE_COUNT = 11;
+    int DOCUMENT_ROOT_FEATURE_COUNT = 12;
 
     /**
      * The meta object id for the '{@link org.jbpm.bpmn2.emfextmodel.impl.GlobalTypeImpl <em>Global Type</em>}' class.
@@ -328,6 +337,16 @@ public interface EmfextmodelPackage extends EPackage {
     int PACKAGE_NAME_TYPE = 5;
 
     /**
+     * The meta object id for the '<em>Priority Type</em>' data type.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see java.math.BigInteger
+     * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getPriorityType()
+     * @generated
+     */
+    int PRIORITY_TYPE = 6;
+
+    /**
      * The meta object id for the '<em>Rule Flow Group Type</em>' data type.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -335,7 +354,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getRuleFlowGroupType()
      * @generated
      */
-    int RULE_FLOW_GROUP_TYPE = 6;
+    int RULE_FLOW_GROUP_TYPE = 7;
 
     /**
      * The meta object id for the '<em>Task Name Type</em>' data type.
@@ -345,7 +364,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getTaskNameType()
      * @generated
      */
-    int TASK_NAME_TYPE = 7;
+    int TASK_NAME_TYPE = 8;
 
     /**
      * The meta object id for the '<em>Version Type</em>' data type.
@@ -355,7 +374,7 @@ public interface EmfextmodelPackage extends EPackage {
      * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getVersionType()
      * @generated
      */
-    int VERSION_TYPE = 8;
+    int VERSION_TYPE = 9;
 
 
     /**
@@ -455,6 +474,17 @@ public interface EmfextmodelPackage extends EPackage {
      * @generated
      */
     EAttribute getDocumentRoot_PackageName();
+
+    /**
+     * Returns the meta object for the attribute '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getPriority <em>Priority</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Priority</em>'.
+     * @see org.jbpm.bpmn2.emfextmodel.DocumentRoot#getPriority()
+     * @see #getDocumentRoot()
+     * @generated
+     */
+    EAttribute getDocumentRoot_Priority();
 
     /**
      * Returns the meta object for the attribute '{@link org.jbpm.bpmn2.emfextmodel.DocumentRoot#getRuleFlowGroup <em>Rule Flow Group</em>}'.
@@ -619,6 +649,18 @@ public interface EmfextmodelPackage extends EPackage {
     EDataType getPackageNameType();
 
     /**
+     * Returns the meta object for data type '{@link java.math.BigInteger <em>Priority Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for data type '<em>Priority Type</em>'.
+     * @see java.math.BigInteger
+     * @model instanceClass="java.math.BigInteger"
+     *        extendedMetaData="name='priority_._type' baseType='http://www.eclipse.org/emf/2003/XMLType#integer' minInclusive='1'"
+     * @generated
+     */
+    EDataType getPriorityType();
+
+    /**
      * Returns the meta object for data type '{@link java.lang.String <em>Rule Flow Group Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -751,6 +793,14 @@ public interface EmfextmodelPackage extends EPackage {
         EAttribute DOCUMENT_ROOT__PACKAGE_NAME = eINSTANCE.getDocumentRoot_PackageName();
 
         /**
+         * The meta object literal for the '<em><b>Priority</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute DOCUMENT_ROOT__PRIORITY = eINSTANCE.getDocumentRoot_Priority();
+
+        /**
          * The meta object literal for the '<em><b>Rule Flow Group</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -879,6 +929,16 @@ public interface EmfextmodelPackage extends EPackage {
          * @generated
          */
         EDataType PACKAGE_NAME_TYPE = eINSTANCE.getPackageNameType();
+
+        /**
+         * The meta object literal for the '<em>Priority Type</em>' data type.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see java.math.BigInteger
+         * @see org.jbpm.bpmn2.emfextmodel.impl.EmfextmodelPackageImpl#getPriorityType()
+         * @generated
+         */
+        EDataType PRIORITY_TYPE = eINSTANCE.getPriorityType();
 
         /**
          * The meta object literal for the '<em>Rule Flow Group Type</em>' data type.

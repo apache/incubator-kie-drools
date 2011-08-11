@@ -29,6 +29,14 @@
     </simpleType>
   </attribute>
   
+  <attribute name="priority">
+    <simpleType>
+      <restriction base="integer" >
+        <minInclusive value="1"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+  
   <attributeGroup name="onxscriptattributes">
     <attribute name="scriptFormat" type="string" use="required" />
   </attributeGroup>

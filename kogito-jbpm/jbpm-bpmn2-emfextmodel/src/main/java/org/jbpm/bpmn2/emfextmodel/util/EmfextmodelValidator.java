@@ -114,6 +114,8 @@ public class EmfextmodelValidator extends EObjectValidator {
                 return validateOnExitScriptType((OnExitScriptType)value, diagnostics, context);
             case EmfextmodelPackage.PACKAGE_NAME_TYPE:
                 return validatePackageNameType((String)value, diagnostics, context);
+            case EmfextmodelPackage.PRIORITY_TYPE:
+                return validatePriorityType((BigInteger)value, diagnostics, context);
             case EmfextmodelPackage.RULE_FLOW_GROUP_TYPE:
                 return validateRuleFlowGroupType((String)value, diagnostics, context);
             case EmfextmodelPackage.TASK_NAME_TYPE:
@@ -177,6 +179,37 @@ public class EmfextmodelValidator extends EObjectValidator {
      */
     public boolean validatePackageNameType(String packageNameType, DiagnosticChain diagnostics, Map<Object, Object> context) {
         return true;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean validatePriorityType(BigInteger priorityType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+        boolean result = validatePriorityType_Min(priorityType, diagnostics, context);
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @see #validatePriorityType_Min
+     */
+    public static final BigInteger PRIORITY_TYPE__MIN__VALUE = new BigInteger("1");
+
+    /**
+     * Validates the Min constraint of '<em>Priority Type</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public boolean validatePriorityType_Min(BigInteger priorityType, DiagnosticChain diagnostics, Map<Object, Object> context) {
+        boolean result = priorityType.compareTo(PRIORITY_TYPE__MIN__VALUE) >= 0;
+        if (!result && diagnostics != null)
+            reportMinViolation(EmfextmodelPackage.Literals.PRIORITY_TYPE, priorityType, PRIORITY_TYPE__MIN__VALUE, true, diagnostics, context);
+        return result;
     }
 
     /**

@@ -86,6 +86,8 @@ public class EmfextmodelFactoryImpl extends EFactoryImpl implements EmfextmodelF
         switch (eDataType.getClassifierID()) {
             case EmfextmodelPackage.PACKAGE_NAME_TYPE:
                 return createPackageNameTypeFromString(eDataType, initialValue);
+            case EmfextmodelPackage.PRIORITY_TYPE:
+                return createPriorityTypeFromString(eDataType, initialValue);
             case EmfextmodelPackage.RULE_FLOW_GROUP_TYPE:
                 return createRuleFlowGroupTypeFromString(eDataType, initialValue);
             case EmfextmodelPackage.TASK_NAME_TYPE:
@@ -107,6 +109,8 @@ public class EmfextmodelFactoryImpl extends EFactoryImpl implements EmfextmodelF
         switch (eDataType.getClassifierID()) {
             case EmfextmodelPackage.PACKAGE_NAME_TYPE:
                 return convertPackageNameTypeToString(eDataType, instanceValue);
+            case EmfextmodelPackage.PRIORITY_TYPE:
+                return convertPriorityTypeToString(eDataType, instanceValue);
             case EmfextmodelPackage.RULE_FLOW_GROUP_TYPE:
                 return convertRuleFlowGroupTypeToString(eDataType, instanceValue);
             case EmfextmodelPackage.TASK_NAME_TYPE:
@@ -184,6 +188,24 @@ public class EmfextmodelFactoryImpl extends EFactoryImpl implements EmfextmodelF
      */
     public String convertPackageNameTypeToString(EDataType eDataType, Object instanceValue) {
         return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.STRING, instanceValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public BigInteger createPriorityTypeFromString(EDataType eDataType, String initialValue) {
+        return (BigInteger)XMLTypeFactory.eINSTANCE.createFromString(XMLTypePackage.Literals.INTEGER, initialValue);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String convertPriorityTypeToString(EDataType eDataType, Object instanceValue) {
+        return XMLTypeFactory.eINSTANCE.convertToString(XMLTypePackage.Literals.INTEGER, instanceValue);
     }
 
     /**
