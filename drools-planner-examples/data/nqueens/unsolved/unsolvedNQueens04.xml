@@ -1,5 +1,6 @@
 <org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <id>0</id>
+  <n>4</n>
   <queenList id="2">
     <org.drools.planner.examples.nqueens.domain.Queen id="3">
       <id>0</id>

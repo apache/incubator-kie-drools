@@ -21,8 +21,9 @@ import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
 
-@PlanningEntity
+@PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
 public class Queen extends AbstractPersistable implements Comparable<Queen> {
 
     private int x;

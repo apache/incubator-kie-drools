@@ -59,13 +59,13 @@ public class NQueensGenerator extends LoggingMain {
     private NQueens createNQueens(int n) {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
+        nQueens.setN(n);
         List<Queen> queenList = new ArrayList<Queen>(n);
         for (int i = 0; i < n; i++) {
             Queen queen = new Queen();
             queen.setId((long) i);
             queen.setX(i);
-            // TODO we don't this at this time: Notice that we leave the PlanningVariable properties on null
-            queen.setY(0);
+            // Notice that we leave the PlanningVariable properties on null
             queenList.add(queen);
         }
         nQueens.setQueenList(queenList);

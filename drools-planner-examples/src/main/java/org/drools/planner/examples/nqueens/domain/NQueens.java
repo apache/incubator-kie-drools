@@ -28,9 +28,18 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 public class NQueens extends AbstractPersistable implements Solution<SimpleScore> {
 
+    private int n;
     private List<Queen> queenList;
 
     private SimpleScore score;
+
+    public int getN() {
+        return n;
+    }
+
+    public void setN(int n) {
+        this.n = n;
+    }
 
     @PlanningEntityCollectionProperty
     public List<Queen> getQueenList() {
@@ -47,10 +56,6 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
 
     public void setScore(SimpleScore score) {
         this.score = score;
-    }
-
-    public int getN() {
-        return queenList.size();
     }
 
     /**
@@ -76,6 +81,7 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
     public NQueens cloneSolution() {
         NQueens clone = new NQueens();
         clone.id = id;
+        clone.n = n;
         List<Queen> clonedQueenList = new ArrayList<Queen>(queenList.size());
         for (Queen queen : queenList) {
             clonedQueenList.add(queen.clone());
