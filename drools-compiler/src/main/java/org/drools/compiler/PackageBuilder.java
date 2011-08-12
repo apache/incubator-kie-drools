@@ -1386,7 +1386,22 @@ public class PackageBuilder {
         PackageRegistry pkgRegistry = null;
         for ( TypeDeclarationDescr typeDescr : packageDescr.getTypeDeclarations() ) {
 
-            int dotPos = typeDescr.getTypeName().lastIndexOf( '.' );
+
+            if ( isEmpty( typeDescr.getNamespace() ) ) {
+                for ( ImportDescr id : packageDescr.getImports() ) {
+                    String imp = id.getTarget();
+                    if ( imp.endsWith( typeDescr.getTypeName() ) ) {
+                        typeDescr.setNamespace( imp.substring( 0,
+                                                               imp.lastIndexOf( '.' ) ) );
+                    }
+                }
+            }
+            String qName = typeDescr.getTypeName();
+            if ( typeDescr.getNamespace() != null ) {
+                qName = typeDescr.getNamespace() + "." + qName;
+            }
+
+            int dotPos = qName.lastIndexOf( '.' );
             if ( dotPos >= 0 ) {
                 // see if this overwrites an existing bean, which also could be a nested class.
                 Class cls = null;
@@ -1394,8 +1409,8 @@ public class PackageBuilder {
                     cls = Class.forName(  typeDescr.getTypeName(), true, this.rootClassLoader );
                 } catch ( ClassNotFoundException e ) {
                 }
-                
-                String qualifiedClass = typeDescr.getTypeName();
+
+                String qualifiedClass = qName;
                 int lastIndex;
                 while ( cls == null && (lastIndex = qualifiedClass.lastIndexOf( '.' )) != -1 ) {
                     try {
@@ -1414,34 +1429,15 @@ public class PackageBuilder {
                     dotPos = cls.getName().lastIndexOf( '.' ); // reget dotPos, incase there were nested classes
                     typeDescr.setTypeName( cls.getName().substring( dotPos + 1 ) );
                 } else {
-                    typeDescr.setNamespace( typeDescr.getTypeName().substring( 0,
+                    typeDescr.setNamespace( qName.substring( 0,
                                                                                dotPos ) );
-                    typeDescr.setTypeName( typeDescr.getTypeName().substring( dotPos + 1 ) );
+                    typeDescr.setTypeName( qName.substring( dotPos + 1 ) );
                 }
             }
 
-            if ( isEmpty( typeDescr.getNamespace() ) ) {
-                // check imports
-                try {
-                    Class< ? > cls = defaultRegistry.getTypeResolver().resolveType( typeDescr.getTypeName() );
-                    typeDescr.setNamespace( ClassUtils.getPackage( cls ) );
-                    String name = cls.getName();
-                    dotPos = name.lastIndexOf( '.' );
-                    typeDescr.setTypeName( name.substring( dotPos + 1 ) );
-                } catch ( ClassNotFoundException e ) {
-                    // swallow, as this isn't a mistake, it just means the type declaration is intended for the default namespace
-                    typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
-                }
-            }
 
             if ( isEmpty( typeDescr.getNamespace() ) ) {
-                for ( ImportDescr id : packageDescr.getImports() ) {
-                    String imp = id.getTarget();
-                    if ( imp.endsWith( typeDescr.getTypeName() ) ) {
-                        typeDescr.setNamespace( imp.substring( 0,
-                                                               imp.lastIndexOf( '.' ) ) );
-                    }
-                }
+                typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
             }
 
             //identify superclass type and namespace
@@ -1625,11 +1621,14 @@ public class PackageBuilder {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if ( reg != null ) {
-                Class<?> resolvedType = reg.getTypeResolver().resolveType( typeDescr.getTypeName() );
-                if( resolvedType != null && typeDescr.getFields().size() > 1 ) {
-                    this.results.add( new TypeDeclarationError("Duplicate type definition. A class with the name '"+resolvedType.getName()+"' was found in the classpath while trying to " +
-                                                               "redefine the fields in the declare statement. Fields can only be defined for non-existing classes.",
-                                                               typeDescr.getLine()) );
+                String availableName = typeDescr.getNamespace() != null
+                                       ? typeDescr.getNamespace() + "." + typeDescr.getTypeName()
+                                       : typeDescr.getTypeName();
+                Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
+                if ( resolvedType != null && typeDescr.getFields().size() > 1 ) {
+                    this.results.add( new TypeDeclarationError( "Duplicate type definition. A class with the name '" + resolvedType.getName() + "' was found in the classpath while trying to " +
+                                                                        "redefine the fields in the declare statement. Fields can only be defined for non-existing classes.",
+                                                                typeDescr.getLine() ) );
                 }
                 return false;
             } else {
