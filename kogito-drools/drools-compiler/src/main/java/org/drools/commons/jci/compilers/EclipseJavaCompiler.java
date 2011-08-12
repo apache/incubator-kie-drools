@@ -216,32 +216,28 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             private NameEnvironmentAnswer findType( final String pClazzName ) {
-                
-                if (isPackage(pClazzName)) {
-                    return null;
-                }
-                
+
                 final String resourceName = ClassUtils.convertClassToResourcePath(pClazzName);
-                
-                final byte[] clazzBytes = pStore.read( resourceName );
-                if (clazzBytes != null) {
-                    final char[] fileName = pClazzName.toCharArray();
-                    try {
-                        final ClassFileReader classFileReader = new ClassFileReader(clazzBytes, fileName, true);
-                        return new NameEnvironmentAnswer(classFileReader, null);
-                    } catch (final ClassFormatException e) {
-                        throw new RuntimeException( "ClassFormatException in loading class '" + fileName + "' with JCI." );
-                    }
-                }
                 
                 InputStream is = null;
                 ByteArrayOutputStream baos = null;
                 try {
                     is = pClassLoader.getResourceAsStream(resourceName);
-                    if (is == null) {
+                    if (is == null || !isSourceAvailable(pClazzName, pReader)) {
                         return null;
                     }
-    
+
+                    final byte[] clazzBytes = pStore.read( resourceName );
+                    if (clazzBytes != null) {
+                        final char[] fileName = pClazzName.toCharArray();
+                        try {
+                            final ClassFileReader classFileReader = new ClassFileReader(clazzBytes, fileName, true);
+                            return new NameEnvironmentAnswer(classFileReader, null);
+                        } catch (final ClassFormatException e) {
+                            throw new RuntimeException( "ClassFormatException in loading class '" + fileName + "' with JCI." );
+                        }
+                    }
+
                     final byte[] buffer = new byte[8192];
                     baos = new ByteArrayOutputStream(buffer.length);
                     int count;
@@ -278,21 +274,17 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 }
             }
 
+            private boolean isSourceAvailable(final String pClazzName, final ResourceReader pReader) {
+                // FIXME: this should not be tied to the extension
+                final String source = pClazzName.replace('.', '/') + ".java";
+                return pReader.isAvailable(source);
+            }
+
             private boolean isPackage( final String pClazzName ) {
                 InputStream is = null;
                 try {
                     is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
-                    if (is != null) {
-                        return false;
-                    }
-                    
-                    // FIXME: this should not be tied to the extension
-                    final String source = pClazzName.replace('.', '/') + ".java";
-                    if (pReader.isAvailable(source)) {
-                        return false;
-                    }
-                    
-                    return true;
+                    return is == null && !isSourceAvailable(pClazzName, pReader);
                 } finally {
                     if ( is != null ) {
                         try {
