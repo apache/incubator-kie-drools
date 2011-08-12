@@ -34,8 +34,8 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
 public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
-
-	protected TaskServer server;
+    
+    protected TaskServer server;
     protected TaskClient client;
 
     @Override
