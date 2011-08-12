@@ -87,7 +87,7 @@
     planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
   </section>
 
-  <section>
+  <section xml:id="realTimePlanning">
     <title>Real-time planning (event based planning)</title>
 
     <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows to

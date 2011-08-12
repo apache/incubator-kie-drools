@@ -938,9 +938,10 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
       </figure>
 
       <para>Notice that we've split up the exam concept into an <literal>Exam</literal> class and a
-      <literal>Topic</literal> class. The <literal>Exam</literal> instances change during solving, when they get another
-      period or room property. The <literal>Topic</literal>, <literal>Period</literal> and <literal>Room</literal>
-      instances never change during solving.</para>
+      <literal>Topic</literal> class. The <literal>Exam</literal> instances change during solving (this is the planning
+      entity class), when they get another period or room property. The <literal>Topic</literal>,
+      <literal>Period</literal> and <literal>Room</literal> instances never change during solving (these are problem
+      facts, just like some other classes).</para>
     </section>
   </section>
 

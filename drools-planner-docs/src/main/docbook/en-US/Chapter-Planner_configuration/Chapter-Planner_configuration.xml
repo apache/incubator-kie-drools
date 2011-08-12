@@ -7,162 +7,118 @@
   <title>Planner configuration</title>
 
   <section>
-    <title>The Solver interface</title>
+    <title>Overview</title>
 
-    <para>Solving a planning problem with Drools Planner consists out of 4 steps:</para>
+    <para>Solving a planning problem with Drools Planner consists out of 5 steps:</para>
 
     <orderedlist>
       <listitem>
-        <para>Build a <literal>Solver</literal>, for example a tabu search solver for any N Queens puzzle.</para>
+        <para><emphasis role="bold">Model your planning problem</emphasis> as a class that implements the interface
+        <literal>Solution</literal>, for example the class <literal>NQueens</literal>.</para>
       </listitem>
 
       <listitem>
-        <para>Set a starting solution on the <literal>Solver</literal>, for example a 4 Queens puzzle instance.</para>
+        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a tabu search solver
+        for any <literal>NQueens</literal> instance.</para>
       </listitem>
 
       <listitem>
-        <para>Solve it.</para>
+        <para><emphasis role="bold">Load a <literal>Solution</literal> instance</emphasis> from your data layer, for
+        example a 4 Queens instance. Set it as the starting solution on the <literal>Solver</literal> with
+        <literal>Solver.setStartingSolution(...)</literal>.</para>
       </listitem>
 
       <listitem>
-        <para>Get the best solution found by the solver.</para>
+        <para><emphasis role="bold">Solve it</emphasis> with <literal>Solver.solve()</literal>.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Get the best solution found</emphasis> by the <literal>Solver</literal> with
+        <literal>Solver.getBestSolution()</literal>.</para>
       </listitem>
     </orderedlist>
-
-    <para>This is the <literal>Solver</literal> interface:</para>
-
-    <programlisting language="java">public interface Solver {
-
-    void setStartingSolution(Solution solution);
-    
-    void solve();
-
-    Solution getBestSolution();
-
-    // ...
-
-}</programlisting>
-
-    <para>There is normally no need to implement the <literal>Solver</literal> interface yourself.</para>
-
-    <para>A <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
-    specifically javadocced as thread-safe.</para>
   </section>
 
   <section>
-    <title>Building a Solver</title>
-
-    <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>. Configure
-    it with a solver configuration XML file:</para>
-
-    <programlisting language="java">    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-    configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
-    Solver solver = configurer.buildSolver();</programlisting>
-
-    <para>A basic solver configuration file looks something like this:</para>
-
-    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;localSearchSolver&gt;
-    &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-    &lt;scoreDefinition&gt;
-        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-    &lt;/scoreDefinition&gt;
-    &lt;termination&gt;
-        &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
-    &lt;/termination&gt;
-    &lt;selector&gt;
-        &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.NQueensMoveFactory&lt;/moveFactoryClass&gt;
-    &lt;/selector&gt;
-    &lt;acceptor&gt;
-        &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-        &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-    &lt;/forager&gt;
-&lt;/localSearchSolver&gt;</programlisting>
-
-    <para>This is a tabu search configuration for n queens. We 'll explain the various parts of a configuration later in
-    this manual.</para>
-
-    <para><emphasis role="bold">Drools Planner makes it relatively easy to switch a solver type just by changing the
-    configuration.</emphasis> There's even a benchmark utility which allows you to play out different configurations
-    against each other and report the most appropriate configuration for your problem. You could for example play out
-    tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
+    <title>Model your planning problem</title>
 
     <section>
-      <title>Environment mode</title>
+      <title>Problem fact or planning entity?</title>
 
-      <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
-      <literal>Random</literal> instance a lot more than others. For example simulated annealing depends highly on
-      random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
-      seed of that <literal>Random</literal> instance.</para>
+      <para>Look at a dataset of your planning problem. You 'll recognize domain classes in there, each of which is one
+      of these:</para>
 
-      <para>The environment mode also allows you to detect common bugs in your implementation.</para>
+      <itemizedlist>
+        <listitem>
+          <para>A unrelated class: not used by any of the score constraints. From a planning standpoint, this data is
+          obsolete.</para>
+        </listitem>
 
-      <para>You can set the environment mode in the solver configuration XML file:</para>
+        <listitem>
+          <para>A <emphasis role="bold">problem fact</emphasis> class: used by the score constraints, but does NOT
+          change during planning (as long as the problem stays the same). For example: <literal>Bed</literal>,
+          <literal>Room</literal>, <literal>Shift</literal>, <literal>Employee</literal>, <literal>Topic</literal>,
+          <literal>Period</literal>, ...</para>
+        </listitem>
 
-      <programlisting language="xml">&lt;localSearchSolver&gt;
-    &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
-    ...
-&lt;/localSearchSolver&gt;</programlisting>
+        <listitem>
+          <para>A <emphasis role="bold">planning entity</emphasis> class: used by the score constraints and changes
+          during planning. For example: <literal>BedDesignation</literal>, <literal>Assignment</literal>,
+          <literal>Exam</literal>, ...</para>
+        </listitem>
+      </itemizedlist>
 
-      <para>There are 4 environment modes:</para>
+      <para>Ask yourself: <emphasis>What class changes during planning?</emphasis> <emphasis>Which class has variables
+      that I want the <literal>Solver</literal> to choose for me?</emphasis> That class is a planning entity. Most use
+      cases have only 1 planning entity class.</para>
+
+      <note>
+        <para>In <link linkend="realTimePlanning">real-time planning</link>, problem facts can change during planning,
+        because the problem itself changes. That doesn't make the planning entities</para>
+      </note>
+
+      <para><emphasis role="bold">In Drools Planner all problems facts and planning entities are plain old JavaBeans
+      (POJO's).</emphasis> You can load them from a database (JDBC/JPA/JDO), an XML file, a data repository, ...: Drools
+      Planner doesn't care.</para>
+    </section>
+
+    <section>
+      <title>Implementing a planning entity</title>
 
       <section>
-        <title>TRACE</title>
+        <title>Planning entity</title>
 
-        <para>The trace mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
-        assert that the delta based score is uncorrupted) to fail-fast on rule engine bugs.</para>
-
-        <para>The trace mode is very slow (because it doesn't rely on delta based score calculation).</para>
+        <para>TODO</para>
       </section>
 
       <section>
-        <title>DEBUG</title>
+        <title>Planning entity difficulty comparison</title>
 
-        <para>The debug mode is reproducible (see the reproducible mode) and also turns on most assertions (such as
-        assert that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
-        ...</para>
-
-        <para>The debug mode is slow.</para>
-
-        <para>It's recommended to write a test case which does a short run of your planning problem with debug mode
-        on.</para>
+        <para>TODO</para>
       </section>
 
       <section>
-        <title>REPRODUCIBLE (default)</title>
+        <title>Planning variable</title>
 
-        <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
-        runs on the same computer will execute the same code in the same order. They will also yield the same result,
-        except if they use a time based termination and they have a sufficiently large difference in allocated CPU time.
-        This allows you to benchmark new optimizations (such as a new move implementation or a different
-        minimalAcceptedSelection setting) fairly.</para>
-
-        <para>The reproducible mode is not much slower than the production mode.</para>
-
-        <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
-        optimizations (such as work stealing).</para>
+        <para>TODO</para>
       </section>
 
       <section>
-        <title>PRODUCTION</title>
+        <title>Planning value</title>
 
-        <para>The production mode is the fastest and the most robust, but not reproducible. It is recommended for a
-        production environment.</para>
+        <para>TODO</para>
+      </section>
 
-        <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
-        unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
-        most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
-        occasional bad result is far more likely caused by another issue (such as a score trap).</para>
+      <section>
+        <title>Planning value strenght comparison</title>
+
+        <para>TODO</para>
       </section>
     </section>
   </section>
 
   <section>
     <title>The Solution interface</title>
-
-    <para>A Solver can only solve 1 problem instance at a time.</para>
 
     <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
 
@@ -173,13 +129,14 @@
     S getScore();
     void setScore(S score);
 
-    Collection&lt;? extends Object&gt; getFacts();
+    Collection&lt;? extends Object&gt; getProblemFacts();
 
     Solution&lt;S&gt; cloneSolution();
 
 }</programlisting>
 
-    <para>For example, an <literal>NQueens</literal> instance just holds a list of all its queens:</para>
+    <para>For example, an <literal>NQueens</literal> instance just holds a list of all its <literal>Queen</literal>
+    instances:</para>
 
     <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
@@ -268,6 +225,143 @@
         clone.score = score;
         return clone;
     }</programlisting>
+    </section>
+  </section>
+
+  <section>
+    <title>The Solver interface</title>
+
+    <para>This is the <literal>Solver</literal> interface, which you 'll build from a solver configuration:</para>
+
+    <programlisting language="java">public interface Solver {
+
+    void setStartingSolution(Solution solution);
+    
+    void solve();
+
+    Solution getBestSolution();
+
+    // ...
+
+}</programlisting>
+
+    <para>A Solver can only solve 1 problem instance at a time. A <literal>Solver</literal> should only be accessed from
+    a single thread, except for the methods that are specifically javadocced as thread-safe.</para>
+  </section>
+
+  <section>
+    <title>Building a Solver</title>
+
+    <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>. Configure
+    it with a solver configuration XML file:</para>
+
+    <programlisting language="java">    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+    configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+    Solver solver = configurer.buildSolver();</programlisting>
+
+    <para>A basic solver configuration file looks something like this:</para>
+
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;solver&gt;
+  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
+  &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+  &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+  &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+  &lt;scoreDefinition&gt;
+    &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+  &lt;/scoreDefinition&gt;
+  &lt;termination&gt;
+    &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
+  &lt;/termination&gt;
+  &lt;!-- Real world problems require to use of &lt;constructionHeuristic&gt;. --&gt;
+  &lt;localSearch&gt;
+    &lt;selector&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+    &lt;/selector&gt;
+    &lt;acceptor&gt;
+      &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;
+&lt;/solver&gt;</programlisting>
+
+    <para>This is a tabu search configuration for n queens. We 'll explain the various parts of a configuration later in
+    this manual.</para>
+
+    <para><emphasis role="bold">Drools Planner makes it relatively easy to switch a solver type just by changing the
+    configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to play out different
+    configurations against each other and report the most appropriate configuration for your problem. You could for
+    example play out tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
+
+    <section>
+      <title>Environment mode</title>
+
+      <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
+      <literal>Random</literal> instance a lot more than others. For example simulated annealing depends highly on
+      random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
+      seed of that <literal>Random</literal> instance.</para>
+
+      <para>The environment mode also allows you to detect common bugs in your implementation.</para>
+
+      <para>You can set the environment mode in the solver configuration XML file:</para>
+
+      <programlisting language="xml">&lt;solver&gt;
+  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
+  ...
+&lt;/solver&gt;</programlisting>
+
+      <para>There are 4 environment modes:</para>
+
+      <section>
+        <title>TRACE</title>
+
+        <para>The trace mode is reproducible (see the reproducible mode) and also turns on all assertions (such as
+        assert that the delta based score is uncorrupted) to fail-fast on rule engine bugs.</para>
+
+        <para>The trace mode is very slow (because it doesn't rely on delta based score calculation).</para>
+      </section>
+
+      <section>
+        <title>DEBUG</title>
+
+        <para>The debug mode is reproducible (see the reproducible mode) and also turns on most assertions (such as
+        assert that the undo Move is uncorrupted) to fail-fast on a bug in your Move implementation, your score rule,
+        ...</para>
+
+        <para>The debug mode is slow.</para>
+
+        <para>It's recommended to write a test case which does a short run of your planning problem with debug mode
+        on.</para>
+      </section>
+
+      <section>
+        <title>REPRODUCIBLE (default)</title>
+
+        <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
+        runs on the same computer will execute the same code in the same order. They will also yield the same result,
+        except if they use a time based termination and they have a sufficiently large difference in allocated CPU time.
+        This allows you to benchmark new optimizations (such as a new move implementation or a different
+        minimalAcceptedSelection setting) fairly.</para>
+
+        <para>The reproducible mode is not much slower than the production mode.</para>
+
+        <para>In practice, this mode uses the default random seed, and it also disables certain concurrency
+        optimizations (such as work stealing).</para>
+      </section>
+
+      <section>
+        <title>PRODUCTION</title>
+
+        <para>The production mode is the fastest and the most robust, but not reproducible. It is recommended for a
+        production environment.</para>
+
+        <para>The random seed is different on every run, which makes it more robust against an unlucky random seed. An
+        unlucky random seed gives a bad result on a certain data set with a certain solver configuration. Note that in
+        most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
+        occasional bad result is far more likely caused by another issue (such as a score trap).</para>
+      </section>
     </section>
   </section>
 

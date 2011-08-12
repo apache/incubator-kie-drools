@@ -38,7 +38,8 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>TODO</para>
+      <para>Like hill climbing, but maintains a tabu list to avoid getting stuck in local optima. See Tabu Search
+      accepter below.</para>
     </section>
   </section>
 
@@ -48,61 +49,65 @@
     <section>
       <title>Algorithm description</title>
 
-      <para>TODO</para>
+      <para>See Simulated Annealing accepter below.</para>
     </section>
   </section>
 
   <section>
-    <title>A move</title>
+    <title>About neighborhoods, moves and steps</title>
 
-    <para>A move is the change from a solution A to a solution B. For example, below you can see a single move on the
-    starting solution of 4 queens that moves a single queen to another row:</para>
+    <section>
+      <title>A move</title>
 
-    <figure>
-      <title>A single move (4 queens example)</title>
+      <para>A move is the change from a solution A to a solution B. For example, below you can see a single move on the
+      starting solution of 4 queens that moves a single queen to another row:</para>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/singleMoveNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
+      <figure>
+        <title>A single move (4 queens example)</title>
 
-    <para>A move can have a small or large impact. In the above example, the move of queen <emphasis>C0 to C2</emphasis>
-    is a small move. Some moves are the same move type. These are some possibilities for move types in n queens:</para>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Local_search/singleMoveNQueens04.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <itemizedlist>
-      <listitem>
-        <para>Move a single queen to another row. This is a small move. For example, move queen <emphasis>C0 to
-        C2</emphasis>.</para>
-      </listitem>
+      <para>A move can have a small or large impact. In the above example, the move of queen <emphasis>C0 to
+      C2</emphasis> is a small move. Some moves are the same move type. These are some possibilities for move types in n
+      queens:</para>
 
-      <listitem>
-        <para>Move all queens a number of rows down or up. This a big move.</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para>Move a single queen to another row. This is a small move. For example, move queen <emphasis>C0 to
+          C2</emphasis>.</para>
+        </listitem>
 
-      <listitem>
-        <para>Move a single queen to another column. This is a small move. For example, move queen <emphasis>C2 to
-        A0</emphasis> (placing it on top of queen A0).</para>
-      </listitem>
+        <listitem>
+          <para>Move all queens a number of rows down or up. This a big move.</para>
+        </listitem>
 
-      <listitem>
-        <para>Add a queen to the board at a certain row and column.</para>
-      </listitem>
+        <listitem>
+          <para>Move a single queen to another column. This is a small move. For example, move queen <emphasis>C2 to
+          A0</emphasis> (placing it on top of queen A0).</para>
+        </listitem>
 
-      <listitem>
-        <para>Remove a queen from the board.</para>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <para>Add a queen to the board at a certain row and column.</para>
+        </listitem>
 
-    <para>Because we have decided that all queens will be on the board at all times and each queen has an appointed
-    column (for performance reasons), only the first 2 move types are usable in our example. Furthermore, we 're only
-    using the first move type in the example because we think it gives the best performance, but you are welcome to
-    prove us wrong.</para>
+        <listitem>
+          <para>Remove a queen from the board.</para>
+        </listitem>
+      </itemizedlist>
 
-    <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
+      <para>Because we have decided that all queens will be on the board at all times and each queen has an appointed
+      column (for performance reasons), only the first 2 move types are usable in our example. Furthermore, we 're only
+      using the first move type in the example because we think it gives the best performance, but you are welcome to
+      prove us wrong.</para>
 
-    <programlisting language="java">public interface Move {
+      <para>Each of your move types will be an implementation of the <literal>Move</literal> interface:</para>
+
+      <programlisting language="java">public interface Move {
 
     boolean isMoveDoable(EvaluationHandler evaluationHandler);
 
@@ -112,10 +117,10 @@
 
 }</programlisting>
 
-    <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
-    different row:</para>
+      <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
+      different row:</para>
 
-    <programlisting language="java">public class YChangeMove implements Move {
+      <programlisting language="java">public class YChangeMove implements Move {
 
     private Queen queen;
     private int toY;
@@ -129,67 +134,67 @@
 
 }</programlisting>
 
-    <para>An instance of <literal>YChangeMove</literal> moves a queen from its current y to a different y.</para>
+      <para>An instance of <literal>YChangeMove</literal> moves a queen from its current y to a different y.</para>
 
-    <para>Drools Planner calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
-    <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
-    facts:</para>
+      <para>Drools Planner calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
+      <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
+      facts:</para>
 
-    <programlisting language="java">    public void doMove(WorkingMemory workingMemory) {
+      <programlisting language="java">    public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
         queen.setY(toY);
         workingMemory.update(queenHandle, queen); // after changes are made
     }</programlisting>
 
-    <para>You need to call the <literal>workingMemory.update(FactHandle, Object)</literal> method after modifying the
-    fact. Note that you can alter multiple facts in a single move and effectively create a big move (also known as a
-    coarse-grained move).</para>
+      <para>You need to call the <literal>workingMemory.update(FactHandle, Object)</literal> method after modifying the
+      fact. Note that you can alter multiple facts in a single move and effectively create a big move (also known as a
+      coarse-grained move).</para>
 
-    <para>Drools Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
-    <literal>isDoable(WorkingMemory)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
+      <para>Drools Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
+      <literal>isDoable(WorkingMemory)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not
-        doable.</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para>A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not
+          doable.</para>
+        </listitem>
 
-      <listitem>
-        <para>A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not
-        doable because it would move it outside the board limits.</para>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <para>A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not
+          doable because it would move it outside the board limits.</para>
+        </listitem>
+      </itemizedlist>
 
-    <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
-    doable:</para>
+      <para>In the n queens example, a move which moves the queen from its current row to the same row isn't
+      doable:</para>
 
-    <programlisting language="java">    public boolean isMoveDoable(WorkingMemory workingMemory) {
+      <programlisting language="java">    public boolean isMoveDoable(WorkingMemory workingMemory) {
         int fromY = queen.getY();
         return fromY != toY;
     }</programlisting>
 
-    <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it. A
-    move that is currently not doable can become doable on a later solution.</para>
+      <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
+      A move that is currently not doable can become doable on a later solution.</para>
 
-    <para>Each move has an <emphasis>undo move</emphasis>: a move (usually of the same type) which does the exact
-    opposite. In the above example the undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2 to
-    C0</emphasis>. An undo move can be created from a move, but only before the move has been done on the current
-    solution.</para>
+      <para>Each move has an <emphasis>undo move</emphasis>: a move (usually of the same type) which does the exact
+      opposite. In the above example the undo move of <emphasis>C0 to C2</emphasis> would be the move <emphasis>C2 to
+      C0</emphasis>. An undo move can be created from a move, but only before the move has been done on the current
+      solution.</para>
 
-    <programlisting language="java">    public Move createUndoMove(WorkingMemory workingMemory) {
+      <programlisting language="java">    public Move createUndoMove(WorkingMemory workingMemory) {
         return new YChangeMove(queen, queen.getY());
     }</programlisting>
 
-    <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
-    C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
+      <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
+      C2</emphasis>, instead of the move <emphasis>C2 to C0</emphasis>.</para>
 
-    <para>The local search solver can do and undo a move more than once, even on different (successive)
-    solutions.</para>
+      <para>The local search solver can do and undo a move more than once, even on different (successive)
+      solutions.</para>
 
-    <para>A move must implement the <literal>equals()</literal> and <literal>hashcode()</literal> methods. 2 moves which
-    make the same change on a solution, must be equal.</para>
+      <para>A move must implement the <literal>equals()</literal> and <literal>hashcode()</literal> methods. 2 moves
+      which make the same change on a solution, must be equal.</para>
 
-    <programlisting language="java">    public boolean equals(Object o) {
+      <programlisting language="java">    public boolean equals(Object o) {
         if (this == o) {
             return true;
         } else if (o instanceof YChangeMove) {
@@ -210,60 +215,60 @@
                 .toHashCode();
     }</programlisting>
 
-    <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
-    <literal>equal()</literal> and <literal>hashcode()</literal> implementations. Notice that it checks if the other
-    move is an instance of the same move type. This is important because a move will be compared to a move with another
-    move type if you're using more then 1 move type.</para>
+      <para>In the above example, the <literal>Queen</literal> class uses the default <literal>Object</literal>
+      <literal>equal()</literal> and <literal>hashcode()</literal> implementations. Notice that it checks if the other
+      move is an instance of the same move type. This is important because a move will be compared to a move with
+      another move type if you're using more then 1 move type.</para>
 
-    <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read Drools
-    Planner's logging more easily:</para>
+      <para>It's also recommended to implement the <literal>toString()</literal> method as it allows you to read Drools
+      Planner's logging more easily:</para>
 
-    <programlisting language="java">    public String toString() {
+      <programlisting language="java">    public String toString() {
         return queen + " =&gt; " + toY;
     }</programlisting>
 
-    <para>Now that we can make a single move, let's take a look at generating moves.</para>
-  </section>
+      <para>Now that we can make a single move, let's take a look at generating moves.</para>
+    </section>
 
-  <section>
-    <title>Move generation</title>
+    <section>
+      <title>Move generation</title>
 
-    <para>At each solution, local search will try all possible moves and pick the best move to change to the next
-    solution. It's up to you to generate those moves. Let's take a look at all the possible moves on the starting
-    solution of 4 queens:</para>
+      <para>At each solution, local search will try all possible moves and pick the best move to change to the next
+      solution. It's up to you to generate those moves. Let's take a look at all the possible moves on the starting
+      solution of 4 queens:</para>
 
-    <figure>
-      <title>Possible moves at step 0 (4 queens example)</title>
+      <figure>
+        <title>Possible moves at step 0 (4 queens example)</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/possibleMovesNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Local_search/possibleMovesNQueens04.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>As you can see, not all the moves are doable. At the starting solution we have 12 doable moves (<literal>n *
-    (n - 1)</literal>), one of which will be move which changes the starting solution into the next solution. Notice
-    that the number of possible solutions is 256 (<literal>n ^ n</literal>), much more that the amount of doable moves.
-    Don't create a move to every possible solution. Instead use moves which can be sequentially combined to reach every
-    possible solution.</para>
+      <para>As you can see, not all the moves are doable. At the starting solution we have 12 doable moves (<literal>n *
+      (n - 1)</literal>), one of which will be move which changes the starting solution into the next solution. Notice
+      that the number of possible solutions is 256 (<literal>n ^ n</literal>), much more that the amount of doable
+      moves. Don't create a move to every possible solution. Instead use moves which can be sequentially combined to
+      reach every possible solution.</para>
 
-    <para>It's highly recommended that you verify all solutions are connected by your move set. This means that by
-    combining a finite number of moves you can reach any solution from any solution. Otherwise you're already excluding
-    solutions at the start. Especially if you're using only big moves, you should check it. Just because big moves
-    outperform small moves in a short test run, it doesn't mean that they will outperform them in a long test
-    run.</para>
+      <para>It's highly recommended that you verify all solutions are connected by your move set. This means that by
+      combining a finite number of moves you can reach any solution from any solution. Otherwise you're already
+      excluding solutions at the start. Especially if you're using only big moves, you should check it. Just because big
+      moves outperform small moves in a short test run, it doesn't mean that they will outperform them in a long test
+      run.</para>
 
-    <para>You can mix different move types. Usually you're better off preferring small (fine-grained) moves over big
-    (course-grained) moves because the score delta calculation will pay off more. However, as the traveling tournament
-    example proves, if you can remove a hard constraint by using a certain set of big moves, you can win performance and
-    scalability. Try it yourself: run both the simple (small moves) and the smart (big moves) version of the traveling
-    tournament example. The smart version evaluates a lot less unfeasible solutions, which enables it to outperform and
-    outscale the simple version.</para>
+      <para>You can mix different move types. Usually you're better off preferring small (fine-grained) moves over big
+      (course-grained) moves because the score delta calculation will pay off more. However, as the traveling tournament
+      example proves, if you can remove a hard constraint by using a certain set of big moves, you can win performance
+      and scalability. Try it yourself: run both the simple (small moves) and the smart (big moves) version of the
+      traveling tournament example. The smart version evaluates a lot less unfeasible solutions, which enables it to
+      outperform and outscale the simple version.</para>
 
-    <para>Move generation currently happens with a <literal>MoveFactory</literal>:</para>
+      <para>Move generation currently happens with a <literal>MoveFactory</literal>:</para>
 
-    <programlisting language="java">public class NQueensMoveFactory extends CachedMoveListMoveFactory {
+      <programlisting language="java">public class NQueensMoveFactory extends CachedMoveListMoveFactory {
 
     public List&lt;Move&gt; createMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
@@ -278,67 +283,67 @@
 
 }</programlisting>
 
-    <para>But we might be making move generation part of the DRL's in the future.</para>
-  </section>
+      <para>But we might be making move generation part of the DRL's in the future.</para>
+    </section>
 
-  <section>
-    <title>A step</title>
+    <section>
+      <title>A step</title>
 
-    <para>A step is the winning move. The local search solver tries every move on the current solution and picks the
-    best accepted move as the step:</para>
+      <para>A step is the winning move. The local search solver tries every move on the current solution and picks the
+      best accepted move as the step:</para>
 
-    <figure>
-      <title>Decide the next step at step 0 (4 queens example)</title>
+      <figure>
+        <title>Decide the next step at step 0 (4 queens example)</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>Because the move <emphasis>B0 to B3</emphasis> has the highest score (<literal>-3</literal>), it is picked as
-    the next step. Notice that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it also has
-    the score <literal>-3</literal>. If multiple moves have the same highest score, one is picked randomly, in this case
-    <emphasis>B0 to B3</emphasis>.</para>
+      <para>Because the move <emphasis>B0 to B3</emphasis> has the highest score (<literal>-3</literal>), it is picked
+      as the next step. Notice that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it
+      also has the score <literal>-3</literal>. If multiple moves have the same highest score, one is picked randomly,
+      in this case <emphasis>B0 to B3</emphasis>.</para>
 
-    <para>The step is made and from that new solution, the local search solver tries all the possible moves again, to
-    decide the next step after that. It continually does this in a loop, and we get something like this:</para>
+      <para>The step is made and from that new solution, the local search solver tries all the possible moves again, to
+      decide the next step after that. It continually does this in a loop, and we get something like this:</para>
 
-    <figure>
-      <title>All steps (4 queens example)</title>
+      <figure>
+        <title>All steps (4 queens example)</title>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/allStepsNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Local_search/allStepsNQueens04.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>Notice that the local search solver doesn't use a search tree, but a search path. The search path is
-    highlighted by the green arrows. At each step it tries all possible moves, but unless it's the step, it doesn't
-    investigate that solution further. This is one of the reasons why local search is very scalable.</para>
+      <para>Notice that the local search solver doesn't use a search tree, but a search path. The search path is
+      highlighted by the green arrows. At each step it tries all possible moves, but unless it's the step, it doesn't
+      investigate that solution further. This is one of the reasons why local search is very scalable.</para>
 
-    <para>As you can see, the local search solver solves the 4 queens problem by starting with the starting solution and
-    make the following steps sequentially:</para>
+      <para>As you can see, the local search solver solves the 4 queens problem by starting with the starting solution
+      and make the following steps sequentially:</para>
 
-    <orderedlist>
-      <listitem>
-        <para><emphasis>B0 to B3</emphasis></para>
-      </listitem>
+      <orderedlist>
+        <listitem>
+          <para><emphasis>B0 to B3</emphasis></para>
+        </listitem>
 
-      <listitem>
-        <para><emphasis>D0 to B2</emphasis></para>
-      </listitem>
+        <listitem>
+          <para><emphasis>D0 to B2</emphasis></para>
+        </listitem>
 
-      <listitem>
-        <para><emphasis>A0 to B1</emphasis></para>
-      </listitem>
-    </orderedlist>
+        <listitem>
+          <para><emphasis>A0 to B1</emphasis></para>
+        </listitem>
+      </orderedlist>
 
-    <para>If we turn on <literal>INFO</literal> logging for the category <literal>org.drools.planner</literal>:</para>
+      <para>If we turn on <literal>INFO</literal> logging for the category <literal>org.drools.planner</literal>:</para>
 
-    <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+      <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
 
     &lt;category name="org.drools.planner"&gt;
         &lt;priority value="info" /&gt;
@@ -348,45 +353,46 @@
 
 &lt;/log4j:configuration&gt;</programlisting>
 
-    <para>Then those steps are reflected into the logging:</para>
+      <para>Then those steps are reflected into the logging:</para>
 
-    <programlisting>INFO  Solving with random seed (0).
+      <programlisting>INFO  Solving with random seed (0).
 INFO  Starting with time spend (0), score (-6), new best score (-6).
 INFO  Step index (0), time spend (4), score (-3), new best score (-3), accepted move size (12) for picked step ([Queen-1] 1 @ 0 =&gt; 3).
 INFO  Step index (1), time spend (7), score (-1), new best score (-1), accepted move size (12) for picked step ([Queen-0] 0 @ 0 =&gt; 1).
 INFO  Step index (2), time spend (10), score (0), new best score (0), accepted move size (12) for picked step ([Queen-3] 3 @ 0 =&gt; 2).
 INFO  Solved with time spend (10) for best score (0) with average calculate count per second (7300).</programlisting>
 
-    <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>
-    implementation: <literal>[Queen-1] 1 @ 0 =&gt; 3</literal>.</para>
+      <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>
+      implementation: <literal>[Queen-1] 1 @ 0 =&gt; 3</literal>.</para>
 
-    <para>The local search solver solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3
-    steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions. It solves 16
-    queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.</para>
-  </section>
+      <para>The local search solver solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3
+      steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions. It solves
+      16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.</para>
+    </section>
 
-  <section>
-    <title>Getting stuck in local optima</title>
+    <section>
+      <title>Getting stuck in local optima</title>
 
-    <para>A <emphasis>simple local search</emphasis> always takes improving moves. This may seem like a good thing, but
-    it's not. It suffers from a number of problems:</para>
+      <para>A <emphasis>hill climber</emphasis> always takes improving moves. This may seem like a good thing, but it's
+      not. It suffers from a number of problems:</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>It can get stuck in a local optimum. For example if it reaches a solution X with a score -1 and there is
-        no improving move, it is forced to take a next step that leads to a solution Y with score -2, after that
-        however, it's very real that it will pick the step back to solution X with score -1. It will then start looping
-        between solution X and Y.</para>
-      </listitem>
+      <itemizedlist>
+        <listitem>
+          <para>It can get stuck in a local optimum. For example if it reaches a solution X with a score -1 and there is
+          no improving move, it is forced to take a next step that leads to a solution Y with score -2, after that
+          however, it's very real that it will pick the step back to solution X with score -1. It will then start
+          looping between solution X and Y.</para>
+        </listitem>
 
-      <listitem>
-        <para>It can start walking in its own footsteps, picking the same next step at every step.</para>
-      </listitem>
-    </itemizedlist>
+        <listitem>
+          <para>It can start walking in its own footsteps, picking the same next step at every step.</para>
+        </listitem>
+      </itemizedlist>
 
-    <para>Of course Drools Planner implements better local searches, such as <emphasis>tabu search</emphasis> and
-    <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use a simple local
-    search, unless you're absolutely sure there are no local optima in your planning problem.</para>
+      <para>Of course Drools Planner implements better local searches, such as <emphasis>tabu search</emphasis> and
+      <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use a hill climber,
+      unless you're absolutely sure there are no local optima in your planning problem.</para>
+    </section>
   </section>
 
   <section>
@@ -570,7 +576,7 @@ INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted 
         <para>Simulated annealing does not always pick the move with the highest score, neither does it evaluate many
         moves per step. At least at first. Instead, it gives unimproving moves also a chance to be picked, depending on
         its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
-        simple local search, only accepting improving moves.</para>
+        hill climber, only accepting improving moves.</para>
 
         <para>In many use cases, simulated annealing surpasses tabu search. By changing a few lines of configuration,
         you can easily switch from tabu search to simulated annealing and back.</para>
