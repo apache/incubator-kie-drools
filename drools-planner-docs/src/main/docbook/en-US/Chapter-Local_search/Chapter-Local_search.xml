@@ -9,13 +9,47 @@
   <section>
     <title>Overview</title>
 
-    <para>Local search tends to find a feasible solution relatively fast. Because it acts very much like a human, it is
-    also pretty natural to program.</para>
+    <para>Local search starts from an initial solution and evolves that single solution into a mostly better and better
+    solution. It uses a single search path of solutions, not a search tree. At each solution in this path it evaluates a
+    number of moves on the solution and applies the most suitable move to take the step to the next solution. It does
+    that for high number of iterations until its terminated (usually because its time has run out).</para>
 
-    <para>Local search solves a problem by making a move on the current solution which changes it into a better
-    solution. It does that high number of iterations untill its time runs out and it is satisfied with the solution. It
-    needs to start from an initialized solution, therefor it's recommended to configure a construction heuristic solver
-    phase before it.</para>
+    <para>Local search acts a lot like a human planner: it uses a single search path and moves facts around to find a
+    good feasible solution. Therefore it's pretty natural to implement.</para>
+
+    <para><emphasis role="bold">Local search needs to start from an initialized solution</emphasis>, therefor it's
+    recommended to configure a construction heuristic solver phase before it.</para>
+  </section>
+
+  <section>
+    <title>Hill climbing (simple local search)</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Hill climbing can easily get stuck in a local optima, but improvements (such as tabu search and simulated
+      annealing) address this problem.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Tabu search</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>TODO</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Simulated annealing</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>TODO</para>
+    </section>
   </section>
 
   <section>

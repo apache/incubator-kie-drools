@@ -59,57 +59,132 @@
         spreading, ...</para>
       </listitem>
     </itemizedlist>
+  </section>
 
-    <para>A planning problem consists out of a number of constraints. Generally, there are 3 types of
-    constraints:</para>
+  <section>
+    <title>What is a planning problem?</title>
 
-    <itemizedlist>
-      <listitem>
-        <para>A <emphasis>(negative) hard constraint</emphasis> must not be broken. For example: <emphasis>1 teacher can
-        not teach 2 different lessons at the same time</emphasis>.</para>
-      </listitem>
+    <section>
+      <title>A planning problem is NP-complete</title>
 
-      <listitem>
-        <para>A <emphasis>(negative) soft constraint</emphasis> should not be broken if it can be avoided. For example:
-        <emphasis>Teacher A does not like to teach on Friday afternoon</emphasis>.</para>
-      </listitem>
+      <para>All the use cases above are <emphasis>probably</emphasis> <link
+      xlink:href="http://en.wikipedia.org/wiki/NP-complete">NP-complete</link>. In layman's terms, this means:</para>
 
-      <listitem>
-        <para>A <emphasis>positive constraint (or reward)</emphasis> should be fulfilled if possible. For example:
-        <emphasis>Teacher B likes to teach on Monday morning</emphasis>.</para>
-      </listitem>
-    </itemizedlist>
+      <itemizedlist>
+        <listitem>
+          <para>It's easy to verify a given solution to a problem in reasonable time. </para>
+        </listitem>
 
-    <para>These constraints define the <emphasis>score function</emphasis> of a planning problem. This is where the
-    drools rule engine comes into play: <emphasis role="bold">adding constraints with score rules is easy and
-    scalable</emphasis>.</para>
+        <listitem>
+          <para>There is no silver bullet to find the optimal solution of a problem in reasonable time (*). </para>
+        </listitem>
+      </itemizedlist>
 
-    <para>A planning problem has a number of <emphasis>solutions</emphasis>. Each solution has a score. There are 3
-    categories of solutions:</para>
+      <note>
+        <para>(*) At least, none of the smartest computer scientists in the world have found such a silver bullet yet.
+        But if they find one for 1 NP-complete problem, they find one for all of them.</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>A <emphasis>possible solution</emphasis> is a solution that does or does not break any number of
-        constraints. Planning problems tend to have a incredibly large number of possible solutions. Most of those
-        solutions are worthless.</para>
-      </listitem>
+        <para>In fact, there's a $ 1,000,000 reward for anyone that proves if <link
+        xlink:href="http://en.wikipedia.org/wiki/P_%3D_NP_problem">such a silver bullet actually exists or
+        not</link>.</para>
+      </note>
 
-      <listitem>
-        <para>A <emphasis>feasible solution</emphasis> is a solution that does not break any (negative) hard
-        constraints. The number of feasible solutions tends to be relative to the number of possible solutions.
-        Sometimes there are no feasible solutions. Every feasible solution is a possible solution.</para>
-      </listitem>
+      <para>The implication of this is pretty dire: solving your problem is probably harder than you anticipated,
+      because the 2 common techniques won't suffice: </para>
 
-      <listitem>
-        <para>An <emphasis>optimal solution</emphasis> is a solution with the highest score. Planning problems tend to
-        have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the remote case that
-        it's not a feasible solution because there are no feasible solutions.</para>
-      </listitem>
-    </itemizedlist>
+      <itemizedlist>
+        <listitem>
+          <para>A brute force algorithm (even a smarter variant) will take too long.</para>
+        </listitem>
 
-    <para>Drools Planner supports several search algorithms to efficiently wade through the incredibly large number of
-    possible solutions. <emphasis role="bold">It makes it easy to switch the search algorithm</emphasis>, by simply
-    changing the solver configuration.</para>
+        <listitem>
+          <para>A quick algorithm, for example; in bin packing, <emphasis>putting in the largest items first</emphasis>,
+          will return a solution that is usually far from optimal.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para><emphasis role="bold">Drools Planner does find a good solution in reasonable time for such planning
+      problems.</emphasis></para>
+    </section>
+
+    <section>
+      <title>A planning problem has (hard and soft) constraints</title>
+
+      <para>Usually, a planning problem has at least 2 types of constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A <emphasis>(negative) hard constraint</emphasis> must not be broken. For example: <emphasis>1 teacher
+          can not teach 2 different lessons at the same time</emphasis>.</para>
+        </listitem>
+
+        <listitem>
+          <para>A <emphasis>(negative) soft constraint</emphasis> should not be broken if it can be avoided. For
+          example: <emphasis>Teacher A does not like to teach on Friday afternoon</emphasis>.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Some problems have positive constraints too:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A <emphasis>positive soft constraint (or reward)</emphasis> should be fulfilled if possible. For
+          example: <emphasis>Teacher B likes to teach on Monday morning</emphasis>.</para>
+
+          <para>In practice, these are just like negative soft constraints, but with a positive weight.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Some toy problems (such as N Queens) only have soft constraints. Some problems have 3 or more levels of
+      constraints, for example hard, medium and soft constraints.</para>
+
+      <para>These constraints define the <emphasis>score function</emphasis> (AKA <emphasis>fitness function</emphasis>)
+      of a planning problem. So each solution of a planning problem can be graded with a score. Because we 'll define
+      these constraints as rules in the Drools Expert rule engine, <emphasis role="bold">adding constraints in Drools
+      Planner is easy and scalable</emphasis>.</para>
+    </section>
+
+    <section>
+      <title>A planning problem has a huge search space</title>
+
+      <para>A planning problem has a number of <emphasis>solutions</emphasis>. There are several categories of
+      solutions:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>A <emphasis>possible solution</emphasis> is a solution that does or does not break any number of
+          constraints. Planning problems tend to have a incredibly large number of possible solutions. Most of those
+          solutions are worthless.</para>
+        </listitem>
+
+        <listitem>
+          <para>A <emphasis>feasible solution</emphasis> is a solution that does not break any (negative) hard
+          constraints. The number of feasible solutions tends to be relative to the number of possible solutions.
+          Sometimes there are no feasible solutions. Every feasible solution is a possible solution.</para>
+        </listitem>
+
+        <listitem>
+          <para>An <emphasis>optimal solution</emphasis> is a solution with the highest score. Planning problems tend to
+          have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the case that that are
+          no feasible solutions and the optimal solution isn't feasible.</para>
+        </listitem>
+
+        <listitem>
+          <para>The <emphasis>best solution found</emphasis> is the solution with the highest score found by an
+          implementation in a given amount of time. The best solution found is likely to be feasible.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Counterintuitively, the number of possible solutions is huge (if calculated correctly), even with a small
+      dataset. As you'll see in the examples, most instances have a lot more possible solutions than the minimal number
+      of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any
+      implementation is forced to evaluate at least a subset of all those possible solutions.</para>
+
+      <para>Drools Planner supports several optimization algorithms to efficiently wade through that incredibly large
+      number of possible solutions. Depending on the use case, some optimization algorithms perform better than others.
+      <emphasis role="bold">In Drools Planner it is easy to switch the optimization algorithm</emphasis>, by changing
+      the solver configuration in XML or by API.</para>
+    </section>
   </section>
 
   <section>
@@ -200,6 +275,6 @@ $ mvn exec:exec
 
     <para>Check <link xlink:href="http://blog.athico.com/search/label/planner">our blog</link> and twitter (<link
     xlink:href="http://twitter.com/geoffreydesmet">Geoffrey De Smet</link>) for news and articles. If Drools Planner
-    helps you solve your problem, don't forget to blog or to twitter about it!</para>
+    helps you solve your problem, don't forget to blog or tweet about it!</para>
   </section>
 </chapter>

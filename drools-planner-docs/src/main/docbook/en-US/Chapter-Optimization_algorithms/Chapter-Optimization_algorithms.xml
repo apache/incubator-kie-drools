@@ -57,9 +57,29 @@
   </section>
 
   <section>
+    <title>The size of real world problems</title>
+
+    <para>As a planning problem gets bigger, the search space tends to blow up really fast. It's not uncommon to see
+    that it's possible to optimally plan 5 people in less then a second, while planning 6 people optimally would take
+    years. Take a look at the problem size of the examples: many instances have a lot more possible solutions than the
+    minimal number of atoms in the known universe (10^80).</para>
+
+    <para>The cold, hard reality is that <emphasis role="bold">for most real-world planning problems we will not find
+    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we do better than the solutions created
+    by human planners (which is easy) and other software.</para>
+
+    <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
+    (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
+    limitations.</para>
+  </section>
+
+  <section>
     <title>Algorithms overview</title>
 
     <para>todo</para>
+
+    <para>If you want to learn more about metaheuristics, read the free book <link
+    xlink:href="Essentials of Metaheuristics">Essentials of Metaheuristics</link>.</para>
   </section>
 
   <section>
@@ -257,7 +277,7 @@
     <note>
       <para>If the <literal>Solver</literal> or <literal>SolverPhase</literal> wants to terminate while a
       <literal>CustomSolverPhaseCommand</literal> is still running, it will wait to terminate until the
-      <literal>CustomSolverPhaseCommand</literal> is done. </para>
+      <literal>CustomSolverPhaseCommand</literal> is done.</para>
     </note>
   </section>
 </chapter>

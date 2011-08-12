@@ -7,146 +7,17 @@
   <title>Planner configuration</title>
 
   <section>
-    <title>Types of solvers</title>
-
-    <para>TODO remove this section</para>
-
-    <para>Different solvers solve problems in different ways. Each type has advantages and disadvantages. We 'll roughly
-    discuss a few of the solver types here. You can safely skip this section.</para>
-
-    <section>
-      <title>Simplex</title>
-
-      <para>Simplex is an algorithm to find the numerical solution of a linear programming problem.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It knows when it has found an optimal solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's complex and mathematical to implement constraints.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Drools Planner does not implement simplex.</para>
-    </section>
-
-    <section>
-      <title>Genetic algorithms</title>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's scalable.</para>
-        </listitem>
-
-        <listitem>
-          <para>Given a limited time, it can still deliver a pretty decent solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It does not know when it has found an optimal solution.</para>
-        </listitem>
-
-        <listitem>
-          <para>If the optimal score is unknown (which is usually the case), it must be told when to stop looking (for
-          example based on time spend, user input, ...).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>The genetic algorithm is currently not implemented in Drools Planner.</para>
-    </section>
-
-    <section>
-      <title>Local search (tabu search, simulated annealing, ...)</title>
-
-      <para>Local search starts from an initial solution and evolves that single solution into a mostly better and
-      better solution. It uses a single search path of solutions, not a search tree. At each solution in this path it
-      evaluates a number of moves on the solution and applies the most suitable move to take the step to the next
-      solution.</para>
-
-      <para>Local search works a lot like a human planner: it uses a single search path and moves facts around to find a
-      good feasible solution.</para>
-
-      <para>A simple local search can easily get stuck in a local optima, but improvements (such as tabu search and
-      simulated annealing) address this problem.</para>
-
-      <para>Advantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It's relatively simple and natural to implement constraints (at least in Drools Planner's
-          implementation).</para>
-        </listitem>
-
-        <listitem>
-          <para>It's very scalable, even when adding extra constraints (at least in Drools Planner's
-          implementation).</para>
-        </listitem>
-
-        <listitem>
-          <para>Given a limited time, it can still deliver a pretty decent solution.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Disadvantages:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>It does not know when it has found an optimal solution.</para>
-        </listitem>
-
-        <listitem>
-          <para>If the optimal score is unknown (which is usually the case), it must be told when to stop looking (for
-          example based on time spend, user input, ...).</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Drools Planner implements local search, including tabu search and simulated annealing.</para>
-    </section>
-  </section>
-
-  <section>
-    <title>The size of real world problems</title>
-
-    <para>As a planning problem gets bigger, the search space tends to blow up really fast. It's not uncommon to see
-    that it's possible to optimally plan 5 people in less then a second, while planning 6 people optimally would take
-    years. Take a look at the problem size of the examples: many instances have a lot more possible solutions than the
-    minimal number of atoms in the known universe (10^80).</para>
-
-    <para>The cold, hard reality is that <emphasis role="bold">for most real-world planning problems we will not find
-    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we do better than the solutions created
-    by human planners (which is easy) and other software.</para>
-
-    <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
-    (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
-    limitations.</para>
-  </section>
-
-  <section>
     <title>The Solver interface</title>
 
     <para>Solving a planning problem with Drools Planner consists out of 4 steps:</para>
 
     <orderedlist>
       <listitem>
-        <para>Build a solver, for example a tabu search solver for any NQueens puzzle.</para>
+        <para>Build a <literal>Solver</literal>, for example a tabu search solver for any N Queens puzzle.</para>
       </listitem>
 
       <listitem>
-        <para>Set a starting solution on the solver, for example a 4 Queens puzzle instance.</para>
+        <para>Set a starting solution on the <literal>Solver</literal>, for example a 4 Queens puzzle instance.</para>
       </listitem>
 
       <listitem>
@@ -158,15 +29,15 @@
       </listitem>
     </orderedlist>
 
-    <para>Every build-in solver implemented in Drools Planner implements the <literal>Solver</literal> interface:</para>
+    <para>This is the <literal>Solver</literal> interface:</para>
 
     <programlisting language="java">public interface Solver {
 
     void setStartingSolution(Solution solution);
-
-    Solution getBestSolution();
     
     void solve();
+
+    Solution getBestSolution();
 
     // ...
 
