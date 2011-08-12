@@ -62,5 +62,9 @@ public interface AgendaGroup
      *     boolean value indicating if the AgendaGroup is active and thus being evaluated.
      */
     public boolean isActive();
+
+    void setAutoFocusActivator(PropagationContext ctx);
     
+    
+    PropagationContext getAutoFocusActivator();
 }

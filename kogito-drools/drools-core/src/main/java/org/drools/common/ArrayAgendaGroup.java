@@ -26,6 +26,7 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -53,6 +54,8 @@ public class ArrayAgendaGroup
     private int               index;
 
     private int               lastIndex;
+    
+    private PropagationContext autoFocusActivator;
 
     public ArrayAgendaGroup() {
 
@@ -225,5 +228,13 @@ public class ArrayAgendaGroup
     
     public void remove(AgendaItem agendaItem) {
         throw new UnsupportedOperationException();
+    }
+    
+    public void setAutoFocusActivator(PropagationContext ctx) {
+        this.autoFocusActivator = ctx;
+    }
+
+    public PropagationContext getAutoFocusActivator() {
+        return autoFocusActivator;
     }
 }

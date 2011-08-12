@@ -257,7 +257,7 @@ public class RuleTerminalNode extends BaseNode
                 // No RuleFlowNode so add it directly to the Agenda
                 // do not add the activation if the rule is "lock-on-active" and the
                 // AgendaGroup is active
-                if ( rule.isLockOnActive() && agendaGroup.isActive() ) {
+                if ( rule.isLockOnActive() && agendaGroup.isActive() && agendaGroup.getAutoFocusActivator() != context) {
                     return false;
                 }
             } else {
@@ -266,7 +266,7 @@ public class RuleTerminalNode extends BaseNode
 
                 // do not add the activation if the rule is "lock-on-active" and the
                 // RuleFlowGroup is active
-                if ( rule.isLockOnActive() && rfg.isActive() ) {
+                if ( rule.isLockOnActive() && rfg.isActive() && agendaGroup.getAutoFocusActivator() != context) {
                     return false;
                 }
             }            

@@ -26,6 +26,7 @@ import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.ConflictResolver;
+import org.drools.spi.PropagationContext;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -50,6 +51,8 @@ public class SequentialAgendaGroupImpl
     private boolean               active;
 
     private long                  index;
+    
+    private PropagationContext    autoFocusActivator;
 
     public SequentialAgendaGroupImpl() {
 
@@ -170,5 +173,13 @@ public class SequentialAgendaGroupImpl
     
     public void setFocus() {
         throw new UnsupportedOperationException();
+    }
+
+    public void setAutoFocusActivator(PropagationContext ctx) {
+        this.autoFocusActivator = ctx;
+    }
+
+    public PropagationContext getAutoFocusActivator() {
+        return autoFocusActivator;
     }
 }
