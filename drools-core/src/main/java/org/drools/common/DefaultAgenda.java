@@ -466,7 +466,8 @@ public class DefaultAgenda
         
         // set the focus if rule autoFocus is true
         if ( rule.getAutoFocus() ) {
-            this.setFocus( rule.getAgendaGroup() );
+            this.setFocus( item.getPropagationContext(),
+                           rule.getAgendaGroup() );
         }              
                                
         // adds item to activation group if appropriate
@@ -574,9 +575,15 @@ public class DefaultAgenda
      * @see org.drools.common.AgendaI#setFocus(java.lang.String)
      */
     public void setFocus(final String name) {
-        AgendaGroup agendaGroup = getAgendaGroup( name );
-        setFocus( agendaGroup );
+        setFocus( null, name );
     }
+    
+    public void setFocus(final PropagationContext ctx, 
+                         final String name) {
+        AgendaGroup agendaGroup = getAgendaGroup( name );
+        agendaGroup.setAutoFocusActivator( ctx );
+        setFocus( agendaGroup );
+    }    
 
     /*
      * (non-Javadoc)
