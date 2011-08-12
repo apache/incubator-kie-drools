@@ -24,6 +24,7 @@ import java.util.PriorityQueue;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.Queueable;
 import org.drools.spi.Activation;
+import org.drools.spi.PropagationContext;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -46,6 +47,7 @@ public class BinaryHeapQueueAgendaGroup
 
     private boolean           active;
 
+    private PropagationContext autoFocusActivator;
     /**
      * Construct an <code>AgendaGroup</code> with the given name.
      *
@@ -111,6 +113,14 @@ public class BinaryHeapQueueAgendaGroup
 
     public void setActive(final boolean activate) {
         this.active = activate;
+    }
+
+    public void setAutoFocusActivator(PropagationContext autoFocusActivator) {
+        this.autoFocusActivator = autoFocusActivator;
+    }
+    
+    public PropagationContext getAutoFocusActivator() {
+        return this.autoFocusActivator;
     }
 
     /**
