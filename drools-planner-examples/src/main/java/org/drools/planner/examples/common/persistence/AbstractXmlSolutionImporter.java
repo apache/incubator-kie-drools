@@ -50,7 +50,13 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
             Document document = builder.build(in);
             XmlInputBuilder txtInputBuilder = createXmlInputBuilder();
             txtInputBuilder.setDocument(document);
-            return txtInputBuilder.readSolution();
+            try {
+                return txtInputBuilder.readSolution();
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("Exception in inputFile (" + inputFile + ")", e);
+            }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
         } catch (JDOMException e) {

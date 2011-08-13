@@ -44,7 +44,13 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             bufferedReader = new BufferedReader(new FileReader(inputFile));
             TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
             txtInputBuilder.setBufferedReader(bufferedReader);
-            return txtInputBuilder.readSolution();
+            try {
+                return txtInputBuilder.readSolution();
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("Exception in inputFile (" + inputFile + ")", e);
+            }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
         } finally {
