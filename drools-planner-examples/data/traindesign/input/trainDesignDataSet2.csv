@@ -595,7 +595,7 @@
 669;1112;3372;8;459;612;109
 ;;;;;;
 "Network";;;;;;
-"Origin";"Destination";"Distance";"Max Train Length(Feet)";"Max Tonnage (tons)";"Max # of Trains";
+"Origin";"Destination";"Distance";"Max Train Length(Feet)";"Max Tonnage (Tons)";"Max # of Trains";
 5899;1264;103.4;9000;10500;10;
 5899;11186;59.5;8000;10500;10;
 5899;4542;80.5;8000;11250;10;

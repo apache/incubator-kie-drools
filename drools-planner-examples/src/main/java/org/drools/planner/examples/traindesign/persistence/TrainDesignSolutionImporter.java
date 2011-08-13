@@ -17,6 +17,7 @@
 package org.drools.planner.examples.traindesign.persistence;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +50,7 @@ import org.drools.planner.examples.traindesign.domain.TrainDesign;
 public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = ".csv";
+    private static final BigDecimal DISTANCE_MULTIPLICANT = new BigDecimal(1000);
 
     public static void main(String[] args) {
         new TrainDesignSolutionImporter().convertAll();
@@ -94,18 +96,18 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
         private void readRailNodeList() throws IOException {
             readConstantLine("\"Network Nodes\";;;;;;");
-            readConstantLine("\"Node \";\"BlockSwap Cost\";;;;;");
+            readConstantLine("\"Node\";\"BlockSwap Cost\";;;;;");
             List<RailNode> railNodeList = new ArrayList<RailNode>();
             nameToRailNodeMap = new HashMap<String, RailNode>();
             String line = bufferedReader.readLine();
             long id = 0L;
             while (!line.equals(";;;;;;")) {
-                String[] lineTokens = splitBySemicolonSeparatedValue(line, 7);
+                String[] lineTokens = splitBySemicolonSeparatedValue(line, 2);
                 RailNode railNode = new RailNode();
                 railNode.setId(id);
                 id++;
                 railNode.setName(lineTokens[0]);
-                railNode.setBlockSwapCost(Integer.parseInt(lineTokens[2]));
+                railNode.setBlockSwapCost(Integer.parseInt(lineTokens[1]));
                 railNodeList.add(railNode);
                 nameToRailNodeMap.put(railNode.getName(), railNode);
                 line = bufferedReader.readLine();
@@ -136,12 +138,12 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
         private void readRailArcList() throws IOException {
             readConstantLine("\"Network\";;;;;;");
-            readConstantLine("\"Origin\";\"Destination\";\"Distance (Miles)\";\"Max Train Length(Feet)\";\"Max Tonnage (Tons)\";\"Max # of Trains\";");
+            readConstantLine("\"Origin\";\"Destination\";\"Distance\";\"Max Train Length(Feet)\";\"Max Tonnage (Tons)\";\"Max # of Trains\";");
             List<RailArc> railArcListList = new ArrayList<RailArc>();
             String line = bufferedReader.readLine();
             long id = 0L;
             while (!line.equals(";;;;;;")) {
-                String[] lineTokens = splitBySemicolonSeparatedValue(line, 7);
+                String[] lineTokens = splitBySemicolonSeparatedValue(line, 6);
                 RailArc railArc = new RailArc();
                 railArc.setId(id);
                 id++;
@@ -157,7 +159,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                             + ") has a non existing destination (" + lineTokens[1] + ").");
                 }
                 railArc.setDestination(destination);
-                railArc.setDistance(Integer.parseInt(lineTokens[2]));
+                railArc.setDistance(readDistance(lineTokens[2]));
                 railArc.setMaximumTrainLength(Integer.parseInt(lineTokens[3]));
                 railArc.setMaximumTonnage(Integer.parseInt(lineTokens[4]));
                 railArc.setMaximumNumberOfTrains(Integer.parseInt(lineTokens[5]));
@@ -165,6 +167,14 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 line = bufferedReader.readLine();
             }
             trainDesign.setRailArcList(railArcListList);
+        }
+
+        private int readDistance(String lineToken) {
+            BigDecimal distanceBigDecimal = new BigDecimal(lineToken).multiply(DISTANCE_MULTIPLICANT);
+            if (distanceBigDecimal.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
+                throw new IllegalArgumentException("The distance (" + lineToken + ") is too detailed.");
+            }
+            return distanceBigDecimal.intValue();
         }
 
 //        private void createBedDesignationList() {

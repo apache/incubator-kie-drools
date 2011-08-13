@@ -170,8 +170,9 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                 Integer numberOfTokens, boolean trim, boolean removeQuotes) {
             String[] lineTokens = line.split(tokenRegex);
             if (numberOfTokens != null && lineTokens.length != numberOfTokens) {
-                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain "
-                        + numberOfTokens + " tokens separated by " + tokenName + ".");
+                throw new IllegalArgumentException("Read line (" + line + ") has " + lineTokens.length
+                        + " tokens but is expected to contain " + numberOfTokens + " tokens separated by "
+                        + tokenName + ".");
             }
             if (trim) {
                 for (int i = 0; i < lineTokens.length; i++) {
