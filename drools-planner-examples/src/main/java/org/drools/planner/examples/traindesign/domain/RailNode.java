@@ -16,6 +16,8 @@
 
 package org.drools.planner.examples.traindesign.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
@@ -27,6 +29,8 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
 
     private String name;
     private int blockSwapCost;
+
+    private List<RailArc> originatingRailArcList;
 
     public String getName() {
         return name;
@@ -42,6 +46,14 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
 
     public void setBlockSwapCost(int blockSwapCost) {
         this.blockSwapCost = blockSwapCost;
+    }
+
+    public List<RailArc> getOriginatingRailArcList() {
+        return originatingRailArcList;
+    }
+
+    public void setOriginatingRailArcList(List<RailArc> originatingRailArcList) {
+        this.originatingRailArcList = originatingRailArcList;
     }
 
     public int compareTo(RailNode other) {

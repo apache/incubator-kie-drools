@@ -108,6 +108,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 id++;
                 railNode.setName(lineTokens[0]);
                 railNode.setBlockSwapCost(Integer.parseInt(lineTokens[1]));
+                railNode.setOriginatingRailArcList(new ArrayList<RailArc>());
                 railNodeList.add(railNode);
                 nameToRailNodeMap.put(railNode.getName(), railNode);
                 line = bufferedReader.readLine();
@@ -145,7 +146,10 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             while (!line.equals(";;;;;;")) {
                 String[] lineTokens = splitBySemicolonSeparatedValue(line, 6);
                 RailArc railArc = new RailArc();
+                RailArc reverseRailArc = new RailArc();
                 railArc.setId(id);
+                id++;
+                reverseRailArc.setId(id);
                 id++;
                 RailNode origin = nameToRailNodeMap.get(lineTokens[0]);
                 if (origin == null) {
@@ -153,17 +157,30 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                             + ") has a non existing origin (" + lineTokens[0] + ").");
                 }
                 railArc.setOrigin(origin);
+                origin.getOriginatingRailArcList().add(railArc);
+                reverseRailArc.setDestination(origin);
                 RailNode destination = nameToRailNodeMap.get(lineTokens[1]);
                 if (destination == null) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") has a non existing destination (" + lineTokens[1] + ").");
                 }
                 railArc.setDestination(destination);
-                railArc.setDistance(readDistance(lineTokens[2]));
-                railArc.setMaximumTrainLength(Integer.parseInt(lineTokens[3]));
-                railArc.setMaximumTonnage(Integer.parseInt(lineTokens[4]));
-                railArc.setMaximumNumberOfTrains(Integer.parseInt(lineTokens[5]));
+                reverseRailArc.setOrigin(destination);
+                destination.getOriginatingRailArcList().add(reverseRailArc);
+                int distance = readDistance(lineTokens[2]);
+                railArc.setDistance(distance);
+                reverseRailArc.setDistance(distance);
+                int maximumTrainLength = Integer.parseInt(lineTokens[3]);
+                railArc.setMaximumTrainLength(maximumTrainLength);
+                reverseRailArc.setMaximumTrainLength(maximumTrainLength);
+                int maximumTonnage = Integer.parseInt(lineTokens[4]);
+                railArc.setMaximumTonnage(maximumTonnage);
+                reverseRailArc.setMaximumTonnage(maximumTonnage);
+                int maximumNumberOfTrains = Integer.parseInt(lineTokens[5]);
+                railArc.setMaximumNumberOfTrains(maximumNumberOfTrains);
+                reverseRailArc.setMaximumNumberOfTrains(maximumNumberOfTrains);
                 railArcListList.add(railArc);
+                railArcListList.add(reverseRailArc);
                 line = bufferedReader.readLine();
             }
             trainDesign.setRailArcList(railArcListList);
