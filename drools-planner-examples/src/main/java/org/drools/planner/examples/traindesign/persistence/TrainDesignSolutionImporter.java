@@ -48,12 +48,19 @@ import org.drools.planner.examples.traindesign.domain.TrainDesign;
 
 public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
+    private static final String INPUT_FILE_SUFFIX = ".csv";
+
     public static void main(String[] args) {
         new TrainDesignSolutionImporter().convertAll();
     }
 
     public TrainDesignSolutionImporter() {
         super(new TrainDesignDaoImpl());
+    }
+
+    @Override
+    protected String getInputFileSuffix() {
+        return INPUT_FILE_SUFFIX;
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
