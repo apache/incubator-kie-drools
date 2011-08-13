@@ -26,14 +26,14 @@ import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.Operation;
-import org.jbpm.task.service.SyncTaskService;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 
 /**
  *
  * @author salaboy
  */
-public class LocalTaskService implements SyncTaskService {
+public class LocalTaskService implements TaskService {
 
     private TaskServiceSession taskServiceSession;
 

@@ -14,21 +14,38 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.local;
+package org.jbpm.task.service.local.sync;
 
-public class TaskLifeCycleLocalTest extends TaskLifeCycleBaseLocalTest {
+import org.drools.util.ChainedProperties;
+import org.jbpm.task.service.base.sync.IcalBaseSyncTest;
+import org.jbpm.task.service.local.LocalTaskService;
+import org.subethamail.wiser.Wiser;
+import org.drools.util.ClassLoaderUtil;
+
+public class IcalLocalTest extends IcalBaseSyncTest {
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+
+		ChainedProperties props = new ChainedProperties("process.email.conf", ClassLoaderUtil.getClassLoader(null, getClass(), false) );
+		setEmailHost(props.getProperty("host", "locahost"));
+		setEmailPort(props.getProperty("port", "2345"));        
+
 		
+
 		client = new LocalTaskService(taskSession);
 		
+
+		setWiser(new Wiser());
+		getWiser().setHostname(getEmailHost());
+		getWiser().setPort( Integer.parseInt(getEmailPort()));         
+		getWiser().start();
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		
-	}    
+		getWiser().stop();
+	}
 
 }

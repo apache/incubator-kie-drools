@@ -16,6 +16,7 @@
 
 package org.jbpm.task.service;
 
+import org.jbpm.task.AsyncTaskService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

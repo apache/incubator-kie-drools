@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.local;
+package org.jbpm.task.service.base.sync;
 
-import org.jbpm.task.service.*;
 import java.io.StringReader;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,24 +23,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.eventmessaging.EventKey;
-import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.event.TaskCompletedEvent;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
-public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
+public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 	
 	protected TaskServer server;
-	protected SyncTaskService client;
+	protected TaskService client;
 
     @SuppressWarnings("unchecked")
 	public void testLifeCycle() throws Exception {      
@@ -59,12 +53,13 @@ public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
             
         
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, null);
+        client.addTask( task, null );
         
         long taskId = task.getId();
         
-//        EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
-//        client.registerForEvent( key, true );
+        EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
+        
+        client.registerForEvent( key, true );
         
         
         
@@ -84,7 +79,7 @@ public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
         
         client.complete( taskId, users.get( "bobba" ).getId(), null );
         
-        
+       
         
         tasks = client.getTasksAssignedAsPotentialOwner(users.get( "bobba" ).getId(), "en-UK");
         assertEquals(0, tasks.size());
@@ -118,9 +113,9 @@ public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
         client.addTask( task, null );
         long taskId = task.getId();
         
-//        EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
-//        BlockingEventResponseHandler handler = new BlockingEventResponseHandler(); 
-//        client.registerForEvent( key, true, handler );
+        EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId );           
+        
+        client.registerForEvent( key, true );
         
         
         
@@ -128,7 +123,7 @@ public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
         assertEquals(1, tasks.size());
         assertEquals(Status.Reserved, tasks.get(0).getStatus());
         
-        
+       
         client.start( taskId, users.get( "bobba" ).getId() );  
 
         
@@ -137,14 +132,13 @@ public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
         assertEquals(1, tasks.size());
         assertEquals(Status.InProgress, tasks.get(0).getStatus());
         
-        
+       
         Task task2 = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task2, null );
         long taskId2 = task2.getId();
         
-//        EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2 );           
-//        BlockingEventResponseHandler handler2 = new BlockingEventResponseHandler(); 
-//        client.registerForEvent( key2, true, handler2 );
+        EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2 );           
+        client.registerForEvent( key2, true );
         
         
         
@@ -179,8 +173,8 @@ public abstract class TaskLifeCycleBaseLocalTest extends BaseTest {
 //        assertNotNull( event );
         
         
-        
-        task2 = client.getTask( taskId2 );
+       
+        task2 =  client.getTask( taskId2 );
         assertEquals( Status.Completed , task2.getTaskData().getStatus() );
     }
 
