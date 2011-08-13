@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service;
+package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -25,24 +25,29 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.task.AccessType;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
+import org.jbpm.task.service.PermissionDeniedException;
+import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
-public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
+public abstract class TaskServiceLifeCycleBaseAsyncTest extends BaseTest {
 
     private static final int DEFAULT_WAIT_TIME = 5000;
 
     protected TaskServer server;
-    protected TaskClient client;
+    protected AsyncTaskService client;
 
     public void testNewTaskWithNoPotentialOwners() {
         Map  vars = new HashMap();     

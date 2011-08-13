@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.service;
+package org.jbpm.task;
 
 import java.util.List;
 import org.jbpm.eventmessaging.EventKey;
-import org.jbpm.task.Attachment;
-import org.jbpm.task.Comment;
-import org.jbpm.task.Content;
-import org.jbpm.task.OrganizationalEntity;
-import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
 
 /**
  *
  * @author salaboy
  */
-public interface SyncTaskService {
+public interface TaskService {
 
     void activate(long taskId, String userId);
 

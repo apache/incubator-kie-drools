@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.task.service;
+package org.jbpm.task;
 
 import java.util.List;
 import org.jbpm.eventmessaging.EventKey;
@@ -23,6 +23,8 @@ import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Task;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskClientHandler.AddAttachmentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddCommentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.AddTaskResponseHandler;

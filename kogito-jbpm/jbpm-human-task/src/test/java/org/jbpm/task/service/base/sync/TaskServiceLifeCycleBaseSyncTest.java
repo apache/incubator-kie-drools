@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.local;
+package org.jbpm.task.service.base.sync;
 
+import org.jbpm.task.service.local.*;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.*;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,17 +33,15 @@ import org.jbpm.task.OrganizationalEntity;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
+import org.jbpm.task.service.PermissionDeniedException;
 
-public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
+public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
 
     private static final int DEFAULT_WAIT_TIME = 5000;
 
-    protected SyncTaskService client;
+    protected TaskService client;
 
     public void testNewTaskWithNoPotentialOwners() {
         Map  vars = new HashMap();     
@@ -1216,7 +1215,7 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
         
@@ -1299,7 +1298,7 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+        
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
         
@@ -1310,7 +1309,7 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         client.start( taskId, users.get( "darth" ).getId() );      
         
         
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
+        
         
         Task task1 = client.getTask( taskId );
         assertEquals(  Status.InProgress, task1.getTaskData().getStatus() );
@@ -1345,16 +1344,14 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [users['bobba' ], users['darth'] ], }),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
+
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
         
         long taskId = task.getId();             
         
         // Go straight from Ready to Inprogress
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.start( taskId, users.get( "darth" ).getId() );
-        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         client.getTask( taskId );
         Task task1 = client.getTask( taskId );
@@ -1368,8 +1365,6 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         data.setContent("content".getBytes());
         
         client.fail( taskId, users.get( "darth" ).getId(), data );
-        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
-        
         
         
         Task task2 = client.getTask( taskId );
@@ -1385,7 +1380,7 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         Content content = client.getContent(contentId);
         assertEquals("content", new String(content.getContent()));
     }
-    //@TODO: FIX IT, looks like a persistence problem around persistent bags
+    //@TODO: FIX IT, looks like a persistence problem around persistent bags for local impl
 //    public void testRegisterRemove() throws Exception {
 //    	Map <String, Object> vars = new HashMap<String, Object>();     
 //        vars.put( "users", users );
@@ -1400,15 +1395,10 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
 //        Task task = ( Task )  eval( new StringReader( str ), vars );
 //        client.addTask( task, null );
 //        
-//        long taskId = task.getId();             
-//        
+//        long taskId = task.getId();               
 //       
 //        client.register(taskId, users.get("bobba").getId());
-//       
-//        
-//        Thread.sleep(500);
-//        
-//        
+//
 //        
 //        Task task1 = client.getTask(taskId);
 //        List<OrganizationalEntity> myRecipientTasks = task1.getPeopleAssignments().getRecipients();
@@ -1418,11 +1408,6 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
 //        assertTrue(task1.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
 //        
 //        client.remove(taskId, users.get("bobba").getId());
-//        
-//        
-//        Thread.sleep(500);
-//        
-//        
 //        
 //        Task task2 = client.getTask( taskId );
 //        assertFalse(task2.getPeopleAssignments().getRecipients().contains(users.get("bobba")));
@@ -1641,8 +1626,10 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         Task task1 = client.getTask( taskId );
         
         assertEquals(task1.getTaskData().getStatus(), Status.Ready);
-        //We are not using remoting here so the object is the same
-        assertTrue(task1.equals(task));
+        //When we are not using remoting the object is the same
+        //assertTrue(task1.equals(task));
+        //When we use remoting this will be false
+        //assertFalse(task1.equals(task));
     }
     
     public void testActivateWithIncorrectUser() {
@@ -1656,7 +1643,6 @@ public abstract class TaskServiceLifeCycleBaseLocalTest extends BaseTest {
         str += "businessAdministrators = [ users['jabba'] ] } ),";                        
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null );
         

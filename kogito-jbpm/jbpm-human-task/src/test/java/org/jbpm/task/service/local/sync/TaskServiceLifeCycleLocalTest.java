@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.local;
+package org.jbpm.task.service.local.sync;
 
-public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseLocalTest {
+import org.jbpm.task.service.base.sync.TaskServiceLifeCycleBaseSyncTest;
+import org.jbpm.task.service.local.LocalTaskService;
+
+public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseSyncTest {
 
 
     @Override
