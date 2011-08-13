@@ -14,7 +14,7 @@
 "Block5";"D";"B";16;960;800;90
 ;;;;;;
 "Network";;;;;;
-"Origin";"Destination";"Distance (Miles)";"Max Train Length(Feet)";"Max Tonnage (Tons)";"Max # of Trains";
+"Origin";"Destination";"Distance";"Max Train Length(Feet)";"Max Tonnage (Tons)";"Max # of Trains";
 "A";"B";50;8000;10000;3;
 "A";"D";45;5000;11000;4;
 "B";"C";55;9000;9000;5;
@@ -34,7 +34,7 @@
 "Crew Imbalance Penalty per imbalance";600;;;;;
 "Train Imbalance Penalty per imbalance";1000;;;;;
 "Train travel cost per mile";10;;;;;
-"Car travel cost per mile";0,75;;;;;
+"Car travel cost per mile";0.75;;;;;
 "Cost per work event";350;;;;;
 "Maximum Blocks per train";8;;;;;
 "Maximum Block swaps per block";3;;;;;
