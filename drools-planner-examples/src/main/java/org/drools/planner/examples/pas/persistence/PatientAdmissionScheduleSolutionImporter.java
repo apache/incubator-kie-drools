@@ -152,7 +152,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             long departmentSpecialismId = 0L;
             for (int i = 0; i < departmentListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitByPipeline(line, 2);
+                String[] lineTokens = splitByPipelineAndTrim(line, 2);
 
                 String[] departmentTokens = splitBySpace(lineTokens[0], 4);
                 Department department = new Department();
@@ -224,7 +224,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             long roomEquipmentId = 0L;
             for (int i = 0; i < roomListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitByPipeline(line, 6);
+                String[] lineTokens = splitByPipelineAndTrim(line, 6);
 
                 String[] roomTokens = splitBySpace(lineTokens[0], 2);
                 Room room = new Room();
@@ -346,7 +346,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             long preferredPatientEquipmentId = 0L;
             for (int i = 0; i < patientListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitByPipeline(line, 6);
+                String[] lineTokens = splitByPipelineAndTrim(line, 6);
 
                 String[] nightTokens = splitBySpace(lineTokens[1], 2);
                 int firstNightIndex = Integer.parseInt(nightTokens[0]);
@@ -514,7 +514,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
             long id = 0L;
             for (AdmissionPart admissionPart : admissionPartList) {
                 BedDesignation bedDesignation = new BedDesignation();
-                bedDesignation.setId((long) id);
+                bedDesignation.setId(id);
                 id++;
                 bedDesignation.setAdmissionPart(admissionPart);
                 // Notice that we leave the PlanningVariable properties on null

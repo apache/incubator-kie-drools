@@ -909,7 +909,7 @@ After in *.java:
             for (Course course : courseList) {
                 for (int i = 0; i < course.getLectureSize(); i++) {
                     Lecture lecture = new Lecture();
-                    lecture.setId((long) id);
+                    lecture.setId(id);
                     id++;
                     lecture.setCourse(course);
                     // Make sure to set all non PlanningVariable properties

@@ -165,7 +165,7 @@ public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
             long id = 0L;
             for (Guest guest : guestList) {
                 SeatDesignation seatDesignation = new SeatDesignation();
-                seatDesignation.setId((long) id);
+                seatDesignation.setId(id);
                 id++;
                 seatDesignation.setGuest(guest);
                 // Notice that we leave the PlanningVariable properties on null

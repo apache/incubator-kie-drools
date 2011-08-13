@@ -105,7 +105,7 @@ public class TspSolutionImporter extends AbstractTxtSolutionImporter {
             long id = 0L;
             for (City city : cityList) {
                 CityAssignment cityAssignment = new CityAssignment();
-                cityAssignment.setId((long) id);
+                cityAssignment.setId(id);
                 id++;
                 cityAssignment.setCity(city);
                 // Notice that we leave the PlanningVariable properties on null

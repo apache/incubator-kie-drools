@@ -137,43 +137,50 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         }
 
         public String[] splitBySpace(String line) {
-            String[] lineTokens = line.split("\\ ");
-            return lineTokens;
+            return splitBySpace(line, null);
         }
 
-        public String[] splitBySpace(String line, int numberOfTokens) {
-            String[] lineTokens = splitBySpace(line);
-            if (lineTokens.length != numberOfTokens) {
-                throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " + numberOfTokens + " tokens separated by a space ( ).");
-            }
-            return lineTokens;
+        public String[] splitBySpace(String line, Integer numberOfTokens) {
+            return splitBy(line, "\\ ", "a space ( )", numberOfTokens, false, false);
         }
 
         public String[] splitBySpacesOrTabs(String line) {
-            String[] lineTokens = line.split("[\\ \\t]+");
-            return lineTokens;
+            return splitBySpacesOrTabs(line, null);
         }
 
-        public String[] splitBySpacesOrTabs(String line, int numberOfTokens) {
-            String[] lineTokens = splitBySpacesOrTabs(line);
-            if (lineTokens.length != numberOfTokens) {
-                throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " + numberOfTokens + " tokens separated by spaces or tabs.");
-            }
-            return lineTokens;
+        public String[] splitBySpacesOrTabs(String line, Integer numberOfTokens) {
+            return splitBy(line, "[\\ \\t]+", "spaces or tabs", numberOfTokens, false, false);
         }
 
-        public String[] splitByPipeline(String line, int numberOfTokens) {
-            String[] lineTokens = line.split("\\|");
-            if (lineTokens.length != numberOfTokens) {
-                throw new IllegalArgumentException("Read line (" + line
-                        + ") is expected to contain " + numberOfTokens + " tokens separated by a pipeline (|).");
+        public String[] splitByPipelineAndTrim(String line, int numberOfTokens) {
+            return splitBy(line, "\\|", "a pipeline (|)", numberOfTokens, true, false);
+        }
+
+        public String[] splitBySemicolonSeparatedValue(String line, int numberOfTokens) {
+            return splitBy(line, ";", "a semicolon (;)", numberOfTokens, false, true);
+        }
+
+        public String[] splitBy(String line, String tokenRegex, String tokenName,
+                Integer numberOfTokens, boolean trim, boolean removeQuotes) {
+            String[] lineTokens = line.split(tokenRegex);
+            if (numberOfTokens != null && lineTokens.length != numberOfTokens) {
+                throw new IllegalArgumentException("Read line (" + line + ") is expected to contain "
+                        + numberOfTokens + " tokens separated by " + tokenName + ".");
             }
-            for (int i = 0; i < lineTokens.length; i++) {
-                lineTokens[i] = lineTokens[i].trim();
+            if (trim) {
+                for (int i = 0; i < lineTokens.length; i++) {
+                    lineTokens[i] = lineTokens[i].trim();
+                }
+            }
+            if (removeQuotes) {
+                for (int i = 0; i < lineTokens.length; i++) {
+                    if (lineTokens[i].startsWith("\"") && lineTokens[i].endsWith("\"")) {
+                        lineTokens[i] = lineTokens[i].substring(1, lineTokens[i].length() - 1);
+                    }
+                }
             }
             return lineTokens;
+
         }
 
     }
