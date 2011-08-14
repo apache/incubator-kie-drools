@@ -54,6 +54,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer implements Cust
     private void initializeBedDesignationList(SolutionDirector solutionDirector,
             PatientAdmissionSchedule patientAdmissionSchedule) {
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+        // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<BedDesignation> bedDesignationList = createBedDesignationList(patientAdmissionSchedule);
         Map<Bed, Set<Integer>> bedToTakenNightIndexSetMap = null;
         if (checkSameBedInSameNight) {

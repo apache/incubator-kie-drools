@@ -47,6 +47,7 @@ public class TspStartingSolutionInitializer implements CustomSolverPhaseCommand 
         City startCity = travelingSalesmanTour.getStartCity();
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
+        // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<CityAssignment> cityAssignmentList = createCityAssignmentList(travelingSalesmanTour);
         List<CityAssignment> assignedCityAssignmentList = null;
         for (CityAssignment cityAssignment : cityAssignmentList) {

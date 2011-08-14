@@ -45,6 +45,7 @@ public class Manners2009StartingSolutionInitializer implements CustomSolverPhase
 
     private void initializeSeatDesignationList(SolutionDirector solutionDirector, Manners2009 manners2009) {
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
+        // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<SeatDesignation> seatDesignationList = createSeatDesignationList(manners2009);
         // Assign one guest at a time
         List<Seat> undesignatedSeatList = manners2009.getSeatList();

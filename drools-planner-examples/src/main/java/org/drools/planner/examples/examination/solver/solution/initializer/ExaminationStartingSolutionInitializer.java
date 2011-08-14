@@ -56,6 +56,7 @@ public class ExaminationStartingSolutionInitializer implements CustomSolverPhase
     private void initializeExamList(SolutionDirector solutionDirector, Examination examination) {
         List<Period> periodList = examination.getPeriodList();
         List<Room> roomList = examination.getRoomList();
+        // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<Exam> examList = new ArrayList<Exam>(examination.getTopicList().size()); // TODO this can be returned from createExamAssigningScoreList
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 

@@ -50,6 +50,7 @@ public class NurseRosteringStartingSolutionInitializer implements CustomSolverPh
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
+        // TODO the planning entity list from the solution should be used and might already contain initialized entities
         List<Assignment> assignmentList = createAssignmentList(nurseRoster);
         for (Assignment assignment : assignmentList) {
             FactHandle assignmentHandle = null;

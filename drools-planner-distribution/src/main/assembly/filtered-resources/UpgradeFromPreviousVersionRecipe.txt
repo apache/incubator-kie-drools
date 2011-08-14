@@ -855,6 +855,7 @@ Therefor it's now possible to start planning from a partially initialized starti
 for example during real-time re-planning after facts change.
 
 [MAJOR] The StartingSolutionInitializer no longer has a isSolutionInitialized(AbstractSolverScope) method.
+The StartingSolutionInitializer should now be smart enough to do nothing if the solution is partially initialized
 Before in *StartingSolutionInitializer.java:
     public class ...StartingSolutionInitializer extends AbstractStartingSolutionInitializer {
 
@@ -1052,12 +1053,14 @@ After in *StartingSolutionInitializer.java:
 
         public void changeWorkingSolution(SolutionDirector solutionDirector) {
             // Initialize the solution
-            ... solutionDirectorsolverScope.getWorkingMemory() ...
+            ... solutionDirector.getWorkingMemory() ...
             ... solutionDirector.calculateScoreFromWorkingMemory() ...
         }
 
         ...
     }
+Warning: A CustomSolverPhaseCommand can be called with a (partially or complete) initialized solution,
+in which case it probably doesn't want to reset the already initialized planning entities.
 
 [MINOR] The AbstractMoveFactory lifecycle methods have changed signature.
 If you overwrote them (which is unlikely as most implements use CachedMoveFactory), you'll need to adjust them.
