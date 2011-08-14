@@ -46,6 +46,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
 
     private List<RailNode> railNodeList;
     private List<RailArc> railArcList;
+    private List<CarBlock> carBlockList;
 
     private List<BedDesignation> bedDesignationList; // TODO replace me
 
@@ -65,6 +66,14 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
 
     public void setRailArcList(List<RailArc> railArcList) {
         this.railArcList = railArcList;
+    }
+
+    public List<CarBlock> getCarBlockList() {
+        return carBlockList;
+    }
+
+    public void setCarBlockList(List<CarBlock> carBlockList) {
+        this.carBlockList = carBlockList;
     }
 
     @PlanningEntityCollectionProperty
@@ -88,6 +97,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(railNodeList);
         facts.addAll(railArcList);
+        facts.addAll(carBlockList);
 //        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
@@ -101,6 +111,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         clone.id = id;
         clone.railNodeList = railNodeList;
         clone.railArcList = railArcList;
+        clone.carBlockList = carBlockList;
         List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
         for (BedDesignation bedDesignation : bedDesignationList) {
             BedDesignation clonedBedDesignation = bedDesignation.clone();

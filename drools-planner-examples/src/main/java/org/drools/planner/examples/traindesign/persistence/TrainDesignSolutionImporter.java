@@ -18,31 +18,14 @@ package org.drools.planner.examples.traindesign.persistence;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Bed;
-import org.drools.planner.examples.pas.domain.BedDesignation;
-import org.drools.planner.examples.pas.domain.Department;
-import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
-import org.drools.planner.examples.pas.domain.Equipment;
-import org.drools.planner.examples.pas.domain.Gender;
-import org.drools.planner.examples.pas.domain.GenderLimitation;
-import org.drools.planner.examples.pas.domain.Night;
-import org.drools.planner.examples.pas.domain.Patient;
-import org.drools.planner.examples.pas.domain.PreferredPatientEquipment;
-import org.drools.planner.examples.pas.domain.RequiredPatientEquipment;
-import org.drools.planner.examples.pas.domain.Room;
-import org.drools.planner.examples.pas.domain.RoomEquipment;
-import org.drools.planner.examples.pas.domain.RoomSpecialism;
-import org.drools.planner.examples.pas.domain.Specialism;
+import org.drools.planner.examples.traindesign.domain.CarBlock;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
@@ -106,11 +89,11 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 RailNode railNode = new RailNode();
                 railNode.setId(id);
                 id++;
-                railNode.setName(lineTokens[0]);
+                railNode.setCode(lineTokens[0]);
                 railNode.setBlockSwapCost(Integer.parseInt(lineTokens[1]));
                 railNode.setOriginatingRailArcList(new ArrayList<RailArc>());
                 railNodeList.add(railNode);
-                nameToRailNodeMap.put(railNode.getName(), railNode);
+                nameToRailNodeMap.put(railNode.getCode(), railNode);
                 line = bufferedReader.readLine();
             }
             trainDesign.setRailNodeList(railNodeList);
@@ -119,22 +102,35 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
         private void readCarBlockList() throws IOException {
             readConstantLine("\"Blocks\";;;;;;");
             readConstantLine("\"BlockID\";\"Origin\";\"Destination\";\"# of Cars\";\"Total Length (Feet)\";\"Total Tonnage (Tons)\";\"Shortest Distance (Miles)\"");
-//            List<RailNode> railNodeList = new ArrayList<RailNode>();
-//            nameToRailNodeMap = new HashMap<String, RailNode>();
+            List<CarBlock> carBlockList = new ArrayList<CarBlock>();
             String line = bufferedReader.readLine();
             long id = 0L;
             while (!line.equals(";;;;;;")) {
                 String[] lineTokens = splitBySemicolonSeparatedValue(line, 7);
-//                RailNode railNode = new RailNode();
-//                railNode.setId(id);
-//                id++;
-//                railNode.setName(lineTokens[0]);
-//                railNode.setBlockSwapCost(Integer.parseInt(lineTokens[2]));
-//                railNodeList.add(railNode);
-//                nameToRailNodeMap.put(railNode.getName(), railNode);
+                CarBlock carBlock = new CarBlock();
+                carBlock.setId(id);
+                id++;
+                carBlock.setCode(lineTokens[0]);
+                RailNode origin = nameToRailNodeMap.get(lineTokens[1]);
+                if (origin == null) {
+                    throw new IllegalArgumentException("Read line (" + line
+                            + ") has a non existing origin (" + lineTokens[1] + ").");
+                }
+                carBlock.setOrigin(origin);
+                RailNode destination = nameToRailNodeMap.get(lineTokens[2]);
+                if (destination == null) {
+                    throw new IllegalArgumentException("Read line (" + line
+                            + ") has a non existing destination (" + lineTokens[2] + ").");
+                }
+                carBlock.setDestination(destination);
+                carBlock.setNumberOfCars(Integer.parseInt(lineTokens[3]));
+                carBlock.setLength(Integer.parseInt(lineTokens[4]));
+                carBlock.setTonnage(Integer.parseInt(lineTokens[5]));
+                carBlock.setShortestDistance(readDistance(lineTokens[6]));
+                carBlockList.add(carBlock);
                 line = bufferedReader.readLine();
             }
-//            trainDesign.setRailNodeList(railNodeList);
+            trainDesign.setCarBlockList(carBlockList);
         }
 
         private void readRailArcList() throws IOException {

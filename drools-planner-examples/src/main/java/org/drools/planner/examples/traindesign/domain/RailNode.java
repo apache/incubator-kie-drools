@@ -21,23 +21,21 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Patient;
 
 @XStreamAlias("RailNode")
 public class RailNode extends AbstractPersistable implements Comparable<RailNode> {
 
-    private String name;
+    private String code;
     private int blockSwapCost;
 
     private List<RailArc> originatingRailArcList;
 
-    public String getName() {
-        return name;
+    public String getCode() {
+        return code;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public int getBlockSwapCost() {
@@ -64,7 +62,7 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
 
     @Override
     public String toString() {
-        return name;
+        return code;
     }
 
 }

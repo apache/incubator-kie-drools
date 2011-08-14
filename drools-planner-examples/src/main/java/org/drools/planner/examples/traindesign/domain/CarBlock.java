@@ -20,15 +20,24 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("RailArc")
-public class RailArc extends AbstractPersistable implements Comparable<RailArc> {
+@XStreamAlias("CarBlock")
+public class CarBlock extends AbstractPersistable implements Comparable<CarBlock> {
 
+    private String code;
     private RailNode origin;
     private RailNode destination;
-    private int distance; // in miles * 1000
-    private int maximumTrainLength; // in feet
-    private int maximumTonnage; // in tons
-    private int maximumNumberOfTrains;
+    private int numberOfCars;
+    private int length; // in feet
+    private int tonnage; // in tons
+    private int shortestDistance; // in miles * 1000
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public RailNode getOrigin() {
         return origin;
@@ -46,47 +55,48 @@ public class RailArc extends AbstractPersistable implements Comparable<RailArc> 
         this.destination = destination;
     }
 
-    public int getDistance() {
-        return distance;
+    public int getNumberOfCars() {
+        return numberOfCars;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
+    public void setNumberOfCars(int numberOfCars) {
+        this.numberOfCars = numberOfCars;
     }
 
-    public int getMaximumTrainLength() {
-        return maximumTrainLength;
+    public int getLength() {
+        return length;
     }
 
-    public void setMaximumTrainLength(int maximumTrainLength) {
-        this.maximumTrainLength = maximumTrainLength;
+    public void setLength(int length) {
+        this.length = length;
     }
 
-    public int getMaximumTonnage() {
-        return maximumTonnage;
+    public int getTonnage() {
+        return tonnage;
     }
 
-    public void setMaximumTonnage(int maximumTonnage) {
-        this.maximumTonnage = maximumTonnage;
+    public void setTonnage(int tonnage) {
+        this.tonnage = tonnage;
     }
 
-    public int getMaximumNumberOfTrains() {
-        return maximumNumberOfTrains;
+    public int getShortestDistance() {
+        return shortestDistance;
     }
 
-    public void setMaximumNumberOfTrains(int maximumNumberOfTrains) {
-        this.maximumNumberOfTrains = maximumNumberOfTrains;
+    public void setShortestDistance(int shortestDistance) {
+        this.shortestDistance = shortestDistance;
     }
 
-    public int compareTo(RailArc other) {
+    public int compareTo(CarBlock other) {
         return new CompareToBuilder()
+                .append(code, other.code)
                 .append(id, other.id)
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return origin + "->" + destination;
+        return code + "(" + origin + "->" + destination + ")";
     }
 
 }
