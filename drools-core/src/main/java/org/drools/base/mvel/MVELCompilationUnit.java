@@ -358,7 +358,7 @@ public class MVELCompilationUnit
                     Object o = decl.getValue( (InternalWorkingMemory) workingMemory,
                                               handle.getObject() );
                     if ( knowledgeHelper != null && decl.isPatternDeclaration() ) {
-                        identityMap.put( decl.getIdentifier(),
+                        identityMap.put( o,
                                          handle );
                     }
                     factory.getIndexedVariableResolver( i++ ).setValue(  o );

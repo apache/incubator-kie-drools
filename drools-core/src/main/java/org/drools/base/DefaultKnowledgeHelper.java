@@ -258,11 +258,15 @@ public class DefaultKnowledgeHelper
     public FactHandle getFactHandle(Object object) {
         FactHandle handle = null;
         if ( identityMap != null ) {
-            identityMap.get( object );
+            handle = identityMap.get( object );
         }
-        if ( handle == null ) {
-            handle = getFactHandleFromWM( object );
+        
+        if ( handle != null ) {
+            return handle;
         }
+        
+        handle = getFactHandleFromWM( object );
+        
         if ( handle == null ) {
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
