@@ -30,11 +30,12 @@ import org.drools.planner.examples.traindesign.domain.CrewSegment;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
+import org.drools.planner.examples.traindesign.domain.TrainDesignParametrization;
 
 public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = ".csv";
-    private static final BigDecimal DISTANCE_MULTIPLICANT = new BigDecimal(1000);
+    private static final BigDecimal DISTANCE_MULTIPLICAND = new BigDecimal(1000);
 
     public static void main(String[] args) {
         new TrainDesignSolutionImporter().convertAll();
@@ -65,6 +66,8 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailNodeList();
             readCarBlockList();
             readRailArcList();
+            readCrewSegmentList();
+            readTrainDesignParametrization();
 
 //            createBedDesignationList();
             logger.info("TrainDesign with {} rail nodes and {} rail arcs.",
@@ -211,8 +214,37 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             trainDesign.setCrewSegmentList(crewSegmentList);
         }
 
+        private void readTrainDesignParametrization() throws IOException {
+            readConstantLine("\"Parameters\";;;;;;");
+            readConstantLine("\"Parameters\";\"Values\";;;;;");
+            TrainDesignParametrization trainDesignParametrization = new TrainDesignParametrization();
+
+            trainDesignParametrization.setCrewImbalancePenalty(
+                    readIntegerValue("\"Crew Imbalance Penalty per imbalance\";", ";;;;;"));
+            trainDesignParametrization.setTrainImbalancePenalty(
+                    readIntegerValue("\"Train Imbalance Penalty per imbalance\";", ";;;;;"));
+            trainDesignParametrization.setTrainTravelCostPerDistance(
+                    readDistance(readStringValue("\"Train travel cost per mile\";", ";;;;;")));
+            trainDesignParametrization.setCarTravelCostPerDistance(
+                    readDistance(readStringValue("\"Car travel cost per mile\";", ";;;;;")));
+            trainDesignParametrization.setWorkEventCost(
+                    readIntegerValue("\"Cost per work event\";", ";;;;;"));
+            trainDesignParametrization.setMaximumBlocksPerTrain(
+                    readIntegerValue("\"Maximum Blocks per train\";", ";;;;;"));
+            trainDesignParametrization.setMaximumBlockSwapsPerBlock(
+                    readIntegerValue("\"Maximum Block swaps per block\";", ";;;;;"));
+            trainDesignParametrization.setMaximumIntermediateWorkEventsPerTrain(
+                    readIntegerValue("\"Maximum intermediate work events per train\";", ";;;;;"));
+            trainDesignParametrization.setTrainStartCost(
+                    readIntegerValue("\"Train start Cost\";", ";;;;;"));
+            trainDesignParametrization.setMissedCarCost(
+                    readIntegerValue("\"Missed cost per railcar\";", ";;;;;"));
+
+            trainDesign.setTrainDesignParametrization(trainDesignParametrization);
+        }
+
         private int readDistance(String lineToken) {
-            BigDecimal distanceBigDecimal = new BigDecimal(lineToken).multiply(DISTANCE_MULTIPLICANT);
+            BigDecimal distanceBigDecimal = new BigDecimal(lineToken).multiply(DISTANCE_MULTIPLICAND);
             if (distanceBigDecimal.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0) {
                 throw new IllegalArgumentException("The distance (" + lineToken + ") is too detailed.");
             }

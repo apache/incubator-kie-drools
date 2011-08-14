@@ -27,22 +27,12 @@ import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.BedDesignation;
-import org.drools.planner.examples.pas.domain.Department;
-import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
-import org.drools.planner.examples.pas.domain.Night;
-import org.drools.planner.examples.pas.domain.Patient;
-import org.drools.planner.examples.pas.domain.PreferredPatientEquipment;
-import org.drools.planner.examples.pas.domain.RequiredPatientEquipment;
-import org.drools.planner.examples.pas.domain.Room;
-import org.drools.planner.examples.pas.domain.RoomEquipment;
-import org.drools.planner.examples.pas.domain.RoomSpecialism;
-import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 
 @XStreamAlias("TrainDesign")
 public class TrainDesign extends AbstractPersistable implements Solution<HardAndSoftScore> {
+
+    private TrainDesignParametrization trainDesignParametrization;
 
     private List<RailNode> railNodeList;
     private List<RailArc> railArcList;
@@ -52,6 +42,14 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     private List<BedDesignation> bedDesignationList; // TODO replace me
 
     private HardAndSoftScore score;
+
+    public TrainDesignParametrization getTrainDesignParametrization() {
+        return trainDesignParametrization;
+    }
+
+    public void setTrainDesignParametrization(TrainDesignParametrization trainDesignParametrization) {
+        this.trainDesignParametrization = trainDesignParametrization;
+    }
 
     public List<RailNode> getRailNodeList() {
         return railNodeList;
@@ -104,6 +102,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
+        facts.add(trainDesignParametrization);
         facts.addAll(railNodeList);
         facts.addAll(railArcList);
         facts.addAll(carBlockList);
@@ -119,6 +118,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     public TrainDesign cloneSolution() {
         TrainDesign clone = new TrainDesign();
         clone.id = id;
+        clone.trainDesignParametrization = trainDesignParametrization;
         clone.railNodeList = railNodeList;
         clone.railArcList = railArcList;
         clone.carBlockList = carBlockList;

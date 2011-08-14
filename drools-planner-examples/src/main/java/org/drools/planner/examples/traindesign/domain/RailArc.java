@@ -25,7 +25,7 @@ public class RailArc extends AbstractPersistable implements Comparable<RailArc> 
 
     private RailNode origin;
     private RailNode destination;
-    private int distance; // in miles * 1000
+    private int distance; // in miles * 1000 (to avoid Double rounding errors and BigDecimal)
     private int maximumTrainLength; // in feet
     private int maximumTonnage; // in tons
     private int maximumNumberOfTrains;

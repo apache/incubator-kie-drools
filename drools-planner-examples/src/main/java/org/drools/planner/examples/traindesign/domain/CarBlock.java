@@ -29,7 +29,9 @@ public class CarBlock extends AbstractPersistable implements Comparable<CarBlock
     private int numberOfCars;
     private int length; // in feet
     private int tonnage; // in tons
-    private int shortestDistance; // in miles * 1000
+
+    // TODO Isn't always correct in the problem xls's.
+    private int shortestDistance; // in miles * 1000 (to avoid Double rounding errors and BigDecimal)
 
     public String getCode() {
         return code;
