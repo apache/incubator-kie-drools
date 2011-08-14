@@ -26,6 +26,7 @@ import java.util.Map;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
+import org.drools.planner.examples.traindesign.domain.CrewSegment;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
@@ -136,7 +137,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
         private void readRailArcList() throws IOException {
             readConstantLine("\"Network\";;;;;;");
             readConstantLine("\"Origin\";\"Destination\";\"Distance\";\"Max Train Length(Feet)\";\"Max Tonnage (Tons)\";\"Max # of Trains\";");
-            List<RailArc> railArcListList = new ArrayList<RailArc>();
+            List<RailArc> railArcList = new ArrayList<RailArc>();
             String line = bufferedReader.readLine();
             long id = 0L;
             while (!line.equals(";;;;;;")) {
@@ -175,11 +176,39 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 int maximumNumberOfTrains = Integer.parseInt(lineTokens[5]);
                 railArc.setMaximumNumberOfTrains(maximumNumberOfTrains);
                 reverseRailArc.setMaximumNumberOfTrains(maximumNumberOfTrains);
-                railArcListList.add(railArc);
-                railArcListList.add(reverseRailArc);
+                railArcList.add(railArc);
+                railArcList.add(reverseRailArc);
                 line = bufferedReader.readLine();
             }
-            trainDesign.setRailArcList(railArcListList);
+            trainDesign.setRailArcList(railArcList);
+        }
+
+        private void readCrewSegmentList() throws IOException {
+            readConstantLine("\"Crew Segments\";;;;;;");
+            readConstantLine("\"Node1\";\"Node2\";;;;;");
+            List<CrewSegment> crewSegmentList = new ArrayList<CrewSegment>();
+            String line = bufferedReader.readLine();
+            long id = 0L;
+            while (!line.equals(";;;;;;")) {
+                String[] lineTokens = splitBySemicolonSeparatedValue(line, 2);
+                CrewSegment crewSegment = new CrewSegment();
+                crewSegment.setId(id);
+                id++;
+                RailNode origin = nameToRailNodeMap.get(lineTokens[0]);
+                if (origin == null) {
+                    throw new IllegalArgumentException("Read line (" + line
+                            + ") has a non existing origin (" + lineTokens[0] + ").");
+                }
+                crewSegment.setOrigin(origin);
+                RailNode destination = nameToRailNodeMap.get(lineTokens[1]);
+                if (destination == null) {
+                    throw new IllegalArgumentException("Read line (" + line
+                            + ") has a non existing destination (" + lineTokens[1] + ").");
+                }
+                crewSegment.setDestination(destination);
+                line = bufferedReader.readLine();
+            }
+            trainDesign.setCrewSegmentList(crewSegmentList);
         }
 
         private int readDistance(String lineToken) {
