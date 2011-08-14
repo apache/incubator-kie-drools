@@ -23,29 +23,29 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("InstitutionalWeighting")
 public class InstitutionalWeighting extends AbstractPersistable implements Comparable<InstitutionalWeighting> {
 
-    private int twoInARowPenality;
-    private int twoInADayPenality;
+    private int twoInARowPenalty;
+    private int twoInADayPenalty;
     private int periodSpreadLength;
-    private int periodSpreadPenality;
-    private int mixedDurationPenality;
+    private int periodSpreadPenalty;
+    private int mixedDurationPenalty;
     private int frontLoadLargeTopicSize;
     private int frontLoadLastPeriodSize;
-    private int frontLoadPenality;
+    private int frontLoadPenalty;
 
-    public int getTwoInARowPenality() {
-        return twoInARowPenality;
+    public int getTwoInARowPenalty() {
+        return twoInARowPenalty;
     }
 
-    public void setTwoInARowPenality(int twoInARowPenality) {
-        this.twoInARowPenality = twoInARowPenality;
+    public void setTwoInARowPenalty(int twoInARowPenalty) {
+        this.twoInARowPenalty = twoInARowPenalty;
     }
 
-    public int getTwoInADayPenality() {
-        return twoInADayPenality;
+    public int getTwoInADayPenalty() {
+        return twoInADayPenalty;
     }
 
-    public void setTwoInADayPenality(int twoInADayPenality) {
-        this.twoInADayPenality = twoInADayPenality;
+    public void setTwoInADayPenalty(int twoInADayPenalty) {
+        this.twoInADayPenalty = twoInADayPenalty;
     }
 
     public int getPeriodSpreadLength() {
@@ -56,20 +56,20 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
         this.periodSpreadLength = periodSpreadLength;
     }
 
-    public int getPeriodSpreadPenality() {
-        return periodSpreadPenality;
+    public int getPeriodSpreadPenalty() {
+        return periodSpreadPenalty;
     }
 
-    public void setPeriodSpreadPenality(int periodSpreadPenality) {
-        this.periodSpreadPenality = periodSpreadPenality;
+    public void setPeriodSpreadPenalty(int periodSpreadPenalty) {
+        this.periodSpreadPenalty = periodSpreadPenalty;
     }
 
-    public int getMixedDurationPenality() {
-        return mixedDurationPenality;
+    public int getMixedDurationPenalty() {
+        return mixedDurationPenalty;
     }
 
-    public void setMixedDurationPenality(int mixedDurationPenality) {
-        this.mixedDurationPenality = mixedDurationPenality;
+    public void setMixedDurationPenalty(int mixedDurationPenalty) {
+        this.mixedDurationPenalty = mixedDurationPenalty;
     }
 
     public int getFrontLoadLargeTopicSize() {
@@ -88,12 +88,12 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
         this.frontLoadLastPeriodSize = frontLoadLastPeriodSize;
     }
 
-    public int getFrontLoadPenality() {
-        return frontLoadPenality;
+    public int getFrontLoadPenalty() {
+        return frontLoadPenalty;
     }
 
-    public void setFrontLoadPenality(int frontLoadPenality) {
-        this.frontLoadPenality = frontLoadPenality;
+    public void setFrontLoadPenalty(int frontLoadPenalty) {
+        this.frontLoadPenalty = frontLoadPenalty;
     }
 
     public int compareTo(InstitutionalWeighting other) {

@@ -1,14 +1,14 @@
 <Examination id="1">
   <institutionalWeighting id="2">
     <id>0</id>
-    <twoInARowPenality>25</twoInARowPenality>
-    <twoInADayPenality>5</twoInADayPenality>
+    <twoInARowPenalty>25</twoInARowPenalty>
+    <twoInADayPenalty>5</twoInADayPenalty>
     <periodSpreadLength>10</periodSpreadLength>
-    <periodSpreadPenality>1</periodSpreadPenality>
-    <mixedDurationPenality>15</mixedDurationPenality>
+    <periodSpreadPenalty>1</periodSpreadPenalty>
+    <mixedDurationPenalty>15</mixedDurationPenalty>
     <frontLoadLargeTopicSize>250</frontLoadLargeTopicSize>
     <frontLoadLastPeriodSize>30</frontLoadLastPeriodSize>
-    <frontLoadPenality>10</frontLoadPenality>
+    <frontLoadPenalty>10</frontLoadPenalty>
   </institutionalWeighting>
   <studentList id="3">
     <Student id="4">

@@ -283,18 +283,18 @@ public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
             institutionalWeighting.setId(0L);
             String[] lineTokens;
             lineTokens = readInstitutionalWeightingProperty("TWOINAROW", 2);
-            institutionalWeighting.setTwoInARowPenality(Integer.parseInt(lineTokens[1]));
+            institutionalWeighting.setTwoInARowPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("TWOINADAY", 2);
-            institutionalWeighting.setTwoInADayPenality(Integer.parseInt(lineTokens[1]));
+            institutionalWeighting.setTwoInADayPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("PERIODSPREAD", 2);
             institutionalWeighting.setPeriodSpreadLength(Integer.parseInt(lineTokens[1]));
-            institutionalWeighting.setPeriodSpreadPenality(1); // constant
+            institutionalWeighting.setPeriodSpreadPenalty(1); // constant
             lineTokens = readInstitutionalWeightingProperty("NONMIXEDDURATIONS", 2);
-            institutionalWeighting.setMixedDurationPenality(Integer.parseInt(lineTokens[1]));
+            institutionalWeighting.setMixedDurationPenalty(Integer.parseInt(lineTokens[1]));
             lineTokens = readInstitutionalWeightingProperty("FRONTLOAD", 4);
             institutionalWeighting.setFrontLoadLargeTopicSize(Integer.parseInt(lineTokens[1]));
             institutionalWeighting.setFrontLoadLastPeriodSize(Integer.parseInt(lineTokens[2]));
-            institutionalWeighting.setFrontLoadPenality(Integer.parseInt(lineTokens[3]));
+            institutionalWeighting.setFrontLoadPenalty(Integer.parseInt(lineTokens[3]));
             examination.setInstitutionalWeighting(institutionalWeighting);
         }
 
