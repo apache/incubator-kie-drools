@@ -23,11 +23,16 @@ import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.drools.planner.examples.examination.persistence.ExaminationDaoImpl;
 import org.drools.planner.examples.examination.persistence.ExaminationSolutionExporter;
 import org.drools.planner.examples.examination.persistence.ExaminationSolutionImporter;
 import org.drools.planner.examples.examination.swingui.ExaminationPanel;
 
+/**
+ * Examination is super optimized and a bit complex.
+ * {@link CurriculumCourseApp} is arguably a better example to learn from.
+ */
 public class ExaminationApp extends CommonApp {
 
     public static final String SOLVER_CONFIG
