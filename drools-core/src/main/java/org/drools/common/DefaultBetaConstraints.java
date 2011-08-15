@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
@@ -64,31 +66,29 @@ public class DefaultBetaConstraints
 
     }
     
-    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints) {
-        // Makes sure the first indexable constraint is not a UnificationRestriction, if possible.
-        // If a UnificationRestriction is involved, then we cannot have a composite index
+    public static boolean compositeAllowed(BetaNodeFieldConstraint[] constraints) {        
+        // 1) If there is 1 or more unification restrictions it cannot be composite
+        // 2) Ensures any non unification restrictions are first        
         int firstUnification = -1;
-        int indexable = 0;
+        int firstNonUnification = -1;
         for ( int i = 0, length = constraints.length; i < length; i++ ) {
             if ( DefaultBetaConstraints.isIndexable( constraints[i] ) ) {
-                indexable++;
                 final boolean isUnification = ((VariableConstraint) constraints[i]).getRestriction() instanceof UnificationRestriction ;
-                if ( isUnification ) {
-                    if (  firstUnification == -1 ) {
-                        // Finds the first unification constraint
-                        firstUnification = i;
-                    }
-                } else {
-                    if ( firstUnification != -1 ) {
-                        // We have a unification constraint before a normal constraint, so swap
-                        swap(constraints, i, firstUnification);
-                        break;
-                    } else {
-                        // The first constraint is not a unification, do nothing
-                        break;
-                    }
+                if ( isUnification && firstUnification == -1 ) {
+                    firstUnification = i;
+                } else if ( !isUnification &&firstNonUnification == -1 ) {
+                    firstNonUnification = i;
                 }
+                
             }
+            if ( firstUnification != -1 && firstNonUnification != -1) {
+                break;
+            }
+        }
+  
+        if (firstNonUnification != -1 && firstNonUnification > 0) {
+            // Make sure a nonunification indexable constraint is first
+            swap(constraints, 0, firstNonUnification);
         }
 
         return (firstUnification == -1);
