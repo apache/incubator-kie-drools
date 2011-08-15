@@ -19,10 +19,12 @@ package org.drools.planner.examples.traindesign.persistence;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
@@ -34,7 +36,7 @@ import org.drools.planner.examples.traindesign.domain.TrainDesignParametrization
 
 public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
-    private static final String INPUT_FILE_SUFFIX = ".csv";
+    private static final String INPUT_FILE_SUFFIX = ".csv"; // TODO undo me
     private static final BigDecimal DISTANCE_MULTIPLICAND = new BigDecimal(1000);
 
     public static void main(String[] args) {
@@ -68,9 +70,10 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailArcList();
             readTrainCrewList();
             readTrainDesignParametrization();
+            buildTodo();
 
 //            createBedDesignationList();
-            logger.info("TrainDesign with {} rail nodes, {} rail arcs, {} car blocks, {}  train crews.",
+            logger.info("TrainDesign with {} rail nodes, {} rail arcs, {} car blocks, {} train crews.",
                     new Object[]{trainDesign.getRailNodeList().size(),
                             trainDesign.getRailArcList().size(),
                             trainDesign.getCarBlockList().size(),
@@ -215,6 +218,122 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 line = bufferedReader.readLine();
             }
             trainDesign.setTrainCrewList(trainCrewList);
+        }
+
+        private void buildTodo() {
+            for (TrainCrew trainCrew : trainDesign.getTrainCrewList()) {
+
+                Dijkstra shortestDijkstra = findShortestDijkstra(trainCrew);
+
+                // TODO do something with shortestDijkstra
+
+                // TODO reverse: away to home
+            }
+        }
+
+        private Dijkstra findShortestDijkstra(TrainCrew trainCrew) {
+            int railNodeSize = trainDesign.getRailNodeList().size();
+            RailNode start = trainCrew.getHome();
+            RailNode finish = trainCrew.getAway();
+            Map<RailNode, Dijkstra> dijkstraMap = new HashMap<RailNode, Dijkstra>(railNodeSize);
+            List<Dijkstra> unvisitedDijkstraList = new ArrayList<Dijkstra>(railNodeSize);
+            Dijkstra startDijkstra = new Dijkstra(start);
+            startDijkstra.setShortestDistance(0);
+            startDijkstra.resetRailPath();
+            startDijkstra.addRailPath(new ArrayList<RailArc>(0));
+            dijkstraMap.put(start, startDijkstra);
+            unvisitedDijkstraList.add(startDijkstra);
+            while (!unvisitedDijkstraList.isEmpty()) {
+                Dijkstra campingDijkstra = unvisitedDijkstraList.remove(0);
+                if (campingDijkstra.isVisited()) {
+                    throw new IllegalStateException("Bug in Dijkstra algorithm.");
+                }
+                campingDijkstra.setVisited(true);
+                if (campingDijkstra.getRailNode().equals(finish)) {
+                    return campingDijkstra;
+                }
+                for (RailArc nextRailArc : campingDijkstra.getRailNode().getOriginatingRailArcList()) {
+                    RailNode nextNode = nextRailArc.getDestination();
+                    int nextDistance = campingDijkstra.getShortestDistance() + nextRailArc.getDistance();
+
+                    Dijkstra dijkstra = dijkstraMap.get(nextNode);
+                    if (dijkstra == null) {
+                        dijkstra = new Dijkstra(nextNode);
+                        dijkstra.setShortestDistance(Integer.MAX_VALUE);
+                        dijkstraMap.put(nextNode, dijkstra);
+                        unvisitedDijkstraList.add(dijkstra);
+                    }
+                    if (nextDistance <= dijkstra.getShortestDistance()) {
+                        if (dijkstra.isVisited()) {
+                            throw new IllegalStateException("Bug in Dijkstra algorithm.");
+                        }
+                        if (nextDistance < dijkstra.getShortestDistance()) {
+                            dijkstra.setShortestDistance(nextDistance);
+                            dijkstra.resetRailPath();
+                        }
+                        for (List<RailArc> campingRailPath : campingDijkstra.getRailPathList()) {
+                            List<RailArc> nextRailPath = new ArrayList<RailArc>(campingRailPath);
+                            nextRailPath.add(nextRailArc);
+                            dijkstra.addRailPath(nextRailPath);
+                        }
+                    }
+                }
+                Collections.sort(unvisitedDijkstraList);
+            }
+            throw new IllegalArgumentException("The TrainCrew (" + trainCrew + ") has no valid railPath.");
+        }
+
+        private class Dijkstra implements Comparable<Dijkstra> {
+
+            private RailNode railNode;
+            private boolean visited = false;
+
+            private int shortestDistance;
+            private List<List<RailArc>> railPathList;
+
+            private Dijkstra(RailNode railNode) {
+                this.railNode = railNode;
+            }
+
+            public RailNode getRailNode() {
+                return railNode;
+            }
+
+            public boolean isVisited() {
+                return visited;
+            }
+
+            public void setVisited(boolean visited) {
+                this.visited = visited;
+            }
+
+            public int getShortestDistance() {
+                return shortestDistance;
+            }
+
+            public void setShortestDistance(int shortestDistance) {
+                this.shortestDistance = shortestDistance;
+            }
+
+            public List<List<RailArc>> getRailPathList() {
+                return railPathList;
+            }
+
+            public void resetRailPath() {
+                railPathList = new ArrayList<List<RailArc>>(2);
+            }
+
+            public void addRailPath(List<RailArc> railPath) {
+                railPathList.add(railPath);
+            }
+
+            public int compareTo(Dijkstra other) {
+                return new CompareToBuilder()
+                        .append(shortestDistance, other.shortestDistance)
+                        .append(railPathList.size(), other.railPathList.size())
+                        .append(railNode.getId(), other.railNode.getId())
+                        .toComparison();
+            }
         }
 
         private void readTrainDesignParametrization() throws IOException {
