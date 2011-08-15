@@ -23,23 +23,23 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("TrainCrew")
 public class TrainCrew extends AbstractPersistable implements Comparable<TrainCrew> {
 
-    private RailNode origin;
-    private RailNode destination;
+    private RailNode home;
+    private RailNode away;
 
-    public RailNode getOrigin() {
-        return origin;
+    public RailNode getHome() {
+        return home;
     }
 
-    public void setOrigin(RailNode origin) {
-        this.origin = origin;
+    public void setHome(RailNode home) {
+        this.home = home;
     }
 
-    public RailNode getDestination() {
-        return destination;
+    public RailNode getAway() {
+        return away;
     }
 
-    public void setDestination(RailNode destination) {
-        this.destination = destination;
+    public void setAway(RailNode away) {
+        this.away = away;
     }
 
     public int compareTo(TrainCrew other) {
@@ -50,7 +50,7 @@ public class TrainCrew extends AbstractPersistable implements Comparable<TrainCr
 
     @Override
     public String toString() {
-        return origin + "->" + destination;
+        return home + "->" + away;
     }
 
 }

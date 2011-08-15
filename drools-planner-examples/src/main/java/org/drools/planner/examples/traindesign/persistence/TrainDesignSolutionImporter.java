@@ -199,18 +199,18 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 TrainCrew trainCrew = new TrainCrew();
                 trainCrew.setId(id);
                 id++;
-                RailNode origin = nameToRailNodeMap.get(lineTokens[0]);
-                if (origin == null) {
+                RailNode home = nameToRailNodeMap.get(lineTokens[0]);
+                if (home == null) {
                     throw new IllegalArgumentException("Read line (" + line
-                            + ") has a non existing origin (" + lineTokens[0] + ").");
+                            + ") has a non existing crew home (" + lineTokens[0] + ").");
                 }
-                trainCrew.setOrigin(origin);
-                RailNode destination = nameToRailNodeMap.get(lineTokens[1]);
-                if (destination == null) {
+                trainCrew.setHome(home);
+                RailNode away = nameToRailNodeMap.get(lineTokens[1]);
+                if (away == null) {
                     throw new IllegalArgumentException("Read line (" + line
-                            + ") has a non existing destination (" + lineTokens[1] + ").");
+                            + ") has a non existing crew away (" + lineTokens[1] + ").");
                 }
-                trainCrew.setDestination(destination);
+                trainCrew.setAway(away);
                 trainCrewList.add(trainCrew);
                 line = bufferedReader.readLine();
             }
