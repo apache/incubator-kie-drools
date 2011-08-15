@@ -17,7 +17,6 @@ import org.drools.lang.descr.ConstraintConnectiveDescr;
 import org.drools.lang.descr.ExprConstraintDescr;
 import org.drools.lang.descr.PatternDescr;
 import org.drools.rule.Declaration;
-import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.QueryElement;
@@ -26,9 +25,6 @@ import org.drools.runtime.rule.Variable;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.ObjectType;
 import org.mvel2.MVEL;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
-import org.mvel2.util.PropertyTools;
 
 public class QueryElementBuilder
     implements
@@ -246,7 +242,7 @@ public class QueryElementBuilder
                                                                   descr,
                                                                   null,
                                                                   "Unable to compile expression:\n" + expr ) );
-                }
+                }                       
             }
         } else {
             // this is creating a new output binding
@@ -290,7 +286,7 @@ public class QueryElementBuilder
                                     String expression,
                                     ConstraintConnectiveDescr result ) {
         int position = ((ExprConstraintDescr) base).getPosition();
-        if ( isSingleInputVariable( context, null, expression ) ) {
+        if ( isVariable( expression ) ) {
             // is this already bound?
             Declaration declr = context.getDeclarationResolver().getDeclaration( query,
                                                                                  expression );
@@ -321,15 +317,8 @@ public class QueryElementBuilder
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
             String rewrittenExpr = new MVELDumper().dump( result,
                                                           mvelCtx );
-            try {
-                arguments.set( position,
-                               MVEL.eval( rewrittenExpr ) ); // for now we just work with literals
-            } catch ( Exception e ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              base,
-                                                              null,
-                                                              "Unable to compile expression:\n" + rewrittenExpr ) );                
-            }
+            arguments.set( position,
+                           MVEL.eval( rewrittenExpr ) ); // for now we just work with literals  
         }
     }
 
@@ -365,14 +354,13 @@ public class QueryElementBuilder
         return result;
     }
 
-    public static boolean isSingleInputVariable( RuleBuildContext context,
-                                                 Class<?> thisClass,
-                                                 String expr ) {
-        expr = expr.trim();
+    public static boolean isVariable( String str ) {
+        str = str.trim();
         
         // check for invalid variable name start char
-        switch ( expr.charAt( 0 ) ) {
+        switch ( str.charAt( 0 ) ) {
             case '\'' :
+            case '"' :
             case '-' :
             case '+' :
             case '!' :
@@ -405,10 +393,11 @@ public class QueryElementBuilder
         }
 
         // Check for operators
-        for ( int i = 1; i < expr.length(); i++ ) {
-            switch ( expr.charAt( i ) ) {
+        for ( int i = 1; i < str.length(); i++ ) {
+            switch ( str.charAt( i ) ) {
                 //case '"' :
                 case '\'' :
+                case '"' :                
                 case '-' :
                 case '+' :
                 case '!' :
@@ -425,24 +414,8 @@ public class QueryElementBuilder
                     return false;
             }
         }
-        
-        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-        ParserConfiguration conf = data.getParserConfiguration();
 
-        conf.setClassLoader( context.getPackageBuilder().getRootClassLoader() );
-
-        final ParserContext pctx = new ParserContext( conf );
-        pctx.setStrictTypeEnforcement( false );
-        pctx.setStrongTyping( false );
-//        pctx.addInput( "this",
-//                       thisClass );
-        pctx.addInput( "empty",
-                       boolean.class ); // overrides the mvel empty label
-        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
-        MVEL.analysisCompile( expr,
-                              pctx );       
-
-        return pctx.getInputs().size() == 2; // because it also includes empty anyway
+        return true;
     }
 
 }
