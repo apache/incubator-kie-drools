@@ -30,6 +30,8 @@ public class RailArc extends AbstractPersistable implements Comparable<RailArc> 
     private int maximumTonnage; // in tons
     private int maximumNumberOfTrains;
 
+    private RailArc reverse;
+
     public RailNode getOrigin() {
         return origin;
     }
@@ -76,6 +78,14 @@ public class RailArc extends AbstractPersistable implements Comparable<RailArc> 
 
     public void setMaximumNumberOfTrains(int maximumNumberOfTrains) {
         this.maximumNumberOfTrains = maximumNumberOfTrains;
+    }
+
+    public RailArc getReverse() {
+        return reverse;
+    }
+
+    public void setReverse(RailArc reverse) {
+        this.reverse = reverse;
     }
 
     public int compareTo(RailArc other) {

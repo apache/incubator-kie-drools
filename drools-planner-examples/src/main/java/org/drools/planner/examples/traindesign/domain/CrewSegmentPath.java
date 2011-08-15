@@ -31,6 +31,8 @@ public class CrewSegmentPath extends AbstractPersistable implements Comparable<C
     private CrewSegment crewSegment;
     private List<RailArc> railPath;
 
+    private CrewSegmentPath reverse;
+
     public CrewSegment getCrewSegment() {
         return crewSegment;
     }
@@ -45,6 +47,14 @@ public class CrewSegmentPath extends AbstractPersistable implements Comparable<C
 
     public void setRailPath(List<RailArc> railPath) {
         this.railPath = railPath;
+    }
+
+    public CrewSegmentPath getReverse() {
+        return reverse;
+    }
+
+    public void setReverse(CrewSegmentPath reverse) {
+        this.reverse = reverse;
     }
 
     public int compareTo(CrewSegmentPath other) {

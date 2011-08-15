@@ -185,6 +185,8 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 int maximumNumberOfTrains = Integer.parseInt(lineTokens[5]);
                 railArc.setMaximumNumberOfTrains(maximumNumberOfTrains);
                 reverseRailArc.setMaximumNumberOfTrains(maximumNumberOfTrains);
+                railArc.setReverse(reverseRailArc);
+                reverseRailArc.setReverse(railArc);
                 railArcList.add(railArc);
                 railArcList.add(reverseRailArc);
                 line = bufferedReader.readLine();
@@ -229,14 +231,24 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 Dijkstra shortestDijkstra = findShortestDijkstra(crewSegment);
                 for (List<RailArc> railPath : shortestDijkstra.getRailPathList()) {
                     CrewSegmentPath crewSegmentPath = new CrewSegmentPath();
+                    CrewSegmentPath reverseCrewSegmentPath = new CrewSegmentPath();
                     crewSegmentPath.setId(id);
                     id++;
+                    reverseCrewSegmentPath.setId(id);
+                    id++;
                     crewSegmentPath.setCrewSegment(crewSegment);
+                    reverseCrewSegmentPath.setCrewSegment(crewSegment);
                     crewSegmentPath.setRailPath(railPath);
+                    List<RailArc> reverseRailPath = new ArrayList<RailArc>(railPath.size());
+                    for (RailArc railArc : railPath) {
+                        reverseRailPath.add(railArc.getReverse());
+                    }
+                    Collections.reverse(reverseRailPath);
+                    reverseCrewSegmentPath.setRailPath(reverseRailPath);
+                    crewSegmentPath.setReverse(reverseCrewSegmentPath);
+                    reverseCrewSegmentPath.setReverse(crewSegmentPath);
                     crewSegmentPathList.add(crewSegmentPath);
                 }
-
-                // TODO reverse: away to home
             }
             trainDesign.setCrewSegmentPathList(crewSegmentPathList);
         }
