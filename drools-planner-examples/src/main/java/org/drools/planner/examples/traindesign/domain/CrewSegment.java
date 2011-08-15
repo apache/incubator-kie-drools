@@ -20,8 +20,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("TrainCrew")
-public class TrainCrew extends AbstractPersistable implements Comparable<TrainCrew> {
+/**
+ * A CrewSegment can be used multiple times on different trains.
+ */
+@XStreamAlias("CrewSegment")
+public class CrewSegment extends AbstractPersistable implements Comparable<CrewSegment> {
 
     private RailNode home;
     private RailNode away;
@@ -42,7 +45,7 @@ public class TrainCrew extends AbstractPersistable implements Comparable<TrainCr
         this.away = away;
     }
 
-    public int compareTo(TrainCrew other) {
+    public int compareTo(CrewSegment other) {
         return new CompareToBuilder()
                 .append(id, other.id)
                 .toComparison();

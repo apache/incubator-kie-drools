@@ -28,7 +28,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
-import org.drools.planner.examples.traindesign.domain.TrainCrew;
+import org.drools.planner.examples.traindesign.domain.CrewSegment;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
@@ -68,7 +68,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailNodeList();
             readCarBlockList();
             readRailArcList();
-            readTrainCrewList();
+            readCrewSegmentList();
             readTrainDesignParametrization();
             buildTodo();
 
@@ -77,7 +77,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                     new Object[]{trainDesign.getRailNodeList().size(),
                             trainDesign.getRailArcList().size(),
                             trainDesign.getCarBlockList().size(),
-                            trainDesign.getTrainCrewList().size()});
+                            trainDesign.getCrewSegmentList().size()});
 //            BigInteger possibleSolutionSize = BigInteger.valueOf(trainDesign.getBedList().size()).pow(
 //                    trainDesign.getAdmissionPartList().size());
 //            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
@@ -191,39 +191,39 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             trainDesign.setRailArcList(railArcList);
         }
 
-        private void readTrainCrewList() throws IOException {
+        private void readCrewSegmentList() throws IOException {
             readConstantLine("\"Crew Segments\";;;;;;");
             readConstantLine("\"Node1\";\"Node2\";;;;;");
-            List<TrainCrew> trainCrewList = new ArrayList<TrainCrew>();
+            List<CrewSegment> crewSegmentList = new ArrayList<CrewSegment>();
             String line = bufferedReader.readLine();
             long id = 0L;
             while (!line.equals(";;;;;;")) {
                 String[] lineTokens = splitBySemicolonSeparatedValue(line, 2);
-                TrainCrew trainCrew = new TrainCrew();
-                trainCrew.setId(id);
+                CrewSegment crewSegment = new CrewSegment();
+                crewSegment.setId(id);
                 id++;
                 RailNode home = nameToRailNodeMap.get(lineTokens[0]);
                 if (home == null) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") has a non existing crew home (" + lineTokens[0] + ").");
                 }
-                trainCrew.setHome(home);
+                crewSegment.setHome(home);
                 RailNode away = nameToRailNodeMap.get(lineTokens[1]);
                 if (away == null) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") has a non existing crew away (" + lineTokens[1] + ").");
                 }
-                trainCrew.setAway(away);
-                trainCrewList.add(trainCrew);
+                crewSegment.setAway(away);
+                crewSegmentList.add(crewSegment);
                 line = bufferedReader.readLine();
             }
-            trainDesign.setTrainCrewList(trainCrewList);
+            trainDesign.setCrewSegmentList(crewSegmentList);
         }
 
         private void buildTodo() {
-            for (TrainCrew trainCrew : trainDesign.getTrainCrewList()) {
+            for (CrewSegment crewSegment : trainDesign.getCrewSegmentList()) {
 
-                Dijkstra shortestDijkstra = findShortestDijkstra(trainCrew);
+                Dijkstra shortestDijkstra = findShortestDijkstra(crewSegment);
 
                 // TODO do something with shortestDijkstra
 
@@ -231,10 +231,10 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             }
         }
 
-        private Dijkstra findShortestDijkstra(TrainCrew trainCrew) {
+        private Dijkstra findShortestDijkstra(CrewSegment crewSegment) {
             int railNodeSize = trainDesign.getRailNodeList().size();
-            RailNode start = trainCrew.getHome();
-            RailNode finish = trainCrew.getAway();
+            RailNode start = crewSegment.getHome();
+            RailNode finish = crewSegment.getAway();
             Map<RailNode, Dijkstra> dijkstraMap = new HashMap<RailNode, Dijkstra>(railNodeSize);
             List<Dijkstra> unvisitedDijkstraList = new ArrayList<Dijkstra>(railNodeSize);
             Dijkstra startDijkstra = new Dijkstra(start);
@@ -280,7 +280,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
                 }
                 Collections.sort(unvisitedDijkstraList);
             }
-            throw new IllegalArgumentException("The TrainCrew (" + trainCrew + ") has no valid railPath.");
+            throw new IllegalArgumentException("The CrewSegment (" + crewSegment + ") has no valid railPath.");
         }
 
         private class Dijkstra implements Comparable<Dijkstra> {
