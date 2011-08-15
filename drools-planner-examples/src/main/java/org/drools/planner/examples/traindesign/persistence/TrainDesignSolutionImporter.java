@@ -29,6 +29,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
 import org.drools.planner.examples.traindesign.domain.CrewSegment;
+import org.drools.planner.examples.traindesign.domain.CrewSegmentPath;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
@@ -70,7 +71,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailArcList();
             readCrewSegmentList();
             readTrainDesignParametrization();
-            buildTodo();
+            generateCrewSegmentPathList();
 
 //            createBedDesignationList();
             logger.info("TrainDesign with {} rail nodes, {} rail arcs, {} car blocks, {} train crews.",
@@ -220,15 +221,24 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             trainDesign.setCrewSegmentList(crewSegmentList);
         }
 
-        private void buildTodo() {
+        private void generateCrewSegmentPathList() {
+            List<CrewSegmentPath> crewSegmentPathList = new ArrayList<CrewSegmentPath>(
+                    trainDesign.getCrewSegmentList().size() * 2);
+            long id = 0L;
             for (CrewSegment crewSegment : trainDesign.getCrewSegmentList()) {
-
                 Dijkstra shortestDijkstra = findShortestDijkstra(crewSegment);
-
-                // TODO do something with shortestDijkstra
+                for (List<RailArc> railPath : shortestDijkstra.getRailPathList()) {
+                    CrewSegmentPath crewSegmentPath = new CrewSegmentPath();
+                    crewSegmentPath.setId(id);
+                    id++;
+                    crewSegmentPath.setCrewSegment(crewSegment);
+                    crewSegmentPath.setRailPath(railPath);
+                    crewSegmentPathList.add(crewSegmentPath);
+                }
 
                 // TODO reverse: away to home
             }
+            trainDesign.setCrewSegmentPathList(crewSegmentPathList);
         }
 
         private Dijkstra findShortestDijkstra(CrewSegment crewSegment) {
