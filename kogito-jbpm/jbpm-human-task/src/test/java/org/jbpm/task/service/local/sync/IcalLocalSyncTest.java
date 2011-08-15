@@ -22,7 +22,7 @@ import org.jbpm.task.service.local.LocalTaskService;
 import org.subethamail.wiser.Wiser;
 import org.drools.util.ClassLoaderUtil;
 
-public class IcalLocalTest extends IcalBaseSyncTest {
+public class IcalLocalSyncTest extends IcalBaseSyncTest {
 
 	@Override
 	protected void setUp() throws Exception {
