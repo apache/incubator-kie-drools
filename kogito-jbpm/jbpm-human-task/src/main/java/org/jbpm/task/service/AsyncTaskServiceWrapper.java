@@ -65,7 +65,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
 
     public void addAttachment(long taskId, Attachment attachment, Content content) {
         BlockingAddAttachmentResponseHandler responseHandler = new BlockingAddAttachmentResponseHandler();
-        taskService.addAttachment(taskId, attachment, content, null);
+        taskService.addAttachment(taskId, attachment, content, responseHandler);
         try {
             responseHandler.waitTillDone(timeout);
         } catch (Exception e) {
@@ -73,6 +73,8 @@ public class AsyncTaskServiceWrapper implements TaskService {
                 throw responseHandler.getError();
             }
         }
+        attachment.setId(responseHandler.getAttachmentId());
+        content.setId(responseHandler.getContentId());
     }
 
     public void addComment(long taskId, Comment comment) {
@@ -85,6 +87,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
                 throw responseHandler.getError();
             }
         }
+        comment.setId(responseHandler.getCommentId());
     }
 
     public void addTask(Task task, ContentData content) {
@@ -182,7 +185,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
 
     public void deleteFault(long taskId, String userId) {
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        taskService.deleteOutput(taskId, userId, responseHandler);
+        taskService.deleteFault(taskId, userId, responseHandler);
         try {
             responseHandler.waitTillDone(timeout);
         } catch (Exception e) {
@@ -299,7 +302,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
 
     public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-        taskService.getTasksAssignedAsExcludedOwner(userId, language, responseHandler);
+        taskService.getTasksAssignedAsBusinessAdministrator(userId, language, responseHandler);
         try {
             responseHandler.waitTillDone(timeout);
         } catch (Exception e) {
@@ -496,6 +499,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
                 throw responseHandler.getError();
             }
         }
+        content.setId(responseHandler.getContentId());
     }
 
     public void setFault(long taskId, String userId, FaultData fault) {
@@ -508,6 +512,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
                 throw responseHandler.getError();
             }
         }
+        
     }
 
     public void setOutput(long taskId, String userId, ContentData outputContentData) {

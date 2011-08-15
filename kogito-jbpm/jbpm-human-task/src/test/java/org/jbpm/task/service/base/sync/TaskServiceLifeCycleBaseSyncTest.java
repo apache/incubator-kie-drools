@@ -40,7 +40,7 @@ import org.jbpm.task.service.PermissionDeniedException;
 public abstract class TaskServiceLifeCycleBaseSyncTest extends BaseTest {
 
     private static final int DEFAULT_WAIT_TIME = 5000;
-
+    protected TaskServer server;
     protected TaskService client;
 
     public void testNewTaskWithNoPotentialOwners() {
