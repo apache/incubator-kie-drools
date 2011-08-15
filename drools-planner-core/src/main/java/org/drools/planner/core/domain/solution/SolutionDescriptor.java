@@ -100,13 +100,13 @@ public class SolutionDescriptor implements Serializable {
     }
 
     public Collection<Object> getAllFacts(Solution solution) {
-        Collection<Object> planningFacts = new ArrayList<Object>();
-        planningFacts.addAll(solution.getProblemFacts());
+        Collection<Object> facts = new ArrayList<Object>();
+        facts.addAll(solution.getProblemFacts());
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
             PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
             if (entity != null && planningEntityDescriptor.isInitialized(entity)) {
-                planningFacts.add(entity);
+                facts.add(entity);
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
@@ -115,11 +115,11 @@ public class SolutionDescriptor implements Serializable {
             for (Object entity : entityCollection) {
                 PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
                 if (planningEntityDescriptor.isInitialized(entity)) {
-                    planningFacts.add(entity);
+                    facts.add(entity);
                 }
             }
         }
-        return planningFacts;
+        return facts;
     }
 
     public List<Object> getPlanningEntityList(Solution solution) {

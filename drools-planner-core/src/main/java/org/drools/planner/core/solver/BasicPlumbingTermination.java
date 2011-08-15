@@ -26,7 +26,7 @@ import org.drools.planner.core.termination.AbstractTermination;
 public class BasicPlumbingTermination extends AbstractTermination {
 
     protected AtomicBoolean terminatedEarly = new AtomicBoolean(false);
-    protected BlockingQueue<PlanningFactChange> planningFactChangeQueue = new LinkedBlockingQueue<PlanningFactChange>();
+    protected BlockingQueue<ProblemFactChange> problemFactChangeQueue = new LinkedBlockingQueue<ProblemFactChange>();
 
     // ************************************************************************
     // Plumbing worker methods
@@ -48,12 +48,12 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return terminatedEarly.get();
     }
 
-    public boolean addPlanningFactChange(PlanningFactChange planningFactChange) {
-        return planningFactChangeQueue.add(planningFactChange);
+    public boolean addProblemFactChange(ProblemFactChange problemFactChange) {
+        return problemFactChangeQueue.add(problemFactChange);
     }
 
-    public BlockingQueue<PlanningFactChange> getPlanningFactChangeQueue() {
-        return planningFactChangeQueue;
+    public BlockingQueue<ProblemFactChange> getProblemFactChangeQueue() {
+        return problemFactChangeQueue;
     }
 
     // ************************************************************************
@@ -61,7 +61,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        return terminatedEarly.get() || !planningFactChangeQueue.isEmpty();
+        return terminatedEarly.get() || !problemFactChangeQueue.isEmpty();
     }
 
     public boolean isPhaseTerminated(AbstractSolverPhaseScope solverPhaseScope) {

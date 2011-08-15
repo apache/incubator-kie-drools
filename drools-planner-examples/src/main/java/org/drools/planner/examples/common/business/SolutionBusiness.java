@@ -36,7 +36,7 @@ import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
 import org.drools.planner.core.solver.DefaultSolverScope;
-import org.drools.planner.core.solver.PlanningFactChange;
+import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.common.persistence.AbstractSolutionExporter;
 import org.drools.planner.examples.common.persistence.AbstractSolutionImporter;
 import org.drools.planner.examples.common.persistence.SolutionDao;
@@ -212,11 +212,11 @@ public class SolutionBusiness {
         move.doMove(solverScope.getWorkingMemory());
     }
 
-    public void doPlanningFactChange(PlanningFactChange planningFactChange) {
+    public void doProblemFactChange(ProblemFactChange problemFactChange) {
         if (solver.isSolving()) {
-            solver.addPlanningFactChange(planningFactChange);
+            solver.addProblemFactChange(problemFactChange);
         } else {
-            planningFactChange.doChange(solverScope.getSolutionDirector());
+            problemFactChange.doChange(solverScope.getSolutionDirector());
         }
     }
 

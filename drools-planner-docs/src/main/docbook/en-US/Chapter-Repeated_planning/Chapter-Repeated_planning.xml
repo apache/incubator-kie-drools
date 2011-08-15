@@ -93,25 +93,25 @@
     <para>To do real-time planning, first combine backup planning and continuous planning with short planning windows to
     lower the burden of real-time planning. Don't configure any <literal>Termination</literal>, just terminate early
     when you need the results or subscribe to the <literal>BestSolutionChangedEvent</literal> (the latter doesn't
-    guarantee yet that every <literal>PlanningFactChange</literal> has been processed).</para>
+    guarantee yet that every <literal>ProblemFactChange</literal> has been processed already).</para>
 
-    <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the planning
-    facts, for example an airplane is delayed and needs the runway at a later time. Do not change the planning fact
+    <para>While the <literal>Solver</literal> is solving, an outside event might want to change one of the problem
+    facts, for example an airplane is delayed and needs the runway at a later time. Do not change the problem fact
     instances used by the <literal>Solver</literal> while it is solving, as that will corrupt it. Instead, add a
-    <literal>PlanningFactChange</literal> to the <literal>Solver</literal> which it will execute as soon as the timing
+    <literal>ProblemFactChange</literal> to the <literal>Solver</literal> which it will execute as soon as the timing
     is right.</para>
 
     <programlisting>public interface Solver {
 
    ...
 
-   boolean addPlanningFactChange(PlanningFactChange planningFactChange);
+   boolean addProblemFactChange(ProblemFactChange problemFactChange);
 
    ...
 
 }</programlisting>
 
-    <programlisting>public interface PlanningFactChange {
+    <programlisting>public interface ProblemFactChange {
 
     void doChange(SolutionDirector solutionDirector);
 
@@ -120,7 +120,7 @@
     <para>Here's an example:</para>
 
     <programlisting>    public void deleteComputer(final CloudComputer cloudComputer) {
-        solver.addPlanningFactChange(new PlanningFactChange() {
+        solver.addProblemFactChange(new ProblemFactChange() {
             public void doChange(SolutionDirector solutionDirector) {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
@@ -147,13 +147,13 @@
     }</programlisting>
 
     <warning>
-      <para>Any change on the planning facts or planning entities in a <literal>PlanningFactChange</literal> must be
+      <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be
       done on the instances of the <literal>Solution</literal> of
       <literal>solutionDirector.getWorkingSolution()</literal>.</para>
     </warning>
 
     <warning>
-      <para>Any change on the planning facts or planning entities in a <literal>PlanningFactChange</literal> must be
+      <para>Any change on the problem facts or planning entities in a <literal>ProblemFactChange</literal> must be
       told to the <literal>WorkingMemory</literal> of <literal>solutionDirector.getWorkingMemory()</literal>.</para>
     </warning>
 
@@ -163,7 +163,7 @@
       can handle that, so it's recommended to configure such a <literal>SolverPhase</literal> as the first phase.</para>
     </note>
 
-    <para>In essence, the <literal>Solver</literal> will stop, run the <literal>PlanningFactChange</literal> and
+    <para>In essence, the <literal>Solver</literal> will stop, run the <literal>ProblemFactChange</literal> and
     restart. Each <literal>SolverPhase</literal> will be run again. Each configured <literal>Termination</literal>
     (except <literal>terminateEarly</literal>) will reset.</para>
   </section>

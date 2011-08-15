@@ -123,8 +123,8 @@ public class DefaultSolver implements Solver {
         return basicPlumbingTermination.isTerminateEarly();
     }
 
-    public boolean addPlanningFactChange(PlanningFactChange planningFactChange) {
-        return basicPlumbingTermination.addPlanningFactChange(planningFactChange);
+    public boolean addProblemFactChange(ProblemFactChange problemFactChange) {
+        return basicPlumbingTermination.addProblemFactChange(problemFactChange);
     }
 
     public final void solve() {
@@ -136,7 +136,7 @@ public class DefaultSolver implements Solver {
             solvingStarted(solverScope);
             runSolverPhases();
             solvingEnded(solverScope);
-            checkPlanningFactChanges();
+            checkProblemFactChanges();
         }
         solving.set(false);
     }
@@ -185,27 +185,27 @@ public class DefaultSolver implements Solver {
         });
     }
 
-    private void checkPlanningFactChanges() {
-        BlockingQueue<PlanningFactChange> planningFactChangeQueue
-                = basicPlumbingTermination.getPlanningFactChangeQueue();
-        if (!planningFactChangeQueue.isEmpty()) {
+    private void checkProblemFactChanges() {
+        BlockingQueue<ProblemFactChange> problemFactChangeQueue
+                = basicPlumbingTermination.getProblemFactChangeQueue();
+        if (!problemFactChangeQueue.isEmpty()) {
             solverScope.setRestartSolver(true);
             Score score = null;
             int count = 0;
-            PlanningFactChange planningFactChange = planningFactChangeQueue.poll();
-            while (planningFactChange != null) {
-                score = doPlanningFactChange(planningFactChange);
+            ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
+            while (problemFactChange != null) {
+                score = doProblemFactChange(problemFactChange);
                 count++;
-                planningFactChange = planningFactChangeQueue.poll();
+                problemFactChange = problemFactChangeQueue.poll();
             }
-            logger.info("Done {} PlanningFactChange(s), score ({}), possibly uninitialized. Restarting solver.", count, score);
+            logger.info("Done {} ProblemFactChange(s), score ({}), possibly uninitialized. Restarting solver.", count, score);
         }
     }
 
-    private Score doPlanningFactChange(PlanningFactChange planningFactChange) {
-        planningFactChange.doChange(solverScope.getSolutionDirector());
+    private Score doProblemFactChange(ProblemFactChange problemFactChange) {
+        problemFactChange.doChange(solverScope.getSolutionDirector());
         Score score = solverScope.calculateScoreFromWorkingMemory();
-        logger.debug("PlanningFactChange done with new score ({}).", score);
+        logger.debug("ProblemFactChange done with new score ({}).", score);
         return score;
     }
 

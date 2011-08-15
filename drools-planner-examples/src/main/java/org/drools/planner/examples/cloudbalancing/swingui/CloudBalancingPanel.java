@@ -38,7 +38,7 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
-import org.drools.planner.core.solver.PlanningFactChange;
+import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
@@ -160,7 +160,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     public void deleteComputer(final CloudComputer cloudComputer) {
         logger.info("Scheduling deleting of computer ({}).", cloudComputer.getLabel());
-        solutionBusiness.doPlanningFactChange(new PlanningFactChange() {
+        solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(SolutionDirector solutionDirector) {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();

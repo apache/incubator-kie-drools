@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.solver.PlanningFactChange;
+import org.drools.planner.core.solver.ProblemFactChange;
 import org.drools.planner.core.termination.Termination;
 
 /**
@@ -84,17 +84,17 @@ public interface Solver {
     boolean isTerminateEarly();
 
     /**
-     * Schedules a {@link PlanningFactChange} to be processed.
+     * Schedules a {@link ProblemFactChange} to be processed.
      * <p/>
      * As a side-effect this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
      * but not {@link #terminateEarly()}.
      * <p/>
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
-     * @param planningFactChange never null
+     * @param problemFactChange never null
      * @return <tt>true</tt> (as specified by {@link Collection#add})
      */
-    boolean addPlanningFactChange(PlanningFactChange planningFactChange);
+    boolean addProblemFactChange(ProblemFactChange problemFactChange);
 
     /**
      * @param eventListener never null
