@@ -26,7 +26,7 @@ import java.util.Map;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
-import org.drools.planner.examples.traindesign.domain.CrewSegment;
+import org.drools.planner.examples.traindesign.domain.TrainCrew;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
@@ -66,13 +66,15 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailNodeList();
             readCarBlockList();
             readRailArcList();
-            readCrewSegmentList();
+            readTrainCrewList();
             readTrainDesignParametrization();
 
 //            createBedDesignationList();
-            logger.info("TrainDesign with {} rail nodes and {} rail arcs.",
+            logger.info("TrainDesign with {} rail nodes, {} rail arcs, {} car blocks, {}  train crews.",
                     new Object[]{trainDesign.getRailNodeList().size(),
-                            trainDesign.getRailArcList().size()});
+                            trainDesign.getRailArcList().size(),
+                            trainDesign.getCarBlockList().size(),
+                            trainDesign.getTrainCrewList().size()});
 //            BigInteger possibleSolutionSize = BigInteger.valueOf(trainDesign.getBedList().size()).pow(
 //                    trainDesign.getAdmissionPartList().size());
 //            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
@@ -186,32 +188,33 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             trainDesign.setRailArcList(railArcList);
         }
 
-        private void readCrewSegmentList() throws IOException {
+        private void readTrainCrewList() throws IOException {
             readConstantLine("\"Crew Segments\";;;;;;");
             readConstantLine("\"Node1\";\"Node2\";;;;;");
-            List<CrewSegment> crewSegmentList = new ArrayList<CrewSegment>();
+            List<TrainCrew> trainCrewList = new ArrayList<TrainCrew>();
             String line = bufferedReader.readLine();
             long id = 0L;
             while (!line.equals(";;;;;;")) {
                 String[] lineTokens = splitBySemicolonSeparatedValue(line, 2);
-                CrewSegment crewSegment = new CrewSegment();
-                crewSegment.setId(id);
+                TrainCrew trainCrew = new TrainCrew();
+                trainCrew.setId(id);
                 id++;
                 RailNode origin = nameToRailNodeMap.get(lineTokens[0]);
                 if (origin == null) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") has a non existing origin (" + lineTokens[0] + ").");
                 }
-                crewSegment.setOrigin(origin);
+                trainCrew.setOrigin(origin);
                 RailNode destination = nameToRailNodeMap.get(lineTokens[1]);
                 if (destination == null) {
                     throw new IllegalArgumentException("Read line (" + line
                             + ") has a non existing destination (" + lineTokens[1] + ").");
                 }
-                crewSegment.setDestination(destination);
+                trainCrew.setDestination(destination);
+                trainCrewList.add(trainCrew);
                 line = bufferedReader.readLine();
             }
-            trainDesign.setCrewSegmentList(crewSegmentList);
+            trainDesign.setTrainCrewList(trainCrewList);
         }
 
         private void readTrainDesignParametrization() throws IOException {

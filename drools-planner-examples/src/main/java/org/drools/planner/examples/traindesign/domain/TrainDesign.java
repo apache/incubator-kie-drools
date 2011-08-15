@@ -37,7 +37,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     private List<RailNode> railNodeList;
     private List<RailArc> railArcList;
     private List<CarBlock> carBlockList;
-    private List<CrewSegment> crewSegmentList;
+    private List<TrainCrew> trainCrewList;
 
     private List<BedDesignation> bedDesignationList; // TODO replace me
 
@@ -75,12 +75,12 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         this.carBlockList = carBlockList;
     }
 
-    public List<CrewSegment> getCrewSegmentList() {
-        return crewSegmentList;
+    public List<TrainCrew> getTrainCrewList() {
+        return trainCrewList;
     }
 
-    public void setCrewSegmentList(List<CrewSegment> crewSegmentList) {
-        this.crewSegmentList = crewSegmentList;
+    public void setTrainCrewList(List<TrainCrew> trainCrewList) {
+        this.trainCrewList = trainCrewList;
     }
 
     @PlanningEntityCollectionProperty
@@ -106,7 +106,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         facts.addAll(railNodeList);
         facts.addAll(railArcList);
         facts.addAll(carBlockList);
-        facts.addAll(crewSegmentList);
+        facts.addAll(trainCrewList);
 //        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
@@ -122,7 +122,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         clone.railNodeList = railNodeList;
         clone.railArcList = railArcList;
         clone.carBlockList = carBlockList;
-        clone.crewSegmentList = crewSegmentList;
+        clone.trainCrewList = trainCrewList;
         List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
         for (BedDesignation bedDesignation : bedDesignationList) {
             BedDesignation clonedBedDesignation = bedDesignation.clone();
