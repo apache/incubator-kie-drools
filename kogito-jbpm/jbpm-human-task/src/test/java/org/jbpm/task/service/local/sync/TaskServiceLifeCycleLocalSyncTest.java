@@ -19,7 +19,7 @@ package org.jbpm.task.service.local.sync;
 import org.jbpm.task.service.base.sync.TaskServiceLifeCycleBaseSyncTest;
 import org.jbpm.task.service.local.LocalTaskService;
 
-public class TaskServiceLifeCycleLocalTest extends TaskServiceLifeCycleBaseSyncTest {
+public class TaskServiceLifeCycleLocalSyncTest extends TaskServiceLifeCycleBaseSyncTest {
 
 
     @Override

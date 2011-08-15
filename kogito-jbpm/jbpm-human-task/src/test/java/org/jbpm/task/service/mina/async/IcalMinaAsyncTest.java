@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.mina;
+package org.jbpm.task.service.mina.async;
 
 import org.drools.SystemEventListenerFactory;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
-import org.jbpm.task.service.IcalBaseTest;
 import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.base.async.IcalBaseAsyncTest;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.subethamail.wiser.Wiser;
 
-public class IcalMinaTest extends IcalBaseTest {
+public class IcalMinaAsyncTest extends IcalBaseAsyncTest {
 
 	@Override
 	protected void setUp() throws Exception {
