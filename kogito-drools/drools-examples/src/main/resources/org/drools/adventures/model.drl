@@ -1,0 +1,65 @@
+package org.drools.adventures
+
+dialect "mvel"
+
+declare Thing
+    id : long
+end   
+
+declare Character extends Thing
+    name : String @key
+end  
+
+declare Item extends Thing
+    name : String @key
+    fixed : boolean
+end
+
+declare Room extends Thing   
+    name : String @key
+end
+        
+declare Door extends Thing
+   fromRoom : Room @key
+   toRoom : Room @key
+end  
+
+declare Location
+    thing : Thing @key
+    target : Thing @key
+end
+
+declare Holding
+   character : Character @key
+   thing : Thing @key
+end
+
+declare GameEvent
+   @role(event)
+end
+ 
+declare ExitEvent extends GameEvent
+   @role(event)
+   character : Character @key   
+   room : Room @key
+end
+
+declare EnterEvent extends GameEvent
+   @role(event)
+   character : Character @key
+   room : Room @key
+end
+
+declare PickupEvent extends GameEvent
+   @role(event)
+   character : Character @key
+   thing : Thing @key
+end
+
+declare DropEvent extends GameEvent
+   @role(event)
+   character : Character @key
+   thing : Thing @key
+end
+
+

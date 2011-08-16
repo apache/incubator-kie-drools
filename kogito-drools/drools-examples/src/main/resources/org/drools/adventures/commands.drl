@@ -1,0 +1,154 @@
+package org.drools.adventures
+
+import org.drools.adventures.Room;
+import org.drools.adventures.Thing;
+
+import org.drools.adventures.Request;
+import org.drools.adventures.Response;
+
+import org.drools.adventures.commands.MoveCommand
+import org.drools.adventures.commands.Command
+import org.drools.adventures.commands.PickupCommand
+import org.drools.adventures.commands.DropCommand
+import org.drools.adventures.commands.LookCommand
+
+global org.drools.adventures.Counter counter
+
+dialect "mvel"
+
+
+rule insertRequestCommand no-loop when
+    r : Request()
+    c : Command() from r.object
+then
+    modify( r ) { localId = counter.getAndIncrement() };    
+    c.request = r.localId;
+    insert( c );
+end
+
+
+rule retractRequest  no-loop salience -100 when
+    r : Request()
+    not Command( request == r.localId )
+then
+    retract ( r );
+end
+
+rule handleResponse when
+    rq : Request()
+    rs : Response( localId == rq.localId )
+then
+    System.out.println( rs.object );
+    retract ( rs );
+end
+
+rule lookCmd agenda-group "commands" lock-on-active auto-focus  when
+    lc : LookCommand()
+    c : Character( id == lc.character )    
+    l  : Location( thing == c )
+    ?look( c, r, things, exits; )
+then    
+    str = "look: " + r + "\n";
+    str +="  things: " + things + "\n";
+    str +="  exits: " + exits + "\n";
+            
+    res = new Response( str );
+    res.localId = lc.request;
+    insert( res );    
+end
+
+rule invalidMove agenda-group "commands" lock-on-active auto-focus when
+    mc : MoveCommand()
+    c : Character( id == mc.character )
+    r : Room( id == mc.room )
+    
+    l  : Location( thing == c, ltarget : target )
+    not ?connect( r, ltarget; ) 
+then
+    res = new Response( "Invalid Move: " + mc );
+    res.localId = mc.request;
+    insert( res ); 
+end
+
+rule validMove agenda-group "commands" lock-on-active auto-focus  when
+    mc : MoveCommand()
+    c : Character( id == mc.character )
+    r : Room( id == mc.room )
+    
+    l  : Location( thing == c, ltarget : target )
+    exists ?connect( r, ltarget; ) 
+then
+    insert( new ExitEvent( c, (Room) l.target ) );
+    insert( new EnterEvent( c, r ) );
+    modify( l ) { target = r };
+    
+    res = new Response( "look: " + l.target );
+    res.localId = mc.request;
+    insert( res );    
+end
+
+rule invalidPickup agenda-group "commands" lock-on-active auto-focus  when
+    pc : PickupCommand( )
+    c : Character( id == pc.character )
+    t : Thing( id == pc.thing )
+            
+    cl  : Location( thing == c )
+    not Location( thing == t, target == cl.target ) 
+then
+    res = new Response( "Invalid Pickup: " + pc );
+    res.localId = pc.request;
+    insert( res ); 
+end
+
+rule validPickup agenda-group "commands" lock-on-active auto-focus  when
+    pc : PickupCommand( )    
+    c : Character( id == pc.character )
+    t : Thing( id == pc.thing )     
+    
+    cl  : Location( thing == c )
+    tl : Location( thing == t, target == cl.target ) 
+then
+    insert( new PickupEvent( c, t ) );
+    insert( new Holding(  c, t ) );
+    modify( tl ) { target =  c };
+end
+
+rule invalidDrop agenda-group "commands" lock-on-active auto-focus  when
+    dc : DropCommand( )    
+    c : Character( id == dc.character )
+    t : Thing( id == dc.thing )      
+    
+    not ( Holding( c, t;) )
+then
+    res = new Response( "Invalid Drop: " + dc );
+    res.localId = dc.request;
+    insert( res ); 
+end
+
+rule validDrop agenda-group "commands" lock-on-active auto-focus  when
+    dc : DropCommand( )    
+    c : Character( id == dc.character )
+    t : Thing( id == dc.thing )     
+    
+    cl  : Location( thing == c )    
+    tl  : Location( thing == t ) 
+    h : Holding( c, t;)
+then
+    insert( new DropEvent( c, t ) );
+    modify( tl ) { target = cl.target };
+    retract ( h );
+end
+
+
+rule printEvent when
+    ge : GameEvent()
+then
+    System.out.println( ge );
+end
+
+rule retractCommand agenda-group "commands" lock-on-active auto-focus salience -100 when
+    c : Command()
+then
+    // System.out.println( rule.name + ":" + c );
+    retract( c );
+end

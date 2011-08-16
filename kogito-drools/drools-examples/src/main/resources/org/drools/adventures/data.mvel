@@ -1,0 +1,75 @@
+import org.drools.adventures.Thing;
+import org.drools.adventures.Character;
+import org.drools.adventures.Item;
+import org.drools.adventures.Room;
+import org.drools.adventures.Door;
+import org.drools.adventures.Location;
+import java.util.HashMap;
+
+vars = new HashMap();
+vars["items"] = new HashMap();
+vars["characters"] = new HashMap();
+vars["rooms"] = new HashMap();
+
+rooms = [ 
+    "basement" : new Room("basement"), 
+    "lounge" : new Room("lounge"),
+    "dining room" : new Room("dining room"),
+    "kitchen" : new Room("kitchen"),     
+    "ground floor hallway" : new Room("ground floor hallway"),     
+    "bedroom1" : new Room("bedroom1"),
+    "bedroom2" : new Room("bedroom2"),
+    "bathroom" : new Room("bathroom"),
+    "office" : new Room("office"),
+    "first floor hallway" : new Room("first floor hallway")
+];
+
+foreach( room : rooms.values ) {
+    room.id = c.getAndIncrement();
+    vars["rooms"][room.name] = room.id; 
+}
+
+doors = [
+    "d1" : new Door( rooms["kitchen"], rooms["basement"] ),
+
+    "d2" : new Door( rooms["ground floor hallway"], rooms["lounge"]),
+    "d3" : new Door( rooms["ground floor hallway"], rooms["dining room"] ),
+    "d4" : new Door( rooms["ground floor hallway"], rooms["kitchen"]),
+    "d5" : new Door( rooms["ground floor hallway"], rooms[ "first floor hallway"] ),     
+    
+    "d6" : new Door( rooms["first floor hallway"], rooms[ "bedroom1"] ),
+    "d7" : new Door( rooms["first floor hallway"], rooms[ "bedroom2"] ),
+    "d8" : new Door( rooms["first floor hallway"], rooms[ "bathroom"] ),
+    "d9" : new Door( rooms["first floor hallway"], rooms[ "office"] )    
+];
+
+characters = [ "hero" : new Character( "hero" ), "monster" : new Character( "monster" ) ];
+foreach( character : characters.values ) {
+    character.id = c.getAndIncrement();
+    vars["characters"][character.name] = character.id;
+}
+
+items = [
+    "mace" : new Item( "mace" ),
+    "cucumber" : new Item( "cucumber" ),
+    "torch" : new Item( "torch" ),
+    "umbrella" : new Item( "umbrella" )
+];
+
+foreach( item : items.values ) {
+    item.id = c.getAndIncrement();
+    item.fixed = false;
+    vars["items"][item.name] = item.id;
+}
+
+locations = [    
+    "mace" : new Location( items["mace"], rooms["basement"] ),
+    "monster" :  new Location( characters["monster"], rooms["basement"] ),
+    "cucumber" : new Location( items["cucumber"], rooms["kitchen"] ),
+    "torch" : new Location( items["torch"], rooms["office"] ),      
+    "umbrella" :  new Location( items["umbrella"], rooms["ground floor hallway"] )
+    "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] )
+];
+
+return [ "rooms" : rooms, "doors" : doors, "characters" : characters,
+         "items" : items, "locations" : locations, "vars" : vars ]; 
