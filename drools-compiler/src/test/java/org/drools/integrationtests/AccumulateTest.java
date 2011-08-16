@@ -1860,7 +1860,6 @@ public class AccumulateTest {
 
 
     @Test
-    @Ignore
     public void testAccumulateAndRetract() {
 
         String drl = "package org.drools;\n" +
@@ -1897,7 +1896,8 @@ public class AccumulateTest {
                 "    $h : Holder()\n" +
                 "then\n" +
                 "    retract($h);\n" +
-                "end";
+                "end" +
+                "\n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()),
