@@ -29,7 +29,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 
-public class TaskServiceEscalationJMSTest extends TaskServiceEscalationBaseAsyncTest {
+public class TaskServiceEscalationJMSAsyncTest extends TaskServiceEscalationBaseAsyncTest {
 
 	private Context context;
 	

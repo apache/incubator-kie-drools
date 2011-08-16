@@ -35,7 +35,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.subethamail.wiser.Wiser;
 
-public class IcalJMSTest extends IcalBaseAsyncTest {
+public class IcalJMSAsyncTest extends IcalBaseAsyncTest {
 
 	private BrokerService broker;
 	private Context context;

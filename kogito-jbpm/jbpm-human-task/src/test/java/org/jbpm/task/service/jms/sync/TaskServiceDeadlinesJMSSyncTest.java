@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service.jms.async;
+package org.jbpm.task.service.jms.sync;
 
 import java.util.Properties;
 
@@ -23,14 +23,15 @@ import javax.naming.Context;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
+import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
-import org.jbpm.task.service.base.async.TaskServiceDeadlinesBaseAsyncTest;
+import org.jbpm.task.service.base.sync.TaskServiceDeadlinesBaseSyncTest;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 import org.subethamail.wiser.Wiser;
 
-public class TaskServiceDeadlinesJMSTest extends TaskServiceDeadlinesBaseAsyncTest {
+public class TaskServiceDeadlinesJMSSyncTest extends TaskServiceDeadlinesBaseSyncTest {
 
 	private Context context;
 	
@@ -74,9 +75,9 @@ public class TaskServiceDeadlinesJMSTest extends TaskServiceDeadlinesBaseAsyncTe
 		clientProperties.setProperty("JMSTaskClient.queueName", "tasksQueue");
 		clientProperties.setProperty("JMSTaskClient.responseQueueName", "tasksResponseQueue");
         
-        client = new TaskClient(new JMSTaskClientConnector("client 1",
+        client = new AsyncTaskServiceWrapper(new TaskClient(new JMSTaskClientConnector("client 1",
 				new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),
-				clientProperties, context));
+				clientProperties, context)));
         client.connect();
 
 		setWiser(new Wiser());

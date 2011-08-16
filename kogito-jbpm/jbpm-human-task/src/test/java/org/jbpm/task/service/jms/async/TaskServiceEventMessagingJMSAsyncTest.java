@@ -30,7 +30,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 
-public class TaskServiceEventMessagingJMSTest extends TaskServiceEventMessagingBaseAsyncTest {
+public class TaskServiceEventMessagingJMSAsyncTest extends TaskServiceEventMessagingBaseAsyncTest {
 
 	private Context context;
 	

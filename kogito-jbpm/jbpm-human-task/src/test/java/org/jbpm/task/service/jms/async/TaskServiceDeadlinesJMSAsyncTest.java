@@ -30,7 +30,7 @@ import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 import org.subethamail.wiser.Wiser;
 
-public class TaskServiceDeadlinesJMSTest extends TaskServiceDeadlinesBaseAsyncTest {
+public class TaskServiceDeadlinesJMSAsyncTest extends TaskServiceDeadlinesBaseAsyncTest {
 
 	private Context context;
 	

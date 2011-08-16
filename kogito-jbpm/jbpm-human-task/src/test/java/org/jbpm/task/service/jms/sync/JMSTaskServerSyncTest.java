@@ -1,4 +1,4 @@
-package org.jbpm.task.service.jms.async;
+package org.jbpm.task.service.jms.sync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,29 +13,28 @@ import junit.framework.TestCase;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.drools.SystemEventListenerFactory;
 import org.easymock.EasyMock;
-import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.Group;
 import org.jbpm.task.I18NText;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.TaskData;
 import org.jbpm.task.User;
+import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.TaskService;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
 import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 
 /**
  * Test case to see if this component works.
  * 
  * @author Mariano De Maio
  */
-public class JMSTaskServerTest extends TestCase {
+public class JMSTaskServerSyncTest extends TestCase {
 
 	/**
 	 * Initial context
@@ -60,7 +59,7 @@ public class JMSTaskServerTest extends TestCase {
 		EasyMock.replay(context);
 		
 		EntityManagerFactory localEntityManagerFactory = Persistence.createEntityManagerFactory("org.jbpm.task");
-		TaskService localTaskService = new TaskService(localEntityManagerFactory, SystemEventListenerFactory.getSystemEventListener());
+		org.jbpm.task.service.TaskService localTaskService = new org.jbpm.task.service.TaskService(localEntityManagerFactory, SystemEventListenerFactory.getSystemEventListener());
 		TaskServiceSession localTaskServiceSession = localTaskService.createSession();
 		for (int i = 0; i < 10; i++) {
 			User user = new User("usr" + i);
@@ -87,20 +86,19 @@ public class JMSTaskServerTest extends TestCase {
 	 * Creates a new client
 	 * @return the created client.
 	 */
-	protected AsyncTaskService createTaskClient() {
+	protected TaskService createTaskClient() {
 		Properties clientProperties = new Properties();
 		clientProperties.setProperty("JMSTaskClient.connectionFactory", "ConnectionFactory");
 		clientProperties.setProperty("JMSTaskClient.transactedQueue", "true");
 		clientProperties.setProperty("JMSTaskClient.acknowledgeMode", "AUTO_ACKNOWLEDGE");
 		clientProperties.setProperty("JMSTaskClient.queueName", "tasksQueue");
 		clientProperties.setProperty("JMSTaskClient.responseQueueName", "tasksResponseQueue");
-		AsyncTaskService client = new TaskClient(
+		TaskService client = new AsyncTaskServiceWrapper(new TaskClient(
 				new JMSTaskClientConnector(
 						"org.jbpm.process.workitem.wsht.WSThroughJMSHumanTaskHandler",
 						new JMSTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()),
 						clientProperties, context
-				)
-		);
+				)));
 		
 		return client;
 	}
@@ -123,13 +121,13 @@ public class JMSTaskServerTest extends TestCase {
 			Thread.sleep(100); // waits until the server finishes the startup
 		}
 		
-		AsyncTaskService client = createTaskClient();
+		TaskService client = createTaskClient();
 		
 		client.connect();
 		
 		Task task = new Task();
 		List<I18NText> names1 = new ArrayList<I18NText>();
-		I18NText text1 = new I18NText("en-UK", "tarea1");
+		I18NText text1 = new I18NText("en-UK", "task1");
 		names1.add(text1);
 		task.setNames(names1);
 		TaskData taskData = new TaskData();
@@ -139,20 +137,20 @@ public class JMSTaskServerTest extends TestCase {
 		task.setTaskData(taskData);
 		
 		ContentData data = new ContentData();
-		BlockingAddTaskResponseHandler addTaskHandler = new BlockingAddTaskResponseHandler();
-		client.addTask(task, data, addTaskHandler);
 		
-		long taskId = addTaskHandler.getTaskId();
+		client.addTask(task, data);
+		
+		long taskId = task.getId();
 
 		client.disconnect();
 		
 		client.connect();
 		
-		assertTrue("taskId debe ser un valor mayor a cero", taskId > 0);
+		assertTrue("taskId must be greater than zero", taskId > 0);
 		
 		Task task2 = new Task();
 		List<I18NText> names2 = new ArrayList<I18NText>();
-		I18NText text2 = new I18NText("en-UK", "tarea1");
+		I18NText text2 = new I18NText("en-UK", "task1");
 		names2.add(text2);
 		task2.setNames(names2);
 		TaskData taskData2 = new TaskData();
@@ -162,13 +160,13 @@ public class JMSTaskServerTest extends TestCase {
 		task2.setTaskData(taskData2);
 	    
 		ContentData data2 = new ContentData();
-		BlockingAddTaskResponseHandler addTaskHandler2 = new BlockingAddTaskResponseHandler();
-		client.addTask(task2, data2, addTaskHandler2);
 		
-		long taskId2 = addTaskHandler2.getTaskId();
+		client.addTask(task2, data2);
 		
-		assertTrue("taskId2 debe ser un valor mayor a cero", taskId2 > 0);
-		assertNotSame("taskId y taskId2 deben ser distintos", taskId, taskId2);
+		long taskId2 = task2.getId();
+		
+		assertTrue("taskId2 must be greater than zero", taskId2 > 0);
+		assertNotSame("taskId y taskId2 must be different", taskId, taskId2);
 		
 		client.disconnect();
 	}

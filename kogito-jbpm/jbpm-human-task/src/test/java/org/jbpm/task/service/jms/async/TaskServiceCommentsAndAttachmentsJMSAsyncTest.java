@@ -29,7 +29,7 @@ import org.jbpm.task.service.jms.JMSTaskClientConnector;
 import org.jbpm.task.service.jms.JMSTaskClientHandler;
 import org.jbpm.task.service.jms.JMSTaskServer;
 
-public class TaskServiceCommentsAndAttachmentsJMSTest extends TaskServiceCommentsAndAttachmentsBaseAsyncTest {
+public class TaskServiceCommentsAndAttachmentsJMSAsyncTest extends TaskServiceCommentsAndAttachmentsBaseAsyncTest {
 
 	private Context context;
 	
