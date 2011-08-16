@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
+import java.awt.GridLayout;
 
 public class AdventureFrame extends JFrame {
 
@@ -55,8 +56,8 @@ public class AdventureFrame extends JFrame {
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         setBounds( 100,
                    100,
-                   833,
-                   714 );
+                   854,
+                   787 );
         contentPane = new JPanel();
         contentPane.setBorder( new EmptyBorder( 5,
                                                 5,
@@ -97,8 +98,9 @@ public class AdventureFrame extends JFrame {
         outputPanel.add(outputTextArea);
         
         JPanel userPanel = new JPanel();
+        userPanel.setBorder(null);
         splitPane_1.setRightComponent(userPanel);
-        userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS));
+        userPanel.setLayout(new GridLayout(0, 1, 0, 0));
         
         JPanel characterPanel = new JPanel();
         characterPanel.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -107,6 +109,7 @@ public class AdventureFrame extends JFrame {
         characterPanel.setLayout(new BoxLayout(characterPanel, BoxLayout.X_AXIS));
         
         JPanel characterSelectionPanel = new JPanel();
+        characterSelectionPanel.setBorder(null);
         characterSelectionPanel.setAlignmentY(Component.TOP_ALIGNMENT);
         characterSelectionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         FlowLayout fl_characterSelectionPanel = (FlowLayout) characterSelectionPanel.getLayout();
@@ -119,6 +122,7 @@ public class AdventureFrame extends JFrame {
         characterSelectCombo.setModel(new DefaultComboBoxModel(new String[] {"Hero", "Monster"}));        
         
         characterPropertiesTable = new JTable();
+        characterPropertiesTable.setBorder(null);
         characterPropertiesTable.setAlignmentY(Component.TOP_ALIGNMENT);
         characterPropertiesTable.setAlignmentX(Component.LEFT_ALIGNMENT);
         characterPropertiesTable.setModel(new DefaultTableModel(
@@ -146,6 +150,7 @@ public class AdventureFrame extends JFrame {
         actionsPanel.setLayout(new BoxLayout(actionsPanel, BoxLayout.X_AXIS));
         
         JPanel commandsPanel = new JPanel();
+        commandsPanel.setBorder(null);
         commandsPanel.setAlignmentY(Component.TOP_ALIGNMENT);
         commandsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         actionsPanel.add(commandsPanel);
@@ -166,9 +171,12 @@ public class AdventureFrame extends JFrame {
 
         
         itemsTable = new JTable();
+        itemsTable.setBorder(null);
         itemsTable.setModel(new DefaultTableModel(
             new Object[][] {
                 {"Sword"},
+                {null},
+                {null},
                 {null},
                 {null},
                 {null},
@@ -184,9 +192,12 @@ public class AdventureFrame extends JFrame {
         actionsPanel.add(itemsPanel);
         
         exitsTable = new JTable();
+        exitsTable.setBorder(null);
         exitsTable.setModel(new DefaultTableModel(
             new Object[][] {
                 {"North"},
+                {null},
+                {null},
                 {null},
                 {null},
                 {null},
