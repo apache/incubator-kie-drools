@@ -210,6 +210,10 @@ public class AccumulateNode extends BetaNode {
         memory.betaMemory.getLeftTupleMemory().remove( leftTuple );        
         
         final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
+        if ( accctx.getAction() != null ) {
+            // there is a scheduled activation, we must cancel it
+            context.getQueue1().remove( accctx.getAction() );
+        }
         leftTuple.setObject( null );
 
         removePreviousMatchesForLeftTuple( leftTuple,
