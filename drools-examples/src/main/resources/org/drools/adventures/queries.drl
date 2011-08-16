@@ -1,0 +1,33 @@
+package org.drools.adventures
+
+import java.util.List
+
+import org.drools.adventures.Character
+import org.drools.adventures.Room
+import org.drools.adventures.Location
+
+query connect( Room x, Room y ) 
+    Door(id, x, y;)
+    or 
+    Door(id, y, x;)
+end
+
+query isContainedIn( Thing x, Thing y ) 
+    Location(x, y;)
+    or 
+    ( Location(z, y;) and ?isContainedIn(x, z;) )
+end
+
+query lookRoom(Room room, List things, List exits) 
+    room := Room()
+    things := List() from accumulate( Location(thing, room;),
+                                      collectList( thing ) )
+    exits := List() from accumulate( ?connect(room, exit;),
+                                     collectList( exit ) )
+end
+
+query look(Character character, Room room, List things, List exits)
+    character := Character()
+    Location( character, room; )
+    ?lookRoom( room, things, exits; )
+end
