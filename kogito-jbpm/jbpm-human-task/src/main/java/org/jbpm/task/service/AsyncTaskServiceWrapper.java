@@ -15,18 +15,30 @@
  */
 package org.jbpm.task.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
 import org.jbpm.task.TaskService;
 import org.jbpm.task.AsyncTaskService;
 import java.util.List;
+import java.util.Map;
+import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventKey;
+import org.jbpm.eventmessaging.EventResponseHandler;
+import org.jbpm.eventmessaging.Payload;
 import org.jbpm.process.workitem.wsht.BlockingAddTaskResponseHandler;
-import org.jbpm.process.workitem.wsht.BlockingEventResponseHandler;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.event.TaskEvent;
 import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
+import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
+import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingAddAttachmentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingAddCommentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingDeleteAttachmentResponseHandler;
@@ -441,16 +453,16 @@ public class AsyncTaskServiceWrapper implements TaskService {
         }
     }
 
-    public void registerForEvent(EventKey key, boolean remove) {
-        BlockingEventResponseHandler responseHandler = new BlockingEventResponseHandler();
+    public void registerForEvent(EventKey key, boolean remove, WorkItemManager manager) {
+        TaskCompletedHandler responseHandler = new TaskCompletedHandler(manager, taskService);
         taskService.registerForEvent(key, remove, responseHandler);
-        try {
-            responseHandler.waitTillDone(timeout);
-        } catch (Exception e) {
-            if (responseHandler.getError() != null) {
-                throw responseHandler.getError();
-            }
-        }
+//        try {
+//            responseHandler.waitTillDone(timeout);
+//        } catch (Exception e) {
+//            if (responseHandler.getError() != null) {
+//                throw responseHandler.getError();
+//            }
+//        }
     }
 
     public void release(long taskId, String userId) {
@@ -512,7 +524,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
                 throw responseHandler.getError();
             }
         }
-        
+
     }
 
     public void setOutput(long taskId, String userId, ContentData outputContentData) {
@@ -583,6 +595,97 @@ public class AsyncTaskServiceWrapper implements TaskService {
         } catch (Exception e) {
             if (responseHandler.getError() != null) {
                 throw responseHandler.getError();
+            }
+        }
+    }
+
+    private static class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
+
+        private WorkItemManager manager;
+        private AsyncTaskService client;
+
+        public TaskCompletedHandler(WorkItemManager manager, AsyncTaskService client) {
+            this.manager = manager;
+            this.client = client;
+        }
+
+        public void execute(Payload payload) {
+            TaskEvent event = (TaskEvent) payload.get();
+            long taskId = event.getTaskId();
+            System.out.println("Task completed " + taskId);
+            GetTaskResponseHandler getTaskResponseHandler =
+                    new GetCompletedTaskResponseHandler(manager, client);
+            client.getTask(taskId, getTaskResponseHandler);
+        }
+
+        public boolean isRemove() {
+            return false;
+        }
+    }
+
+    private static class GetCompletedTaskResponseHandler extends AbstractBaseResponseHandler implements GetTaskResponseHandler {
+
+        private WorkItemManager manager;
+        private AsyncTaskService client;
+
+        public GetCompletedTaskResponseHandler(WorkItemManager manager, AsyncTaskService client) {
+            this.manager = manager;
+            this.client = client;
+        }
+
+        public void execute(Task task) {
+            long workItemId = task.getTaskData().getWorkItemId();
+            if (task.getTaskData().getStatus() == Status.Completed) {
+                String userId = task.getTaskData().getActualOwner().getId();
+                Map<String, Object> results = new HashMap<String, Object>();
+                results.put("ActorId", userId);
+                long contentId = task.getTaskData().getOutputContentId();
+                if (contentId != -1) {
+                    GetContentResponseHandler getContentResponseHandler =
+                            new GetResultContentResponseHandler(manager, task, results);
+                    client.getContent(contentId, getContentResponseHandler);
+                } else {
+                    manager.completeWorkItem(workItemId, results);
+                }
+            } else {
+                manager.abortWorkItem(workItemId);
+            }
+        }
+    }
+
+    private static class GetResultContentResponseHandler extends AbstractBaseResponseHandler implements GetContentResponseHandler {
+
+        private WorkItemManager manager;
+        private Task task;
+        private Map<String, Object> results;
+
+        public GetResultContentResponseHandler(WorkItemManager manager, Task task, Map<String, Object> results) {
+            this.manager = manager;
+            this.task = task;
+            this.results = results;
+        }
+
+        public void execute(Content content) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
+            ObjectInputStream in;
+            try {
+                in = new ObjectInputStream(bis);
+                Object result = in.readObject();
+                in.close();
+                results.put("Result", result);
+                if (result instanceof Map) {
+                    Map<?, ?> map = (Map) result;
+                    for (Map.Entry<?, ?> entry : map.entrySet()) {
+                        if (entry.getKey() instanceof String) {
+                            results.put((String) entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+                manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }

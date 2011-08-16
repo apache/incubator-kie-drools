@@ -16,11 +16,14 @@
 package org.jbpm.task.service.base.sync;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventKey;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
@@ -57,8 +60,24 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         long taskId = task.getId();
 
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
+        WorkItemManager manager = new WorkItemManager() {
+            private List<Long> completed = new ArrayList<Long>();
+            private List<Long> aborted = new ArrayList<Long>();
+            public void completeWorkItem(long l, Map<String, Object> map) {
+                System.out.println("WorkItem Completed");
+                completed.add(l);
+            }
 
-        client.registerForEvent(key, true);
+            public void abortWorkItem(long l) {
+                System.out.println("WorkItem Aborted");
+                aborted.add(l);
+            }
+
+            public void registerWorkItemHandler(String string, WorkItemHandler wih) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+        client.registerForEvent(key, true, manager);
 
 
 
@@ -108,13 +127,31 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
+        WorkItemManager manager = new WorkItemManager() {
+            private List<Long> completed = new ArrayList<Long>();
+            private List<Long> aborted = new ArrayList<Long>();
+            public void completeWorkItem(long l, Map<String, Object> map) {
+                System.out.println("WorkItem Completed");
+                completed.add(l);
+            }
+
+            public void abortWorkItem(long l) {
+                System.out.println("WorkItem Aborted");
+                aborted.add(l);
+            }
+
+            public void registerWorkItemHandler(String string, WorkItemHandler wih) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
+        
         Task task = (Task) eval(new StringReader(str), vars);
         client.addTask(task, null);
         long taskId = task.getId();
 
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
 
-        client.registerForEvent(key, true);
+        client.registerForEvent(key, true, manager);
 
 
 
@@ -137,7 +174,7 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         long taskId2 = task2.getId();
 
         EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2);
-        client.registerForEvent(key2, true);
+        client.registerForEvent(key2, true, manager);
 
 
 

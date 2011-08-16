@@ -15,18 +15,30 @@
  */
 package org.jbpm.task.service.local;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventKey;
+import org.jbpm.eventmessaging.EventTriggerTransport;
+import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.Attachment;
 import org.jbpm.task.Comment;
 import org.jbpm.task.Content;
 import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.Status;
 import org.jbpm.task.Task;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.Operation;
 import org.jbpm.task.TaskService;
+import org.jbpm.task.event.TaskCompletedEvent;
+import org.jbpm.task.event.TaskFailedEvent;
+import org.jbpm.task.event.TaskSkippedEvent;
 import org.jbpm.task.service.TaskServiceSession;
 
 /**
@@ -175,8 +187,9 @@ public class LocalTaskService implements TaskService {
         taskServiceSession.taskOperation(Operation.Register, taskId, userId, null, null, null);
     }
 
-    public void registerForEvent(EventKey key, boolean remove) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void registerForEvent(EventKey key, boolean remove, WorkItemManager manager) {
+        SimpleEventTransport transport = new SimpleEventTransport(taskServiceSession, manager, remove);
+        taskServiceSession.getService().getEventKeys().register(key, transport);
     }
 
     public void release(long taskId, String userId) {
@@ -221,5 +234,74 @@ public class LocalTaskService implements TaskService {
 
     public void suspend(long taskId, String userId) {
         taskServiceSession.taskOperation(Operation.Suspend, taskId, userId, null, null, null);
+    }
+
+    private static class SimpleEventTransport implements EventTriggerTransport {
+
+        private boolean remove;
+        private WorkItemManager manager;
+        private TaskServiceSession session;
+
+        public SimpleEventTransport(TaskServiceSession session, WorkItemManager manager, boolean remove) {
+            this.session = session;
+            this.manager = manager;
+            this.remove = remove;
+        }
+
+        public void trigger(Payload payload) {
+            if (payload.get() instanceof TaskFailedEvent) {
+                Task task = session.getTask(((TaskFailedEvent) payload.get()).getTaskId());
+                manager.abortWorkItem(task.getTaskData().getWorkItemId());
+                return;
+            }
+            if (payload.get() instanceof TaskSkippedEvent) {
+                Task task = session.getTask(((TaskSkippedEvent) payload.get()).getTaskId());
+                manager.abortWorkItem(task.getTaskData().getWorkItemId());
+                return;
+            }
+            if (payload.get() instanceof TaskCompletedEvent) {
+                Task task = session.getTask(((TaskCompletedEvent) payload.get()).getTaskId());
+
+                task.getTaskData().setStatus(Status.Completed);
+                String userId = task.getTaskData().getActualOwner().getId();
+                Map<String, Object> results = new HashMap<String, Object>();
+                results.put("ActorId", userId);
+                long contentId = task.getTaskData().getOutputContentId();
+                if (contentId != -1) {
+                    Content content = session.getContent(contentId);
+                    ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
+                    ObjectInputStream in;
+                    try {
+                        in = new ObjectInputStream(bis);
+                        Object result = in.readObject();
+                        in.close();
+                        results.put("Result", result);
+                        if (result instanceof Map) {
+                            Map<?, ?> map = (Map) result;
+                            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                                if (entry.getKey() instanceof String) {
+                                    results.put((String) entry.getKey(), entry.getValue());
+                                }
+                            }
+                        }
+                        manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+                }
+
+                return;
+            }
+
+        }
+
+        public boolean isRemove() {
+            return remove;
+        }
     }
 }
