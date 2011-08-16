@@ -101,24 +101,26 @@ public class MVELDialectRuntimeData
     public void merge(DialectRuntimeRegistry registry,
                       DialectRuntimeData newData) {
         MVELDialectRuntimeData other = (MVELDialectRuntimeData) newData;
-        this.imports.putAll( other.imports );
+        
+        for ( Entry<String, Object> entry : other.imports.entrySet() ) {
+            if ( entry.getValue() instanceof Class ) {
+                if ( !this.imports.containsKey( entry.getKey() ) ) {
+                 // store it as a String, we'll re-resolve this later, against the correct ClassLoader
+                    this.imports.put(  entry.getKey(), ((Class) entry.getValue()).getName() ); 
+                }
+            } else {
+                this.imports.put( entry.getKey(), entry.getValue() );  
+            }
+        }
+                
         this.packageImports.addAll( other.packageImports );
         for ( Entry<Wireable, MVELCompileable> entry : other.invokerLookups.entrySet() ) {
             invokerLookups.put( entry.getKey(),
                                 entry.getValue() );
-
             if ( this.wireList == Collections.<Wireable> emptyList() ) {
                 this.wireList = new ArrayList<Wireable>();
             }
             wireList.add( entry.getKey() );
-            //            // first make sure the MVELCompilationUnit is compiled            
-            //            MVELCompilable component = entry.getValue();
-            //            component.compile( rootClassLoader );
-            //            
-            //            // now wire up the target
-            //            Wireable target = entry.getKey();
-            //            target.wire( component );
-            //            System.out.println( component );
         }
         this.mvelReaders = new ArrayList<MVELCompileable>();
         this.mvelReaders.addAll( other.mvelReaders );
@@ -126,7 +128,8 @@ public class MVELDialectRuntimeData
 
     public DialectRuntimeData clone(DialectRuntimeRegistry registry,
                                     CompositeClassLoader rootClassLoader) {
-        DialectRuntimeData clone = new MVELDialectRuntimeData();
+        MVELDialectRuntimeData clone = new MVELDialectRuntimeData();
+        clone.rootClassLoader = rootClassLoader;        
         clone.merge( registry,
                      this );
         clone.onAdd( registry,
@@ -250,25 +253,20 @@ public class MVELDialectRuntimeData
                         key = entry.getKey();
                         value = entry.getValue();
                         if ( entry.getValue() instanceof String ) {
-                            String str = (String ) value;                 
-                            Class cls = this.rootClassLoader.loadClass( str.substring( 2 ) );
+                            String str = (String ) value;
+                            // @TODO MVEL doesn't yet support importing of fields
                             if ( str.startsWith( "m:" ) ) {
+                                Class cls = this.rootClassLoader.loadClass( str.substring( 2 ) );
                                 String methodName =  key;
                                 for ( Method method : cls.getDeclaredMethods() ) {
                                     if ( method.getName().equals( methodName ) ) {
                                         entry.setValue( method );
                                         continue;
                                     }
-                                }                        
+                                }
                             } else {
-                                // @TODO MVEL doesn't yet support importing of fields
-//                                String fieldName = key;                    
-//                                for ( Field field : cls.getFields() ) {
-//                                    if ( field.isAccessible() && field.getName().equals( fieldName ) ) {
-//                                        entry.setValue( field );
-//                                        continue;
-//                                    }
-//                                }                        
+                                Class cls = this.rootClassLoader.loadClass( str);
+                                entry.setValue( cls );
                             }
                         }
                     }
