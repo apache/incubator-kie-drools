@@ -81,7 +81,7 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
         client.complete(taskId, users.get("bobba").getId(), null);
 
-        
+
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(0, tasks.size());
@@ -111,8 +111,8 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
-       MyWorkItemManager manager = new MyWorkItemManager();
-        
+        MyWorkItemManager manager = new MyWorkItemManager();
+
         Task task = (Task) eval(new StringReader(str), vars);
         client.addTask(task, null);
         long taskId = task.getId();
@@ -163,7 +163,7 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 //        Payload payload = handler.getPayload();
 //        TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();
 //        assertNotNull( event );
-        
+
 
 
         task = client.getTask(taskId);
@@ -176,38 +176,39 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 //        event = ( TaskCompletedEvent ) payload.get();
 //        assertNotNull( event );
 
-       
+
 
         task2 = client.getTask(taskId2);
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
         
-         assertEquals(2, manager.getCompleted().size());
+        assertEquals(2, manager.getCompleted().size());
     }
-    
+
     private static class MyWorkItemManager implements WorkItemManager {
-            private List<Long> completed = new ArrayList<Long>();
-            private List<Long> aborted = new ArrayList<Long>();
 
-            public List<Long> getAborted() {
-                return aborted;
-            }
+        private List<Long> completed = new ArrayList<Long>();
+        private List<Long> aborted = new ArrayList<Long>();
 
-            public List<Long> getCompleted() {
-                return completed;
-            }
-            
-            public void completeWorkItem(long l, Map<String, Object> map) {
-                System.out.println("WorkItem Completed");
-                completed.add(l);
-            }
+        public List<Long> getAborted() {
+            return aborted;
+        }
 
-            public void abortWorkItem(long l) {
-                System.out.println("WorkItem Aborted");
-                aborted.add(l);
-            }
+        public List<Long> getCompleted() {
+            return completed;
+        }
 
-            public void registerWorkItemHandler(String string, WorkItemHandler wih) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        };
+        public void completeWorkItem(long l, Map<String, Object> map) {
+            System.out.println("WorkItem Completed");
+            completed.add(l);
+        }
+
+        public void abortWorkItem(long l) {
+            System.out.println("WorkItem Aborted");
+            aborted.add(l);
+        }
+
+        public void registerWorkItemHandler(String string, WorkItemHandler wih) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    };
 }

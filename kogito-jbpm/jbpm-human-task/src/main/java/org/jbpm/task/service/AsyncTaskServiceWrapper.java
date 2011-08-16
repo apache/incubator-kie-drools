@@ -456,13 +456,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
     public void registerForEvent(EventKey key, boolean remove, WorkItemManager manager) {
         TaskCompletedHandler responseHandler = new TaskCompletedHandler(manager, taskService);
         taskService.registerForEvent(key, remove, responseHandler);
-//        try {
-//            responseHandler.waitTillDone(timeout);
-//        } catch (Exception e) {
-//            if (responseHandler.getError() != null) {
-//                throw responseHandler.getError();
-//            }
-//        }
+
     }
 
     public void release(long taskId, String userId) {
