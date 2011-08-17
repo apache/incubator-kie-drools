@@ -16,7 +16,9 @@
 
 package org.drools;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +26,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.drools.base.QueryRowWithSubruleIndex;
+import org.drools.base.extractors.ArrayElementReader;
+import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
 
 /**
@@ -37,21 +41,25 @@ public class QueryResults
 
     protected List<QueryRowWithSubruleIndex>  results;
     protected WorkingMemory                   workingMemory;
-
-    public QueryResults() {
-    }
+    protected Declaration[] parameters;
 
     public QueryResults(final List<QueryRowWithSubruleIndex> results,
                         final Map<String, Declaration>[]  declarations,
-                        final WorkingMemory workingMemory) {
+                        final WorkingMemory workingMemory,
+                        final Declaration[] parameters) {
         this.results = results;
         this.workingMemory = workingMemory;
         this.declarations = declarations;
+        this.parameters = parameters;
 
     }
     
     public Map<String, Declaration>[] getDeclarations() {
         return this.declarations;
+    }
+    
+    public Declaration[] getParameters() {
+        return this.parameters;
     }
     
     public Map<String, Declaration> getDeclarations(int subruleIndex) {

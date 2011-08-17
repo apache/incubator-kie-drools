@@ -210,10 +210,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             }
 
             executeQueuedActions();
+            
 
             return new QueryResults( (List<QueryRowWithSubruleIndex>) queryObject.getQueryResultCollector().getResults(),
                                      decls.toArray( new Map[decls.size()] ),
-                                     this );
+                                     this,
+                                     ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
         } finally {
             this.lock.unlock();
             this.ruleBase.readUnlock();

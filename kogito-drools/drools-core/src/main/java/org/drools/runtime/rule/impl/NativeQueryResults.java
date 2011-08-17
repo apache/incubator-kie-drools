@@ -17,9 +17,14 @@
 package org.drools.runtime.rule.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,6 +34,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
+import org.drools.base.extractors.ArrayElementReader;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
@@ -39,6 +45,8 @@ public class NativeQueryResults
     QueryResults {
     
     private org.drools.QueryResults results;
+    
+    private String[] identifiers;
     
     public NativeQueryResults() {
     }
@@ -52,17 +60,35 @@ public class NativeQueryResults
     }
 
     public String[] getIdentifiers() {
-        List<String> actualIds = new ArrayList();
-        for ( Declaration declr : results.getDeclarations(0).values() ) {
-               ObjectType objectType = declr.getPattern().getObjectType();
-                if ( objectType instanceof ClassObjectType ) {
-                    if ( ((ClassObjectType) objectType).getClassType() == DroolsQuery.class ) {
-                        continue;
-                    }
-                }
-                actualIds.add( declr.getIdentifier() );
+        if ( identifiers != null ) {
+            return identifiers;
         }
-        return actualIds.toArray( new String[actualIds.size() ] );
+        Declaration[] parameters = this.results.getParameters();
+        
+        Set<String> set  = new HashSet<String>();
+        for ( Declaration declr : parameters ) {
+            set.add( declr.getIdentifier() );
+        }
+        
+        
+        Collection<Declaration> declrCollection = new ArrayList( results.getDeclarations(0).values() );
+        
+        for ( Iterator<Declaration> it =  declrCollection.iterator(); it.hasNext(); ) {
+            Declaration declr = it.next();
+            if ( set.contains( declr.getIdentifier()  ) ) {
+                it.remove();
+            }
+        }   
+        
+        String[] declrs = new String[parameters.length + declrCollection.size() ];
+        int i = 0;
+        for ( Declaration declr : parameters ) {
+            declrs[i++] = declr.getIdentifier();
+        }
+        for ( Declaration declr : declrCollection ) {
+            declrs[i++] = declr.getIdentifier();
+        }        
+        return declrs;
     }
     
     
