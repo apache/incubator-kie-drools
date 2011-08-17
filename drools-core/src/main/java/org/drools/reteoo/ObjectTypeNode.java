@@ -195,7 +195,7 @@ public class ObjectTypeNode extends ObjectSource
                                              workingMemory );
         }
 
-        if ( this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
+        if ( this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
             // schedule expiration
             WorkingMemoryReteExpireAction expire = new WorkingMemoryReteExpireAction( factHandle,
                                                                                       this );

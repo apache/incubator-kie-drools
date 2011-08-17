@@ -406,4 +406,5 @@ public class TypeDeclaration
     public void setNovel(boolean novel) {
         this.novel = novel;
     }
+
 }
