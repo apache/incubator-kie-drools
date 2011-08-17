@@ -1,8 +1,5 @@
 package org.drools.adventures;
 
-import static org.junit.Assert.*;
-
-
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -30,37 +27,39 @@ import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
 import org.drools.runtime.rule.Variable;
-import org.junit.Test;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 
 public class DeathMansion {
-    @Test
     public void test1() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "model.drl", getClass() ),
                       ResourceType.DRL );      
         if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit(1);
         }
         
         kbuilder.add( ResourceFactory.newClassPathResource( "./commands/commands-model.drl", getClass() ),
                       ResourceType.DRL );        
         if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit(1);
         }
         
         kbuilder.add( ResourceFactory.newClassPathResource( "queries.drl", getClass() ),
                       ResourceType.DRL );      
         if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit(1);
         }
         
         kbuilder.add( ResourceFactory.newClassPathResource( "commands.drl", getClass() ),
                       ResourceType.DRL );          
         if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit(1);
         }
 
 
