@@ -17,9 +17,16 @@
 package org.drools.runtime.rule.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,10 +35,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.base.ClassObjectType;
+import org.drools.base.DroolsQuery;
+import org.drools.base.extractors.ArrayElementReader;
 import org.drools.rule.Declaration;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
+import org.drools.spi.ObjectType;
 import org.drools.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
 import org.drools.xml.jaxb.util.JaxbMapAdapter;
 
@@ -68,26 +79,51 @@ public class FlatQueryResults
         this.factHandles = factHandles;
     }
     
-    public FlatQueryResults(org.drools.QueryResults results) {
-        Declaration[] declrs = results.getDeclarations(0).values().toArray( new Declaration[results.getDeclarations(0).size()] );
+    public FlatQueryResults(org.drools.QueryResults results) {        
+        Declaration[] parameters = results.getParameters();
+        
+        Set<String> set  = new HashSet<String>();
+        for ( Declaration declr : parameters ) {
+            set.add( declr.getIdentifier() );
+        }
+        
+        
+        Collection<Declaration> declrCollection = new ArrayList( results.getDeclarations(0).values() );
+        
+        for ( Iterator<Declaration> it =  declrCollection.iterator(); it.hasNext(); ) {
+            Declaration declr = it.next();
+            if ( set.contains( declr.getIdentifier()  ) ) {
+                it.remove();
+            }
+        }   
+        
+        Declaration[] declrs = new Declaration[parameters.length + declrCollection.size() ];
+        int i = 0;
+        for ( Declaration declr : parameters ) {
+            declrs[i++] = declr;
+        }
+        for ( Declaration declr : declrCollection ) {
+            declrs[i++] = declr;
+        }       
+        
+
         this.results = new ArrayList<ArrayList<Object>>( results.size() );
         this.factHandles = new ArrayList<ArrayList<FactHandle>> ( results.size() );
 
         int length = declrs.length;
         
-        identifiers = new HashMap<String, Integer>( length );
-        for ( int i = 0; i < length; i++ ) {
+        identifiers = new LinkedHashMap<String, Integer>( length );
+        for ( i = 0; i < length; i++ ) {
             identifiers.put( declrs[i].getIdentifier(),
                              i );
         }
         
         
-
         for ( org.drools.QueryResult result : results ) {
             ArrayList<Object> row = new ArrayList<Object>();
             ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
 
-            for ( int i = 0; i < length; i++ ) {
+            for ( i = 0; i < length; i++ ) {
                 Declaration declr = declrs[i];
                 row.add( result.get( declr ) );
                 rowHandle.add( result.getFactHandle( declr ) );

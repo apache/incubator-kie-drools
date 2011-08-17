@@ -36,6 +36,7 @@ import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.base.evaluators.Operator;
 import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -743,8 +744,8 @@ public class PatternBuilder
                 restriction = new VariableRestriction( extractor,
                                                        declr,
                                                        evaluator );
-
-                if ( declr.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) ) {
+                
+                if ( declr.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) && Operator.EQUAL.getOperatorString().equals( operator ) ) {
                     // declaration is query argument, so allow for unification.
                     restriction = new UnificationRestriction( (VariableRestriction) restriction );
                 }

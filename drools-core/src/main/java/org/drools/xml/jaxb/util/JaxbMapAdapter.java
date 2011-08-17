@@ -19,6 +19,7 @@ package org.drools.xml.jaxb.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +59,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
 
     @Override
     public Map<String, Object> unmarshal(JaxbStringObjectPair[] value) throws Exception {
-        Map<String, Object> r = new HashMap<String, Object>();
+        Map<String, Object> r = new LinkedHashMap<String, Object>();
         for( JaxbStringObjectPair p : value ) {
             if ( p.getValue() instanceof JaxbListWrapper) {
                 r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
