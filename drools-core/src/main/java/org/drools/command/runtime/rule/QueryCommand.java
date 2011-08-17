@@ -16,7 +16,6 @@
 
 package org.drools.command.runtime.rule;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +31,7 @@ import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.Variable;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class QueryCommand  implements GenericCommand<QueryResults> {
@@ -93,6 +93,13 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
         if ( this.arguments == null || this.arguments.isEmpty() ) {
             this.arguments = Collections.emptyList();
         }
+        
+        for (int j = 0; j < arguments.size(); j++) {
+            if (arguments.get(j) instanceof Variable) {
+                arguments.set(j, Variable.v);
+            }
+        }
+
         
         results = ksession.getQueryResults( name, this.arguments.toArray() );
         
