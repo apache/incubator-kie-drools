@@ -45,7 +45,8 @@ public class FromBuilder
                                                                               (AlphaNodeFieldConstraint[]) context.getAlphaConstraints().toArray( new AlphaNodeFieldConstraint[context.getAlphaConstraints().size()] ),
                                                                               betaConstraints,
                                                                               context.isTupleMemoryEnabled(),
-                                                                              context ) ) );
+                                                                              context,
+                                                                              from ) ) );
         context.setAlphaConstraints( null );
         context.setBetaconstraints( null );
         context.popRuleComponent();

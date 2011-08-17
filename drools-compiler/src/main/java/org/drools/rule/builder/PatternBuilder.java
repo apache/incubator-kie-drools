@@ -73,6 +73,7 @@ import org.drools.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
+import org.drools.rule.From;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
@@ -313,7 +314,9 @@ public class PatternBuilder
 
             PatternSource source = (PatternSource) builder.build( context,
                                                                   patternDescr.getSource() );
-
+            if ( source instanceof From ) {
+                ((From)source).setResultPattern( pattern );
+            }
             pattern.setSource( source );
         }
 
