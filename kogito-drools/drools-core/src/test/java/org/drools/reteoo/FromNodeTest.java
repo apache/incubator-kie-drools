@@ -45,6 +45,7 @@ import org.drools.common.SingleBetaConstraints;
 import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.Declaration;
+import org.drools.rule.From;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.VariableConstraint;
@@ -101,6 +102,12 @@ public class FromNodeTest {
         list.add( cheese1 );
         list.add( cheese2 );
         final MockDataProvider dataProvider = new MockDataProvider( list );
+        
+        final Pattern pattern = new Pattern( 0,
+                                             new ClassObjectType( Cheese.class ) );
+        
+        From fromCe = new From(dataProvider);
+        fromCe.setResultPattern( pattern ); 
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
@@ -108,7 +115,8 @@ public class FromNodeTest {
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null,
                                             true,
-                                            buildContext );
+                                            buildContext,
+                                            fromCe );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -219,6 +227,10 @@ public class FromNodeTest {
         list.add( cheese1 );
         list.add( cheese2 );
         final MockDataProvider dataProvider = new MockDataProvider( list );
+        
+        From fromCe = new From(dataProvider);
+        fromCe.setResultPattern( new Pattern( 0,
+                                              new ClassObjectType( Cheese.class ) ) );
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
@@ -226,7 +238,8 @@ public class FromNodeTest {
                                             new AlphaNodeFieldConstraint[0],
                                             betaConstraints,
                                             true,
-                                            buildContext );
+                                            buildContext,
+                                            fromCe );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -320,6 +333,12 @@ public class FromNodeTest {
         list.add( cheese1 );
         list.add( cheese2 );
         final MockDataProvider dataProvider = new MockDataProvider( list );
+        
+        final Pattern pattern = new Pattern( 0,
+                                             new ClassObjectType( Cheese.class ) );
+        
+        From fromCe = new From(dataProvider);
+        fromCe.setResultPattern( pattern );        
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
@@ -327,7 +346,8 @@ public class FromNodeTest {
                                             new AlphaNodeFieldConstraint[]{constraint},
                                             null,
                                             true,
-                                            buildContext );
+                                            buildContext,
+                                            fromCe );
         final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
         from.addTupleSink( sink );
 
@@ -369,6 +389,89 @@ public class FromNodeTest {
                       memory.betaMemory.getLeftTupleMemory().size() );
         assertNull( memory.betaMemory.getRightTupleMemory() );
     }
+    
+    @Test
+    public void testAssignable() {
+        final PropagationContext context = new PropagationContextImpl( 0,
+                                                                       PropagationContext.ASSERTION,
+                                                                       null,
+                                                                       null,
+                                                                       null );
+        final ReteooWorkingMemory workingMemory = new ReteooWorkingMemory( 1,
+                                                                           ruleBase );
+
+
+        final List list = new ArrayList();
+//        final Cheese cheese1 = new Cheese( "cheddar",
+//                                           20 );
+//        final Cheese cheese2 = new Cheese( "brie",
+//                                           20 );
+//        list.add( cheese1 );
+//        list.add( cheese2 );
+        
+        Human h1  = new Human();
+        Human h2  = new Human();
+        Person p1 = new Person("darth", 105);
+        Person p2 = new Person("yoda", 200);
+        Person m1 = new Man("bobba", 95);
+        Person m2 = new Man("luke", 40); 
+        
+        list.add(h1);
+        list.add(h2);
+        list.add(p1);
+        list.add(p1);
+        list.add(m1);
+        list.add(m2);
+        
+        
+        
+        final MockDataProvider dataProvider = new MockDataProvider( list );
+        
+        final Pattern pattern = new Pattern( 0,
+                                             new ClassObjectType( Person.class ) );
+        
+        From fromCe = new From(dataProvider);
+        fromCe.setResultPattern( pattern ); 
+
+        final FromNode from = new FromNode( 3,
+                                            dataProvider,
+                                            null,
+                                            new AlphaNodeFieldConstraint[]{},
+                                            null,
+                                            true,
+                                            buildContext,
+                                            fromCe );
+        
+        final MockLeftTupleSink sink = new MockLeftTupleSink( 5 );
+        from.addTupleSink( sink );
+
+        final FactHandle handle = workingMemory.insert( "xxx" );
+        final LeftTuple tuple1 = new LeftTupleImpl( (DefaultFactHandle) handle,
+                                                    from,
+                                                    true );
+        from.assertLeftTuple( tuple1,
+                              context,
+                              workingMemory );
+        
+        List asserted = sink.getAsserted();
+        int countHuman = 0;
+        int countPerson = 0;
+        int countMan = 0;
+        for ( int i = 0; i < 4; i++ ) {
+            Object o = ((LeftTuple) ((Object[]) asserted.get( i ))[0]).getLastHandle().getObject();
+            if ( o.getClass() ==  Human.class ) {
+                countHuman++;
+            } else if ( o.getClass() == Person.class ) {
+                countPerson++;
+            } else  if ( o.getClass() == Man.class ) {
+                countMan++;
+            } 
+        }
+        
+        assertEquals( 0, countHuman );
+        assertEquals( 2, countPerson );
+        assertEquals( 2, countMan );
+    }    
 
     public static class MockDataProvider
         implements
@@ -406,7 +509,11 @@ public class FromNodeTest {
         }
     }
 
-    public static class Person {
+    
+    public static class Human {
+        
+    }
+    public static class Person extends Human {
         private String name;
         private int    age;
 
@@ -424,5 +531,15 @@ public class FromNodeTest {
         public String getName() {
             return this.name;
         }
+    }
+    
+    public static class Man extends Person {
+
+        public Man(String name,
+                   int age) {
+            super( name,
+                   age );
+        }
+        
     }
 }

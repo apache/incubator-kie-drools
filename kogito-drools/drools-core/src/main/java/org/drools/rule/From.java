@@ -36,6 +36,8 @@ public class From extends ConditionalElement
     private static final long serialVersionUID = 510l;
 
     private DataProvider      dataProvider;
+    
+    private Pattern           resultPattern;
 
     public From() {
     }
@@ -46,10 +48,12 @@ public class From extends ConditionalElement
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         dataProvider    = (DataProvider)in.readObject();
+        resultPattern   = ( Pattern ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(dataProvider);
+        out.writeObject(  resultPattern );
     }
     
     public void wire(Object object) {
@@ -85,6 +89,14 @@ public class From extends ConditionalElement
 
     public boolean isPatternScopeDelimiter() {
         return true;
+    }
+
+    public void setResultPattern(Pattern pattern) {
+        this.resultPattern = pattern;
+    }
+    
+    public Pattern getResultPattern() {
+        return this.resultPattern;
     }
 
 }
