@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.RuleBaseConfiguration;
+import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
@@ -39,6 +40,7 @@ import org.drools.core.util.LeftTupleList;
 import org.drools.core.util.LinkedList;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.From;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
 import org.drools.spi.PropagationContext;
@@ -56,6 +58,9 @@ public class FromNode extends LeftTupleSource
 
     private LeftTupleSinkNode          previousTupleSinkNode;
     private LeftTupleSinkNode          nextTupleSinkNode;
+    
+    private From                       from;
+    private Class                      resultClass;
 
     protected boolean                  tupleMemoryEnabled;
 
@@ -68,7 +73,8 @@ public class FromNode extends LeftTupleSource
                     final AlphaNodeFieldConstraint[] constraints,
                     final BetaConstraints binder,
                     final boolean tupleMemoryEnabled,
-                    final BuildContext context) {
+                    final BuildContext context,
+                    final From from) {
         super( id,
                context.getPartitionId(),
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
@@ -77,6 +83,8 @@ public class FromNode extends LeftTupleSource
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
+        this.from = from;
+        resultClass = ((ClassObjectType)this.from.getResultPattern().getObjectType()).getClassType();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -87,6 +95,8 @@ public class FromNode extends LeftTupleSource
         alphaConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
         betaConstraints = (BetaConstraints) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
+        from = (From) in.readObject();
+        resultClass = ((ClassObjectType)this.from.getResultPattern().getObjectType()).getClassType();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -96,6 +106,7 @@ public class FromNode extends LeftTupleSource
         out.writeObject( alphaConstraints );
         out.writeObject( betaConstraints );
         out.writeBoolean( tupleMemoryEnabled );
+        out.writeObject( from );
     }
 
     /**
@@ -131,6 +142,9 @@ public class FromNode extends LeftTupleSource
                                                                                context,
                                                                                memory.providerContext ); it.hasNext(); ) {
             final Object object = it.next();
+            if ( !resultClass.isAssignableFrom( object.getClass() ) ) {
+                continue; // skip anything if it not assignable
+            }
 
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( object,
                                                                                                   null, // set this to null, otherwise it uses the driver fact's entrypoint
@@ -216,6 +230,10 @@ public class FromNode extends LeftTupleSource
                                                                                context,
                                                                                memory.providerContext ); it.hasNext(); ) {
             final Object object = it.next();
+            if ( !resultClass.isAssignableFrom( object.getClass() ) ) {
+                continue; // skip anything if it not assignable
+            }
+            
             RightTuple rightTuple = previousMatches.remove( object );
 
             if ( rightTuple == null ) {

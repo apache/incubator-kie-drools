@@ -118,6 +118,9 @@ public class Pattern
         index = in.readInt();
         source = (PatternSource) in.readObject();
         offset = in.readInt();
+        if ( source instanceof From ) {
+            ((From)source).setResultPattern( this );
+        }          
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -161,6 +164,9 @@ public class Pattern
                                            this.declaration != null ? this.declaration.isInternalFact() : false );
         if ( this.getSource() != null ) {
             clone.setSource( (PatternSource) this.getSource().clone() );
+            if ( source instanceof From ) {
+                ((From)clone.getSource()).setResultPattern( this );
+            }            
         }
 
         if( this.declarations != null ) {
