@@ -87,8 +87,9 @@ public class NativeQueryResults
         }
         for ( Declaration declr : declrCollection ) {
             declrs[i++] = declr.getIdentifier();
-        }        
-        return declrs;
+        }       
+        identifiers = declrs;
+        return identifiers;
     }
     
     
