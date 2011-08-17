@@ -28,7 +28,6 @@ import java.util.Collections;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBaseConfiguration;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
@@ -56,10 +55,12 @@ import org.drools.rule.EntryPoint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.TypeDeclaration;
 import org.drools.runtime.Environment;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.FactHandleFactory;
+import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 
 /**
@@ -432,5 +433,18 @@ public class ReteooRuleBase extends AbstractRuleBase {
 
     public void addPackage(final Package newPkg) {
         addPackages( Collections.singleton( newPkg ) );
+    }
+
+    @Override
+    protected void updateDependentTypes( Package newPkg,
+                                         TypeDeclaration typeDeclaration ) {
+        // update OTNs
+        for( EntryPointNode ep : this.rete.getEntryPointNodes().values() ) {
+            for( ObjectTypeNode node : ep.getObjectTypeNodes().values() ) {
+                if( node.isAssignableFrom( typeDeclaration.getObjectType() ) ) {
+                    node.setExpirationOffset( Math.max( node.getExpirationOffset(), typeDeclaration.getExpirationOffset()+1 ) );
+                }
+            }
+        }
     }
 }
