@@ -30,11 +30,9 @@ public class DateUtils {
     private static final long serialVersionUID = 510l;
     private static final String DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
     private static final String DATE_FORMAT_MASK = getDateFormatMask();
-    private static final String DEFAULT_COUNTRY = Locale.getDefault()
-            .getCountry();
+    private static final String DEFAULT_COUNTRY = Locale.UK.getCountry(); // getDefault().getCountry();
     private static final String DEFINE_COUNTRY = getDefaultContry();
-    private static final String DEFAULT_LANGUAGE = Locale.getDefault()
-            .getLanguage();
+    private static final String DEFAULT_LANGUAGE = Locale.UK.getLanguage(); // .getDefault().getLanguage();
     private static final String DEFINE_LANGUAGE = getDefaultLanguage();
 
     private static ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>() {

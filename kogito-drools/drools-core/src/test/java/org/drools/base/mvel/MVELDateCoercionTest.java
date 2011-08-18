@@ -17,7 +17,7 @@
 package org.drools.base.mvel;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,11 +43,11 @@ public class MVELDateCoercionTest {
     public void testString() throws Exception {
         MVELDateCoercion co = new MVELDateCoercion();
         assertTrue(co.canConvertFrom( Date.class ));
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
 
         String dt = df.format(df.parse("10-Jul-1974"));
-        Date dt_ = DateUtils.parseDate( dt,
-                                        new DateFormatsImpl() );
+        Date dt_ = DateUtils.parseDate(dt,
+                new DateFormatsImpl());
         assertEquals(dt_, co.convertFrom( dt ));
     }
 
