@@ -4,11 +4,7 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
@@ -728,7 +724,7 @@ public class TimerAndCalendarTest {
         List list = new ArrayList();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
-        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
         Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
@@ -792,7 +788,7 @@ public class TimerAndCalendarTest {
         List list = new ArrayList();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
-        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
         Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
@@ -856,7 +852,7 @@ public class TimerAndCalendarTest {
         List list = new ArrayList();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
-        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
         Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
@@ -920,7 +916,7 @@ public class TimerAndCalendarTest {
         List list = new ArrayList();
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();
-        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy" );
+        DateFormat df = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
         Date date = df.parse( "1-JAN-2010" );
         
         Calendar cal1 = new Calendar() {
