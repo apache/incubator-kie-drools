@@ -7,9 +7,7 @@ import static org.junit.Assert.fail;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -24,7 +22,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.junit.Test;
 
 public class SerializedPackageMergeTest {
-    private static final DateFormat DF   = new SimpleDateFormat( "dd-MMM-yyyy" );
+    private static final DateFormat DF   = new SimpleDateFormat( "dd-MMM-yyyy", Locale.UK );
     private static final String[]   DRLs = {"HelloWorld.drl","test_Serialization1.drl"};
 
     @Test

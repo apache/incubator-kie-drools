@@ -221,15 +221,12 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 
                 final byte[] clazzBytes = pStore.read( resourceName );
                 if (clazzBytes != null) {
-                    final char[] fileName = pClazzName.toCharArray();
                     try {
-                        final ClassFileReader classFileReader = new ClassFileReader(clazzBytes, fileName, true);
-                        return new NameEnvironmentAnswer(classFileReader, null);
+                        return createNameEnvironmentAnswer(pClazzName, clazzBytes);
                     } catch (final ClassFormatException e) {
-                        throw new RuntimeException( "ClassFormatException in loading class '" + fileName + "' with JCI." );
+                        throw new RuntimeException( "ClassFormatException in loading class '" + pClazzName + "' with JCI." );
                     }
                 }
-
 
                 InputStream is = null;
                 ByteArrayOutputStream baos = null;
@@ -242,13 +239,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     final byte[] buffer = new byte[8192];
                     baos = new ByteArrayOutputStream(buffer.length);
                     int count;
-                        while ((count = is.read(buffer, 0, buffer.length)) > 0) {
-                            baos.write(buffer, 0, count);
-                        }
-                        baos.flush();
-                        final char[] fileName = pClazzName.toCharArray();
-                        final ClassFileReader classFileReader = new ClassFileReader(baos.toByteArray(), fileName, true);
-                        return new NameEnvironmentAnswer(classFileReader, null);
+                    while ((count = is.read(buffer, 0, buffer.length)) > 0) {
+                        baos.write(buffer, 0, count);
+                    }
+                    baos.flush();
+                    return createNameEnvironmentAnswer(pClazzName, baos.toByteArray());
                 } catch ( final IOException e ) {
                     throw new RuntimeException( "could not read class",
                                                 e );
@@ -273,6 +268,12 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                                                     ie );
                     }
                 }
+            }
+
+            private NameEnvironmentAnswer createNameEnvironmentAnswer(final String pClazzName, final byte[] clazzBytes) throws ClassFormatException {
+                final char[] fileName = pClazzName.toCharArray();
+                final ClassFileReader classFileReader = new ClassFileReader(clazzBytes, fileName, true);
+                return new NameEnvironmentAnswer(classFileReader, null);
             }
 
             private boolean isSourceAvailable(final String pClazzName, final ResourceReader pReader) {
