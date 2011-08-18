@@ -15,7 +15,7 @@ public class DSLMappingFileTest {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
-    @Test
+    @Test @Ignore
     public void testParseFile() {
         try {
             final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );

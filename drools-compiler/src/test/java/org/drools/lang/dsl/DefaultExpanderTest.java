@@ -14,6 +14,8 @@ import static org.junit.Assert.*;
 import org.drools.lang.ExpanderException;
 
 public class DefaultExpanderTest {
+    private static final String NL = System.getProperty( "line.separator" );
+
     private DSLMappingFile          file          = null;
     private DSLTokenizedMappingFile tokenizedFile = null;
     private DefaultExpander         expander      = null;
@@ -205,12 +207,13 @@ public class DefaultExpanderTest {
     @Test
     public void testLineNumberError() throws Exception {
         DSLMappingFile file = new DSLTokenizedMappingFile();
-        String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
+        String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping( file.getMapping() );
-        String source = "rule 'q'\nagenda-group 'x'\nwhen\n    __  \nthen\n    bar 42\n\tgoober\nend";
+        String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    __  " + NL +
+                "then" + NL + "    bar 42" + NL + "\tgoober" + NL + "end";
         ex.expand( source );
         assertTrue( ex.hasErrors() );
         assertEquals( 2,
@@ -227,12 +230,13 @@ public class DefaultExpanderTest {
     @Test
     public void testANTLRLineNumberError() throws Exception {
         DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-        String dsl = "[when]foo=Foo()\n[then]bar {num}=baz({num});";
+        String dsl = "[when]foo=Foo()" + NL + "[then]bar {num}=baz({num});";
         file.parseAndLoad( new StringReader( dsl ) );
 
         DefaultExpander ex = new DefaultExpander();
         ex.addDSLMapping( file.getMapping() );
-        String source = "rule 'q'\nagenda-group 'x'\nwhen\n    __  \nthen\n    bar 42\n\tgoober\nend";
+        String source = "rule 'q'" + NL + "agenda-group 'x'" + NL + "when" + NL + "    __  " + NL +
+                "then" + NL + "    bar 42" + NL + "\tgoober" + NL + "end";
         ex.expand( source );
         assertTrue( ex.hasErrors() );
         assertEquals( 2,
