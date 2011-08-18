@@ -99,6 +99,10 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-templates</artifactId>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
 
     <!-- Needed for logging -->
     <dependency>

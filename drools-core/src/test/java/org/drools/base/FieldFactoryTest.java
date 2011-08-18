@@ -19,7 +19,7 @@ package org.drools.base;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 import org.junit.After;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class FieldFactoryTest {
 
     @Test
     public void testDate() throws Exception {
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
         String s = df.format(df.parse("10-Jul-1974"));
         final FieldValue val = FieldFactory.getFieldValue( s, ValueType.DATE_TYPE,
                                                            new DateFormatsImpl() );
