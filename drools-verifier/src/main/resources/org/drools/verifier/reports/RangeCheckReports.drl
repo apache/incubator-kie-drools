@@ -66,7 +66,7 @@ global VerifierReport result
 #            rule "Remove useless date gaps greater or greater and equal"
 #
 rule "Collect gaps"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     salience -100
     when
         $f :Field()
