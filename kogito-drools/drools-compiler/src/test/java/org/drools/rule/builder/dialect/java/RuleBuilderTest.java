@@ -197,7 +197,7 @@ public class RuleBuilderTest {
         ruleDescr.addAnnotation( "author",
                                  "Bob Doe" );
         ruleDescr.addAnnotation( "text",
-                                 "\"It's a quoted\" string\"" );
+                                 "\"It's a quoted\\\" string\"" );
 
         // creates expected results
         // defining expectations on the mock object
@@ -211,11 +211,11 @@ public class RuleBuilderTest {
 
         // check expectations
         verify( rule ).addMetaAttribute( "ruleId",
-                                         "123" );
+                                         123 );
         verify( rule ).addMetaAttribute( "author",
                                          "Bob Doe" );
         verify( rule ).addMetaAttribute( "text",
-                                         "\"It's a quoted\" string\"" );
+                                         "It's a quoted\" string" );
     }
 
     @Test

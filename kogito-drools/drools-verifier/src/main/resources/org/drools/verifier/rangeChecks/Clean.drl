@@ -56,7 +56,7 @@ global VerifierReport result;
 # Example: missing ( x >= 10 ) and ( x <= 10 ). This is the same as ( x == 10 )
 #
 rule "Merge gaps"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $g1 :Gap(
             operator == Operator.GREATER_OR_EQUAL
@@ -99,7 +99,7 @@ end
 #             reports that ( x < 50 ), ( x > 50 ) and ( x <= 70 ) is missing.
 #
 rule "Remove useless integer gaps lesser or lesser and equal"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         # Covered x > 10
         $lower :NumberRestriction(
@@ -153,7 +153,7 @@ end
 #            reports that ( x < 50 ), ( x > 50 ) and ( x >= 70 ) is missing.
 #
 rule "Remove useless integer gaps greater or greater and equal"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         # Covered x > 10
         $lower :NumberRestriction(
@@ -206,7 +206,7 @@ end
 #             reports that ( x < 50.0 ), ( x > 50.0 ) and ( x <= 70.0 ) is missing.
 #
 rule "Remove useless double gaps lesser or lesser and equal"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         # Covered x > 10.0
         $lower :NumberRestriction(
@@ -259,7 +259,7 @@ end
 # reports that ( x < 50.0 ), ( x > 50.0 ) and ( x >= 70.0 ) is missing.
 #
 rule "Remove useless double gaps greater or greater and equal"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         # Covered x > 10.0
         $lower :NumberRestriction(
@@ -312,7 +312,7 @@ end
 # reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x <= "15-Oct-2007" ) is missing.
 #
 rule "Remove useless date gaps lesser or lesser and equal"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         # Covered x > "01-Oct-2007"
         $lower :DateRestriction(
@@ -366,7 +366,7 @@ end
 # reports that ( x < "10-Oct-2007" ), ( x > "10-Oct-2007" ) and ( x >= "15-Oct-2007" ) is missing.
 #
 rule "Remove useless date gaps greater or greater and equal"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         # Covered x > "01-Oct-2007"
         $lower :DateRestriction(

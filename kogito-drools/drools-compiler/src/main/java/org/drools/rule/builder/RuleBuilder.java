@@ -108,9 +108,23 @@ public class RuleBuilder {
     public void buildMetaAttributes(final RuleBuildContext context ) {
         Rule rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
+            Object value = resolveValue( (String) context.getRuleDescr().getAnnotation(metaAttr).getValue() ); 
             rule.addMetaAttribute( metaAttr,
-                                   context.getRuleDescr().getAnnotation(metaAttr).getValue() );
+                                   value );
         }
+    }
+
+    private Object resolveValue( String value ) {
+        // for backward compatibility, if something is not an expression, we return an string as is
+        Object result = value;
+        // try to resolve as an expression:
+        try {
+            Object resolvedValue = MVEL.eval( value );
+            result = resolvedValue;
+        } catch ( Exception e ) {
+            // do nothing
+        }
+        return result;
     }
 
     public void buildAttributes(final RuleBuildContext context) {

@@ -75,7 +75,7 @@ public class ScopesAgendaFilter
         }
 
         if ( activation.getRule().getMetaData().containsKey( VERIFYING_SCOPES ) ) {
-            List<String> values = (List< String >) MVEL.eval( "[ "+activation.getRule().getMetaData().get( VERIFYING_SCOPES )+" ]" );
+            List<String> values = (List< String >) activation.getRule().getMetaData().get( VERIFYING_SCOPES );
 
             for ( String value : values ) {
                 if ( scopes.contains( value.trim() ) ) {
