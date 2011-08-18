@@ -5,9 +5,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
 import static org.junit.Assert.*;
 
 public class DSLTokenizedMappingFileTest {
@@ -19,7 +18,7 @@ public class DSLTokenizedMappingFileTest {
     private DSLMappingFile file     = null;
     private final String   filename = "test_metainfo.dsl";
 
-    @Test
+    @Test @Ignore
     public void testParseFile() {
         try {
             final Reader reader = new InputStreamReader( this.getClass().getResourceAsStream( this.filename ) );

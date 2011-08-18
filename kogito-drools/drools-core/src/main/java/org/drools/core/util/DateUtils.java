@@ -30,9 +30,9 @@ public class DateUtils {
     private static final long serialVersionUID = 510l;
     private static final String DEFAULT_FORMAT_MASK = "dd-MMM-yyyy";
     private static final String DATE_FORMAT_MASK = getDateFormatMask();
-    private static final String DEFAULT_COUNTRY = Locale.UK.getCountry(); // getDefault().getCountry();
+    private static final String DEFAULT_COUNTRY = Locale.getDefault().getCountry();
     private static final String DEFINE_COUNTRY = getDefaultContry();
-    private static final String DEFAULT_LANGUAGE = Locale.UK.getLanguage(); // .getDefault().getLanguage();
+    private static final String DEFAULT_LANGUAGE = Locale.getDefault().getLanguage();
     private static final String DEFINE_LANGUAGE = getDefaultLanguage();
 
     private static ThreadLocal<SimpleDateFormat> df = new ThreadLocal<SimpleDateFormat>() {
@@ -64,15 +64,15 @@ public class DateUtils {
     /** Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input, DateFormats dateFormats) {
         try {
-//            if (  dateFormat != null ) {
-//                return dateFormat.parse( input );
-//            } else {
-//                return df.get().parse(input);
-//            }
             return df.get().parse(input);
         } catch (final ParseException e) {
-            throw new IllegalArgumentException("Invalid date input format: ["
-                    + input + "] it should follow: [" + DATE_FORMAT_MASK + "]");
+            try {
+                // FIXME: Workaround to make the tests run with non-English locales
+                return new SimpleDateFormat(DATE_FORMAT_MASK, Locale.UK).parse(input);
+            } catch (ParseException e1) {
+                throw new IllegalArgumentException("Invalid date input format: ["
+                        + input + "] it should follow: [" + DATE_FORMAT_MASK + "]");
+            }
         }
     }
 
