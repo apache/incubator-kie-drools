@@ -35,7 +35,7 @@ global VerifierReport result;
 #                        and Foo( <= 42 || == 42 ) is missing.
 #
 rule "Range check for integers, if smaller than or equal is missing"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $f :Field( fieldType == Field.INT )
 
@@ -67,7 +67,7 @@ end
 #                        and in Foo( >= 42 || == 42 ) is missing.
 #
 rule "Range check for integers, if greater than or equal is missing"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     when
         $f :Field( fieldType == Field.INT )
 
@@ -100,7 +100,7 @@ end
 #                        then Foo( bar > 42 ) is missing.
 #
 rule "Range check for integers, equal and greater than"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     dialect "mvel"
     when
         $f :Field( fieldType == Field.INT )
@@ -142,7 +142,7 @@ end
 #                        then Foo( bar < 42 ) is missing.
 #
 rule "Range check for integers, equal and smaller than"
-    @verifying_scopes("knowledge-package", "decision-table")
+    @verifying_scopes(["knowledge-package", "decision-table"])
     dialect "mvel"
     when
         $f :Field( fieldType == Field.INT )
