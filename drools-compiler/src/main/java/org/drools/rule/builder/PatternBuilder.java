@@ -274,6 +274,7 @@ public class PatternBuilder
                 build( context,
                        patternDescr,
                        pattern,
+                       patternDescr,
                        "this == " + patternDescr.getIdentifier() );
             } else {
                 // This declaration already exists, so throw an Exception
@@ -372,6 +373,7 @@ public class PatternBuilder
 
             ConstraintConnectiveDescr result = parseExpression( context,
                                                                 patternDescr,
+                                                                b,
                                                                 expression );
             if ( result == null ) {
                 return;
@@ -460,6 +462,7 @@ public class PatternBuilder
                 build( context,
                        patternDescr,
                        pattern,
+                       descr,
                        field.getName() + " == " + descr.getExpression() );
             }
         }
@@ -468,13 +471,16 @@ public class PatternBuilder
     private void build( final RuleBuildContext context,
                         final PatternDescr patternDescr,
                         final Pattern pattern,
+                        final BaseDescr original,
                         final String expr ) {
         ConstraintConnectiveDescr result = parseExpression( context,
                                                             patternDescr,
+                                                            original, 
                                                             expr );
         if ( result == null ) {
             return;
         }
+        result.copyLocation( original );
         build( context,
                patternDescr,
                pattern,
@@ -486,6 +492,7 @@ public class PatternBuilder
                         Pattern pattern,
                         ConstraintConnectiveDescr descr ) {
         for ( BaseDescr d : descr.getDescrs() ) {
+            d.copyLocation( descr );
             
             if( d instanceof BindingDescr ) {
                 buildRuleBindings( context,
@@ -517,6 +524,7 @@ public class PatternBuilder
                     // MVELDumper already stripped the eval
                     // this will build the eval using the specified dialect
                     PredicateDescr pdescr = new PredicateDescr( expr );
+                    pdescr.copyLocation( d );
                     buildEval( context,
                                pattern,
                                pdescr,
@@ -541,6 +549,7 @@ public class PatternBuilder
             if ( !simple  ||  ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) || ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
+                                         d, 
                                          expr,
                                          aliases );
                 continue;
@@ -591,6 +600,7 @@ public class PatternBuilder
                 // then it is a constant expression... build it as a predicate as well
                 createAndBuildPredicate( context,
                                          pattern,
+                                         d,
                                          expr,
                                          aliases );
                 continue;
@@ -611,6 +621,7 @@ public class PatternBuilder
                  ( leftExpr.getFieldAccessors().size() > 2 || !leftExpr.getRuleBindings().isEmpty() || !leftExpr.getGlobalBindings().isEmpty() ) ) {
                 createAndBuildPredicate( context,
                                          pattern,
+                                         d, 
                                          expr,
                                          aliases );
                 continue;
@@ -787,6 +798,7 @@ public class PatternBuilder
 
     private void createAndBuildPredicate( RuleBuildContext context,
                                           Pattern pattern,
+                                          BaseDescr base, 
                                           String expr,
                                           Map<String, OperatorDescr> aliases ) {
         Dialect dialect = context.getDialect();
@@ -794,6 +806,7 @@ public class PatternBuilder
         context.setDialect( mvelDialect );
 
         PredicateDescr pdescr = new PredicateDescr( expr );
+        pdescr.copyLocation( base );
         buildEval( context,
                    pattern,
                    pdescr,
@@ -901,6 +914,7 @@ public class PatternBuilder
                 build( context,
                        patternDescr,
                        pattern,
+                       fieldBindingDescr,
                        fieldBindingDescr.getExpression() + " == " + fieldBindingDescr.getVariable() );
                 return;
             } else {
@@ -1399,9 +1413,11 @@ public class PatternBuilder
     @SuppressWarnings("unchecked")
     private ConstraintConnectiveDescr parseExpression( final RuleBuildContext context,
                                                        final PatternDescr patternDescr,
+                                                       final BaseDescr original, 
                                                        final String expression ) {
         DrlExprParser parser = new DrlExprParser();
         ConstraintConnectiveDescr result = parser.parse( expression );
+        result.copyLocation( original );
         if ( result == null || parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
