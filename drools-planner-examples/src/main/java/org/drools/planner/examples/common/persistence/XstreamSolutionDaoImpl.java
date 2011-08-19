@@ -86,6 +86,7 @@ public abstract class XstreamSolutionDaoImpl implements SolutionDao {
             // xStream.fromXml(InputStream) does not use UTF-8
             reader = new InputStreamReader(in, "UTF-8");
             Solution solution = (Solution) xStream.fromXML(reader);
+            postRead(solution);
             return solution;
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read from InputStream: " + in, e);
@@ -98,6 +99,10 @@ public abstract class XstreamSolutionDaoImpl implements SolutionDao {
                 }
             }
         }
+    }
+
+    protected void postRead(Solution solution) {
+        // Do nothing
     }
 
     public void writeSolution(Solution solution, File file) {

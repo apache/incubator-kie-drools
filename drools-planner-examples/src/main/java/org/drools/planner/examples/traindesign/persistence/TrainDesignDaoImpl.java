@@ -16,14 +16,23 @@
 
 package org.drools.planner.examples.traindesign.persistence;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
+import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
 
 public class TrainDesignDaoImpl extends XstreamSolutionDaoImpl {
 
     public TrainDesignDaoImpl() {
         super("traindesign", TrainDesign.class);
+    }
+
+    @Override
+    protected void postRead(Solution solution) {
+        TrainDesign trainDesign = (TrainDesign) solution;
+        for (RailNode origin : trainDesign.getRailNodeList()) {
+            origin.initializeShortestPathMap(trainDesign.getRailNodeList());
+        }
     }
 
 }

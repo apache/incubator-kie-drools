@@ -16,11 +16,19 @@
 
 package org.drools.planner.examples.traindesign.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.traindesign.domain.solver.RailNodeShortestPath;
+import org.drools.planner.examples.traindesign.domain.solver.RailPath;
 
 @XStreamAlias("RailNode")
 public class RailNode extends AbstractPersistable implements Comparable<RailNode> {
@@ -29,6 +37,8 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
     private int blockSwapCost;
 
     private List<RailArc> originatingRailArcList;
+    @XStreamOmitField
+    private Map<RailNode, RailNodeShortestPath> shortestPathMap;
 
     public String getCode() {
         return code;
@@ -54,6 +64,14 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
         this.originatingRailArcList = originatingRailArcList;
     }
 
+    public Map<RailNode, RailNodeShortestPath> getShortestPathMap() {
+        return shortestPathMap;
+    }
+
+    public void setShortestPathMap(Map<RailNode, RailNodeShortestPath> shortestPathMap) {
+        this.shortestPathMap = shortestPathMap;
+    }
+
     public int compareTo(RailNode other) {
         return new CompareToBuilder()
                 .append(id, other.id)
@@ -63,6 +81,57 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
     @Override
     public String toString() {
         return code;
+    }
+
+    public void initializeShortestPathMap(List<RailNode> railNodeList) {
+        shortestPathMap = new HashMap<RailNode, RailNodeShortestPath>(
+                railNodeList.size());
+        // Dijkstra algorithm
+        List<RailNodeShortestPath> unvisitedShortestPathList = new ArrayList<RailNodeShortestPath>(
+                railNodeList.size());
+
+        RailNodeShortestPath originShortestPath = new RailNodeShortestPath();
+        originShortestPath.setOrigin(this);
+        originShortestPath.setDestination(this);
+        originShortestPath.setDistance(0);
+        originShortestPath.resetRailPathList();
+        RailPath originRailPath = new RailPath();
+        originRailPath.setRailArcList(new ArrayList<RailArc>(0));
+        originShortestPath.addRailPath(originRailPath);
+        shortestPathMap.put(this, originShortestPath);
+        unvisitedShortestPathList.add(originShortestPath);
+
+        while (!unvisitedShortestPathList.isEmpty()) {
+            RailNodeShortestPath campingShortestPath = unvisitedShortestPathList.remove(0);
+            for (RailArc nextRailArc : campingShortestPath.getDestination().getOriginatingRailArcList()) {
+                RailNode nextNode = nextRailArc.getDestination();
+                int nextDistance = campingShortestPath.getDistance() + nextRailArc.getDistance();
+
+                RailNodeShortestPath nextShortestPath = shortestPathMap.get(nextNode);
+                if (nextShortestPath == null) {
+                    nextShortestPath = new RailNodeShortestPath();
+                    nextShortestPath.setOrigin(this);
+                    nextShortestPath.setDestination(nextNode);
+                    nextShortestPath.setDistance(Integer.MAX_VALUE);
+                    shortestPathMap.put(nextNode, nextShortestPath);
+                    unvisitedShortestPathList.add(nextShortestPath);
+                }
+                if (nextDistance <= nextShortestPath.getDistance()) {
+                    if (nextDistance < nextShortestPath.getDistance()) {
+                        nextShortestPath.setDistance(nextDistance);
+                        nextShortestPath.resetRailPathList();
+                    }
+                    for (RailPath campingRailPath : campingShortestPath.getRailPathList()) {
+                        RailPath nextRailPath = new RailPath();
+                        List<RailArc> railArcList = new ArrayList<RailArc>(campingRailPath.getRailArcList());
+                        railArcList.add(nextRailArc);
+                        nextRailPath.setRailArcList(railArcList);
+                        nextShortestPath.addRailPath(nextRailPath);
+                    }
+                }
+            }
+            Collections.sort(unvisitedShortestPathList);
+        }
     }
 
 }

@@ -21,8 +21,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
@@ -71,6 +73,8 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailArcList();
             readCrewSegmentList();
             readTrainDesignParametrization();
+//            experiment();
+            initializeShortestPathMaps();
             generateCrewSegmentPathList();
 
 //            createBedDesignationList();
@@ -222,6 +226,40 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             }
             trainDesign.setCrewSegmentList(crewSegmentList);
         }
+
+        private void initializeShortestPathMaps() {
+            List<RailNode> railNodeList = trainDesign.getRailNodeList();
+            for (RailNode origin : railNodeList) {
+                origin.initializeShortestPathMap(railNodeList);
+            }
+        }
+
+//        private void experiment() {
+//            for (CarBlock carBlock : trainDesign.getCarBlockList()) {
+//                List<List<RailArc>> railPathList = new ArrayList<List<RailArc>>();
+//                recursive(carBlock.getOrigin(), new ArrayList<RailArc>(), new HashSet<RailNode>(),
+//                        carBlock.getDestination(), railPathList);
+//System.out.println("CarBlock " + carBlock + "  with size " + railPathList.size());
+//            }
+//        }
+//
+//        private void recursive(RailNode campingRailNode, List<RailArc> campingRailPath,
+//                Set<RailNode> campingRailNodeSet, RailNode finish, List<List<RailArc>> railPathList) {
+//            campingRailNodeSet.add(campingRailNode);
+//            for (RailArc nextRailArc : campingRailNode.getOriginatingRailArcList()) {
+//                RailNode nextRailNode = nextRailArc.getDestination();
+//                if (!campingRailNodeSet.contains(nextRailNode)) {
+//                    List<RailArc> nextRailPath = new ArrayList<RailArc>(campingRailPath);
+//                    nextRailPath.add(nextRailArc);
+//                    if (nextRailNode.equals(finish)) {
+//                        railPathList.add(nextRailPath);
+//                    } else if (nextRailPath.size() < 16) { // TODO magic number?
+//                        Set<RailNode> nextRailNodeSet = new HashSet<RailNode>(campingRailNodeSet);
+//                        recursive(nextRailNode, nextRailPath, nextRailNodeSet, finish, railPathList);
+//                    }
+//                }
+//            }
+//        }
 
         private void generateCrewSegmentPathList() {
             List<CrewSegmentPath> crewSegmentPathList = new ArrayList<CrewSegmentPath>(
