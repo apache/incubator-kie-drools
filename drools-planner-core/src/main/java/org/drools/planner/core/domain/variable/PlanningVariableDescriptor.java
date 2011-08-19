@@ -136,31 +136,32 @@ public class PlanningVariableDescriptor {
 
     private void processValueRangeFromPlanningEntityPropertyAnnotation(
             ValueRangeFromPlanningEntityProperty valueRangeFromPlanningEntityPropertyAnnotation) {
+        throw new IllegalStateException("TODO");
         // TODO extract to RangeValue interface
-        String planningEntityProperty = valueRangeFromPlanningEntityPropertyAnnotation.propertyName();
-        rangePropertyDescriptor = planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty);
-        if (rangePropertyDescriptor == null) {
-            String exceptionMessage = "The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") that refers to a planningEntityProperty (" + planningEntityProperty
-                    + ") that does not exist.";
-            if (planningEntityProperty.length() >= 2 && Character.isUpperCase(planningEntityProperty.charAt(1))) {
-                String correctedPlanningEntityProperty = planningEntityProperty.substring(0, 1).toUpperCase()
-                        + planningEntityProperty.substring(1);
-                exceptionMessage += " But it probably needs to be correctedPlanningEntityProperty ("
-                        + correctedPlanningEntityProperty + ") instead because the JavaBeans spec states" +
-                        " the first letter should be a upper case if the second is upper case.";
-            }
-            throw new IllegalArgumentException(exceptionMessage);
-        }
-        if (!Collection.class.isAssignableFrom(rangePropertyDescriptor.getPropertyType())) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + planningEntityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
-                    + ") that refers to a planningEntityProperty (" + planningEntityProperty
-                    + ") that does not return a Collection.");
-        }
+//        String planningEntityProperty = valueRangeFromPlanningEntityPropertyAnnotation.propertyName();
+//        rangePropertyDescriptor = planningEntityDescriptor.getPropertyDescriptor(planningEntityProperty);
+//        if (rangePropertyDescriptor == null) {
+//            String exceptionMessage = "The planningEntityClass ("
+//                    + planningEntityDescriptor.getPlanningEntityClass()
+//                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+//                    + ") that refers to a planningEntityProperty (" + planningEntityProperty
+//                    + ") that does not exist.";
+//            if (planningEntityProperty.length() >= 2 && Character.isUpperCase(planningEntityProperty.charAt(1))) {
+//                String correctedPlanningEntityProperty = planningEntityProperty.substring(0, 1).toUpperCase()
+//                        + planningEntityProperty.substring(1);
+//                exceptionMessage += " But it probably needs to be correctedPlanningEntityProperty ("
+//                        + correctedPlanningEntityProperty + ") instead because the JavaBeans spec states" +
+//                        " the first letter should be a upper case if the second is upper case.";
+//            }
+//            throw new IllegalArgumentException(exceptionMessage);
+//        }
+//        if (!Collection.class.isAssignableFrom(rangePropertyDescriptor.getPropertyType())) {
+//            throw new IllegalArgumentException("The planningEntityClass ("
+//                    + planningEntityDescriptor.getPlanningEntityClass()
+//                    + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
+//                    + ") that refers to a planningEntityProperty (" + planningEntityProperty
+//                    + ") that does not return a Collection.");
+//        }
     }
 
     private void processValueRangeUndefinedAnnotation(ValueRangeUndefined valueRangeUndefined) {
@@ -207,7 +208,7 @@ public class PlanningVariableDescriptor {
                     + ") has a PlanningVariable annotated property (" + variablePropertyDescriptor.getName()
                     + ") which uses a @ValueRangeUndefined.");
         }
-        return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, solution);ggg
+        return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor, solution);// TODO fix me for ValueRangeFromPlanningEntityProperty
     }
 
     public List<Object> getPlanningValueList(Solution solution) {
