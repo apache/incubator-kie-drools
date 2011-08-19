@@ -31,6 +31,7 @@ import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
 import org.drools.planner.examples.traindesign.domain.TrainDesignParametrization;
+import org.drools.planner.examples.traindesign.domain.solver.RailPath;
 
 public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -69,6 +70,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readCrewSegmentList();
             readTrainDesignParametrization();
             trainDesign.initializeTransientProperties();
+            removeUnavailableRailArcs();
 //            experiment();
 
 //            createBedDesignationList();
@@ -83,6 +85,26 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 //            logger.info("TrainDesign with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
 //                    flooredPossibleSolutionSize, possibleSolutionSize);
             return trainDesign;
+        }
+
+        private void removeUnavailableRailArcs() {
+            List<RailArc> unavailableRailArcList = new ArrayList<RailArc>(trainDesign.getRailArcList());
+            for (CrewSegment crewSegment : trainDesign.getCrewSegmentList()) {
+                for (RailPath railPath : crewSegment.getHomeAwayShortestPath().getRailPathList()) {
+                    unavailableRailArcList.removeAll(railPath.getRailArcList());
+                }
+                for (RailPath railPath : crewSegment.getAwayHomeShortestPath().getRailPathList()) {
+                    unavailableRailArcList.removeAll(railPath.getRailArcList());
+                }
+            }
+            if (!unavailableRailArcList.isEmpty()) {
+                logger.warn("There are unavailable railArcs (" + unavailableRailArcList + "): removing them.");
+                trainDesign.getRailArcList().removeAll(unavailableRailArcList);
+                for (RailNode railNode : trainDesign.getRailNodeList()) {
+                    railNode.getOriginatingRailArcList().removeAll(unavailableRailArcList);
+                }
+                trainDesign.initializeTransientProperties();
+            }
         }
 
         private void readRailNodeList() throws IOException {
