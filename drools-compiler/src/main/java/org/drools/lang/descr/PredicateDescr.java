@@ -54,4 +54,5 @@ public class PredicateDescr extends RestrictionDescr {
     public String[] getDeclarations() {
         return this.declarations;
     }
+
 }

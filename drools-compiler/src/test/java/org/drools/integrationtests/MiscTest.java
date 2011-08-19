@@ -9033,6 +9033,30 @@ public class MiscTest {
     }
 
     @Test
+    public void testJBRULES2872() {
+        String str = "package org.drools.test\n" +
+                     "import org.drools.FactA\n" +
+                     "rule X\n" +
+                     "when\n" +
+                     "    FactA( enumVal == TestEnum.ONE || == TestEnum.TWO )\n" +
+                     "then\n" +
+                     "end\n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        assertTrue( kbuilder.hasErrors() );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        System.out.println( errors );
+        assertEquals( 1,
+                      errors.size() );
+        KnowledgeBuilderError error = errors.iterator().next();
+        assertEquals( 5,
+                      error.getErrorLines()[0] );
+
+    }
+
+    @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
         // JBRULES-2749 Various rules stop firing when they are in unlucky packagename and there is a function declared

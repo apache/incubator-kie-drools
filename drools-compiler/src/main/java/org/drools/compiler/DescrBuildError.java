@@ -24,7 +24,7 @@ public class DescrBuildError extends DroolsError {
     private BaseDescr descr;
     private Object    object;
     private String    message;
-    private int[]     errorLines = new int[0];
+    private int[]     errorLines = new int[1];
 
     public DescrBuildError(final BaseDescr parentDescr,
                            final BaseDescr descr,
@@ -35,6 +35,7 @@ public class DescrBuildError extends DroolsError {
         this.descr = descr;
         this.object = object;
         this.message = message;
+        this.errorLines[0] = getLine();
     }
 
     public BaseDescr getParentDescr() {
@@ -61,6 +62,10 @@ public class DescrBuildError extends DroolsError {
         return this.descr != null ? this.descr.getLine() : -1;
     }
 
+    public int getColumn() {
+        return this.descr != null ? this.descr.getColumn() : -1;
+    }
+
     public String getMessage() {
         String summary = this.message;
         if ( this.object instanceof CompilationProblem[] ) {
@@ -79,7 +84,7 @@ public class DescrBuildError extends DroolsError {
 
     public String toString() {
         final StringBuilder buf = new StringBuilder();
-        buf.append( this.message );
+        buf.append( this.message.replaceAll( "\\[Line: \\d+, Column: \\d+\\]", "[Line: "+this.getLine()+", Column: "+this.getColumn()+"]" ) );
         buf.append( " : " );
         buf.append( this.parentDescr );
         buf.append( "\n" );
