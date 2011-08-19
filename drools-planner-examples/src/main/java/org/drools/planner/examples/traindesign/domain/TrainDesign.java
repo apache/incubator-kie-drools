@@ -27,7 +27,6 @@ import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
 import org.drools.planner.core.score.HardAndSoftScore;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
-import org.drools.planner.examples.pas.domain.BedDesignation;
 
 @XStreamAlias("TrainDesign")
 public class TrainDesign extends AbstractPersistable implements Solution<HardAndSoftScore> {
@@ -39,7 +38,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     private List<CarBlock> carBlockList;
     private List<CrewSegment> crewSegmentList;
 
-    private List<BedDesignation> bedDesignationList; // TODO replace me
+    private List<CarBlockDesignation> carBlockDesignationList;
 
     private HardAndSoftScore score;
 
@@ -84,12 +83,12 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     }
 
     @PlanningEntityCollectionProperty
-    public List<BedDesignation> getBedDesignationList() {
-        return bedDesignationList;
+    public List<CarBlockDesignation> getCarBlockDesignationList() {
+        return carBlockDesignationList;
     }
 
-    public void setBedDesignationList(List<BedDesignation> bedDesignationList) {
-        this.bedDesignationList = bedDesignationList;
+    public void setCarBlockDesignationList(List<CarBlockDesignation> bedDesignationList) {
+        this.carBlockDesignationList = bedDesignationList;
     }
 
     public HardAndSoftScore getScore() {
@@ -113,7 +112,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     }
 
     /**
-     * Clone will only deep copy the {@link #bedDesignationList}.
+     * Clone will only deep copy the {@link #carBlockDesignationList}.
      */
     public TrainDesign cloneSolution() {
         TrainDesign clone = new TrainDesign();
@@ -123,12 +122,12 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         clone.railArcList = railArcList;
         clone.carBlockList = carBlockList;
         clone.crewSegmentList = crewSegmentList;
-        List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
-        for (BedDesignation bedDesignation : bedDesignationList) {
-            BedDesignation clonedBedDesignation = bedDesignation.clone();
-            clonedBedDesignationList.add(clonedBedDesignation);
+        List<CarBlockDesignation> clonedCarBlockDesignationList = new ArrayList<CarBlockDesignation>(carBlockDesignationList.size());
+        for (CarBlockDesignation bedDesignation : carBlockDesignationList) {
+            CarBlockDesignation clonedCarBlockDesignation = bedDesignation.clone();
+            clonedCarBlockDesignationList.add(clonedCarBlockDesignation);
         }
-        clone.bedDesignationList = clonedBedDesignationList;
+        clone.carBlockDesignationList = clonedCarBlockDesignationList;
         clone.score = score;
         return clone;
     }
@@ -141,14 +140,14 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
             return false;
         } else {
             TrainDesign other = (TrainDesign) o;
-            if (bedDesignationList.size() != other.bedDesignationList.size()) {
+            if (carBlockDesignationList.size() != other.carBlockDesignationList.size()) {
                 return false;
             }
-            for (Iterator<BedDesignation> it = bedDesignationList.iterator(), otherIt = other.bedDesignationList.iterator(); it.hasNext();) {
-                BedDesignation bedDesignation = it.next();
-                BedDesignation otherBedDesignation = otherIt.next();
+            for (Iterator<CarBlockDesignation> it = carBlockDesignationList.iterator(), otherIt = other.carBlockDesignationList.iterator(); it.hasNext();) {
+                CarBlockDesignation bedDesignation = it.next();
+                CarBlockDesignation otherCarBlockDesignation = otherIt.next();
                 // Notice: we don't use equals()
-                if (!bedDesignation.solutionEquals(otherBedDesignation)) {
+                if (!bedDesignation.solutionEquals(otherCarBlockDesignation)) {
                     return false;
                 }
             }
@@ -158,7 +157,7 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (BedDesignation bedDesignation : bedDesignationList) {
+        for (CarBlockDesignation bedDesignation : carBlockDesignationList) {
             // Notice: we don't use hashCode()
             hashCodeBuilder.append(bedDesignation.solutionHashCode());
         }

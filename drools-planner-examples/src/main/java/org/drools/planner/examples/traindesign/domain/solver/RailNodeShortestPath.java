@@ -25,9 +25,6 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 
-/**
- * A CrewSegment can be used multiple times on different trains.
- */
 public class RailNodeShortestPath extends AbstractPersistable implements Comparable<RailNodeShortestPath> {
 
     private RailNode origin;

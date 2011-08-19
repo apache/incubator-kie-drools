@@ -24,19 +24,25 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.traindesign.domain.CrewSegment;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 
-/**
- * A CrewSegment can be used multiple times on different trains.
- */
 public class RailPath extends AbstractPersistable implements Comparable<RailPath> {
 
     private List<RailArc> railArcList;
+    private int distance; // in miles * 1000 (to avoid Double rounding errors and BigDecimal)
+
+    public RailPath(List<RailArc> railArcList) {
+        this.railArcList = railArcList;
+        distance = 0;
+        for (RailArc railArc : railArcList) {
+            distance += railArc.getDistance();
+        }
+    }
 
     public List<RailArc> getRailArcList() {
         return railArcList;
     }
 
-    public void setRailArcList(List<RailArc> railArcList) {
-        this.railArcList = railArcList;
+    public int getDistance() {
+        return distance;
     }
 
     public int compareTo(RailPath other) {

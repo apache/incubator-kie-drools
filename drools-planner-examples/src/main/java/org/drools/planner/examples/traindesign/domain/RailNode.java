@@ -95,8 +95,7 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
         originShortestPath.setDestination(this);
         originShortestPath.setDistance(0);
         originShortestPath.resetRailPathList();
-        RailPath originRailPath = new RailPath();
-        originRailPath.setRailArcList(new ArrayList<RailArc>(0));
+        RailPath originRailPath = new RailPath(new ArrayList<RailArc>(0));
         originShortestPath.addRailPath(originRailPath);
         shortestPathMap.put(this, originShortestPath);
         unvisitedShortestPathList.add(originShortestPath);
@@ -122,10 +121,9 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
                         nextShortestPath.resetRailPathList();
                     }
                     for (RailPath campingRailPath : campingShortestPath.getRailPathList()) {
-                        RailPath nextRailPath = new RailPath();
                         List<RailArc> railArcList = new ArrayList<RailArc>(campingRailPath.getRailArcList());
                         railArcList.add(nextRailArc);
-                        nextRailPath.setRailArcList(railArcList);
+                        RailPath nextRailPath = new RailPath(railArcList);
                         nextShortestPath.addRailPath(nextRailPath);
                     }
                 }
