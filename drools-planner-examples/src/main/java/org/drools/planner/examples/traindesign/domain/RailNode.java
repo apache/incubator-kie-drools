@@ -68,6 +68,10 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
         return shortestPathMap;
     }
 
+    public RailNodeShortestPath getShortestPathTo(RailNode other) {
+        return shortestPathMap.get(other);
+    }
+
     public void setShortestPathMap(Map<RailNode, RailNodeShortestPath> shortestPathMap) {
         this.shortestPathMap = shortestPathMap;
     }

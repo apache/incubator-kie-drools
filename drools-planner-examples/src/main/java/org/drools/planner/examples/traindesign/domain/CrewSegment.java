@@ -80,8 +80,8 @@ public class CrewSegment extends AbstractPersistable implements Comparable<CrewS
     }
 
     public void initializeShortestPath() {
-        homeAwayShortestPath = home.getShortestPathMap().get(away);
-        awayHomeShortestPath = away.getShortestPathMap().get(home);
+        homeAwayShortestPath = home.getShortestPathTo(away);
+        awayHomeShortestPath = away.getShortestPathTo(home);
     }
 
 }

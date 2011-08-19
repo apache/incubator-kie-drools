@@ -16,12 +16,15 @@
 
 package org.drools.planner.examples.traindesign.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromPlanningEntityProperty;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.traindesign.domain.solver.RailPath;
@@ -42,7 +45,7 @@ public class CarBlockDesignation extends AbstractPersistable implements Comparab
     }
 
     @PlanningVariable()
-    @ValueRangeFromSolutionProperty(propertyName = "railPathList") // TODO doesn't work
+    @ValueRangeFromPlanningEntityProperty(propertyName = "possibleRailPathList")
     public RailPath getRailPath() {
         return railPath;
     }
@@ -103,6 +106,21 @@ public class CarBlockDesignation extends AbstractPersistable implements Comparab
     @Override
     public String toString() {
         return carBlock + " @ " + railPath;
+    }
+
+    public List<RailPath> getPossibleRailPathList() {
+        // TODO this is too 1 sided
+        return carBlock.getOrigin().getShortestPathTo(carBlock.getDestination()).getRailPathList();
+    }
+
+    public int calculateCarTravelCost(int carTravelCostPerDistance) {
+        int carTravelCost = carBlock.getNumberOfCars()
+                * railPath.getDistance() // in miles * 1000
+                * carTravelCostPerDistance; // per 1000 miles
+        if (carTravelCost % 1000000 != 0) {
+            throw new IllegalStateException("The carTravelCost (" + carTravelCost + ") / 1000000 is not an integer.");
+        }
+        return carTravelCost / 1000000;
     }
 
 }

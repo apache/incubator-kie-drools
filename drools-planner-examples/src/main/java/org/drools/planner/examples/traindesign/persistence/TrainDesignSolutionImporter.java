@@ -26,6 +26,7 @@ import java.util.Map;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
+import org.drools.planner.examples.traindesign.domain.CarBlockDesignation;
 import org.drools.planner.examples.traindesign.domain.CrewSegment;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
@@ -71,6 +72,7 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readTrainDesignParametrization();
             trainDesign.initializeTransientProperties();
             removeUnavailableRailArcs();
+            createCarBlockDesignationList();
 //            experiment();
 
 //            createBedDesignationList();
@@ -307,20 +309,20 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             return distanceBigDecimal.intValue();
         }
 
-//        private void createBedDesignationList() {
-//            List<AdmissionPart> admissionPartList = trainDesign.getAdmissionPartList();
-//            List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(admissionPartList.size());
-//            long id = 0L;
-//            for (AdmissionPart admissionPart : admissionPartList) {
-//                BedDesignation bedDesignation = new BedDesignation();
-//                bedDesignation.setId(id);
-//                id++;
-//                bedDesignation.setAdmissionPart(admissionPart);
-//                // Notice that we leave the PlanningVariable properties on null
-//                bedDesignationList.add(bedDesignation);
-//            }
-//            trainDesign.setBedDesignationList(bedDesignationList);
-//        }
+        private void createCarBlockDesignationList() {
+            List<CarBlock> carBlockList = trainDesign.getCarBlockList();
+            List<CarBlockDesignation> carBlockDesignationList = new ArrayList<CarBlockDesignation>(carBlockList.size());
+            long id = 0L;
+            for (CarBlock carBlock : carBlockList) {
+                CarBlockDesignation carBlockDesignation = new CarBlockDesignation();
+                carBlockDesignation.setId(id);
+                id++;
+                carBlockDesignation.setCarBlock(carBlock);
+                // Notice that we leave the PlanningVariable properties on null
+                carBlockDesignationList.add(carBlockDesignation);
+            }
+            trainDesign.setCarBlockDesignationList(carBlockDesignationList);
+        }
 
     }
 
