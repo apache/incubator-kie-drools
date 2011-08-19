@@ -51,6 +51,12 @@ public class TaskServiceSession {
         return em;
     }
 
+    public org.jbpm.task.service.TaskService getService() {
+        return service;
+    }
+    
+    
+
     public void setRuleBase(final String type, final RuleBase ruleBase) {
         if (ruleBases == null) {
             ruleBases = new HashMap<String, RuleBase>();

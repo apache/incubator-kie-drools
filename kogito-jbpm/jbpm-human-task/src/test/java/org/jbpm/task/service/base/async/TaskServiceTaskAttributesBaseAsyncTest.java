@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service;
+package org.jbpm.task.service.base.async;
 
 import java.io.StringReader;
 import java.util.Date;
@@ -22,21 +22,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.task.AccessType;
+import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
-public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
+public abstract class TaskServiceTaskAttributesBaseAsyncTest extends BaseTest {
     
     protected TaskServer server;
-    protected TaskClient client;
+    protected AsyncTaskService client;
 
     @Override
     protected void setUp() throws Exception {

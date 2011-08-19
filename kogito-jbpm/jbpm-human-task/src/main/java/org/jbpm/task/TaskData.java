@@ -81,11 +81,11 @@ public class TaskData
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
-    private List<Comment> comments = Collections.emptyList();
+    private List<Comment> comments = Collections.<Comment>emptyList();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)
-    private List<Attachment> attachments = Collections.emptyList();
+    private List<Attachment> attachments = Collections.<Attachment>emptyList();
 
     public void writeExternal(ObjectOutput out) throws IOException {
         if (status != null) {

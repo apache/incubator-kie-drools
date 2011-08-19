@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.task.service;
+package org.jbpm.task.service.base.sync;
 
 import java.io.StringReader;
 import java.util.Date;
@@ -26,17 +26,15 @@ import org.jbpm.task.BaseTest;
 import org.jbpm.task.Content;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
-import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.service.ContentData;
+import org.jbpm.task.service.FaultData;
 import org.jbpm.task.service.TaskServer;
-import org.jbpm.task.service.responsehandlers.BlockingAddTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
-import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
-public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
+public abstract class TaskServiceTaskAttributesBaseSyncTest extends BaseTest {
     
     protected TaskServer server;
-    protected TaskClient client;
+    protected TaskService client;
 
     @Override
     protected void setUp() throws Exception {
@@ -61,35 +59,33 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
         str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, null, addTaskResponseHandler );
         
-        long taskId = addTaskResponseHandler.getTaskId();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null );
+        
+        long taskId = task.getId();
         
         ContentData outputData = new ContentData();
         outputData.setAccessType(AccessType.Inline);
         outputData.setContent("This is my output!!!!".getBytes());
         outputData.setType("text/plain");
         
-        BlockingTaskOperationResponseHandler setOutputResponseHandler = new BlockingTaskOperationResponseHandler();
-        client.setOutput( taskId, "Darth Vader", outputData, setOutputResponseHandler );
-        setOutputResponseHandler.waitTillDone(1000);
-        assertFalse( setOutputResponseHandler.hasError() );
+       
+        client.setOutput( taskId, "Darth Vader", outputData );
         
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
-        client.getTask( taskId, getTaskResponseHandler );
-        Task task1 = getTaskResponseHandler.getTask();
-        assertNotSame(task, task1);
-        assertFalse(  task.equals( task1) );
+        
+        
+        
+        Task task1 = client.getTask( taskId );
+        // If we use a local implementation it will be the same Object
+        //assertNotSame(task, task1);
+        //assertFalse(  task.equals( task1) );
        
         long outputContentId = task1.getTaskData().getOutputContentId();
         assertNotSame(0, outputContentId);
 
-        BlockingGetContentResponseHandler getOutputResponseHandler = new BlockingGetContentResponseHandler();
-        client.getContent(outputContentId, getOutputResponseHandler);
-        assertNotNull(getOutputResponseHandler.getContent());
-        Content content = getOutputResponseHandler.getContent();
+        Content content = client.getContent(outputContentId);
+        assertNotNull(content);
         assertEquals("This is my output!!!!", new String(content.getContent()));
         assertEquals("text/plain", task1.getTaskData().getOutputType());
         assertEquals(AccessType.Inline, task1.getTaskData().getOutputAccessType());
@@ -101,13 +97,11 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
         assertEquals(task, task1);       
 
         //test delete output
-        BlockingTaskOperationResponseHandler deleteOutputResponseHandler = new BlockingTaskOperationResponseHandler();
-        client.deleteOutput( taskId, "Darth Vader", deleteOutputResponseHandler );
-        deleteOutputResponseHandler.waitTillDone( 1000 );
         
-        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
-        client.getTask( taskId, getTaskResponseHandler );
-        task1 = getTaskResponseHandler.getTask(); 
+        client.deleteOutput( taskId, "Darth Vader" );
+
+        
+        task1 = client.getTask( taskId );
         assertEquals(0, task1.getTaskData().getOutputContentId() );   
         assertNull( task1.getTaskData().getOutputAccessType() );
         assertNull( task1.getTaskData().getOutputType() );
@@ -126,11 +120,11 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
         str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, null, addTaskResponseHandler );
         
-        long taskId = addTaskResponseHandler.getTaskId();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null );
+        
+        long taskId = task.getId();
         
         FaultData faultData = new FaultData();
         faultData.setAccessType(AccessType.Inline);
@@ -138,24 +132,26 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
         faultData.setFaultName("fault1");
         faultData.setType("text/plain");
         
-        BlockingTaskOperationResponseHandler setFaultResponseHandler = new BlockingTaskOperationResponseHandler();
-        client.setFault( taskId, "Darth Vader", faultData, setFaultResponseHandler );
-        setFaultResponseHandler.waitTillDone(1000);
-        assertFalse( setFaultResponseHandler.hasError() );
         
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
-        client.getTask( taskId, getTaskResponseHandler );
-        Task task1 = getTaskResponseHandler.getTask();
-        assertNotSame(task, task1);
-        assertFalse(  task.equals( task1) );
+        client.setFault( taskId, "Darth Vader", faultData );
+        
+        
+        
+        
+        
+        Task task1 = client.getTask( taskId );
+        
+//        assertNotSame(task, task1);
+//        assertFalse(  task.equals( task1) );
        
         long faultContentId = task1.getTaskData().getFaultContentId();
         assertNotSame(0, faultContentId);
 
-        BlockingGetContentResponseHandler getFaultResponseHandler = new BlockingGetContentResponseHandler();
-        client.getContent(faultContentId, getFaultResponseHandler);
-        assertNotNull(getFaultResponseHandler.getContent());
-        Content content = getFaultResponseHandler.getContent();
+        
+        
+        
+        Content content = client.getContent(faultContentId);
+        assertNotNull(content);
         assertEquals("This is my fault!!!!", new String(content.getContent()));
         assertEquals("text/plain", task1.getTaskData().getFaultType());
         assertEquals("fault1", task1.getTaskData().getFaultName());
@@ -168,13 +164,10 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
         assertEquals(task, task1);       
 
         //test delete fault
-        BlockingTaskOperationResponseHandler deleteFaultResponseHandler = new BlockingTaskOperationResponseHandler();
-        client.deleteFault( taskId, "Darth Vader", deleteFaultResponseHandler );
-        deleteFaultResponseHandler.waitTillDone( 1000 );
         
-        getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
-        client.getTask( taskId, getTaskResponseHandler );
-        task1 = getTaskResponseHandler.getTask(); 
+        client.deleteFault( taskId, "Darth Vader" );
+
+        task1 = client.getTask( taskId );
         assertEquals(0, task1.getTaskData().getFaultContentId() );   
         assertNull( task1.getTaskData().getFaultAccessType() );
         assertNull( task1.getTaskData().getFaultType() );
@@ -194,24 +187,24 @@ public abstract class TaskServiceTaskAttributesBaseTest extends BaseTest {
         str += "peopleAssignments = new PeopleAssignments(),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
             
-        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
-        Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, null, addTaskResponseHandler );
         
-        long taskId = addTaskResponseHandler.getTaskId();
+        Task task = ( Task )  eval( new StringReader( str ), vars );
+        client.addTask( task, null );
+        
+        long taskId = task.getId();
         
         int newPriority = 33;
         
-        BlockingTaskOperationResponseHandler setPriorityResponseHandler = new BlockingTaskOperationResponseHandler();
-        client.setPriority(taskId, "Darth Vader", newPriority, setPriorityResponseHandler );
-        setPriorityResponseHandler.waitTillDone(1000);
-        assertFalse( setPriorityResponseHandler.hasError() );
         
-        BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler(); 
-        client.getTask( taskId, getTaskResponseHandler );
-        Task task1 = getTaskResponseHandler.getTask();
-        assertNotSame(task, task1);
-        assertFalse(  task.equals( task1) );
+        client.setPriority(taskId, "Darth Vader", newPriority );
+        
+        
+        
+        
+        Task task1 = client.getTask( taskId );
+        //If we use the local implementation the object will be the same
+//        assertNotSame(task, task1);
+//        assertFalse(  task.equals( task1) );
        
         int newPriority1 = task1.getPriority();
         assertEquals(newPriority, newPriority1);
