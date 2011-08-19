@@ -27,7 +27,6 @@ import org.drools.planner.examples.traindesign.domain.RailArc;
 /**
  * A CrewSegment can be used multiple times on different trains.
  */
-@XStreamAlias("RailPath")
 public class RailPath extends AbstractPersistable implements Comparable<RailPath> {
 
     private List<RailArc> railArcList;

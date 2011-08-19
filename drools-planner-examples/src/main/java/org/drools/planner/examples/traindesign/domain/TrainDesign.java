@@ -38,7 +38,6 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
     private List<RailArc> railArcList;
     private List<CarBlock> carBlockList;
     private List<CrewSegment> crewSegmentList;
-    private List<CrewSegmentPath> crewSegmentPathList;
 
     private List<BedDesignation> bedDesignationList; // TODO replace me
 
@@ -84,14 +83,6 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         this.crewSegmentList = crewSegmentList;
     }
 
-    public List<CrewSegmentPath> getCrewSegmentPathList() {
-        return crewSegmentPathList;
-    }
-
-    public void setCrewSegmentPathList(List<CrewSegmentPath> crewSegmentPathList) {
-        this.crewSegmentPathList = crewSegmentPathList;
-    }
-
     @PlanningEntityCollectionProperty
     public List<BedDesignation> getBedDesignationList() {
         return bedDesignationList;
@@ -116,7 +107,6 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         facts.addAll(railArcList);
         facts.addAll(carBlockList);
         facts.addAll(crewSegmentList);
-        facts.addAll(crewSegmentPathList);
 //        facts.addAll(calculateAdmissionPartSpecialismMissingInRoomList());
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
@@ -133,7 +123,6 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
         clone.railArcList = railArcList;
         clone.carBlockList = carBlockList;
         clone.crewSegmentList = crewSegmentList;
-        clone.crewSegmentPathList = crewSegmentPathList;
         List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
         for (BedDesignation bedDesignation : bedDesignationList) {
             BedDesignation clonedBedDesignation = bedDesignation.clone();
@@ -174,6 +163,15 @@ public class TrainDesign extends AbstractPersistable implements Solution<HardAnd
             hashCodeBuilder.append(bedDesignation.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
+    }
+
+    public void initializeTransientProperties() {
+        for (RailNode origin : railNodeList) {
+            origin.initializeShortestPathMap(railNodeList);
+        }
+        for (CrewSegment crewSegment : crewSegmentList) {
+            crewSegment.initializeShortestPath();
+        }
     }
 
 }

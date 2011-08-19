@@ -17,8 +17,10 @@
 package org.drools.planner.examples.traindesign.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.traindesign.domain.solver.RailNodeShortestPath;
 
 /**
  * A CrewSegment can be used multiple times on different trains.
@@ -28,6 +30,11 @@ public class CrewSegment extends AbstractPersistable implements Comparable<CrewS
 
     private RailNode home;
     private RailNode away;
+
+    @XStreamOmitField
+    private RailNodeShortestPath homeAwayShortestPath;
+    @XStreamOmitField
+    private RailNodeShortestPath awayHomeShortestPath;
 
     public RailNode getHome() {
         return home;
@@ -45,6 +52,22 @@ public class CrewSegment extends AbstractPersistable implements Comparable<CrewS
         this.away = away;
     }
 
+    public RailNodeShortestPath getHomeAwayShortestPath() {
+        return homeAwayShortestPath;
+    }
+
+    public void setHomeAwayShortestPath(RailNodeShortestPath homeAwayShortestPath) {
+        this.homeAwayShortestPath = homeAwayShortestPath;
+    }
+
+    public RailNodeShortestPath getAwayHomeShortestPath() {
+        return awayHomeShortestPath;
+    }
+
+    public void setAwayHomeShortestPath(RailNodeShortestPath awayHomeShortestPath) {
+        this.awayHomeShortestPath = awayHomeShortestPath;
+    }
+
     public int compareTo(CrewSegment other) {
         return new CompareToBuilder()
                 .append(id, other.id)
@@ -54,6 +77,11 @@ public class CrewSegment extends AbstractPersistable implements Comparable<CrewS
     @Override
     public String toString() {
         return home + "->" + away;
+    }
+
+    public void initializeShortestPath() {
+        homeAwayShortestPath = home.getShortestPathMap().get(away);
+        awayHomeShortestPath = away.getShortestPathMap().get(home);
     }
 
 }

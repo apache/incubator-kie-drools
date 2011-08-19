@@ -19,19 +19,14 @@ package org.drools.planner.examples.traindesign.persistence;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.traindesign.domain.CarBlock;
 import org.drools.planner.examples.traindesign.domain.CrewSegment;
-import org.drools.planner.examples.traindesign.domain.CrewSegmentPath;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 import org.drools.planner.examples.traindesign.domain.TrainDesign;
@@ -73,12 +68,11 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             readRailArcList();
             readCrewSegmentList();
             readTrainDesignParametrization();
+            trainDesign.initializeTransientProperties();
 //            experiment();
-            initializeShortestPathMaps();
-            generateCrewSegmentPathList();
 
 //            createBedDesignationList();
-            logger.info("TrainDesign with {} rail nodes, {} rail arcs, {} car blocks, {} train crews.",
+            logger.info("TrainDesign with {} rail nodes, {} rail arcs, {} car blocks, {} crew segments.",
                     new Object[]{trainDesign.getRailNodeList().size(),
                             trainDesign.getRailArcList().size(),
                             trainDesign.getCarBlockList().size(),
@@ -227,13 +221,6 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
             trainDesign.setCrewSegmentList(crewSegmentList);
         }
 
-        private void initializeShortestPathMaps() {
-            List<RailNode> railNodeList = trainDesign.getRailNodeList();
-            for (RailNode origin : railNodeList) {
-                origin.initializeShortestPathMap(railNodeList);
-            }
-        }
-
 //        private void experiment() {
 //            for (CarBlock carBlock : trainDesign.getCarBlockList()) {
 //                List<List<RailArc>> railPathList = new ArrayList<List<RailArc>>();
@@ -260,141 +247,6 @@ public class TrainDesignSolutionImporter extends AbstractTxtSolutionImporter {
 //                }
 //            }
 //        }
-
-        private void generateCrewSegmentPathList() {
-            List<CrewSegmentPath> crewSegmentPathList = new ArrayList<CrewSegmentPath>(
-                    trainDesign.getCrewSegmentList().size() * 2);
-            long id = 0L;
-            for (CrewSegment crewSegment : trainDesign.getCrewSegmentList()) {
-                Dijkstra shortestDijkstra = findShortestDijkstra(crewSegment);
-                for (List<RailArc> railPath : shortestDijkstra.getRailPathList()) {
-                    CrewSegmentPath crewSegmentPath = new CrewSegmentPath();
-                    CrewSegmentPath reverseCrewSegmentPath = new CrewSegmentPath();
-                    crewSegmentPath.setId(id);
-                    id++;
-                    reverseCrewSegmentPath.setId(id);
-                    id++;
-                    crewSegmentPath.setCrewSegment(crewSegment);
-                    reverseCrewSegmentPath.setCrewSegment(crewSegment);
-                    crewSegmentPath.setRailPath(railPath);
-                    List<RailArc> reverseRailPath = new ArrayList<RailArc>(railPath.size());
-                    for (RailArc railArc : railPath) {
-                        reverseRailPath.add(railArc.getReverse());
-                    }
-                    Collections.reverse(reverseRailPath);
-                    reverseCrewSegmentPath.setRailPath(reverseRailPath);
-                    crewSegmentPath.setReverse(reverseCrewSegmentPath);
-                    reverseCrewSegmentPath.setReverse(crewSegmentPath);
-                    crewSegmentPathList.add(crewSegmentPath);
-                }
-            }
-            trainDesign.setCrewSegmentPathList(crewSegmentPathList);
-        }
-
-        private Dijkstra findShortestDijkstra(CrewSegment crewSegment) {
-            int railNodeSize = trainDesign.getRailNodeList().size();
-            RailNode start = crewSegment.getHome();
-            RailNode finish = crewSegment.getAway();
-            Map<RailNode, Dijkstra> dijkstraMap = new HashMap<RailNode, Dijkstra>(railNodeSize);
-            List<Dijkstra> unvisitedDijkstraList = new ArrayList<Dijkstra>(railNodeSize);
-            Dijkstra startDijkstra = new Dijkstra(start);
-            startDijkstra.setShortestDistance(0);
-            startDijkstra.resetRailPath();
-            startDijkstra.addRailPath(new ArrayList<RailArc>(0));
-            dijkstraMap.put(start, startDijkstra);
-            unvisitedDijkstraList.add(startDijkstra);
-            while (!unvisitedDijkstraList.isEmpty()) {
-                Dijkstra campingDijkstra = unvisitedDijkstraList.remove(0);
-                if (campingDijkstra.isVisited()) {
-                    throw new IllegalStateException("Bug in Dijkstra algorithm.");
-                }
-                campingDijkstra.setVisited(true);
-                if (campingDijkstra.getRailNode().equals(finish)) {
-                    return campingDijkstra;
-                }
-                for (RailArc nextRailArc : campingDijkstra.getRailNode().getOriginatingRailArcList()) {
-                    RailNode nextNode = nextRailArc.getDestination();
-                    int nextDistance = campingDijkstra.getShortestDistance() + nextRailArc.getDistance();
-
-                    Dijkstra dijkstra = dijkstraMap.get(nextNode);
-                    if (dijkstra == null) {
-                        dijkstra = new Dijkstra(nextNode);
-                        dijkstra.setShortestDistance(Integer.MAX_VALUE);
-                        dijkstraMap.put(nextNode, dijkstra);
-                        unvisitedDijkstraList.add(dijkstra);
-                    }
-                    if (nextDistance <= dijkstra.getShortestDistance()) {
-                        if (dijkstra.isVisited()) {
-                            throw new IllegalStateException("Bug in Dijkstra algorithm.");
-                        }
-                        if (nextDistance < dijkstra.getShortestDistance()) {
-                            dijkstra.setShortestDistance(nextDistance);
-                            dijkstra.resetRailPath();
-                        }
-                        for (List<RailArc> campingRailPath : campingDijkstra.getRailPathList()) {
-                            List<RailArc> nextRailPath = new ArrayList<RailArc>(campingRailPath);
-                            nextRailPath.add(nextRailArc);
-                            dijkstra.addRailPath(nextRailPath);
-                        }
-                    }
-                }
-                Collections.sort(unvisitedDijkstraList);
-            }
-            throw new IllegalArgumentException("The CrewSegment (" + crewSegment + ") has no valid railPath.");
-        }
-
-        private class Dijkstra implements Comparable<Dijkstra> {
-
-            private RailNode railNode;
-            private boolean visited = false;
-
-            private int shortestDistance;
-            private List<List<RailArc>> railPathList;
-
-            private Dijkstra(RailNode railNode) {
-                this.railNode = railNode;
-            }
-
-            public RailNode getRailNode() {
-                return railNode;
-            }
-
-            public boolean isVisited() {
-                return visited;
-            }
-
-            public void setVisited(boolean visited) {
-                this.visited = visited;
-            }
-
-            public int getShortestDistance() {
-                return shortestDistance;
-            }
-
-            public void setShortestDistance(int shortestDistance) {
-                this.shortestDistance = shortestDistance;
-            }
-
-            public List<List<RailArc>> getRailPathList() {
-                return railPathList;
-            }
-
-            public void resetRailPath() {
-                railPathList = new ArrayList<List<RailArc>>(2);
-            }
-
-            public void addRailPath(List<RailArc> railPath) {
-                railPathList.add(railPath);
-            }
-
-            public int compareTo(Dijkstra other) {
-                return new CompareToBuilder()
-                        .append(shortestDistance, other.shortestDistance)
-                        .append(railPathList.size(), other.railPathList.size())
-                        .append(railNode.getId(), other.railNode.getId())
-                        .toComparison();
-            }
-        }
 
         private void readTrainDesignParametrization() throws IOException {
             readConstantLine("\"Parameters\";;;;;;");

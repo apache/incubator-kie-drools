@@ -30,9 +30,7 @@ public class TrainDesignDaoImpl extends XstreamSolutionDaoImpl {
     @Override
     protected void postRead(Solution solution) {
         TrainDesign trainDesign = (TrainDesign) solution;
-        for (RailNode origin : trainDesign.getRailNodeList()) {
-            origin.initializeShortestPathMap(trainDesign.getRailNodeList());
-        }
+        trainDesign.initializeTransientProperties();
     }
 
 }
