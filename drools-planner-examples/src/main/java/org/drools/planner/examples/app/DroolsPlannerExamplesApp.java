@@ -74,6 +74,12 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new SmartTravelingTournamentApp().init(false);
             }
         }));
+        // TODO TrainDesign is still in working progress
+//        contentPane.add(new JButton(new AbstractAction("Train design (RAS2011)") {
+//            public void actionPerformed(ActionEvent e) {
+//                new TrainDesignApp().init(false);
+//            }
+//        }));
         contentPane.add(new JButton(new AbstractAction("Cloud balancing") {
             public void actionPerformed(ActionEvent e) {
                 new CloudBalancingApp().init(false);
