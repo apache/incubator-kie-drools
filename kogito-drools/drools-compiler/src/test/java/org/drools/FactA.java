@@ -6,6 +6,7 @@ public class FactA implements Serializable {
     String  field1;
     Integer field2;
     Float   field3;
+    TestEnum enumVal;
 
     public FactA() {
     }
@@ -76,6 +77,20 @@ public class FactA implements Serializable {
             if ( other.field3 != null ) return false;
         } else if ( !field3.equals( other.field3 ) ) return false;
         return true;
+    }
+
+    /**
+     * @return the enumVal
+     */
+    public TestEnum getEnumVal() {
+        return enumVal;
+    }
+
+    /**
+     * @param enumVal the enumVal to set
+     */
+    public void setEnumVal( TestEnum enumVal ) {
+        this.enumVal = enumVal;
     }
 
 }

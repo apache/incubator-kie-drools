@@ -121,4 +121,11 @@ public class BaseDescr
     public void setStartCharacter( final int startCharacter ) {
         this.startCharacter = startCharacter;
     }
+    
+    public void copyLocation( BaseDescr d ) {
+        this.setLocation( d.getLine(), d.getColumn() );
+        this.setEndLocation( d.getEndLine(), d.getEndColumn() );
+        this.setStartCharacter( d.getStartCharacter() );
+        this.setEndCharacter( d.getEndCharacter() );
+    }
 }

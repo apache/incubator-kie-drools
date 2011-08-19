@@ -451,6 +451,9 @@ public class MVELDialect
                                                     final Map<String, Class<?>> localTypes) {
 
         AnalysisResult result = null;
+        // the following is required for proper error handling
+        BaseDescr temp = context.getParentDescr();
+        context.setParentDescr( descr );
         try {
             result = analyzer.analyzeExpression( context,
                                                  (String) content,
@@ -463,6 +466,9 @@ public class MVELDialect
                                                           descr,
                                                           null,
                                                           "Unable to determine the used declarations.\n" + e.getMessage() ) );
+        } finally {
+            // setting it back to original parent descr
+            context.setParentDescr( temp );
         }
         return result;
     }

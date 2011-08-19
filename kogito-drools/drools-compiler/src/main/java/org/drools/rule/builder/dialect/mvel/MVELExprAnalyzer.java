@@ -29,10 +29,12 @@ import org.drools.base.EvaluatorWrapper;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.definition.rule.Rule;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.builder.PackageBuildContext;
+import org.drools.rule.builder.RuleBuildContext;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -103,8 +105,9 @@ public class MVELExprAnalyzer {
                 returnType = MVEL.analyze( expr,
                                            parserContext1 );
             } catch ( Exception e ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              null,
+                BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
+                context.getErrors().add( new DescrBuildError( base,
+                                                              context.getParentDescr(),
                                                               null,
                                                               "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
                 return null;
@@ -201,8 +204,9 @@ public class MVELExprAnalyzer {
             } catch ( Exception e ) {
                 // is this an error, or can we fall back to non-typesafe mode?
                 if ( typesafe ) {
-                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                  null,
+                    BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
+                    context.getErrors().add( new DescrBuildError( base,
+                                                                  context.getParentDescr(),
                                                                   null,
                                                                   "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
                     return null;                    
