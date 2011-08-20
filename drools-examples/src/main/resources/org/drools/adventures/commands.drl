@@ -38,7 +38,8 @@ rule handleResponse when
     rq : Request()
     rs : Response( localId == rq.localId )
 then
-    System.out.println( rs.object );
+    channels["output"].send( rs.object );
+    //System.out.println( rs.object );
     retract ( rs );
 end
 
@@ -143,6 +144,7 @@ end
 rule printEvent when
     ge : GameEvent()
 then
+    channels["events"].send( ge );
     System.out.println( ge );
 end
 
