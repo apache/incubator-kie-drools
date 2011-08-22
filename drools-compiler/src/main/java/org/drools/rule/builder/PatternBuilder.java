@@ -834,6 +834,9 @@ public class PatternBuilder
         pctx.addInput( "empty",
                        boolean.class ); // overrides the mvel empty label
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+        MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
+        MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
+        MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
         MVEL.analysisCompile( expr,
                               pctx );
 
@@ -1176,7 +1179,11 @@ public class PatternBuilder
         ValueType vtype = extractor.getValueType();
         try {
             String value = literalRestrictionDescr.getText().trim();
-
+            MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+            MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
+            MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
+            MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
+            
             MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
             ParserConfiguration pconf = data.getParserConfiguration();
             ParserContext pctx = new ParserContext( pconf );
