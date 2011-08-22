@@ -114,12 +114,12 @@
         <module>jbpm-distribution</module>
       </modules>
     </profile>
+
     <profile>
       <id>database</id>
-       
       <dependencies>
         <!--  Add the downloaded jdbc driver jar for the database to the classpath.
-              !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
+              Warning: <groupId>, <artifactId> and <version> are just placeholders and do not matter. -->
         <dependency>
            <groupId>org.jbpm</groupId>
            <artifactId>downloaded-jdbc-driver-jar</artifactId>
@@ -129,13 +129,9 @@
         </dependency>  
       </dependencies>
     </profile>
-    
-    <!--  
-    The following is an example of how to test with a particular database:
-    
+    <!-- The following is an example of how to test with a particular database:
     <profile>
         <id>postgresql</id>
-        
         <properties>
           <! see http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/session-configuration.html#configuration-optional-dialects 
           <maven.hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</maven.hibernate.dialect>
@@ -154,10 +150,6 @@
           <maven.jdbc.password>jbpm3</maven.jdbc.password>
           <maven.jdbc.url>jdbc:postgresql://localhost:5432/jbpm3</maven.jdbc.url>
         </properties>
-
-         <! Add the downloaded jdbc driver jar for the database to the classpath
-         <! !: Both <groupId> and <artifactId> are just placeholders and DO NOT MATTER!
-        
         <dependencies>
           <dependency>
             <groupId>org.jboss</groupId>
