@@ -7,7 +7,7 @@
   <title>Designer</title>
 
   <para>The designer is a web-based editor for viewing, creating and editing your business processes.
-  It is very similar to the Eclipse-based designer and allows the creation of BPMN2 processes in a web
+  It is similar to the Eclipse-based designer and allows the creation of BPMN2 processes in a web
   context. There is a palette on the left and a properties panel on the right (make sure to click the
   arrows on the side of the canvas to make them visible if you cannot see them).</para>
   
@@ -35,22 +35,25 @@
     context.</listitem>
     <listitem>Create fully executable BPMN2 processes: A user can create a new BPMN2 process in the Designer and
     use the editing capabilities (drag and drop and filling in properties in the properties panel) to fill
-    in initial details.  This for example allows business users to create complete business processes all inside a
-    a browser.</listitem>
+    in the details. This for example allows business users to create complete business processes all inside a
+    a browser. The integration with Drools Guvnor allows for your business processes as wells as other business
+    assets such as business rules, process forms/images, etc. to be stored and versioned inside a content 
+    repository.</listitem>
   </itemizedlist>
   
-  <para>Designer supports full roundtripping of all BPMN2 elements supported by jBPM.</para>
+  <para>Designer supports full roundtripping of all BPMN2 elements supported by jBPM as well as all jBPM-specific BPMN2
+  extension elements and attributes.</para>
     
   <section>
     <title>Installation</title>
     
     <para>If you are using the jBPM installer, this should automatically download and install the
     latest version of the designer for you.  To manually install the designer, simply drop the designer
-    war into your application server deploy folder.  This version that should deploy without any changes
-    on JBoss AS 5.1.0.  Note: If you want to deploy on other (versions of an) application server, you might
+    war into your application server deploy folder. Currently out-of-the-box designer deployments exist for JBoss 
+    5.1.0 and JBoss 7. Note: If you want to deploy on other (versions of an) application server, you might
     have to adjust the dependencies inside the war based on the default libraries provided by your
-    application server.  We are working on a JBoss AS7 deployable which will be available in the next Designer version.
-    The latest version of the designer can be found <ulink url="http://sourceforge.net/projects/jbpm/files/designer/">here</ulink>.</para>
+    application server. The latest version of the designer can be found 
+    <ulink url="http://sourceforge.net/projects/jbpm/files/designer/">here</ulink>.</para>
     
     <para>To open up the designer, open up Guvnor (e.g. <ulink url="http://localhost:8080/drools-guvnor">
     http://localhost:8080/drools-guvnor</ulink>) and either open up an existing BPMN2 process or create
@@ -61,7 +64,7 @@
     
     <para>The designer may also be opened stand-alone by using the following link:
     <ulink url="http://localhost:8080/designer/editor?profile=jbpm&amp;uuid=123456">http://localhost:8080/designer/editor?profile=jbpm&amp;uuid=123456</ulink>
-    (where 123456 should be replaced by the id of the process in Guvnor).  Note that running designer in this way allows you to only view existing processes,
+    (where 123456 should be replaced by the id of the process in Guvnor). Note that running designer in this way allows you to only view existing processes,
     and not save any edits nor create new ones. Information on how to integrate designer into your own applications can be found here: http://blog.athico.com/2011/04/using-oryx-designer-and-guvnor-in-your.html.</para>
     
   </section>
@@ -122,6 +125,46 @@
     <ulink url="http://vimeo.com/26126678">this</ulink>, and <ulink url="http://vimeo.com/24288229">this</ulink> video.
   </para>
     
+  </section>
+  
+  <section>
+    <title>Configuring Designer</title>
+    <para>Designer is tightly integrated with Guvnor. By default Designer expects to find a Guvnor instance on
+    http://localhost:8080/drools-guvnor/. In cases where Guvnor is configured to use https, or is running on a different
+    host/port/domain/subdomain you have to configure Designer to reflect these settings. in order to change Designer 
+    configurations you have to deploy it as an exploded war. In $designer.war/profiles/jbpm.xml notice the section 
+    on the bottom:
+    </para>
+    
+    <programlisting language="xml">
+      &lt;externalloadurl protocol="http" host="localhost:8080" subdomain="drools-guvnor/org.drools.guvnor.Guvnor/oryxeditor" usr="admin" pwd="admin"/&gt;
+    </programlisting>
+    
+    <para>
+      The configuration attributes include:
+      <itemizedlist>
+        <listitem>protocol: the protocol to use (http/https)</listitem>
+        <listitem>host: includes both the host and the port that Guvnor is running on</listitem>
+        <listitem>subdomain: in some situations Guvnor subdomain is not drools-guvnor. You should leave the path to the
+        servlet as-is.</listitem>
+        <listitem>usr: if you have set up JAAS authentication in Guvnor, provide a Guvnor user name here. Note that 
+        this user should have admin privileges in Guvnor</listitem>
+        <listitem>pwd: password for the Guvnor user</listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+    Alernative you can specify these configrations via system properties:
+    <itemizedlist>
+      <listitem>oryx.external.protocol</listitem>
+      <listitem>oryx.external.host</listitem>
+      <listitem>oryx.external.usr</listitem>
+      <listitem>oryx.external.pwd</listitem>
+    </itemizedlist>
+    </para>
+    <para>
+    If you choose to use system properties you do not have to deploy the designer war as exploded.
+    </para>
   </section>
   
   <section>
