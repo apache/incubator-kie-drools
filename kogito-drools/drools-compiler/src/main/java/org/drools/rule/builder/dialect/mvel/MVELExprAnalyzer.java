@@ -75,6 +75,10 @@ public class MVELExprAnalyzer {
         MVELAnalysisResult result = null;
         if ( expr.trim().length() > 0 ) {
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+            MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
+            MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
+            MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
+            
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
             
             MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
