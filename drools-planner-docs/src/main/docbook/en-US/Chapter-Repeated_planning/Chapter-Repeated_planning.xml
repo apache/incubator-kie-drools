@@ -32,7 +32,7 @@
     </itemizedlist>
 
     <para>Waiting to start planning - to lower the risk of planning facts changing - usually isn't a good way to deal
-    with that. More CPU time means a better planning solution. A incomplete plan is better then no plan.</para>
+    with that. More CPU time means a better planning solution. An incomplete plan is better then no plan.</para>
 
     <para>Luckily, the Drools Planner algorithms support planning a solution that's already (partially) planned, known
     as repeated planning.</para>
