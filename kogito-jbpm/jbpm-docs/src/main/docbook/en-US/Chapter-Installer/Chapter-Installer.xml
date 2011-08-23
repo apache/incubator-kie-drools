@@ -82,6 +82,12 @@
 
     <para>Once everything is started, you can start playing with the Eclipse tooling, Guvnor
     repository and jBPM console, as explained in the next three sections.</para>
+    
+    <para>If you do not wish to use Eclipse in the demo setup, you can use the alternative commands:</para>
+    <programlisting>
+    ant install.demo.noeclipse
+    ant start.demo.noeclipse
+    </programlisting>
 
   </section>
 
