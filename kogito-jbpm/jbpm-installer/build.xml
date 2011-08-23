@@ -407,7 +407,10 @@
 
   <!-- Install Demo -->
   <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime,install.drools-eclipse.into.eclipse" />
-
+  
+  <!-- Install Demo (No Eclipse) -->
+  <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />
+  
   <!-- ############ START/STOP ############ -->
 
   <!-- Start H2 server -->
@@ -513,6 +516,10 @@
 
   <!-- Start Demo -->
   <target name="start.demo" depends="start.h2,start.jboss,start.eclipse,start.human.task" />
+  
+  <!-- Start Demo (No Eclipse)--> 
+  <target name="start.demo.noeclipse" depends="start.h2,start.jboss,start.human.task" />	
+  
   <!-- Stop Demo -->
   <target name="stop.demo" depends="stop.h2,stop.jboss" />
 
@@ -532,7 +539,9 @@
     <delete dir="${eclipse.workspace.dir}"/>
   </target>
 
-  <!-- Stop Demo -->
+  <!-- Clean Demo -->
   <target name="clean.demo" depends="clean.jboss,clean.eclipse" />
+  <!-- Clean Demo (No Eclipse) -->
+  <target name="clean.demo.noeclipse" depends="clean.jboss" />
 	
 </project>
