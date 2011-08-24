@@ -6,10 +6,10 @@ import org.drools.adventures.Character
 import org.drools.adventures.Room
 import org.drools.adventures.Location
 
-query connect( Room x, Room y ) 
-    Door(id, x, y;)
+query connect( Room $x, Room $y ) 
+    Door(id, $x, $y;)
     or 
-    Door(id, y, x;)
+    Door(id, $y, $x;)
 end
 
 query isContainedIn( Thing x, Thing y ) 
@@ -18,16 +18,29 @@ query isContainedIn( Thing x, Thing y )
     ( Location(z, y;) and ?isContainedIn(x, z;) )
 end
 
-query lookRoom(Room room, List things, List exits) 
-    room := Room()
-    things := List() from accumulate( Location(thing, room;),
-                                      collectList( thing ) )
-    exits := List() from accumulate( ?connect(room, exit;),
-                                     collectList( exit ) )
+query things(Character $char, List $things)
+    $char := Character()
+    Location( $char, $room; )
+    $things := List() from accumulate( Location($thing, $room; thing != $char),
+                                       collectList( $thing ) )      
 end
 
-query look(Character character, Room room, List things, List exits)
-    character := Character()
-    Location( character, room; )
-    ?lookRoom( room, things, exits; )
+query exits(Character $char, List $exits)
+    $char := Character()
+    Location( $char, $room; )
+    $exits := List() from accumulate( connect($room, $exit;),
+                                      collectList( $exit ) )      
+end
+
+query look(Character $char, Room $room, List $things, List $exits) 
+   $char := Character()
+   Location( $char, $room; )
+   things( $char, $things; )
+   exits( $char, $exits; )
+end
+
+query inventory(Character $char, List $inventory) 
+    $char := Character()    
+    $inventory := List() from accumulate( Holding( $char, $thing; ),
+                                          collectList( $thing ) )   
 end

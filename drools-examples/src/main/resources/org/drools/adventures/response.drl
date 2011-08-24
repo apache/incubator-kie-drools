@@ -1,0 +1,34 @@
+package org.drools.adventures
+
+import org.drools.adventures.Request;
+import org.drools.adventures.Response;
+import org.drools.adventures.SessionCharacter
+
+global org.drools.adventures.Counter counter
+
+dialect "mvel"
+
+rule insertRequestCommand no-loop when
+    r : Request()
+    c : Command() from r.object
+then
+    modify( r ) { localId = counter.getAndIncrement() };    
+    c.request = r.localId;
+    insert( c );
+end
+
+
+rule retractRequest  no-loop salience -100 when
+    r : Request()
+    not Command( request == r.localId )
+then
+    retract ( r );
+end
+
+rule handleResponse when
+    rq : Request()
+    rs : Response( localId == rq.localId )
+then
+    rq.session.channels["output"].send( rs.object );
+    retract ( rs );
+end
