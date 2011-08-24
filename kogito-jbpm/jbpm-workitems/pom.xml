@@ -47,11 +47,11 @@
       <scope>test</scope>
     </dependency>
     <!-- Commons -->
-    <dependency>
+    <!--dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-finder</artifactId>
       <version>1.0-20080905.033643-1</version>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
