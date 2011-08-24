@@ -248,13 +248,13 @@ public class QueryElementNode extends LeftTupleSource
                                                                                                          this.tupleMemoryEnabled );
         
         boolean executeAsOpenQuery = openQuery;
-//        if ( executeAsOpenQuery ) {
-//            // There is no point in doing an open query if the caller is a non-open query.
-//            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
-//            if ( object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
-//                executeAsOpenQuery = false;
-//            }          
-//        }
+        if ( executeAsOpenQuery ) {
+            // There is no point in doing an open query if the caller is a non-open query.
+            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            if ( object instanceof DroolsQuery && !((DroolsQuery) object).isOpen() ) {
+                executeAsOpenQuery = false;
+            }          
+        }
 
         DroolsQuery queryObject = new DroolsQuery( this.queryElement.getQueryName(),
                                                    args,
