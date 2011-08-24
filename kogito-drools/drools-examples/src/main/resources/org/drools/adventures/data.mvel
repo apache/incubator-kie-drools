@@ -6,11 +6,6 @@ import org.drools.adventures.Door;
 import org.drools.adventures.Location;
 import java.util.HashMap;
 
-vars = new HashMap();
-vars["items"] = new HashMap();
-vars["characters"] = new HashMap();
-vars["rooms"] = new HashMap();
-
 rooms = [ 
     "basement" : new Room("basement"), 
     "lounge" : new Room("lounge"),
@@ -25,8 +20,7 @@ rooms = [
 ];
 
 foreach( room : rooms.values ) {
-    room.id = c.getAndIncrement();
-    vars["rooms"][room.name] = room.id; 
+    room.id = c.getAndIncrement(); 
 }
 
 doors = [
@@ -46,20 +40,18 @@ doors = [
 characters = [ "hero" : new Character( "hero" ), "monster" : new Character( "monster" ) ];
 foreach( character : characters.values ) {
     character.id = c.getAndIncrement();
-    vars["characters"][character.name] = character.id;
 }
 
 items = [
     "mace" : new Item( "mace" ),
     "cucumber" : new Item( "cucumber" ),
     "torch" : new Item( "torch" ),
-    "umbrella" : new Item( "umbrella" )
+    "umbrella" : new Item( "umbrella" )    
 ];
 
 foreach( item : items.values ) {
     item.id = c.getAndIncrement();
     item.fixed = false;
-    vars["items"][item.name] = item.id;
 }
 
 locations = [    
@@ -67,9 +59,9 @@ locations = [
     "monster" :  new Location( characters["monster"], rooms["basement"] ),
     "cucumber" : new Location( items["cucumber"], rooms["kitchen"] ),
     "torch" : new Location( items["torch"], rooms["office"] ),      
-    "umbrella" :  new Location( items["umbrella"], rooms["ground floor hallway"] )
-    "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] )
+    "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] ),
+    "umbrella" :  new Location( items["umbrella"], rooms["ground floor hallway"] )    
 ];
 
 return [ "rooms" : rooms, "doors" : doors, "characters" : characters,
-         "items" : items, "locations" : locations, "vars" : vars ]; 
+         "items" : items, "locations" : locations ]; 

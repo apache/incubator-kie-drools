@@ -1,22 +1,24 @@
 package org.drools.adventures;
 
 public class Request {
-    private long remoteId;
-    private long localId;
+    private long   localId;
     private Object object;
-    
-    public Request(Object object) {
+    UserSession    session;
+
+    public Request(UserSession session,
+                   Object object) {
         this.object = object;
+        this.session = session;
     }
-    
-    public long getRemoteId() {
-        return remoteId;
+
+    public UserSession getSession() {
+        return session;
     }
-    
-    public void setRemoteId(long id) {
-        this.remoteId = id;
+
+    public void setSession(UserSession session) {
+        this.session = session;
     }
-    
+
     public Object getObject() {
         return object;
     }
@@ -35,7 +37,7 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request [remoteId=" + remoteId + ", localId=" + localId + ", object=" + object + "]";
+        return "Request [session=" + session + ", localId=" + localId + ", object=" + object + "]";
     }
-    
+
 }

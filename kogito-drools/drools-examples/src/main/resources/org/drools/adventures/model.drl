@@ -2,6 +2,8 @@ package org.drools.adventures
 
 dialect "mvel"
 
+// Things
+
 declare Thing
     id : long
 end   
@@ -24,6 +26,7 @@ declare Door extends Thing
    toRoom : Room @key
 end  
 
+// State
 declare Location
     thing : Thing @key
     target : Thing @key
@@ -34,8 +37,19 @@ declare Holding
    thing : Thing @key
 end
 
+declare SessionCharacter
+    session : UserSession
+    character : Character
+end    
+
+// Events
 declare GameEvent
    @role(event)
+end
+
+declare CharacterSelectedEvent extends GameEvent
+   @role(event)
+   character : Character @key
 end
  
 declare ExitEvent extends GameEvent
@@ -62,4 +76,33 @@ declare DropEvent extends GameEvent
    thing : Thing @key
 end
 
+
+// Commands
+declare Command
+    request : long
+end
+
+declare MoveCommand extends Command
+   character : Character @key
+   room : Room @key
+end
+
+declare DropCommand extends Command
+   character : Character @key
+   thing : Thing @key
+end
+
+declare PickupCommand extends Command
+   character : Character @key
+   thing : Thing @key
+end
+
+declare LookCommand extends Command
+   character : Character @key
+end
+
+declare SetSessionCharacterCommand extends Command
+    session : UserSession  @key
+    character : Character  @key
+end
 
