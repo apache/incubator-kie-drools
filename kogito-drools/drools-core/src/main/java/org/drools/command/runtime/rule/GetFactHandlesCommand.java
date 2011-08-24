@@ -45,6 +45,9 @@ public class GetFactHandlesCommand
         this.filter = filter;
         this.disconnected = disconnected;
     }
+    public GetFactHandlesCommand(boolean disconnected) {
+        this.disconnected = disconnected;
+    }
 
     public Collection<FactHandle> execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
@@ -57,8 +60,11 @@ public class GetFactHandlesCommand
                     handle.disconnect();
                     disconnectedFactHandles.add(handle);
                 }
+                return disconnectedFactHandles;
             }
-            return disconnectedFactHandles;
+            else { 
+                return ksession.getFactHandles( this.filter );
+            }
         } else {
             Collection<InternalFactHandle> factHandles = ksession.getFactHandles( );
             if(factHandles != null && disconnected){
@@ -67,8 +73,11 @@ public class GetFactHandlesCommand
                     handle.disconnect();
                     disconnectedFactHandles.add(handle);
                 }
+                return disconnectedFactHandles;
             }
-            return disconnectedFactHandles;
+            else { 
+                return ksession.getFactHandles();
+            }
         }
     }
 
