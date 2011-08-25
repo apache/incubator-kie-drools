@@ -19,5 +19,8 @@ echo
 echo "Starting examples app..."
 
 # You can use -Xmx128m or less too, but it might be slower
-# You can remove -server to run it on a JRE without a JDK, but it will be slower
-$JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainClasspath} ${mainClass} $*
+if [ -d $JAVA_HOME/bin ]; then
+    $JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainClasspath} ${mainClass} $*
+else
+    java -Xms256m -Xmx512m -cp ${mainClasspath} ${mainClass} $*
+fi
