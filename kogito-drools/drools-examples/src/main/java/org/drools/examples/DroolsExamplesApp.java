@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.drools.adventures.TextAdventure;
 import org.drools.examples.datadriventemplate.DataDrivenTemplateExample;
 import org.drools.examples.decisiontable.PricingRuleDTExample;
 import org.drools.examples.decisiontable.PricingRuleTemplateExample;
@@ -75,6 +76,11 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("PacmanExample") {
             public void actionPerformed(ActionEvent e) {
                 PacmanExample.main(new String[0]);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("TextAdventure") {
+            public void actionPerformed(ActionEvent e) {
+                TextAdventure.main(new String[0]);
             }
         }));
         
