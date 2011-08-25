@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
@@ -138,6 +139,10 @@ public class ProcessBaseImpl implements InternalKnowledgeBase {
 
 	public RuleBase getRuleBase() {
 		return null;
+	}
+
+	public Set<String> getEntryPointIds() {
+		throw new UnsupportedOperationException("Entry points not supported");
 	}
     
 }
