@@ -19,38 +19,35 @@ package org.drools.lang.descr;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashSet;
-import java.util.Set;
  
 public class EntryPointDeclarationDescr extends BaseDescr {
 
     private static final long            serialVersionUID = 530l;
-    private Set<String>                  entryPoints = new HashSet<String>();
+    private String                       entryPoint = null;
 
     public EntryPointDeclarationDescr() {
         super();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         super.readExternal( in );
-        this.entryPoints = (Set<String>) in.readObject();
+        this.entryPoint = (String) in.readObject();
     }
     
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
-        out.writeObject( entryPoints );
+        out.writeObject( entryPoint );
     }
 
-    public void addEntryPoint( String name ) {
-        this.entryPoints.add( name );
+    public void setEntryPointId( String name ) {
+        this.entryPoint = name;
     }
 
-    public Set<String> getEntryPoints() {
-        return this.entryPoints;
+    public String getEntryPointId() {
+        return this.entryPoint;
     }
 
     /**
@@ -60,7 +57,7 @@ public class EntryPointDeclarationDescr extends BaseDescr {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((entryPoints == null) ? 0 : entryPoints.hashCode());
+        result = prime * result + ((entryPoint == null) ? 0 : entryPoint.hashCode());
         return result;
     }
 
@@ -73,9 +70,9 @@ public class EntryPointDeclarationDescr extends BaseDescr {
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         EntryPointDeclarationDescr other = (EntryPointDeclarationDescr) obj;
-        if ( entryPoints == null ) {
-            if ( other.entryPoints != null ) return false;
-        } else if ( !entryPoints.equals( other.entryPoints ) ) return false;
+        if ( entryPoint == null ) {
+            if ( other.entryPoint != null ) return false;
+        } else if ( !entryPoint.equals( other.entryPoint ) ) return false;
         return true;
     }
 }

@@ -79,6 +79,7 @@ import org.drools.io.internal.InternalResource;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.FactTemplateDescr;
 import org.drools.lang.descr.FieldTemplateDescr;
 import org.drools.lang.descr.FunctionDescr;
@@ -1030,6 +1031,8 @@ public class PackageBuilder {
         for ( final ImportDescr importEntry : packageDescr.getImports() ) {
             pkgRegistry.addImport( importEntry.getTarget() );
         }
+        
+        processEntryPointDeclarations( packageDescr );
 
         processTypeDeclarations( packageDescr );
 
@@ -1456,6 +1459,16 @@ public class PackageBuilder {
         typeDescr.setFields( fieldMap );
 
         return true;
+    }
+
+    /**
+     * @param packageDescr
+     */
+    private void processEntryPointDeclarations(final PackageDescr packageDescr) {
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        for ( EntryPointDeclarationDescr epDescr : packageDescr.getEntryPointDeclarations() ) {
+            pkgRegistry.getPackage().addEntryPointId( epDescr.getEntryPointId() );
+        }
     }
 
     /**

@@ -12,8 +12,8 @@ public class EntryPointDeclarationDescrBuilderImpl extends BaseDescrBuilderImpl<
         super( parent, new EntryPointDeclarationDescr() );
     }
 
-    public EntryPointDeclarationDescrBuilder addEntryPoint( String name ) {
-        descr.addEntryPoint( name );
+    public EntryPointDeclarationDescrBuilder entryPointId( String id ) {
+        descr.setEntryPointId( id );
         return this;
     }
 

@@ -450,7 +450,10 @@ public class DRLParser {
     }
 
     /**
-     * entryPointDeclaration := ENTRY-POINT  stringId (COMMA stringId)* END?
+     * entryPointDeclaration := ENTRY-POINT stringId END?
+     * 
+     * NOTE: at the moment, it seems redundant to have the declaration to accept only a stringId, but
+     *       in the future, it will likely accept annotations and other parameters.
      * 
      * @return
      * @throws RecognitionException
@@ -488,23 +491,7 @@ public class DRLParser {
             ep = stringId();
             if ( state.failed ) return null;
             if( state.backtracking == 0 ) {
-                declare.addEntryPoint( ep );
-            }
-
-            while ( input.LA( 1 ) == DRLLexer.COMMA ) {
-                // (COMMA stringId)*
-                match( input,
-                       DRLLexer.MINUS,
-                       null,
-                       null,
-                       DroolsEditorType.KEYWORD );
-                if ( state.failed ) return null;
-                
-                ep = stringId();
-                if ( state.failed ) return null;
-                if( state.backtracking == 0 ) {
-                    declare.addEntryPoint( ep );
-                }
+                declare.entryPointId( ep );
             }
 
             if( helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
