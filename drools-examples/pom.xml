@@ -103,19 +103,25 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-templates</artifactId>
     </dependency>
-    
-    <dependency>
-       <groupId>com.miglayout</groupId>
-       <artifactId>miglayout</artifactId>
-       <version>3.7.4</version>
-    </dependency>        
 
     <!-- Needed for logging -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+
+    <!-- Examples only dependencies. -->
+    <!--
+      WARNING: every examples only dependency must be properly dealt with in
+      drools-distribution/src/main/assembly/assembly-drools.xml
+    -->
+    <dependency>
+       <groupId>com.miglayout</groupId>
+       <artifactId>miglayout</artifactId>
+       <version>3.7.4</version>
+    </dependency>
   </dependencies>
+
   <profiles>
     <profile>
       <id>soaProfile</id>
@@ -161,4 +167,5 @@
       </build>
     </profile>
   </profiles>
+
 </project>
