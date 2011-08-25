@@ -692,6 +692,13 @@ abstract public class AbstractRuleBase
             throw new RuntimeDroolsException( "Unable to resolve class '" + lastType +
                                               "' for global '" + lastIdent + "'" );
         }
+        
+        // merge entry point declarations
+        if ( newPkg.getEntryPointIds() != null ) {
+            for( String ep : newPkg.getEntryPointIds() ) {
+                pkg.addEntryPointId( ep );
+            }
+        }
 
         // merge the type declarations
         if ( newPkg.getTypeDeclarations() != null ) {

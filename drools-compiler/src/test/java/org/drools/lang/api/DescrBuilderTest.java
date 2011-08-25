@@ -225,11 +225,10 @@ public class DescrBuilderTest {
                 .name( "org.drools" )
                 // declare
                 .newDeclare().entryPoint()
-                    .addEntryPoint( "ep1" )
-                    .addEntryPoint( "ep2" )
+                    .entryPointId( "ep1" )
                 .end()
                 .newDeclare().entryPoint()
-                    .addEntryPoint( "ep3" )
+                    .entryPointId( "ep3" )
                 .end()
                 .getDescr();
 
@@ -243,7 +242,7 @@ public class DescrBuilderTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
-        assertEquals( 3,
+        assertEquals( 2,
                       kbase.getEntryPointIds().size() );
         
     }

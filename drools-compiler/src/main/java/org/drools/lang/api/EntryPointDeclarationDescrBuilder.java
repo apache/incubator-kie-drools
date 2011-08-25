@@ -26,12 +26,12 @@ public interface EntryPointDeclarationDescrBuilder
     DescrBuilder<PackageDescrBuilder, EntryPointDeclarationDescr> {
 
     /**
-     * Adds an entry point id to the list of declared entry points
+     * Declares the entry point id 
      * 
      * @param name the name of the entry point to be declared
      * 
      * @return itself
      */
-    public EntryPointDeclarationDescrBuilder addEntryPoint( String name );
+    public EntryPointDeclarationDescrBuilder entryPointId( String name );
 
 }
