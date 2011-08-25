@@ -16,5 +16,8 @@ echo
 echo "Starting examples app..."
 
 rem You can use -Xmx128m or less too, but it might be slower
-rem You can remove -server to run it on a JRE without a JDK, but it will be slower
-"%JAVA_HOME%\bin\java" -Xms256m -Xmx512m -server -cp %mainClasspath% %mainClass%
+if exist %JAVA_HOME%\bin\java.exe (
+    %JAVA_HOME%\bin\java -Xms256m -Xmx512m -server -cp %mainClasspath% %mainClass%
+) else (
+    java -Xms256m -Xmx512m -cp %mainClasspath% %mainClass%
+)
