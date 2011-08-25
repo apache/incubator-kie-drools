@@ -16,7 +16,13 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
+
 public class EntryPoint extends VerifierComponentSource {
+
+    public EntryPoint(BaseDescr descr) {
+        super(descr);
+    }
 
     private String entryPointName;
 

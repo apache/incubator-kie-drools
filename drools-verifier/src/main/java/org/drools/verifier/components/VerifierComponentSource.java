@@ -16,9 +16,10 @@
 
 package org.drools.verifier.components;
 
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 
-public abstract class VerifierComponentSource extends VerifierComponent
+public abstract class VerifierComponentSource extends VerifierComponent<BaseDescr>
     implements
     Source {
 
@@ -26,6 +27,11 @@ public abstract class VerifierComponentSource extends VerifierComponent
     private String                parentPath;
     private int                   orderNumber = 0;
 
+    
+    public VerifierComponentSource(BaseDescr descr) {
+        super(descr);
+    }
+    
     public VerifierComponentType getParentType() {
         return parentType;
     }
