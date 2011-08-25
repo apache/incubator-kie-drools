@@ -3,7 +3,8 @@
 # Change directory to the directory of the script
 cd `dirname $0`
 
-mainJar=binaries/drools-examples-${project.version}.jar
+mainClasspath=
+for i in binaries/*.jar; do mainClasspath=${mainClasspath}:$i; done
 mainClass=org.drools.examples.DroolsExamplesApp
 
 echo "Usage: ./runExamples.sh"
@@ -19,4 +20,4 @@ echo "Starting examples app..."
 
 # You can use -Xmx128m or less too, but it might be slower
 # You can remove -server to run it on a JRE without a JDK, but it will be slower
-$JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainJar} ${mainClass} $*
+$JAVA_HOME/bin/java -Xms256m -Xmx512m -server -cp ${mainClasspath} ${mainClass} $*
