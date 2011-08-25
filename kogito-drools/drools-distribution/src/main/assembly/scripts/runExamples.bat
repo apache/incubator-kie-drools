@@ -1,4 +1,8 @@
-set mainJar=binaries\drools-examples-${project.version}.jar
+@ECHO OFF
+
+setLocal EnableDelayedExpansion
+set mainClasspath=
+for %%i in (binaries\*.jar) do (set mainClasspath=!mainClasspath!;%%i)
 set mainClass=org.drools.examples.DroolsExamplesApp
 
 echo "Usage: runExamples.bat"
@@ -13,4 +17,4 @@ echo "Starting examples app..."
 
 rem You can use -Xmx128m or less too, but it might be slower
 rem You can remove -server to run it on a JRE without a JDK, but it will be slower
-"%JAVA_HOME%\bin\java" -Xms256m -Xmx512m -server -cp %mainJar% %mainClass%
+"%JAVA_HOME%\bin\java" -Xms256m -Xmx512m -server -cp %mainClasspath% %mainClass%
