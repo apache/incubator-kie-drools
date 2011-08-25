@@ -105,6 +105,12 @@
       <artifactId>jfreechart</artifactId>
     </dependency>
 
+
+    <!-- Examples only dependencies. -->
+    <!--
+      WARNING: every examples only dependency must be properly dealt with in
+      drools-planner-distribution/src/main/assembly/assembly-drools-planner.xml
+    -->
     <!-- Converters -->
     <dependency>
       <groupId>org.jdom</groupId>

@@ -73,6 +73,7 @@
     <dependencySet>
       <excludes>
         <exclude>org.drools.planner:drools-planner-examples</exclude>
+        <exclude>org.jdom:jdom</exclude>
         <exclude>org.drools.planner:drools-planner-docs</exclude>
         <exclude>*:javadoc</exclude>
         <exclude>*:sources</exclude>
@@ -83,6 +84,7 @@
     <dependencySet>
       <includes>
         <include>org.drools.planner:drools-planner-examples:jar</include>
+        <include>org.jdom:jdom:jar</include>
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
