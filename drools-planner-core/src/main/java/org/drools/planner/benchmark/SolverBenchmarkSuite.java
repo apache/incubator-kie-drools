@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import com.thoughtworks.xstream.XStream;
@@ -68,6 +67,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @XStreamAlias("solverBenchmarkSuite")
@@ -75,7 +75,7 @@ public class SolverBenchmarkSuite {
 
     public static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
 
-    protected final transient org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
     private File solvedSolutionFilesDirectory = null;
