@@ -15,17 +15,19 @@
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
       </termination>
-      <selector>
-        <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-        <completeMoveTabuSize>7</completeMoveTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <!-- Real world problems require to use of <minimalAcceptedSelection> -->
-      </forager>
+      <localSearch>
+        <selector>
+          <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
+          <completeMoveTabuSize>7</completeMoveTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <!-- Real world problems require to use of <minimalAcceptedSelection> -->
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
   <!-- TODO crashes loading of xstream file because Day is not unique -->
@@ -48,25 +50,27 @@
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
-      <selector>
+      <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.RoomChangeMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.ExamSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completePropertyTabuSize>10</completePropertyTabuSize>
-      </acceptor>
-      <forager>
-        <pickEarlyType>NEVER</pickEarlyType>
-        <minimalAcceptedSelection>1400</minimalAcceptedSelection>
-      </forager>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>10</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <minimalAcceptedSelection>1400</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
   <!-- TODO crashes loading of xstream file because Room is not unique -->
@@ -84,19 +88,21 @@
       <!--<customSolverPhase>-->
         <!--<customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</customSolverPhaseCommandClass>-->
       <!--</customSolverPhase>-->
-      <!--<selector>-->
+      <!--<localSearch>-->
         <!--<selector>-->
-          <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.pas.solver.move.factory.BedDesignationPillarPartSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
         <!--</selector>-->
-      <!--</selector>-->
-      <!--<acceptor>-->
-        <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-        <!--<completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>-->
-      <!--</acceptor>-->
-      <!--<forager>-->
-        <!--<pickEarlyType>NEVER</pickEarlyType>-->
-        <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
-      <!--</forager>-->
+        <!--<acceptor>-->
+          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+          <!--<completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<pickEarlyType>NEVER</pickEarlyType>-->
+          <!--<minimalAcceptedSelection>500</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
     <!--</solver>-->
   <!--</solverBenchmark>-->
   <solverBenchmark>
@@ -113,24 +119,26 @@
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
-      <selector>
+      <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-        <completePropertyTabuSize>11</completePropertyTabuSize>
-      </acceptor>
-      <forager>
-        <minimalAcceptedSelection>800</minimalAcceptedSelection>
-      </forager>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>11</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>800</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
@@ -147,25 +155,27 @@
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
-      <selector>
+      <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+          </selector>
         </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
-        </selector>
-        <selector>
-          <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
-        </selector>
-      </selector>
-      <acceptor>
-        <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-        <completePropertyTabuSize>5</completePropertyTabuSize>
-      </acceptor>
-      <forager>
-        <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
-        <minimalAcceptedSelection>4</minimalAcceptedSelection>
-      </forager>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
+          <completePropertyTabuSize>5</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>
