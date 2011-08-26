@@ -8,6 +8,8 @@
     <name>travelingtournament_tabuSearch</name>
     <unsolvedSolutionFile>data/travelingtournament/smart/unsolved/1-nl14.xml</unsolvedSolutionFile>
     <solver>
+      <solutionClass>org.drools.planner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.travelingtournament.domain.Match</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/travelingtournament/solver/smart/smartTravelingTournamentScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -40,6 +42,8 @@
     <name>examination_tabuSearch</name>
     <unsolvedSolutionFile>data/examination/unsolved/exam_comp_set2.xml</unsolvedSolutionFile>
     <solver>
+      <solutionClass>org.drools.planner.examples.examination.domain.Examination</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.examination.domain.Exam</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/examination/solver/examinationScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -78,6 +82,8 @@
     <!--<name>pas_tabuSearch</name>-->
     <!--<unsolvedSolutionFile>data/pas/unsolved/testdata01.xml</unsolvedSolutionFile>-->
     <!--<solver>-->
+      <!--<solutionClass>org.drools.planner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>-->
+      <!--<planningEntityClass>org.drools.planner.examples.pas.domain.BedDesignation</planningEntityClass>-->
       <!--<scoreDrl>/org/drools/planner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>-->
       <!--<scoreDefinition>-->
         <!--<scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>-->
@@ -109,6 +115,8 @@
     <name>nurseRostering_tabuSearch</name>
     <unsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</unsolvedSolutionFile>
     <solver>
+      <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -145,6 +153,8 @@
     <name>nurseRostering_simulatedAnnealing</name>
     <unsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</unsolvedSolutionFile>
     <solver>
+      <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>

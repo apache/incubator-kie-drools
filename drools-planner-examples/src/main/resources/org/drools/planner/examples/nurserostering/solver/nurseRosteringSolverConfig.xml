@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>DEBUG</environmentMode>-->
-  <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
   <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
+  <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
