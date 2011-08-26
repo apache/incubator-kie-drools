@@ -406,7 +406,8 @@ public class SolverBenchmarkSuite {
             }
         }
         writeHtmlOverview(htmlFragment);
-        writeBenchmarkResult(xStream);
+        // TODO Temporarily disabled because it crashes because of http://jira.codehaus.org/browse/XSTR-666
+        // writeBenchmarkResult(xStream);
     }
 
     private void determineRankings() {
