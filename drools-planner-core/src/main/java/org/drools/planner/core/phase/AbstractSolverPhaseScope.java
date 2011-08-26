@@ -26,6 +26,7 @@ import org.drools.planner.core.phase.step.AbstractStepScope;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,10 @@ public abstract class AbstractSolverPhaseScope {
     public long calculatePhaseTimeMillisSpend() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
+    }
+
+    public SolutionDirector getSolutionDirector() {
+        return solverScope.getSolutionDirector();
     }
 
     public Solution getWorkingSolution() {

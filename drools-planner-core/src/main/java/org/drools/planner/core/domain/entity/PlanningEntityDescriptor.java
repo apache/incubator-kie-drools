@@ -130,6 +130,15 @@ public class PlanningEntityDescriptor {
         return planningEntitySorter;
     }
 
+    public PropertyDescriptor getPropertyDescriptor(String propertyName) {
+        for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
+            if (propertyDescriptor.getName().equals(propertyName)) {
+                return propertyDescriptor;
+            }
+        }
+        return null;
+    }
+
     public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {
         return planningVariableDescriptorMap.values();
     }

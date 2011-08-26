@@ -86,7 +86,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
 
     public void initWalk(Object planningEntity) {
         this.planningEntity = planningEntity;
-        planningValueIterator = planningValueSelector.iterator();
+        planningValueIterator = planningValueSelector.iterator(planningEntity);
         Object value = planningValueIterator.next();
         planningVariableDescriptor.setValue(planningEntity, value);
         isFirstValue = true;
@@ -114,7 +114,7 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     }
 
     public void resetWalk() {
-        planningValueIterator = planningValueSelector.iterator();
+        planningValueIterator = planningValueSelector.iterator(planningEntity);
         Object value = planningValueIterator.next();
         changeWorkingValue(value);
         workingValue = value;

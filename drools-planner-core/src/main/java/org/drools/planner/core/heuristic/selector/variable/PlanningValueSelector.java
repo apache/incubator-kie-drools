@@ -1,19 +1,22 @@
 package org.drools.planner.core.heuristic.selector.variable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
 import org.drools.planner.core.domain.variable.PlanningValueSorter;
 import org.drools.planner.core.phase.AbstractSolverPhaseScope;
 import org.drools.planner.core.phase.event.SolverPhaseLifecycleListenerAdapter;
+import org.drools.planner.core.solution.director.SolutionDirector;
 
 /**
  * Determines the order in which the planning values of 1 planning entity class are selected for an algorithm
  */
-public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter
-        implements Iterable<Object> {
+public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
     private PlanningVariableDescriptor planningVariableDescriptor;
 
@@ -21,7 +24,9 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter
     private PlanningValueSelectionPromotion selectionPromotion = PlanningValueSelectionPromotion.NONE; // TODO
     private boolean roundRobinSelection = false; // TODO
 
-    private List<Object> selectedPlanningValueList = null;
+    private SolutionDirector solutionDirector;
+    private Random workingRandom;
+    private Collection<?> cachedPlanningValues = null;
 
     public PlanningValueSelector(PlanningVariableDescriptor planningVariableDescriptor) {
         this.planningVariableDescriptor = planningVariableDescriptor;
@@ -46,13 +51,15 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter
     @Override
     public void phaseStarted(AbstractSolverPhaseScope solverPhaseScope) {
         validateConfiguration();
+        solutionDirector = solverPhaseScope.getSolutionDirector();
+        workingRandom = solverPhaseScope.getWorkingRandom();
         initSelectedPlanningValueList(solverPhaseScope);
     }
 
     private void validateConfiguration() {
         if (selectionOrder == PlanningValueSelectionOrder.INCREASING_STRENGTH) {
-            PlanningValueSorter planningValueSorter = planningVariableDescriptor.getPlanningValueSorter();
-            if (!planningValueSorter.isSortStrengthSupported()) {
+            PlanningValueSorter valueSorter = planningVariableDescriptor.getValueSorter();
+            if (!valueSorter.isSortStrengthSupported()) {
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder
                         + ") can not be used on PlanningEntity ("
                         + planningVariableDescriptor.getPlanningEntityDescriptor().getPlanningEntityClass().getName()
@@ -63,32 +70,48 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter
     }
 
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope solverPhaseScope) {
-        List<Object> workingPlanningValueList = planningVariableDescriptor.getPlanningValueList(
-                solverPhaseScope.getWorkingSolution());
-        switch (selectionOrder) {
-            case ORIGINAL:
-                break;
-            case RANDOM:
-                Collections.shuffle(workingPlanningValueList, solverPhaseScope.getWorkingRandom());
-                break;
-            case INCREASING_STRENGTH:
-                PlanningValueSorter planningValueSorter = planningVariableDescriptor.getPlanningValueSorter();
-                planningValueSorter.sortStrengthAscending(
-                        solverPhaseScope.getWorkingSolution(), workingPlanningValueList);
-                break;
-            default:
-                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented");
+        if (planningVariableDescriptor.isPlanningValuesCacheable()) {
+            Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
+                    solverPhaseScope.getSolutionDirector(), null);
+            cachedPlanningValues = applySelectionOrder(planningValues);
+        } else {
+            cachedPlanningValues = null;
         }
-        selectedPlanningValueList = workingPlanningValueList;
     }
 
     @Override
     public void phaseEnded(AbstractSolverPhaseScope solverPhaseScope) {
-        selectedPlanningValueList = null;
+        cachedPlanningValues = null;
     }
 
-    public Iterator<Object> iterator() {
-        return selectedPlanningValueList.iterator();
+    public Iterator<?> iterator(Object planningEntity) {
+        if (cachedPlanningValues != null) {
+            return cachedPlanningValues.iterator();
+        } else {
+            Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
+                    solutionDirector, planningEntity);
+            planningValues = applySelectionOrder(planningValues);
+            return planningValues.iterator();
+        }
+    }
+
+    private Collection<?> applySelectionOrder(Collection<?> workingPlanningValues) {
+        switch (selectionOrder) {
+            case ORIGINAL:
+                return workingPlanningValues;
+            case RANDOM:
+                List<Object> randomPlanningValueList = new ArrayList<Object>(workingPlanningValues);
+                Collections.shuffle(randomPlanningValueList, workingRandom);
+                return randomPlanningValueList;
+            case INCREASING_STRENGTH:
+                List<Object> increasingStrengthPlanningValueList = new ArrayList<Object>(workingPlanningValues);
+                PlanningValueSorter valueSorter = planningVariableDescriptor.getValueSorter();
+                valueSorter.sortStrengthAscending(
+                        solutionDirector.getWorkingSolution(), increasingStrengthPlanningValueList);
+                return increasingStrengthPlanningValueList;
+            default:
+                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented");
+        }
     }
 
 }
