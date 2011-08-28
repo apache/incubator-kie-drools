@@ -233,14 +233,14 @@ public class SingleSessionCommandService
                     this.txm = (TransactionManager) con.newInstance( tm );
                     logger.debug( "Instantiating  DroolsSpringTransactionManager" );
                     
-                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
+//                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
                         // configure spring for JPA and local transactions
                         cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
                         con = cls.getConstructors()[0];
                         this.jpm =  ( PersistenceContextManager) con.newInstance( new Object[] { this.env } );
-                    } else {
-                        // configure spring for JPA and distributed transactions 
-                    }
+//                    } else {
+//                        // configure spring for JPA and distributed transactions 
+//                    }
                 } catch ( Exception e ) {
                     logger.warn( "Could not instatiate DroolsSpringTransactionManager" );
                     throw new RuntimeException( "Could not instatiate org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager", e );
