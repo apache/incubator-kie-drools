@@ -274,6 +274,31 @@ public class AnnotationsTest {
 
     }
 
+    @Test
+    public void testRuleAnnotation2() {
+        String drl = "package org.drools\n" +
+                     "rule X\n" +
+                     "    @alt(\" \\\"<- these are supposed to be the only quotes ->\\\" \")\n" +
+                     "when\n"+
+                     "    Person()\n" +
+                     "then\n" +
+                     "end";
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        conf.setOption( MBeansOption.ENABLED );
+
+        KnowledgeBase kbase = loadKnowledgeBase( "kb1",
+                                                 drl,
+                                                 conf );
+
+        Rule rule = kbase.getRule( "org.drools",
+                                   "X" );
+
+        Assert.assertEquals( " \"<- these are supposed to be the only quotes ->\" ",
+                             rule.getMetaData().get( "alt" ) );
+
+    }
+
     private KnowledgeBase loadKnowledgeBase( String id,
                                              String drl,
                                              KnowledgeBaseConfiguration conf ) {

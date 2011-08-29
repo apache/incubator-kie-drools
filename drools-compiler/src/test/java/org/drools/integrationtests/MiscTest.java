@@ -8167,7 +8167,7 @@ public class MiscTest {
         assertThat( rule.getMetaAttribute( "author" ),
                     is( "john_doe" ) );
         assertThat( rule.getMetaAttribute( "text" ),
-                    is( "\"It's an escaped\" string\"" ) );
+                    is( "It's an escaped\" string" ) );
 
     }
 
