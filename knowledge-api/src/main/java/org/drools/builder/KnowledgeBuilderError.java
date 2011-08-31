@@ -19,16 +19,7 @@ package org.drools.builder;
 /**
  * A reported error during the build process.
  */
-public interface KnowledgeBuilderError {
+public interface KnowledgeBuilderError extends KnowledgeBuilderProblem {
 
-    /**
-     * Returns the error message
-     */
-    String getMessage();
-
-    /**
-     * Returns the lines of the error in the source file
-     * @return
-     */
-    int[] getErrorLines();
+    
 }
