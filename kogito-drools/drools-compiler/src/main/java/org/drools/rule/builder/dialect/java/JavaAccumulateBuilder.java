@@ -48,11 +48,12 @@ import org.drools.runtime.rule.TypedAccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.InternalReadAccessor;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 
 /**
  * A builder for the java dialect accumulate version
  */
-public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
+public class JavaAccumulateBuilder
     implements
     AccumulateBuilder {
 
@@ -210,8 +211,8 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                context,
                                                                previousDeclarations,
                                                                sourceDeclArr,
-                                                               usedIdentifiers.getGlobals(),
-                                                               null );
+                                                               usedIdentifiers.getGlobals()
+        );
         map.put( "readLocalsFromTuple",
                  accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
 
@@ -300,8 +301,8 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                context,
                                                                declarations,
                                                                null,
-                                                               requiredGlobals,
-                                                               null );
+                                                               requiredGlobals
+        );
 
         map.put( "className",
                  accumDescr.getClassName() );

@@ -73,7 +73,6 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
-import org.drools.rule.builder.dialect.java.JavaDialect;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.DeclarationScopeResolver;
@@ -84,6 +83,8 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.compiler.ExpressionCompiler;
+
+import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
 
 public class MVELDialect
     implements
@@ -293,20 +294,20 @@ public class MVELDialect
 
         // @todo: why is this here, MVEL doesn't compile anything? mdp
         String pkgName = this.pkg == null ? "" : this.pkg.getName();
-        final String ruleClassName = JavaDialect.getUniqueLegalName( pkgName,
-                                                                     ruleDescr.getName(),
-                                                                     "mvel",
-                                                                     "Rule",
-                                                                     this.src );
+        final String ruleClassName = getUniqueLegalName(pkgName,
+                                                        ruleDescr.getName(),
+                                                        "mvel",
+                                                        "Rule",
+                                                        this.src);
         ruleDescr.setClassName( StringUtils.ucFirst( ruleClassName ) );
     }
 
     public void init(final ProcessDescr processDescr) {
-        final String processDescrClassName = JavaDialect.getUniqueLegalName( this.pkg.getName(),
-                                                                             processDescr.getName(),
-                                                                             "mvel",
-                                                                             "Process",
-                                                                             this.src );
+        final String processDescrClassName = getUniqueLegalName(this.pkg.getName(),
+                                                                processDescr.getName(),
+                                                                "mvel",
+                                                                "Process",
+                                                                this.src);
         processDescr.setClassName( StringUtils.ucFirst( processDescrClassName ) );
     }
 

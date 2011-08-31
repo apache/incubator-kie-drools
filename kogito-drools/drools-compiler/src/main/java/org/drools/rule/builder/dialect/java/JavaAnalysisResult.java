@@ -33,13 +33,20 @@ import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
  * An analysis result implementation for the java dialect
  */
 public class JavaAnalysisResult implements AnalysisResult {
-    
+
+    private String analyzedExpr;
     private BoundIdentifiers boundIdentifiers = null;
     private Set<String> identifiers = Collections.emptySet();
     private Map<String,JavaLocalDeclarationDescr> localVariables = Collections.emptyMap();
     private Set<String> notBoundedIdentifiers = Collections.emptySet();
     private JavaContainerBlockDescr blocks;
-    
+
+    public String getAnalyzedExpr() {
+        return analyzedExpr;
+    }
+    public void setAnalyzedExpr(String analyzedExpr) {
+        this.analyzedExpr = analyzedExpr;
+    }
     public BoundIdentifiers getBoundIdentifiers() {
         return boundIdentifiers;
     }
@@ -76,5 +83,4 @@ public class JavaAnalysisResult implements AnalysisResult {
     public void setBlockDescrs(JavaContainerBlockDescr blocks) {
         this.blocks = blocks;
     }
-        
 }

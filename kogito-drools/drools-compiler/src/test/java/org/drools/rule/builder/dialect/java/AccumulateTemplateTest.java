@@ -5,10 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.Cheese;
 import org.drools.Person;
@@ -295,7 +293,7 @@ public class AccumulateTemplateTest {
 
     private TemplateRegistry getRuleTemplateRegistry() {
         TemplateRegistry ruleRegistry = new SimpleTemplateRegistry();
-        CompiledTemplate compiled = TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaRule.mvel" ),
+        CompiledTemplate compiled = TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaRule.mvel" ),
                                                                       (Map<String, Class<? extends Node>>) null );
         TemplateRuntime.execute( compiled,
                                  null,
@@ -306,7 +304,7 @@ public class AccumulateTemplateTest {
 
     private TemplateRegistry getInvokerTemplateRegistry() {
         TemplateRegistry invokerRegistry = new SimpleTemplateRegistry();
-        CompiledTemplate compiled = TemplateCompiler.compileTemplate( AbstractJavaRuleBuilder.class.getResourceAsStream( "javaInvokers.mvel" ),
+        CompiledTemplate compiled = TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( "javaInvokers.mvel" ),
                                                                       (Map<String, Class<? extends Node>>) null );
         TemplateRuntime.execute( compiled,
                                  null,

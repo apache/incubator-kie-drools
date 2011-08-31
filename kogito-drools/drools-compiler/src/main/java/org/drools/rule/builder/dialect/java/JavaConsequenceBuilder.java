@@ -26,8 +26,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.drools.base.mvel.MVELCompilationUnit;
-import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.core.util.ClassUtils;
@@ -60,9 +58,9 @@ import org.drools.spi.KnowledgeHelper;
 import org.drools.spi.PatternExtractor;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
-import org.mvel2.compiler.ExecutableStatement;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 
-public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
+public class JavaConsequenceBuilder
     implements
     ConsequenceBuilder {
 
@@ -78,22 +76,9 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         final String className = consequenceName + "Consequence";
 
-        final RuleDescr ruleDescr = context.getRuleDescr();
-
         Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
-        
-        BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ), 
-                                                         context.getPackageBuilder().getGlobals(),
-                                                         null,
-                                                         KnowledgeHelper.class );
-        
-        String consequenceStr = ( "default".equals( consequenceName ) ) ? (String) ruleDescr.getConsequence() : (String) ruleDescr.getNamedConsequences().get( consequenceName );
-        consequenceStr = consequenceStr + "\n";
-        
-        JavaAnalysisResult analysis = ( JavaAnalysisResult) context.getDialect().analyzeBlock( context,
-                                                                                             ruleDescr,
-                                                                                             consequenceStr,
-                                                                                             bindings );
+
+        JavaAnalysisResult analysis = createJavaAnalysisResult(context, consequenceName, decls);
 
         if ( analysis == null ) {
             // not possible to get the analysis results
@@ -117,9 +102,9 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
 
         // this will fix modify, retract, insert, update, entrypoints and channels
         String fixedConsequence = this.fixBlockDescr( context,
-                                                      consequenceStr,                                                      
+                                                      analysis.getAnalyzedExpr(),
                                                       blocks,
-                                                      bindings,
+                                                      analysis.getBoundIdentifiers(),
                                                       decls );
 
         if ( fixedConsequence == null ) {
@@ -128,51 +113,7 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         }
         fixedConsequence = ((JavaDialect) context.getDialect()).getKnowledgeHelperFixer().fix( fixedConsequence );
 
-        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-                
-        final Declaration[] declarations =  new Declaration[usedIdentifiers.getDeclrClasses().size()];
-        String[] declrStr = new String[declarations.length];
-        int j = 0;
-        for (String str : usedIdentifiers.getDeclrClasses().keySet() ) {
-            declrStr[j] = str;
-            declarations[j++] = decls.get( str );
-        }
-        Arrays.sort( declarations, SortDeclarations.instance  );
-        for ( int i = 0; i < declrStr.length; i++) {
-            declrStr[i] = declarations[i].getIdentifier();
-        }
-        context.getRule().setRequiredDeclarations( declrStr );
-                
-        final Map<String, Object> map = createVariableContext( className,
-                                                               fixedConsequence,
-                                                               context,
-                                                               declarations,
-                                                               null,
-                                                               usedIdentifiers.getGlobals(),
-                                                               (JavaAnalysisResult) analysis );
-        
-        map.put( "consequenceName", consequenceName );
-
-        //final int[] indexes = new int[declarations.length];
-        final Integer[] indexes = new Integer[declarations.length];
-
-        final Boolean[] notPatterns = new Boolean[declarations.length];
-        for ( int i = 0, length = declarations.length; i < length; i++ ) {
-            indexes[i] = i;
-            notPatterns[i] = (declarations[i].getExtractor() instanceof PatternExtractor) ? Boolean.FALSE : Boolean.TRUE ;
-            if ( (indexes[i]).intValue() == -1 ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              ruleDescr,
-                                                              null,
-                                                              "Internal Error : Unable to find declaration in list while generating the consequence invoker" ) );
-            }
-        }
-
-        map.put( "indexes",
-                 indexes );
-
-        map.put( "notPatterns",
-                 notPatterns );
+        Map<String, Object> map = createConsequenceContext(context, consequenceName, className, fixedConsequence, decls, analysis.getBoundIdentifiers());
 
         generatTemplates( "consequenceMethod",
                           "consequenceInvoker",
@@ -180,12 +121,23 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                           className,
                           map,
                           context.getRule(),
-                          ruleDescr );
+                          context.getRuleDescr() );
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
     }
     
-    protected String fixBlockDescr(final RuleBuildContext context,
+    private static void buildBlockDescrs(List<JavaBlockDescr> descrs,
+                                 JavaContainerBlockDescr parentBlock) {
+        for ( JavaBlockDescr block : parentBlock.getJavaBlockDescrs() ) {
+            if( block instanceof JavaContainerBlockDescr ) {
+                buildBlockDescrs( descrs, (JavaContainerBlockDescr) block );
+            } else {
+                descrs.add( block );
+            }
+        }
+    }
+
+    String fixBlockDescr(final RuleBuildContext context,
                                    String originalCode, 
                                    List<JavaBlockDescr> blocks,
                                    BoundIdentifiers bindings,
@@ -246,17 +198,6 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         return consequence.toString();
     }    
     
-    public void buildBlockDescrs(List<JavaBlockDescr> descrs,
-                                 JavaContainerBlockDescr parentBlock) {
-        for ( JavaBlockDescr block : parentBlock.getJavaBlockDescrs() ) {  
-            if( block instanceof JavaContainerBlockDescr ) {
-                buildBlockDescrs( descrs, (JavaContainerBlockDescr) block );
-            } else {
-                descrs.add( block );
-            }
-        }
-    }
-
     /**
      * This code is not currently used, it's commented out in method caller. This is because we couldn't
      * get this to work and will have to wait until MVEL supports genercs (mdp).
