@@ -1,6 +1,5 @@
 package org.drools.rule.builder.dialect.java;
 
-import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.AnalysisResult;
@@ -10,8 +9,9 @@ import org.drools.rule.Declaration;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 
-public class JavaPredicateBuilder extends AbstractJavaRuleBuilder
+public class JavaPredicateBuilder
     implements
     PredicateBuilder {
 
@@ -30,8 +30,8 @@ public class JavaPredicateBuilder extends AbstractJavaRuleBuilder
                                                context,
                                                previousDeclarations,
                                                localDeclarations,
-                                               usedIdentifiers.getGlobals(),
-                                               null );
+                                               usedIdentifiers.getGlobals()
+        );
 
         generatTemplates( "predicateMethod",
                           "predicateInvoker",

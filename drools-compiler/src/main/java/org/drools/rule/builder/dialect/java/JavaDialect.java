@@ -4,13 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.*;
+import java.util.*;
 
 import org.drools.base.TypeResolver;
 import org.drools.commons.jci.compilers.CompilationResult;
@@ -19,7 +13,6 @@ import org.drools.commons.jci.compilers.JavaCompilerFactory;
 import org.drools.commons.jci.compilers.JavaCompilerSettings;
 import org.drools.commons.jci.problems.CompilationProblem;
 import org.drools.commons.jci.readers.MemoryResourceReader;
-import org.drools.commons.jci.readers.ResourceReader;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
@@ -73,9 +66,12 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.dialect.asm.*;
 import org.drools.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELSalienceBuilder;
+
+import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
 
 public class JavaDialect
     implements
@@ -94,7 +90,8 @@ public class JavaDialect
     private static final JavaEvalBuilder             EVAL_BUILDER                  = new JavaEvalBuilder();
     private static final JavaPredicateBuilder        PREDICATE_BUILDER             = new JavaPredicateBuilder();
     private static final JavaReturnValueBuilder      RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
-    private static final JavaConsequenceBuilder      CONSESUENCE_BUILDER           = new JavaConsequenceBuilder();
+    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
+//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
     private static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
     private static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
     private static final JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
@@ -329,7 +326,7 @@ public class JavaDialect
     }
 
     public ConsequenceBuilder getConsequenceBuilder() {
-        return CONSESUENCE_BUILDER;
+        return CONSEQUENCE_BUILDER;
     }
 
     public RuleClassBuilder getRuleClassBuilder() {
@@ -433,16 +430,21 @@ public class JavaDialect
      * It will not actually call the compiler
      */
     public void addRule(final RuleBuildContext context) {
+        final Rule rule = context.getRule();
+        final RuleDescr ruleDescr = context.getRuleDescr();
+
         RuleClassBuilder classBuilder = context.getDialect().getRuleClassBuilder();
 
         String ruleClass = classBuilder.buildRule( context );
         // return if there is no ruleclass name;
         if ( ruleClass == null ) {
+            if (rule.getConsequence() != null) {
+                // the consequence has been already created by the ASMConsequenceBuilder
+                String consequenceRes = pkg.getName().replace('.', '/') + "/" + ruleDescr.getClassName() + ".java";
+                src.add(consequenceRes, null);
+            }
             return;
         }
-
-        final Rule rule = context.getRule();
-        final RuleDescr ruleDescr = context.getRuleDescr();
 
         // The compilation result is for the entire rule, so difficult to associate with any descr
         addClassCompileTask( this.pkg.getName() + "." + ruleDescr.getClassName(),
@@ -616,41 +618,6 @@ public class JavaDialect
 
     public List getResults() {
         return this.results;
-    }
-
-    private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[ -/:-@\\[-`\\{-\\xff]");
-
-    /**
-     * Takes a given name and makes sure that its legal and doesn't already exist. If the file exists it increases counter appender untill it is unique.
-     * <p/>
-     * TODO: move out to shared utility class
-     *
-     * @param packageName
-     * @param name
-     * @param ext
-     * @return
-     */
-    public static String getUniqueLegalName(final String packageName,
-                                            final String name,
-                                            final String ext,
-                                            final String prefix,
-                                            final ResourceReader src) {
-        // replaces all non alphanumeric or $ chars with _
-        final String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
-        final String fileName = packageName.replace('.', '/') + "/" + newName + "_";
-
-        // make sure the class name does not exist, if it does increase the counter
-        int counter = -1;
-        while (true) {
-
-            counter++;
-            final String actualName = fileName + counter + "." + ext;
-
-            //MVEL:test null to Fix failing test on org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilderTest.testImperativeCodeError()
-            if (src == null || !src.isAvailable(actualName)) break;
-        }
-        // we have duplicate file names so append counter
-        return counter >= 0 ? (newName + "_" + counter) : newName;
     }
 
     public String getId() {

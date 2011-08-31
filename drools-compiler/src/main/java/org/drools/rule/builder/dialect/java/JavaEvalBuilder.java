@@ -30,8 +30,9 @@ import org.drools.rule.Pattern;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 
-public class JavaEvalBuilder extends AbstractJavaRuleBuilder
+public class JavaEvalBuilder
     implements
     RuleConditionBuilder {
 
@@ -81,8 +82,8 @@ public class JavaEvalBuilder extends AbstractJavaRuleBuilder
                                                context,
                                                declarations,
                                                null,
-                                               usedIdentifiers.getGlobals(),
-                                               null );
+                                               usedIdentifiers.getGlobals()
+        );
 
         generatTemplates( "evalMethod",
                           "evalInvoker",

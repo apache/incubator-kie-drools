@@ -68,14 +68,11 @@ public class JavaExprAnalyzer {
     @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeExpression(final String expr,
                                                 final BoundIdentifiers availableIdentifiers) throws RecognitionException {
-        final CharStream charStream = new ANTLRStringStream( expr );
-        final JavaLexer lexer = new JavaLexer( charStream );
-        final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParser parser = new JavaParser( tokenStream );
-
+        final JavaParser parser = parse( expr );
         parser.conditionalOrExpression();
         
         JavaAnalysisResult result = new JavaAnalysisResult();
+        result.setAnalyzedExpr(expr);
         result.setIdentifiers(new HashSet<String>( parser.getIdentifiers() ) );
         return analyze( result,
                         availableIdentifiers );
@@ -84,14 +81,11 @@ public class JavaExprAnalyzer {
     @SuppressWarnings("unchecked")
     public JavaAnalysisResult analyzeBlock(final String expr,
                                        final BoundIdentifiers availableIdentifiers) throws RecognitionException {
-        final CharStream charStream = new ANTLRStringStream( "{" + expr + "}" );
-        final JavaLexer lexer = new JavaLexer( charStream );
-        final TokenStream tokenStream = new CommonTokenStream( lexer );
-        final JavaParser parser = new JavaParser( tokenStream );
-
+        final JavaParser parser = parse( "{" + expr + "}" );
         parser.block();
 
         JavaAnalysisResult result = new JavaAnalysisResult();
+        result.setAnalyzedExpr(expr);
         result.setIdentifiers( new HashSet<String>( parser.getIdentifiers() ) );
         result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
         if( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
@@ -106,6 +100,13 @@ public class JavaExprAnalyzer {
 
         return analyze( result,
                         availableIdentifiers );
+    }
+
+    private JavaParser parse(final String expr) {
+        final CharStream charStream = new ANTLRStringStream(expr);
+        final JavaLexer lexer = new JavaLexer( charStream );
+        final TokenStream tokenStream = new CommonTokenStream( lexer );
+        return new JavaParser( tokenStream );
     }
 
     /**

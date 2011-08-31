@@ -20,7 +20,6 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.base.EnabledBoolean;
@@ -96,10 +95,11 @@ public class RuleBuilder {
         if ( !(ruleDescr instanceof QueryDescr) ) {
             // do not build the consequence if we have a query
 
-            context.getDialect().getConsequenceBuilder().build( context, "default" );
+            ConsequenceBuilder consequenceBuilder = context.getDialect().getConsequenceBuilder();
+            consequenceBuilder.build( context, "default" );
             
             for ( String name : ruleDescr.getNamedConsequences().keySet() ) {
-                context.getDialect().getConsequenceBuilder().build( context, name );
+                consequenceBuilder.build( context, name );
             }
         }
 
