@@ -178,5 +178,21 @@ public interface KnowledgeBuilder
      * @return
      */
     KnowledgeBuilderErrors getErrors();
+    
+    /**
+     * Return problems of the types supplied as parameters that occured during the build process.
+     * 
+     * @param problemTypes
+     * @return
+     */
+    KnowledgeBuilderProblems getProblems(ProblemSeverity...problemTypes );
+    
+        
+    /**
+     * Checks if the builder encountered any problems of the type supplied.
+     * @param problemTypes
+     * @return
+     */
+    boolean hasProblems(ProblemSeverity...problemTypes); 
 
 }
