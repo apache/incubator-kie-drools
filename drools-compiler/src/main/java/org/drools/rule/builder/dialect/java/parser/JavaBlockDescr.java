@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.java.parser;
 
+import java.util.List;
 import java.util.Map;
 
 public interface JavaBlockDescr {
@@ -19,6 +20,18 @@ public interface JavaBlockDescr {
 
     public Map<String, Class<?>> getInputs();
 
-    public void setInputs(Map<String, Class< ? >> variables);;
+    public void setInputs(Map<String, Class< ? >> variables);
 
+    /**
+     * Returns the list of in-code, declared variables that are available
+     * in the scope of this block
+     * @return
+     */
+    public List<JavaLocalDeclarationDescr> getInScopeLocalVars();
+
+    /**
+     * Sets the list of in-code, declared variables that are available
+     * in the scope of this block
+     */
+    public void setInScopeLocalVars( List<JavaLocalDeclarationDescr> inScopeLocalVars );
 }

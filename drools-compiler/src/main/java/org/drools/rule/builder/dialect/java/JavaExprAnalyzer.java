@@ -94,11 +94,12 @@ public class JavaExprAnalyzer {
         JavaAnalysisResult result = new JavaAnalysisResult();
         result.setIdentifiers( new HashSet<String>( parser.getIdentifiers() ) );
         result.setLocalVariables( new HashMap<String,JavaLocalDeclarationDescr>() );
-        for( Iterator<?> it = parser.getLocalDeclarations().iterator(); it.hasNext(); ) {
-            JavaLocalDeclarationDescr descr = (JavaLocalDeclarationDescr) it.next();
-            for( Iterator<?> identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
-                JavaLocalDeclarationDescr.IdentifierDescr ident = (JavaLocalDeclarationDescr.IdentifierDescr) identIt.next();
-                result.addLocalVariable( ident.getIdentifier(), descr );
+        if( parser.getRootBlockDescr().getInScopeLocalVars() != null ) {
+            for( JavaLocalDeclarationDescr descr : parser.getRootBlockDescr().getInScopeLocalVars() ) {
+                for( Iterator<?> identIt = descr.getIdentifiers().iterator(); identIt.hasNext(); ) {
+                    JavaLocalDeclarationDescr.IdentifierDescr ident = (JavaLocalDeclarationDescr.IdentifierDescr) identIt.next();
+                    result.addLocalVariable( ident.getIdentifier(), descr );
+                }
             }
         }
         result.setBlockDescrs( parser.getRootBlockDescr() );

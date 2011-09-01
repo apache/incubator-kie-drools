@@ -176,6 +176,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ConsequenceExceptionHandler;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -9062,6 +9063,49 @@ public class MiscTest {
 
     }
 
+    @Test
+    public void testModifyJava() {
+        String str = "package org.drools\n" +
+        		     "import java.util.List\n" +
+                     "rule \"test\"\n" +
+                     "when\n" +
+                     "    $l : List() from collect ( Person( alive == false ) );\n" +
+                     "then\n" +
+                     "    for(Object p : $l ) {\n" +
+                     "        Person p2 = (Person) p;\n" +
+                     "        modify(p2) { setAlive(true) }\n" +
+                     "    }\n" +
+                     "end";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        Assert.assertFalse( kbuilder.getErrors().toString(),
+                            kbuilder.hasErrors() );
+    }
+
+    @Test
+    public void testModifyMVEL() {
+        String str = "package org.drools\n" +
+                     "import java.util.List\n" +
+                     "rule \"test\"\n" +
+                     "    dialect \"mvel\"\n" +
+                     "when\n" +
+                     "    $l : List() from collect ( Person( alive == false ) );\n" +
+                     "then\n" +
+                     "    for(Object p : $l ) {\n" +
+                     "        Person p2 = (Person) p;\n" +
+                     "        modify(p2) { setAlive(true) }\n" +
+                     "    }\n" +
+                     "end";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        Assert.assertFalse( kbuilder.getErrors().toString(),
+                            kbuilder.hasErrors() );
+    }
+    
     @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {
