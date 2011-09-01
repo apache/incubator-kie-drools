@@ -27,7 +27,7 @@ public class JavaLocalDeclarationDescr {
     private int start;
     private int end;
     private String type;
-    private List modifiers;
+    private List<String> modifiers;
     private List<IdentifierDescr> identifiers;
     
     public JavaLocalDeclarationDescr() {
@@ -38,7 +38,7 @@ public class JavaLocalDeclarationDescr {
         this.start = start;
         this.end = end;
         this.type = type;
-        this.modifiers = new LinkedList();
+        this.modifiers = new LinkedList<String>();
         this.identifiers = new LinkedList<IdentifierDescr>();
     }
 
@@ -54,7 +54,7 @@ public class JavaLocalDeclarationDescr {
         return identifiers;
     }
 
-    public void setIdentifiers(List identifiers) {
+    public void setIdentifiers(List<IdentifierDescr> identifiers) {
         this.identifiers = identifiers;
     }
     
@@ -65,11 +65,11 @@ public class JavaLocalDeclarationDescr {
         this.identifiers.add( new IdentifierDescr( identifier, start, end ) );
     }
 
-    public List getModifiers() {
+    public List<String> getModifiers() {
         return modifiers;
     }
 
-    public void setModifiers(List modifiers) {
+    public void setModifiers(List<String> modifiers) {
         this.modifiers = modifiers;
     }
     
@@ -97,6 +97,11 @@ public class JavaLocalDeclarationDescr {
 
     public void setType(String type) {
         this.type = type;
+    }
+    
+    @Override
+    public String toString() {
+        return "[Declaration type="+this.type + " identifiers=" + this.identifiers.toString() + "]";
     }
     
     public static class IdentifierDescr {
@@ -129,6 +134,10 @@ public class JavaLocalDeclarationDescr {
         }
         public void setStart(int start) {
             this.start = start;
+        }
+        @Override
+        public String toString() {
+            return this.identifier;
         }
     }
 

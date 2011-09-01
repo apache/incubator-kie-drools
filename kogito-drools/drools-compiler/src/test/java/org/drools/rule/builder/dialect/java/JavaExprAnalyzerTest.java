@@ -52,7 +52,6 @@ public class JavaExprAnalyzerTest {
             
             JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
             Set<String> vars = analysis.getLocalVariables();
-            
             assertEquals( 3, vars.size() );
             assertTrue( vars.contains( "x" ));
             assertTrue( vars.contains( "cheese" ));
