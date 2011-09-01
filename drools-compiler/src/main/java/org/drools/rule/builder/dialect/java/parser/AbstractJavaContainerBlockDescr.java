@@ -6,7 +6,8 @@ import java.util.Map;
 
 public abstract class AbstractJavaContainerBlockDescr implements JavaContainerBlockDescr {
     private List<JavaBlockDescr> blocks = new ArrayList<JavaBlockDescr>();
-    private Map<String, Class< ? >> variables;
+    private Map<String, Class< ? >> inputs;
+    private List<JavaLocalDeclarationDescr> inScopeLocalVars;
     
     public List<JavaBlockDescr> getJavaBlockDescrs() {
         return this.blocks;
@@ -18,13 +19,27 @@ public abstract class AbstractJavaContainerBlockDescr implements JavaContainerBl
 
 
     public Map<String, Class< ? >> getInputs() {
-        return variables;
+        return inputs;
     }
 
     public void setInputs(Map<String, Class< ? >> variables) {
-        this.variables = variables;
+        this.inputs = variables;
     }
 
+    /**
+     * Returns the list of in-code, declared variables that are available
+     * in the scope of this block
+     * @return
+     */
+    public List<JavaLocalDeclarationDescr> getInScopeLocalVars() {
+        return inScopeLocalVars;
+    }
 
-  
+    /**
+     * Sets the list of in-code, declared variables that are available
+     * in the scope of this block
+     */
+    public void setInScopeLocalVars( List<JavaLocalDeclarationDescr> inScopeLocalVars ) {
+        this.inScopeLocalVars = inScopeLocalVars;
+    }    
 }

@@ -44,6 +44,8 @@ import org.drools.rule.builder.dialect.java.parser.JavaFinalBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaForBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaIfBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaInterfacePointsDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+import org.drools.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr.IdentifierDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaModifyBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaThrowBlockDescr;
 import org.drools.rule.builder.dialect.java.parser.JavaTryBlockDescr;
@@ -565,13 +567,14 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
                                                 end ) );
     }
     
+    @SuppressWarnings("unchecked")
     private boolean rewriteDescr(final RuleBuildContext context,
                                  final String originalCode,
-                                 MVELDialect mvel,
-                                 StringBuilder consequence,
-                                 JavaBlockDescr d, 
-                                 BoundIdentifiers bindings,
-                                 Map<String, Declaration> decls) {         
+                                 final MVELDialect mvel,
+                                 final StringBuilder consequence,
+                                 final JavaBlockDescr d, 
+                                 final BoundIdentifiers bindings,
+                                 final Map<String, Declaration> decls) {         
         if ( d.getEnd() == 0 ) {
             // do nothing, it was incorrectly parsed, but this error should be picked up else where
             return false;            
@@ -579,12 +582,32 @@ public class JavaConsequenceBuilder extends AbstractJavaRuleBuilder
         
         boolean typeSafety = context.isTypesafe();
         context.setTypesafe( false ); // we have to analyse in dynamic mode for now, as we cannot safely determine all input vars
+        
+        Map<String, Class<?>> localTypes = d.getInputs();
+        if( d.getInScopeLocalVars() != null && ! d.getInScopeLocalVars().isEmpty() ) {
+            localTypes = new HashMap<String, Class<?>>( d.getInputs() != null ? d.getInputs() : Collections.EMPTY_MAP );
+            for( JavaLocalDeclarationDescr local : d.getInScopeLocalVars() ) {
+                // these are variables declared in the code itself that are in the scope for this expression
+                try {
+                    Class<?> type = context.getDialect( "java" ).getPackageRegistry().getTypeResolver().resolveType( local.getType() );
+                    for( IdentifierDescr id : local.getIdentifiers() ) {
+                        localTypes.put( id.getIdentifier(), type );
+                    }
+                } catch ( ClassNotFoundException e ) {
+                    context.getErrors().add( new DescrBuildError( context.getRuleDescr(),
+                                                                  context.getParentDescr(),
+                                                                  null,
+                                                                  "Unable to resolve type " + local.getType() + ":\n" + e.getMessage() ) );
+                }
+            }
+        }
+        
            MVELAnalysisResult mvelAnalysis = ( MVELAnalysisResult ) mvel.analyzeBlock( context,
                                                                                        context.getRuleDescr(),
                                                                                        mvel.getInterceptors(),
                                                                                        d.getTargetExpression(),
                                                                                        bindings,
-                                                                                       d.getInputs(),
+                                                                                       localTypes,
                                                                                        "drools",
                                                                                        KnowledgeHelper.class);
            context.setTypesafe( typeSafety );

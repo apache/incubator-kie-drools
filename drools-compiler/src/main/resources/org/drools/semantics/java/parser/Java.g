@@ -77,22 +77,29 @@
 grammar Java;
 options {k=2; backtrack=true; memoize=true;}
 
+scope VarDecl {
+            JavaLocalDeclarationDescr descr;
+}
+ 
 @parser::header {
     package org.drools.rule.builder.dialect.java.parser;
     import java.util.Iterator;
     import java.util.Queue;
-    import java.util.LinkedList;    
+    import java.util.LinkedList;   
+    import java.util.Stack; 
     
 }
 
 @parser::members {
     private List identifiers = new ArrayList();
     public List getIdentifiers() { return identifiers; }
-    private List localDeclarations = new ArrayList();
-    public List getLocalDeclarations() { return localDeclarations; }
+
+    private Stack<List<JavaLocalDeclarationDescr>> localDeclarationsStack = new Stack<List<JavaLocalDeclarationDescr>>(); 
+    { localDeclarationsStack.push( new ArrayList<JavaLocalDeclarationDescr>() ); }
+    private int localVariableLevel = 0;
+
     public static final CommonToken IGNORE_TOKEN = new CommonToken(null,0,99,0,0);
     private List errors = new ArrayList();
-    private int localVariableLevel = 0;
     
         private JavaRootBlockDescr rootBlockDescr = new JavaRootBlockDescr();
         private LinkedList<JavaContainerBlockDescr> blocks;
@@ -215,6 +222,32 @@ options {k=2; backtrack=true; memoize=true;}
         }
                    return message.toString();
         }   
+        
+        public void increaseLevel() {
+            this.localVariableLevel++;
+            localDeclarationsStack.push( new ArrayList<JavaLocalDeclarationDescr>() );
+        }
+        
+        public void decreaseLevel() {
+            this.localVariableLevel--;
+            localDeclarationsStack.pop();
+        }
+        
+        public void addLocalDeclaration( JavaLocalDeclarationDescr decl ) {
+            localDeclarationsStack.peek().add(decl);
+        }
+
+        public List<JavaLocalDeclarationDescr> getLocalDeclarations() { 
+            if( localDeclarationsStack.size() > 1 ) {
+                List<JavaLocalDeclarationDescr> decls = new ArrayList<JavaLocalDeclarationDescr>();
+                for( List<JavaLocalDeclarationDescr> local : localDeclarationsStack ) {
+                    decls.addAll( local );
+                }
+                return decls;
+            }
+            // the stack should never be empty, so it is safe to do a peek() here
+            return new ArrayList<JavaLocalDeclarationDescr>( localDeclarationsStack.peek() ); 
+        }
 } 
 
 @lexer::header {
@@ -343,6 +376,7 @@ genericMethodOrConstructorRest
     ;
 
 methodDeclaration
+scope VarDecl;
     :	type Identifier methodDeclaratorRest
     ;
 
@@ -417,23 +451,19 @@ variableDeclarator
         JavaLocalDeclarationDescr.IdentifierDescr ident;
     }
     @init {
-        if( this.localVariableLevel == 1 ) { // we only want top level local vars
-            $variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
-        }
+        $variableDeclarator::ident = new JavaLocalDeclarationDescr.IdentifierDescr();
     }
     @after {
-            if( this.localVariableLevel == 1 ) { // we only want top level local vars
-                $localVariableDeclaration::descr.addIdentifier( $variableDeclarator::ident );
+            if( $VarDecl::descr != null ) {
+                $VarDecl::descr.addIdentifier( $variableDeclarator::ident );
             }
     }
     :	id=Identifier rest=variableDeclaratorRest
         {
-            if( this.localVariableLevel == 1 ) { // we only want top level local vars
-                $variableDeclarator::ident.setIdentifier( $id.text );
-                $variableDeclarator::ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
-                if( $rest.stop != null ) {
-                       $variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
-                }
+            $variableDeclarator::ident.setIdentifier( $id.text );
+            $variableDeclarator::ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
+            if( $rest.stop != null ) {
+                   $variableDeclarator::ident.setEnd( ((CommonToken)$rest.stop).getStopIndex() );
             }
         }
     ;
@@ -634,6 +664,7 @@ annotationMethodRest
      ;
 
 annotationConstantRest
+scope VarDecl;
      :	variableDeclarators
      ;
 
@@ -645,10 +676,14 @@ defaultValue
 
 block
         @init {
-            this.localVariableLevel++;
+            increaseLevel();
         }
         @after {
-            this.localVariableLevel--;
+            if( localVariableLevel <= 1 ) {
+                // this is the top level block, so set the top level declarations
+                rootBlockDescr.setInScopeLocalVars( getLocalDeclarations() );
+            }
+            decreaseLevel();
         }
     :	'{' blockStatement* '}'
     ;
@@ -660,27 +695,25 @@ blockStatement
     ;
 
 localVariableDeclaration
-scope   {
-            JavaLocalDeclarationDescr descr;
-        }
+scope VarDecl;
         @init {
-            $localVariableDeclaration::descr = new JavaLocalDeclarationDescr();
+            $VarDecl::descr = new JavaLocalDeclarationDescr();
         }
         @after {
-            localDeclarations.add( $localVariableDeclaration::descr );
+            addLocalDeclaration( $VarDecl::descr );
         }
     :
     ( variableModifier
         {
-            $localVariableDeclaration::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 );
-            $localVariableDeclaration::descr.addModifier( $variableModifier.text );
+            $VarDecl::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 );
+            $VarDecl::descr.addModifier( $variableModifier.text );
         }
     )*
     type
         {
-            $localVariableDeclaration::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 );
-            $localVariableDeclaration::descr.setType( $type.text );
-            $localVariableDeclaration::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() );
+            $VarDecl::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 );
+            $VarDecl::descr.setType( $type.text );
+            $VarDecl::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() );
         }
     variableDeclarators ';'
     ;
@@ -734,13 +767,13 @@ ifStatement
     //    | 'if' parExpression statement (options {k=1;}:'else' statement)?
     s='if' parExpression
     {
-        this.localVariableLevel++;
+        increaseLevel();
         id = new JavaIfBlockDescr();
         id.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(id, true); 
     }    
     x=statement 
     {
-        this.localVariableLevel--;
+        decreaseLevel();
         id.setTextStart(((CommonToken)$x.start).getStartIndex() );
         id.setEnd(((CommonToken)$x.stop).getStopIndex() ); popContainerBlockDescr(); 
     }
@@ -748,13 +781,13 @@ ifStatement
     (
      y='else'  ('if' parExpression )?
     {
-        this.localVariableLevel++;
+        increaseLevel();
         ed = new JavaElseBlockDescr();
         ed.setStart( ((CommonToken)$y).getStartIndex() );  pushContainerBlockDescr(ed, true); 
     }             
      z=statement
     {
-        this.localVariableLevel--;
+        decreaseLevel();
         ed.setTextStart(((CommonToken)$z.start).getStartIndex() );
         ed.setEnd(((CommonToken)$z.stop).getStopIndex() ); popContainerBlockDescr();               
     })*       
@@ -762,10 +795,16 @@ ifStatement
        
 forStatement
 options {k=3;}
+scope VarDecl;
     @init {
          JavaForBlockDescr fd = null;
-         
-     }
+         increaseLevel();
+         $VarDecl::descr = new JavaLocalDeclarationDescr();
+    }
+    @after {
+         addLocalDeclaration( $VarDecl::descr );
+         decreaseLevel();
+    }
     : 
     x='for' y='('
     {   fd = new JavaForBlockDescr( ); 
@@ -773,7 +812,27 @@ options {k=3;}
         fd.setStartParen( ((CommonToken)$y).getStartIndex() );            
     }      
     (    
-        (variableModifier* type Identifier z=':' expression
+        ( ( variableModifier
+            {
+                $VarDecl::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 );
+                $VarDecl::descr.addModifier( $variableModifier.text );
+            }
+          )*
+          type
+          {
+            $VarDecl::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 );
+            $VarDecl::descr.setType( $type.text );
+            $VarDecl::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() );
+          }
+          id=Identifier 
+          {
+            JavaLocalDeclarationDescr.IdentifierDescr ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+            ident.setIdentifier( $id.text );
+            ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
+            ident.setEnd( ((CommonToken)$id).getStopIndex() );
+            $VarDecl::descr.addIdentifier( ident );
+          }
+          z=':' expression
           {
              fd.setInitEnd( ((CommonToken)$z).getStartIndex() );        
           })
@@ -817,18 +876,18 @@ tryStatement
     }
     :     
     s='try' 
-    {   this.localVariableLevel++;
+    {   increaseLevel();
         td = new JavaTryBlockDescr( ); td.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(td, true);    
     } bs='{' blockStatement*
     {
                 
         td.setTextStart( ((CommonToken)$bs).getStartIndex() );        
 
-    } c='}' {td.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr();    }
+    } c='}' {td.setEnd( ((CommonToken)$c).getStopIndex() ); decreaseLevel(); popContainerBlockDescr();    }
     
  
     (s='catch' '(' formalParameter ')' 
-     {  this.localVariableLevel++;
+     {  increaseLevel();
         cd = new JavaCatchBlockDescr( $formalParameter.text );
         cd.setClauseStart( ((CommonToken)$formalParameter.start).getStartIndex() ); 
         cd.setStart( ((CommonToken)$s).getStartIndex() );  pushContainerBlockDescr(cd, false);
@@ -836,18 +895,18 @@ tryStatement
      { 
         cd.setTextStart( ((CommonToken)$bs).getStartIndex() );
         td.addCatch( cd );        
-     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )* 
+     }  c='}' {cd.setEnd( ((CommonToken)$c).getStopIndex() ); decreaseLevel(); popContainerBlockDescr(); } )* 
      
      
      
      (s='finally' 
-     {  this.localVariableLevel++;
+     {  increaseLevel();
         fd = new JavaFinalBlockDescr( ); fd.setStart( ((CommonToken)$s).getStartIndex() ); pushContainerBlockDescr(fd, false);
      } bs='{' blockStatement*
       {
         fd.setTextStart( ((CommonToken)$bs).getStartIndex() );        
         td.setFinally( fd );         
-      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); this.localVariableLevel--; popContainerBlockDescr(); } )?     
+      }  c='}' {fd.setEnd( ((CommonToken)$c).getStopIndex() ); decreaseLevel(); popContainerBlockDescr(); } )?     
     ;    
 
 modifyStatement
@@ -858,6 +917,7 @@ modifyStatement
     {
         d = new JavaModifyBlockDescr( $parExpression.text );
         d.setStart( ((CommonToken)$s).getStartIndex() );
+        d.setInScopeLocalVars( getLocalDeclarations() );
         this.addBlockDescr( d );
 
     }
@@ -957,23 +1017,58 @@ moreStatementExpressions
 
 forControl
 options {k=3;} // be efficient for common case: for (ID ID : ID) ...
+scope VarDecl;
+        @init {
+            increaseLevel();
+            $VarDecl::descr = new JavaLocalDeclarationDescr();
+        }
+        @after {
+            addLocalDeclaration( $VarDecl::descr );
+            decreaseLevel();
+        }
     :	forVarControl
     |	forInit? ';' expression? ';' forUpdate?
     ;
 
 forInit
-        @init {
-            this.localVariableLevel++;
+    :	( variableModifier
+            {
+                $VarDecl::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 );
+                $VarDecl::descr.addModifier( $variableModifier.text );
+            }
+        )*
+        type
+        {
+            $VarDecl::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 );
+            $VarDecl::descr.setType( $type.text );
+            $VarDecl::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() );
         }
-        @after {
-            this.localVariableLevel--;
-        }
-    :	variableModifier* type variableDeclarators
+        variableDeclarators
     |	expressionList
     ;
 
 forVarControl
-    :	variableModifier* type Identifier ':' expression
+    :	( variableModifier
+            {
+                $VarDecl::descr.updateStart( ((CommonToken)$variableModifier.start).getStartIndex() - 1 );
+                $VarDecl::descr.addModifier( $variableModifier.text );
+            }
+        )*
+        type
+        {
+            $VarDecl::descr.updateStart( ((CommonToken)$type.start).getStartIndex() - 1 );
+            $VarDecl::descr.setType( $type.text );
+            $VarDecl::descr.setEnd( ((CommonToken)$type.stop).getStopIndex() );
+        }
+        id=Identifier 
+        {
+            JavaLocalDeclarationDescr.IdentifierDescr ident = new JavaLocalDeclarationDescr.IdentifierDescr();
+            ident.setIdentifier( $id.text );
+            ident.setStart( ((CommonToken)$id).getStartIndex() - 1 );
+            ident.setEnd( ((CommonToken)$id).getStopIndex() );
+            $VarDecl::descr.addIdentifier( ident );
+        }
+        ':' expression
     ;
 
 forUpdate
@@ -1171,8 +1266,8 @@ superSuffix
     :	arguments
     |   '.' Identifier (arguments)?
     ;
-
-arguments
+    
+    arguments
     :	'(' expressionList? ')'
     ;
 
