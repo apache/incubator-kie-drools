@@ -3,7 +3,7 @@ package org.drools.rule.builder.dialect.asm;
 import org.junit.*;
 import org.mvel2.asm.*;
 
-import static org.drools.rule.builder.dialect.asm.ClassGenerator.mDescr;
+import static org.drools.rule.builder.dialect.asm.ASMUtil.mDescr;
 import static org.junit.Assert.assertEquals;
 import static org.mvel2.asm.Opcodes.*;
 import static org.mvel2.asm.Type.*;

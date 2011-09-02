@@ -34,12 +34,12 @@ public class JavaReturnValueBuilder
 
         map.put( "readLocalsFromTuple", Boolean.FALSE );
 
-        generatTemplates( "returnValueMethod",
-                          "returnValueInvoker",
-                          context,
-                          className,
-                          map,
-                          returnValueRestriction,
-                          returnValueRestrictionDescr );
+        generateTemplates("returnValueMethod",
+                "returnValueInvoker",
+                context,
+                className,
+                map,
+                returnValueRestriction,
+                returnValueRestrictionDescr);
     }
 }

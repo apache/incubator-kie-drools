@@ -1,20 +1,19 @@
 package org.drools.rule.builder.dialect.asm;
 
 import org.drools.*;
-import org.drools.compiler.*;
-import org.drools.lang.descr.*;
 import org.drools.rule.*;
 import org.drools.rule.builder.*;
 import org.drools.rule.builder.dialect.java.*;
 import org.drools.spi.*;
 import org.mvel2.asm.*;
 
-import static org.drools.rule.builder.dialect.asm.ClassGenerator.mDescr;
-import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
-import static org.mvel2.asm.Type.*;
-import static org.mvel2.asm.Opcodes.*;
-
 import java.util.*;
+
+import static org.drools.rule.builder.dialect.DialectUtil.*;
+import static org.drools.rule.builder.dialect.asm.ASMUtil.*;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
+import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Type.*;
 
 public class ASMConsequenceBuilder implements ConsequenceBuilder {
 
@@ -24,8 +23,12 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
         // pushing consequence LHS into the stack for variable resolution
         context.getBuildStack().push( context.getRule().getLhs() );
 
-        Consequence consequence = createConsequence(context, consequenceName, consequenceContext(context, consequenceName));
-        context.getRule().setConsequence(consequence);
+        Map<String, Object> vars = consequenceContext(context, consequenceName);
+        if (vars == null) return;
+        generateMethodTemplate("consequenceMethod", context, vars);
+
+        byte[] bytecode = createConsequenceBytecode(context, consequenceName, vars);
+        writeBytecode(context, vars, bytecode);
 
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
@@ -36,10 +39,35 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
         Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
         JavaAnalysisResult analysis = createJavaAnalysisResult(context, consequenceName, decls);
 
-        return createConsequenceContext(context, consequenceName, className, analysis.getAnalyzedExpr(), decls, analysis.getBoundIdentifiers());
+        if ( analysis == null ) {
+            // not possible to get the analysis results
+            return null;
+        }
+
+        // this will fix modify, retract, insert, update, entrypoints and channels
+        String fixedConsequence = fixBlockDescr(context, analysis, decls);
+
+        if ( fixedConsequence == null ) {
+            // not possible to rewrite the modify blocks
+            return null;
+        }
+        fixedConsequence = KnowledgeHelperFixer.fix( fixedConsequence );
+
+        return createConsequenceContext(context, consequenceName, className, fixedConsequence, decls, analysis.getBoundIdentifiers());
     }
 
-    private Consequence createConsequence(RuleBuildContext ruleContext, String consequenceName, final Map<String, Object> consequenceContext) {
+    private void writeBytecode(RuleBuildContext context, Map<String, Object> consequenceContext, byte[] bytecode) {
+        String packageName = (String)consequenceContext.get("package");
+        String invokerClassName = (String)consequenceContext.get("invokerClassName");
+        String className = packageName + "." + invokerClassName;
+        String resourceName = className.replace('.', '/') + ".class";
+
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData)context.getPkg().getDialectRuntimeRegistry().getDialectData("java");
+        data.write(resourceName, bytecode);
+        data.putInvoker(className, context.getRule());
+    }
+
+    private byte[] createConsequenceBytecode(RuleBuildContext ruleContext, String consequenceName, final Map<String, Object> consequenceContext) {
         final String packageName = (String)consequenceContext.get("package");
         final String invokerClassName = (String)consequenceContext.get("invokerClassName");
         final String ruleClassName = (String)consequenceContext.get("ruleClassName");
@@ -49,8 +77,11 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
         final Integer hashCode = (Integer)consequenceContext.get("hashCode");
         final Declaration[] declarations = (Declaration[])consequenceContext.get("declarations");
         final String[] declarationTypes = (String[])consequenceContext.get("declarationTypes");
+        final String[] globals = (String[])consequenceContext.get("globals");
+        final String[] globalTypes = (String[])consequenceContext.get("globalTypes");
 
-        final ClassGenerator generator = new ClassGenerator(packageName + "." + invokerClassName)
+        final ClassGenerator generator = new ClassGenerator(packageName + "." + invokerClassName,
+                                                            ruleContext.getPackageBuilder().getRootClassLoader())
                 .setInterfaces("org/drools/spi/Consequence", "org/drools/spi/CompiledInvoker");
 
         generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", LONG_TYPE.getDescriptor(), CONSEQUENCE_SERIAL_UID)
@@ -130,7 +161,7 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                     mv.visitLdcInsn(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/spi/Tuple", "get", "(Lorg/drools/rule/Declaration;)Lorg/drools/common/InternalFactHandle;");
-                    mv.visitVarInsn(ASTORE, i+5); // fact[i]
+                    mv.visitVarInsn(ASTORE, i*2+5); // fact[i]
 
                     // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
                     mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
@@ -138,28 +169,41 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // WorkingMemory
                     mv.visitTypeInsn(CHECKCAST, "org/drools/common/InternalWorkingMemory"); // (org.drools.common.InternalWorkingMemory)workingMemory
-                    mv.visitVarInsn(ALOAD, i+5); // fact[i]
+                    mv.visitVarInsn(ALOAD, i * 2 + 5); // fact[i]
                     mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/common/InternalFactHandle", "getObject", "()Ljava/lang/Object;");
                     mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", "getValue", "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)Ljava/lang/Object;");
-                    mv.visitTypeInsn(CHECKCAST, declarationTypes[i].replace('.', '/'));
-                    mv.visitVarInsn(ASTORE, i+6); // obj[i]
+                    mv.visitTypeInsn(CHECKCAST, toInteralName(declarationTypes[i]));
+                    mv.visitVarInsn(ASTORE, i * 2 + 6); // obj[i]
                 }
 
-                // TODO: @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+                // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
+                int globalsOffset = declarations.length * 2 + 5;
+                for (int i = 0; i < globals.length; i++) {
+                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
+                    mv.visitLdcInsn(globals[i]);
+                    mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/WorkingMemory", "getGlobal", "(Ljava/lang/String;)Ljava/lang/Object;");
+                    mv.visitTypeInsn(CHECKCAST, toInteralName(globalTypes[i]));
+                    mv.visitVarInsn(ASTORE, globalsOffset + i);
+                }
 
-                // @{ruleClassName}.@{methodName}
+                // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
                 StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/spi/KnowledgeHelper;");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
                 for (int i = 0; i < declarations.length; i++) {
-                    mv.visitVarInsn(ALOAD, i+6); // obj[i]
-                    mv.visitVarInsn(ALOAD, i+5); // fact[i]
-                    consequenceMethodDescr.append("L" + declarationTypes[i].replace('.', '/') + ";Lorg/drools/FactHandle;");
+                    mv.visitVarInsn(ALOAD, i*2+6); // obj[i]
+                    mv.visitVarInsn(ALOAD, i * 2 + 5); // fact[i]
+                    consequenceMethodDescr.append(toTypeDescriptor(declarationTypes[i]) + "Lorg/drools/FactHandle;");
+                }
+                for (int i = 0; i < globals.length; i++) {
+                    mv.visitVarInsn(ALOAD, globalsOffset + i);
+                    consequenceMethodDescr.append(toTypeDescriptor(globalTypes[i]));
                 }
                 consequenceMethodDescr.append(")V");
                 mv.visitMethodInsn(INVOKESTATIC, internalRuleClassName, methodName, consequenceMethodDescr.toString());
                 mv.visitInsn(RETURN);
             }
         });
-        return generator.newInstance();
+
+        return generator.generateBytecode();
     }
 }
