@@ -7,30 +7,66 @@ import java.util.Properties;
 
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.persistence.session.VariablePersistenceStrategyTest;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class PersistenceUtil {
 
+    private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
+    
     public static final String PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
         
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     private static TestH2Server h2Server = new TestH2Server();
+    
+    private static Properties defaultProperties = null;
+   
+    private static Properties getDefaultProperties() { 
+        if( defaultProperties == null ) { 
+            String [] keyArr = { "serverName", "portNumber", "databaseName", "url", 
+                    "user", "password", "driverClassName", "className", 
+                    "maxPoolSize", "allowLocalTransactions" };
+            String [] defaultPropArr= { "", "", "", "jdbc:h2:tcp://localhost/JPADroolsFlow", 
+                    "sa", "", "org.h2.Driver", "bitronix.tm.resource.jdbc.lrc.LrcXADataSource", 
+                    "16", "true" };
+            Assert.assertTrue("Unequal number of keys for default properties", keyArr.length == defaultPropArr.length);
+            defaultProperties = new Properties();
+            for( int i = 0; i < keyArr.length; ++i ) { 
+                defaultProperties.put(keyArr[i], defaultPropArr[i]);
+            }
+        }
+        
+        return defaultProperties;
+    }
 
     private static Properties getDatasourceProperties() {
-        String propertiesNotFound = "Unable to load datasource properties ["+ DATASOURCE_PROPERTIES + "]";
+        String propertiesNotFoundMessage = "Unable to load datasource properties ["+ DATASOURCE_PROPERTIES + "]";
+        boolean propertiesNotFound = false;
 
         InputStream propsInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
-        Assert.assertNotNull(propertiesNotFound, propsInputStream);
         Properties props = new Properties();
-        try {
-            props.load(propsInputStream);
-        } catch (IOException ioe) {
-            Assert.fail(propertiesNotFound + ": " + ioe.getMessage());
-            ioe.printStackTrace();
+        if( propsInputStream != null ) { 
+            try {
+                props.load(propsInputStream);
+            } catch (IOException ioe) {
+                propertiesNotFound = true;
+                logger.warn("Unable to find properties, using default H2 properties: " + ioe.getMessage());
+                ioe.printStackTrace();
+            }
+        }
+        else { 
+            propertiesNotFound = true;
         }
 
+        String password = props.getProperty("password");
+        if( "${maven.jdbc.password}".equals(password) || propertiesNotFound )  { 
+           props = getDefaultProperties();
+        }
+            
         return props;
     }
 
