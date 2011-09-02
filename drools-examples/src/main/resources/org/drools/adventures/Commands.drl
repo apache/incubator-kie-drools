@@ -29,7 +29,7 @@ then
     str +="\n";
             
     res = new Response( str );
-    res.localId = lc.request;
+    res.localId = lc.requestId;
     insert( res );    
 end
 
@@ -39,16 +39,10 @@ rule setUserSessionCharacter agenda-group "commands" lock-on-active auto-focus  
 then
     modify( $sc ) { character = $c.character }; 
     insert( new CharacterSelectedEvent( $c.character ) );   
-end
-
-rule invalidMove agenda-group "commands" lock-on-active auto-focus when
-    mc : MoveCommand( c : character, r : room )    
-    l  : Location( thing == c, ltarget : target )
-    not ?connect( r, ltarget; ) 
-then
-    res = new Response( "Invalid Move: " + mc );
-    res.localId = mc.request;
-    insert( res ); 
+    
+    res = new Response( "You have selected the character " + $c.character + "\n" );
+    res.localId = $c.requestId;
+    insert( res );     
 end
 
 rule validMove agenda-group "commands" lock-on-active auto-focus  when
@@ -65,18 +59,8 @@ then
     insert( enter );    
     
     res = new Response( "You have entered the " + l.target + "\n" );
-    res.localId = mc.request;
+    res.localId = mc.requestId;
     insert( res );    
-end
-
-rule invalidPickup agenda-group "commands" lock-on-active auto-focus  when
-    pc : PickupCommand( c : character, t : thing)            
-    cl  : Location( thing == c )
-    not Location( thing == t, target == cl.target ) 
-then
-    res = new Response( "Invalid Pickup: " + pc );
-    res.localId = pc.request;
-    insert( res ); 
 end
 
 rule validPickup agenda-group "commands" lock-on-active auto-focus  when
@@ -90,17 +74,8 @@ then
     insert( new PickupEvent( c, t ) );
     
     res = new Response( "You have picked up the " + t + "\n" );
-    res.localId = pc.request;
+    res.localId = pc.requestId;
     insert( res );  
-end
-
-rule invalidDrop agenda-group "commands" lock-on-active auto-focus  when
-    dc : DropCommand( c : character, t : thing)           
-    not ( Holding( c, t;) )
-then
-    res = new Response( "Invalid Drop: " + dc );
-    res.localId = dc.request;
-    insert( res ); 
 end
 
 rule validDrop agenda-group "commands" lock-on-active auto-focus  when
@@ -115,10 +90,36 @@ then
     insert( new DropEvent( c, t ) );    
     
     res = new Response( "You have droped the " + t + "\n" );
-    res.localId = dc.request;
+    res.localId = dc.requestId;
     insert( res );      
 end
-                     
+
+rule validGive agenda-group "commands" lock-on-active auto-focus  when
+    gc : GiveCommand( $giver : giver, $thing : thing )    
+    
+    // They are in the same room
+    giverl  : Location( thing == gc.giver )
+              Location( thing == gc.receiver, target == giverl.target )
+
+    // The giver must be holding the thing                   
+    h : Holding( $giver, $thing;)
+then
+    modify( h ) { character = gc.receiver };
+    insert( new GiveEvent( gc.giver, gc.thing, gc.receiver ) );    
+    
+    res = new Response( "You have given the " + gc.thing + " to " + gc.receiver + "\n" );
+    res.localId = gc.requestId;
+    insert( res );      
+end    
+
+rule invalidCommand  agenda-group "commands" lock-on-active auto-focus  when
+    $cmd : Command()
+    not Response( localId == $cmd.requestId )
+then
+    res = new Response( "Invalid Command: " + $cmd );
+    res.localId = $cmd.requestId;
+    insert( res ); 
+end               
 
 rule retractCommand agenda-group "commands" lock-on-active auto-focus salience -100 when
     c : Command()

@@ -72,6 +72,8 @@ public class AdventureFrame extends JFrame {
     private JTable                   thingsTable;
     private JTable                   inventoryTable;
     private JFormattedTextField      cmdTextField;
+    
+    private JTextArea                globalEventsTextArea;
 
     private GameEngine               gameEngine;
 
@@ -82,8 +84,8 @@ public class AdventureFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public AdventureFrame(UserSession session) {
-        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+    public AdventureFrame(UserSession session, int onClose) {
+        setDefaultCloseOperation( onClose );
         setBounds( 100,
                    100,
                    1100,
@@ -100,9 +102,14 @@ public class AdventureFrame extends JFrame {
         JToolBar toolBar_1 = new JToolBar();
         toolBar_1.setAlignmentX( Component.LEFT_ALIGNMENT );
         contentPane.add( toolBar_1 );
-
-        JToggleButton Exit = new JToggleButton( "Exit" );
-        toolBar_1.add( Exit );
+        
+        JToggleButton newFrame = new JToggleButton( "New Window" );
+        toolBar_1.add( newFrame );       
+        newFrame.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                TextAdventure.createFrame( gameEngine, JFrame.DISPOSE_ON_CLOSE );
+            }
+        } );
 
         JSplitPane splitPane = new JSplitPane();
         splitPane.setResizeWeight( 0.4 );
@@ -185,40 +192,62 @@ public class AdventureFrame extends JFrame {
         splitPanel.setResizeWeight( 0.4 );
         splitPanel.setOrientation( JSplitPane.VERTICAL_SPLIT );
 
+        splitPanel.setRightComponent( createGlobalEventsPanel() );
+        
+        splitPanel.setLeftComponent( createLocalEventsPanel() );
+
+        return splitPanel;
+    }
+    
+    private Component createGlobalEventsPanel() {
         JPanel globalEventsPanel = new JPanel();
-        splitPanel.setLeftComponent( globalEventsPanel );
+        
         globalEventsPanel.setLayout( new BoxLayout( globalEventsPanel,
                                                     BoxLayout.Y_AXIS ) );
 
         JLabel globalEventsLabel = new JLabel( "Global Events" );
         globalEventsPanel.add( globalEventsLabel );
 
-        JScrollPane pane = createTextAreaScroll( "",
-                                                 20,
-                                                 50,
-                                                 true,
-                                                 true );
-        JTextArea globalEventsTextArea = (JTextArea) ((JViewport) pane.getComponents()[0]).getComponents()[0];
-        globalEventsPanel.add( pane );
-
+        JScrollPane pane1 = createTextAreaScroll( "",
+                                                  20,
+                                                  50,
+                                                  true,
+                                                  true );
+        globalEventsTextArea = (JTextArea) ((JViewport) pane1.getComponents()[0]).getComponents()[0];
+        globalEventsPanel.add( pane1 );
+        return globalEventsPanel;
+    }     
+    
+    private Component createLocalEventsPanel() {
         JPanel localEventsPanel = new JPanel();
-        splitPanel.setRightComponent( localEventsPanel );
+        
         localEventsPanel.setLayout( new BoxLayout( localEventsPanel,
                                                    BoxLayout.Y_AXIS ) );
 
         JLabel localEventsLabel = new JLabel( "Local Events" );
         localEventsPanel.add( localEventsLabel );
 
-        pane = createTextAreaScroll( "",
-                                     20,
-                                     50,
-                                     true,
-                                     true );
-        localEventsTextArea = (JTextArea) ((JViewport) pane.getComponents()[0]).getComponents()[0];
-        localEventsPanel.add( pane );
+//        JScrollPane pane2 = createTextAreaScroll( "",
+//                                                  20,
+//                                                  50,
+//                                                  true,
+//                                                  true );
+        JTextArea ta = new JTextArea( "",
+                                      20,
+                                      50 );
+        ta.setFont( UIManager.getFont( "TextField.font" ) );
+        ta.setWrapStyleWord( true );
+        ta.setLineWrap( true );
 
-        return splitPanel;
-    }
+        JScrollPane scroll = new JScrollPane( ta,
+                                              ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                              ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );        
+        
+        localEventsTextArea = (JTextArea) ((JViewport) scroll.getComponents()[0]).getComponents()[0];
+        localEventsPanel.add( scroll );
+
+        return localEventsPanel;
+    }    
 
     private Component createInventoryPanel() {
         inventoryTable = new JTable();
@@ -252,7 +281,7 @@ public class AdventureFrame extends JFrame {
                 int col = inventoryTable.columnAtPoint( e.getPoint() );
                 Object o = inventoryTable.getModel().getValueAt( row,
                                                                  col );
-                cmdTextField.setText( cmdTextField.getText() + o.toString() );
+                cmdTextField.setText( cmdTextField.getText() + o.toString() + " " );
                 cmd.add( o );
             }
         } );
@@ -264,13 +293,25 @@ public class AdventureFrame extends JFrame {
     private void createpOutputPanel(JPanel parent) {
         parent.add( createLabel( "Output" ),
                     "wrap, spanx 3" );
-        JScrollPane pane = createTextAreaScroll( "",
-                                                 20,
-                                                 45,
-                                                 true,
-                                                 true );
-        outputTextArea = (JTextArea) ((JViewport) pane.getComponents()[0]).getComponents()[0];
-        parent.add( pane,
+//        JScrollPane pane = createTextAreaScroll( "",
+//                                                 20,
+//                                                 45,
+//                                                 true,
+//                                                 true );
+        
+        JTextArea ta = new JTextArea( "",
+                                      20,
+                                      50 );
+        ta.setFont( UIManager.getFont( "TextField.font" ) );
+        ta.setWrapStyleWord( true );
+        ta.setLineWrap( true );
+
+        JScrollPane scroll = new JScrollPane( ta,
+                                              ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                              ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED );  
+        
+        outputTextArea = (JTextArea) ((JViewport) scroll.getComponents()[0]).getComponents()[0];
+        parent.add( scroll,
                     "wrap, span 3" );
     }
 
@@ -355,6 +396,17 @@ public class AdventureFrame extends JFrame {
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
             }
         } );
+        
+        JButton giveBtn = new JButton( "Give" );
+        commandsPanel.add( giveBtn );
+        giveBtn.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cmdTextField.setText( "Give " );
+                cmd = new ArrayList();
+                cmd.add( CommandEnum.GIVE );
+                cmd.add( characterSelectCombo.getSelectedObjects()[0] );
+            }
+        } );        
 
         JButton lookBtn = new JButton( "Look" );
         commandsPanel.add( lookBtn );
@@ -403,7 +455,7 @@ public class AdventureFrame extends JFrame {
                 int col = thingsTable.columnAtPoint( e.getPoint() );
                 Object o = thingsTable.getModel().getValueAt( row,
                                                               col );
-                cmdTextField.setText( cmdTextField.getText() + o.toString() );
+                cmdTextField.setText( cmdTextField.getText() + o.toString() + " " );
                 cmd.add( o );
             }
         } );
@@ -446,7 +498,7 @@ public class AdventureFrame extends JFrame {
                 int col = exitsTable.columnAtPoint( e.getPoint() );
                 Object o = exitsTable.getModel().getValueAt( row,
                                                              col );
-                cmdTextField.setText( cmdTextField.getText() + o.toString() );
+                cmdTextField.setText( cmdTextField.getText() + o.toString() + " " );
                 cmd.add( o );
             }
         } );
