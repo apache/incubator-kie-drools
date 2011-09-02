@@ -27,8 +27,10 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.common.app.LoggingMain;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.persistence.XstreamSolutionDaoImpl;
+import org.drools.planner.examples.nqueens.domain.Column;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
+import org.drools.planner.examples.nqueens.domain.Row;
 
 public class NQueensGenerator extends LoggingMain {
 
@@ -60,11 +62,29 @@ public class NQueensGenerator extends LoggingMain {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
         nQueens.setN(n);
+        List<Column> columnList = new ArrayList<Column>(n);
+        for (int i = 0; i < n; i++) {
+            Column column = new Column();
+            column.setId((long) i);
+            column.setIndex(i);
+            columnList.add(column);
+        }
+        nQueens.setColumnList(columnList);
+        List<Row> rowList = new ArrayList<Row>(n);
+        for (int i = 0; i < n; i++) {
+            Row row = new Row();
+            row.setId((long) i);
+            row.setIndex(i);
+            rowList.add(row);
+        }
+        nQueens.setRowList(rowList);
         List<Queen> queenList = new ArrayList<Queen>(n);
-        for (int x = 0; x < n; x++) {
+        long id = 0;
+        for (Column column : columnList) {
             Queen queen = new Queen();
-            queen.setId((long) x);
-            queen.setX(x);
+            queen.setId(id);
+            id++;
+            queen.setColumn(column);
             // Notice that we leave the PlanningVariable properties on null
             queenList.add(queen);
         }

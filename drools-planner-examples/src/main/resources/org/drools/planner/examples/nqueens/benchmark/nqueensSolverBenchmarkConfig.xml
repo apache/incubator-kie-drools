@@ -25,7 +25,7 @@
     <solver>
       <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
           <completeSolutionTabuSize>1000</completeSolutionTabuSize>
@@ -41,7 +41,7 @@
     <solver>
       <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
           <completeMoveTabuSize>5</completeMoveTabuSize>
@@ -57,7 +57,7 @@
     <solver>
       <localSearch>
         <selector>
-          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+          <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
           <completePropertyTabuSize>5</completePropertyTabuSize>

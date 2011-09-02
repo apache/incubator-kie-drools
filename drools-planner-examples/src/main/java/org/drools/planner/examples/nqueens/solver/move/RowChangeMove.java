@@ -19,6 +19,7 @@ package org.drools.planner.examples.nqueens.solver.move;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
@@ -26,28 +27,29 @@ import org.drools.FactHandle;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nqueens.domain.Queen;
+import org.drools.planner.examples.nqueens.domain.Row;
 
-public class YChangeMove implements Move, TabuPropertyEnabled {
+public class RowChangeMove implements Move, TabuPropertyEnabled {
 
     private Queen queen;
-    private Integer toY;
+    private Row toRow;
 
-    public YChangeMove(Queen queen, Integer toY) {
+    public RowChangeMove(Queen queen, Row toRow) {
         this.queen = queen;
-        this.toY = toY;
+        this.toRow = toRow;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !queen.getY().equals(toY);
+        return !ObjectUtils.equals(queen.getRow(), toRow);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new YChangeMove(queen, queen.getY());
+        return new RowChangeMove(queen, queen.getRow());
     }
 
     public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
-        queen.setY(toY);
+        queen.setRow(toRow);
         workingMemory.update(queenHandle, queen); // after changes are made
     }
 
@@ -58,11 +60,11 @@ public class YChangeMove implements Move, TabuPropertyEnabled {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof YChangeMove) {
-            YChangeMove other = (YChangeMove) o;
+        } else if (o instanceof RowChangeMove) {
+            RowChangeMove other = (RowChangeMove) o;
             return new EqualsBuilder()
                     .append(queen, other.queen)
-                    .append(toY, other.toY)
+                    .append(toRow, other.toRow)
                     .isEquals();
         } else {
             return false;
@@ -72,12 +74,12 @@ public class YChangeMove implements Move, TabuPropertyEnabled {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(queen)
-                .append(toY)
+                .append(toRow)
                 .toHashCode();
     }
 
     public String toString() {
-        return queen + " => " + toY;
+        return queen + " => " + toRow;
     }
 
 }

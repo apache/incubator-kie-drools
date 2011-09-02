@@ -24,16 +24,17 @@ import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
-import org.drools.planner.examples.nqueens.solver.move.YChangeMove;
+import org.drools.planner.examples.nqueens.domain.Row;
+import org.drools.planner.examples.nqueens.solver.move.RowChangeMove;
 
-public class NQueensMoveFactory extends CachedMoveFactory {
+public class RowChangeMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         NQueens nQueens = (NQueens) solution;
         List<Move> moveList = new ArrayList<Move>();
         for (Queen queen : nQueens.getQueenList()) {
-            for (int y : nQueens.getRowList()) {
-                moveList.add(new YChangeMove(queen, y));
+            for (Row toRow : nQueens.getRowList()) {
+                moveList.add(new RowChangeMove(queen, toRow));
             }
         }
         return moveList;

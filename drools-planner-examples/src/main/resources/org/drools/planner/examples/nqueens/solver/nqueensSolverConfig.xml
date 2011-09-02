@@ -16,7 +16,7 @@
   </constructionHeuristic>
   <localSearch>
     <selector>
-      <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory</moveFactoryClass>
+      <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
       <completeSolutionTabuSize>1000</completeSolutionTabuSize>

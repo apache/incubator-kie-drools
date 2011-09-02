@@ -29,6 +29,12 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class NQueens extends AbstractPersistable implements Solution<SimpleScore> {
 
     private int n;
+
+    // Problem facts
+    private List<Column> columnList;
+    private List<Row> rowList;
+
+    // Planning entities
     private List<Queen> queenList;
 
     private SimpleScore score;
@@ -39,6 +45,22 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
 
     public void setN(int n) {
         this.n = n;
+    }
+
+    public List<Column> getColumnList() {
+        return columnList;
+    }
+
+    public void setColumnList(List<Column> columnList) {
+        this.columnList = columnList;
+    }
+
+    public List<Row> getRowList() {
+        return rowList;
+    }
+
+    public void setRowList(List<Row> rowList) {
+        this.rowList = rowList;
     }
 
     @PlanningEntityCollectionProperty
@@ -58,21 +80,12 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
         this.score = score;
     }
 
-    /**
-     * @return a list of every possible y
-     */
-    public List<Integer> getRowList() {
-        int n = getN();
-        List<Integer> yList = new ArrayList<Integer>(n);
-        for (int i = 0; i < n; i++) {
-            yList.add(i);
-        }
-        return yList;
-    }
-
     public Collection<? extends Object> getProblemFacts() {
+        List<Object> facts = new ArrayList<Object>();
+        facts.addAll(columnList);
+        facts.addAll(rowList);
         // Do not add the planning entity's (queenList) because that will be done automatically
-        return Collections.emptyList();
+        return facts;
     }
 
     /**
@@ -82,6 +95,8 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
         NQueens clone = new NQueens();
         clone.id = id;
         clone.n = n;
+        clone.columnList = columnList;
+        clone.rowList = rowList;
         List<Queen> clonedQueenList = new ArrayList<Queen>(queenList.size());
         for (Queen queen : queenList) {
             clonedQueenList.add(queen.clone());

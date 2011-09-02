@@ -1,169 +1,429 @@
 <org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <id>0</id>
   <n>32</n>
-  <queenList id="2">
-    <org.drools.planner.examples.nqueens.domain.Queen id="3">
+  <columnList id="2">
+    <Column id="3">
       <id>0</id>
-      <x>0</x>
-      <y>24</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="4">
+      <index>0</index>
+    </Column>
+    <Column id="4">
       <id>1</id>
-      <x>1</x>
-      <y>3</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="5">
+      <index>1</index>
+    </Column>
+    <Column id="5">
       <id>2</id>
-      <x>2</x>
-      <y>5</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="6">
+      <index>2</index>
+    </Column>
+    <Column id="6">
       <id>3</id>
-      <x>3</x>
-      <y>23</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="7">
+      <index>3</index>
+    </Column>
+    <Column id="7">
       <id>4</id>
-      <x>4</x>
-      <y>4</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="8">
+      <index>4</index>
+    </Column>
+    <Column id="8">
       <id>5</id>
-      <x>5</x>
-      <y>11</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="9">
+      <index>5</index>
+    </Column>
+    <Column id="9">
       <id>6</id>
-      <x>6</x>
-      <y>21</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="10">
+      <index>6</index>
+    </Column>
+    <Column id="10">
       <id>7</id>
-      <x>7</x>
-      <y>15</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="11">
+      <index>7</index>
+    </Column>
+    <Column id="11">
       <id>8</id>
-      <x>8</x>
-      <y>17</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="12">
+      <index>8</index>
+    </Column>
+    <Column id="12">
       <id>9</id>
-      <x>9</x>
-      <y>19</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="13">
+      <index>9</index>
+    </Column>
+    <Column id="13">
       <id>10</id>
-      <x>10</x>
-      <y>1</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="14">
+      <index>10</index>
+    </Column>
+    <Column id="14">
       <id>11</id>
-      <x>11</x>
-      <y>27</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="15">
+      <index>11</index>
+    </Column>
+    <Column id="15">
       <id>12</id>
-      <x>12</x>
-      <y>30</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="16">
+      <index>12</index>
+    </Column>
+    <Column id="16">
       <id>13</id>
-      <x>13</x>
-      <y>7</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="17">
+      <index>13</index>
+    </Column>
+    <Column id="17">
       <id>14</id>
-      <x>14</x>
-      <y>9</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="18">
+      <index>14</index>
+    </Column>
+    <Column id="18">
       <id>15</id>
-      <x>15</x>
-      <y>28</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="19">
+      <index>15</index>
+    </Column>
+    <Column id="19">
       <id>16</id>
-      <x>16</x>
-      <y>13</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="20">
+      <index>16</index>
+    </Column>
+    <Column id="20">
       <id>17</id>
-      <x>17</x>
-      <y>29</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="21">
+      <index>17</index>
+    </Column>
+    <Column id="21">
       <id>18</id>
-      <x>18</x>
-      <y>14</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="22">
+      <index>18</index>
+    </Column>
+    <Column id="22">
       <id>19</id>
-      <x>19</x>
-      <y>2</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="23">
+      <index>19</index>
+    </Column>
+    <Column id="23">
       <id>20</id>
-      <x>20</x>
-      <y>31</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="24">
+      <index>20</index>
+    </Column>
+    <Column id="24">
       <id>21</id>
-      <x>21</x>
-      <y>20</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="25">
+      <index>21</index>
+    </Column>
+    <Column id="25">
       <id>22</id>
-      <x>22</x>
-      <y>26</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="26">
+      <index>22</index>
+    </Column>
+    <Column id="26">
       <id>23</id>
-      <x>23</x>
-      <y>16</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="27">
+      <index>23</index>
+    </Column>
+    <Column id="27">
       <id>24</id>
-      <x>24</x>
-      <y>25</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="28">
+      <index>24</index>
+    </Column>
+    <Column id="28">
       <id>25</id>
-      <x>25</x>
-      <y>12</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="29">
+      <index>25</index>
+    </Column>
+    <Column id="29">
       <id>26</id>
-      <x>26</x>
-      <y>10</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="30">
+      <index>26</index>
+    </Column>
+    <Column id="30">
       <id>27</id>
-      <x>27</x>
-      <y>8</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="31">
+      <index>27</index>
+    </Column>
+    <Column id="31">
       <id>28</id>
-      <x>28</x>
-      <y>6</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="32">
+      <index>28</index>
+    </Column>
+    <Column id="32">
       <id>29</id>
-      <x>29</x>
-      <y>18</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="33">
+      <index>29</index>
+    </Column>
+    <Column id="33">
       <id>30</id>
-      <x>30</x>
-      <y>22</y>
-    </org.drools.planner.examples.nqueens.domain.Queen>
-    <org.drools.planner.examples.nqueens.domain.Queen id="34">
+      <index>30</index>
+    </Column>
+    <Column id="34">
       <id>31</id>
-      <x>31</x>
-      <y>0</y>
+      <index>31</index>
+    </Column>
+  </columnList>
+  <rowList id="35">
+    <Row id="36">
+      <id>0</id>
+      <index>0</index>
+    </Row>
+    <Row id="37">
+      <id>1</id>
+      <index>1</index>
+    </Row>
+    <Row id="38">
+      <id>2</id>
+      <index>2</index>
+    </Row>
+    <Row id="39">
+      <id>3</id>
+      <index>3</index>
+    </Row>
+    <Row id="40">
+      <id>4</id>
+      <index>4</index>
+    </Row>
+    <Row id="41">
+      <id>5</id>
+      <index>5</index>
+    </Row>
+    <Row id="42">
+      <id>6</id>
+      <index>6</index>
+    </Row>
+    <Row id="43">
+      <id>7</id>
+      <index>7</index>
+    </Row>
+    <Row id="44">
+      <id>8</id>
+      <index>8</index>
+    </Row>
+    <Row id="45">
+      <id>9</id>
+      <index>9</index>
+    </Row>
+    <Row id="46">
+      <id>10</id>
+      <index>10</index>
+    </Row>
+    <Row id="47">
+      <id>11</id>
+      <index>11</index>
+    </Row>
+    <Row id="48">
+      <id>12</id>
+      <index>12</index>
+    </Row>
+    <Row id="49">
+      <id>13</id>
+      <index>13</index>
+    </Row>
+    <Row id="50">
+      <id>14</id>
+      <index>14</index>
+    </Row>
+    <Row id="51">
+      <id>15</id>
+      <index>15</index>
+    </Row>
+    <Row id="52">
+      <id>16</id>
+      <index>16</index>
+    </Row>
+    <Row id="53">
+      <id>17</id>
+      <index>17</index>
+    </Row>
+    <Row id="54">
+      <id>18</id>
+      <index>18</index>
+    </Row>
+    <Row id="55">
+      <id>19</id>
+      <index>19</index>
+    </Row>
+    <Row id="56">
+      <id>20</id>
+      <index>20</index>
+    </Row>
+    <Row id="57">
+      <id>21</id>
+      <index>21</index>
+    </Row>
+    <Row id="58">
+      <id>22</id>
+      <index>22</index>
+    </Row>
+    <Row id="59">
+      <id>23</id>
+      <index>23</index>
+    </Row>
+    <Row id="60">
+      <id>24</id>
+      <index>24</index>
+    </Row>
+    <Row id="61">
+      <id>25</id>
+      <index>25</index>
+    </Row>
+    <Row id="62">
+      <id>26</id>
+      <index>26</index>
+    </Row>
+    <Row id="63">
+      <id>27</id>
+      <index>27</index>
+    </Row>
+    <Row id="64">
+      <id>28</id>
+      <index>28</index>
+    </Row>
+    <Row id="65">
+      <id>29</id>
+      <index>29</index>
+    </Row>
+    <Row id="66">
+      <id>30</id>
+      <index>30</index>
+    </Row>
+    <Row id="67">
+      <id>31</id>
+      <index>31</index>
+    </Row>
+  </rowList>
+  <queenList id="68">
+    <org.drools.planner.examples.nqueens.domain.Queen id="69">
+      <id>0</id>
+      <column reference="3"/>
+      <row reference="60"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="70">
+      <id>1</id>
+      <column reference="4"/>
+      <row reference="39"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="71">
+      <id>2</id>
+      <column reference="5"/>
+      <row reference="41"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="72">
+      <id>3</id>
+      <column reference="6"/>
+      <row reference="59"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="73">
+      <id>4</id>
+      <column reference="7"/>
+      <row reference="40"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="74">
+      <id>5</id>
+      <column reference="8"/>
+      <row reference="47"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="75">
+      <id>6</id>
+      <column reference="9"/>
+      <row reference="57"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="76">
+      <id>7</id>
+      <column reference="10"/>
+      <row reference="51"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="77">
+      <id>8</id>
+      <column reference="11"/>
+      <row reference="53"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="78">
+      <id>9</id>
+      <column reference="12"/>
+      <row reference="55"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="79">
+      <id>10</id>
+      <column reference="13"/>
+      <row reference="37"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="80">
+      <id>11</id>
+      <column reference="14"/>
+      <row reference="63"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="81">
+      <id>12</id>
+      <column reference="15"/>
+      <row reference="66"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="82">
+      <id>13</id>
+      <column reference="16"/>
+      <row reference="43"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="83">
+      <id>14</id>
+      <column reference="17"/>
+      <row reference="45"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="84">
+      <id>15</id>
+      <column reference="18"/>
+      <row reference="64"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="85">
+      <id>16</id>
+      <column reference="19"/>
+      <row reference="49"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="86">
+      <id>17</id>
+      <column reference="20"/>
+      <row reference="65"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="87">
+      <id>18</id>
+      <column reference="21"/>
+      <row reference="50"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="88">
+      <id>19</id>
+      <column reference="22"/>
+      <row reference="38"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="89">
+      <id>20</id>
+      <column reference="23"/>
+      <row reference="67"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="90">
+      <id>21</id>
+      <column reference="24"/>
+      <row reference="56"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="91">
+      <id>22</id>
+      <column reference="25"/>
+      <row reference="62"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="92">
+      <id>23</id>
+      <column reference="26"/>
+      <row reference="52"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="93">
+      <id>24</id>
+      <column reference="27"/>
+      <row reference="61"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="94">
+      <id>25</id>
+      <column reference="28"/>
+      <row reference="48"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="95">
+      <id>26</id>
+      <column reference="29"/>
+      <row reference="46"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="96">
+      <id>27</id>
+      <column reference="30"/>
+      <row reference="44"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="97">
+      <id>28</id>
+      <column reference="31"/>
+      <row reference="42"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="98">
+      <id>29</id>
+      <column reference="32"/>
+      <row reference="54"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="99">
+      <id>30</id>
+      <column reference="33"/>
+      <row reference="58"/>
+    </org.drools.planner.examples.nqueens.domain.Queen>
+    <org.drools.planner.examples.nqueens.domain.Queen id="100">
+      <id>31</id>
+      <column reference="34"/>
+      <row reference="36"/>
     </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
-  <score class="org.drools.planner.core.score.DefaultSimpleScore" id="35">
+  <score class="org.drools.planner.core.score.DefaultSimpleScore" id="101">
     <score>0</score>
   </score>
 </org.drools.planner.examples.nqueens.domain.NQueens>

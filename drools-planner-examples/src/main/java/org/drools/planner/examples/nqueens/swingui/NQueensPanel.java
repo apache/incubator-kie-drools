@@ -36,7 +36,8 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
-import org.drools.planner.examples.nqueens.solver.move.YChangeMove;
+import org.drools.planner.examples.nqueens.domain.Row;
+import org.drools.planner.examples.nqueens.solver.move.RowChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -65,10 +66,10 @@ public class NQueensPanel extends SolutionPanel {
         for (int y = 0; y < n; y++) {
             for (int x = 0; x < n; x++) {
                 Queen queen = queenList.get(x);
-                if (queen.getX() != x) {
+                if (queen.getColumn().getIndex() != x) {
                     throw new IllegalStateException("The queenList is not in the expected order.");
                 }
-                if (queen.getY() != null && queen.getY() == y) {
+                if (queen.getRow() != null && queen.getRow().getIndex() == y) {
                     JButton button = new JButton(new QueenAction(queen));
                     button.setHorizontalTextPosition(SwingConstants.CENTER);
                     button.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -96,14 +97,14 @@ public class NQueensPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Integer> yList = getNQueens().getRowList();
-            JComboBox yListField = new JComboBox(yList.toArray());
-            yListField.setSelectedItem(queen.getY());
-            int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), yListField, "Select y",
+            List<Row> rowList = getNQueens().getRowList();
+            JComboBox rowListField = new JComboBox(rowList.toArray());
+            rowListField.setSelectedItem(queen.getRow());
+            int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), rowListField, "Select row",
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                Integer toY = (Integer) yListField.getSelectedItem();
-                Move move = new YChangeMove(queen, toY);
+                Row toRow = (Row) rowListField.getSelectedItem();
+                Move move = new RowChangeMove(queen, toRow);
                 solutionBusiness.doMove(move);
                 solverAndPersistenceFrame.resetScreen();
             }

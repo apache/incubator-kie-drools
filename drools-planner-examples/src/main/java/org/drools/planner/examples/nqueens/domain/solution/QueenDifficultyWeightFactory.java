@@ -29,15 +29,15 @@ public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWei
         NQueens nQueens = (NQueens) solution;
         int n = nQueens.getN();
         Queen queen = (Queen) planningEntity;
-        int x = queen.getX();
-        int distanceFromMiddle = calculateDistanceFromMiddle(n, x);
+        int columnIndex = queen.getColumnIndex();
+        int distanceFromMiddle = calculateDistanceFromMiddle(n, columnIndex);
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
     }
 
-    private static int calculateDistanceFromMiddle(int n, int x) {
+    private static int calculateDistanceFromMiddle(int n, int columnIndex) {
         int middle = n / 2;
-        int distanceFromMiddle = Math.abs(x - middle);
-        if ((n % 2 == 0) && (x < middle)) {
+        int distanceFromMiddle = Math.abs(columnIndex - middle);
+        if ((n % 2 == 0) && (columnIndex < middle)) {
             distanceFromMiddle--;
         }
         return distanceFromMiddle;
@@ -56,7 +56,7 @@ public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWei
         public int compareTo(QueenDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(distanceFromMiddle, other.distanceFromMiddle)
-                    .append(queen.getX(), other.queen.getX())
+                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
                     .append(queen.getId(), other.queen.getId())
                     .toComparison();
         }

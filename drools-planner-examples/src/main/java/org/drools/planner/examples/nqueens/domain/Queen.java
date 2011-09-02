@@ -16,7 +16,6 @@
 
 package org.drools.planner.examples.nqueens.domain;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
@@ -24,58 +23,58 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
-public class Queen extends AbstractPersistable implements Comparable<Queen> {
+public class Queen extends AbstractPersistable {
 
-    private int x;
+    private Column column;
 
     // Planning variables: changes during planning, between score calculations.
-    private Integer y;
+    private Row row;
 
-    public int getX() {
-        return x;
+    public Column getColumn() {
+        return column;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setColumn(Column column) {
+        this.column = column;
     }
 
     @PlanningVariable
     @ValueRangeFromSolutionProperty(propertyName = "rowList")
-    public Integer getY() {
-        return y;
+    public Row getRow() {
+        return row;
     }
 
-    public void setY(Integer y) {
-        this.y = y;
+    public void setRow(Row row) {
+        this.row = row;
     }
 
-    public int getAscendingD() {
-        return (x + y);
+    public int getColumnIndex() {
+        return column.getIndex();
     }
 
-    public int getDescendingD() {
-        return (x - y);
+    public int getRowIndex() {
+        return row.getIndex();
     }
 
-    public int compareTo(Queen other) {
-        return new CompareToBuilder()
-                .append(x, other.x)
-                .append(y, other.y)
-                .append(id, other.id)
-                .toComparison();
+    public int getAscendingDiagonalIndex() {
+        return (getColumnIndex() + getRowIndex());
+    }
+
+    public int getDescendingDiagonalIndex() {
+        return (getColumnIndex() - getRowIndex());
     }
 
     public Queen clone() {
         Queen clone = new Queen();
         clone.id = id;
-        clone.x = x;
-        clone.y = y;
+        clone.column = column;
+        clone.row = row;
         return clone;
     }
 
     @Override
     public String toString() {
-        return x + " @ " + y;
+        return column + " @ " + row;
     }
 
 }
