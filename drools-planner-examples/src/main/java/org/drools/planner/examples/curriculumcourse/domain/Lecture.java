@@ -37,7 +37,7 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
     private Course course;
     private int lectureIndexInCourse;
 
-    // Changed by moves, between score calculations.
+    // Planning variables: changes during planning, between score calculations.
     private Period period;
     private Room room;
 

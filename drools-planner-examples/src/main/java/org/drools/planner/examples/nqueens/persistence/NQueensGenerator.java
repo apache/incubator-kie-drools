@@ -61,15 +61,15 @@ public class NQueensGenerator extends LoggingMain {
         nQueens.setId(0L);
         nQueens.setN(n);
         List<Queen> queenList = new ArrayList<Queen>(n);
-        for (int i = 0; i < n; i++) {
+        for (int x = 0; x < n; x++) {
             Queen queen = new Queen();
-            queen.setId((long) i);
-            queen.setX(i);
+            queen.setId((long) x);
+            queen.setX(x);
             // Notice that we leave the PlanningVariable properties on null
             queenList.add(queen);
         }
         nQueens.setQueenList(queenList);
-        logger.info("NQueens {} with {} queens.", nQueens.getN());
+        logger.info("NQueens with {} queens.", nQueens.getN());
         BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("NQueens with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",

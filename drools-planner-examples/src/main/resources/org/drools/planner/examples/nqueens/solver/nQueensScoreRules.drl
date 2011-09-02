@@ -68,29 +68,3 @@ rule "hardConstraintsBroken"
     then
         scoreCalculator.setScore(- $occurrenceCount.intValue());
 end
-
-// Don't do this. It breaks performance and scalability! Will be fixed with set based propagation
-//rule "hardConstraintsBroken"
-//    when
-//        $multipleQueensHorizontal : Number()
-//        from accumulate(
-//            $q1 : Queen($id : id, $y : y)
-//            and Queen(id > $id, y == $y),
-//            count($q1)
-//        )
-//        $multipleQueensAscendingDiagonal : Number()
-//        from accumulate(
-//            $q1 : Queen($id : id, $ascendingD : ascendingD)
-//            and Queen(id > $id, ascendingD == $ascendingD),
-//            count($q1)
-//        )
-//        $multipleQueensDescendingDiagonal : Number()
-//        from accumulate(
-//            $q1 : Queen($id : id, $descendingD : descendingD)
-//            and Queen(id > $id, descendingD == $descendingD),
-//            count($q1)
-//        )
-//    then
-//        scoreCalculator.setScore(- $multipleQueensHorizontal.intValue()
-//                - $multipleQueensAscendingDiagonal.intValue() - $multipleQueensDescendingDiagonal.intValue());
-//end

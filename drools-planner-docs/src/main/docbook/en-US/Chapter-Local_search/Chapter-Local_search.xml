@@ -123,9 +123,9 @@
       <programlisting language="java">public class YChangeMove implements Move {
 
     private Queen queen;
-    private int toY;
+    private Integer toY;
 
-    public YChangeMove(Queen queen, int toY) {
+    public YChangeMove(Queen queen, Integer toY) {
         this.queen = queen;
         this.toY = toY;
     }
@@ -169,8 +169,7 @@
       doable:</para>
 
       <programlisting language="java">    public boolean isMoveDoable(WorkingMemory workingMemory) {
-        int fromY = queen.getY();
-        return fromY != toY;
+        return !queen.getY().equals(toY);
     }</programlisting>
 
       <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
@@ -274,8 +273,8 @@
         NQueens nQueens = (NQueens) solution;
         List&lt;Move&gt; moveList = new ArrayList&lt;Move&gt;();
         for (Queen queen : nQueens.getQueenList()) {
-            for (int n : nQueens.createNList()) {
-                moveList.add(new YChangeMove(queen, n));
+            for (int y : nQueens.getRowList()) {
+                moveList.add(new YChangeMove(queen, y));
             }
         }
         return moveList;

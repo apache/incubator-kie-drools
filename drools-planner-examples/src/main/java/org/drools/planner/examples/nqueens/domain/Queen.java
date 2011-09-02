@@ -27,7 +27,9 @@ import org.drools.planner.examples.nqueens.domain.solution.QueenDifficultyWeight
 public class Queen extends AbstractPersistable implements Comparable<Queen> {
 
     private int x;
-    private int y;
+
+    // Planning variables: changes during planning, between score calculations.
+    private Integer y;
 
     public int getX() {
         return x;
@@ -38,12 +40,12 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
     }
 
     @PlanningVariable
-    @ValueRangeFromSolutionProperty(propertyName = "columnList")
-    public int getY() {
+    @ValueRangeFromSolutionProperty(propertyName = "rowList")
+    public Integer getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(Integer y) {
         this.y = y;
     }
 
@@ -73,7 +75,7 @@ public class Queen extends AbstractPersistable implements Comparable<Queen> {
 
     @Override
     public String toString() {
-        return super.toString() + " " + x + " @ " + y;
+        return x + " @ " + y;
     }
 
 }

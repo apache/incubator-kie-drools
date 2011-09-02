@@ -61,7 +61,7 @@ public class NQueens extends AbstractPersistable implements Solution<SimpleScore
     /**
      * @return a list of every possible y
      */
-    public List<Integer> getColumnList() {
+    public List<Integer> getRowList() {
         int n = getN();
         List<Integer> yList = new ArrayList<Integer>(n);
         for (int i = 0; i < n; i++) {

@@ -72,11 +72,11 @@
 
       <itemizedlist>
         <listitem>
-          <para>It's easy to verify a given solution to a problem in reasonable time. </para>
+          <para>It's easy to verify a given solution to a problem in reasonable time.</para>
         </listitem>
 
         <listitem>
-          <para>There is no silver bullet to find the optimal solution of a problem in reasonable time (*). </para>
+          <para>There is no silver bullet to find the optimal solution of a problem in reasonable time (*).</para>
         </listitem>
       </itemizedlist>
 
@@ -90,7 +90,7 @@
       </note>
 
       <para>The implication of this is pretty dire: solving your problem is probably harder than you anticipated,
-      because the 2 common techniques won't suffice: </para>
+      because the 2 common techniques won't suffice:</para>
 
       <itemizedlist>
         <listitem>
@@ -110,7 +110,7 @@
     <section>
       <title>A planning problem has (hard and soft) constraints</title>
 
-      <para>Usually, a planning problem has at least 2 types of constraints:</para>
+      <para>Usually, a planning problem has at least 2 levels of constraints:</para>
 
       <itemizedlist>
         <listitem>
@@ -135,7 +135,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Some toy problems (such as N Queens) only have soft constraints. Some problems have 3 or more levels of
+      <para>Some toy problems (such as N Queens) only have hard constraints. Some problems have 3 or more levels of
       constraints, for example hard, medium and soft constraints.</para>
 
       <para>These constraints define the <emphasis>score function</emphasis> (AKA <emphasis>fitness function</emphasis>)
@@ -183,7 +183,7 @@
       <para>Drools Planner supports several optimization algorithms to efficiently wade through that incredibly large
       number of possible solutions. Depending on the use case, some optimization algorithms perform better than others.
       <emphasis role="bold">In Drools Planner it is easy to switch the optimization algorithm</emphasis>, by changing
-      the solver configuration in XML or by API.</para>
+      the solver configuration in a few XML lines or by API.</para>
     </section>
   </section>
 

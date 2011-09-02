@@ -33,7 +33,7 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
 
     private CloudProcess cloudProcess;
 
-    // Changed by moves, between score calculations.
+    // Planning variables: changes during planning, between score calculations.
     private CloudComputer cloudComputer;
 
     public CloudProcess getCloudProcess() {

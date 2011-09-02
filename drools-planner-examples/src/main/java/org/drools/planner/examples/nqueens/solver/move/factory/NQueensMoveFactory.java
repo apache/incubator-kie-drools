@@ -32,7 +32,7 @@ public class NQueensMoveFactory extends CachedMoveFactory {
         NQueens nQueens = (NQueens) solution;
         List<Move> moveList = new ArrayList<Move>();
         for (Queen queen : nQueens.getQueenList()) {
-            for (int y : nQueens.getColumnList()) {
+            for (int y : nQueens.getRowList()) {
                 moveList.add(new YChangeMove(queen, y));
             }
         }

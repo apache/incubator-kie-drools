@@ -37,7 +37,7 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
     private ExamCoincidence examCoincidence = null;
     private ExamBefore examBefore = null;
 
-    // Changed by moves, between score calculations.
+    // Planning variables: changes during planning, between score calculations.
     private Period period;
     private Room room;
 

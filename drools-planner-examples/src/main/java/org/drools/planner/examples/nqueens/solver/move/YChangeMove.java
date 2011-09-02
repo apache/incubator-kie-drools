@@ -30,15 +30,15 @@ import org.drools.planner.examples.nqueens.domain.Queen;
 public class YChangeMove implements Move, TabuPropertyEnabled {
 
     private Queen queen;
-    private int toY;
+    private Integer toY;
 
-    public YChangeMove(Queen queen, int toY) {
+    public YChangeMove(Queen queen, Integer toY) {
         this.queen = queen;
         this.toY = toY;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return queen.getY() != toY;
+        return !queen.getY().equals(toY);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {

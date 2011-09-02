@@ -11,7 +11,7 @@
 
     <para>Drools Planner has several examples. In this manual we explain Drools Planner mainly using the n queens
     example. So it's advisable to read at least the section about that example. For advanced users, the following
-    examples are recommended: curriculum course, examination and nurse rostering.</para>
+    examples are recommended: curriculum course and nurse rostering.</para>
 
     <para>You can find the source code of all these examples in the drools source distribution and also in git under
     <filename>drools-planner/drools-planner-examples</filename>.</para>

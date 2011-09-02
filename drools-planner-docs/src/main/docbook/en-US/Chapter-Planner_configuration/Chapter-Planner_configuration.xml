@@ -18,8 +18,8 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a tabu search solver
-        for any <literal>NQueens</literal> instance.</para>
+        <para><emphasis role="bold">Configure a <literal>Solver</literal></emphasis>, for example a first fit and tabu
+        search solver for any <literal>NQueens</literal> instance.</para>
       </listitem>
 
       <listitem>
@@ -43,7 +43,7 @@
     <title>Model your planning problem</title>
 
     <section>
-      <title>Problem fact or planning entity?</title>
+      <title>Is this class a problem fact or planning entity?</title>
 
       <para>Look at a dataset of your planning problem. You 'll recognize domain classes in there, each of which is one
       of these:</para>
@@ -74,21 +74,34 @@
 
       <note>
         <para>In <link linkend="realTimePlanning">real-time planning</link>, problem facts can change during planning,
-        because the problem itself changes. That doesn't make the planning entities</para>
+        because the problem itself changes. That doesn't make them planning entities.</para>
       </note>
 
       <para><emphasis role="bold">In Drools Planner all problems facts and planning entities are plain old JavaBeans
-      (POJO's).</emphasis> You can load them from a database (JDBC/JPA/JDO), an XML file, a data repository, ...: Drools
-      Planner doesn't care.</para>
+      (POJO's).</emphasis> You can load them from a database (JDBC/JPA/JDO), an XML file, a data repository, a noSQL
+      cloud, ...: Drools Planner doesn't care.</para>
     </section>
 
     <section>
       <title>Implementing a planning entity</title>
 
       <section>
-        <title>Planning entity</title>
+        <title>The planning entity class</title>
 
         <para>TODO</para>
+
+        <programlisting>@PlanningEntity
+public class Queen {
+    ...
+}</programlisting>
+
+        <para>ggg</para>
+
+        <important>
+          <para>Avoid changing classes during planning that are not real planning entities or logical insertions. having
+          more than 1 planning entity class (or 1 planning entity class hierarchy), unless the problem requires
+          it.</para>
+        </important>
       </section>
 
       <section>
@@ -110,6 +123,30 @@
       </section>
 
       <section>
+        <title>ValueRange</title>
+
+        <section>
+          <title><literal>ValueRangeFromSolutionProperty</literal></title>
+
+          <para>TODO</para>
+
+          <para>todo should range include null or not?</para>
+        </section>
+
+        <section>
+          <title><literal>ValueRangeFromPlanningEntityProperty</literal></title>
+
+          <para>TODO</para>
+        </section>
+
+        <section>
+          <title><literal>ValueRangeUndefined</literal></title>
+
+          <para>TODO</para>
+        </section>
+      </section>
+
+      <section>
         <title>Planning value strenght comparison</title>
 
         <para>TODO</para>
@@ -118,11 +155,11 @@
   </section>
 
   <section>
-    <title>The Solution interface</title>
+    <title>The <literal>Solution</literal> interface</title>
 
     <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
 
-    <para>You need to implement the <literal>Solution</literal> interface:</para>
+    <para>This means you need to implement the <literal>Solution</literal> interface:</para>
 
     <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
 
@@ -393,12 +430,13 @@
       <programlisting language="java">    private NQueens createNQueens(int n) {
         NQueens nQueens = new NQueens();
         nQueens.setId(0L);
+        nQueens.setN(n);
         List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
-        for (int i = 0; i &lt; n; i++) {
+        for (int x = 0; x &lt; n; x++) {
             Queen queen = new Queen();
-            queen.setId((long) i);
-            queen.setX(i); // Different column
-            queen.setY(0); // Same row
+            queen.setId((long) x);
+            queen.setX(x);
+            // Notice that we leave the PlanningVariable properties on null: no setY()
             queenList.add(queen);
         }
         nQueens.setQueenList(queenList);

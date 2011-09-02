@@ -34,7 +34,7 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
 
     private Shift shift;
 
-    // Changed by moves, between score calculations.
+    // Planning variables: changes during planning, between score calculations.
     private Employee employee;
 
     public Shift getShift() {

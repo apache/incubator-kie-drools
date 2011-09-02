@@ -5,22 +5,18 @@
     <org.drools.planner.examples.nqueens.domain.Queen id="3">
       <id>0</id>
       <x>0</x>
-      <y>0</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="4">
       <id>1</id>
       <x>1</x>
-      <y>0</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="5">
       <id>2</id>
       <x>2</x>
-      <y>0</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="6">
       <id>3</id>
       <x>3</x>
-      <y>0</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
 </org.drools.planner.examples.nqueens.domain.NQueens>

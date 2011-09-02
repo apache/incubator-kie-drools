@@ -62,10 +62,13 @@ public class NQueensPanel extends SolutionPanel {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
         setLayout(new GridLayout(n, n));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                Queen queen = queenList.get(j);
-                if (queen.getY() == i) {
+        for (int y = 0; y < n; y++) {
+            for (int x = 0; x < n; x++) {
+                Queen queen = queenList.get(x);
+                if (queen.getX() != x) {
+                    throw new IllegalStateException("The queenList is not in the expected order.");
+                }
+                if (queen.getY() != null && queen.getY() == y) {
                     JButton button = new JButton(new QueenAction(queen));
                     button.setHorizontalTextPosition(SwingConstants.CENTER);
                     button.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -75,7 +78,7 @@ public class NQueensPanel extends SolutionPanel {
                     panel.setBorder(BorderFactory.createCompoundBorder(
                             BorderFactory.createLineBorder(Color.DARK_GRAY),
                             BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-                    Color background = (((i + j) % 2) == 0) ? Color.WHITE : Color.GRAY;
+                    Color background = (((y + x) % 2) == 0) ? Color.WHITE : Color.GRAY;
                     panel.setBackground(background);
                     add(panel);
                 }
@@ -93,13 +96,13 @@ public class NQueensPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Integer> yList = getNQueens().getColumnList();
+            List<Integer> yList = getNQueens().getRowList();
             JComboBox yListField = new JComboBox(yList.toArray());
             yListField.setSelectedItem(queen.getY());
             int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), yListField, "Select y",
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
-                int toY = (Integer) yListField.getSelectedItem();
+                Integer toY = (Integer) yListField.getSelectedItem();
                 Move move = new YChangeMove(queen, toY);
                 solutionBusiness.doMove(move);
                 solverAndPersistenceFrame.resetScreen();

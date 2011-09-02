@@ -1,70 +1,71 @@
 <org.drools.planner.examples.nqueens.domain.NQueens id="1">
   <id>0</id>
+  <n>16</n>
   <queenList id="2">
     <org.drools.planner.examples.nqueens.domain.Queen id="3">
       <id>0</id>
       <x>0</x>
-      <y>5</y>
+      <y>14</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="4">
       <id>1</id>
       <x>1</x>
-      <y>0</y>
+      <y>8</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="5">
       <id>2</id>
       <x>2</x>
-      <y>12</y>
+      <y>4</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="6">
       <id>3</id>
       <x>3</x>
-      <y>9</y>
+      <y>0</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="7">
       <id>4</id>
       <x>4</x>
-      <y>2</y>
+      <y>9</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="8">
       <id>5</id>
       <x>5</x>
-      <y>13</y>
+      <y>11</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="9">
       <id>6</id>
       <x>6</x>
-      <y>10</y>
+      <y>2</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="10">
       <id>7</id>
       <x>7</x>
-      <y>1</y>
+      <y>5</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="11">
       <id>8</id>
       <x>8</x>
-      <y>15</y>
+      <y>3</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="12">
       <id>9</id>
       <x>9</x>
-      <y>4</y>
+      <y>12</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="13">
       <id>10</id>
       <x>10</x>
-      <y>11</y>
+      <y>10</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="14">
       <id>11</id>
       <x>11</x>
-      <y>14</y>
+      <y>15</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="15">
       <id>12</id>
       <x>12</x>
-      <y>8</y>
+      <y>13</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="16">
       <id>13</id>
@@ -74,7 +75,7 @@
     <org.drools.planner.examples.nqueens.domain.Queen id="17">
       <id>14</id>
       <x>14</x>
-      <y>3</y>
+      <y>1</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="18">
       <id>15</id>

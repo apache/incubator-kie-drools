@@ -1,324 +1,329 @@
 <org.drools.planner.examples.nqueens.domain.NQueens id="1">
+  <id>0</id>
+  <n>64</n>
   <queenList id="2">
     <org.drools.planner.examples.nqueens.domain.Queen id="3">
-      <x>0</x>
-      <y>30</y>
       <id>0</id>
+      <x>0</x>
+      <y>45</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="4">
-      <x>1</x>
-      <y>42</y>
       <id>1</id>
+      <x>1</x>
+      <y>3</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="5">
-      <x>2</x>
-      <y>47</y>
       <id>2</id>
+      <x>2</x>
+      <y>39</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="6">
-      <x>3</x>
-      <y>9</y>
       <id>3</id>
+      <x>3</x>
+      <y>7</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="7">
-      <x>4</x>
-      <y>40</y>
       <id>4</id>
+      <x>4</x>
+      <y>9</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="8">
-      <x>5</x>
-      <y>56</y>
       <id>5</id>
+      <x>5</x>
+      <y>46</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="9">
-      <x>6</x>
-      <y>21</y>
       <id>6</id>
+      <x>6</x>
+      <y>13</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="10">
-      <x>7</x>
-      <y>31</y>
       <id>7</id>
+      <x>7</x>
+      <y>15</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="11">
-      <x>8</x>
-      <y>8</y>
       <id>8</id>
+      <x>8</x>
+      <y>36</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="12">
-      <x>9</x>
-      <y>13</y>
       <id>9</id>
+      <x>9</x>
+      <y>19</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="13">
-      <x>10</x>
-      <y>58</y>
       <id>10</id>
+      <x>10</x>
+      <y>21</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="14">
-      <x>11</x>
-      <y>14</y>
       <id>11</id>
+      <x>11</x>
+      <y>43</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="15">
-      <x>12</x>
-      <y>59</y>
       <id>12</id>
+      <x>12</x>
+      <y>25</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="16">
-      <x>13</x>
-      <y>45</y>
       <id>13</id>
+      <x>13</x>
+      <y>27</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="17">
-      <x>14</x>
-      <y>28</y>
       <id>14</id>
+      <x>14</x>
+      <y>50</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="18">
-      <x>15</x>
-      <y>22</y>
       <id>15</id>
+      <x>15</x>
+      <y>31</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="19">
-      <x>16</x>
-      <y>49</y>
       <id>16</id>
+      <x>16</x>
+      <y>33</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="20">
+      <id>17</id>
       <x>17</x>
       <y>35</y>
-      <id>17</id>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="21">
-      <x>18</x>
-      <y>16</y>
       <id>18</id>
+      <x>18</x>
+      <y>37</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="22">
+      <id>19</id>
       <x>19</x>
       <y>57</y>
-      <id>19</id>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="23">
-      <x>20</x>
-      <y>12</y>
       <id>20</id>
+      <x>20</x>
+      <y>41</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="24">
-      <x>21</x>
-      <y>48</y>
       <id>21</id>
+      <x>21</x>
+      <y>2</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="25">
-      <x>22</x>
-      <y>17</y>
       <id>22</id>
+      <x>22</x>
+      <y>5</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="26">
-      <x>23</x>
-      <y>54</y>
       <id>23</id>
+      <x>23</x>
+      <y>62</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="27">
-      <x>24</x>
-      <y>32</y>
       <id>24</id>
+      <x>24</x>
+      <y>14</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="28">
-      <x>25</x>
-      <y>53</y>
       <id>25</id>
+      <x>25</x>
+      <y>17</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="29">
-      <x>26</x>
-      <y>19</y>
       <id>26</id>
+      <x>26</x>
+      <y>60</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="30">
-      <x>27</x>
-      <y>43</y>
       <id>27</id>
+      <x>27</x>
+      <y>26</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="31">
-      <x>28</x>
-      <y>62</y>
       <id>28</id>
+      <x>28</x>
+      <y>53</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="32">
-      <x>29</x>
-      <y>11</y>
       <id>29</id>
+      <x>29</x>
+      <y>30</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="33">
-      <x>30</x>
-      <y>55</y>
       <id>30</id>
+      <x>30</x>
+      <y>6</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="34">
-      <x>31</x>
-      <y>36</y>
       <id>31</id>
+      <x>31</x>
+      <y>58</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="35">
-      <x>32</x>
-      <y>41</y>
       <id>32</id>
+      <x>32</x>
+      <y>1</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="36">
-      <x>33</x>
-      <y>0</y>
       <id>33</id>
+      <x>33</x>
+      <y>29</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="37">
-      <x>34</x>
-      <y>60</y>
       <id>34</id>
+      <x>34</x>
+      <y>54</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="38">
-      <x>35</x>
-      <y>15</y>
       <id>35</id>
+      <x>35</x>
+      <y>59</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="39">
-      <x>36</x>
-      <y>46</y>
       <id>36</id>
+      <x>36</x>
+      <y>20</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="40">
-      <x>37</x>
-      <y>50</y>
       <id>37</id>
+      <x>37</x>
+      <y>23</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="41">
-      <x>38</x>
-      <y>37</y>
       <id>38</id>
+      <x>38</x>
+      <y>61</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="42">
-      <x>39</x>
-      <y>27</y>
       <id>39</id>
+      <x>39</x>
+      <y>11</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="43">
+      <id>40</id>
       <x>40</x>
       <y>52</y>
-      <id>40</id>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="44">
-      <x>41</x>
-      <y>18</y>
       <id>41</id>
+      <x>41</x>
+      <y>63</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="45">
-      <x>42</x>
-      <y>61</y>
       <id>42</id>
+      <x>42</x>
+      <y>42</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="46">
-      <x>43</x>
-      <y>5</y>
       <id>43</id>
+      <x>43</x>
+      <y>40</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="47">
-      <x>44</x>
-      <y>20</y>
       <id>44</id>
+      <x>44</x>
+      <y>38</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="48">
-      <x>45</x>
-      <y>29</y>
       <id>45</id>
+      <x>45</x>
+      <y>48</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="49">
-      <x>46</x>
-      <y>33</y>
       <id>46</id>
+      <x>46</x>
+      <y>34</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="50">
-      <x>47</x>
-      <y>4</y>
       <id>47</id>
+      <x>47</x>
+      <y>32</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="51">
-      <x>48</x>
-      <y>7</y>
       <id>48</id>
+      <x>48</x>
+      <y>10</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="52">
-      <x>49</x>
-      <y>39</y>
       <id>49</id>
+      <x>49</x>
+      <y>28</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="53">
-      <x>50</x>
-      <y>3</y>
       <id>50</id>
+      <x>50</x>
+      <y>56</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="54">
-      <x>51</x>
-      <y>6</y>
       <id>51</id>
+      <x>51</x>
+      <y>24</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="55">
-      <x>52</x>
-      <y>10</y>
       <id>52</id>
+      <x>52</x>
+      <y>22</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="56">
-      <x>53</x>
-      <y>38</y>
       <id>53</id>
+      <x>53</x>
+      <y>44</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="57">
-      <x>54</x>
-      <y>26</y>
       <id>54</id>
+      <x>54</x>
+      <y>18</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="58">
-      <x>55</x>
-      <y>44</y>
       <id>55</id>
+      <x>55</x>
+      <y>16</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="59">
-      <x>56</x>
-      <y>25</y>
       <id>56</id>
+      <x>56</x>
+      <y>49</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="60">
-      <x>57</x>
-      <y>51</y>
       <id>57</id>
+      <x>57</x>
+      <y>55</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="61">
-      <x>58</x>
-      <y>2</y>
       <id>58</id>
+      <x>58</x>
+      <y>12</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="62">
-      <x>59</x>
-      <y>34</y>
       <id>59</id>
+      <x>59</x>
+      <y>8</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="63">
-      <x>60</x>
-      <y>24</y>
       <id>60</id>
+      <x>60</x>
+      <y>47</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="64">
-      <x>61</x>
-      <y>63</y>
       <id>61</id>
+      <x>61</x>
+      <y>4</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="65">
-      <x>62</x>
-      <y>1</y>
       <id>62</id>
+      <x>62</x>
+      <y>51</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
     <org.drools.planner.examples.nqueens.domain.Queen id="66">
-      <x>63</x>
-      <y>23</y>
       <id>63</id>
+      <x>63</x>
+      <y>0</y>
     </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
+  <score class="org.drools.planner.core.score.DefaultSimpleScore" id="67">
+    <score>0</score>
+  </score>
 </org.drools.planner.examples.nqueens.domain.NQueens>
