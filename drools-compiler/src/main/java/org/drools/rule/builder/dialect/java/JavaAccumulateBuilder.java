@@ -218,13 +218,13 @@ public class JavaAccumulateBuilder
 
         JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
 
-        generatTemplates( "returnValueMethod",
-                          "returnValueInvoker",
-                          context,
-                          className,
-                          map,
-                          accumulator,
-                          accumDescr );
+        generateTemplates("returnValueMethod",
+                "returnValueInvoker",
+                context,
+                className,
+                map,
+                accumulator,
+                accumDescr);
         return accumulator;
     }
 
@@ -355,13 +355,13 @@ public class JavaAccumulateBuilder
                                      declarations,
                                      sourceDeclArr );
 
-        generatTemplates( "accumulateInnerClass",
-                          "accumulateInvoker",
-                          context,
-                          className,
-                          map,
-                          accumulate.new Wirer(0),
-                          accumDescr );
+        generateTemplates("accumulateInnerClass",
+                "accumulateInvoker",
+                context,
+                className,
+                map,
+                accumulate.new Wirer(0),
+                accumDescr);
         return accumulate;
     }
 

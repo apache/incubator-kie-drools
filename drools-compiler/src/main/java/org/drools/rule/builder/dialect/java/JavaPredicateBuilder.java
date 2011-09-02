@@ -33,13 +33,13 @@ public class JavaPredicateBuilder
                                                usedIdentifiers.getGlobals()
         );
 
-        generatTemplates( "predicateMethod",
-                          "predicateInvoker",
-                          context,
-                          className,
-                          map,
-                          predicateConstraint,
-                          predicateDescr );
+        generateTemplates("predicateMethod",
+                "predicateInvoker",
+                context,
+                className,
+                map,
+                predicateConstraint,
+                predicateDescr);
     }
 
 }

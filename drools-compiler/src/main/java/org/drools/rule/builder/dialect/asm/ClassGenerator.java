@@ -10,6 +10,8 @@ import static org.mvel2.asm.Type.getDescriptor;
 public class ClassGenerator {
 
     private final String className;
+    private final InternalClassLoader classLoader;
+
     private int version = V1_5;
     private int access = ACC_PUBLIC + ACC_SUPER;
     private String signature;
@@ -21,21 +23,36 @@ public class ClassGenerator {
 
     private List<ClassPartDescr> classParts = new ArrayList<ClassPartDescr>();
 
+    private byte[] bytecode;
+    private Class<?> clazz;
+
     public ClassGenerator(String className) {
+        this(className, null);
+    }
+
+    public ClassGenerator(String className, ClassLoader classLoader) {
         this.className = className;
+        this.classLoader = classLoader == null ? INTERNAL_CLASS_LOADER : new InternalClassLoader(classLoader);
     }
 
     private interface ClassPartDescr {
         void write(ClassGenerator cg, ClassWriter cw);
     }
 
+    public byte[] generateBytecode() {
+        if (bytecode == null) {
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
+            cw.visit(version, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInternalForm(interfaces));
+            for (ClassPartDescr part : classParts) part.write(this, cw);
+            cw.visitEnd();
+            bytecode = cw.toByteArray();
+        }
+        return bytecode;
+    }
+
     public Class<?> generateClass() {
-        ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS + ClassWriter.COMPUTE_FRAMES);
-        cw.visit(version, access, getClassDescriptor(), signature, getSuperClassDescriptor(), toInternalForm(interfaces));
-        for (ClassPartDescr part : classParts) part.write(this, cw);
-        cw.visitEnd();
-        byte[] bytecode = cw.toByteArray();
-        return INTERNAL_CLASS_LOADER.defineClass(className, bytecode);
+        if (clazz == null) clazz = classLoader.defineClass(className, generateBytecode());
+        return clazz;
     }
 
     public <T> T newInstance() {
@@ -84,13 +101,6 @@ public class ClassGenerator {
     }
 
     // Utility
-
-    public static String mDescr(Class<?> type, Class<?>... args) {
-        StringBuilder desc = new StringBuilder("(");
-        if (args != null) for (Class<?> arg : args) desc.append(getDescriptor(arg));
-        desc.append(")").append(type == null ? "V" : getDescriptor(type));
-        return desc.toString();
-    }
 
     private String toInternalForm(String className) {
         return className.replace('.', '/');

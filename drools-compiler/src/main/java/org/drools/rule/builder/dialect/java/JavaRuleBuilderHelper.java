@@ -201,22 +201,34 @@ public final class JavaRuleBuilderHelper {
         return map;
     }
 
-    public static void generatTemplates(final String ruleTemplate,
-                                        final String invokerTemplate,
-                                        final RuleBuildContext context,
-                                        final String className,
-                                        final Map vars,
-                                        final Object invokerLookup,
-                                        final BaseDescr descrLookup) {
-        
+    public static void generateTemplates(final String ruleTemplate,
+                                         final String invokerTemplate,
+                                         final RuleBuildContext context,
+                                         final String className,
+                                         final Map vars,
+                                         final Object invokerLookup,
+                                         final BaseDescr descrLookup) {
+
+        generateMethodTemplate(ruleTemplate, context, vars);
+        generateInvokerTemplate(invokerTemplate, context, className, vars, invokerLookup, descrLookup);
+    }
+
+    public static void generateMethodTemplate(final String ruleTemplate, final RuleBuildContext context, final Map vars) {
         TemplateRegistry registry = getRuleTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
-  
+
         context.getMethods().add( TemplateRuntime.execute( registry.getNamedTemplate( ruleTemplate ),
                                                            null,
                                                            new MapVariableResolverFactory( vars ),
                                                            registry ) );
+    }
 
-        registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
+    public static void generateInvokerTemplate(final String invokerTemplate,
+                                               final RuleBuildContext context,
+                                               final String className,
+                                               final Map vars,
+                                               final Object invokerLookup,
+                                               final BaseDescr descrLookup) {
+        TemplateRegistry registry = getInvokerTemplateRegistry(context.getPackageBuilder().getRootClassLoader());
         final String invokerClassName = context.getPkg().getName() + "." + context.getRuleDescr().getClassName() + StringUtils.ucFirst( className ) + "Invoker";
 
         context.getInvokers().put( invokerClassName,
@@ -229,6 +241,5 @@ public final class JavaRuleBuilderHelper {
                                              invokerLookup );
         context.getDescrLookups().put( invokerClassName,
                                            descrLookup );
-                
     }
 }

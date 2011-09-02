@@ -90,8 +90,8 @@ public class JavaDialect
     private static final JavaEvalBuilder             EVAL_BUILDER                  = new JavaEvalBuilder();
     private static final JavaPredicateBuilder        PREDICATE_BUILDER             = new JavaPredicateBuilder();
     private static final JavaReturnValueBuilder      RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
-    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
-//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
+//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
+    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
     private static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
     private static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
     private static final JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
@@ -108,7 +108,6 @@ public class JavaDialect
     }
 
     //
-    private static final KnowledgeHelperFixer        knowledgeHelperFixer          = new KnowledgeHelperFixer();
     private static final DeclarationTypeFixer        typeFixer                     = new DeclarationTypeFixer();
     private static final JavaExprAnalyzer            analyzer                      = new JavaExprAnalyzer();
 
@@ -274,15 +273,6 @@ public class JavaDialect
     }
 
     /**
-     * Returns the Knowledge Helper Fixer
-     *
-     * @return
-     */
-    public KnowledgeHelperFixer getKnowledgeHelperFixer() {
-        return this.knowledgeHelperFixer;
-    }
-
-    /**
      * @return the typeFixer
      */
     public DeclarationTypeFixer getTypeFixer() {
@@ -438,11 +428,6 @@ public class JavaDialect
         String ruleClass = classBuilder.buildRule( context );
         // return if there is no ruleclass name;
         if ( ruleClass == null ) {
-            if (rule.getConsequence() != null) {
-                // the consequence has been already created by the ASMConsequenceBuilder
-                String consequenceRes = pkg.getName().replace('.', '/') + "/" + ruleDescr.getClassName() + ".java";
-                src.add(consequenceRes, null);
-            }
             return;
         }
 

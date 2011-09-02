@@ -85,13 +85,13 @@ public class JavaEvalBuilder
                                                usedIdentifiers.getGlobals()
         );
 
-        generatTemplates( "evalMethod",
-                          "evalInvoker",
-                          context,
-                          className,
-                          map,
-                          eval,
-                          descr );
+        generateTemplates("evalMethod",
+                "evalInvoker",
+                context,
+                className,
+                map,
+                eval,
+                descr);
 
         return eval;
     }
