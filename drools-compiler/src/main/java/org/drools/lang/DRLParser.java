@@ -1074,6 +1074,7 @@ public class DRLParser {
      *   |   ( NO-LOOP
      *       | AUTO-FOCUS
      *       | LOCK-ON-ACTIVE
+     *       | REFRACT
      *       ) BOOLEAN?
      *   |   ( AGENDA-GROUP 
      *       | ACTIVATION-GROUP 
@@ -1128,6 +1129,9 @@ public class DRLParser {
                                            DroolsSoftKeywords.ACTIVE ) ) {
                 attribute = booleanAttribute( as,
                                               new String[]{DroolsSoftKeywords.LOCK, "-", DroolsSoftKeywords.ON, "-", DroolsSoftKeywords.ACTIVE} );
+            } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.REFRACT ) ) {
+                attribute = booleanAttribute( as,
+                                              new String[]{ DroolsSoftKeywords.REFRACT } );
             } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.AGENDA ) &&
                         helper.validateLT( 2,
                                            "-" ) &&
