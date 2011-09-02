@@ -1,0 +1,20 @@
+package org.drools.adventures
+
+import org.drools.adventures.Room;
+import org.drools.adventures.Thing;
+
+dialect "mvel"
+
+rule printEvent salience 10 when
+    $ge : GameEvent()
+    SessionCharacter( $us : session )    
+then
+    $us.channels["events"].send( $ge );
+end
+
+
+rule removeGameEvent when
+    $ge : GameEvent()
+then
+    retract ( $ge );
+end

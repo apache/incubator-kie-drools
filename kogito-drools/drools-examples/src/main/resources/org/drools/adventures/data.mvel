@@ -37,6 +37,10 @@ doors = [
     "d9" : new Door( rooms["first floor hallway"], rooms[ "office"] )    
 ];
 
+//keys = [ "key1" : new Key() ];
+
+//locks = [ "lock1" : new lock().{
+
 characters = [ "hero" : new Character( "hero" ), "monster" : new Character( "monster" ) ];
 foreach( character : characters.values ) {
     character.id = c.getAndIncrement();

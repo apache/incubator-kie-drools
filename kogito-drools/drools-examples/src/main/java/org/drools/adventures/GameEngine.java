@@ -29,7 +29,7 @@ public class GameEngine {
 
     public void createGame() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "model.drl",
+        kbuilder.add( ResourceFactory.newClassPathResource( "Model.drl",
                                                             getClass() ),
                       ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
@@ -37,47 +37,53 @@ public class GameEngine {
             System.exit( 1 );
         }
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "queries.drl",
+        kbuilder.add( ResourceFactory.newClassPathResource( "Queries.drl",
                                                             getClass() ),
                       ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors().toString() );
             System.exit( 1 );
         }
-        
-        kbuilder.add( ResourceFactory.newClassPathResource( "general.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        } 
-        
-        kbuilder.add( ResourceFactory.newClassPathResource( "response.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }         
-        
-        kbuilder.add( ResourceFactory.newClassPathResource( "events.drl",
-                                                            getClass() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            System.exit( 1 );
-        }          
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "commands.drl",
+        kbuilder.add( ResourceFactory.newClassPathResource( "General.drl",
                                                             getClass() ),
                       ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             System.out.println( kbuilder.getErrors().toString() );
             System.exit( 1 );
         }
-        
-      
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "Response.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit( 1 );
+        }
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "Events.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit( 1 );
+        }
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "UiView.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit( 1 );
+        }
+
+        kbuilder.add( ResourceFactory.newClassPathResource( "Commands.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            System.out.println( kbuilder.getErrors().toString() );
+            System.exit( 1 );
+        }
 
         KnowledgeBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbaseConf.setOption( AssertBehaviorOption.EQUALITY );
@@ -130,17 +136,18 @@ public class GameEngine {
             }
 
             MapVariableResolverFactory f = new MapVariableResolverFactory( map );
-            
+
             String baseStr = "import  org.drools.adventures.*;  import org.drools.adventures.commands.*;\n";
             FactHandle fh = ksession.insert( MVEL.eval( baseStr + "new EnterEvent( characters['hero'], rooms['first floor hallway'] )",
-                                             f ) );
+                                                        f ) );
             ksession.fireAllRules();
         } finally {
             Thread.currentThread().setContextClassLoader( currentClassLoader );
         }
     }
 
-    public void receiveCommand(UserSession session, List cmd) {
+    public void receiveCommand(UserSession session,
+                               List cmd) {
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
         String baseStr = "import  org.drools.adventures.*;  import org.drools.adventures.commands.*;\n";
         try {
@@ -152,36 +159,50 @@ public class GameEngine {
             CommandEnum c = (CommandEnum) cmd.get( 0 );
             switch ( c ) {
                 case MOVE : {
-                    ksession.insert( new Request(  session, MVEL.eval( baseStr + "new MoveCommand(args[1], args[2])",
-                                                f ) ) );
+                    ksession.insert( new Request( session,
+                                                  MVEL.eval( baseStr + "new MoveCommand(args[1], args[2])",
+                                                             f ) ) );
                     ksession.fireAllRules();
                     break;
                 }
                 case PICKUP : {
-                    ksession.insert( new Request(  session, MVEL.eval( baseStr + "new PickupCommand(args[1], args[2])",
-                                                f ) ) );
+                    ksession.insert( new Request( session,
+                                                  MVEL.eval( baseStr + "new PickupCommand(args[1], args[2])",
+                                                             f ) ) );
                     ksession.fireAllRules();
                     break;
                 }
                 case DROP : {
-                    ksession.insert( new Request(  session, MVEL.eval( baseStr + "new DropCommand(args[1], args[2])",
-                                                f ) ) );
+                    ksession.insert( new Request( session,
+                                                  MVEL.eval( baseStr + "new DropCommand(args[1], args[2])",
+                                                             f ) ) );
+                    ksession.fireAllRules();
+                    break;
+                }
+                case GIVE : {
+                    ksession.insert( new Request( session,
+                                                  MVEL.eval( baseStr + "new GiveCommand(args[1], args[2], args[3])",
+                                                             f ) ) );
                     ksession.fireAllRules();
                     break;
                 }
                 case LOOK : {
-                    ksession.insert( new Request( session, MVEL.eval( baseStr + "new LookCommand(args[1])",
-                                                f ) ) );
+                    ksession.insert( new Request( session,
+                                                  MVEL.eval( baseStr + "new LookCommand(args[1])",
+                                                             f ) ) );
                     ksession.fireAllRules();
                     break;
-                }          
+                }
                 case SELECT_CHARACTER : {
-                    ksession.insert( new Request( session, MVEL.eval( baseStr + "new SetSessionCharacterCommand(args[1], args[2])",
-                                                                      f ) ) );
-                                          ksession.fireAllRules();
-                                          break;                    
+                    ksession.insert( new Request( session,
+                                                  MVEL.eval( baseStr + "new SetSessionCharacterCommand(args[1], args[2])",
+                                                             f ) ) );
+                    ksession.fireAllRules();
+                    break;
                 }
             }
+        } catch ( Exception e ) {
+            session.getChannels().get( "output" ).send( "Unable to Execute Command: " + cmd );
         } finally {
             Thread.currentThread().setContextClassLoader( currentClassLoader );
         }

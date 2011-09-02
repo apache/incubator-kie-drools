@@ -26,6 +26,15 @@ declare Door extends Thing
    toRoom : Room @key
 end  
 
+declare Key extends Thing
+end
+
+declare Lock extends Thing
+    key : Key @key
+    door : Door @key
+    status : String
+end
+
 // State
 declare Location
     thing : Thing @key
@@ -76,10 +85,17 @@ declare DropEvent extends GameEvent
    thing : Thing @key
 end
 
+declare GiveEvent extends GameEvent
+   @role(event)
+   giver : Character @key
+   thing : Thing @key   
+   receiver : Character @key
+end
+
 
 // Commands
 declare Command
-    request : long
+    requestId : long
 end
 
 declare MoveCommand extends Command
@@ -90,6 +106,12 @@ end
 declare DropCommand extends Command
    character : Character @key
    thing : Thing @key
+end
+
+declare GiveCommand extends Command
+   giver : Character @key
+   thing : Thing @key   
+   receiver : Character @key
 end
 
 declare PickupCommand extends Command

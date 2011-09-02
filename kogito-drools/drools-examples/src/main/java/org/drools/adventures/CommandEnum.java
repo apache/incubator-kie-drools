@@ -4,6 +4,7 @@ public enum CommandEnum {
     MOVE,
     PICKUP,
     DROP,
+    GIVE,
     LOOK,
     SELECT_CHARACTER;
 }

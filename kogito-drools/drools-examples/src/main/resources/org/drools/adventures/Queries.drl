@@ -7,15 +7,15 @@ import org.drools.adventures.Room
 import org.drools.adventures.Location
 
 query connect( Room $x, Room $y ) 
-    Door(id, $x, $y;)
+    Door($id, $x, $y;)
     or 
-    Door(id, $y, $x;)
+    Door($id, $y, $x;)
 end
 
-query isContainedIn( Thing x, Thing y ) 
-    Location(x, y;)
+query isContainedIn( Thing $x, Thing $y ) 
+    Location($x, $y;)
     or 
-    ( Location(z, y;) and ?isContainedIn(x, z;) )
+    ( Location($z, $y;) and ?isContainedIn($x, $z;) )
 end
 
 query things(Character $char, List $things)
