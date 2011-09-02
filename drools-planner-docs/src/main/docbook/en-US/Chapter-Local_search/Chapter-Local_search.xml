@@ -120,21 +120,22 @@
       <para>Let's take a look at the <literal>Move</literal> implementation for 4 queens which moves a queen to a
       different row:</para>
 
-      <programlisting language="java">public class YChangeMove implements Move {
+      <programlisting language="java">public class RowChangeMove implements Move {
 
     private Queen queen;
-    private Integer toY;
+    private Row toRow;
 
-    public YChangeMove(Queen queen, Integer toY) {
+    public RowChangeMove(Queen queen, Row toRow) {
         this.queen = queen;
-        this.toY = toY;
+        this.toRow = toRow;
     }
 
     // ... see below
 
 }</programlisting>
 
-      <para>An instance of <literal>YChangeMove</literal> moves a queen from its current y to a different y.</para>
+      <para>An instance of <literal>RowChangeMove</literal> moves a queen from its current row to a different
+      row.</para>
 
       <para>Drools Planner calls the <literal>doMove(WorkingMemory)</literal> method to do a move. The
       <literal>Move</literal> implementation must notify the working memory of any changes it does on the solution
@@ -142,7 +143,7 @@
 
       <programlisting language="java">    public void doMove(WorkingMemory workingMemory) {
         FactHandle queenHandle = workingMemory.getFactHandle(queen);
-        queen.setY(toY);
+        queen.setRow(toRow);
         workingMemory.update(queenHandle, queen); // after changes are made
     }</programlisting>
 
@@ -156,7 +157,7 @@
       <itemizedlist>
         <listitem>
           <para>A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not
-          doable.</para>
+          doable, because it is already there.</para>
         </listitem>
 
         <listitem>
@@ -169,7 +170,7 @@
       doable:</para>
 
       <programlisting language="java">    public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !queen.getY().equals(toY);
+        return !ObjectUtils.equals(queen.getRow(), toRow);
     }</programlisting>
 
       <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
@@ -181,7 +182,7 @@
       solution.</para>
 
       <programlisting language="java">    public Move createUndoMove(WorkingMemory workingMemory) {
-        return new YChangeMove(queen, queen.getY());
+        return new RowChangeMove(queen, queen.getRow());
     }</programlisting>
 
       <para>Notice that if C0 would have already been moved to C2, the undo move would create the move <emphasis>C2 to
@@ -196,11 +197,11 @@
       <programlisting language="java">    public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof YChangeMove) {
-            YChangeMove other = (YChangeMove) o;
+        } else if (o instanceof RowChangeMove) {
+            RowChangeMove other = (RowChangeMove) o;
             return new EqualsBuilder()
                     .append(queen, other.queen)
-                    .append(toY, other.toY)
+                    .append(toRow, other.toRow)
                     .isEquals();
         } else {
             return false;
@@ -210,7 +211,7 @@
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(queen)
-                .append(toY)
+                .append(toRow)
                 .toHashCode();
     }</programlisting>
 
@@ -223,7 +224,7 @@
       Planner's logging more easily:</para>
 
       <programlisting language="java">    public String toString() {
-        return queen + " =&gt; " + toY;
+        return queen + " =&gt; " + toRow;
     }</programlisting>
 
       <para>Now that we can make a single move, let's take a look at generating moves.</para>
@@ -530,7 +531,7 @@ INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted 
             <programlisting language="java">public class YChangeMove implements Move, TabuPropertyEnabled {
 
     private Queen queen;
-    private int toY;
+    private Row toRow;
 
     // ...
 

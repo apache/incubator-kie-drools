@@ -76,7 +76,7 @@
   <section>
     <title>Algorithms overview</title>
 
-    <para>todo</para>
+    <para>TODO</para>
 
     <para>If you want to learn more about metaheuristics, read the free book <link
     xlink:href="Essentials of Metaheuristics">Essentials of Metaheuristics</link>.</para>
@@ -123,7 +123,7 @@
   &lt;/termination&gt;
   &lt;localSearch&gt;
     &lt;termination&gt;&lt;!-- Phase termination --&gt;
-      &lt;maximumSecondsSpend&gt;60&lt;/maximumSecondsSpend&gt;&lt;!-- Let the next phase run too, before the solver terminates --&gt;
+      &lt;maximumSecondsSpend&gt;60&lt;/maximumSecondsSpend&gt;&lt;!-- Give the next phase a chance to run too, before the solver terminates --&gt;
     &lt;/termination&gt;
     ...
   &lt;/localSearch&gt;
@@ -143,7 +143,7 @@
     use case. Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration, probably
     much better than what you're used to.</para>
 
-    <para>Start with a quick configuration like this as this involves little or no code:</para>
+    <para>Start with a quick configuration that involves little or no configuration and optimization code:</para>
 
     <orderedlist>
       <listitem>
@@ -159,7 +159,7 @@
       </listitem>
     </orderedlist>
 
-    <para>Next, implement moves and add tabu search:</para>
+    <para>Next, implement moves and add tabu search behind it:</para>
 
     <orderedlist>
       <listitem>
@@ -167,12 +167,13 @@
       </listitem>
 
       <listitem>
-        <para>Tabu search (use property tabu 5 or move tabu 7)</para>
+        <para>Tabu search (use property tabu or move tabu)</para>
       </listitem>
     </orderedlist>
 
-    <para>At this point <emphasis>the free lunch is over</emphasis>. The result is probably more than good enough, but
-    we can do better. Use the Benchmarker and try a couple of simulated annealing configurations:</para>
+    <para>At this point <emphasis>the free lunch is over</emphasis>. The return on invested time lowers. The result is
+    probably already more than good enough, but we can do even better. Use the Benchmarker and try a couple of simulated
+    annealing configurations:</para>
 
     <orderedlist>
       <listitem>
@@ -199,6 +200,9 @@
         <para>Tabu search (relatively short time)</para>
       </listitem>
     </orderedlist>
+
+    <para>If you have time, continue experimenting even further (and blog about your experiments!), but the return on
+    investment will be low.</para>
   </section>
 
   <section>

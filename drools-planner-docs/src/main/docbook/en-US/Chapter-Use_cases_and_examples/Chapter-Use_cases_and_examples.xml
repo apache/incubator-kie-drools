@@ -23,15 +23,15 @@
     <section>
       <title>Problem statement</title>
 
-      <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the follow constraints:</para>
+      <para>The <emphasis>n queens puzzle</emphasis> is a puzzle with the following constraints:</para>
 
       <itemizedlist>
         <listitem>
-          <para>Use a chessboard of n rows and n columns.</para>
+          <para>Use a chessboard of <emphasis>n</emphasis> columns and <emphasis>n</emphasis> rows.</para>
         </listitem>
 
         <listitem>
-          <para>Place n queens on the chessboard.</para>
+          <para>Place <emphasis>n</emphasis> queens on the chessboard.</para>
         </listitem>
 
         <listitem>
@@ -57,9 +57,10 @@
         </mediaobject>
       </figure>
 
-      <para>The above solution is wrong because queens A1 and B0 can attack each other (as can queens B0 and D0).
-      Removing queen B0 would respect the "no 2 queens can attack each other" constraint, but would break the "place n
-      queens" constraint.</para>
+      <para>The above solution is wrong because queens <literal>A1</literal> and <literal>B0</literal> can attack each
+      other (as can queens <literal>B0</literal> and <literal>D0</literal>). Removing queen <literal>B0</literal> would
+      respect the "no 2 queens can attack each other" constraint, but would break the "place n queens"
+      constraint.</para>
     </section>
 
     <section>
@@ -113,11 +114,11 @@
 
               <entry># possible solutions (each queen its own column)</entry>
 
-              <entry># feasible solutions (distinct)</entry>
+              <entry># feasible solutions (= optimal in this use case)</entry>
 
-              <entry># optimal solutions (distinct)</entry>
+              <entry># optimal solutions</entry>
 
-              <entry># possible / # optimal</entry>
+              <entry># optimal <emphasis>out of</emphasis> # possible</entry>
             </row>
           </thead>
 
@@ -131,7 +132,7 @@
 
               <entry>2</entry>
 
-              <entry>128</entry>
+              <entry>1 <emphasis>out of </emphasis>128</entry>
             </row>
 
             <row>
@@ -143,7 +144,7 @@
 
               <entry>64</entry>
 
-              <entry>262144</entry>
+              <entry>1 <emphasis>out of</emphasis> 262144</entry>
             </row>
 
             <row>
@@ -155,7 +156,7 @@
 
               <entry>14772512</entry>
 
-              <entry>1248720872503</entry>
+              <entry>1 <emphasis>out of</emphasis> 1248720872503</entry>
             </row>
 
             <row>
@@ -204,24 +205,51 @@
     <section>
       <title>Domain class diagram</title>
 
-      <para>Use a good domain model and it will be easier to understand and solve your problem with Drools Planner. We
-      'll use this domain model for the n queens example:</para>
+      <para>Use a good domain model: it will be easier to understand and solve your planning problem with Drools
+      Planner. This is the domain model for the n queens example:</para>
 
-      <figure>
-        <title>NQueens domain class diagram</title>
+      <programlisting>public class Column {
+    
+    private int index;
 
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Use_cases_and_examples/nQueensDomainDiagram.png"
-                       format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
+    // ... getters and setters
+}</programlisting>
 
-      <para>A <literal>Queen</literal> instance has an x (its column, for example: 0 is column A, 1 is column B, ...)
-      and a y (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the x and y, the ascending diagonal line as
-      well as the descending diagonal line can be calculated. The x and y indexes start from the upper left corner of
-      the chessboard.</para>
+      <programlisting>public class Row {
+    
+    private int index;
+
+    // ... getters and setters
+}</programlisting>
+
+      <programlisting>public class Queen {
+    
+    private Column column;
+    private Row row;
+
+    public int getAscendingDiagonalIndex() {...}
+    public int getDescendingDiagonalIndex() {...}
+
+    // ... getters and setters
+}</programlisting>
+
+      <programlisting>public class NQueens implements Solution&lt;SimpleScore&gt; {
+    
+    private int n;
+    private List&lt;Column&gt; columnList;
+    private List&lt;Row&gt; rowList;
+
+    private List&lt;Queen&gt; queenList;
+
+    private SimpleScore score;
+
+    // ... getters and setters
+}</programlisting>
+
+      <para>A <literal>Queen</literal> instance has a <literal>Column</literal> (for example: 0 is column A, 1 is column
+      B, ...) and a <literal>Row</literal> (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the column and
+      the row, the ascending diagonal line as well as the descending diagonal line can be calculated. The column and row
+      indexes start from the upper left corner of the chessboard.</para>
 
       <table>
         <title>A solution for the 4 queens puzzle shown in the domain model</title>
@@ -233,13 +261,13 @@
 
               <entry align="center">Queen</entry>
 
-              <entry>x</entry>
+              <entry>columnIndex</entry>
 
-              <entry>y</entry>
+              <entry>rowIndex</entry>
 
-              <entry>ascendingD (x + y)</entry>
+              <entry>ascendingDiagonalIndex (columnIndex + rowIndex)</entry>
 
-              <entry>descendingD (x - y)</entry>
+              <entry>descendingDiagonalIndex (columnIndex - rowIndex)</entry>
             </row>
           </thead>
 
@@ -258,7 +286,7 @@
 
               <entry>1</entry>
 
-              <entry>1 (**)</entry>
+              <entry><emphasis role="bold">1 (**)</emphasis></entry>
 
               <entry>-1</entry>
             </row>
@@ -268,9 +296,9 @@
 
               <entry>1</entry>
 
-              <entry>0 (*)</entry>
+              <entry><emphasis role="bold">0 (*)</emphasis></entry>
 
-              <entry>1 (**)</entry>
+              <entry><emphasis role="bold">1 (**)</emphasis></entry>
 
               <entry>1</entry>
             </row>
@@ -292,7 +320,7 @@
 
               <entry>3</entry>
 
-              <entry>0 (*)</entry>
+              <entry><emphasis role="bold">0 (*)</emphasis></entry>
 
               <entry>3</entry>
 
@@ -302,9 +330,13 @@
         </tgroup>
       </table>
 
+      <para>When 2 queens share the same column, row or diagonal line, such as (*) and (**), they can attack each
+      other.</para>
+
       <para>A single <literal>NQueens</literal> instance contains a list of all <literal>Queen</literal> instances. It
-      is the <literal>Solution</literal> implementation which will be supplied to and retrieved from the Solver. Notice
-      that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return 4.</para>
+      is the <literal>Solution</literal> implementation which will be supplied to, solved by and retrieved from the
+      Solver. Notice that in the 4 queens example, NQueens's <literal>getN()</literal> method will always return
+      4.</para>
     </section>
   </section>
 

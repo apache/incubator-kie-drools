@@ -61,7 +61,7 @@
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;selector&gt;
-          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
           &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
@@ -77,7 +77,7 @@
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;selector&gt;
-          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
           &lt;completeMoveTabuSize&gt;5&lt;/completeMoveTabuSize&gt;
@@ -93,7 +93,7 @@
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;selector&gt;
-          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+          &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
           &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;

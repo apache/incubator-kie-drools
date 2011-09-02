@@ -98,9 +98,9 @@ public class Queen {
         <para>ggg</para>
 
         <important>
-          <para>Avoid changing classes during planning that are not real planning entities or logical insertions. having
-          more than 1 planning entity class (or 1 planning entity class hierarchy), unless the problem requires
-          it.</para>
+          <para>Avoid changing classes during planning that are not real planning entities or logical insertions. So
+          avoid having more than 1 planning entity class (or 1 planning entity class hierarchy), unless the problem
+          requires it. TODO</para>
         </important>
       </section>
 
@@ -147,7 +147,7 @@ public class Queen {
       </section>
 
       <section>
-        <title>Planning value strenght comparison</title>
+        <title>Planning value strength comparison</title>
 
         <para>TODO</para>
       </section>
@@ -172,11 +172,18 @@ public class Queen {
 
 }</programlisting>
 
-    <para>For example, an <literal>NQueens</literal> instance just holds a list of all its <literal>Queen</literal>
-    instances:</para>
+    <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
+    <literal>Queen</literal> instances:</para>
 
     <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
+    private int n;
+
+    // Problem facts
+    private List&lt;Column&gt; columnList;
+    private List&lt;Row&gt; rowList;
+
+    // Planning entities
     private List&lt;Queen&gt; queenList;
 
     // ...
@@ -201,30 +208,46 @@ public class Queen {
         this.score = score;
     }</programlisting>
 
-      <para>Most use cases use a <literal>HardAndSoftScore</literal> instead.</para>
+      <para>Most use cases use a <literal>HardAndSoftScore</literal> instead:</para>
+
+      <programlisting>    private HardAndSoftScore score;</programlisting>
     </section>
 
     <section>
-      <title>The getFacts method</title>
+      <title>The getProblemFacts method</title>
 
-      <para>All objects returned by the <literal>getFacts()</literal> method will be asserted into the drools working
-      memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns all
-      <literal>Queen</literal> instances.</para>
+      <para>All objects returned by the <literal>getProblemFacts()</literal> method will be asserted into the drools
+      working memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns
+      all <literal>Queen</literal> instances.</para>
 
-      <programlisting language="java">    public Collection&lt;? extends Object&gt; getFacts() {
-        return queenList;
+      <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
+        List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
+        facts.addAll(columnList);
+        facts.addAll(rowList);
+        // Do not add the planning entity's (queenList) because that will be done automatically
+        return facts;
     }</programlisting>
     </section>
 
     <section>
       <title>The cloneSolution method</title>
 
-      <para>Most solvers use the <literal>cloneSolution()</literal> method to clone the solution each time they
-      encounter a new best solution. The <literal>NQueens</literal> implementation just clones all
-      <literal>Queen</literal> instances:</para>
+      <para>Most solver algorithms use the <literal>cloneSolution()</literal> method to clone the solution each time
+      they encounter a new best solution, so they can recall it later.</para>
 
-      <programlisting language="java">    public NQueens cloneSolution() {
+      <para>The <literal>NQueens</literal> implementation only deep clones all <literal>Queen</literal> instances, so
+      when the original solution is changed during planning, by changing a <literal>Queen</literal>, the clone stays the
+      same.</para>
+
+      <programlisting language="java">    /**
+     * Clone will only deep copy the {@link #queenList}.
+     */
+    public NQueens cloneSolution() {
         NQueens clone = new NQueens();
+        clone.id = id;
+        clone.n = n;
+        clone.columnList = columnList;
+        clone.rowList = rowList;
         List&lt;Queen&gt; clonedQueenList = new ArrayList&lt;Queen&gt;(queenList.size());
         for (Queen queen : queenList) {
             clonedQueenList.add(queen.clone());
@@ -234,34 +257,16 @@ public class Queen {
         return clone;
     }</programlisting>
 
-      <para>The <literal>cloneSolution()</literal> method should clone no more and no less than the parts of the
-      <literal>Solution</literal> that can change during planning. For example, in the curriculum course schedule
-      example the lectures are cloned, but teachers, courses, timeslots, periods, rooms, ... are not cloned because only
-      a lecture's appointed period or room changes during solving:</para>
+      <para>The <literal>cloneSolution()</literal> method should only deep clone the planning entities. Notice that the
+      problem facts, such as <literal>Column</literal> and <literal>Row</literal> are normally <emphasis>not</emphasis>
+      cloned: even their <literal>List</literal> instances are <emphasis>not</emphasis> cloned.</para>
 
-      <programlisting language="java">    /**
-     * Clone will only deep copy the {@link #lectureList}.
-     */
-    public CurriculumCourseSchedule cloneSolution() {
-        CurriculumCourseSchedule clone = new CurriculumCourseSchedule();
-        ...
-        clone.teacherList = teacherList;
-        clone.curriculumList = curriculumList;
-        clone.courseList = courseList;
-        clone.dayList = dayList;
-        clone.timeslotList = timeslotList;
-        clone.periodList = periodList;
-        clone.roomList = roomList;
-        clone.unavailablePeriodConstraintList = unavailablePeriodConstraintList;
-        List&lt;Lecture&gt; clonedLectureList = new ArrayList&lt;Lecture&gt;(lectureList.size());
-        for (Lecture lecture : lectureList) {
-            Lecture clonedLecture = lecture.clone();
-            clonedLectureList.add(clonedLecture);
-        }
-        clone.lectureList = clonedLectureList;
-        clone.score = score;
-        return clone;
-    }</programlisting>
+      <note>
+        <para>If you were to clone the problem facts too, then you'd have to make sure that the new planning entity
+        clones also refer to the new problem facts clones used by the solution. For example, if you 'd clone all
+        <literal>Row</literal> instances, then each <literal>Queen</literal> clone and the <literal>NQueens</literal>
+        clone itself should refer to the same set of new <literal>Row</literal> clones.</para>
+      </note>
     </section>
   </section>
 
@@ -313,7 +318,7 @@ public class Queen {
   &lt;!-- Real world problems require to use of &lt;constructionHeuristic&gt;. --&gt;
   &lt;localSearch&gt;
     &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.NQueensMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
     &lt;acceptor&gt;
       &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
