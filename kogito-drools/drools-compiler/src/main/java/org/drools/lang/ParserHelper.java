@@ -330,7 +330,9 @@ public class ParserHelper {
                validateLT( index,
                            DroolsSoftKeywords.TIMER ) ||
                validateLT( index,
-                           DroolsSoftKeywords.DURATION );
+                           DroolsSoftKeywords.DURATION ) ||
+               validateLT( index,
+                           DroolsSoftKeywords.REFRACT );
     }
 
     public boolean validateIdentifierSufix() {

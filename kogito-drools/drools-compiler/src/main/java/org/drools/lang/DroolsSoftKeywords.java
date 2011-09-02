@@ -39,6 +39,7 @@ public class DroolsSoftKeywords {
     public static final String DURATION     = "duration";
     public static final String TIMER        = "timer";
     public static final String CALENDARS    = "calendars";
+    public static final String REFRACT      = "refract";
     public static final String PACKAGE      = "package";
     public static final String IMPORT       = "import";
     public static final String DIALECT      = "dialect";

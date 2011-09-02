@@ -2163,6 +2163,29 @@ public class RuleParserTest extends TestCase {
     }
 
     @Test
+    public void testAttributeRefract() throws Exception {
+        final String source = "rule Test refract when Person() then end";
+
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 source );
+
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+
+        assertEquals( "Test",
+                      rule.getName() );
+        Map<String, AttributeDescr> attributes = rule.getAttributes();
+        assertEquals( 1,
+                      attributes.size() );
+        AttributeDescr refract = attributes.get( "refract" );
+        assertNotNull( refract );
+        assertEquals( "true",
+                      refract.getValue() );
+
+    }
+
+    @Test
     public void testEnabledExpression() throws Exception {
         final RuleDescr rule = (RuleDescr) parseResource( "rule",
                                                           "rule_enabled_expression.drl" );
@@ -3844,28 +3867,28 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
         assertFalse( pattern.isUnification() );
 
-//        assertEquals( 2,
-//                      pattern.getDescrs().size() );
-//        BindingDescr bindingDescr = pattern.getDescrs().get( 0 );
-//        assertEquals( "$name",
-//                      bindingDescr.getVariable() );
-//        assertEquals( "name",
-//                      bindingDescr.getExpression() );
-//        assertFalse( bindingDescr.isUnification() );
-//
-//        bindingDescr = pattern.getDescrs().get( 1 );
-//        assertEquals( "$loc",
-//                      bindingDescr.getVariable() );
-//        assertEquals( "location",
-//                      bindingDescr.getExpression() );
-//        assertFalse( bindingDescr.isUnification() );
+        //        assertEquals( 2,
+        //                      pattern.getDescrs().size() );
+        //        BindingDescr bindingDescr = pattern.getDescrs().get( 0 );
+        //        assertEquals( "$name",
+        //                      bindingDescr.getVariable() );
+        //        assertEquals( "name",
+        //                      bindingDescr.getExpression() );
+        //        assertFalse( bindingDescr.isUnification() );
+        //
+        //        bindingDescr = pattern.getDescrs().get( 1 );
+        //        assertEquals( "$loc",
+        //                      bindingDescr.getVariable() );
+        //        assertEquals( "location",
+        //                      bindingDescr.getExpression() );
+        //        assertFalse( bindingDescr.isUnification() );
 
         // embedded bindings are extracted at compile time
-        List<?> constraints = pattern.getDescrs();
-        assertEquals( 1, 
+        List< ? > constraints = pattern.getDescrs();
+        assertEquals( 1,
                       constraints.size() );
         assertEquals( "$name : name == \"Bob\" || $loc : location == \"Montreal\"",
-                      ((ExprConstraintDescr)constraints.get( 0 )).getExpression() );
+                      ((ExprConstraintDescr) constraints.get( 0 )).getExpression() );
     }
 
     @Test
@@ -3878,28 +3901,28 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
         assertFalse( pattern.isUnification() );
 
-//        assertEquals( 2,
-//                      pattern.getDescrs().size() );
-//        BindingDescr bindingDescr = pattern.getDescrs().get( 0 );
-//        assertEquals( "$name",
-//                      bindingDescr.getVariable() );
-//        assertEquals( "name.toUpperCase()",
-//                      bindingDescr.getExpression() );
-//        assertFalse( bindingDescr.isUnification() );
-//
-//        bindingDescr = pattern.getDescrs().get( 1 );
-//        assertEquals( "$loc",
-//                      bindingDescr.getVariable() );
-//        assertEquals( "location[0].city",
-//                      bindingDescr.getExpression() );
-//        assertFalse( bindingDescr.isUnification() );
-        
+        //        assertEquals( 2,
+        //                      pattern.getDescrs().size() );
+        //        BindingDescr bindingDescr = pattern.getDescrs().get( 0 );
+        //        assertEquals( "$name",
+        //                      bindingDescr.getVariable() );
+        //        assertEquals( "name.toUpperCase()",
+        //                      bindingDescr.getExpression() );
+        //        assertFalse( bindingDescr.isUnification() );
+        //
+        //        bindingDescr = pattern.getDescrs().get( 1 );
+        //        assertEquals( "$loc",
+        //                      bindingDescr.getVariable() );
+        //        assertEquals( "location[0].city",
+        //                      bindingDescr.getExpression() );
+        //        assertFalse( bindingDescr.isUnification() );
+
         // embedded bindings are extracted at compile time
-        List<?> constraints = pattern.getDescrs();
-        assertEquals( 1, 
+        List< ? > constraints = pattern.getDescrs();
+        assertEquals( 1,
                       constraints.size() );
         assertEquals( "$name : name.toUpperCase() == \"Bob\" || $loc : location[0].city == \"Montreal\"",
-                      ((ExprConstraintDescr)constraints.get( 0 )).getExpression() );
+                      ((ExprConstraintDescr) constraints.get( 0 )).getExpression() );
     }
 
     @Test
@@ -3986,16 +4009,17 @@ public class RuleParserTest extends TestCase {
             /** Use Reflection to get rule method from parser */
             Method ruleName = null;
             Object[] params = null;
-            for( Method method : DRLParser.class.getMethods() ) {
-                if( method.getName().equals( testRuleName ) ) {
+            for ( Method method : DRLParser.class.getMethods() ) {
+                if ( method.getName().equals( testRuleName ) ) {
                     ruleName = method;
-                    Class<?>[] parameterTypes = method.getParameterTypes();
+                    Class< ? >[] parameterTypes = method.getParameterTypes();
                     params = new Object[parameterTypes.length];
                 }
             }
 
             /** Invoke grammar rule, and get the return value */
-            Object ruleReturn = ruleName.invoke( parser, params );
+            Object ruleReturn = ruleName.invoke( parser,
+                                                 params );
 
             if ( parser.hasErrors() ) {
                 System.out.println( parser.getErrorMessages() );
