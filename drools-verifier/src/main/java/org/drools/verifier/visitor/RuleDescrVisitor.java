@@ -53,7 +53,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
 
     public void visitRuleDescr(RuleDescr descr) throws UnknownDescriptionException {
 
-        rule = new VerifierRule( rulePackage );
+        rule = new VerifierRule(descr, rulePackage );
 
         rule.setName( descr.getName() );
 
@@ -221,7 +221,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
 
     @Override
     protected void visitAndDescr(AndDescr descr) throws UnknownDescriptionException {
-        RuleOperatorDescr operatorDescr = new RuleOperatorDescr( rule,
+        RuleOperatorDescr operatorDescr = new RuleOperatorDescr( descr, rule,
                                                                  OperatorDescrType.AND );
         operatorDescr.setOrderNumber( orderNumber.next() );
         operatorDescr.setParentPath( getParent().getPath() );
@@ -236,7 +236,7 @@ public class RuleDescrVisitor extends ConditionalElementDescrVisitor {
 
     @Override
     protected void visitOrDescr(OrDescr descr) throws UnknownDescriptionException {
-        RuleOperatorDescr operatorDescr = new RuleOperatorDescr( rule,
+        RuleOperatorDescr operatorDescr = new RuleOperatorDescr( descr, rule,
                                                                  OperatorDescrType.OR );
         operatorDescr.setOrderNumber( orderNumber.next() );
 

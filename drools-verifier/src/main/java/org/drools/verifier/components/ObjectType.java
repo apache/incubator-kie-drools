@@ -18,14 +18,15 @@ package org.drools.verifier.components;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
+
+import org.drools.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 
-public class ObjectType extends VerifierComponent
+public class ObjectType extends VerifierComponent<BaseDescr>
     implements
     Serializable {
     private static final long   serialVersionUID = 510l;
@@ -41,6 +42,11 @@ public class ObjectType extends VerifierComponent
 
     private Multimap<String, String> metadata         = TreeMultimap.create();
 
+    
+    public ObjectType(BaseDescr descr) {
+        super(descr);
+    }
+    
     public int getOffset() {
         offset++;
         return offset % 2;

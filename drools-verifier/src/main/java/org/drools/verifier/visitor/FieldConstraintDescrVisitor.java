@@ -53,7 +53,7 @@ public class FieldConstraintDescrVisitor {
         field = data.getFieldByObjectTypeAndFieldName(objectType.getFullName(),
                 descr.getFieldName());
         if (field == null) {
-            field = ObjectTypeFactory.createField(descr.getFieldName(),
+            field = ObjectTypeFactory.createField(descr, descr.getFieldName(),
                     objectType);
             data.add(field);
         }
@@ -177,15 +177,15 @@ public class FieldConstraintDescrVisitor {
                     Import objectImport = data.getImportByName(base);
 
                     if (objectImport != null) {
-                        objectType = ObjectTypeFactory.createObjectType(objectImport);
+                        objectType = ObjectTypeFactory.createObjectType(descr,objectImport);
                     } else {
-                        objectType = ObjectTypeFactory.createObjectType(base);
+                        objectType = ObjectTypeFactory.createObjectType(descr,base);
                     }
 
                     data.add(objectType);
                 }
 
-                enumField = new EnumField();
+                enumField = new EnumField(descr);
 
                 enumField.setObjectTypePath(objectType.getPath());
                 enumField.setObjectTypeName(objectType.getName());

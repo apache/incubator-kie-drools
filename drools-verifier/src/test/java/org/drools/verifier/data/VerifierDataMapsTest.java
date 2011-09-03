@@ -21,6 +21,8 @@ import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import org.drools.lang.descr.AndDescr;
+import org.drools.lang.descr.PackageDescr;
 import org.drools.verifier.VerifierComponentMockFactory;
 import org.drools.verifier.components.EnumField;
 import org.drools.verifier.components.EnumRestriction;
@@ -100,8 +102,8 @@ public class VerifierDataMapsTest {
         saveVerifierComponentAndGet( pattern );
 
         saveVerifierComponentAndGet( new InlineEvalDescr( pattern ) );
-        saveVerifierComponentAndGet( new ObjectType() );
-        saveVerifierComponentAndGet( new RuleOperatorDescr( rule,
+        saveVerifierComponentAndGet( new ObjectType(new PackageDescr("testPackage1")) );
+        saveVerifierComponentAndGet( new RuleOperatorDescr( new AndDescr(), rule,
                                                             OperatorDescrType.AND ) );
         saveVerifierComponentAndGet( new PatternOperatorDescr( pattern,
                                                                OperatorDescrType.AND ) );
@@ -124,8 +126,8 @@ public class VerifierDataMapsTest {
 
     @Test
     public void testSaveVerifierComponentAndGetForAllFields() {
-        saveVerifierComponentAndGet( new EnumField() );
-        saveVerifierComponentAndGet( new Field() );
+        saveVerifierComponentAndGet( new EnumField(new PackageDescr("testPackage1")) );
+        saveVerifierComponentAndGet( new Field(new PackageDescr("testPackage1")) );
     }
 
     @Test
@@ -150,7 +152,7 @@ public class VerifierDataMapsTest {
         assertEquals( "testRule1",
                       rule.getName() );
 
-        ObjectType objectType = new ObjectType();
+        ObjectType objectType = new ObjectType(new PackageDescr("testPackage1"));
         Pattern pattern = VerifierComponentMockFactory.createPattern1();
 
         assertNotNull( pattern.getRulePath() );
@@ -203,7 +205,7 @@ public class VerifierDataMapsTest {
     private void saveVerifierComponentAndGet(Field field) {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
-        ObjectType objectType = new ObjectType();
+        ObjectType objectType = new ObjectType(new PackageDescr("testPackage1"));
 
         field.setObjectTypePath( objectType.getPath() );
 
@@ -249,9 +251,9 @@ public class VerifierDataMapsTest {
     private void saveVerifierComponentAndGet(Restriction component) {
         VerifierData data = VerifierReportFactory.newVerifierData();
 
-        ObjectType objectType = new ObjectType();
+        ObjectType objectType = new ObjectType(new PackageDescr("testPackage1"));
 
-        Field field = new Field();
+        Field field = new Field(new PackageDescr("testPackage1"));
         field.setObjectTypePath( objectType.getPath() );
 
         component.setFieldPath( field.getPath() );
