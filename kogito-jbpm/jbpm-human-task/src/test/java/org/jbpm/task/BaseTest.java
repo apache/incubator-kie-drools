@@ -64,6 +64,15 @@ public abstract class BaseTest extends TestCase {
         taskSession = taskService.createSession();
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo(userInfo);
+        loadUsersAndGroups(taskService);
+    }
+
+    protected void tearDown() throws Exception {
+        taskSession.dispose();
+        emf.close();
+    }
+    
+    public void loadUsersAndGroups(TaskService taskService) throws Exception {
         Map vars = new HashMap();
 
         Reader reader = null;
@@ -88,11 +97,6 @@ public abstract class BaseTest extends TestCase {
         } finally {
             if (reader != null) reader.close();
         }
-    }
-
-    protected void tearDown() throws Exception {
-        taskSession.dispose();
-        emf.close();
     }
 
     public Object eval(Reader reader,

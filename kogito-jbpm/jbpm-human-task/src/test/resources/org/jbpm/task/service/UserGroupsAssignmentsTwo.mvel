@@ -1,0 +1,4 @@
+usersgroups = [ 
+				new User('sales-rep') : [new Group( "Crusaders" )]
+              ];       
+return usersgroups;
