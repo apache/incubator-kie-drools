@@ -10,7 +10,6 @@ import org.mvel2.asm.*;
 import java.util.*;
 
 import static org.drools.rule.builder.dialect.DialectUtil.*;
-import static org.drools.rule.builder.dialect.asm.ASMUtil.*;
 import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 import static org.mvel2.asm.Opcodes.*;
 import static org.mvel2.asm.Type.*;
@@ -79,33 +78,35 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
         final String[] declarationTypes = (String[])consequenceContext.get("declarationTypes");
         final String[] globals = (String[])consequenceContext.get("globals");
         final String[] globalTypes = (String[])consequenceContext.get("globalTypes");
+        final Boolean[] notPatterns = (Boolean[])consequenceContext.get("notPatterns");
 
         final ClassGenerator generator = new ClassGenerator(packageName + "." + invokerClassName,
-                                                            ruleContext.getPackageBuilder().getRootClassLoader())
-                .setInterfaces("org/drools/spi/Consequence", "org/drools/spi/CompiledInvoker");
+                                                            ruleContext.getPackageBuilder().getRootClassLoader(),
+                                                            ruleContext.getDialect("java").getPackageRegistry().getTypeResolver())
+                .setInterfaces("org.drools.spi.Consequence", "org.drools.spi.CompiledInvoker");
 
         generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", LONG_TYPE.getDescriptor(), CONSEQUENCE_SERIAL_UID)
                 .addField(ACC_PRIVATE + ACC_FINAL, "consequenceName", getDescriptor(String.class));
 
         generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv) {
+            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
                 mv.visitVarInsn(ALOAD, 0); // read local variable 0 (initialized to this) and push it on the stack
                 mv.visitLdcInsn(name); // push the String "default" on the stack
                 mv.visitFieldInsn(PUTFIELD, cg.getClassDescriptor(), "consequenceName", getDescriptor(String.class));
             }
-        }).addMethod(ACC_PUBLIC, "getName", mDescr(String.class), new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv) {
+        }).addMethod(ACC_PUBLIC, "getName", generator.toMethodDescriptor(String.class), new ClassGenerator.MethodBody() {
+            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
                 mv.visitVarInsn(ALOAD, 0); // read local variable 0 (initialized to this) and push it on the stack
                 mv.visitFieldInsn(GETFIELD, cg.getClassDescriptor(), "consequenceName", getDescriptor(String.class));
                 mv.visitInsn(ARETURN); // return the first object on the stack
             }
-        }).addMethod(ACC_PUBLIC, "hashCode", mDescr(Integer.TYPE), new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv) {
+        }).addMethod(ACC_PUBLIC, "hashCode", generator.toMethodDescriptor(Integer.TYPE), new ClassGenerator.MethodBody() {
+            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
                 mv.visitLdcInsn(hashCode);
                 mv.visitInsn(IRETURN);
             }
-        }).addMethod(ACC_PUBLIC, "getMethodBytecode", mDescr(List.class), new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv) {
+        }).addMethod(ACC_PUBLIC, "getMethodBytecode", generator.toMethodDescriptor(List.class), new ClassGenerator.MethodBody() {
+            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "getClass", "()Ljava/lang/Class;");
                 mv.visitLdcInsn(ruleClassName);
@@ -115,8 +116,8 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                 mv.visitMethodInsn(INVOKESTATIC, "org/drools/rule/Rule", "getMethodBytecode", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;");
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "equals", mDescr(Boolean.TYPE, Object.class), new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv) {
+        }).addMethod(ACC_PUBLIC, "equals", generator.toMethodDescriptor(Boolean.TYPE, Object.class), new ClassGenerator.MethodBody() {
+            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
                 Label l1 = new Label();
                 Label l2 = new Label();
                 mv.visitVarInsn(ALOAD, 1); // if (object == null)
@@ -138,8 +139,8 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                 mv.visitInsn(IRETURN);
 
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", mDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv) {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.toMethodDescriptor(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
+            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/spi/KnowledgeHelper", "getTuple", "()Lorg/drools/spi/Tuple;");
@@ -154,14 +155,20 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/reteoo/RuleTerminalNode", "getDeclarations", "()[Lorg/drools/rule/Declaration;");
                 mv.visitVarInsn(ASTORE, 4);
 
+                int[] paramsPos = new int[declarations.length];
+                int offset = 5;
                 for (int i = 0; i < declarations.length; i++) {
+                    int factPos = offset;
+                    int objPos = ++offset;
+                    paramsPos[i] = factPos;
+
                     // InternalFactHandle fact[i] = tuple.get(declarations[i]);
                     mv.visitVarInsn(ALOAD, 3); // org.drools.spi.Tuple
                     mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
                     mv.visitLdcInsn(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/spi/Tuple", "get", "(Lorg/drools/rule/Declaration;)Lorg/drools/common/InternalFactHandle;");
-                    mv.visitVarInsn(ASTORE, i*2+5); // fact[i]
+                    mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
                     // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
                     mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
@@ -169,35 +176,43 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // WorkingMemory
                     mv.visitTypeInsn(CHECKCAST, "org/drools/common/InternalWorkingMemory"); // (org.drools.common.InternalWorkingMemory)workingMemory
-                    mv.visitVarInsn(ALOAD, i * 2 + 5); // fact[i]
+                    mv.visitVarInsn(ALOAD, factPos); // fact[i]
                     mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/common/InternalFactHandle", "getObject", "()Ljava/lang/Object;");
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", "getValue", "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)Ljava/lang/Object;");
-                    mv.visitTypeInsn(CHECKCAST, toInteralName(declarationTypes[i]));
-                    mv.visitVarInsn(ASTORE, i * 2 + 6); // obj[i]
-                }
+                    String readMethod = declarations[i].getNativeReadMethod().getName();
+                    boolean isObject = readMethod.equals("getValue");
+                    String returnedType = isObject ? "Ljava/lang/Object;" : cg.toTypeDescriptor(declarationTypes[i]);
+                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                    if (isObject) mv.visitTypeInsn(CHECKCAST, cg.toInteralName(declarationTypes[i]));
+                    offset += mh.store(objPos, declarationTypes[i]); // obj[i]
 
-                // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-                int globalsOffset = declarations.length * 2 + 5;
-                for (int i = 0; i < globals.length; i++) {
-                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
-                    mv.visitLdcInsn(globals[i]);
-                    mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/WorkingMemory", "getGlobal", "(Ljava/lang/String;)Ljava/lang/Object;");
-                    mv.visitTypeInsn(CHECKCAST, toInteralName(globalTypes[i]));
-                    mv.visitVarInsn(ASTORE, globalsOffset + i);
+                    if (notPatterns[i]) {
+                        mv.visitVarInsn(ALOAD, 1);
+                        mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/spi/KnowledgeHelper", "getWorkingMemory", "()Lorg/drools/WorkingMemory;");
+                        mh.loadAsObject(objPos);
+                        mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/WorkingMemory", "getFactHandle", "(Ljava/lang/Object;)Lorg/drools/FactHandle;");
+                        mv.visitTypeInsn(CHECKCAST, "org/drools/common/InternalFactHandle");
+                        mv.visitVarInsn(ASTORE, factPos);
+                    }
                 }
 
                 // @{ruleClassName}.@{methodName}(KnowledgeHelper, @foreach{declr : declarations} Object, FactHandle @end)
                 StringBuilder consequenceMethodDescr = new StringBuilder("(Lorg/drools/spi/KnowledgeHelper;");
                 mv.visitVarInsn(ALOAD, 1); // KnowledgeHelper
                 for (int i = 0; i < declarations.length; i++) {
-                    mv.visitVarInsn(ALOAD, i*2+6); // obj[i]
-                    mv.visitVarInsn(ALOAD, i * 2 + 5); // fact[i]
-                    consequenceMethodDescr.append(toTypeDescriptor(declarationTypes[i]) + "Lorg/drools/FactHandle;");
+                    mh.load(paramsPos[i]+1); // obj[i]
+                    mv.visitVarInsn(ALOAD, paramsPos[i]); // fact[i]
+                    consequenceMethodDescr.append(cg.toTypeDescriptor(declarationTypes[i]) + "Lorg/drools/FactHandle;");
                 }
+
+                // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
                 for (int i = 0; i < globals.length; i++) {
-                    mv.visitVarInsn(ALOAD, globalsOffset + i);
-                    consequenceMethodDescr.append(toTypeDescriptor(globalTypes[i]));
+                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
+                    mv.visitLdcInsn(globals[i]);
+                    mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/WorkingMemory", "getGlobal", "(Ljava/lang/String;)Ljava/lang/Object;");
+                    mv.visitTypeInsn(CHECKCAST, cg.toInteralName(globalTypes[i]));
+                    consequenceMethodDescr.append(cg.toTypeDescriptor(globalTypes[i]));
                 }
+
                 consequenceMethodDescr.append(")V");
                 mv.visitMethodInsn(INVOKESTATIC, internalRuleClassName, methodName, consequenceMethodDescr.toString());
                 mv.visitInsn(RETURN);
