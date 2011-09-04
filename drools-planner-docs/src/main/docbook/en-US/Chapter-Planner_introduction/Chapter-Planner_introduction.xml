@@ -220,19 +220,27 @@ $ runExamples.bat</programlisting>
     </section>
 
     <section>
-      <title>Get it with maven</title>
+      <title>Get it with maven, gradle, ivy, buildr or ANT</title>
 
       <para>The Drools Planner jars are available on <link
-      xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link> and <link
-      xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools.planner~~~~">the JBoss maven
-      repository</link>. If you use maven, just add a dependency to <literal>drools-planner-core</literal> in your
-      project's <filename>pom.xml</filename>:</para>
+      xlink:href="http://search.maven.org/#search|ga|1|org.drools.planner">the central maven repository</link> (and
+      <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools.planner~~~~">the JBoss
+      maven repository</link>).</para>
+
+      <para>If you use maven, just add a dependency to <literal>drools-planner-core</literal> in your project's
+      <filename>pom.xml</filename>:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
         &lt;groupId&gt;org.drools.planner&lt;/groupId&gt;
         &lt;artifactId&gt;drools-planner-core&lt;/artifactId&gt;
         &lt;version&gt;5.x&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
+
+      <para>This is similar for gradle, ivy and buildr.</para>
+
+      <para>If you're still using ant (without ivy), copy all the jars from the download zip's
+      <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
+      jars.</para>
     </section>
 
     <section>
