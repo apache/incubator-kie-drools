@@ -53,6 +53,7 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
         this.className = className;
         this.expr = expr;
         this.typesafe = typesafe;
+        setValueType( ValueType.CLASS_TYPE );
     }
     
     public void readExternal(ObjectInput in) throws IOException,
@@ -74,19 +75,22 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
         try {            
             cls = runtimeData.getRootClassLoader().loadClass( this.className );
         } catch ( ClassNotFoundException e ) {
-            throw new IllegalStateException( "Unable to compile as Class could not b e found '" + className + "'");
+            throw new IllegalStateException( "Unable to compile as Class could not be found '" + className + "'");
         }
         ParserContext context = new ParserContext(runtimeData.getParserConfiguration());
         context.addInput( "this", cls );
         context.setStrongTyping( typesafe );  
         
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+        MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
+        MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
+        MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;
         this.mvelExpression = (ExecutableStatement)MVEL.compileExpression( expr, context);
         
         Class returnType = this.mvelExpression.getKnownEgressType();
         setFieldType( returnType );
-        setValueType( ValueType.determineValueType( returnType ) );        
-    }    
+        setValueType( ValueType.determineValueType( returnType ) );
+    }
 
 //    public MVELClassFieldReader(Class cls,
 //                                String fieldName,

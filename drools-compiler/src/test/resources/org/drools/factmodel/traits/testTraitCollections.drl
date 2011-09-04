@@ -1,0 +1,98 @@
+package org.test;
+ 
+ 
+import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.Individual;
+import java.util.*;
+
+
+global java.util.List list;
+
+
+
+declare SimpleTrait
+@format( trait )
+    name : String
+end
+ 
+declare ComplexTrait
+@format( trait )
+//    doubles : double[]
+//    names   : String[]
+    ages    : List
+    addrex  : Set
+    nested  : SimpleTrait
+    nest2   : AnotherTrait
+end
+
+ 
+ 
+ 
+declare Bean
+@Traitable
+//    names   : String[]
+    addrex  : Set               = new java.util.HashSet()
+end
+
+declare AnotherTrait
+@format( trait )
+    field : List
+end
+
+
+
+
+
+rule "Init"
+when
+then
+ Bean core = new Bean( );
+ insert( core );
+end
+
+
+rule "Compose"
+when
+    $core : Bean()
+then
+    ComplexTrait<Bean> complex = drools.<ComplexTrait,Bean>don( $core, ComplexTrait.class, true );
+
+    complex.setAges( new ArrayList() );
+    complex.getAges().add(22);
+    complex.getAges().add(18);
+
+//    complex.setAddrex( new HashSet() );
+    complex.getAddrex().add( "here" );
+
+    Individual i1 = new Individual();
+    SimpleTrait<Individual> st = drools.<SimpleTrait,Individual>don( i1, SimpleTrait.class, true );
+    st.setName("xyz");
+
+    Individual i2 = new Individual();
+    AnotherTrait<Individual> at = drools.<AnotherTrait,Individual>don( i1, AnotherTrait.class, true );
+    at.setField(new LinkedList());
+    at.getField().add("aaa");
+
+    complex.setNested( st );
+    complex.setNest2( at );
+
+    System.out.println( complex );
+    update( complex );
+end
+
+
+rule "Check"
+when
+    ComplexTrait( ages contains 22, ages contains 18,
+                  addrex.size == 1, addrex contains "here" ,
+                  nested.name == "xyz",
+                  nest2.field contains "aaa" )
+then
+    list.add("OK");
+end
+
+
+
+
+
+
