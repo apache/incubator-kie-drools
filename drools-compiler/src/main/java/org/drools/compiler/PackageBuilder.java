@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,6 +67,12 @@ import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.factmodel.traits.TraitRegistry;
+import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.TraitBuilder;
+import org.drools.factmodel.traits.ITraitable;
+import org.drools.factmodel.traits.Traitable;
+import org.drools.factmodel.traits.Trait;
 import org.drools.facttemplates.FactTemplate;
 import org.drools.facttemplates.FactTemplateImpl;
 import org.drools.facttemplates.FieldTemplate;
@@ -313,7 +320,20 @@ public class PackageBuilder {
         activationType.setTypesafe( false );
         activationType.setTypeClass( Activation.class );
         builtinTypes.put( Activation.class.getCanonicalName(),
-                          activationType );        
+                          activationType );
+
+        TypeDeclaration thingType = new TypeDeclaration( IThing.class.getName() );
+        thingType.setFormat( TypeDeclaration.Format.TRAIT );
+        thingType.setTypeClass( IThing.class );
+        builtinTypes.put( IThing.class.getCanonicalName(),
+                          thingType );
+        ClassDefinition def = new ClassDefinition();
+            def.setClassName( thingType.getTypeClass().getName() );
+            def.setDefinedClass( IThing.class );
+        TraitRegistry.getInstance().addTrait( def );
+
+
+
 
     }
 
@@ -383,7 +403,7 @@ public class PackageBuilder {
 
     /**
      * Load a rule package from XML source.
-     * 
+     *
      * @param reader
      * @throws DroolsParserException
      * @throws IOException
@@ -1253,9 +1273,9 @@ public class PackageBuilder {
      *            the current package registry
      * @return the fully qualified name of the superclass
      */
-    private String resolveSuperType(String sup,
-                                     PackageDescr packageDescr,
-                                     PackageRegistry pkgRegistry) {
+    private String resolveType( String sup,
+                                PackageDescr packageDescr,
+                                PackageRegistry pkgRegistry) {
 
         //look among imports
         for ( ImportDescr id : packageDescr.getImports() ) {
@@ -1297,33 +1317,63 @@ public class PackageBuilder {
      */
     private void fillSuperType(TypeDeclarationDescr typeDescr,
                                 PackageDescr packageDescr) {
-        String declaredSuperType = typeDescr.getSuperTypeName();
-        if ( declaredSuperType != null ) {
-            int separator = declaredSuperType.lastIndexOf( "." );
-            boolean qualified = separator > 0;
-            // check if a simple name corresponds to a f.q.n.
-            if ( !qualified ) {
-                declaredSuperType =
-                        resolveSuperType( declaredSuperType,
-                                          packageDescr,
-                                          this.pkgRegistryMap.get( typeDescr.getNamespace() ) );
-            }
 
-            // sets supertype name and supertype package
-            separator = declaredSuperType.lastIndexOf( "." );
-            if ( separator < 0 ) {
-                this.results.add( new TypeDeclarationError(
-                                                            "Cannot resolve supertype '" + typeDescr.getSuperTypeName() + "'",
-                                                            typeDescr.getLine() ) );
-                typeDescr.setSuperTypeName( null );
-                typeDescr.setSuperTypeNamespace( null );
-            } else {
-                typeDescr.setSuperTypeName( declaredSuperType.substring( separator + 1 ) );
-                typeDescr.setSuperTypeNamespace( declaredSuperType.substring( 0,
-                                                                              separator ) );
+        for ( TypeDeclarationDescr.QualifiedName qname : typeDescr.getSuperTypes() ) {
+            String declaredSuperType = qname.getFullName();
+
+            if ( declaredSuperType != null ) {
+                int separator = declaredSuperType.lastIndexOf( "." );
+                boolean qualified = separator > 0;
+                // check if a simple name corresponds to a f.q.n.
+                if ( !qualified ) {
+                    declaredSuperType =
+                            resolveType( declaredSuperType,
+                                         packageDescr,
+                                         this.pkgRegistryMap.get( typeDescr.getNamespace() ) );
+
+
+                    // sets supertype name and supertype package
+                    separator = declaredSuperType.lastIndexOf( "." );
+                    if ( separator < 0 ) {
+                        this.results.add( new TypeDeclarationError(
+                                                                    "Cannot resolve supertype '" + declaredSuperType + "'",
+                                                                    typeDescr.getLine() ) );
+                        qname.setName( null );
+                        qname.setNamespace( null );
+                    } else {
+                        qname.setName(declaredSuperType.substring(separator + 1));
+                        qname.setNamespace(declaredSuperType.substring(0,
+                                separator));
+                    }
+                }
             }
         }
     }
+
+
+
+    private void fillFieldTypes( TypeDeclarationDescr typeDescr,
+                                 PackageDescr packageDescr) {
+
+        for ( TypeFieldDescr field : typeDescr.getFields().values() ) {
+            String declaredType = field.getPattern().getObjectType();
+
+            if ( declaredType != null ) {
+                int separator = declaredType.lastIndexOf( "." );
+                boolean qualified = separator > 0;
+                // check if a simple name corresponds to a f.q.n.
+                if ( !qualified ) {
+                    declaredType =
+                            resolveType( declaredType,
+                                         packageDescr,
+                                         this.pkgRegistryMap.get( typeDescr.getNamespace() ) );
+
+                    field.getPattern().setObjectType( declaredType );
+                }
+            }
+        }
+    }
+
 
     /**
      * In order to build a declared class, the fields inherited from its
@@ -1346,12 +1396,24 @@ public class PackageBuilder {
      *            fields descriptors
      * @return true if all went well
      */
-    private boolean mergeInheritedFields(TypeDeclarationDescr typeDescr) {
-        if ( typeDescr.getSuperTypeName() == null ) return false;
+    private boolean mergeInheritedFields( TypeDeclarationDescr typeDescr ) {
 
-        String simpleSuperTypeName = typeDescr.getSuperTypeName();
-        String superTypePackageName = typeDescr.getSuperTypeNamespace();
-        String fullSuper = superTypePackageName + "." + simpleSuperTypeName;
+        if ( typeDescr.getSuperTypes().isEmpty() ) return false;
+        boolean merge = false;
+
+        for ( TypeDeclarationDescr.QualifiedName qname : typeDescr.getSuperTypes() ) {
+            String simpleSuperTypeName = qname.getName();
+            String superTypePackageName = qname.getNamespace();
+            String fullSuper = qname.getFullName();
+
+            merge = merge || mergeInheritedFields( simpleSuperTypeName, superTypePackageName, fullSuper, typeDescr );
+        }
+
+        return merge;
+    }
+
+
+    private boolean mergeInheritedFields( String simpleSuperTypeName, String superTypePackageName, String fullSuper, TypeDeclarationDescr typeDescr ) {
 
         Map<String, TypeFieldDescr> fieldMap = new LinkedHashMap<String, TypeFieldDescr>();
 
@@ -1365,10 +1427,9 @@ public class PackageBuilder {
         } else {
             // If there is no regisrty the type isn't a DRL-declared type, which is forbidden.
             // Avoid NPE JIRA-3041 when trying to access the registry. Avoid subsequent problems.
-            this.results.add( new TypeDeclarationError( "Cannot extend supertype '" + fullSuper + "' (not a declared type)",
-                                                        typeDescr.getLine() ) );
-            typeDescr.setSuperTypeName( null );
-            typeDescr.setSuperTypeNamespace( null );
+            this.results.add(new TypeDeclarationError("Cannot extend supertype '" + fullSuper + "' (not a declared type)",
+                    typeDescr.getLine()));
+            typeDescr.setType( null, null );
             return false;
         }
 
@@ -1442,9 +1503,8 @@ public class PackageBuilder {
                 }
 
                 if ( ! type1.equals(type2) ) {
-                    this.results.add(new TypeDeclarationError("Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2 , typeDescr.getLine() ));
-                        typeDescr.setSuperTypeName(null);
-                        typeDescr.setSuperTypeNamespace(null);
+                    this.results.add(new TypeDeclarationError("Cannot redeclare field '" + fieldName + " from " + type1 + " to " + type2, typeDescr.getLine()));
+                        typeDescr.setType(null, null);
                     return false;
                 } else {
                     String initVal = fieldMap.get(fieldName).getInitExpr();
@@ -1484,16 +1544,16 @@ public class PackageBuilder {
             if ( isEmpty( typeDescr.getNamespace() ) ) {
                 for ( ImportDescr id : packageDescr.getImports() ) {
                     String imp = id.getTarget();
-                    if ( imp.endsWith( typeDescr.getTypeName() ) ) {
+                    int separator = imp.lastIndexOf( '.' );
+                    String tail = imp.substring( separator + 1 );
+//                    if ( imp.endsWith( typeDescr.getTypeName() ) ) {
+                    if ( tail.equals(typeDescr.getTypeName()) ) {
                         typeDescr.setNamespace( imp.substring( 0,
-                                                               imp.lastIndexOf( '.' ) ) );
+                                                               separator ) );
                     }
                 }
             }
-            String qName = typeDescr.getTypeName();
-            if ( typeDescr.getNamespace() != null ) {
-                qName = typeDescr.getNamespace() + "." + qName;
-            }
+            String qName = typeDescr.getType().getFullName();
 
             int dotPos = qName.lastIndexOf( '.' );
             if ( dotPos >= 0 ) {
@@ -1528,7 +1588,7 @@ public class PackageBuilder {
                     typeDescr.setTypeName( cls.getName().substring( dotPos + 1 ) );
                 } else {
                     typeDescr.setNamespace( qName.substring( 0,
-                                                                               dotPos ) );
+                                                             dotPos ) );
                     typeDescr.setTypeName( qName.substring( dotPos + 1 ) );
                 }
             }
@@ -1541,6 +1601,10 @@ public class PackageBuilder {
             //identify superclass type and namespace
             fillSuperType( typeDescr,
                            packageDescr );
+
+            //identify field types as well
+            fillFieldTypes( typeDescr,
+                            packageDescr );
 
             if ( !typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
                 // If the type declaration is for a different namespace, process that separately.
@@ -1570,7 +1634,7 @@ public class PackageBuilder {
             pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
 
             //descriptor needs fields inherited from superclass
-            if ( typeDescr.getSuperTypeName() != null ) {
+            for ( TypeDeclarationDescr.QualifiedName qname : typeDescr.getSuperTypes() ) {
                 //descriptor needs fields inherited from superclass
                 if ( mergeInheritedFields( typeDescr ) ) {
                     //descriptor also needs metadata from superclass
@@ -1578,10 +1642,10 @@ public class PackageBuilder {
                     while ( iter.hasNext() ) {
                         // sortedTypeDescriptors are sorted by inheritance order, so we'll always find the superClass (if any) before the subclass
                         TypeDeclarationDescr descr = iter.next();
-                        if ( (typeDescr.getSuperTypeName().equals( descr.getTypeName() ) && typeDescr.getSuperTypeNamespace().equals( descr.getNamespace() )) ) {
+                        if ( qname.equals( descr.getType() ) ) {
                             typeDescr.getAnnotations().putAll( descr.getAnnotations() );
                             break;
-                        } else if ( (typeDescr.getTypeName().equals( descr.getTypeName() ) && typeDescr.getNamespace().equals( descr.getNamespace() )) ) {
+                        } else if ( typeDescr.getType().equals( descr.getType() ) ) {
                             break;
                         }
                     }
@@ -1607,55 +1671,47 @@ public class PackageBuilder {
                 type.setTypesafe( Boolean.parseBoolean( typesafe ) );
             }
 
-            // is it a POJO or a template?
-            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TEMPLATE );
-            String templateName = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
-            if ( templateName != null ) {
-                type.setFormat( TypeDeclaration.Format.TEMPLATE );
-                FactTemplate template = pkgRegistry.getPackage().getFactTemplate( templateName );
-                if ( template != null ) {
-                    type.setTypeTemplate( template );
-                } else {
-                    this.results.add( new TypeDeclarationError( "Template not found for TypeDeclaration '" + template + "' for type '" + type.getTypeName() + "'",
-                                                                typeDescr.getLine() ) );
-                    continue;
-                }
-            } else {
-                annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
-                String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+            // is it a pojo or a trait?
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.Format.ID );
+            String format = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+            if ( format != null ) {
+                type.setFormat( TypeDeclaration.Format.parseFormat(format) );
+            }
 
-                if ( StringUtils.isEmpty( className ) ) {
-                    className = type.getTypeName();
-                }
-                type.setFormat( TypeDeclaration.Format.POJO );
-                Class clazz;
-                try {
 
-                    // the type declaration is generated in any case (to be used by subclasses, if any)
-                    // the actual class will be generated only if needed
-                    generateDeclaredBean( typeDescr,
-                                          type,
-                                          pkgRegistry );
 
-                    clazz = pkgRegistry.getTypeResolver().resolveType( className );
-                    type.setTypeClass( clazz );
+            annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_CLASS );
+            String className = (annotationDescr != null) ? annotationDescr.getSingleValue() : null;
+            if ( StringUtils.isEmpty( className ) ) {
+                className = type.getTypeName();
+            }
+            Class clazz;
+            try {
+
+                // the type declaration is generated in any case (to be used by subclasses, if any)
+                // the actual class will be generated only if needed
+                generateDeclaredBean( typeDescr,
+                                      type,
+                                      pkgRegistry );
+
+                clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
+                type.setTypeClass( clazz );
 
                     if ( type.getTypeClassDef() != null ) {
-                        try {
-                            buildFieldAccessors( type,
-                                                 pkgRegistry );
-                        } catch ( Exception e ) {
-                            this.results.add( new TypeDeclarationError( "Error creating field accessors for TypeDeclaration '" + className + "' for type '" + type.getTypeName() + "'",
-                                                                        typeDescr.getLine() ) );
-                            continue;
-                        }
+                    try {
+                        buildFieldAccessors( type,
+                                             pkgRegistry );
+                    } catch ( Exception e ) {
+                        this.results.add( new TypeDeclarationError( "Error creating field accessors for TypeDeclaration '" + className + "' for type '" + type.getTypeName() + "'",
+                                                                    typeDescr.getLine() ) );
+                        continue;
                     }
-                } catch ( final ClassNotFoundException e ) {
-                    this.results.add( new TypeDeclarationError( "Class '" + className +
-                                                                        "' not found for type declaration of '" + type.getTypeName() + "'",
-                                                                typeDescr.getLine() ) );
-                    continue;
                 }
+            } catch ( final ClassNotFoundException e ) {
+                this.results.add( new TypeDeclarationError( "Class '" + className +
+                                                                    "' not found for type declaration of '" + type.getTypeName() + "'",
+                                                            typeDescr.getLine() ) );
+                continue;
             }
 
             annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_TIMESTAMP );
@@ -1706,6 +1762,33 @@ public class PackageBuilder {
         }
     }
 
+    private void updateTraitDefinition( TypeDeclaration type, Class concrete ) {
+        try {
+
+            ClassFieldInspector inspector = new ClassFieldInspector( concrete );
+            Map<String, Method> methods = inspector.getGetterMethods();
+            Map<String, Method> setters = inspector.getSetterMethods();
+            int j = 0;
+            for ( String fieldName : methods.keySet() ) {
+                if ( "core".equals( fieldName ) || "fields".equals( fieldName ) ) {
+                    continue;
+                }
+                if ( ! inspector.isNonGetter( fieldName ) && setters.keySet().contains( fieldName )) {
+
+                    Class ret = methods.get( fieldName ).getReturnType();
+                    FieldDefinition field = new FieldDefinition();
+                    field.setName( fieldName );
+                    field.setTypeName( ret.getName() );
+                    field.setIndex( j++ );
+                    type.getTypeClassDef().addField( field );
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /**
      * Checks whether a declaration is novel, or is a retagging of an external
      * one
@@ -1717,9 +1800,10 @@ public class PackageBuilder {
         try {
             PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
             if ( reg != null ) {
-                String availableName = typeDescr.getNamespace() != null
-                                       ? typeDescr.getNamespace() + "." + typeDescr.getTypeName()
-                                       : typeDescr.getTypeName();
+//                String availableName = typeDescr.getNamespace() != null
+//                                       ? typeDescr.getNamespace() + "." + typeDescr.getTypeName()
+//                                       : typeDescr.getTypeName();
+                String availableName = typeDescr.getType().getFullName();
                 Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
                 if ( resolvedType != null && typeDescr.getFields().size() > 1 ) {
                     this.results.add( new TypeDeclarationError( "Duplicate type definition. A class with the name '" + resolvedType.getName() + "' was found in the classpath while trying to " +
@@ -1794,24 +1878,55 @@ public class PackageBuilder {
      * Generates a bean, and adds it to the composite class loader that
      * everything is using.
      */
-    private void generateDeclaredBean(TypeDeclarationDescr typeDescr,
+    private void generateDeclaredBean( TypeDeclarationDescr typeDescr,
                                        TypeDeclaration type,
-                                       PackageRegistry pkgRegistry) {
+                                       PackageRegistry pkgRegistry ) {
 
         // extracts type, supertype and interfaces
-        String fullName = typeDescr.getNamespace() + "." + typeDescr.getTypeName();
-        // generated beans should be serializable
+        String fullName = typeDescr.getType().getFullName();
 
-        String fullSuperType = typeDescr.getSuperTypeName() != null ?
-                (typeDescr.getSuperTypeNamespace() + "." + typeDescr.getSuperTypeName())
-                : Object.class.getName();
+        if ( type.getFormat().equals( TypeDeclaration.Format.POJO ) ) {
+            if ( typeDescr.getSuperTypes().size() > 1 ) {
+                this.results.add( new TypeDeclarationError( "Declared class " + fullName + "  - has more than one supertype;",
+                                                                typeDescr.getLine() ) );
+                return;
+            } else if ( typeDescr.getSuperTypes().size() == 0 ) {
+                typeDescr.addSuperType("java.lang.Object");
+            }
+        }
 
-        String[] interfaces = new String[]{Serializable.class.getName()};
+        boolean traitable = typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null;
+
+
+        String[] fullSuperTypes = new String[ typeDescr.getSuperTypes().size() +1 ];
+        int j = 0;
+        for ( TypeDeclarationDescr.QualifiedName qname : typeDescr.getSuperTypes() ) {
+            fullSuperTypes[ j++ ] = qname.getFullName();
+        }
+        fullSuperTypes[ j++ ] = IThing.class.getName();
+
+
+
+        List<String> interfaceList = new ArrayList<String>();
+            interfaceList.add( Serializable.class.getName() );
+            if ( traitable ) {
+                interfaceList.add( ITraitable.class.getName() );
+            }
+        String[] interfaces = interfaceList.toArray( new String[ interfaceList.size() ] );
 
         // prepares a class definition
-        ClassDefinition def = new ClassDefinition( fullName,
-                                                   fullSuperType,
-                                                   interfaces );
+        ClassDefinition def = null;
+        if ( type.getFormat().equals( TypeDeclaration.Format.TRAIT ) ) {
+            def = new ClassDefinition( fullName,
+                                       "java.lang.Object",
+                                       fullSuperTypes );
+
+        } else {
+            def = new ClassDefinition( fullName,
+                                       fullSuperTypes[0],
+                                       interfaces );
+            def.setTraitable( traitable );
+        }
 
         for ( String annotationName : typeDescr.getAnnotationNames() ) {
             Class annotation = resolveAnnotation( annotationName,
@@ -1844,23 +1959,131 @@ public class PackageBuilder {
         // check whether it is necessary to build the class or not
         type.setNovel( isNovelClass( typeDescr ) );
 
-        if ( type.isNovel() ) {
-            try {
-                ClassBuilder cb = new ClassBuilder();
-                byte[] d = cb.buildClass( def );
+        // attach the class definition, it will be completed later
+        type.setTypeClassDef( def );
 
-                JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
 
-                dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
-                               d );
+        generateDeclaredBean( typeDescr, type, pkgRegistry, def );
 
-            } catch ( Exception e ) {
-                this.results.add( new TypeDeclarationError( "Unable to create a class for declared type " + fullName + ": " + e.getMessage() + ";",
-                                                            typeDescr.getLine() ) );
+    }
+
+
+
+
+    private void generateDeclaredBean( TypeDeclarationDescr typeDescr,
+                                       TypeDeclaration type,
+                                       PackageRegistry pkgRegistry,
+                                       ClassDefinition def ) {
+
+
+        if ( typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null ) {
+            if ( ! isNovelClass( typeDescr ) ) {
+                try {
+                    PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
+                    String availableName = typeDescr.getType().getFullName();
+                    Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
+                    updateTraitDefinition( type, resolvedType );
+                } catch ( ClassNotFoundException cnfe ) {
+                    // we already know the class exists
+                }
             }
+            TraitRegistry.getInstance().addTraitable( def );
+        } else if ( type.getFormat().equals( TypeDeclaration.Format.TRAIT)
+                    || typeDescr.getAnnotation( Trait.class.getSimpleName() ) != null ) {
+
+            if ( ! type.isNovel() ) {
+                try {
+                    PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
+                    String availableName = typeDescr.getType().getFullName();
+                    Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
+                    if ( ! IThing.class.isAssignableFrom( resolvedType) ) {
+                        updateTraitDefinition( type, resolvedType );
+
+                            String target = typeDescr.getTypeName() + "_Trait__Extension";
+                            TypeDeclarationDescr tempDescr = new TypeDeclarationDescr();
+                                tempDescr.setNamespace( typeDescr.getNamespace() );
+                                tempDescr.setFields( typeDescr.getFields() );
+                                tempDescr.setType( target, typeDescr.getNamespace() );
+                                tempDescr.addSuperType( typeDescr.getType() );
+                            TypeDeclaration tempDeclr = new TypeDeclaration( target );
+                                tempDeclr.setFormat( TypeDeclaration.Format.TRAIT );
+                                tempDeclr.setTypesafe( type.isTypesafe() );
+                                tempDeclr.setNovel( true );
+                                tempDeclr.setTypeClassName( tempDescr.getType().getFullName() );
+                                tempDeclr.setResource( type.getResource() );
+
+                            ClassDefinition tempDef = new ClassDefinition( target );
+                                tempDef.setClassName( tempDescr.getType().getFullName() );
+                                tempDef.setTraitable( false );
+                                for ( FieldDefinition fld : def.getFieldsDefinitions() ) {
+                                    tempDef.addField( fld );
+                                }
+                                tempDef.setInterfaces( def.getInterfaces() );
+                                tempDef.setSuperClass( def.getClassName() );
+                            type.setFormat( TypeDeclaration.Format.POJO );
+
+                            generateDeclaredBean(tempDescr, tempDeclr, pkgRegistry, tempDef );
+
+                    } else {
+                        updateTraitDefinition( type, resolvedType );
+                        TraitRegistry.getInstance().addTrait( def );
+                    }
+                } catch ( ClassNotFoundException cnfe ) {
+                    // we already know the class exists
+                }
+            } else {
+                if ( def.getClassName().endsWith( "_Trait__Extension" ) ) {
+                    TraitRegistry.getInstance().addTrait( def.getClassName().replace( "_Trait__Extension", "" ) , def );
+                } else {
+                    TraitRegistry.getInstance().addTrait( def );
+                }
+            }
+
+
+
         }
 
-        type.setTypeClassDef( def );
+
+        if ( type.isNovel() ) {
+            String fullName = typeDescr.getType().getFullName();
+            JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" );
+            switch (type.getFormat()) {
+                case TRAIT:
+                    try {
+                        byte[] d;
+
+                        d = TraitBuilder.buildInterface( def );
+                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
+                                d );
+
+//                        d = tb.buildImplementingClass(def);
+//                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
+//                                d );
+
+                    } catch ( Exception e ) {
+                        this.results.add( new TypeDeclarationError( "Unable to compile declared trait " + fullName + ": " + e.getMessage() + ";",
+                                typeDescr.getLine() ) );
+                    }
+                    break;
+                case POJO:
+                default:
+                    try {
+                        ClassBuilder cb = new ClassBuilder();
+                        byte[] d = cb.buildClass( def );
+                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
+                                d );
+
+                    } catch ( Exception e ) {
+                        this.results.add( new TypeDeclarationError( "Unable to create a class for declared type " + fullName + ": " + e.getMessage() + ";",
+                                typeDescr.getLine() ) );
+                    }
+
+                    break;
+            }
+
+        }
+
+
     }
 
     /**
@@ -2330,33 +2553,44 @@ public class PackageBuilder {
         Node<TypeDeclarationDescr> root = new Node<TypeDeclarationDescr>( null );
         Map<String, Node<TypeDeclarationDescr>> map = new HashMap<String, Node<TypeDeclarationDescr>>();
         for ( TypeDeclarationDescr tdescr : typeDeclarations ) {
-            String typeName = tdescr.getNamespace() + "." + tdescr.getTypeName();
-            String superTypeName = tdescr.getSuperTypeNamespace() + "." + tdescr.getSuperTypeName();
+            String typeName = tdescr.getType().getFullName();
 
-            Node<TypeDeclarationDescr> node = map.get( typeName );
-            if ( node == null ) {
-                node = new Node( typeName,
-                                 tdescr );
-                map.put( typeName,
-                         node );
-            } else if ( node.getData() == null ) {
-                node.setData( tdescr );
-            }
-
-            if ( superTypeName == null ) {
-                root.addChild( node );
-                //System.out.println(node.getKey() + " is child of Object");
-            } else {
-                Node<TypeDeclarationDescr> superNode = map.get( superTypeName );
-                if ( superNode == null ) {
-                    superNode = new Node<TypeDeclarationDescr>( superTypeName );
-                    map.put( superTypeName,
-                             superNode );
+                Node<TypeDeclarationDescr> node = map.get( typeName );
+                if ( node == null ) {
+                    node = new Node( typeName,
+                            tdescr );
+                    map.put( typeName,
+                            node );
+                } else if ( node.getData() == null ) {
+                    node.setData( tdescr );
                 }
-                superNode.addChild( node );
+            if ( tdescr.getSuperTypes().isEmpty() ) {
+                root.addChild( node );
+            } else {
+                for ( TypeDeclarationDescr.QualifiedName qname : tdescr.getSuperTypes() ) {
+                    String superTypeName = qname.getFullName();
 
-                //System.out.println(node.getKey() + " is child of " + superNode.getKey());
+                    Node<TypeDeclarationDescr> superNode = map.get( superTypeName );
+                    if ( superNode == null ) {
+                        superNode = new Node<TypeDeclarationDescr>( superTypeName );
+                        map.put( superTypeName,
+                                superNode );
+                    }
+                    superNode.addChild( node );
+                }
             }
+            for ( TypeFieldDescr field : tdescr.getFields().values() ) {
+                String fieldTypeName = field.getPattern().getObjectType();
+
+                    Node<TypeDeclarationDescr> superNode = map.get( fieldTypeName );
+                    if ( superNode == null ) {
+                        superNode = new Node<TypeDeclarationDescr>( fieldTypeName );
+                        map.put( fieldTypeName,
+                                superNode );
+                    }
+                    superNode.addChild( node );
+            }
+
         }
 
         Iterator<Node<TypeDeclarationDescr>> iter = map.values().iterator();
@@ -2415,6 +2649,9 @@ public class PackageBuilder {
 
         public void accept(List<T> list) {
             if ( this.data != null ) {
+                if ( list.contains( this.data ) ) {
+                    list.remove( this.data );
+                }
                 list.add( this.data );
             }
 

@@ -554,6 +554,18 @@ public class DRLParser {
                     // Going for type includes generics, which is a no-no (JIRA-3040)
                     String superType = qualifiedIdentifier();
                     declare.superType( superType );
+
+                    while ( input.LA( 1 ) == DRLLexer.COMMA ) {
+
+                        match( input,
+                                DRLLexer.COMMA,
+                                null,
+                                null,
+                                DroolsEditorType.SYMBOL );
+
+                        superType = qualifiedIdentifier();
+                        declare.superType( superType );
+                    }
                 }
             }
 
@@ -3504,8 +3516,6 @@ public class DRLParser {
      * 
      * type := ID typeArguments? ( DOT ID typeArguments? )* (LEFT_SQUARE RIGHT_SQUARE)*
      * 
-     * @param doQualify set to true if qualification is acceptable
-     * @param doGenPar  set to true if generic arguments and brackets are acceptable
      * @return
      * @throws RecognitionException
      */
