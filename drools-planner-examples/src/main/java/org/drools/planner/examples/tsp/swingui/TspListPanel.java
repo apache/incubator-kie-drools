@@ -61,9 +61,14 @@ public class TspListPanel extends JPanel {
             JPanel cityAssignmentPanel = new JPanel(new GridLayout(1, 2));
             JButton button = new JButton(new CityAssignmentAction(cityAssignment));
             cityAssignmentPanel.add(button);
-            JLabel distanceLabel = new JLabel("Distance to next: "
-                    + cityAssignment.getDistanceToNextCityAssignment());
-            cityAssignmentPanel.add(distanceLabel);
+            String distanceLabelString;
+            if (cityAssignment.getNextCityAssignment() == null) {
+                distanceLabelString = "Unassigned";
+            } else {
+                distanceLabelString = "Distance to next: "
+                        + cityAssignment.getDistanceToNextCityAssignment();
+            }
+            cityAssignmentPanel.add(new JLabel(distanceLabelString));
             add(cityAssignmentPanel);
         }
     }
