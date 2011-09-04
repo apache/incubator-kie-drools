@@ -16,22 +16,20 @@
 
 package org.drools.factmodel;
 
+import org.drools.factmodel.traits.ITraitable;
+import org.mvel2.asm.*;
+
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.RuntimeDroolsException;
-import org.drools.definition.type.FactField;
-import org.mvel2.asm.*;
-
 /**
  * A builder to dynamically build simple Javabean(TM) classes
  */
-public class ClassBuilder {
+public class ClassBuilder implements Opcodes {
     private boolean     debug  = false;
 
     public ClassBuilder() {
@@ -61,7 +59,7 @@ public class ClassBuilder {
      * @throws NoSuchFieldException
      * @throws InstantiationException
      */
-    public byte[] buildClass(ClassDefinition classDef) throws IOException,
+    public byte[] buildClass( ClassDefinition classDef ) throws IOException,
             IntrospectionException,
             SecurityException,
             IllegalArgumentException,
@@ -85,9 +83,18 @@ public class ClassBuilder {
                         fieldDef );
         }
 
+        if ( classDef.isTraitable() ) {
+            this.buildDynamicPropertyMap( cw, classDef );
+            this.buildTraitMap(cw, classDef);
+        }
+
         // Building default constructor
+        try {
         this.buildDefaultConstructor( cw,
                 classDef );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Building constructor with all fields
         if (classDef.getFieldsDefinitions().size() > 0) {
@@ -136,6 +143,77 @@ public class ClassBuilder {
         return serializedClass;
     }
 
+
+    /**
+     * A traitable class is a special class with support for dynamic properties and types.
+     *
+     * This method builds the trait map, containing the references to the proxies
+     * for each trait carried by an object at a given time.
+     *
+     * @param cw
+     * @param classDef
+     */
+    private void buildTraitMap(ClassWriter cw, ClassDefinition classDef) {
+
+        FieldVisitor fv = cw.visitField( ACC_PRIVATE,
+                                         ITraitable.TRAITSET_FIELD_NAME,
+                                         "Ljava/util/Map;",
+                                         "Ljava/util/Map<Ljava/lang/String;+Lorg/drools/factmodel/traits/IThing;>;",
+                                         null);
+        fv.visitEnd();
+
+
+        MethodVisitor mv = cw.visitMethod(ACC_PUBLIC,
+                "getTraits",
+                "()Ljava/util/Map;",
+                "()Ljava/util/Map<Ljava/lang/String;+Lorg/drools/factmodel/traits/IThing;>;",
+                null);
+
+        mv.visitCode();
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( classDef.getName() ), ITraitable.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+        mv.visitInsn(ARETURN);
+        mv.visitMaxs(1, 1);
+        mv.visitEnd();
+
+    }
+
+
+    /**
+     * A traitable class is a special class with support for dynamic properties and types.
+     *
+     * This method builds the property map, containing the key/values pairs to implement
+     * any property defined in a trait interface but not supported by the traited class
+     * fields.
+     *
+     * @param cw
+     * @param def
+     */
+    private void buildDynamicPropertyMap( ClassWriter cw, ClassDefinition def ) {
+
+        FieldVisitor fv = cw.visitField( Opcodes.ACC_PRIVATE,
+                ITraitable.MAP_FIELD_NAME,
+                "Ljava/util/Map;",
+                "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
+                null);
+        fv.visitEnd();
+
+        MethodVisitor mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                "getDynamicProperties",
+                "()Ljava/util/Map;",
+                "()Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;",
+                null);
+        mv.visitCode();
+        mv.visitVarInsn(ALOAD, 0);
+        mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType(def.getName()), ITraitable.MAP_FIELD_NAME, "Ljava/util/Map;");
+        mv.visitInsn(ARETURN);
+        mv.visitMaxs(1, 1);
+        mv.visitEnd();
+
+
+
+    }
+
     /**
      * Defines the class header for the given class definition
      *
@@ -147,14 +225,14 @@ public class ClassBuilder {
         String[] original = classDef.getInterfaces();
         String[] interfaces = new String[original.length];
         for ( int i = 0; i < original.length; i++ ) {
-            interfaces[i] = getInternalType( original[i] );
+            interfaces[i] = BuildUtils.getInternalType( original[i] );
         }
         // Building class header
         cw.visit( Opcodes.V1_5,
                 Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
-                getInternalType( classDef.getClassName() ),
+                BuildUtils.getInternalType( classDef.getClassName() ),
                 null,
-                getInternalType( classDef.getSuperClass() ),
+                BuildUtils.getInternalType( classDef.getSuperClass() ),
                 interfaces );
 
         buildClassAnnotations(classDef, cw);
@@ -178,7 +256,7 @@ public class ClassBuilder {
         FieldVisitor fv;
         fv = cw.visitField( Opcodes.ACC_PRIVATE,
                 fieldDef.getName(),
-                getTypeDescriptor( fieldDef.getTypeName() ),
+                BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ),
                 null,
                 null );
 
@@ -219,7 +297,7 @@ public class ClassBuilder {
             try {
                 sup = Type.getInternalName(Class.forName(classDef.getSuperClass()));
             } catch (ClassNotFoundException e) {
-                sup = getInternalType( classDef.getSuperClass() );
+                sup = BuildUtils.getInternalType( classDef.getSuperClass() );
             }
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
                     sup,
@@ -227,29 +305,49 @@ public class ClassBuilder {
                     Type.getMethodDescriptor( Type.VOID_TYPE,
                             new Type[]{} ) );
 
+            boolean hasObjects = false;
             for (FieldDefinition field : classDef.getFieldsDefinitions()) {
 
                 if (! field.isInherited()) {
-                    Object val = getDefaultValue(field);
+                    Object val = BuildUtils.getDefaultValue(field);
 
                     if (val != null) {
                         mv.visitVarInsn(Opcodes.ALOAD, 0);
-                        mv.visitLdcInsn(val);
-
-                        if (isBoxed(field.getTypeName())) {
-                            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-                                    getInternalType(field.getTypeName()),
+                        if ( BuildUtils.isPrimitive( field.getTypeName() )
+                             || BuildUtils.isBoxed( field.getTypeName() )
+                             || String.class.getName().equals( field.getTypeName() ) ) {
+                            mv.visitLdcInsn(val);
+                            if ( BuildUtils.isBoxed(field.getTypeName()) ) {
+                                mv.visitMethodInsn(Opcodes.INVOKESTATIC,
+                                    BuildUtils.getInternalType(field.getTypeName()),
                                     "valueOf",
-                                    "("+unBox(field.getTypeName())+")"+getTypeDescriptor(field.getTypeName()));
+                                    "("+BuildUtils.unBox(field.getTypeName())+")"+BuildUtils.getTypeDescriptor(field.getTypeName()));
+                            }
+                        } else {
+                            hasObjects = true;
+                            String type = BuildUtils.getInternalType( val.getClass().getName() );
+                            mv.visitTypeInsn( NEW, type );
+                            mv.visitInsn(DUP);
+                            mv.visitMethodInsn( INVOKESPECIAL,
+                                                type,
+                                                "<init>",
+                                                "()V");
                         }
 
+
+
                         mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                getInternalType( classDef.getClassName() ),
+                                BuildUtils.getInternalType( classDef.getClassName() ),
                                 field.getName(),
-                                getTypeDescriptor( field.getTypeName() ) );
+                                BuildUtils.getTypeDescriptor( field.getTypeName() ) );
 
                     }
                 }
+            }
+
+
+            if ( classDef.isTraitable() ) {
+                initializeDynamicTypeStructures( mv, classDef );
             }
 
 
@@ -260,16 +358,36 @@ public class ClassBuilder {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         l1,
                         0 );
             }
-            mv.visitMaxs( 0,
-                    0 );
+            mv.visitMaxs( hasObjects ? 3 : 0,
+                          hasObjects ? 1 : 0 );
             mv.visitEnd();
         }
+    }
+
+
+    /**
+     * Initializes the trait map and dynamic property map to empty values
+     * @param mv
+     * @param classDef
+     */
+    private void initializeDynamicTypeStructures( MethodVisitor mv, ClassDefinition classDef) {
+        mv.visitVarInsn(ALOAD, 0);
+                        mv.visitTypeInsn(NEW, "java/util/HashMap");
+                        mv.visitInsn(DUP);
+                        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
+                        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), ITraitable.MAP_FIELD_NAME, "Ljava/util/Map;");
+                        mv.visitVarInsn(ALOAD, 0);
+                        mv.visitTypeInsn(NEW, "java/util/HashMap");
+                        mv.visitInsn(DUP);
+                        mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
+                        mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( classDef.getName() ), ITraitable.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+
     }
 
     /**
@@ -288,7 +406,7 @@ public class ClassBuilder {
             Type[] params = new Type[fieldDefs.size()];
             int index = 0;
             for ( FieldDefinition field : fieldDefs ) {
-                params[index++] = Type.getType( getTypeDescriptor( field.getTypeName() ) );
+                params[index++] = Type.getType( BuildUtils.getTypeDescriptor( field.getTypeName() ) );
             }
 
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
@@ -310,7 +428,7 @@ public class ClassBuilder {
             try {
                 sup = Type.getInternalName(Class.forName(classDef.getSuperClass()));
             } catch (ClassNotFoundException e) {
-                sup = getInternalType( classDef.getSuperClass() );
+                sup = BuildUtils.getInternalType( classDef.getSuperClass() );
             }
 
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
@@ -327,7 +445,7 @@ public class ClassBuilder {
                 }
                 mv.visitVarInsn( Opcodes.ALOAD,
                         0 );
-                mv.visitVarInsn( Type.getType( getTypeDescriptor( field.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
+                mv.visitVarInsn( Type.getType( BuildUtils.getTypeDescriptor( field.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
                         index++ );
                 if ( field.getTypeName().equals( "long" ) || field.getTypeName().equals( "double" ) ) {
                     // long and double variables use 2 words on the variables table
@@ -336,18 +454,22 @@ public class ClassBuilder {
 
                 if (! field.isInherited()) {
                     mv.visitFieldInsn( Opcodes.PUTFIELD,
-                            getInternalType( classDef.getClassName() ),
+                            BuildUtils.getInternalType( classDef.getClassName() ),
                             field.getName(),
-                            getTypeDescriptor( field.getTypeName() ) );
+                            BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                 } else {
                     mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
-                            getInternalType(classDef.getClassName()),
+                            BuildUtils.getInternalType(classDef.getClassName()),
                             field.getWriteMethod(),
                             Type.getMethodDescriptor(Type.VOID_TYPE,
-                                    new Type[]{Type.getType(getTypeDescriptor(field.getTypeName()))}
+                                    new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
                             ));
                 }
 
+            }
+
+            if ( classDef.isTraitable() ) {
+                initializeDynamicTypeStructures( mv, classDef );
             }
 
             mv.visitInsn( Opcodes.RETURN );
@@ -356,7 +478,7 @@ public class ClassBuilder {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         l1,
@@ -365,7 +487,7 @@ public class ClassBuilder {
                     Label l11 = new Label();
                     mv.visitLabel( l11 );
                     mv.visitLocalVariable( field.getName(),
-                            getTypeDescriptor( field.getTypeName() ),
+                            BuildUtils.getTypeDescriptor( field.getTypeName() ),
                             null,
                             l0,
                             l1,
@@ -394,7 +516,7 @@ public class ClassBuilder {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                     fieldDef.getWriteMethod(),
                     Type.getMethodDescriptor( Type.VOID_TYPE,
-                            new Type[]{Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) )} ),
+                            new Type[]{Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) )} ),
                     null,
                     null );
             mv.visitCode();
@@ -405,12 +527,12 @@ public class ClassBuilder {
             }
             mv.visitVarInsn( Opcodes.ALOAD,
                     0 );
-            mv.visitVarInsn( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
+            mv.visitVarInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.ILOAD ),
                     1 );
             mv.visitFieldInsn( Opcodes.PUTFIELD,
-                    getInternalType( classDef.getClassName() ),
+                    BuildUtils.getInternalType( classDef.getClassName() ),
                     fieldDef.getName(),
-                    getTypeDescriptor( fieldDef.getTypeName() ) );
+                    BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
 
             mv.visitInsn( Opcodes.RETURN );
             Label l1 = null;
@@ -418,7 +540,7 @@ public class ClassBuilder {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         l1,
@@ -445,7 +567,7 @@ public class ClassBuilder {
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                     fieldDef.getReadMethod(),
-                    Type.getMethodDescriptor( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ),
+                    Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ),
                             new Type[]{} ),
                     null,
                     null );
@@ -458,16 +580,16 @@ public class ClassBuilder {
             mv.visitVarInsn( Opcodes.ALOAD,
                     0 );
             mv.visitFieldInsn( Opcodes.GETFIELD,
-                    getInternalType( classDef.getClassName() ),
+                    BuildUtils.getInternalType( classDef.getClassName() ),
                     fieldDef.getName(),
-                    getTypeDescriptor( fieldDef.getTypeName() ) );
-            mv.visitInsn( Type.getType( getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
+                    BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) );
+            mv.visitInsn( Type.getType( BuildUtils.getTypeDescriptor( fieldDef.getTypeName() ) ).getOpcode( Opcodes.IRETURN ) );
             Label l1 = null;
             if ( this.debug ) {
                 l1 = new Label();
                 mv.visitLabel( l1 );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         l1,
@@ -544,7 +666,7 @@ public class ClassBuilder {
             mv.visitVarInsn( Opcodes.ALOAD,
                     1 );
             mv.visitTypeInsn( Opcodes.CHECKCAST,
-                    getInternalType( classDef.getClassName() ) );
+                    BuildUtils.getInternalType( classDef.getClassName() ) );
             mv.visitVarInsn( Opcodes.ASTORE,
                     2 );
 
@@ -556,7 +678,7 @@ public class ClassBuilder {
 
                     Label goNext = new Label();
 
-                    if ( isPrimitive( field.getTypeName() ) ) {
+                    if ( BuildUtils.isPrimitive(field.getTypeName()) ) {
                         // if attr is primitive
 
                         // if ( this.<attr> != other.<booleanAttr> ) return false;
@@ -634,7 +756,7 @@ public class ClassBuilder {
                         visitFieldOrGetter(mv, classDef, field);
 
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                getInternalType( field.getTypeName() ),
+                                BuildUtils.getInternalType( field.getTypeName() ),
                                 "equals",
                                 "(Ljava/lang/Object;)Z" );
                         mv.visitJumpInsn( Opcodes.IFNE,
@@ -658,7 +780,7 @@ public class ClassBuilder {
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         lastLabel,
@@ -670,7 +792,7 @@ public class ClassBuilder {
                         lastLabel,
                         1 );
                 mv.visitLocalVariable( "other",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         lastLabel,
@@ -768,7 +890,7 @@ public class ClassBuilder {
                         mv.visitInsn( Opcodes.LUSHR );
                         mv.visitInsn( Opcodes.LXOR );
                         mv.visitInsn( Opcodes.L2I );
-                    } else if ( !isPrimitive( field.getTypeName() ) ) {
+                    } else if ( !BuildUtils.isPrimitive(field.getTypeName()) ) {
                         // attr_hash ::== ((objAttr == null) ? 0 : objAttr.hashCode());
                         Label olabel1 = new Label();
                         mv.visitJumpInsn( Opcodes.IFNONNULL,
@@ -784,7 +906,7 @@ public class ClassBuilder {
                         visitFieldOrGetter(mv, classDef, field);
 
                         mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                                getInternalType( field.getTypeName() ),
+                                BuildUtils.getInternalType( field.getTypeName() ),
                                 "hashCode",
                                 "()I" );
                         mv.visitLabel( olabel2 );
@@ -804,7 +926,7 @@ public class ClassBuilder {
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         lastLabel,
@@ -856,7 +978,7 @@ public class ClassBuilder {
             mv.visitVarInsn( Opcodes.ALOAD,
                     0 );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                    getInternalType( classDef.getClassName() ),
+                    BuildUtils.getInternalType( classDef.getClassName() ),
                     "getClass",
                     "()Ljava/lang/Class;" );
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
@@ -906,13 +1028,13 @@ public class ClassBuilder {
                 visitFieldOrGetter(mv,classDef,field);
 
 
-                if ( isPrimitive( field.getTypeName() ) ) {
+                if ( BuildUtils.isPrimitive(field.getTypeName()) ) {
                     String type = field.getTypeName().matches( "(byte|short)" ) ? "int" : field.getTypeName();
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                             Type.getInternalName( StringBuilder.class ),
                             "append",
                             Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                    new Type[]{Type.getType( getTypeDescriptor( type ) )} ) );
+                                    new Type[]{Type.getType( BuildUtils.getTypeDescriptor( type ) )} ) );
                 } else {
                     mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                             Type.getInternalName( StringBuilder.class ),
@@ -939,7 +1061,7 @@ public class ClassBuilder {
                 lastLabel = new Label();
                 mv.visitLabel( lastLabel );
                 mv.visitLocalVariable( "this",
-                        getTypeDescriptor( classDef.getClassName() ),
+                        BuildUtils.getTypeDescriptor( classDef.getClassName() ),
                         null,
                         l0,
                         lastLabel,
@@ -963,7 +1085,7 @@ public class ClassBuilder {
     private void buildClassAnnotations(ClassDefinition classDef, ClassVisitor cw) {
         if (classDef.getAnnotations() != null) {
             for (AnnotationDefinition ad : classDef.getAnnotations()) {
-                AnnotationVisitor av = cw.visitAnnotation("L"+getInternalType(ad.getName())+";", true);
+                AnnotationVisitor av = cw.visitAnnotation("L"+BuildUtils.getInternalType(ad.getName())+";", true);
                 for (String key : ad.getValues().keySet()) {
                     AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
 
@@ -982,7 +1104,7 @@ public class ClassBuilder {
                         case ENUMARRAY:
                             AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
                             Enum[] enArray = (Enum[]) apv.getValue();
-                            String aenumType = "L" + getInternalType(enArray[0].getClass().getName()) + ";";
+                            String aenumType = "L" + BuildUtils.getInternalType(enArray[0].getClass().getName()) + ";";
                             for (Enum enumer : enArray) {
                                 subEnav.visitEnum(null,aenumType,enumer.name());
                             }
@@ -992,16 +1114,16 @@ public class ClassBuilder {
                             AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
                             Class[] klarray = (Class[]) apv.getValue();
                             for (Class klass : klarray) {
-                                subKlav.visit(null,Type.getType("L"+getInternalType(klass.getName())+";"));
+                                subKlav.visit(null,Type.getType("L"+BuildUtils.getInternalType(klass.getName())+";"));
                             }
                             subKlav.visitEnd();
                             break;
                         case ENUMERATION:
-                            String enumType = "L" + getInternalType(apv.getType().getName()) + ";";
+                            String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
                             av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
                             break;
                         case KLASS:
-                            String klassName = getInternalType(((Class) apv.getValue()).getName());
+                            String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
                             av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
                             break;
                         case PRIMITIVE:
@@ -1024,7 +1146,7 @@ public class ClassBuilder {
     private void buildFieldAnnotations(FieldDefinition fieldDef, FieldVisitor fv) {
         if (fieldDef.getAnnotations() != null) {
             for (AnnotationDefinition ad : fieldDef.getAnnotations()) {
-                AnnotationVisitor av = fv.visitAnnotation("L"+getInternalType(ad.getName())+";", true);
+                AnnotationVisitor av = fv.visitAnnotation("L"+BuildUtils.getInternalType(ad.getName())+";", true);
                 for (String key : ad.getValues().keySet()) {
                     AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
 
@@ -1043,7 +1165,7 @@ public class ClassBuilder {
                         case ENUMARRAY:
                             AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
                             Enum[] enArray = (Enum[]) apv.getValue();
-                            String aenumType = "L" + getInternalType(enArray[0].getClass().getName()) + ";";
+                            String aenumType = "L" + BuildUtils.getInternalType(enArray[0].getClass().getName()) + ";";
                             for (Enum enumer : enArray) {
                                 subEnav.visitEnum(null,aenumType,enumer.name());
                             }
@@ -1053,16 +1175,16 @@ public class ClassBuilder {
                             AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
                             Class[] klarray = (Class[]) apv.getValue();
                             for (Class klass : klarray) {
-                                subKlav.visit(null,Type.getType("L"+getInternalType(klass.getName())+";"));
+                                subKlav.visit(null,Type.getType("L"+BuildUtils.getInternalType(klass.getName())+";"));
                             }
                             subKlav.visitEnd();
                             break;
                         case ENUMERATION:
-                            String enumType = "L" + getInternalType(apv.getType().getName()) + ";";
+                            String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
                             av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
                             break;
                         case KLASS:
-                            String klassName = getInternalType(((Class) apv.getValue()).getName());
+                            String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
                             av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
                             break;
                         case PRIMITIVE:
@@ -1082,207 +1204,32 @@ public class ClassBuilder {
 
 
 
-
-
-
-
-
-
-
-
-
-    /**
-     * Returns the corresponding internal type representation for the
-     * given type.
-     *
-     * I decided to not use the ASM Type class methods because they require
-     * resolving the actual type into a Class instance and at this point,
-     * I think it is best to delay type resolution until it is really needed.
-     *
-     * @param type
-     * @return
-     */
-    private String getInternalType(String type) {
-        String internalType = null;
-        if ( "byte".equals( type ) ) {
-            internalType = "B";
-        } else if ( "char".equals( type ) ) {
-            internalType = "C";
-        } else if ( "double".equals( type ) ) {
-            internalType = "D";
-        } else if ( "float".equals( type ) ) {
-            internalType = "F";
-        } else if ( "int".equals( type ) ) {
-            internalType = "I";
-        } else if ( "long".equals( type ) ) {
-            internalType = "J";
-        } else if ( "short".equals( type ) ) {
-            internalType = "S";
-        } else if ( "boolean".equals( type ) ) {
-            internalType = "Z";
-        } else if ( "void".equals( type ) ) {
-            internalType = "V";
-        } else if ( type != null ) {
-            // I think this will fail for inner classes, but we don't really
-            // support inner class generation at the moment
-            internalType = type.replace( '.',
-                    '/' );
-        }
-        return internalType;
-    }
-
-    /**
-     * Returns the corresponding type descriptor for the
-     * given type.
-     *
-     * I decided to not use the ASM Type class methods because they require
-     * resolving the actual type into a Class instance and at this point,
-     * I think it is best to delay type resolution until it is really needed.
-     *
-     * @param type
-     * @return
-     */
-    private String getTypeDescriptor(String type) {
-        String internalType = null;
-        if ( "byte".equals( type ) ) {
-            internalType = "B";
-        } else if ( "char".equals( type ) ) {
-            internalType = "C";
-        } else if ( "double".equals( type ) ) {
-            internalType = "D";
-        } else if ( "float".equals( type ) ) {
-            internalType = "F";
-        } else if ( "int".equals( type ) ) {
-            internalType = "I";
-        } else if ( "long".equals( type ) ) {
-            internalType = "J";
-        } else if ( "short".equals( type ) ) {
-            internalType = "S";
-        } else if ( "boolean".equals( type ) ) {
-            internalType = "Z";
-        } else if ( "void".equals( type ) ) {
-            internalType = "V";
-        } else if ( type != null ) {
-            // I think this will fail for inner classes, but we don't really
-            // support inner class generation at the moment
-            internalType = "L" + type.replace( '.',
-                    '/' ) + ";";
-        }
-        return internalType;
-    }
-
-    /**
-     * Returns true if the provided type is a primitive type
-     *
-     * @param type
-     * @return
-     */
-    private boolean isPrimitive(String type) {
-        boolean isPrimitive = false;
-        if ( "byte".equals( type ) || "char".equals( type ) || "double".equals( type ) || "float".equals( type ) || "int".equals( type ) || "long".equals( type ) || "short".equals( type ) || "boolean".equals( type ) || "void".equals( type ) ) {
-            isPrimitive = true;
-        }
-        return isPrimitive;
-    }
-
-
     private void visitFieldOrGetter(MethodVisitor mv, ClassDefinition classDef, FieldDefinition field) {
         if (! field.isInherited()) {
             mv.visitFieldInsn( Opcodes.GETFIELD,
-                    getInternalType( classDef.getClassName() ),
+                    BuildUtils.getInternalType( classDef.getClassName() ),
                     field.getName(),
-                    getTypeDescriptor( field.getTypeName() ) );
+                    BuildUtils.getTypeDescriptor( field.getTypeName() ) );
         } else {
             mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
-                    getInternalType( classDef.getClassName()),
+                    BuildUtils.getInternalType( classDef.getClassName()),
                     field.getReadMethod(),
-                    Type.getMethodDescriptor( Type.getType( getTypeDescriptor( field.getTypeName() ) ),
-                            new Type[]{} )
+                    Type.getMethodDescriptor(Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName())),
+                            new Type[]{})
             );
         }
     }
+   
 
 
 
-    private Object getDefaultValue(FieldDefinition fld) {
-        String type = fld.getTypeName();
-        if ( "byte".equals( type ) ) {
-            return fld.getDefaultValueAs_byte();
-        } else if ( "char".equals( type ) ) {
-            return fld.getDefaultValueAs_char();
-        } else if ( "double".equals( type ) ) {
-            return fld.getDefaultValueAs_double();
-        } else if ( "float".equals( type ) ) {
-            return fld.getDefaultValueAs_float();
-        } else if ( "int".equals( type ) ) {
-            return fld.getDefaultValueAs_int();
-        } else if ( "long".equals( type ) ) {
-            return fld.getDefaultValueAs_long();
-        } else if ( "short".equals( type ) ) {
-            return fld.getDefaultValueAs_short();
-        } else if ( "boolean".equals( type ) ) {
-            return fld.getDefaultValueAs_boolean();
-
-        } else if ( "java.lang.String".equals( type ) ) {
-            return fld.getDefaultValueAsString();
-
-        } else if ( "java.lang.Byte".equals( type ) || "Byte".equals( type )) {
-            return fld.getDefaultValueAsByte();
-        } else if ( "java.lang.Character".equals( type ) || "Character".equals( type ) ) {
-            return fld.getDefaultValueAsChar();
-        } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
-            return fld.getDefaultValueAsDouble();
-        } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
-            return fld.getDefaultValueAsFloat();
-        } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
-            return fld.getDefaultValueAsInt();
-        } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
-            return fld.getDefaultValueAsLong();
-        } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
-            return fld.getDefaultValueAsShort();
-        } else if ( "java.lang.Boolean".equals( type ) || "Boolean".equals( type )) {
-            return fld.getDefaultValueAsBoolean();
-        }
-
-        return null;
-
-    }
-
-    private boolean isBoxed(String type) {
-        if (type == null) return false;
-        return "java.lang.Short".equals(type)
-                || "java.lang.Byte".equals(type)
-                || "java.lang.Character".equals(type)
-                || "java.lang.Double".equals(type)
-                || "java.lang.Float".equals(type)
-                || "java.lang.Integer".equals(type)
-                || "java.lang.Boolean".equals(type)
-                || "java.lang.Long".equals(type) ;
-    }
 
 
 
-    private String unBox(String type) {
-        if ( "java.lang.Byte".equals( type ) || "Byte".equals( type )) {
-            return getInternalType("byte");
-        } else if ( "java.lang.Character".equals( type ) || "Character".equals( type ) ) {
-            return getInternalType("char");
-        } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
-            return getInternalType("double");
-        } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
-            return getInternalType("float");
-        } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
-            return getInternalType("int");
-        } else if ( "java.lang.Long".equals( type ) || "Long".equals( type )) {
-            return getInternalType("long");
-        } else if ( "java.lang.Short".equals( type ) || "Short".equals( type )) {
-            return getInternalType("short");
-        } else if ( "java.lang.Boolean".equals( type ) || "Boolean".equals( type )) {
-            return getInternalType("boolean");
-        } else {
-            throw new RuntimeDroolsException("Unable to recognize boxed primitive type " + type);
-        }
-    }
 
+
+
+
+   
 }
 

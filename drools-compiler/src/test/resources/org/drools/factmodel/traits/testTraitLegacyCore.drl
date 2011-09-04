@@ -1,0 +1,89 @@
+package org.test;
+
+
+// Individual is an empty traitable, based solely on a property map.
+import org.drools.factmodel.traits.Individual;
+
+import org.drools.factmodel.traits.IThing;
+
+import org.drools.factmodel.traits.Imp;
+
+import org.drools.factmodel.traits.IRole;
+
+
+global java.util.List list;
+
+
+
+declare IRole
+    @format(trait)
+end
+
+declare Imp
+    @Traitable
+end
+
+
+declare Core
+    @Traitable
+end
+
+
+// declared interface
+declare Person
+    @format(trait)
+    name : String
+    age  : int
+end
+
+
+
+
+
+
+rule "Init"
+when
+then
+    Imp core = new Imp();
+    insert( core );
+end
+
+rule "Trait"
+no-loop
+when
+    // use only pure Objs
+    $core: Imp()
+then
+    Person<Object> p = drools.<Person,Object>don( $core, Person.class, true );
+    p.setName( "john" );
+    p.setAge( 30 );
+
+    System.out.println( " Person trait : " + p);
+
+    update(p);
+end
+
+
+rule "Cloak"
+no-loop
+when
+    $p    : Person( $core : core, name == "john" )
+then
+    System.out.println( "John the Person is here >>> " + $p );
+    list.add("OK");
+
+    IRole role = drools.don( $core, IRole.class, true );
+    role.setRoleName("myRole");
+
+    update( role );
+
+end
+
+
+rule "Role"
+when
+    $role : IRole( roleName == "myRole" )
+then
+    System.out.println( "John the Role is here >>> " + $role );
+    list.add("OK2");
+end

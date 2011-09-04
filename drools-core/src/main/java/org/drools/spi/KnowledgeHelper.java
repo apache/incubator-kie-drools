@@ -144,4 +144,6 @@ public interface KnowledgeHelper
     public void setIdentityMap(IdentityHashMap<Object, FactHandle> identityMap);
     
     <T> T getContext(Class<T> contextClass);
+
+    <T, K> T don( K core, Class<T> trait, boolean logical );
 }

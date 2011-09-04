@@ -37,12 +37,12 @@ import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
-import org.drools.event.rule.ActivationCancelledCause;
-import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.factmodel.traits.CoreWrapper;
+import org.drools.factmodel.traits.ITraitable;
+import org.drools.factmodel.traits.TraitBuilder;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
-import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.runtime.Channel;
 import org.drools.runtime.ExitPoint;
@@ -467,6 +467,36 @@ public class DefaultKnowledgeHelper
         }
         return null;
     }
+
+
+
+
+    public <T, K> T don( K core, Class<T> trait, boolean logical ) {
+        TraitBuilder builder = new TraitBuilder( this.getKnowledgeRuntime().getKnowledgeBase() );
+
+        ITraitable inner;
+        if ( core instanceof ITraitable ) {
+            inner = (ITraitable) core;
+        } else {
+            CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
+            if ( wrapper == null ) {
+                throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );
+            }
+            wrapper.init( core );
+            inner = wrapper;
+        }
+
+        T thing = (T) builder.getProxy( inner, trait );
+
+        if ( logical ) {
+            insertLogical( thing );
+        } else {
+            insert( thing );
+        }
+
+        return thing;
+    }
+
 
     public void modify(Object newObject) {
         // TODO Auto-generated method stub
