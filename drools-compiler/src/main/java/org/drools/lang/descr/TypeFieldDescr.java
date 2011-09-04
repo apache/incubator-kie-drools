@@ -140,7 +140,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
         PatternDescr fldType = new PatternDescr();
         TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
         inheritedFldDescr.setFieldName(fld.getName());
-        fldType.setObjectType(fld.getType().getName());
+        fldType.setObjectType( ((FieldDefinition) fld).getTypeName() );
         inheritedFldDescr.setPattern(fldType);
         if (fld.isKey()) inheritedFldDescr.getAnnotations().put(TypeDeclaration.ATTR_KEY,new AnnotationDescr(TypeDeclaration.ATTR_KEY));
         inheritedFldDescr.setIndex(fld.getIndex());

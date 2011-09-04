@@ -26,6 +26,7 @@ import java.util.Date;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.EventFactHandle;
+import org.drools.factmodel.traits.IThing;
 import org.drools.facttemplates.FactTemplate;
 
 public class ValueType
@@ -114,6 +115,14 @@ public class ValueType
                                                                       SimpleValueType.OBJECT );
     public static final ValueType  QUERY_TYPE        = new ValueType( "Query",
                                                                       DroolsQuery.class,
+                                                                      SimpleValueType.OBJECT );
+
+    public static final ValueType  TRAIT_TYPE        = new ValueType( "Trait",
+                                                                      IThing.class,
+                                                                      SimpleValueType.OBJECT );
+
+    public static final ValueType  CLASS_TYPE        = new ValueType( "Class",
+                                                                      Class.class,
                                                                       SimpleValueType.OBJECT );
 
     private String           name;
@@ -223,6 +232,8 @@ public class ValueType
             return ValueType.STRING_TYPE;
         } else if ( clazz == EventFactHandle.class ) {
             return ValueType.EVENT_TYPE;
+        } else if ( clazz == Class.class ) {
+            return ValueType.CLASS_TYPE;
         } else if ( Object.class.isAssignableFrom( clazz ) ) {
             return ValueType.OBJECT_TYPE;
         }

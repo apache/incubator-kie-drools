@@ -19,6 +19,7 @@ package org.drools.base;
 import java.util.Date;
 
 import org.drools.base.field.BooleanFieldImpl;
+import org.drools.base.field.ClassFieldImpl;
 import org.drools.base.field.DoubleFieldImpl;
 import org.drools.base.field.LongFieldImpl;
 import org.drools.base.field.ObjectFieldImpl;
@@ -100,6 +101,8 @@ public class FieldFactory {
             field = new ObjectFieldImpl( MathUtils.getBigDecimal( value ) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
             field = new ObjectFieldImpl( MathUtils.getBigInteger( value ) );
+        } else if ( valueType == ValueType.CLASS_TYPE ) {
+            field = new ClassFieldImpl( value );
         }
 
         return field;
@@ -182,10 +185,14 @@ public class FieldFactory {
             field = new ObjectFieldImpl( MathUtils.getBigDecimal( value ) );
         } else if ( valueType == ValueType.BIG_INTEGER_TYPE ) {
             field = new ObjectFieldImpl( MathUtils.getBigInteger( value ) );
+        } else if ( valueType == ValueType.CLASS_TYPE ) {
+            field = new ClassFieldImpl( (Class) value );
         }
 
         return field;
     }
+
+
 
     public static FieldValue getFieldValue(final Object value) {
         return new ObjectFieldImpl( value );
@@ -221,6 +228,10 @@ public class FieldFactory {
 
     public static FieldValue getFieldValue(final double value) {
         return new DoubleFieldImpl( value );
+    }
+
+    public static FieldValue getFieldValue(final Class value) {
+        return value == null ? new ObjectFieldImpl( null ) :  new ClassFieldImpl( value );
     }
 
     private static String stripNumericType(String value) {

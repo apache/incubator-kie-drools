@@ -24,6 +24,8 @@ import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
+import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.ITraitable;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
@@ -141,7 +143,7 @@ public class SequentialKnowledgeHelper
     }
 
     /**
-     * @deprecated use {@link #getChannel()} instead
+     * @deprecated use {@link #getChannels()} instead
      */
     @Deprecated
     public ExitPoint getExitPoint(String id) {
@@ -177,6 +179,10 @@ public class SequentialKnowledgeHelper
     }
 
     public <T> T getContext(Class<T> contextClass) {
+        return null;
+    }
+
+    public <T, K> T don( K core, Class<T> trait, boolean logical ) {
         return null;
     }
 
