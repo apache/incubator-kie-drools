@@ -37,6 +37,7 @@ import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.evaluators.Operator;
+import org.drools.base.field.ClassFieldImpl;
 import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
@@ -700,11 +701,24 @@ public class PatternBuilder
                                                           rightValue,
                                                           thisPattern );
                     if ( declr == null ) {
-                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                                      d,
-                                                                      null,
-                                                                      "Unable to return Declaration for identifier '" + rightValue + "'" ) );
-                        continue;
+                        // maybe it was a class literal ?
+                        try {
+                            final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( rightValue );
+                            restriction = buildLiteralRestriction( context,
+                                                                   extractor,
+                                                                   new LiteralRestrictionDescr( operator,
+                                                                                                relDescr.isNegated(),
+                                                                                                relDescr.getParameters(),
+                                                                                                cls.getName(),
+                                                                                                LiteralRestrictionDescr.TYPE_STRING ) ); // default type
+                        } catch ( ClassNotFoundException cnfe ) {
+
+                            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                          d,
+                                                                          null,
+                                                                          "Unable to return Declaration for identifier '" + rightValue + "'" ) );
+                            continue;
+                        }
                     }
                 }
             }

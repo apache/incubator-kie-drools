@@ -1,0 +1,141 @@
+package org.test;
+
+
+// Individual is an empty traitable, based solely on a property map.
+import org.drools.factmodel.traits.Individual;
+
+import org.drools.factmodel.traits.IThing;
+
+
+import org.drools.factmodel.traits.IStudent;
+import org.drools.factmodel.traits.IPerson;
+import org.drools.factmodel.traits.IRole;
+
+
+global java.util.List list;
+
+
+
+
+
+//declare Object
+//    @Traitable
+//end
+
+
+declare Core
+    @Traitable
+end
+
+
+// legacy "semantic" interface
+declare IStudent
+    @format(trait)
+end
+
+// legacy interface, does not extend IThing
+declare IRole
+    @format(trait)
+end
+
+
+// legacy "semantic" interface
+declare IPerson
+    @format(trait)
+end
+
+// declared interface
+declare Person
+    @format(trait)
+    name : String
+    age  : int
+end
+
+// declared interface
+declare Worker
+    @format(trait)
+    name : String
+    age  : int
+end
+
+
+
+ 
+ 
+rule "Init"
+when
+then
+    Individual core = new Individual();
+    insert( core );
+end
+
+rule "Trait"
+no-loop
+when
+    $core: Individual( )
+then
+    IRole r = drools.don( $core, IRole.class, true );
+    IStudent<Individual> s = drools.<IStudent,Individual>don( $core, IStudent.class, true );
+    IPerson<Individual> x = drools.<IPerson,Individual>don( $core, IPerson.class, true );
+    Person<Individual> p = drools.<Person,Individual>don( $core, Person.class, true );
+    Worker<Individual> w = drools.<Worker,Individual>don( $core, Worker.class, true );
+    p.setName( "john" );
+    s.setSchool( "skol" );
+    w.setAge( 30 );
+    r.setRoleName( "john" );
+
+    System.out.println(s);
+    System.out.println(p);
+    System.out.println(w);
+    System.out.println(x);
+    System.out.println(r);
+
+    update(p);
+    update(w);
+//    not necessary: IStudent instanceof IPerson
+//    update(x);
+    update(s);
+    update(r);
+end
+
+
+rule "Cloak"
+when
+    $p    : Person( name == "john" )
+then
+    System.out.println( "John the Person is here" );
+    list.add("OK");
+end
+
+rule "Cloak 2"
+when
+    $p    : Worker( name == "john", age == 30 )
+then
+    System.out.println( "John the Worker is here" );
+    list.add("OK2");
+end
+
+rule "Cloak 3"
+when
+    $p    : IPerson( name == "john" )
+then
+    System.out.println( "John the IPerson is here" );
+    list.add("OK3");
+end
+
+rule "Cloak 4"
+when
+    $p    : IStudent( name == "john", school == "skol" )
+then
+    System.out.println( "John the IStudent is here" );
+    list.add("OK4");
+end
+
+
+rule "Cloak 5"
+when
+    $p    : IRole( roleName == "john" )
+then
+    System.out.println( "John the IRole is here" );
+    list.add("OK5");
+end

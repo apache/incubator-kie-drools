@@ -42,6 +42,7 @@ public class ClassDefinition
     private String                       superClass;
     private String[]                     interfaces;
     private transient Class< ? >         definedClass;
+    private boolean                      traitable;
 
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
@@ -53,29 +54,23 @@ public class ClassDefinition
               null );
     }
 
-    public ClassDefinition(String className) {
+    public ClassDefinition( String className ) {
         this( className,
               null,
               null );
     }
 
-    public ClassDefinition(String className,
-                           String superClass) {
+    public ClassDefinition( String className,
+                            String superClass ) {
         this( className,
               superClass,
               null );
     }
 
-    public ClassDefinition(String className,
-                           String[] interfaces) {
-        this( className,
-              null,
-              interfaces );
-    }
 
-    public ClassDefinition(String className,
-                           String superClass,
-                           String[] interfaces) {
+    public ClassDefinition( String className,
+                            String superClass,
+                            String[] interfaces ) {
         this.setClassName( className );
         this.setSuperClass( superClass );
         this.setInterfaces( interfaces );
@@ -88,6 +83,7 @@ public class ClassDefinition
         this.interfaces = (String[]) in.readObject();
         this.fields = (LinkedHashMap<String, FieldDefinition>) in.readObject();
         this.annotations = (List<AnnotationDefinition>) in.readObject();
+        this.traitable = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -96,6 +92,7 @@ public class ClassDefinition
         out.writeObject( this.interfaces );
         out.writeObject( this.fields );
         out.writeObject( this.annotations );
+        out.writeBoolean( this.traitable );
     }
 
     /**
@@ -263,4 +260,14 @@ public class ClassDefinition
         return annotations;
     }
 
+
+
+
+    public boolean isTraitable() {
+        return traitable;
+    }
+
+    public void setTraitable(boolean traitable) {
+        this.traitable = traitable;
+    }
 }

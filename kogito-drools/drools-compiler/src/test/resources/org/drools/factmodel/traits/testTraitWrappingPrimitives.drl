@@ -1,0 +1,191 @@
+package org.test;
+ 
+ 
+import org.drools.factmodel.traits.IThing;
+
+global java.util.List list;
+
+ 
+declare Trait
+@format( trait )
+    byteh : byte
+    charh : char
+    doubleh : double
+    floath : float
+    inth : int
+    longh : long
+    shorth : short
+    boolh : boolean
+    strh: String
+//
+    bytes : byte
+    chars : char
+    doubles : double
+    floats : float
+    ints : int
+    longs : long
+    shorts : short
+    bools: boolean
+    strs: String
+end
+ 
+ 
+ 
+ 
+declare Bean
+ @Traitable
+    byteh : byte
+    charh : char
+    doubleh : double
+    floath : float
+    inth : int
+    longh : long
+    shorth : short
+    boolh : boolean
+    strh : String
+end 
+ 
+
+
+
+rule Init
+when
+then
+ Bean core = new Bean( );
+ insert( core );
+end
+
+
+
+
+rule "TraitHard"
+no-loop
+when
+ $core: Bean( )
+then
+    Trait t = (Trait) drools.don( $core, Trait.class, true );
+ 
+    byte b0 = t.getByteh();
+    if ( b0 != 0 ) list.add( " hard byte default value != 0 " + b0 );
+    t.setByteh( Byte.valueOf("1") );
+    if ( $core.getByteh() != 1 ) list.add( " hard byte setter on trait failed, core reports " + $core.getByteh() );
+    if ( t.getByteh() != 1 ) list.add( " hard byte getter on trait failed, after set trait reports " + t.getByteh() );
+
+    char c0 = t.getCharh();
+    if ( c0 != 0 ) list.add( " hard char default value != '' <" + c0 + ">");
+    t.setCharh( Character.valueOf( '2' ) );
+    if ( $core.getCharh() != '2' ) list.add( " hard char setter on trait failed, core reports " + $core.getCharh() );
+    if ( t.getCharh() != '2' ) list.add( " hard char getter on trait failed, after set trait reports " + t.getCharh() );
+
+    double d0 = t.getDoubleh();
+    if ( d0 != 0.0 ) list.add( " hard double default value != ' ' " + d0 );
+    t.setDoubleh( Double.valueOf( "3" ) );
+    if ( $core.getDoubleh() != 3.0 ) list.add( " hard double setter on trait failed, core reports " + $core.getDoubleh() );
+    if ( t.getDoubleh() != 3.0 ) list.add( " hard double getter on trait failed, after set trait reports " + t.getDoubleh() );
+
+    float f0 = t.getFloath();
+    if ( f0 != 0.0 ) list.add( " hard float default value != ' ' " + f0 );
+    t.setFloath( Float.valueOf( "4" ) );
+    if ( $core.getFloath() != 4.0 ) list.add( " hard float setter on trait failed, core reports " + $core.getFloath() );
+    if ( t.getFloath() != 4.0 ) list.add( " hard float getter on trait failed, after set trait reports " + t.getFloath() );
+
+    int i0 = t.getInth();
+    if ( i0 != 0 ) list.add( " hard int default value != ' ' " + i0 );
+    t.setInth( Integer.valueOf( "5" ) );
+    if ( $core.getInth() != 5 ) list.add( " hard int setter on trait failed, core reports " + $core.getInth() );
+    if ( t.getInth() != 5 ) list.add( " hard int getter on trait failed, after set trait reports " + t.getInth() );
+
+
+    long l0 = t.getLongh();
+    if ( l0 != 0 ) list.add( " hard long default value != ' ' " + l0 );
+    t.setLongh( Long.valueOf( "6" ) );
+    if ( $core.getLongh() != 6 ) list.add( " hard long setter on trait failed, core reports " + $core.getLongh() );
+    if ( t.getLongh() != 6 ) list.add( " hard long getter on trait failed, after set trait reports " + t.getLongh() );
+
+    short s0 = t.getShorth();
+    if ( s0 != 0 ) list.add( " hard short default value != ' ' " + s0 );
+    t.setShorth( Short.valueOf( "7" ) );
+    if ( $core.getShorth() != 7 ) list.add( " hard short setter on trait failed, core reports " + $core.getShorth() );
+    if ( t.getShorth() != 7 ) list.add( " hard short getter on trait failed, after set trait reports " + t.getShorth() );
+
+
+    boolean x0 = t.isBoolh();
+    if ( x0 != false ) list.add( " hard bool default value != ' ' " + x0 );
+    t.setBoolh( true );
+    if ( $core.isBoolh() != true ) list.add( " hard bool setter on trait failed, core reports " + $core.isBoolh() );
+    if ( t.isBoolh() != true ) list.add( " hard bool getter on trait failed, after set trait reports " + t.isBoolh() );
+
+
+    String z0 = t.getStrh();
+    if ( z0 != null ) list.add( " hard String default value != ' ' " + z0 );
+    t.setStrh( "HW" );
+    if ( ! $core.getStrh().equals("HW")  ) list.add( " hard str setter on trait failed, core reports " + $core.getStrh() );
+    if ( ! t.getStrh().equals("HW") ) list.add( " hard str getter on trait failed, after set trait reports " + t.getStrh() );
+
+end;
+
+
+
+
+
+
+
+
+
+rule "TraitSoft"
+no-loop
+when
+$core: Bean( )
+then
+    Trait t = (Trait) drools.don( $core, Trait.class, true );
+
+    byte b0 = t.getBytes();
+    if ( b0 != 0 ) list.add( " soft byte default value != 0 " + b0 );
+    t.setBytes( Byte.valueOf("1") );
+    if ( t.getBytes() != 1 ) list.add( " soft byte getter on trait failed, after set trait reports " + t.getBytes() );
+
+    char c0 = t.getChars();
+    if ( c0 != 0 ) list.add( " soft char default value != '' <" + c0 + ">" );
+    t.setChars( Character.valueOf( '2' ) );
+    if ( t.getChars() != '2' ) list.add( " soft char getter on trait failed, after set trait reports " + t.getChars() );
+
+    double d0 = t.getDoubles();
+    if ( d0 != 0.0 ) list.add( " soft double default value != ' ' " + d0 );
+    t.setDoubles( Double.valueOf( "3" ) );
+    if ( t.getDoubles() != 3.0 ) list.add( " soft double getter on trait failed, after set trait reports " + t.getDoubles() );
+
+    float f0 = t.getFloats();
+    if ( f0 != 0.0 ) list.add( " soft float default value != ' ' " + f0 );
+    t.setFloats( Float.valueOf( "4" ) );
+    if ( t.getFloats() != 4.0 ) list.add( " soft float getter on trait failed, after set trait reports " + t.getFloats() );
+
+    int i0 = t.getInts();
+    if ( i0 != 0 ) list.add( " soft int default value != ' ' " + i0 );
+    t.setInts( Integer.valueOf( "5" ) );
+    if ( t.getInts() != 5 ) list.add( " soft int getter on trait failed, after set trait reports " + t.getInts() );
+
+
+    long l0 = t.getLongs();
+    if ( l0 != 0 ) list.add( " soft long default value != ' ' " + l0 );
+    t.setLongs( Long.valueOf( "6" ) );
+    if ( t.getLongs() != 6 ) list.add( " soft long getter on trait failed, after set trait reports " + t.getLongs() );
+
+    short s0 = t.getShorts();
+    if ( s0 != 0 ) list.add( " soft short default value != ' ' " + s0 );
+    t.setShorts( Short.valueOf( "7" ) );
+    if ( t.getShorts() != 7 ) list.add( " soft short getter on trait failed, after set trait reports " + t.getShorts() );
+
+
+    boolean x0 = t.isBools();
+    if ( x0 != false ) list.add( " soft bool default value != ' ' " + x0 );
+    t.setBools( true );
+    if ( t.isBools() != true ) list.add( " soft bool getter on trait failed, after set trait reports " + t.isBools() );
+
+
+    String z0 = t.getStrs();
+    if ( z0 != null ) list.add( " soft String default value != ' ' " + z0 );
+    t.setStrs( "HW" );
+    if ( ! t.getStrs().equals("HW") ) list.add( " soft str getter on trait failed, after set trait reports " + t.getStrs() );
+
+end;
+

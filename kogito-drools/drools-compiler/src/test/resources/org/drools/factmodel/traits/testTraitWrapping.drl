@@ -1,0 +1,200 @@
+package org.test;
+ 
+ 
+import org.drools.factmodel.traits.IThing;
+
+
+
+global java.util.List list;
+
+ 
+declare Trait
+@format( trait )
+    byteh : Byte
+    charh : Character
+    doubleh : Double
+    floath : Float
+    inth : Integer
+    longh : Long
+    shorth : Short
+    boolh : Boolean
+
+    bytes : Byte
+    chars : Character
+    doubles : Double
+    floats : Float
+    ints : Integer
+    longs : Long
+    shorts : Short
+    bools: Boolean
+end
+ 
+ 
+ 
+ 
+declare Bean
+ @Traitable
+    byteh : Byte
+    charh : Character
+    doubleh : Double
+    floath : Float
+    inth : Integer
+    longh : Long
+    shorth : Short
+    boolh : Boolean
+end
+ 
+
+
+
+rule Init
+when
+then
+ Bean core = new Bean( );
+ insert( core );
+end
+
+
+
+
+rule "TraitHard"
+no-loop
+when
+ $core: Bean( )
+then
+    Trait t = (Trait) drools.don( $core, Trait.class, true );
+ 
+    Byte b0 = t.getByteh();
+    System.out.println( ">>> " + b0);
+    if ( b0 != 0 ) list.add( " hard byte default value != 0 " + b0 );
+    t.setByteh( Byte.valueOf("1") );
+    if ( $core.getByteh() != 1 ) list.add( " hard byte setter on trait failed, core reports " + $core.getByteh() );
+    if ( t.getByteh() != 1 ) list.add( " hard byte getter on trait failed, after set trait reports " + t.getByteh() );
+    if ( ! t.getFields().containsValue( 0 ) ) list.add( " ByteH not found in list of values ");
+
+    Character c0 = t.getCharh();
+    if ( c0 != Character.valueOf('\u0000'.charAt(0)) ) list.add( " hard char default value != '\u0000' <" + c0 + ">");
+    t.setCharh( Character.valueOf( '2' ) );
+    if ( $core.getCharh() != '2' ) list.add( " hard char setter on trait failed, core reports " + $core.getCharh() );
+    if ( t.getCharh() != '2' ) list.add( " hard char getter on trait failed, after set trait reports " + t.getCharh() );
+    if ( ! t.getFields().containsValue( '2' ) ) list.add( " CharH not found in list of values ");
+
+    Double d0 = t.getDoubleh();
+    if ( d0 != 0.0 ) list.add( " hard double default value != ' ' " + d0 );
+    t.setDoubleh( Double.valueOf( "3" ) );
+    if ( $core.getDoubleh() != 3.0 ) list.add( " hard double setter on trait failed, core reports " + $core.getDoubleh() );
+    if ( t.getDoubleh() != 3.0 ) list.add( " hard double getter on trait failed, after set trait reports " + t.getDoubleh() );
+    if ( ! t.getFields().containsValue( 3.0 ) ) list.add( " DoubleH not found in list of values ");
+
+    Float f0 = t.getFloath();
+    if ( f0 != 0.0 ) list.add( " hard float default value != ' ' " + f0 );
+    t.setFloath( Float.valueOf( "4" ) );
+    if ( $core.getFloath() != 4.0 ) list.add( " hard float setter on trait failed, core reports " + $core.getFloath() );
+    if ( t.getFloath() != 4.0 ) list.add( " hard float getter on trait failed, after set trait reports " + t.getFloath() );
+    if ( ! t.getFields().containsValue( 4.0f ) ) list.add( " FloatH not found in list of values ");
+
+    Integer i0 = t.getInth();
+    if ( i0 != 0 ) list.add( " hard int default value != ' ' " + i0 );
+    t.setInth( Integer.valueOf( "5" ) );
+    if ( $core.getInth() != 5 ) list.add( " hard int setter on trait failed, core reports " + $core.getInth() );
+    if ( t.getInth() != 5 ) list.add( " hard int getter on trait failed, after set trait reports " + t.getInth() );
+    if ( ! t.getFields().containsValue( 5 ) ) list.add( " IntH not found in list of values ");
+    
+    
+    Long l0 = t.getLongh();
+    if ( l0 != 0 ) list.add( " hard long default value != ' ' " + l0 );
+    t.setLongh( Long.valueOf( "6" ) );
+    if ( $core.getLongh() != 6 ) list.add( " hard long setter on trait failed, core reports " + $core.getLongh() );
+    if ( t.getLongh() != 6 ) list.add( " hard long getter on trait failed, after set trait reports " + t.getLongh() );
+    if ( ! t.getFields().containsValue( 6L ) ) list.add( " LongH not found in list of values ");
+    
+    Short s0 = t.getShorth();
+    if ( s0 != 0 ) list.add( " hard short default value != ' ' " + s0 );
+    t.setShorth( Short.valueOf( "7" ) );
+    if ( $core.getShorth() != 7 ) list.add( " hard short setter on trait failed, core reports " + $core.getShorth() );
+    if ( t.getShorth() != 7 ) list.add( " hard short getter on trait failed, after set trait reports " + t.getShorth() );
+    if ( ! t.getFields().containsValue( Short.valueOf( "7" ) ) ) list.add( " ShortH not found in list of values ");
+
+
+    Boolean x0 = t.getBoolh();
+    if ( x0 != false ) list.add( " hard bool default value != ' ' " + x0 );
+    t.setBoolh( true );
+    if ( $core.getBoolh() != true ) list.add( " hard bool setter on trait failed, core reports " + $core.getBoolh() );
+    if ( t.getBoolh() != true ) list.add( " hard bool getter on trait failed, after set trait reports " + t.getBoolh() );
+    if ( ! t.getFields().containsValue( true ) ) list.add( " BooleanH not found in list of values ");
+
+    if ( t.getFields().containsValue( 99 ) ) list.add( " Rogue value in field list ");
+
+end
+
+
+
+
+
+
+rule "TraitSoft"
+no-loop
+when
+$core: Bean( )
+then
+    Trait t = (Trait) drools.don( $core, Trait.class, true );
+
+    Byte b0 = t.getBytes();
+    if ( b0 != null ) list.add( " soft byte default value != 0 " + b0 );
+    t.setBytes( Byte.valueOf("1") );
+    if ( t.getBytes() != 1 ) list.add( " soft byte getter on trait failed, after set trait reports " + t.getBytes() );
+    if ( ! t.getFields().containsValue( Byte.valueOf("1") ) ) list.add( " ByteS not found in list of values ");
+
+    Character c0 = t.getChars();
+    if ( c0 != null ) list.add( " soft char default value != '' <" + c0 + ">" );
+    t.setChars( Character.valueOf( '2' ) );
+    if ( t.getChars() != '2' ) list.add( " soft char getter on trait failed, after set trait reports " + t.getChars() );
+    if ( ! t.getFields().containsValue( Character.valueOf('2') ) ) list.add( " CharS not found in list of values ");
+
+    Double d0 = t.getDoubles();
+    if ( d0 != null ) list.add( " soft double default value != ' ' " + d0 );
+    t.setDoubles( Double.valueOf( "3" ) );
+    if ( t.getDoubles() != 3.0 ) list.add( " soft double getter on trait failed, after set trait reports " + t.getDoubles() );
+    if ( ! t.getFields().containsValue( 3.0 ) ) list.add( " DoubleS not found in list of values ");
+
+    Float f0 = t.getFloats();
+    if ( f0 != null ) list.add( " soft float default value != ' ' " + f0 );
+    t.setFloats( Float.valueOf( "4" ) );
+    if ( t.getFloats() != 4.0 ) list.add( " soft float getter on trait failed, after set trait reports " + t.getFloats() );
+    if ( ! t.getFields().containsValue( 4.0f ) ) list.add( " FloatS not found in list of values ");
+
+    Integer i0 = t.getInts();
+    if ( i0 != null ) list.add( " soft int default value != ' ' " + i0 );
+    t.setInts( Integer.valueOf( "5" ) );
+    if ( t.getInts() != 5 ) list.add( " soft int getter on trait failed, after set trait reports " + t.getInts() );
+    if ( ! t.getFields().containsValue( 5 ) ) list.add( " IntS not found in list of values ");
+
+
+    Long l0 = t.getLongs();
+    if ( l0 != null ) list.add( " soft long default value != ' ' " + l0 );
+    t.setLongs( Long.valueOf( "6" ) );
+    if ( t.getLongs() != 6 ) list.add( " soft long getter on trait failed, after set trait reports " + t.getLongs() );
+    if ( ! t.getFields().containsValue( 6L ) ) list.add( " LongS not found in list of values ");
+
+    Short s0 = t.getShorts();
+    if ( s0 != null ) list.add( " soft short default value != ' ' " + s0 );
+    t.setShorts( Short.valueOf( "7" ) );
+    if ( t.getShorts() != 7 ) list.add( " soft short getter on trait failed, after set trait reports " + t.getShorts() );
+    if ( ! t.getFields().containsValue( Short.valueOf("7") ) ) list.add( " ShortS not found in list of values ");
+
+
+    Boolean x0 = t.getBools();
+    if ( x0 != null ) list.add( " soft bool default value != ' ' " + x0 );
+    t.setBools( true );
+    if ( t.getBools() != true ) list.add( " soft bool getter on trait failed, after set trait reports " + t.getBools() );
+    if ( ! t.getFields().containsValue( true ) ) list.add( " BooleanS not found in list of values ");
+
+
+    if ( t.getFields().containsValue( 99 ) ) list.add( " Rogue value in field list ");
+
+
+end
+
+
+
+

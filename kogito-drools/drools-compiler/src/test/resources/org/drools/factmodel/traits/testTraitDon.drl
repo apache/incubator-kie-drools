@@ -1,0 +1,92 @@
+package org.test;
+
+import org.drools.factmodel.traits.Individual;
+
+
+global java.util.List list;
+
+
+ 
+declare Parent
+    @format( trait )
+    child   : Student
+end
+ 
+ 
+declare Person
+    @format(trait)
+    name    : String 
+    age     : int   @position(0) 
+end
+  
+declare Role
+    @format(trait) 
+end
+ 
+
+declare Student extends Person, Role
+    @format(trait)
+    school  : String
+end 
+ 
+ 
+declare Imp
+    @Traitable 
+    name    : String
+    school  : String
+end
+ 
+ 
+  
+declare java.lang.Object 
+    @Traitable
+end 
+ 
+ 
+declare java.lang.String 
+    @Traitable
+end 
+ 
+ 
+ 
+rule "Init"
+when 
+then 
+    Imp core = new Imp( "xx", "yy" );
+    insert( core );
+end
+
+rule "Trait"
+when 
+    $core: Imp( "xx", "yy" ; )
+    not String( this == "die" )
+then 
+    Student<Imp> s = drools.<Student,Imp>don( $core, Student.class, true );
+    Imp core = s.getCore();
+
+    s.setName("abc");
+    s.setAge(88);
+    s.setSchool("skl");
+
+    update( s );
+end 
+
+ 
+ 
+rule "Check" 
+no-loop 
+when
+    $z: Student( $s : school == "skl", fields[ "name" ] == "abc", $a : age == 88 )
+then
+    list.add( "DON" );
+end 
+ 
+ 
+ 
+rule "Check2"
+salience -100 
+when
+    not Student( )
+then 
+    list.add( "SHED" );
+end;

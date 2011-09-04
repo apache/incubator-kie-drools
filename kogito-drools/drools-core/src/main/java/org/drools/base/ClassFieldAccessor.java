@@ -74,6 +74,15 @@ public class ClassFieldAccessor
         this.writer = (ClassFieldWriter) writeAccessor;
     }
 
+    public InternalReadAccessor getReadAccessor() {
+        return reader;
+    }
+
+    public WriteAccessor getWriteAccessor() {
+        return writer;
+    }
+
+
     public int getIndex() {
         return this.reader.getIndex();
     }

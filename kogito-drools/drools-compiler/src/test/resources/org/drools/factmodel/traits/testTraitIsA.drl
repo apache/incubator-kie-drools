@@ -1,0 +1,145 @@
+package org.test;
+
+import org.drools.factmodel.traits.Traitable;
+import org.drools.factmodel.traits.Individual;
+import org.drools.factmodel.traits.IThing;
+
+global java.util.List list;
+
+
+
+
+declare Imp
+    @Traitable
+    name    : String
+    school  : String
+end
+
+
+declare Person
+    @format(trait)
+    name    : String 
+    age     : int   @position(0) 
+end
+  
+
+declare Student extends Person
+    @format(trait)
+    school  : String
+end 
+
+declare Worker
+    @format(trait)
+    job     : String
+end
+ 
+
+ 
+
+ 
+ 
+rule "Init"
+when
+then
+    Imp core = new Imp( "adam", "skool" );
+    insert( core );
+
+    Individual ind = new Individual();
+    insert( ind );
+end
+
+rule "Trait"
+no-loop
+when
+    $core: Imp( "adam", "skool" ;)
+then
+    Student<Imp> s = drools.<Student,Imp>don( $core, Student.class, true );
+    IThing<Imp> t = drools.<IThing,Imp>don( $core, IThing.class, true );
+
+    Worker<Imp> w = drools.<Worker,Imp>don( $core, Worker.class, true );
+
+    update( $core );
+end
+
+rule "Trait2"
+no-loop
+when
+    $core: Individual( )
+then
+    Student<Individual> s = drools.<Student,Individual>don( $core, Student.class, true );
+    list.add( "0" );
+end
+
+
+
+rule "Students"
+when
+    $s : Student( $core : core, $k : core.getClass() == Imp )
+then
+    list.add( "1" );
+end
+
+rule "Workers"
+when
+    $w : Worker( $core : core )
+then
+    list.add( "2" );
+end
+
+rule "Worker Students"
+when
+    $x1 := Worker( $ind := core )
+    $x2 := Student( $ind := core )
+then
+    list.add( "3" );
+    if ( ! $x1.equals( $x2 ) ) {
+        list.add( "4" );
+    }
+end
+
+
+
+
+
+rule "Worker Students v2"
+when
+    $x1 := Worker( this isA Student )
+then
+    list.add( "5" );
+end
+
+rule "Worker Students v3"
+when
+    $x1 := Worker( this isA "org.test.Student" )
+then
+    list.add( "6" );
+end
+
+
+rule "Worker Students v4"
+when
+    $x1 := Worker( core isA "org.test.Student" )
+then
+    list.add( "7" );
+end
+
+rule "Worker Students v5"
+when
+    $x1 := Imp( this isA "org.test.Student" )
+then
+    list.add( "8" );
+end
+
+rule "Worker Students v6"
+when
+    $x2 := Student(  )
+    $x1 := Worker( core != $x2.core, this isA $x2 )
+then
+    list.add( "9" );
+end
+
+
+
+
+
+

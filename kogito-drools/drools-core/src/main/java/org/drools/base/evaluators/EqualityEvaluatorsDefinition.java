@@ -22,11 +22,14 @@ import java.io.ObjectOutput;
 import java.util.Date;
 import java.math.BigDecimal;
 
+import com.sun.codemodel.ClassType;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
+import org.drools.base.field.ClassFieldImpl;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.MathUtils;
+import org.drools.rule.VariableRestriction;
 import org.drools.rule.VariableRestriction.BooleanVariableContextEntry;
 import org.drools.rule.VariableRestriction.CharVariableContextEntry;
 import org.drools.rule.VariableRestriction.DoubleVariableContextEntry;
@@ -93,6 +96,9 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             addEvaluator( ValueType.PSHORT_TYPE,        Operator.NOT_EQUAL,     ShortNotEqualEvaluator.INSTANCE );
             addEvaluator( ValueType.STRING_TYPE,        Operator.EQUAL,         StringEqualEvaluator.INSTANCE );
             addEvaluator( ValueType.STRING_TYPE,        Operator.NOT_EQUAL,     StringNotEqualEvaluator.INSTANCE );
+            addEvaluator( ValueType.CLASS_TYPE,         Operator.EQUAL,         ClassEqualEvaluator.INSTANCE );
+            addEvaluator( ValueType.CLASS_TYPE,         Operator.NOT_EQUAL,     ClassNotEqualEvaluator.INSTANCE );
+
         }
     };
 
@@ -1743,6 +1749,114 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
             return "Object !=";
         }
     }
+
+
+    public static class ClassEqualEvaluator extends BaseEvaluator {
+
+        private static final long     serialVersionUID = 400L;
+        public final static Evaluator INSTANCE         = new ClassEqualEvaluator();
+        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
+
+
+        public ClassEqualEvaluator() {
+            super( ValueType.CLASS_TYPE,
+                   Operator.EQUAL );
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final InternalReadAccessor extractor,
+                                final Object object1, final FieldValue object2) {
+            Object value1 = extractor.getValue( workingMemory, object1 );
+            Object value2 = object2.getValue();
+            if ( value2 == null ) {
+                ClassFieldImpl classField = (ClassFieldImpl) object2;
+                value2 = classField.resolve( workingMemory );
+            }
+            return comparator.equals( value1, value2 );
+        }
+
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
+            return comparator.equals( ((ObjectVariableContextEntry) context).right, value );
+        }
+
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            final Object value = context.extractor.getValue( workingMemory, right );
+            return comparator.equals( value, ((ObjectVariableContextEntry) context).left );
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final InternalReadAccessor extractor1,
+                                final Object object1,
+                                final InternalReadAccessor extractor2, final Object object2) {
+            final Object value1 = extractor1.getValue( workingMemory, object1 );
+            final Object value2 = extractor2.getValue( workingMemory, object2 );
+            return comparator.equals( value1, value2 );
+        }
+
+        public String toString() {
+            return "Class ==";
+        }
+
+    }
+
+
+    public static class ClassNotEqualEvaluator extends BaseEvaluator {
+
+        private static final long     serialVersionUID = 400L;
+        public final static Evaluator INSTANCE         = new ClassEqualEvaluator();
+        private static final ObjectEqualsComparator comparator = new ObjectEqualsComparator();
+
+
+        public ClassNotEqualEvaluator() {
+            super( ValueType.CLASS_TYPE,
+                   Operator.NOT_EQUAL );
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final InternalReadAccessor extractor,
+                                final Object object1, final FieldValue object2) {
+            Object value1 = extractor.getValue( workingMemory, object1 );
+            Object value2 = object2.getValue();
+            if ( value2 == null ) {
+                ClassFieldImpl classField = (ClassFieldImpl) object2;
+                value2 = classField.resolve( workingMemory );
+            }
+            return !comparator.equals( value1, value2 );
+        }
+
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
+                                           final VariableContextEntry context, final Object left) {
+            final Object value = context.declaration.getExtractor().getValue( workingMemory, left );
+            return !comparator.equals( ((ObjectVariableContextEntry) context).right, value );
+        }
+
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
+                                          final VariableContextEntry context, final Object right) {
+            final Object value = context.extractor.getValue( workingMemory, right );
+            return !comparator.equals( value, ((ObjectVariableContextEntry) context).left );
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final InternalReadAccessor extractor1,
+                                final Object object1,
+                                final InternalReadAccessor extractor2, final Object object2) {
+            final Object value1 = extractor1.getValue( workingMemory, object1 );
+            final Object value2 = extractor2.getValue( workingMemory, object2 );
+            return !comparator.equals( value1, value2 );
+        }
+
+        public String toString() {
+            return "Class !=";
+        }
+
+    }
+
+
+
+
 
     public static class ShortEqualEvaluator extends BaseEvaluator {
         private static final long      serialVersionUID = 400L;

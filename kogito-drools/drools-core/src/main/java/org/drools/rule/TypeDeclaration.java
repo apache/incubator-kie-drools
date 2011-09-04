@@ -46,7 +46,6 @@ public class TypeDeclaration
     public static final int FORMAT_BIT                  = 4;
 
     public static final String ATTR_CLASS               = "class";
-    public static final String ATTR_TEMPLATE            = "template";
     public static final String ATTR_TYPESAFE            = "typesafe";
     public static final String ATTR_DURATION            = "duration";
     public static final String ATTR_TIMESTAMP           = "timestamp";
@@ -73,7 +72,7 @@ public class TypeDeclaration
     }
 
     public static enum Format {
-        POJO, TEMPLATE;
+        POJO, TRAIT, TEMPLATE;
 
         public static final String ID = "format";
 
@@ -82,6 +81,8 @@ public class TypeDeclaration
                 return POJO;
             } else if ( "template".equalsIgnoreCase( format ) ) {
                 return TEMPLATE;
+            } else if ( "trait".equalsIgnoreCase( format ) ) {
+                return TRAIT;
             }
             return null;
         }

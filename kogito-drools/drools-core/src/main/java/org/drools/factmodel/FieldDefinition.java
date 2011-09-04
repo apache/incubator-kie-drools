@@ -280,7 +280,7 @@ public class FieldDefinition
         }
     }
     public Character getDefaultValueAsChar() {
-        return initExpr == null ? ' ' : initExpr.charAt(0);
+        return initExpr == null ? '\u0000' : initExpr.charAt(0);
     }
     public Double getDefaultValueAsDouble() {
         try {
@@ -330,7 +330,7 @@ public class FieldDefinition
         }
     }
     public char getDefaultValueAs_char() {
-        return initExpr == null ? ' ' : initExpr.charAt(0);
+        return initExpr == null ? 0 : initExpr.charAt(0);
     }
     public double getDefaultValueAs_double() {
         try {
@@ -366,5 +366,19 @@ public class FieldDefinition
         } catch (NumberFormatException nfe) {
             return 0;
         }
+    }
+
+
+    public String toString() {
+        return "FieldDefinition{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", key=" + key +
+                ", inherited=" + inherited +
+                ", index=" + index +
+                ", initExpr='" + initExpr + '\'' +
+                ", annotations=" + annotations +
+                ", accessor=" + accessor +
+                '}';
     }
 }
