@@ -17,15 +17,15 @@ public class ClassGeneratorTest {
         generator.addField(ACC_PRIVATE + ACC_FINAL, "name", String.class);
 
         generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
+            public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0);// read local variable 0 (initialized to this) and push it on the stack
                 mv.visitLdcInsn(MY_NAME); // push the String MY_NAME on the stack
-                mv.visitFieldInsn(PUTFIELD, cg.getClassDescriptor(), "name", getDescriptor(String.class));
+                putField("name", String.class);
             }
-        }).addMethod(ACC_PUBLIC, "toString", generator.toMethodDescriptor(String.class), new ClassGenerator.MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv, ClassGenerator.MethodHelper mh) {
+        }).addMethod(ACC_PUBLIC, "toString", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
+            public void body(MethodVisitor mv) {
                 mv.visitVarInsn(ALOAD, 0); // read local variable 0 (initialized to this) and push it on the stack
-                mv.visitFieldInsn(GETFIELD, cg.getClassDescriptor(), "name", getDescriptor(String.class));
+                getField("name", String.class);
                 mv.visitInsn(ARETURN); // return the first object on the stack
             }
         });

@@ -17,8 +17,8 @@ public class ClassGenerator {
     private int version = V1_5;
     private int access = ACC_PUBLIC + ACC_SUPER;
     private String signature;
-    private String superName = "java.lang.Object";
-    private String[] interfaces;
+    private Class superClass = Object.class;
+    private Class<?>[] interfaces;
 
     private String classDescriptor;
     private String superDescriptor;
@@ -82,7 +82,7 @@ public class ClassGenerator {
     }
 
     public String getSuperClassDescriptor() {
-        if (superDescriptor == null) superDescriptor = toInteralName(superName);
+        if (superDescriptor == null) superDescriptor = toInteralName(superClass);
         return superDescriptor;
     }
 
@@ -101,19 +101,19 @@ public class ClassGenerator {
         return this;
     }
 
-    public ClassGenerator setSuperName(String superName) {
-        this.superName = superName;
+    public ClassGenerator setSuperClass(Class superClass) {
+        this.superClass = superClass;
         return this;
     }
 
-    public ClassGenerator setInterfaces(String... interfaces) {
+    public ClassGenerator setInterfaces(Class<?>... interfaces) {
         this.interfaces = interfaces;
         return this;
     }
 
     // Utility
 
-    public String toMethodDescriptor(Class<?> type, Class<?>... args) {
+    public String methodDescr(Class<?> type, Class<?>... args) {
         StringBuilder desc = new StringBuilder("(");
         if (args != null) for (Class<?> arg : args) desc.append(getDescriptor(arg));
         desc.append(")").append(type == null ? "V" : getDescriptor(type));
@@ -166,37 +166,33 @@ public class ClassGenerator {
         return arrayPrefix + typeDescriptor;
     }
 
-    private String[] toInteralNames(String[] classNames) {
-        if (classNames == null) return null;
-        String[] internals = new String[classNames.length];
-        for (int i = 0; i < classNames.length; i++) internals[i] = toInteralName(classNames[i]);
+    private String[] toInteralNames(Class<?>[] classes) {
+        if (classes == null) return null;
+        String[] internals = new String[classes.length];
+        for (int i = 0; i < classes.length; i++) internals[i] = toInteralName(classes[i]);
         return internals;
     }
 
     // FieldDescr
 
     public ClassGenerator addField(int access, String name, Class<?> type) {
-        return addField(access, name, getDescriptor(type), null, null);
+        return addField(access, name, type, null, null);
     }
 
-    public ClassGenerator addField(int access, String name, String desc) {
-        return addField(access, name, desc, null, null);
+    public ClassGenerator addField(int access, String name, Class<?> type, String signature) {
+        return addField(access, name, type, signature, null);
     }
 
-    public ClassGenerator addField(int access, String name, String desc, String signature) {
-        return addField(access, name, desc, signature, null);
+    public ClassGenerator addStaticField(int access, String name, Class<?> type, Object value) {
+        return addField(access + ACC_STATIC, name, type, null, value);
     }
 
-    public ClassGenerator addStaticField(int access, String name, String desc, Object value) {
-        return addField(access + ACC_STATIC, name, desc, null, value);
+    public ClassGenerator addStaticField(int access, String name, Class<?> type, String signature, Object value) {
+        return addField(access + ACC_STATIC, name, type, signature, value);
     }
 
-    public ClassGenerator addStaticField(int access, String name, String desc, String signature, Object value) {
-        return addField(access + ACC_STATIC, name, desc, signature, value);
-    }
-
-    private ClassGenerator addField(int access, String name, String desc, String signature, Object value) {
-        classParts.add(new FieldDescr(access, name, desc, signature, value));
+    private ClassGenerator addField(int access, String name, Class<?> type, String signature, Object value) {
+        classParts.add(new FieldDescr(access, name, getDescriptor(type), signature, value));
         return this;
     }
 
@@ -220,14 +216,15 @@ public class ClassGenerator {
         }
     }
 
-    // MethodDescr
-
     public ClassGenerator addDefaultConstructor(final MethodBody body) {
         MethodBody constructorBody = new MethodBody() {
-            public void body(ClassGenerator cg, MethodVisitor mv, MethodHelper mh) {
+            public void body(MethodVisitor mv) {
+                body.setClassGenerator(cg);
+                body.setMethodVisitor(mv);
+
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitMethodInsn(INVOKESPECIAL, cg.getSuperClassDescriptor(), "<init>", "()V"); // super()
-                body.body(cg, mv, mh);
+                body.body(mv);
                 mv.visitInsn(RETURN); // return
             }
         };
@@ -251,45 +248,19 @@ public class ClassGenerator {
         return this;
     }
 
-    public interface MethodBody {
-        void body(ClassGenerator cg, MethodVisitor mv, MethodHelper mh);
-    }
+    // MethodBody
 
-    private static class MethodDescr implements ClassPartDescr {
-        private final int access;
-        private final String name;
-        private final String desc;
-        private final String signature;
-        private final String[] exceptions;
-        private final MethodBody body;
-
-        private MethodDescr(int access, String name, String desc, String signature, String[] exceptions, MethodBody body) {
-            this.access = access;
-            this.name = name;
-            this.desc = desc;
-            this.signature = signature;
-            this.exceptions = exceptions;
-            this.body = body;
-        }
-
-        public void write(ClassGenerator cg, ClassWriter cw) {
-            MethodVisitor mv = cw.visitMethod(access, name, desc, signature, exceptions);
-            mv.visitCode();
-            body.body(cg, mv, new MethodHelper(cg, mv));
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
-    }
-
-    // Method helpers
-
-    public static class MethodHelper {
-        private final ClassGenerator cg;
-        private final MethodVisitor mv;
+    public abstract static class MethodBody {
+        ClassGenerator cg;
+        MethodVisitor mv;
         private Map<Integer, Type> storedTypes;
 
-        public MethodHelper(ClassGenerator cg, MethodVisitor mv) {
+        public abstract void body(MethodVisitor mv);
+
+        private void setClassGenerator (ClassGenerator cg) {
             this.cg = cg;
+        }
+        private void setMethodVisitor (MethodVisitor mv) {
             this.mv = mv;
         }
 
@@ -325,6 +296,115 @@ public class ClassGenerator {
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
             else if (typeName.equals("double"))
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+        }
+
+        public void push(Object obj) {
+            mv.visitLdcInsn(obj);
+        }
+
+        public void cast(Class<?> clazz) {
+            mv.visitTypeInsn(CHECKCAST, interalName(clazz));
+        }
+
+        public void instanceOf(Class<?> clazz) {
+            mv.visitTypeInsn(INSTANCEOF, interalName(clazz));
+        }
+
+        public void invokeThis(String methodName, Class<?> returnedType, Class<?>... paramsType) {
+            mv.visitMethodInsn(INVOKEVIRTUAL, classDescriptor(), methodName, methodDescr(returnedType, paramsType));
+        }
+
+        public void invokeStatic(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+            invoke(INVOKESTATIC, clazz, methodName, returnedType, paramsType);
+        }
+
+        public void invokeVirtual(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+            invoke(INVOKEVIRTUAL, clazz, methodName, returnedType, paramsType);
+        }
+
+        public void invokeInterface(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+            invoke(INVOKEINTERFACE, clazz, methodName, returnedType, paramsType);
+        }
+
+        public void invokeSpecial(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+            invoke(INVOKESPECIAL, clazz, methodName, returnedType, paramsType);
+        }
+
+        private void invoke(int opCode, Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
+            mv.visitMethodInsn(opCode, interalName(clazz), methodName, methodDescr(returnedType, paramsType));
+        }
+
+        public void putField(String name, Class<?> type) {
+            mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, getDescriptor(type));
+        }
+
+        public void getField(String name, Class<?> type) {
+            mv.visitFieldInsn(GETFIELD, classDescriptor(), name, getDescriptor(type));
+        }
+
+        // ClassGenerator delegates
+
+        public String classDescriptor() {
+            return cg.getClassDescriptor();
+        }
+
+        public String superClassDescriptor() {
+            return cg.getSuperClassDescriptor();
+        }
+        public String methodDescr(Class<?> type, Class<?>... args) {
+            return cg.methodDescr(type, args);
+        }
+
+        private Type type(String typeName) {
+            return cg.toType(typeName);
+        }
+
+        public String typeDescr(Class<?> clazz) {
+            return cg.toTypeDescriptor(clazz);
+        }
+
+        public String typeDescr(String className) {
+            return cg.toTypeDescriptor(className);
+        }
+
+        public String interalName(Class<?> clazz) {
+            return cg.toInteralName(clazz);
+        }
+
+        public String interalName(String className) {
+            return cg.toInteralName(className);
+        }
+    }
+
+    // MethodDescr
+
+    private static class MethodDescr implements ClassPartDescr {
+        private final int access;
+        private final String name;
+        private final String desc;
+        private final String signature;
+        private final String[] exceptions;
+        private final MethodBody body;
+
+        private MethodDescr(int access, String name, String desc, String signature, String[] exceptions, MethodBody body) {
+            this.access = access;
+            this.name = name;
+            this.desc = desc;
+            this.signature = signature;
+            this.exceptions = exceptions;
+            this.body = body;
+        }
+
+        public void write(ClassGenerator cg, ClassWriter cw) {
+            MethodVisitor mv = cw.visitMethod(access, name, desc, signature, exceptions);
+            mv.visitCode();
+
+            body.setClassGenerator(cg);
+            body.setMethodVisitor(mv);
+            body.body(mv);
+
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
         }
     }
 
