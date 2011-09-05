@@ -6,7 +6,6 @@ import org.mvel2.asm.*;
 import java.util.*;
 
 import static org.mvel2.asm.Opcodes.*;
-import static org.mvel2.asm.Type.getDescriptor;
 
 public class ClassGenerator {
 
@@ -20,7 +19,7 @@ public class ClassGenerator {
     private Class superClass = Object.class;
     private Class<?>[] interfaces;
 
-    private String classDescriptor;
+    private final String classDescriptor;
     private String superDescriptor;
 
     private List<ClassPartDescr> classParts = new ArrayList<ClassPartDescr>();
@@ -42,6 +41,7 @@ public class ClassGenerator {
 
     public ClassGenerator(String className, ClassLoader classLoader, TypeResolver typeResolver) {
         this.className = className;
+        this.classDescriptor = className.replace('.', '/');
         this.classLoader = classLoader == null ? INTERNAL_CLASS_LOADER : new InternalClassLoader(classLoader);
         this.typeResolver = typeResolver == null ? INTERNAL_TYPE_RESOLVER : typeResolver;
     }
@@ -77,7 +77,6 @@ public class ClassGenerator {
     // Accessors
 
     public String getClassDescriptor() {
-        if (classDescriptor == null) classDescriptor = toInteralName(className);
         return classDescriptor;
     }
 
@@ -113,10 +112,21 @@ public class ClassGenerator {
 
     // Utility
 
+    private Map<Class<?>, String> descriptorsCache = new HashMap<Class<?>, String>();
+
+    private String descriptorOf(Class<?> type) {
+        String descriptor = descriptorsCache.get(type);
+        if (descriptor == null) {
+            descriptor = Type.getDescriptor(type);
+            descriptorsCache.put(type, descriptor);
+        }
+        return descriptor;
+    }
+
     public String methodDescr(Class<?> type, Class<?>... args) {
         StringBuilder desc = new StringBuilder("(");
-        if (args != null) for (Class<?> arg : args) desc.append(getDescriptor(arg));
-        desc.append(")").append(type == null ? "V" : getDescriptor(type));
+        if (args != null) for (Class<?> arg : args) desc.append(descriptorOf(arg));
+        desc.append(")").append(type == null ? "V" : descriptorOf(type));
         return desc.toString();
     }
 
@@ -125,7 +135,7 @@ public class ClassGenerator {
     }
 
     public String toTypeDescriptor(Class<?> clazz) {
-        return Type.getType(clazz).getDescriptor();
+        return descriptorOf(clazz);
     }
 
     public String toTypeDescriptor(String className) {
@@ -144,7 +154,7 @@ public class ClassGenerator {
     }
 
     public String toInteralName(Class<?> clazz) {
-        return clazz.isPrimitive() ? Type.getType(clazz).getDescriptor() : Type.getType(clazz).getInternalName();
+        return clazz.isPrimitive() ? descriptorOf(clazz) : Type.getType(clazz).getInternalName();
     }
 
     public String toInteralName(String className) {
@@ -192,7 +202,7 @@ public class ClassGenerator {
     }
 
     private ClassGenerator addField(int access, String name, Class<?> type, String signature, Object value) {
-        classParts.add(new FieldDescr(access, name, getDescriptor(type), signature, value));
+        classParts.add(new FieldDescr(access, name, descriptorOf(type), signature, value));
         return this;
     }
 
@@ -335,11 +345,11 @@ public class ClassGenerator {
         }
 
         public void putField(String name, Class<?> type) {
-            mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, getDescriptor(type));
+            mv.visitFieldInsn(PUTFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
         public void getField(String name, Class<?> type) {
-            mv.visitFieldInsn(GETFIELD, classDescriptor(), name, getDescriptor(type));
+            mv.visitFieldInsn(GETFIELD, classDescriptor(), name, cg.descriptorOf(type));
         }
 
         // ClassGenerator delegates

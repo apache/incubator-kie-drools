@@ -15,7 +15,6 @@ import java.util.*;
 import static org.drools.rule.builder.dialect.DialectUtil.*;
 import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 import static org.mvel2.asm.Opcodes.*;
-import static org.mvel2.asm.Type.*;
 
 public class ASMConsequenceBuilder implements ConsequenceBuilder {
 
