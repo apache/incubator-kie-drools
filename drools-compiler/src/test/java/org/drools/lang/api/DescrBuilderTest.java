@@ -241,10 +241,10 @@ public class DescrBuilderTest {
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
-        
+
         assertEquals( 2,
                       kbase.getEntryPointIds().size() );
-        
+
     }
 
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {

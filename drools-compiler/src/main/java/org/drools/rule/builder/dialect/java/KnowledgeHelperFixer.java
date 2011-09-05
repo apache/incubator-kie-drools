@@ -71,7 +71,7 @@ public class KnowledgeHelperFixer {
                     } );
     }
 
-    public String fix(final String raw) {
+    public static String fix(final String raw) {
         if  ( raw == null || "".equals( raw.trim() )) {
             return raw;
         }
