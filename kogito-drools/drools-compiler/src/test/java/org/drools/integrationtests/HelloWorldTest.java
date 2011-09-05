@@ -63,7 +63,7 @@ public class HelloWorldTest {
                 return 0;
             }
         });
-        String source = "org.drools.integrationtests.Rule_Hello_World_0";
+        String source = "org.drools.integrationtests.Rule_Hello_World";
         MVELRuntime.registerBreakpoint(source, 1);
         // load up the knowledge base
         KnowledgeBase kbase = readKnowledgeBase();

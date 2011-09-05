@@ -48,11 +48,12 @@ import org.drools.runtime.rule.TypedAccumulateFunction;
 import org.drools.spi.Accumulator;
 import org.drools.spi.DeclarationScopeResolver;
 import org.drools.spi.InternalReadAccessor;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 
 /**
  * A builder for the java dialect accumulate version
  */
-public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
+public class JavaAccumulateBuilder
     implements
     AccumulateBuilder {
 
@@ -210,20 +211,20 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                context,
                                                                previousDeclarations,
                                                                sourceDeclArr,
-                                                               usedIdentifiers.getGlobals(),
-                                                               null );
+                                                               usedIdentifiers.getGlobals()
+        );
         map.put( "readLocalsFromTuple",
                  accumDescr.isMultiPattern() ? Boolean.TRUE : Boolean.FALSE );
 
         JavaAccumulatorFunctionExecutor accumulator = new JavaAccumulatorFunctionExecutor( function );
 
-        generatTemplates( "returnValueMethod",
-                          "returnValueInvoker",
-                          context,
-                          className,
-                          map,
-                          accumulator,
-                          accumDescr );
+        generateTemplates("returnValueMethod",
+                "returnValueInvoker",
+                context,
+                className,
+                map,
+                accumulator,
+                accumDescr);
         return accumulator;
     }
 
@@ -300,8 +301,8 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                                                context,
                                                                declarations,
                                                                null,
-                                                               requiredGlobals,
-                                                               null );
+                                                               requiredGlobals
+        );
 
         map.put( "className",
                  accumDescr.getClassName() );
@@ -354,13 +355,13 @@ public class JavaAccumulateBuilder extends AbstractJavaRuleBuilder
                                      declarations,
                                      sourceDeclArr );
 
-        generatTemplates( "accumulateInnerClass",
-                          "accumulateInvoker",
-                          context,
-                          className,
-                          map,
-                          accumulate.new Wirer(0),
-                          accumDescr );
+        generateTemplates("accumulateInnerClass",
+                "accumulateInvoker",
+                context,
+                className,
+                map,
+                accumulate.new Wirer(0),
+                accumDescr);
         return accumulate;
     }
 
