@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -247,8 +247,6 @@ public class TaskServiceSession {
 
     private boolean isAllowed(final OperationCommand command, final Task task, final User user,
     		                         List<String> groupIds) {
-        doUserGroupCallbackOperation(user.getId(), groupIds);
-        
         final PeopleAssignments people = task.getPeopleAssignments();
         final TaskData taskData = task.getTaskData();
         
@@ -343,13 +341,14 @@ public class TaskServiceSession {
                               List<String> groupIds) throws TaskException {
         OrganizationalEntity targetEntity = null;
 
+        doUserGroupCallbackOperation(userId, groupIds);
+        doCallbackUserOperation(targetEntityId);
         if (targetEntityId != null) {
             targetEntity = getEntity(OrganizationalEntity.class, targetEntityId);
         }
 
         final Task task = getTask(taskId);
         
-        doUserGroupCallbackOperation(userId, groupIds);
         User user = getEntity(User.class, userId);
 
         try {
@@ -386,7 +385,9 @@ public class TaskServiceSession {
                 }
             }
         } catch (RuntimeException e) {
-            em.getTransaction().rollback();
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
 
             doOperationInTransaction(new TransactedOperation() {
                 public void doOperation() {
@@ -780,7 +781,6 @@ public class TaskServiceSession {
     }
 
     private boolean isAllowed(final User user, final List<String> groupIds, final List<OrganizationalEntity> entities) {
-        doUserGroupCallbackOperation(user.getId(), groupIds);
         // for now just do a contains, I'll figure out group membership later.
         for (OrganizationalEntity entity : entities) {
             if (entity instanceof User && entity.equals(user)) {

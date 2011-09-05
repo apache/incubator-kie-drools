@@ -1629,10 +1629,15 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
+        BlockingTaskOperationResponseHandler claimResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.claim( taskId, users.get( "darth" ).getId(), claimResponseHandler );        
+        claimResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        
         // Go straight from Ready to Inprogress
-        BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-        client.start( taskId, users.get( "darth" ).getId(), responseHandler );
-        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        BlockingTaskOperationResponseHandler startResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.start( taskId, users.get( "darth" ).getId(), startResponseHandler );
+        startResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        client.claim( taskId, users.get( "darth" ).getId(), startResponseHandler );
         
         BlockingGetTaskResponseHandler getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
@@ -1645,9 +1650,9 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
         data.setType("type");
         data.setFaultName("faultName");
         data.setContent("content".getBytes());
-        responseHandler = new BlockingTaskOperationResponseHandler();
-        client.fail( taskId, users.get( "darth" ).getId(), data, responseHandler );
-        responseHandler.waitTillDone(DEFAULT_WAIT_TIME);
+        BlockingTaskOperationResponseHandler failResponseHandler = new BlockingTaskOperationResponseHandler();
+        client.fail( taskId, users.get( "darth" ).getId(), data, failResponseHandler );
+        failResponseHandler.waitTillDone(DEFAULT_WAIT_TIME);
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );
