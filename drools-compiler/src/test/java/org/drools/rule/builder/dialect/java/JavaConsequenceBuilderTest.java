@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.drools.rule.builder.dialect.DialectUtil.*;
 import static org.junit.Assert.*;
 
 import org.antlr.runtime.RecognitionException;
@@ -38,13 +40,10 @@ import org.drools.spi.PatternExtractor;
 
 public class JavaConsequenceBuilderTest {
 
-    private JavaConsequenceBuilder builder;
     private RuleBuildContext       context;
     private RuleDescr              ruleDescr;
 
     private void setupTest(String consequence, Map<String, Object> namedConsequences) {
-        builder = new JavaConsequenceBuilder();
-
         Package pkg = new Package( "org.drools" );
         pkg.addImport( new ImportDeclaration( "org.drools.Cheese" ) );
 
@@ -115,11 +114,7 @@ public class JavaConsequenceBuilderTest {
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
                                                                                       new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
-            String fixed = builder.fixBlockDescr( context,
-                                                  (String) ruleDescr.getConsequence(),                                                  
-                                                  analysis.getBlockDescrs().getJavaBlockDescrs(),                                                  
-                                                  new BoundIdentifiers( new HashMap(), new HashMap() ),
-                                                  new HashMap<String,Declaration>() );
+            String fixed = fixBlockDescr(context, analysis, new HashMap<String, Declaration>());
 
             String expected = " System.out.println(\"this is a test\");\n " + 
                               " drools.getExitPoint(\"foo\").insert( new Cheese() );\n " + 
@@ -163,7 +158,7 @@ public class JavaConsequenceBuilderTest {
             
             // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
             List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
-            builder.setContainerBlockInputs(context, 
+            setContainerBlockInputs(context,
                                             descrs,
                                             analysis.getBlockDescrs(), 
                                             consequence,
@@ -171,11 +166,7 @@ public class JavaConsequenceBuilderTest {
                                             new HashMap(),
                                             0);            
             
-            String fixed = builder.fixBlockDescr( context,
-                                                  (String) ruleDescr.getConsequence(),                                                  
-                                                  descrs,                                                  
-                                                  bindings,
-                                                  context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+            String fixed = fixBlockDescr(context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
             String expected = 
                     " { $cheese.setPrice( 10 ); $cheese.setOldPrice( age ); drools.update( $cheese__Handle__ ); }\r\n" + 
@@ -208,11 +199,7 @@ public class JavaConsequenceBuilderTest {
             JavaAnalysisResult analysis = (JavaAnalysisResult) analyzer.analyzeBlock( (String) ruleDescr.getConsequence(),
                                                                                       new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
 
-            String fixed = builder.fixBlockDescr( context,
-                                                  (String) ruleDescr.getConsequence(),                                                  
-                                                  analysis.getBlockDescrs().getJavaBlockDescrs(),                                                  
-                                                  new BoundIdentifiers( new HashMap(), new HashMap() ),
-                                                  new HashMap<String,Declaration>() );
+            String fixed = fixBlockDescr( context, analysis, new HashMap<String,Declaration>() );
 
             String expected = " System.out.println(\"this is a test\");\n " + 
                               " drools.getEntryPoint(\"foo\").insert( new Cheese() );\n " + 
@@ -275,19 +262,17 @@ public class JavaConsequenceBuilderTest {
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
-        builder.setContainerBlockInputs(context, 
+        setContainerBlockInputs(context,
                                         descrs,
                                         analysis.getBlockDescrs(), 
                                         consequence,
                                         bindings,
                                         new HashMap(),
-                                        0);            
+                                        0);
+
+        analysis.setBoundIdentifiers(bindings);
         
-        String fixed = builder.fixBlockDescr( context,
-                                              (String) ruleDescr.getConsequence(),                                                  
-                                              descrs,                                                  
-                                              bindings,
-                                              context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+        String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations(context.getRule()), descrs );
 
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 
@@ -368,7 +353,7 @@ public class JavaConsequenceBuilderTest {
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
-        builder.setContainerBlockInputs(context, 
+        setContainerBlockInputs(context,
                                         descrs,
                                         analysis.getBlockDescrs(), 
                                         consequence,
@@ -376,11 +361,7 @@ public class JavaConsequenceBuilderTest {
                                         new HashMap(),
                                         0);            
         
-        String fixed = builder.fixBlockDescr( context,
-                                              (String) ruleDescr.getConsequence(),                                                  
-                                              descrs,                                                  
-                                              bindings,
-                                              context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+        String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
         String expected = 
                 "  System.out.println(\"this is a test\");\r\n" + 
@@ -455,7 +436,7 @@ public class JavaConsequenceBuilderTest {
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
-        builder.setContainerBlockInputs(context, 
+        setContainerBlockInputs(context,
                                         descrs,
                                         analysis.getBlockDescrs(), 
                                         consequence,
@@ -463,11 +444,7 @@ public class JavaConsequenceBuilderTest {
                                         new HashMap(),
                                         0);            
         
-        String fixed = builder.fixBlockDescr( context,
-                                              (String) ruleDescr.getConsequence(),                                                  
-                                              descrs,                                                  
-                                              bindings,
-                                              context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+        String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
 
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 
@@ -528,7 +505,7 @@ public class JavaConsequenceBuilderTest {
         
         // Set the inputs for each container, this is needed for modifes when the target context is the result of an expression
         List<JavaBlockDescr> descrs = new ArrayList<JavaBlockDescr>();
-        builder.setContainerBlockInputs(context, 
+        setContainerBlockInputs(context,
                                         descrs,
                                         analysis.getBlockDescrs(), 
                                         consequence,
@@ -536,11 +513,7 @@ public class JavaConsequenceBuilderTest {
                                         new HashMap(),
                                         0);            
         
-        String fixed = builder.fixBlockDescr( context,
-                                              (String) ruleDescr.getConsequence(),                                                  
-                                              descrs,                                                  
-                                              bindings,
-                                              context.getDeclarationResolver().getDeclarations( context.getRule() ) );
+        String fixed = fixBlockDescr( context, analysis, context.getDeclarationResolver().getDeclarations( context.getRule() ) );
         
         String expected = 
                 " System.out.println(\"this is a test\");\r\n" + 
