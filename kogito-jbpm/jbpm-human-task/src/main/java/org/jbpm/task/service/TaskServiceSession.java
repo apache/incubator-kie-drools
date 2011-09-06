@@ -698,7 +698,6 @@ public class TaskServiceSession {
     }
     
     public void setOutput(final long taskId, final String userId, final ContentData outputContentData) {
-        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -714,7 +713,6 @@ public class TaskServiceSession {
     }
     
     public void setFault(final long taskId, final String userId, final FaultData faultContentData) {
-        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -730,7 +728,6 @@ public class TaskServiceSession {
     }
     
     public void setPriority(final long taskId, final String userId, final int priority) {
-        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -740,7 +737,6 @@ public class TaskServiceSession {
     }
     
     public void deleteOutput(final long taskId, final String userId) {
-        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -757,7 +753,6 @@ public class TaskServiceSession {
     }
     
     public void deleteFault(final long taskId, final String userId) {
-        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
