@@ -126,10 +126,11 @@ public class TaskServiceSession {
     public void addTask(final Task task, final ContentData contentData)
         throws CannotAddTaskException {
         
-        final TaskData taskData = task.getTaskData();
         doCallbackOperationForPeopleAssignments(task.getPeopleAssignments());
-        doCallbackOperationForTaskData(taskData);
+        doCallbackOperationForTaskData(task.getTaskData());
         doCallbackOperationForTaskDeadlines(task.getDeadlines());
+        
+        final TaskData taskData = task.getTaskData();
         // initialize the task data
         Status currentStatus = taskData.initialize();
 
@@ -579,6 +580,7 @@ public class TaskServiceSession {
     @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
                                                               final String language) {
+        doCallbackUserOperation(userId);
         doUserGroupCallbackOperation(userId, groupIds);
         final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroups");
         tasksAssignedAsPotentialOwner.setParameter("userId", userId);
@@ -696,7 +698,7 @@ public class TaskServiceSession {
     }
     
     public void setOutput(final long taskId, final String userId, final ContentData outputContentData) {
-        doCallbackUserOperation(userId);
+        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -712,7 +714,7 @@ public class TaskServiceSession {
     }
     
     public void setFault(final long taskId, final String userId, final FaultData faultContentData) {
-        doCallbackUserOperation(userId);
+        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -728,7 +730,7 @@ public class TaskServiceSession {
     }
     
     public void setPriority(final long taskId, final String userId, final int priority) {
-        doCallbackUserOperation(userId);
+        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -738,7 +740,7 @@ public class TaskServiceSession {
     }
     
     public void deleteOutput(final long taskId, final String userId) {
-        doCallbackUserOperation(userId);
+        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -755,7 +757,7 @@ public class TaskServiceSession {
     }
     
     public void deleteFault(final long taskId, final String userId) {
-        doCallbackUserOperation(userId);
+        //doCallbackUserOperation(userId);
     	doOperationInTransaction(new TransactedOperation() {
     		public void doOperation() {
     			Task task = getEntity(Task.class, taskId);
@@ -889,7 +891,7 @@ public class TaskServiceSession {
     
     private void doCallbackUserOperation(String userId) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
-            if(UserGroupCallbackManager.getInstance().getCallback().existsUser(userId)) {
+            if(userId != null && UserGroupCallbackManager.getInstance().getCallback().existsUser(userId)) {
                 addUserFromCallbackOperation(userId);
             }
         } else {
@@ -899,7 +901,7 @@ public class TaskServiceSession {
     
     private void doCallbackGroupOperation(String groupId) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
-            if(UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId)) {
+            if(groupId != null && UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId)) {
                 addGroupFromCallbackOperation(groupId);
             }
         } else {
@@ -935,10 +937,6 @@ public class TaskServiceSession {
     private void doCallbackOperationForPeopleAssignments(PeopleAssignments assignments) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
             if(assignments != null) {
-                if(assignments.getTaskInitiator() != null && assignments.getTaskInitiator().getId() != null) {
-                    doCallbackUserOperation(assignments.getTaskInitiator().getId());
-                }
-                
                 List<OrganizationalEntity> businessAdmins = assignments.getBusinessAdministrators();
                 if(businessAdmins != null) {
                     for(OrganizationalEntity admin : businessAdmins) {
@@ -951,18 +949,6 @@ public class TaskServiceSession {
                     }
                 }
                 
-                List<OrganizationalEntity> excludedOwners = assignments.getExcludedOwners();
-                if(excludedOwners != null) {
-                    for(OrganizationalEntity exowner : excludedOwners) {
-                        if(exowner instanceof User) {
-                            doCallbackUserOperation(exowner.getId());
-                        }
-                        if(exowner instanceof Group) {
-                            doCallbackGroupOperation(exowner.getId());
-                        }
-                    }
-                }
-                
                 List<OrganizationalEntity> potentialOwners = assignments.getPotentialOwners();
                 if(potentialOwners != null) {
                     for(OrganizationalEntity powner : potentialOwners) {
@@ -971,6 +957,22 @@ public class TaskServiceSession {
                         }
                         if(powner instanceof Group) {
                             doCallbackGroupOperation(powner.getId());
+                        }
+                    }
+                }
+                
+                if(assignments.getTaskInitiator() != null && assignments.getTaskInitiator().getId() != null) {
+                    doCallbackUserOperation(assignments.getTaskInitiator().getId());
+                }
+                
+                List<OrganizationalEntity> excludedOwners = assignments.getExcludedOwners();
+                if(excludedOwners != null) {
+                    for(OrganizationalEntity exowner : excludedOwners) {
+                        if(exowner instanceof User) {
+                            doCallbackUserOperation(exowner.getId());
+                        }
+                        if(exowner instanceof Group) {
+                            doCallbackGroupOperation(exowner.getId());
                         }
                     }
                 }
@@ -999,7 +1001,7 @@ public class TaskServiceSession {
                     }
                 }
             }
-        } 
+        }
         
     }
     
@@ -1133,20 +1135,30 @@ public class TaskServiceSession {
     
     private void doCallbackGroupsOperation(String userId, List<String> groupIds) { 
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
-            if(groupIds != null && groupIds.size() > 0) {
-                for(String groupId : groupIds) {
-                    if(UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId) && UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId).contains(groupId)) {
-                        addGroupFromCallbackOperation(groupId);
+            if(userId != null) {
+                if(groupIds != null && groupIds.size() > 0) {
+                    for(String groupId : groupIds) {
+                        if(UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId) && 
+                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId) != null &&
+                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId).contains(groupId)) {
+                            addGroupFromCallbackOperation(groupId);
+                        }
+                    }
+                } else {
+                    if(!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) { 
+                        List<String> userGroups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId);
+                        if(userGroups != null && userGroups.size() > 0) {
+                            for(String group : userGroups) {
+                                addGroupFromCallbackOperation(group);
+                            }
+                            userGroupsMap.put(userId, true);
+                        }
                     }
                 }
             } else {
-                if(!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) { 
-                    List<String> userGroups = UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId);
-                    if(userGroups != null && userGroups.size() > 0) {
-                        for(String group : userGroups) {
-                            addGroupFromCallbackOperation(group);
-                        }
-                        userGroupsMap.put(userId, true);
+                if(groupIds != null) {
+                    for(String groupId : groupIds) {
+                        addGroupFromCallbackOperation(groupId);
                     }
                 }
             }

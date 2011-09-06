@@ -20,8 +20,8 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.UserGroupCallbackManager;
 
 public abstract class BaseTestNoUserGroupSetup extends BaseTest {
     
@@ -33,6 +33,12 @@ public abstract class BaseTestNoUserGroupSetup extends BaseTest {
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
+        UserGroupCallbackManager.resetCallback();
+    }
+    
+    @Override
+    public void disableUserGroupCallback() {
+        // do not disable
     }
     
     @Override

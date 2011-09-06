@@ -35,6 +35,7 @@ import org.jbpm.task.User;
 import org.jbpm.task.service.SendIcal;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.service.UserGroupCallbackManager;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
@@ -65,11 +66,16 @@ public abstract class BaseTest extends TestCase {
         MockUserInfo userInfo = new MockUserInfo();
         taskService.setUserinfo(userInfo);
         loadUsersAndGroups(taskService);
+        disableUserGroupCallback();
     }
 
     protected void tearDown() throws Exception {
         taskSession.dispose();
         emf.close();
+    }
+    
+    public void disableUserGroupCallback() {
+        UserGroupCallbackManager.getInstance().setCallback(null);
     }
     
     public void loadUsersAndGroups(TaskService taskService) throws Exception {
