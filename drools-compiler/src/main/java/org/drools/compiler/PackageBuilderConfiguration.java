@@ -19,6 +19,7 @@ package org.drools.compiler;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -29,6 +30,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorRegistry;
 import org.drools.builder.KnowledgeBuilderConfiguration;
+import org.drools.builder.ProblemSeverity;
 import org.drools.builder.conf.AccumulateFunctionOption;
 import org.drools.builder.conf.ClassLoaderCacheOption;
 import org.drools.builder.conf.DefaultDialectOption;
@@ -37,6 +39,7 @@ import org.drools.builder.conf.DumpDirOption;
 import org.drools.builder.conf.EvaluatorOption;
 import org.drools.builder.conf.KnowledgeBuilderOption;
 import org.drools.builder.conf.MultiValueKnowledgeBuilderOption;
+import org.drools.builder.conf.ProblemSeverityOption;
 import org.drools.builder.conf.ProcessStringEscapesOption;
 import org.drools.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.drools.compiler.xml.RulesSemanticModule;
@@ -79,6 +82,10 @@ import org.drools.xml.WrapperSemanticModule;
  * drools.accumulate.function.sum = org.drools.base.accumulators.SumAccumulateFunction
  * 
  * drools.parser.processStringEscapes = true|false
+ * 
+ * 
+ * drools.problem.severity.<ident> = ERROR|WARNING|INFO
+ * 
  */
 public class PackageBuilderConfiguration
     implements
@@ -107,6 +114,8 @@ public class PackageBuilderConfiguration
     private boolean                           classLoaderCache        = true;
 
     private String                            defaultPackageName;
+    
+    private Map<String, ProblemSeverity>      severityMap;
 
     public boolean isAllowMultipleNamespaces() {
         return allowMultipleNamespaces;
@@ -179,6 +188,8 @@ public class PackageBuilderConfiguration
         buildEvaluatorRegistry();
 
         buildDumpDirectory();
+        
+        buildSeverityMap();
 
         setProperty( ProcessStringEscapesOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( ProcessStringEscapesOption.PROPERTY_NAME,
@@ -187,6 +198,21 @@ public class PackageBuilderConfiguration
         setProperty( DefaultPackageNameOption.PROPERTY_NAME,
                      this.chainedProperties.getProperty( DefaultPackageNameOption.PROPERTY_NAME,
                                                          "defaultpkg" ) );
+    }
+
+    private void buildSeverityMap() {
+        this.severityMap = new HashMap<String, ProblemSeverity>();
+        Map<String, String> temp = new HashMap<String, String>();
+        this.chainedProperties.mapStartsWith( temp,
+                                              ProblemSeverityOption.PROPERTY_NAME,
+                                              true );
+        
+        int index = ProblemSeverityOption.PROPERTY_NAME.length();
+        for ( Map.Entry<String, String> entry : temp.entrySet() ) {
+            String identifier = entry.getKey().trim().substring( index );
+            this.severityMap.put( identifier,
+                                          ProblemSeverityOption.get(identifier, entry.getValue()).getSeverity());
+        }
     }
 
     public void setProperty(String name,
@@ -211,6 +237,9 @@ public class PackageBuilderConfiguration
             setProcessStringEscapes( Boolean.parseBoolean( value ) );
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( Boolean.parseBoolean( value ) );
+        } else if ( name.startsWith( ProblemSeverityOption.PROPERTY_NAME ) ) {
+            String key = name.substring( name.lastIndexOf('.') + 1 ); 
+            this.severityMap.put(key, ProblemSeverityOption.get(key, value).getSeverity());
         }
     }
 
@@ -238,6 +267,10 @@ public class PackageBuilderConfiguration
             return String.valueOf( isProcessStringEscapes() );
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return String.valueOf( isClassLoaderCacheEnabled() );
+        } else if (name.startsWith(ProblemSeverityOption.PROPERTY_NAME)){
+            String key = name.substring(name.lastIndexOf('.') + 1 );
+            ProblemSeverity severity = this.severityMap.get(key);
+            return severity.toString();
         }
         return null;
     }
@@ -618,6 +651,10 @@ public class PackageBuilderConfiguration
         } else if ( EvaluatorOption.class.equals( option ) ) {
             return (T) EvaluatorOption.get( key,
                                             this.evaluatorRegistry.getEvaluatorDefinition( key ) );
+        } else if ( ProblemSeverityOption.class.equals( option )) {
+            
+            return (T) ProblemSeverityOption.get( key,
+                                                  this.severityMap.get( key ));
         }
         return null;
     }
@@ -628,6 +665,8 @@ public class PackageBuilderConfiguration
             return this.accumulateFunctions.keySet();
         } else if ( EvaluatorOption.class.equals( option ) ) {
             return this.evaluatorRegistry.keySet();
+        } else if ( ProblemSeverityOption.class.equals( option ) ){
+            return this.severityMap.keySet();
         }
         return null;
     }
@@ -648,6 +687,8 @@ public class PackageBuilderConfiguration
             setDefaultPackageName( ((DefaultPackageNameOption) option).getPackageName() );
         } else if ( option instanceof ClassLoaderCacheOption ) {
             setClassLoaderCacheEnabled( ((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled() );
+        } else if ( option instanceof ProblemSeverityOption ) {
+            this.severityMap.put(((ProblemSeverityOption) option).getName(), ((ProblemSeverityOption) option).getSeverity());
         }
     }
 
