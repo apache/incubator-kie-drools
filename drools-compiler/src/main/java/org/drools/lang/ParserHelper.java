@@ -39,6 +39,7 @@ import org.drools.lang.api.CollectDescrBuilder;
 import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.DescrBuilder;
 import org.drools.lang.api.DescrFactory;
+import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.lang.api.EvalDescrBuilder;
 import org.drools.lang.api.FieldDescrBuilder;
 import org.drools.lang.api.ForallDescrBuilder;
@@ -652,6 +653,14 @@ public class ParserHelper {
                 beginSentence( DroolsSentenceType.TYPE_DECLARATION );
                 setStart( declare );
                 return (T) declare;
+            } else if ( EntryPointDeclarationDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                EntryPointDeclarationDescrBuilder declare = ctxBuilder == null ?
+                                                            DescrFactory.newPackage().newDeclare().entryPoint() :
+                                                            ((DeclareDescrBuilder) ctxBuilder).entryPoint();
+                pushParaphrases( DroolsParaphraseTypes.ENTRYPOINT_DECLARE );
+                beginSentence( DroolsSentenceType.ENTRYPOINT_DECLARATION );
+                setStart( declare );
+                return (T) declare;
             } else if ( FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {
                 FieldDescrBuilder field = ((TypeDeclarationDescrBuilder) ctxBuilder).newField( param );
                 setStart( field );
@@ -736,7 +745,8 @@ public class ParserHelper {
                    CEDescrBuilder.class.isAssignableFrom( clazz ) ||
                    CollectDescrBuilder.class.isAssignableFrom( clazz ) ||
                    AccumulateDescrBuilder.class.isAssignableFrom( clazz ) ||
-                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
+                   ForallDescrBuilder.class.isAssignableFrom( clazz ) || 
+                   BehaviorDescrBuilder.class.isAssignableFrom( clazz )) ) {
                 popParaphrases();
             }
             setEnd( builder );

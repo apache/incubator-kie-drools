@@ -23,6 +23,7 @@ import org.drools.lang.descr.EntryPointDeclarationDescr;
  */
 public interface EntryPointDeclarationDescrBuilder
     extends
+    AnnotatedDescrBuilder<EntryPointDeclarationDescrBuilder>, 
     DescrBuilder<PackageDescrBuilder, EntryPointDeclarationDescr> {
 
     /**
