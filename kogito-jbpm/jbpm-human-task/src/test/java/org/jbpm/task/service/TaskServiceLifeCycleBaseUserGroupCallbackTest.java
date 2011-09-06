@@ -37,7 +37,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
-public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
+public abstract class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
     private static final int DEFAULT_WAIT_TIME = 5000;
 
     protected TaskServer server;
@@ -63,6 +63,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -128,6 +129,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, data, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -173,6 +175,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, data, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -212,6 +215,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -252,6 +256,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -295,6 +300,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -336,6 +342,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -385,6 +392,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -427,6 +435,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -477,6 +486,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -521,6 +531,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -573,6 +584,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -619,6 +631,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -665,6 +678,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -717,6 +731,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -760,6 +775,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -807,6 +823,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -859,7 +876,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Check is Ready
@@ -914,6 +931,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -973,6 +991,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1024,6 +1043,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();                     
         
@@ -1058,6 +1078,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1091,13 +1112,14 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
-        client.addTask( task, null, addTaskResponseHandler );        
         if(task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
             businessAdmins.add(new User("Administrator"));
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
+        client.addTask( task, null, addTaskResponseHandler );  
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();                     
         
         // Check is Delegated
@@ -1134,6 +1156,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
         
         long taskId = addTaskResponseHandler.getTaskId();             
         
@@ -1181,7 +1204,9 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
-        client.addTask( task, null, addTaskResponseHandler );        
+        client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone( 3000 );
+        
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Claim and Reserved
@@ -1235,7 +1260,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();                     
         
         // Check is Forwarded
@@ -1272,7 +1297,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Claim and Reserved
@@ -1320,7 +1345,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Claim and Reserved
@@ -1374,7 +1399,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Go straight from Ready to Inprogress
@@ -1420,7 +1445,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Go straight from Ready to Inprogress
@@ -1472,7 +1497,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Go straight from Ready to Inprogress
@@ -1528,7 +1553,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Go straight from Ready to Inprogress
@@ -1574,7 +1599,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Go straight from Ready to Inprogress
@@ -1626,7 +1651,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         BlockingTaskOperationResponseHandler claimResponseHandler = new BlockingTaskOperationResponseHandler();
@@ -1688,7 +1713,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         BlockingTaskOperationResponseHandler opResponseHandler = new BlockingTaskOperationResponseHandler();
@@ -1739,7 +1764,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();             
         
         // Do nominate and fail due to Ready status
@@ -1798,7 +1823,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
         
         BlockingTaskOperationResponseHandler startResponseHandler = new BlockingTaskOperationResponseHandler();
@@ -1845,7 +1870,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
         
         BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
@@ -1888,7 +1913,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         } 
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
         
         BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
@@ -1924,7 +1949,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
         
         BlockingTaskOperationResponseHandler nominateHandler = new BlockingTaskOperationResponseHandler();
@@ -1961,7 +1986,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
 
         BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
@@ -1996,7 +2021,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
 
         BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();
@@ -2032,7 +2057,7 @@ public class TaskServiceLifeCycleBaseUserGroupCallbackTest extends BaseTestNoUse
             task.getPeopleAssignments().setBusinessAdministrators(businessAdmins);
         }
         client.addTask( task, null, addTaskResponseHandler );
-        
+        addTaskResponseHandler.waitTillDone( 3000 );
         long taskId = addTaskResponseHandler.getTaskId();
 
         BlockingTaskOperationResponseHandler activateResponseHandler = new BlockingTaskOperationResponseHandler();

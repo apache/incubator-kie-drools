@@ -865,7 +865,7 @@ public class TaskServiceSession {
 
             tx.commit();
         } finally {
-            if (tx.isActive()) {
+            if( tx.isActive() ) {
                 tx.rollback();
             }
         }
@@ -1164,24 +1164,23 @@ public class TaskServiceSession {
     
     private void addGroupFromCallbackOperation(String groupId) {
         try {
-            if(!isEmpty(groupId)) {
+            if(!isEmpty(groupId) && em.find(Group.class, groupId) == null) {
                 Group g = new Group(groupId);
                 addGroup(g);
-                logger.debug("Added group: " + groupId);
             }
         } catch (Throwable t) {
             logger.debug("Trying to add group " + groupId + ", but it already exists. ");
         }
     }
     
-    private void addUserFromCallbackOperation(String userId) {  
+    private void addUserFromCallbackOperation(String userId) { 
         try {
-            if(!isEmpty(userId)) {
+            if(!isEmpty(userId) && em.find(User.class, userId) == null ) {
                 User toCreateUser = new User(userId);
                 addUser(toCreateUser);
             }
         } catch (Throwable t) {
-            logger.debug("Trying to add user " + userId + ", but it already exists. ");
+            logger.debug("Unable to add user " + userId);
         }
     }
     
