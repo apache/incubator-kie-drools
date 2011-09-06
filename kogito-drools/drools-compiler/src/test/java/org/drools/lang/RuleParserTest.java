@@ -39,8 +39,8 @@ import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.BehaviorDescr;
-import org.drools.lang.descr.BindingDescr;
 import org.drools.lang.descr.CollectDescr;
+import org.drools.lang.descr.EntryPointDeclarationDescr;
 import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.EvalDescr;
 import org.drools.lang.descr.ExistsDescr;
@@ -3977,6 +3977,34 @@ public class RuleParserTest extends TestCase {
         ExprConstraintDescr constr = (ExprConstraintDescr) pattern.getConstraint().getDescrs().get( 0 );
         assertEquals( "this after[-*,*] $another",
                       constr.getText() );
+
+    }
+
+    @Test
+    public void testEntryPointDeclaration() throws Exception {
+        final String text = "package org.drools\n" +
+                            "declare entry-point eventStream\n" +
+                            "    @source(\"jndi://queues/events\")\n" +
+                            "    @foo( true )\n" +
+                            "end";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 text );
+
+        assertEquals( "org.drools",
+                      pkg.getName() );
+        assertEquals( 1,
+                      pkg.getEntryPointDeclarations().size() );
+
+        EntryPointDeclarationDescr epd = pkg.getEntryPointDeclarations().iterator().next();
+
+        assertEquals( "eventStream",
+                      epd.getEntryPointId() );
+        assertEquals( 2,
+                      epd.getAnnotations().size() );
+        assertEquals( "\"jndi://queues/events\"",
+                      epd.getAnnotation( "source" ).getValue() );
+        assertEquals( "true",
+                      epd.getAnnotation( "foo" ).getValue() );
 
     }
 

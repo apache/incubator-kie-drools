@@ -438,6 +438,7 @@ public class DRLParser {
             
             if( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
                 // entry point declaration
+                declaration = entryPointDeclaration( declare );
             } else {
                 // type declaration
                 declaration = typeDeclaration( declare );
@@ -450,7 +451,7 @@ public class DRLParser {
     }
 
     /**
-     * entryPointDeclaration := ENTRY-POINT stringId END?
+     * entryPointDeclaration := ENTRY-POINT stringId annotation* END
      * 
      * NOTE: at the moment, it seems redundant to have the declaration to accept only a stringId, but
      *       in the future, it will likely accept annotations and other parameters.
@@ -494,15 +495,18 @@ public class DRLParser {
                 declare.entryPointId( ep );
             }
 
-            if( helper.validateIdentifierKey( DroolsSoftKeywords.END ) ) {
-                // END?
-                match( input,
-                       DRLLexer.ID,
-                       DroolsSoftKeywords.END,
-                       null,
-                       DroolsEditorType.KEYWORD );
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // annotation*
+                annotation( declare );
                 if ( state.failed ) return null;
             }
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.END,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
 
         } catch ( RecognitionException re ) {
             reportError( re );
@@ -558,7 +562,7 @@ public class DRLParser {
             }
 
             while ( input.LA( 1 ) == DRLLexer.AT ) {
-                // metadata*
+                // annotation*
                 annotation( declare );
                 if ( state.failed ) return null;
             }

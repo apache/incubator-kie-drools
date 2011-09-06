@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
  
-public class EntryPointDeclarationDescr extends BaseDescr {
+public class EntryPointDeclarationDescr extends AnnotatedBaseDescr {
 
     private static final long            serialVersionUID = 530l;
     private String                       entryPoint = null;
@@ -75,4 +75,5 @@ public class EntryPointDeclarationDescr extends BaseDescr {
         } else if ( !entryPoint.equals( other.entryPoint ) ) return false;
         return true;
     }
+
 }
