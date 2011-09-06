@@ -23,6 +23,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.lang.reflect.Field;
@@ -97,10 +98,18 @@ import org.drools.spi.CompiledInvoker;
 import org.drools.spi.PropagationContext;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class PackageBuilderTest extends DroolsTestCase {
+    
+    @After
+    public void tearDown() {
+        System.getProperties().remove( "drools.warning.filters" );
+        System.getProperties().remove( "drools.problem.severity." + DuplicateFunctionProblem.KEY);
+        System.getProperties().remove( "drools.problem.severity." + DuplicateRuleProblem.KEY);
+    }
 
     @Test
     public void testErrors() throws Exception {
@@ -734,26 +743,137 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 0,
                       builder.getErrors().getErrors() );
     }
+    
+    @Test
+    public void testWarnings() {
+        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
+        
+        final PackageBuilder builder = new PackageBuilder();
+        
+        final PackageDescr packageDescr1 = createBasicPackageWithOneRule(11, 1);
+        
+        final PackageDescr packageDescr2 = createBasicPackageWithOneRule(22, 2);
+        
+        builder.addPackage(packageDescr1);
+        builder.addPackage(packageDescr2);
+        
+        assertFalse(builder.hasErrors());
+        assertTrue(builder.hasWarnings());
+       
+    }
+    
+    @Test
+    public void testWarningsReportAsErrors() {
+        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "ERROR");
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        final PackageBuilder builder = new PackageBuilder(cfg);
+        
+        final PackageDescr packageDescr1 = createBasicPackageWithOneRule(11, 1);
+        
+        final PackageDescr packageDescr2 = createBasicPackageWithOneRule(22, 2);
+        
+        builder.addPackage(packageDescr1);
+        builder.addPackage(packageDescr2);
+        
+        assertTrue(builder.hasErrors());
+        assertFalse(builder.hasWarnings());
+       
+    }
+    
+    @Test
+    public void testResetWarnings() {
+        
+        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
+        
+        final PackageBuilder builder = new PackageBuilder();
+        
+        final PackageDescr packageDescr1 = createBasicPackageWithOneRule(11, 1);
+        
+        final PackageDescr packageDescr2 = createBasicPackageWithOneRule(22, 2);
+        
+        builder.addPackage(packageDescr1);
+        builder.addPackage(packageDescr2);
+        
+        assertTrue(builder.hasWarnings());
+        
+        builder.resetWarnings();
+        assertFalse(builder.hasWarnings());
+        
+        builder.addPackage(packageDescr1);
+        
+        assertTrue(builder.hasWarnings());
+    }
+    
+    @Test
+    public void testResetProblems() throws DroolsParserException, IOException {
+        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
+        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY, "ERROR");
+        
+        final PackageBuilder builder = new PackageBuilder();
+        
+        final PackageDescr packageDescr1 = createBasicPackageWithOneRule(11, 1);
+        
+        final PackageDescr packageDescr2 = createBasicPackageWithOneRule(22, 2);
+        
+        builder.addPackage(packageDescr1);
+        builder.addPackage(packageDescr2);
+        builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
+        
+        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
+        assertTrue(builder.hasWarnings());
+        assertTrue(builder.hasErrors());
+        
+        builder.resetProblems();
+        assertFalse(builder.hasWarnings());
+        assertFalse(builder.hasErrors());
+    }
+    
+    @Test
+    public void testResetWarningsButNotErrors() throws DroolsParserException, IOException {
+        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
+        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY, "ERROR");
+        
+        final PackageBuilder builder = new PackageBuilder();
+        
+        final PackageDescr packageDescr1 = createBasicPackageWithOneRule(11, 1);
+        
+        final PackageDescr packageDescr2 = createBasicPackageWithOneRule(22, 2);
+        
+        builder.addPackage(packageDescr1);
+        builder.addPackage(packageDescr2);
+        builder.addPackageFromDrl( new StringReader( "package foo \n rule ORB" ) );
+        
+        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
+        assertTrue(builder.hasWarnings());
+        assertTrue(builder.hasErrors());
+        
+        builder.resetWarnings();
+        assertFalse(builder.hasWarnings());
+        assertTrue(builder.hasErrors());
+    }
+    
+    @Test
+    public void testWarnOnFunctionReplacement() throws DroolsParserException, IOException {
+        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY, "WARNING");
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
+        builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );
+        assertTrue(builder.hasWarnings());
+        
+    }
 
     @Test
     public void testDuplicateRuleNames() throws Exception {
 
         final PackageBuilder builder = new PackageBuilder();
 
-        final PackageDescr packageDescr = new PackageDescr( "p1" );
-
-        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
-        packageDescr.addRule( ruleDescr );
-        AndDescr lhs = new AndDescr();
-        ruleDescr.setLhs( lhs );
-        PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
-                                                      "stilton" );
-        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
-        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
-                                                                  null ) );
-        patternDescr.addConstraint( literalDescr );
-        ruleDescr.setConsequence( "" );
-
+        RuleDescr ruleDescr;
+        AndDescr lhs;
+        PatternDescr patternDescr;
+        FieldConstraintDescr literalDescr;
+        final PackageDescr packageDescr = createBasicPackageWithOneRule(1,1);
         ruleDescr = new RuleDescr( "rule-1" );
         ruleDescr.setLocation( 42,
                                43 );
@@ -794,6 +914,26 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertEquals( 43,
                       err.getCol() );
 
+    }
+
+    private PackageDescr createBasicPackageWithOneRule(int line, int col) {
+        PackageDescr packageDescr = new PackageDescr( "p1" );
+
+        RuleDescr ruleDescr = new RuleDescr( "rule-1" );
+        ruleDescr.setLocation( line,
+                col );
+        packageDescr.addRule( ruleDescr );
+        AndDescr lhs = new AndDescr();
+        ruleDescr.setLhs( lhs );
+        PatternDescr patternDescr = new PatternDescr( Cheese.class.getName(),
+                                                      "stilton" );
+        FieldConstraintDescr literalDescr = new FieldConstraintDescr( "type" );
+        literalDescr.addRestriction( new LiteralRestrictionDescr( "==",
+                                                                  null ) );
+        patternDescr.addConstraint( literalDescr );
+        ruleDescr.setConsequence( "" );
+
+        return packageDescr;
     }
 
     @Test @Ignore // TODO we now allow bindings on declarations, so update the test for this

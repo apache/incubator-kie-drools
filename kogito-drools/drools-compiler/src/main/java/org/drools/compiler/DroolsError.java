@@ -17,22 +17,13 @@
 package org.drools.compiler;
 
 import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.ProblemSeverity;
 
-public abstract class DroolsError implements KnowledgeBuilderError {
+public abstract class DroolsError extends DroolsProblem implements KnowledgeBuilderError {
 
-    /**
-     * Classes that extend this must provide a printable message,
-     * which summarises the error.
-     */
-    public abstract String getMessage();
-    
-    /**
-     * Returns the lines of the error in the source file
-     * @return
-     */
-    public abstract int[] getErrorLines();
-    
-    public String toString() {
-        return getClass().getName() + ": " + getMessage();
+   
+    public ProblemSeverity getProblemSeverity() {
+        return ProblemSeverity.ERROR;
     }
+
 }
