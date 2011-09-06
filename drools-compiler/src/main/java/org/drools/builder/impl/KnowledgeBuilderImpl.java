@@ -9,6 +9,8 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderProblems;
+import org.drools.builder.ProblemSeverity;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilder;
@@ -72,5 +74,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     
     public PackageBuilder getPackageBuilder() {
         return this.pkgBuilder;
+    }
+
+    public KnowledgeBuilderProblems getProblems(ProblemSeverity... problemTypes) {
+        return this.pkgBuilder.getProblems(problemTypes);
+    }
+
+    public boolean hasProblems(ProblemSeverity... problemTypes) {
+        return this.pkgBuilder.hasProblems(problemTypes);
     }
 }

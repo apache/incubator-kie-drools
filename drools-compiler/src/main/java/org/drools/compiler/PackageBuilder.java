@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +50,8 @@ import org.drools.base.TypeResolver;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.base.mvel.MVELCompileable;
 import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.KnowledgeBuilderProblems;
+import org.drools.builder.ProblemSeverity;
 import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.builder.conf.impl.JaxbConfigurationImpl;
@@ -139,8 +142,8 @@ public class PackageBuilder {
 
     private Map<String, PackageRegistry>             pkgRegistryMap;
 
-    private List<DroolsError>                        results;
-
+    private List<DroolsProblem>                      results;
+    
     private final PackageBuilderConfiguration        configuration;
 
     public static final RuleBuilder                  ruleBuilder       = new RuleBuilder();
@@ -241,7 +244,7 @@ public class PackageBuilder {
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
-        this.results = new ArrayList<DroolsError>();
+        this.results = new ArrayList<DroolsProblem>();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
                                                            pkg );
@@ -284,7 +287,7 @@ public class PackageBuilder {
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
-        this.results = new ArrayList<DroolsError>();
+        this.results = new ArrayList<DroolsProblem>();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
@@ -671,12 +674,12 @@ public class PackageBuilder {
      * there are any generated classes to compile of course.
      */
     public void addPackage(final PackageDescr packageDescr) {
-        validateUniqueRuleNames( packageDescr );
 
         //Derive namespace
         if ( isEmpty( packageDescr.getNamespace() ) ) {
             packageDescr.setNamespace( this.configuration.getDefaultPackageName() );
         }
+        validateUniqueRuleNames( packageDescr );
         if ( !checkNamespace( packageDescr.getNamespace() ) ) {
             return;
         }
@@ -868,8 +871,12 @@ public class PackageBuilder {
         // first merge anything related to classloader re-wiring
         pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
                                                this.rootClassLoader );
+        Map<String, Function> existingFunctions = pkg.getFunctions();
         if ( newPkg.getFunctions() != null ) {
             for ( Map.Entry<String, Function> entry : newPkg.getFunctions().entrySet() ) {
+                if (pkg.getFunctions().containsKey(entry.getKey())) {
+                    this.results.add(new DuplicateFunctionProblem(entry.getValue(), this.configuration));
+                }
                 pkg.addFunction( entry.getValue() );
             }
         }
@@ -977,12 +984,20 @@ public class PackageBuilder {
 
     private void validateUniqueRuleNames(final PackageDescr packageDescr) {
         final Set<String> names = new HashSet<String>();
+        PackageRegistry packageRegistry = this.pkgRegistryMap.get(packageDescr.getNamespace());
+        Package pkg = null;
+        if (packageRegistry != null) {
+            pkg = packageRegistry.getPackage();
+        }
         for ( final RuleDescr rule : packageDescr.getRules() ) {
             final String name = rule.getName();
             if ( names.contains( name ) ) {
                 this.results.add( new ParserError( "Duplicate rule name: " + name,
                                                    rule.getLine(),
                                                    rule.getColumn() ) );
+            }
+            if (pkg != null && pkg.getRule(name) != null) {
+                this.results.add( new DuplicateRuleProblem(name, packageDescr, this.configuration));
             }
             names.add( name );
         }
@@ -1035,7 +1050,14 @@ public class PackageBuilder {
         processEntryPointDeclarations( packageDescr );
 
         processTypeDeclarations( packageDescr );
-
+        for (FunctionDescr function : packageDescr.getFunctions()) {
+            Function existingFunc = pkgRegistry.getPackage().getFunctions().get(function.getName());
+            if (existingFunc != null && function.getNamespace().equals(existingFunc.getNamespace())) {
+                this.results.add(
+                        new DuplicateFunctionProblem(function, this.configuration));
+            }
+        }
+        
         for ( final FunctionImportDescr functionImport : packageDescr.getFunctionImports() ) {
             String importEntry = functionImport.getTarget();
             pkgRegistry.addStaticImport( importEntry );
@@ -2103,15 +2125,61 @@ public class PackageBuilder {
      * compiling phase
      */
     public boolean hasErrors() {
-        return !this.results.isEmpty();
+        return !getErrorList().isEmpty();
+    }
+    
+    public KnowledgeBuilderProblems getProblems(ProblemSeverity... problemTypes ) {
+        List<DroolsProblem> problems = getProblemList(problemTypes);
+        return new PackageBuilderProblems(problems.toArray(new DroolsProblem[problems.size()]));
     }
 
+    /**
+     * @param problemTypes
+     * @return
+     */
+    private List<DroolsProblem> getProblemList(ProblemSeverity... problemTypes) {
+        List<ProblemSeverity> typesToFetch = Arrays.asList(problemTypes);
+        ArrayList<DroolsProblem> problems = new ArrayList<DroolsProblem>();
+        for (DroolsProblem problem : results ) {
+            if (typesToFetch.contains(problem.getProblemSeverity())) {
+                problems.add(problem);
+            }
+        }
+        return problems;
+    }
+    
+    
+    public boolean hasProblems(ProblemSeverity...problemTypes ) {
+        return !getProblemList(problemTypes).isEmpty();
+    }
+    
+    private List<DroolsError> getErrorList() { 
+        List<DroolsProblem> list = getProblemList(ProblemSeverity.ERROR);
+        List<DroolsError> errors = new ArrayList<DroolsError>();
+        for (DroolsProblem p : list ) {
+            if (p instanceof ConfigurableSeverityProblem) {
+                errors.add(new DroolsErrorWrapper(p));
+            } else {
+                errors.add((DroolsError) p);
+            }
+        }
+        return errors;
+    }
+    
+    public boolean hasWarnings() {
+        return !getWarningList().isEmpty();
+    }
+    
+    private List<DroolsProblem> getWarningList() {
+        return getProblemList(ProblemSeverity.WARNING);
+    }
     /**
      * @return A list of Error objects that resulted from building and compiling
      *         the package.
      */
     public PackageBuilderErrors getErrors() {
-        return new PackageBuilderErrors( this.results.toArray( new DroolsError[this.results.size()] ) );
+        List<DroolsError> errors = getErrorList();
+        return new PackageBuilderErrors( errors.toArray( new DroolsError[errors.size()] ) );
     }
 
     /**
@@ -2121,6 +2189,23 @@ public class PackageBuilder {
      * you will get spurious errors which will not be that helpful.
      */
     protected void resetErrors() {
+        resetProblemType(ProblemSeverity.ERROR);
+    }
+    
+    protected void resetWarnings() {
+        resetProblemType(ProblemSeverity.WARNING);
+    }
+    private void resetProblemType(ProblemSeverity problemType) {
+        List<DroolsProblem> toBeDeleted = new ArrayList<DroolsProblem>();
+        for (DroolsProblem problem : results) {
+            if (problemType != null && problemType.equals(problem.getProblemSeverity())) {
+                toBeDeleted.add(problem);
+            }
+        }
+        this.results.removeAll(toBeDeleted);
+        
+    }
+    protected void resetProblems() {
         this.results.clear();
     }
 
