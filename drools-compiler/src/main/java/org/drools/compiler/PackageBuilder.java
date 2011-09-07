@@ -1848,8 +1848,18 @@ public class PackageBuilder {
      */
     private Class resolveAnnotation(String annotation,
                                     TypeResolver resolver) {
+        // do not waste time with @role and @format
+        if ( TypeDeclaration.Role.ID.equals( annotation )
+             || TypeDeclaration.Format.ID.equals( annotation ) ) {
+            return null;
+        }
+        // known conflicting annotation
+        if ( TypeDeclaration.ATTR_CLASS.equals( annotation) ) {
+            return null;
+        }
+
         try {
-            Class ann = resolver.resolveType( annotation );
+            Class ann = resolver.resolveType( annotation.substring(0,1).toUpperCase() + annotation.substring(1) );
             return ann;
         } catch ( ClassNotFoundException e ) {
             // internal annotation, or annotation which can't be resolved.
