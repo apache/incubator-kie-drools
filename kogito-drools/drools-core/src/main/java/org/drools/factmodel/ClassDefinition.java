@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 import org.drools.definition.type.FactField;
 import org.drools.definition.type.FactType;
@@ -269,5 +270,19 @@ public class ClassDefinition
 
     public void setTraitable(boolean traitable) {
         this.traitable = traitable;
+    }
+
+
+
+    public String toString() {
+        return "ClassDefinition{" +
+                "className='" + className + '\'' +
+                ", superClass='" + superClass + '\'' +
+                ", interfaces=" + (interfaces == null ? null : Arrays.asList(interfaces)) +
+                ", definedClass=" + definedClass +
+                ", traitable=" + traitable +
+                ", fields=" + fields +
+                ", annotations=" + annotations +
+                '}';
     }
 }

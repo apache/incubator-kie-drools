@@ -69,6 +69,20 @@ public class KnowledgeHelperFixer {
                             return "drools.retract";
                         }
                     } );
+
+        macros.put( "don",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.don";
+                        }
+                    } );
+
+        macros.put( "shed",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.shed";
+                        }
+                    } );
     }
 
     public static String fix(final String raw) {

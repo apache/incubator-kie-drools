@@ -160,10 +160,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             if ( objectValue instanceof IThing ) {
                 IThing thing = (IThing) objectValue;
                 core = (ITraitable) thing.getCore();
-                return core.getTraits().containsKey( typeName );
+                return this.getOperator().isNegated() ^ core.getTraits().containsKey( typeName );
             } else if ( objectValue.getClass().getAnnotation( Traitable.class ) != null ) {
                 core = (ITraitable) objectValue;
-                return core.getTraits().containsKey( typeName );
+                return this.getOperator().isNegated() ^ core.getTraits().containsKey( typeName );
             }
 
 
@@ -218,7 +218,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 targetTraits = ((ITraitable) target).getTraits().keySet();
             }
 
-            return ( targetTraits != null && sourceTraits.containsAll( targetTraits ) );
+            return ( targetTraits != null &&
+                    ( this.getOperator().isNegated() ^ sourceTraits.containsAll( targetTraits ) ) );
         }
 
         @Override

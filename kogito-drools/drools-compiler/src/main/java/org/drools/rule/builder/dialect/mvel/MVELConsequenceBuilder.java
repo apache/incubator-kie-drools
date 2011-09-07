@@ -72,6 +72,20 @@ public class MVELConsequenceBuilder
                             return "drools.exitPoints";
                         }
                     } );
+
+        macros.put( "don",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.don";
+                        }
+                    } );
+
+        macros.put( "shed",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.shed";
+                        }
+                    } );
     }
 
     public MVELConsequenceBuilder() {

@@ -834,7 +834,7 @@ public class TraitBuilder<T extends IThing<K>, K extends ITraitable > implements
         mv.visitVarInsn(ASTORE, 2);
         mv.visitVarInsn(ALOAD, 2);
         mv.visitInsn(ARETURN);
-        mv.visitMaxs( 3 + stack,
+        mv.visitMaxs( 4 + stack,
                 3);
         mv.visitEnd();
     }

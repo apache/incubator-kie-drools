@@ -38,6 +38,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
+import org.drools.factmodel.traits.IThing;
 import org.drools.factmodel.traits.ITraitable;
 import org.drools.factmodel.traits.TraitBuilder;
 import org.drools.reteoo.LeftTuple;
@@ -486,7 +487,12 @@ public class DefaultKnowledgeHelper
             inner = wrapper;
         }
 
+
         T thing = (T) builder.getProxy( inner, trait );
+
+        if ( ! inner.getTraits().containsKey(IThing.class.getName() ) ) {
+            insert( don( inner, IThing.class, false) );
+        }
 
         if ( logical ) {
             insertLogical( thing );
@@ -494,6 +500,29 @@ public class DefaultKnowledgeHelper
             insert( thing );
         }
 
+        return thing;
+    }
+
+    public <T, K> T don( IThing<K> core, Class<T> trait, boolean logical ) {
+        return don( core.getCore(), trait, logical );
+    }
+
+    public <T, K> T don( K core, Class<T> trait ) {
+        return don( core, trait, false );
+    }
+
+    public <T, K> T don( IThing<K> core, Class<T> trait ) {
+        return don( core.getCore(), trait );
+    }
+
+    public <T,K> IThing<K> shed( IThing<K> thing, Class<T> trait ) {
+        return shed((ITraitable<K>) thing.getCore(), trait);
+    }
+
+    public <T,K> IThing<K> shed( ITraitable<K> core, Class<T> trait ) {
+        retract( core.getTraits().remove(trait.getName() ) );
+        IThing thing = core.getTraits().get( IThing.class.getName() );
+        update( thing );
         return thing;
     }
 
