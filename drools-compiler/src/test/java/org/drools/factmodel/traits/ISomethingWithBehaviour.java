@@ -16,20 +16,15 @@
 
 package org.drools.factmodel.traits;
 
+@Trait( impl = SomethingImpl.class )
+public interface ISomethingWithBehaviour<K> extends IDoSomething<K> {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public String getName();
+    public void setName(String name);
 
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target( value = ElementType.TYPE)
-public @interface Trait {
+    public int getAge();
+    public void setAge(int age);
 
-    Class impl() default NullMixin.class;
 
-    public static class NullMixin {
-        private NullMixin() {}
-    }
 
 }
