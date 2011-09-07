@@ -16,20 +16,32 @@
 
 package org.drools.factmodel.traits;
 
+public class SomethingImpl<K> implements IDoSomething<K> {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target( value = ElementType.TYPE)
-public @interface Trait {
 
-    Class impl() default NullMixin.class;
+    private ISomethingWithBehaviour<K> arg;
 
-    public static class NullMixin {
-        private NullMixin() {}
+    public SomethingImpl( ISomethingWithBehaviour<K> arg ) {
+        this.arg = arg;
     }
 
+
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String doSomething( int x ) {
+        return "" + (arg.getAge() + x);
+    }
+
+    public void doAnotherTask() {
+        System.out.println("X");
+    }
 }

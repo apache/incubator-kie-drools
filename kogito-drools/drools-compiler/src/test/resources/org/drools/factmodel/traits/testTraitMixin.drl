@@ -1,0 +1,38 @@
+package org.test;
+
+import org.drools.factmodel.traits.Individual;
+
+import org.drools.factmodel.traits.ISomethingWithBehaviour;
+
+
+global java.util.List list;
+
+
+declare ISomethingWithBehaviour
+    @format( trait )
+end
+ 
+ 
+
+rule "Init"
+when 
+then 
+    Individual core = new Individual();
+    insert( core );
+end
+
+
+rule "Mixin'"
+dialect "java"
+when
+    $core: Individual( )
+then
+    ISomethingWithBehaviour x = don( $core, ISomethingWithBehaviour.class );
+    x.setName( "john" );
+    x.setAge( 22 );
+
+    x.doAnotherTask();
+    list.add( x.doSomething( 5 ) );
+end
+
+ 

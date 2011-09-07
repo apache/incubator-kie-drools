@@ -35,6 +35,9 @@ import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
 
 public class TraitBuilder<T extends IThing<K>, K extends ITraitable > implements Opcodes {
 
@@ -275,6 +278,40 @@ public class TraitBuilder<T extends IThing<K>, K extends ITraitable > implements
         String descrTrait       = BuildUtils.getTypeDescriptor(trait.getClassName());
 
 
+        Class mixinClass = null;
+        String mixin = null;
+        Set<Method> mixinMethods = new HashSet<Method>();
+        Map<String,Method> mixinGetSet = new HashMap<String,Method>();
+        try {
+            if ( trait.getDefinedClass() != null ) {
+                Trait annTrait = trait.getDefinedClass().getAnnotation( Trait.class );
+                if ( annTrait != null && ! annTrait.impl().equals(Trait.NullMixin.class) ) {
+                    mixinClass = annTrait.impl();
+                    mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
+                    ClassFieldInspector cfi = new ClassFieldInspector( mixinClass );
+
+                    for ( Method m : mixinClass.getMethods() ) {
+                        try {
+                            trait.getDefinedClass().getMethod(m.getName(), m.getParameterTypes() );
+                            if ( cfi.getGetterMethods().containsValue( m )
+                                 || cfi.getSetterMethods().containsValue( m )) {
+                                mixinGetSet.put( m.getName(), m );
+                            } else {
+                                mixinMethods.add( m );
+                            }
+                        } catch (NoSuchMethodException e) {
+
+                        }
+                    }
+
+                }
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+
+
+
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, internalProxy, null, "org/drools/factmodel/traits/TraitProxy", new String[]{internalTrait});
 
         {
@@ -285,11 +322,48 @@ public class TraitBuilder<T extends IThing<K>, K extends ITraitable > implements
             fv = cw.visitField(ACC_PUBLIC + ACC_FINAL, "map", "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null);
             fv.visitEnd();
         }
+        if ( mixinClass != null ) {
+            {
+                fv = cw.visitField( ACC_PRIVATE,
+                        mixin,
+                        BuildUtils.getTypeDescriptor( mixinClass.getName() ),
+                        null, null);
+                fv.visitEnd();
+            }
+        }
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(" + descrCore + "Ljava/util/Map;)V", "(" + descrCore + "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V", null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
             mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TraitProxy", "<init>", "()V");
+            if ( mixinClass != null ) {
+                try {
+                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
+
+                    mv.visitVarInsn(ALOAD, 0);
+                    mv.visitTypeInsn(NEW, BuildUtils.getInternalType( mixinClass.getName() ) );
+                    mv.visitInsn(DUP);
+                    mv.visitVarInsn(ALOAD, 0);
+                    mv.visitMethodInsn( INVOKESPECIAL,
+                                        BuildUtils.getInternalType( mixinClass.getName() ),
+                                        "<init>",
+                                        "("+ BuildUtils.getTypeDescriptor( trait.getDefinedClass().getName() ) + ")V");
+                    mv.visitFieldInsn( PUTFIELD,
+                            internalProxy,
+                            mixin,
+                            BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
+                } catch ( NoSuchMethodException nsme ) {
+                    mv.visitVarInsn(ALOAD, 0);
+                    mv.visitTypeInsn(NEW, BuildUtils.getInternalType( mixinClass.getName() ) );
+                    mv.visitInsn(DUP);
+                    mv.visitMethodInsn(INVOKESPECIAL, BuildUtils.getInternalType( mixinClass.getName() ), "<init>", "()V");
+                    mv.visitFieldInsn( PUTFIELD,
+                            internalProxy,
+                            mixin,
+                            BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
+                }
+
+            }
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
             mv.visitFieldInsn(PUTFIELD, internalProxy, "object", descrCore);
@@ -342,8 +416,12 @@ public class TraitBuilder<T extends IThing<K>, K extends ITraitable > implements
 
             boolean isSoftField = (mask & (1 << j++)) == 0;
             if ( isSoftField ) {
-                buildSoftGetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
-                buildSoftSetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
+                if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
+                    buildSoftGetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
+                    buildSoftSetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
+                } else {
+                    //
+                }
 
             } else {
                 {
@@ -364,13 +442,48 @@ public class TraitBuilder<T extends IThing<K>, K extends ITraitable > implements
 
         buildEqualityMethods( cw, masterName, core.getClassName() );
 
+        if ( mixinClass != null ) {
+            buildMixinMethods( cw, masterName, mixin, mixinClass, mixinMethods );
+            buildMixinMethods( cw, masterName, mixin, mixinClass, mixinGetSet.values() );
+        }
+
+
+
         cw.visitEnd();
 
         return cw.toByteArray();
 
     }
 
+    private void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass, Collection<Method> mixinMethods ) {
+        for ( Method method : mixinMethods ) {
+            String signature = buildSignature( method );
+            {
+            MethodVisitor mv = cw.visitMethod( ACC_PUBLIC,
+                                 method.getName(),
+                                 signature,
+                                 null,
+                                 null );
+            mv.visitCode();
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), mixin, BuildUtils.getTypeDescriptor( mixinClass.getName() ) );
+            int j = 1;
+            for ( Class arg : method.getParameterTypes() ) {
+                mv.visitVarInsn( BuildUtils.varType( arg.getName() ), j++ );
+            }
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                                BuildUtils.getInternalType( mixinClass.getName() ),
+                                method.getName(),
+                                signature );
 
+            mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
+            int stack = getStackSize( method ) ;
+            mv.visitMaxs(stack, stack);
+            mv.visitEnd();
+            }
+        }
+
+    }
 
 
     private void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core ) {

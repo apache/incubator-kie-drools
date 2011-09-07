@@ -16,20 +16,10 @@
 
 package org.drools.factmodel.traits;
 
+public interface IDoSomething<K> {
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+    public String doSomething( int x );
 
-@Retention(value = RetentionPolicy.RUNTIME)
-@Target( value = ElementType.TYPE)
-public @interface Trait {
-
-    Class impl() default NullMixin.class;
-
-    public static class NullMixin {
-        private NullMixin() {}
-    }
+    public void doAnotherTask( );
 
 }
