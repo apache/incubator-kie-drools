@@ -145,7 +145,8 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
                 invokeInterface(KnowledgeHelper.class, "getTuple", Tuple.class);
-                mv.visitVarInsn(ASTORE, 3);
+                invokeInterface(Tuple.class, "toFactHandles", InternalFactHandle[].class);
+                mv.visitVarInsn(ASTORE, 3); // InternalFactHandle[]
 
                 // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
@@ -163,36 +164,44 @@ public class ASMConsequenceBuilder implements ConsequenceBuilder {
                     int objPos = ++offset;
                     paramsPos[i] = factPos;
 
-                    // InternalFactHandle fact[i] = tuple.get(declarations[i]);
-                    mv.visitVarInsn(ALOAD, 3); // org.drools.spi.Tuple
+                    // InternalFactHandle fact[i] = handles[declaration[i].getPattern().getOffset()];
+                    mv.visitVarInsn(ALOAD, 3); // InternalFactHandle[]
                     mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
-                    invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
+                    invokeVirtual(Declaration.class, "getPattern", Pattern.class);
+                    invokeVirtual(Pattern.class, "getOffset", Integer.TYPE);
+                    mv.visitInsn(AALOAD); // handles[declaration[i].getPattern().getOffset()]
                     mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
-                    // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
-                    mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
-                    push(i); // i
-                    mv.visitInsn(AALOAD); // declarations[i]
-                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
-                    cast(InternalWorkingMemory.class);
-                    mv.visitVarInsn(ALOAD, factPos); // fact[i]
-                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
-                    String readMethod = declarations[i].getNativeReadMethod().getName();
-                    boolean isObject = readMethod.equals("getValue");
-                    String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                    if (isObject) mv.visitTypeInsn(CHECKCAST, interalName(declarationTypes[i]));
-                    offset += store(objPos, declarationTypes[i]); // obj[i]
-
                     if (notPatterns[i]) {
+                        // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
+                        mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
+                        push(i); // i
+                        mv.visitInsn(AALOAD); // declarations[i]
+                        mv.visitVarInsn(ALOAD, 2); // WorkingMemory
+                        cast(InternalWorkingMemory.class);
+                        mv.visitVarInsn(ALOAD, factPos); // fact[i]
+                        invokeInterface(InternalFactHandle.class, "getObject", Object.class);
+                        String readMethod = declarations[i].getNativeReadMethod().getName();
+                        boolean isObject = readMethod.equals("getValue");
+                        String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
+                        mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                        if (isObject) mv.visitTypeInsn(CHECKCAST, interalName(declarationTypes[i]));
+                        offset += store(objPos, declarationTypes[i]); // obj[i]
+
+                        // fact[i] = (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle(obj);
                         mv.visitVarInsn(ALOAD, 1);
                         invokeInterface(KnowledgeHelper.class, "getWorkingMemory", WorkingMemory.class);
                         loadAsObject(objPos);
                         invokeInterface(WorkingMemory.class, "getFactHandle", FactHandle.class, Object.class);
                         cast(InternalFactHandle.class);
                         mv.visitVarInsn(ASTORE, factPos);
+                    } else {
+                        mv.visitVarInsn(ALOAD, factPos); // fact[i]
+                        invokeInterface(InternalFactHandle.class, "getObject", Object.class);
+                        mv.visitTypeInsn(CHECKCAST, interalName(declarationTypes[i]));
+                        offset += store(objPos, declarationTypes[i]); // obj[i]
                     }
                 }
 

@@ -3,154 +3,131 @@ package org.drools.reteoo;
 import org.drools.common.InternalFactHandle;
 import org.drools.core.util.Entry;
 import org.drools.core.util.LeftTupleList;
-import org.drools.rule.Declaration;
 import org.drools.spi.Tuple;
 
 public interface LeftTuple extends Entry, Tuple {
 
-    public  void reAdd();
-    public  void reAddLeft();
+    void reAdd();
 
-    public  void reAddRight();
+    void reAddLeft();
 
-    public  void unlinkFromLeftParent();
+    void reAddRight();
 
-    public  void unlinkFromRightParent();
+    void unlinkFromLeftParent();
 
-    public  int getIndex();
+    void unlinkFromRightParent();
 
-    public  LeftTupleSink getLeftTupleSink();
+    int getIndex();
+
+    LeftTupleSink getLeftTupleSink();
 
     /* Had to add the set method because sink adapters must override 
      * the tuple sink set when the tuple was created.
      */
-    public  void setLeftTupleSink(LeftTupleSink sink);
+    void setLeftTupleSink(LeftTupleSink sink);
 
-    public  LeftTuple getLeftParent();
+    LeftTuple getLeftParent();
 
-    public  void setLeftParent(LeftTuple leftParent);
+    void setLeftParent(LeftTuple leftParent);
 
-    public  LeftTuple getLeftParentPrevious();
+    LeftTuple getLeftParentPrevious();
 
-    public  void setLeftParentPrevious(LeftTuple leftParentLeft);
+    void setLeftParentPrevious(LeftTuple leftParentLeft);
 
-    public  LeftTuple getLeftParentNext();
+    LeftTuple getLeftParentNext();
 
-    public  void setLeftParentNext(LeftTuple leftParentright);
+    void setLeftParentNext(LeftTuple leftParentright);
 
-    public  RightTuple getRightParent();
+    RightTuple getRightParent();
 
-    public  void setRightParent(RightTuple rightParent);
+    void setRightParent(RightTuple rightParent);
 
-    public  LeftTuple getRightParentPrevious();
+    LeftTuple getRightParentPrevious();
 
-    public  void setRightParentPrevious(LeftTuple rightParentLeft);
+    void setRightParentPrevious(LeftTuple rightParentLeft);
 
-    public  LeftTuple getRightParentNext();
+    LeftTuple getRightParentNext();
 
-    public  void setRightParentNext(LeftTuple rightParentRight);
+    void setRightParentNext(LeftTuple rightParentRight);
 
-    public  InternalFactHandle get(final int index);
+    LeftTupleList getMemory();
 
-    public  LeftTupleList getMemory();
+    void setMemory(LeftTupleList memory);
 
-    public  void setMemory(LeftTupleList memory);
+    Entry getPrevious();
 
-    public  Entry getPrevious();
+    void setPrevious(Entry previous);
 
-    public  void setPrevious(Entry previous);
+    InternalFactHandle getLastHandle();
 
-    public  void setNext(final Entry next);
+    void setBlocker(RightTuple blocker);
 
-    public  Entry getNext();
+    RightTuple getBlocker();
 
-    public  InternalFactHandle getLastHandle();
+    LeftTuple getBlockedPrevious();
 
-    public  InternalFactHandle get(final Declaration declaration);
+    void setBlockedPrevious(LeftTuple blockerPrevious);
 
-    /**
-     * Returns the fact handles in reverse order
-     */
-    public  InternalFactHandle[] getFactHandles();
+    LeftTuple getBlockedNext();
 
-    public  InternalFactHandle[] toFactHandles();
+    void setBlockedNext(LeftTuple blockerNext);
 
-    public  void setBlocker(RightTuple blocker);
+    Object getObject();
 
-    public  RightTuple getBlocker();
-
-    public  LeftTuple getBlockedPrevious();
-
-    public  void setBlockedPrevious(LeftTuple blockerPrevious);
-
-    public  LeftTuple getBlockedNext();
-
-    public  void setBlockedNext(LeftTuple blockerNext);
-
-    public  Object getObject();
-
-    public  void setObject(final Object object);
-
-    public  String toString();
-
-    public  int hashCode();
+    void setObject(final Object object);
 
     /**
      * We use this equals method to avoid the cast
+     *
      * @param tuple
      * @return
      */
-    public  boolean equals(final LeftTuple other);
-
-    public  boolean equals(final Object object);
-
-    public  int size();
+    boolean equals(final LeftTuple other);
 
     /**
      * Returns the ReteTuple that contains the "elements"
      * first elements in this tuple.
-     * 
+     * <p/>
      * Use carefully as no cloning is made during this process.
-     * 
+     * <p/>
      * This method is used by TupleStartEqualsConstraint when
      * joining a subnetwork tuple into the main network tuple;
-     * 
+     *
      * @param elements the number of elements to return, starting from
-     * the begining of the tuple
-     * 
+     *                 the begining of the tuple
      * @return a ReteTuple containing the "elements" first elements
-     * of this tuple or null if "elements" is greater than size;
+     *         of this tuple or null if "elements" is greater than size;
      */
-    public  LeftTuple getSubTuple(final int elements);
+    LeftTuple getSubTuple(final int elements);
 
-    public  Object[] toObjectArray();
+    Object[] toObjectArray();
 
-    public  LeftTuple getParent();
+    LeftTuple getParent();
 
-    public  String toTupleTree(int indent);
+    String toTupleTree(int indent);
 
-    public  void increaseActivationCountForEvents();
+    void increaseActivationCountForEvents();
 
-    public  void decreaseActivationCountForEvents();
-    
-    public InternalFactHandle getHandle();
+    void decreaseActivationCountForEvents();
 
-    public void setHandle(InternalFactHandle handle);
+    InternalFactHandle getHandle();
 
-    public LeftTuple getFirstChild();
+    void setHandle(InternalFactHandle handle);
 
-    public void setFirstChild(LeftTuple firstChild);
-    
-    public LeftTuple getLastChild();
+    LeftTuple getFirstChild();
 
-    public void setLastChild(LeftTuple lastChild);
+    void setFirstChild(LeftTuple firstChild);
 
-    public LeftTupleSink getSink();
+    LeftTuple getLastChild();
 
-    public void setSink(LeftTupleSink sink);
+    void setLastChild(LeftTuple lastChild);
 
-    public void setIndex(int index);
+    LeftTupleSink getSink();
 
-    public void setParent(LeftTuple parent);    
+    void setSink(LeftTupleSink sink);
+
+    void setIndex(int index);
+
+    void setParent(LeftTuple parent);
 
 }
