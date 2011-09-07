@@ -53,7 +53,12 @@ public interface Tuple
      */
     InternalFactHandle get(Declaration declaration);
 
+    /**
+     * Returns the fact handles in reverse order
+     */
     InternalFactHandle[] getFactHandles();
+
+    InternalFactHandle[] toFactHandles();
 
     /**
      * Returns the size of this tuple in number of elements (patterns)
