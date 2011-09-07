@@ -56,22 +56,37 @@ then
     insert( core );
 end
 
+//rule "Trait"
+//dialect "mvel"
+//when
+//    $core: Imp( "xx", "yy" ; )
+//    not String( this == "die" )
+//then
+//    Student s = drools.don( $core, Student, true );
+//    Imp core = (Imp) s.getCore();
+//
+//    s.name = "abc";
+//    s.age = 88;
+//    s.school = "skl";
+//
+//    update( s );
+//end
+
 rule "Trait"
-when 
+dialect "java"
+when
     $core: Imp( "xx", "yy" ; )
     not String( this == "die" )
-then 
-    Student<Imp> s = drools.<Student,Imp>don( $core, Student.class, true );
-    Imp core = s.getCore();
+then
+    Student s = don( $core, Student.class, true );
+    Imp core = (Imp) s.getCore();
 
-    s.setName("abc");
-    s.setAge(88);
-    s.setSchool("skl");
+    s.setName( "abc" );
+    s.setAge( 88 );
+    s.setSchool( "skl" );
 
     update( s );
-end 
-
- 
+end
  
 rule "Check" 
 no-loop 

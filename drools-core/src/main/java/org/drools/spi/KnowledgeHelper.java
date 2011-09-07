@@ -23,6 +23,8 @@ import java.util.Map;
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
+import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.ITraitable;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.runtime.Channel;
@@ -146,4 +148,14 @@ public interface KnowledgeHelper
     <T> T getContext(Class<T> contextClass);
 
     <T, K> T don( K core, Class<T> trait, boolean logical );
+
+    <T, K> T don( IThing<K> core, Class<T> trait, boolean logical );
+
+    <T, K> T don( K core, Class<T> trait );
+
+    <T, K> T don( IThing<K> core, Class<T> trait );
+
+    <T,K> IThing<K> shed( IThing<K> thing, Class<T> trait );
+
+    <T,K> IThing<K> shed( ITraitable<K> core, Class<T> trait );
 }

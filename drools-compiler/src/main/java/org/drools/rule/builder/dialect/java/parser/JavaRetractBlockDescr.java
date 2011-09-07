@@ -41,7 +41,7 @@ public class JavaRetractBlockDescr extends AbstractJavaBlockDescr implements Jav
     }
 
     public BlockType getType() {
-        return BlockType.MODIFY;
+        return BlockType.RETRACT;
     }
 
 }
