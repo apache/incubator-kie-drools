@@ -161,6 +161,31 @@ public class TraitTest {
 
 
 
+    @Test
+    public void testMixin() {
+        String source = "org/drools/factmodel/traits/testTraitMixin.drl";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        Resource res = ResourceFactory.newClassPathResource(source);
+        assertNotNull(res);
+        kbuilder.add(res, ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        List info = new ArrayList();
+        ks.setGlobal( "list", info );
+
+        ks.fireAllRules();
+
+        assertTrue( info.contains("27") );
+
+    }
+
+
 
     @Test
     public void testTraitMethodsWithObjects() {

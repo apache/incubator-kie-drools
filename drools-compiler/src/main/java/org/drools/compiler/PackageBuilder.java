@@ -25,19 +25,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 import org.drools.ChangeSet;
 import org.drools.PackageIntegrationException;
@@ -1800,6 +1788,16 @@ public class PackageBuilder {
                     type.getTypeClassDef().addField( field );
                 }
             }
+
+            Set<String> interfaces = new HashSet<String>();
+            for ( String iface : type.getTypeClassDef().getInterfaces() ) {
+                interfaces.add( iface );
+            }
+            for ( Class iKlass : concrete.getInterfaces() ) {
+                interfaces.add( iKlass.getName() );
+            }
+            type.getTypeClassDef().setInterfaces( interfaces.toArray(new String[interfaces.size()] ) );
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -2047,6 +2045,8 @@ public class PackageBuilder {
                                 }
                                 tempDef.setInterfaces( def.getInterfaces() );
                                 tempDef.setSuperClass( def.getClassName() );
+                                tempDef.setDefinedClass( resolvedType );
+
                             type.setFormat( TypeDeclaration.Format.POJO );
 
                             generateDeclaredBean(tempDescr, tempDeclr, pkgRegistry, tempDef );
