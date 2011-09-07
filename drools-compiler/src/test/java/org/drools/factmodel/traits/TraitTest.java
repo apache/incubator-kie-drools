@@ -89,6 +89,49 @@ public class TraitTest {
 
 
     @Test
+    public void testTraitShed() {
+        String source = "org/drools/factmodel/traits/testTraitShed.drl";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        Resource res = ResourceFactory.newClassPathResource(source);
+        assertNotNull(res);
+        kbuilder.add(res, ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        List info = new ArrayList();
+        ks.setGlobal( "list", info );
+
+        assertTrue( info.isEmpty() );
+
+        ks.fireAllRules();
+
+        assertTrue( info.contains("Student") );
+        assertEquals( 1, info.size() );
+
+        ks.insert("hire");
+        ks.fireAllRules();
+
+        Collection c = ks.getObjects();
+
+        assertTrue( info.contains("Worker") );
+        assertEquals( 2, info.size() );
+
+        ks.insert("check");
+        ks.fireAllRules();
+
+        assertEquals( 4, info.size() );
+        assertTrue( info.contains("Conflict") );
+        assertTrue( info.contains("Nothing") );
+
+    }
+
+
+    @Test
     public void testTraitDon() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
 

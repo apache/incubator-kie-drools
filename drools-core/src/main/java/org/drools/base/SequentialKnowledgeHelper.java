@@ -186,6 +186,26 @@ public class SequentialKnowledgeHelper
         return null;
     }
 
+    public <T, K> T don(IThing<K> core, Class<T> trait, boolean logical) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T, K> T don( K core, Class<T> trait) {
+        return don( core, trait, false );
+    }
+
+    public <T, K> T don(IThing<K> core, Class<T> trait) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public <T,K> IThing<K> shed( IThing<K> thing, Class<T> trait ) {
+        return null;
+    }
+
+    public <T, K> IThing<K> shed( ITraitable<K> core, Class<T> trait) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public void cancelRemainingPreviousLogicalDependencies() {
     }
 

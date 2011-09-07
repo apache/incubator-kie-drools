@@ -16,9 +16,6 @@
 
 package org.drools.factmodel.traits;
 
-import com.sun.deploy.util.VersionID;
-import org.drools.base.ClassFieldReader;
-import org.drools.factmodel.FieldDefinition;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 
