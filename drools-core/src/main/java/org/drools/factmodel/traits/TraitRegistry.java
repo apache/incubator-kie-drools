@@ -61,6 +61,9 @@ public class TraitRegistry {
     }
 
     protected ClassDefinition getTrait( String key ) {
+        if ( key.endsWith(  TraitFactory.SUFFIX ) ) {
+            key = key.replace(  TraitFactory.SUFFIX , "" );
+        }
         return traits != null ? traits.get( key ) : null;
     }
 

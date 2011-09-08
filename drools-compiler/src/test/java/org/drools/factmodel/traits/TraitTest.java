@@ -40,7 +40,7 @@ public class TraitTest {
     @Before
     public void reset() {
         TraitRegistry.reset();
-        TraitBuilder.reset();
+        TraitFactory.reset();
     }
 
     @Test
@@ -61,7 +61,7 @@ public class TraitTest {
             FactType impClass = kb.getFactType("org.test","Imp");
             ITraitable imp = (ITraitable) impClass.newInstance();
             Class trait = kb.getFactType("org.test","Student").getFactClass();
-            TraitProxy proxy = (TraitProxy) new TraitBuilder( kb ).getProxy( imp, trait );
+            TraitProxy proxy = (TraitProxy) new TraitFactory( kb ).getProxy( imp, trait );
 
             Map<String,Object> virtualFields = imp.getDynamicProperties();
             Map<String,Object> wrapper = proxy.getFields();
@@ -272,7 +272,7 @@ public class TraitTest {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        TraitBuilder traitBuilder = new TraitBuilder( kb );
+        TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
             ITraitable imp = (ITraitable) kb.getFactType("org.test","Imp").newInstance();
@@ -336,7 +336,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        TraitBuilder traitBuilder = new TraitBuilder( kb );
+        TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
@@ -433,7 +433,7 @@ public class TraitTest {
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
-        TraitBuilder traitBuilder = new TraitBuilder( kb );
+        TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
@@ -507,7 +507,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        TraitBuilder traitBuilder = new TraitBuilder( kb );
+        TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
@@ -613,7 +613,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        TraitBuilder traitBuilder = new TraitBuilder( kb );
+        TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
@@ -696,7 +696,7 @@ public class TraitTest {
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
         kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        TraitBuilder traitBuilder = new TraitBuilder( kb );
+        TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
