@@ -37,11 +37,11 @@ public class Activator
     private ServiceRegistration resourceReg;
     private ServiceRegistration kbaseReg;
     private ServiceRegistration marshallerProviderReg;
-	private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public void start(BundleContext bc) throws Exception {
 
-		this.logger.debug("registering core services");
+        this.logger.debug("registering core services");
 
         this.resourceReg = bc.registerService( new String[]{ResourceFactoryService.class.getName(), Service.class.getName()},
                                                new ResourceFactoryServiceImpl(),
@@ -55,7 +55,7 @@ public class Activator
                 new MarshallerProviderImpl(),
                 new Hashtable() );
         
-		this.logger.debug("core services registered");
+        this.logger.debug("core services registered");
     }
 
     public void stop(BundleContext bc) throws Exception {
