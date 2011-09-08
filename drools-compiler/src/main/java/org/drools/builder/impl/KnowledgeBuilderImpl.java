@@ -16,9 +16,12 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.Resource;
 import org.drools.rule.Package;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public PackageBuilder pkgBuilder;
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public KnowledgeBuilderImpl(PackageBuilder pkgBuilder) {
         this.pkgBuilder = pkgBuilder;
@@ -53,7 +56,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         KnowledgeBuilderErrors errors = getErrors();
         if (errors.size() > 0) {
             for (KnowledgeBuilderError error: errors) {
-                System.err.println(error);
+                logger.error(error.toString());
             }
             throw new IllegalArgumentException("Could not parse knowledge.");
         }

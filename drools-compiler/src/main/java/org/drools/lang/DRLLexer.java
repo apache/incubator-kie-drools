@@ -2,16 +2,23 @@
 
     package org.drools.lang;
 
-    import org.drools.compiler.DroolsParserException;
-    import org.drools.core.util.StringUtils;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+    import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.CharStream;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.IntStream;
+import org.antlr.runtime.Lexer;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.drools.compiler.DroolsParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 public class DRLLexer extends Lexer {
     public static final int EOF=-1;
     public static final int EOL=4;
@@ -80,6 +87,8 @@ public class DRLLexer extends Lexer {
     public static final int ID=67;
     public static final int DIV=68;
     public static final int MISC=69;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
         private List<DroolsParserException> errors = new ArrayList<DroolsParserException>();
         private DroolsParserExceptionFactory errorMessageFactory = new DroolsParserExceptionFactory(null);
@@ -3836,7 +3845,7 @@ public class DRLLexer extends Lexer {
         try {
             synpred1_DRLLexer_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);

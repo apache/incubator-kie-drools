@@ -9,6 +9,8 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.PackageRegistry;
 import org.drools.rule.Package;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -34,6 +36,9 @@ import org.drools.rule.Package;
 public class JavaDialectConfiguration
     implements
     DialectConfiguration {
+    
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    
     public static final int             ECLIPSE         = 0;
     public static final int             JANINO          = 1;
 
@@ -130,11 +135,11 @@ public class JavaDialectConfiguration
             } else if ( prop.equals( "JANINO" ) ) {
                 return JavaDialectConfiguration.JANINO;
             } else {
-                System.err.println( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
+                logger.error( "Drools config: unable to use the drools.compiler property. Using default. It was set to:" + prop );
                 return JavaDialectConfiguration.ECLIPSE;
             }
         } catch ( final SecurityException e ) {
-            System.err.println( "Drools config: unable to read the drools.compiler property. Using default." );
+            logger.error( "Drools config: unable to read the drools.compiler property. Using default." );
             return JavaDialectConfiguration.ECLIPSE;
         }
     }

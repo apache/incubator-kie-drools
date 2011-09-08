@@ -67,6 +67,8 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DRLParser {
 
@@ -74,6 +76,7 @@ public class DRLParser {
     private RecognizerSharedState state;
     private ParserHelper          helper;
     private DRLExpressions        exprParser;
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public DRLParser(TokenStream input) {
         this.input = input;
@@ -896,7 +899,7 @@ public class DRLParser {
             parameters( null,
                         requiresType ); // can never throw exception
         } catch ( RecognitionException re ) {
-            System.err.println( "impossible: " + re );
+            logger.error("impossible: " + re);
             re.printStackTrace();
         }
         boolean success = !state.failed;
@@ -2633,7 +2636,7 @@ public class DRLParser {
         try {
             positionalConstraints( null ); // can never throw exception
         } catch ( RecognitionException re ) {
-            System.err.println( "impossible: " + re );
+            logger.error("impossible: " + re);
             re.printStackTrace();
         }
         boolean success = !state.failed;
@@ -3337,7 +3340,7 @@ public class DRLParser {
         try {
             elementValuePairs( null ); // can never throw exception
         } catch ( RecognitionException re ) {
-            System.err.println( "impossible: " + re );
+            logger.error("impossible: " + re);
             re.printStackTrace();
         }
         boolean success = !state.failed;

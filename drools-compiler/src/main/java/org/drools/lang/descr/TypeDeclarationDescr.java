@@ -24,10 +24,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.drools.rule.Namespaceable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 public class TypeDeclarationDescr extends AnnotatedBaseDescr
     implements
     Namespaceable, Comparable<TypeDeclarationDescr> {
+    
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final long            serialVersionUID = 510l;
     private String                       namespace;
@@ -136,7 +140,7 @@ public class TypeDeclarationDescr extends AnnotatedBaseDescr
         if (this.getSuperTypeName() == null && descr.getSuperTypeName() == null) result = 0;
         else if (this.getSuperTypeName() != null && this.getSuperTypeName().equals(descr.getTypeName())) result = -1;
         else if (descr.getSuperTypeName() != null && descr.getSuperTypeName().equals(this.getTypeName())) result = 1;
-        System.err.println("TypeDeclaration Descr compareTo : Compare descr "+ this.getTypeName() + " vs " + descr.getTypeName() + " >>  " + result);
+        logger.error("TypeDeclaration Descr compareTo : Compare descr "+ this.getTypeName() + " vs " + descr.getTypeName() + " >>  " + result);
         return result;
     }
 
