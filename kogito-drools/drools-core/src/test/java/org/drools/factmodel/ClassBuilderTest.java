@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -72,7 +71,7 @@ public class ClassBuilderTest {
     @Test
     public void testBuildClass() {
         try {
-            ClassBuilder builder = new ClassBuilder();
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
 
             ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass1",
                                                             null,
@@ -150,7 +149,7 @@ public class ClassBuilderTest {
     @Test
     public void testEquals() {
         try {
-            ClassBuilder builder = new ClassBuilder();
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
 
             ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass2",
                                                             null,
@@ -280,7 +279,7 @@ public class ClassBuilderTest {
     @Test
     public void testHashCode() {
         try {
-            ClassBuilder builder = new ClassBuilder();
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
 
             ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass3",
                                                             null,
@@ -325,7 +324,7 @@ public class ClassBuilderTest {
     @Test
     public void testToString() {
         try {
-            ClassBuilder builder = new ClassBuilder();
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
 
             ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass4",
                                                             null,
@@ -418,7 +417,7 @@ public class ClassBuilderTest {
     @Test
     public void testConstructorWithFields() {
         try {
-            ClassBuilder builder = new ClassBuilder();
+            ClassBuilder builder = ClassBuilderFactory.getBeanClassBuilderService();
 
             ClassDefinition classDef = new ClassDefinition( "org.drools.TestClass5",
                                                             null,

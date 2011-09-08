@@ -47,7 +47,7 @@ public class Jenerator {
         String packagePath = packageName.replace('.', '/');
 
         for (int i = 0; i < facts.length; i++) {
-            ClassBuilder cb = new ClassBuilder();
+            ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
             ClassDefinition classDef = new ClassDefinition( packageName, null, new String[]{"java.io.Serializable"} );
             for (int j = 0; j < facts[i].fields.size(); j++) {
                 Field fd = (Field) facts[i].fields.get(j);
