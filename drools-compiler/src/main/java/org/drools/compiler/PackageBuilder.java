@@ -53,11 +53,12 @@ import org.drools.definition.type.FactField;
 import org.drools.definition.type.Position;
 import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.ClassBuilder;
+import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.factmodel.traits.TraitRegistry;
 import org.drools.factmodel.traits.IThing;
-import org.drools.factmodel.traits.TraitBuilder;
+import org.drools.factmodel.traits.TraitFactory;
 import org.drools.factmodel.traits.ITraitable;
 import org.drools.factmodel.traits.Traitable;
 import org.drools.factmodel.traits.Trait;
@@ -2024,7 +2025,7 @@ public class PackageBuilder {
                     if ( ! IThing.class.isAssignableFrom( resolvedType) ) {
                         updateTraitDefinition( type, resolvedType );
 
-                            String target = typeDescr.getTypeName() + "_Trait__Extension";
+                            String target = typeDescr.getTypeName() + TraitFactory.SUFFIX;
                             TypeDeclarationDescr tempDescr = new TypeDeclarationDescr();
                                 tempDescr.setNamespace( typeDescr.getNamespace() );
                                 tempDescr.setFields( typeDescr.getFields() );
@@ -2079,13 +2080,10 @@ public class PackageBuilder {
                     try {
                         byte[] d;
 
-                        d = TraitBuilder.buildInterface( def );
+                        ClassBuilder tb = ClassBuilderFactory.getTraitBuilderService();
+                        d = tb.buildClass( def );
                         dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
                                 d );
-
-//                        d = tb.buildImplementingClass(def);
-//                        dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
-//                                d );
 
                     } catch ( Exception e ) {
                         this.results.add( new TypeDeclarationError( "Unable to compile declared trait " + fullName + ": " + e.getMessage() + ";",
@@ -2095,7 +2093,7 @@ public class PackageBuilder {
                 case POJO:
                 default:
                     try {
-                        ClassBuilder cb = new ClassBuilder();
+                        ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService( );
                         byte[] d = cb.buildClass( def );
                         dialect.write( JavaDialectRuntimeData.convertClassToResourcePath( fullName ),
                                 d );

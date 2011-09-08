@@ -25,10 +25,7 @@ import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.JavaDialectRuntimeData.PackageClassLoader;
 import org.drools.util.ClassLoaderUtil;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * @version $Id$
@@ -74,7 +71,7 @@ public class InstancesHashcodedTest {
         cd.addField(new FieldDefinition("issueDate", "java.util.Date", false));
         cd.addField(new FieldDefinition("cycleCode", "java.lang.String", false));
 
-        ClassBuilder cb = new ClassBuilder();
+        ClassBuilder cb = ClassBuilderFactory.getBeanClassBuilderService();
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2006);

@@ -29,7 +29,6 @@ import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
-import org.drools.common.EventSupport;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemoryActions;
@@ -40,7 +39,7 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.IThing;
 import org.drools.factmodel.traits.ITraitable;
-import org.drools.factmodel.traits.TraitBuilder;
+import org.drools.factmodel.traits.TraitFactory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
@@ -473,7 +472,7 @@ public class DefaultKnowledgeHelper
 
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
-        TraitBuilder builder = new TraitBuilder( this.getKnowledgeRuntime().getKnowledgeBase() );
+        TraitFactory builder = new TraitFactory( this.getKnowledgeRuntime().getKnowledgeBase() );
 
         ITraitable inner;
         if ( core instanceof ITraitable ) {
