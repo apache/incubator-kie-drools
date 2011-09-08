@@ -39,8 +39,13 @@ import org.jbpm.task.service.UserGroupCallbackManager;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BaseTest extends TestCase {
+
+    protected Logger logger;
+    
     protected EntityManagerFactory emf;
 
     protected Map<String, User> users;
@@ -49,6 +54,10 @@ public abstract class BaseTest extends TestCase {
     protected TaskService taskService;
     protected TaskServiceSession taskSession;
 
+    protected EntityManagerFactory createEntityManagerFactory() { 
+        return Persistence.createEntityManagerFactory("org.jbpm.task");
+    }
+    
     protected void setUp() throws Exception {
         Properties conf = new Properties();
         conf.setProperty("mail.smtp.host", "localhost");
@@ -59,7 +68,7 @@ public abstract class BaseTest extends TestCase {
         SendIcal.initInstance(conf);
 
         // Use persistence.xml configuration
-        emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+        emf = createEntityManagerFactory();
 
         taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         taskSession = taskService.createSession();
@@ -67,6 +76,9 @@ public abstract class BaseTest extends TestCase {
         taskService.setUserinfo(userInfo);
         loadUsersAndGroups(taskService);
         disableUserGroupCallback();
+        
+        logger = LoggerFactory.getLogger(getClass());
+        logger.info("Starting test");
     }
 
     protected void tearDown() throws Exception {

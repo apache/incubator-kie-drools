@@ -34,17 +34,8 @@ public class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends BaseTest
     protected TaskServer server;
     protected TaskClient client;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        client.disconnect();
-    }
-
-    public void testAddRemoveOutput() {
+    @SuppressWarnings("unchecked")
+	public void testAddRemoveOutput() {
         Map  vars = new HashMap();     
         vars.put( "users", users );
         vars.put( "groups", groups );        
@@ -60,6 +51,7 @@ public class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends BaseTest
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone(3000);
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -125,6 +117,7 @@ public class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends BaseTest
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone(3000);
         
         long taskId = addTaskResponseHandler.getTaskId();
         
@@ -193,6 +186,7 @@ public class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends BaseTest
         BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         Task task = ( Task )  eval( new StringReader( str ), vars );
         client.addTask( task, null, addTaskResponseHandler );
+        addTaskResponseHandler.waitTillDone(3000);
         
         long taskId = addTaskResponseHandler.getTaskId();
         

@@ -17,20 +17,14 @@ package org.jbpm.task.service;
 
 import java.util.List;
 
+import org.jbpm.task.BaseTestNoUserGroupSetup;
 import org.jbpm.task.service.UserGroupCallbackManager;
 
-import junit.framework.TestCase;
-
-public class UserGroupCallbackTest extends TestCase {
-    
-    @Override
-    protected void tearDown()  {
-        UserGroupCallbackManager.resetCallback();
-    }
+public class UserGroupCallbackTest extends BaseTestNoUserGroupSetup {
     
     public void testUserGroupCallbackViaSystemProperty() throws Exception {
         System.setProperty(UserGroupCallbackManager.USER_GROUP_CALLBACK_KEY, "org.jbpm.task.service.UserGroupCallbackTwoImpl");
-        
+        UserGroupCallbackManager.getInstance().resetCallback();
         assertTrue(UserGroupCallbackManager.getInstance().existsCallback());
         
         assertFalse(UserGroupCallbackManager.getInstance().getCallback().existsUser("Darth Vader"));
@@ -46,7 +40,7 @@ public class UserGroupCallbackTest extends TestCase {
     }
     
     public void testUserGroupCallbackViaPropertiesFile() throws Exception {
-        
+    	UserGroupCallbackManager.getInstance().resetCallback();
         assertTrue(UserGroupCallbackManager.getInstance().existsCallback());
         
         assertTrue(UserGroupCallbackManager.getInstance().getCallback().existsUser("Darth Vader"));

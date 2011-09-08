@@ -20,20 +20,31 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityManagerFactory;
+
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.UserGroupCallbackManager;
+import org.jbpm.task.service.UserGroupCallbackOneImpl;
 
 public abstract class BaseTestNoUserGroupSetup extends BaseTest {
     
     @Override
     protected void setUp() throws Exception {
-        super.setUp();            
+        super.setUp();          
+        if(!UserGroupCallbackManager.getInstance().existsCallback()) {
+        	UserGroupCallbackManager.getInstance().setCallback(new UserGroupCallbackOneImpl());
+        }
     }
     
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
-        UserGroupCallbackManager.resetCallback();
+    }
+    
+    @Override
+    protected EntityManagerFactory createEntityManagerFactory() {
+        EntityManagerFactory realEmf = super.createEntityManagerFactory();
+        return new EntityManagerFactoryAndTracker(realEmf);
     }
     
     @Override
