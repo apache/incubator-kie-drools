@@ -28,7 +28,6 @@ import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
-import org.drools.planner.config.constructionheuristic.greedyFit.GreedyFitSolverPhaseConfig;
 import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.drools.planner.config.phase.custom.CustomSolverPhaseConfig;
 import org.drools.planner.config.solver.SolverConfig;
@@ -51,7 +50,7 @@ public class XmlSolverConfigurer {
     }
 
     private XStream xStream;
-    private SolverConfig config = null;
+    private SolverConfig solverConfig = null;
 
     public XmlSolverConfigurer() {
         xStream = buildXstream();
@@ -66,8 +65,8 @@ public class XmlSolverConfigurer {
         xStream.processAnnotations(aliasClass);
     }
 
-    public SolverConfig getConfig() {
-        return config;
+    public SolverConfig getSolverConfig() {
+        return solverConfig;
     }
 
     // ************************************************************************
@@ -95,12 +94,12 @@ public class XmlSolverConfigurer {
     }
 
     public XmlSolverConfigurer configure(Reader reader) {
-        config = (SolverConfig) xStream.fromXML(reader);
+        solverConfig = (SolverConfig) xStream.fromXML(reader);
         return this;
     }
 
     public Solver buildSolver() {
-        return config.buildSolver();
+        return solverConfig.buildSolver();
     }
 
 }

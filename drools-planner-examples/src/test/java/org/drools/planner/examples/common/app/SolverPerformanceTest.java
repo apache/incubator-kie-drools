@@ -58,10 +58,10 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     private XmlSolverConfigurer buildConfigurer(String scoreAttainedString, EnvironmentMode environmentMode) {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(createSolverConfigResource());
-        configurer.getConfig().setEnvironmentMode(environmentMode);
+        configurer.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setScoreAttained(scoreAttainedString);
-        configurer.getConfig().setTerminationConfig(terminationConfig);
+        configurer.getSolverConfig().setTerminationConfig(terminationConfig);
         return configurer;
     }
 

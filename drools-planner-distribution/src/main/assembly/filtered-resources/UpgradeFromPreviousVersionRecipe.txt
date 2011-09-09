@@ -1154,3 +1154,9 @@ After in  *.java:
             ...
         }
     });
+
+[MAJOR] XmlSolverConfigurer's method getConfig() has been rename to getSolverConfig()
+Before in  *.java:
+    ... configurer.getConfig() ...
+After in  *.java:
+    ... configurer.getSolverConfig() ...
