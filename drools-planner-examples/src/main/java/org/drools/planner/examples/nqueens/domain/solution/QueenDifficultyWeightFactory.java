@@ -27,10 +27,8 @@ public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWei
 
     public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
         NQueens nQueens = (NQueens) solution;
-        int n = nQueens.getN();
         Queen queen = (Queen) planningEntity;
-        int columnIndex = queen.getColumnIndex();
-        int distanceFromMiddle = calculateDistanceFromMiddle(n, columnIndex);
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
     }
 
