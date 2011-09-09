@@ -85,7 +85,9 @@ public abstract class IcalBaseSyncTest extends BaseTest {
         
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         client.addTask( task, null );
+        addTaskResponseHandler.waitTillDone( 5000 );
 
         long taskId = task.getId();
         
@@ -192,7 +194,9 @@ public abstract class IcalBaseSyncTest extends BaseTest {
         
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         client.addTask( task, null );
+        addTaskResponseHandler.waitTillDone( 5000 );
 
         long taskId = task.getId();
 
@@ -270,7 +274,9 @@ public abstract class IcalBaseSyncTest extends BaseTest {
         
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         client.addTask( task, null );
+        addTaskResponseHandler.waitTillDone( 5000 );
 
         long taskId = task.getId();
 
@@ -343,8 +349,10 @@ public abstract class IcalBaseSyncTest extends BaseTest {
         
         Task task = (Task) eval( new StringReader( str ),
                                  vars );
+        BlockingAddTaskResponseHandler addTaskResponseHandler = new BlockingAddTaskResponseHandler();
         client.addTask( task, null );
-
+        addTaskResponseHandler.waitTillDone( 5000 );
+        
         long taskId = task.getId();
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();

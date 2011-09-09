@@ -30,7 +30,7 @@ import org.jbpm.task.service.responsehandlers.BlockingGetContentResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 
-public class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
+public abstract class TaskServiceTaskAttributesBaseUserGroupCallbackTest extends BaseTestNoUserGroupSetup {
     protected TaskServer server;
     protected TaskClient client;
 

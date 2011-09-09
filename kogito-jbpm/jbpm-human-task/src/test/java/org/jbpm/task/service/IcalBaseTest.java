@@ -86,7 +86,7 @@ public abstract class IcalBaseTest extends BaseTest {
                                  vars );
         client.addTask( task, null,
                         addTaskResponseHandler );
-
+        addTaskResponseHandler.waitTillDone( 5000 );
         long taskId = addTaskResponseHandler.getTaskId();
         
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
@@ -195,7 +195,7 @@ public abstract class IcalBaseTest extends BaseTest {
                                  vars );
         client.addTask( task, null,
                         addTaskResponseHandler );
-
+        addTaskResponseHandler.waitTillDone( 5000 );
         long taskId = addTaskResponseHandler.getTaskId();
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
@@ -275,7 +275,7 @@ public abstract class IcalBaseTest extends BaseTest {
                                  vars );
         client.addTask( task, null,
                         addTaskResponseHandler );
-
+        addTaskResponseHandler.waitTillDone( 5000 );
         long taskId = addTaskResponseHandler.getTaskId();
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
@@ -351,7 +351,7 @@ public abstract class IcalBaseTest extends BaseTest {
                                  vars );
         client.addTask( task, null,
                         addTaskResponseHandler );
-
+        addTaskResponseHandler.waitTillDone( 5000 );
         long taskId = addTaskResponseHandler.getTaskId();
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
