@@ -45,4 +45,7 @@ public interface InternalResource extends Resource {
     
     long getLastRead();
 
+    void setDescription(String description); 
+
+    void setName(String name);
 }
