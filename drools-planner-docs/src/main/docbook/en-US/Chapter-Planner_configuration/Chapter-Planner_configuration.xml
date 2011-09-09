@@ -23,8 +23,8 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Load a <literal>Solution</literal> instance</emphasis> from your data layer, for
-        example a 4 Queens instance. Set it as the starting solution on the <literal>Solver</literal> with
+        <para><emphasis role="bold">Load a problem data set</emphasis> from your data layer, for example a 4 Queens
+        instance. Set it as the starting solution on the <literal>Solver</literal> with
         <literal>Solver.setStartingSolution(...)</literal>.</para>
       </listitem>
 
@@ -37,6 +37,115 @@
         <literal>Solver.getBestSolution()</literal>.</para>
       </listitem>
     </orderedlist>
+  </section>
+
+  <section>
+    <title>Solver configuration</title>
+
+    <section>
+      <title>Solver configuration by XML file</title>
+
+      <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>.
+      Configure it with a solver configuration XML file:</para>
+
+      <programlisting language="java">        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+        configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        Solver solver = configurer.buildSolver();</programlisting>
+
+      <para>A solver configuration file looks something like this:</para>
+
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;solver&gt;
+  &lt;!-- Define the model --&gt;
+  &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+  &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+
+  &lt;!-- Define the score function --&gt;
+  &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
+  &lt;scoreDefinition&gt;
+    &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
+  &lt;/scoreDefinition&gt;
+
+  &lt;!-- Configure the optimization algorithm(s) --&gt;
+  &lt;termination&gt;
+    ...
+  &lt;/termination&gt;
+  &lt;constructionHeuristic&gt;
+    ...
+  &lt;/constructionHeuristic&gt;
+  &lt;localSearch&gt;
+    ...
+  &lt;/localSearch&gt;
+&lt;/solver&gt;</programlisting>
+
+      <para>Notice the 3 parts in it:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Define the model</para>
+        </listitem>
+
+        <listitem>
+          <para>Define the score function</para>
+        </listitem>
+
+        <listitem>
+          <para>Configure the optimization algorithm(s)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>We 'll explain these various parts of a configuration later in this manual.</para>
+
+      <para><emphasis role="bold">Drools Planner makes it relatively easy to switch optimization algorithm(s) just by
+      changing the configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to
+      play out different configurations against each other and report the most appropriate configuration for your
+      problem. You could for example play out tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
+    </section>
+
+    <section>
+      <title>Solver configuration by Java API</title>
+
+      <para>As an alternative to the XML file, a solver configuration can also be configured with the
+      <literal>SolverConfig</literal> API:</para>
+
+      <programlisting>        SolverConfig solverConfig = new SolverConfig();
+
+        solverConfig.setSolutionClass(NQueens.class);
+        Set&lt;Class&lt;?&gt;&gt; planningEntityClassSet = new HashSet&lt;Class&lt;?&gt;&gt;();
+        planningEntityClassSet.add(Queen.class);
+        solverConfig.setPlanningEntityClassSet(planningEntityClassSet);
+
+        solverConfig.setScoreDrlList(
+                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+        ScoreDefinitionConfig scoreDefinitionConfig = solverConfig.getScoreDefinitionConfig();
+        scoreDefinitionConfig.setScoreDefinitionType(
+                ScoreDefinitionConfig.ScoreDefinitionType.SIMPLE);
+
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        // ...
+        List&lt;SolverPhaseConfig&gt; solverPhaseConfigList = new ArrayList&lt;SolverPhaseConfig&gt;();
+        ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
+                = new ConstructionHeuristicSolverPhaseConfig();
+        // ...
+        solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
+        LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
+        // ...
+        solverPhaseConfigList.add(localSearchSolverPhaseConfig);
+        solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
+        Solver solver = solverConfig.buildSolver();</programlisting>
+
+      <para><emphasis role="bold">It is highly recommended to configure by XML file instead of this API.</emphasis> To
+      dynamically configure a value at runtime, use the XML file as a template and extract the
+      <literal>SolverConfig</literal> class with <literal>getSolverConfig()</literal> to configure the dynamic value at
+      runtime:</para>
+
+      <programlisting>        XmlSolverConfigurer configurer = new XmlSolverConfigurer();
+        configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
+
+        SolverConfig solverConfig = configurer.getSolverConfig();
+        solverConfig.getTerminationConfig().setMaximumMinutesSpend(userInput);
+        Solver solver = solverConfig.buildSolver();</programlisting>
+    </section>
   </section>
 
   <section>
@@ -63,7 +172,7 @@
 
         <listitem>
           <para>A <emphasis role="bold">planning entity</emphasis> class: used by the score constraints and changes
-          during planning. For example: <literal>BedDesignation</literal>, <literal>Assignment</literal>,
+          during planning. For example: <literal>BedDesignation</literal>, <literal>ShiftAssignment</literal>,
           <literal>Exam</literal>, ...</para>
         </listitem>
       </itemizedlist>
@@ -74,7 +183,7 @@
 
       <note>
         <para>In <link linkend="realTimePlanning">real-time planning</link>, problem facts can change during planning,
-        because the problem itself changes. That doesn't make them planning entities.</para>
+        because the problem itself changes. However, that doesn't make them planning entities.</para>
       </note>
 
       <para><emphasis role="bold">In Drools Planner all problems facts and planning entities are plain old JavaBeans
@@ -83,31 +192,219 @@
     </section>
 
     <section>
-      <title>Implementing a planning entity</title>
+      <title>Problem fact</title>
+
+      <para>A problem fact is any JavaBean (POJO) with getters and setters. Implementing the interface
+      <literal>Serializable</literal> is recommended (but not required). For example in n queens, there are columns and
+      rows:</para>
+
+      <programlisting>public class Column implements Serializable {
+
+    private int index;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+}</programlisting>
+
+      <programlisting>public class Row implements Serializable {
+
+    private int index;
+
+    // ... getters and setters
+}</programlisting>
+
+      <para>A problem fact can reference other problem facts of course:</para>
+
+      <programlisting>public class Course implements Serializable {
+
+    private String code;
+
+    private Teacher teacher; // Other problem fact
+    private int lectureSize;
+    private int minWorkingDaySize;
+
+    private List&lt;Curriculum&gt; curriculumList; // Other problem facts
+    private int studentSize;
+
+    // ... getters and setters
+}</programlisting>
+
+      <para>A problem fact class does <emphasis>not</emphasis> require any Planner specific code. For example, you can
+      reuse your domain classes, which might have JPA annotations.</para>
+
+      <note>
+        <para>Generally, better designed domain classes lead to simpler and more efficient score constraints. Therefore,
+        when dealing with a messy legacy system, it can sometimes be worth it to convert the messy domain set into a
+        planner specific POJO set first. For example: if your domain model has 2 <literal>Teacher</literal> instances
+        for the same teacher that teaches at 2 different departments, it's hard to write a correct score constraint that
+        is constrains a teacher's spare time.</para>
+
+        <para>Alternatively, you can sometimes also introduce <link linkend="getProblemFacts"><emphasis>a cached problem
+        fact</emphasis></link> to enrich the domain model during planning without actually changing it.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Planning entity implementation</title>
 
       <section>
-        <title>The planning entity class</title>
+        <title>Planning entity class</title>
 
-        <para>TODO</para>
+        <para>A planning entity can change during solving, for example a queens changes to another row. A planning
+        problem has multiple planning entities, for example each queen is a planning entity, but there's usually only 1
+        planning entity class, for example the <literal>Queen</literal> class. A planning entity class needs to be
+        annotated with the <literal>@PlanningEntity</literal> annotation.</para>
+
+        <para>Each planning entity class has 1 or more <emphasis>planning variables</emphasis>. It usually also has 1 or
+        more <emphasis>defining</emphasis> properties. For example in n queens, a <literal>Queen</literal> is defined by
+        it's <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a Queen's
+        column never changes during solving, while it's row does.</para>
 
         <programlisting>@PlanningEntity
 public class Queen {
-    ...
+
+    private Column column;
+
+    // Planning variables: changes during planning, between score calculations.
+    private Row row;
+
+    // ...
 }</programlisting>
 
-        <para>ggg</para>
+        <para>A planning entity class can have multiple planning varibles. For example, a <literal>Lecture</literal> is
+        defined by it's <literal>Course</literal> and it's index in that course (because 1 course has multiple
+        lectures). Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
+        <literal>Room</literal> so it has 2 planning variables (period and room). For example: the course Mathematics
+        has 8 lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.</para>
 
-        <important>
-          <para>Avoid changing classes during planning that are not real planning entities or logical insertions. So
-          avoid having more than 1 planning entity class (or 1 planning entity class hierarchy), unless the problem
-          requires it. TODO</para>
-        </important>
+        <programlisting>@PlanningEntity
+public class Lecture {
+
+    private Course course;
+    private int lectureIndexInCourse;
+
+    // Planning variables: changes during planning, between score calculations.
+    private Period period;
+    private Room room;
+
+    // ...
+}</programlisting>
+
+        <para>The solver configuration also needs to be made aware of each planning entity class:</para>
+
+        <programlisting>&lt;solver&gt;
+  ...
+  &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
+  ...
+&lt;/solver&gt;</programlisting>
+
+        <para>Some uses cases have multiple planning entity classes. For example: route freight and trains into railway
+        network arcs, where each freight can use multiple trains over it's journey and each train can carry multiple
+        freights per arc. Having multiple planning entity classes directly raises the implementation complexity of your
+        use case.</para>
+
+        <note>
+          <para><emphasis>Do not create unnecessary planning entity classes.</emphasis> This leads to difficult
+          <literal>Move</literal> implementations and slower score calculation.</para>
+
+          <para>For example, do not create a planning entity class to hold the total free time of a teacher, which needs
+          to be kept up to date as the <literal>Lecture</literal> planning entities change. Instead, calculate the free
+          time in the score constraints and put the result per teacher into a logically inserted score object.</para>
+
+          <para>If historic data needs to be considered too, then create problem fact to hold the historic data up to,
+          but <emphasis>not including</emphasis>, the planning window (so it doesn't change when a planning entity
+          changes) and let the score constraints take it into account.</para>
+        </note>
       </section>
 
       <section>
         <title>Planning entity difficulty comparison</title>
 
-        <para>TODO</para>
+        <para>Some optimization algorithms work more efficiently if they have an estimation of which planning entities
+        are more difficult to plan. For example: in bin packing bigger items are harder to fit, in course scheduling
+        lectures with more students are more difficult to schedule, in n queens the middle queens are more
+        difficult.</para>
+
+        <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
+        <literal>@PlanningEntity</literal> annotation:</para>
+
+        <programlisting>@PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
+public class CloudAssignment {
+    // ...
+}</programlisting>
+
+        <programlisting>public class CloudAssignmentDifficultyComparator implements Comparator&lt;Object&gt; {
+
+    public int compare(Object a, Object b) {
+        return compare((CloudAssignment) a, (CloudAssignment) b);
+    }
+
+    public int compare(CloudAssignment a, CloudAssignment b) {
+        return new CompareToBuilder()
+                .append(a.getCloudProcess().getMinimalMultiplicand(), b.getCloudProcess().getMinimalMultiplicand())
+                .append(a.getCloudProcess().getId(), b.getCloudProcess().getId())
+                .toComparison();
+    }
+
+}</programlisting>
+
+        <para>Alternatively, you can also set a <literal>difficultyWeightFactoryClass</literal> to the
+        <literal>@PlanningEntity</literal> annotation, so you have the ability to use the rest of the problem facts from
+        the solution too:</para>
+
+        <programlisting>@PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
+public class Queen {
+    // ...
+}</programlisting>
+
+        <programlisting>public interface PlanningEntityDifficultyWeightFactory {
+
+    Comparable createDifficultyWeight(Solution solution, Object planningEntity);
+
+}</programlisting>
+
+        <programlisting>public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+
+    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
+        NQueens nQueens = (NQueens) solution;
+        Queen queen = (Queen) planningEntity;
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
+        return new QueenDifficultyWeight(queen, distanceFromMiddle);
+    }
+
+    // ...
+
+    public static class QueenDifficultyWeight implements Comparable&lt;QueenDifficultyWeight&gt; {
+
+        private final Queen queen;
+        private final int distanceFromMiddle;
+
+        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
+            this.queen = queen;
+            this.distanceFromMiddle = distanceFromMiddle;
+        }
+
+        public int compareTo(QueenDifficultyWeight other) {
+            return new CompareToBuilder()
+                    .append(distanceFromMiddle, other.distanceFromMiddle)
+                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
+                    .append(queen.getId(), other.queen.getId())
+                    .toComparison();
+        }
+
+    }
+
+}</programlisting>
+
+        <para><emphasis>None of the planning variables may be used to compare planning entities.</emphasis> They are
+        likely to be <literal>null</literal> anyway. For example, a <literal>Queens</literal>'s row variable must not be
+        used.</para>
       </section>
 
       <section>
@@ -152,16 +449,15 @@ public class Queen {
         <para>TODO</para>
       </section>
     </section>
-  </section>
 
-  <section>
-    <title>The <literal>Solution</literal> interface</title>
+    <section>
+      <title>The <literal>Solution</literal> interface</title>
 
-    <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
+      <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
 
-    <para>This means you need to implement the <literal>Solution</literal> interface:</para>
+      <para>This means you need to implement the <literal>Solution</literal> interface:</para>
 
-    <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
+      <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
 
     S getScore();
     void setScore(S score);
@@ -172,10 +468,10 @@ public class Queen {
 
 }</programlisting>
 
-    <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
-    <literal>Queen</literal> instances:</para>
+      <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
+      <literal>Queen</literal> instances:</para>
 
-    <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+      <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     private int n;
 
@@ -190,15 +486,15 @@ public class Queen {
 
 }</programlisting>
 
-    <section>
-      <title>The getScore and setScore methods</title>
+      <section>
+        <title>The getScore and setScore methods</title>
 
-      <para>A <literal>Solution</literal> requires a score property. The score property is null if the
-      <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The score property
-      is usually typed to the specific <literal>Score</literal> implementation you use. For example,
-      <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
+        <para>A <literal>Solution</literal> requires a score property. The score property is null if the
+        <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The score property
+        is usually typed to the specific <literal>Score</literal> implementation you use. For example,
+        <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
 
-      <programlisting language="java">    private SimpleScore score;
+        <programlisting language="java">    private SimpleScore score;
 
     public SimpleScore getScore() {
         return score;
@@ -208,38 +504,40 @@ public class Queen {
         this.score = score;
     }</programlisting>
 
-      <para>Most use cases use a <literal>HardAndSoftScore</literal> instead:</para>
+        <para>Most use cases use a <literal>HardAndSoftScore</literal> instead:</para>
 
-      <programlisting>    private HardAndSoftScore score;</programlisting>
-    </section>
+        <programlisting>    private HardAndSoftScore score;</programlisting>
+      </section>
 
-    <section>
-      <title>The getProblemFacts method</title>
+      <section xml:id="getProblemFacts">
+        <title>The getProblemFacts method</title>
 
-      <para>All objects returned by the <literal>getProblemFacts()</literal> method will be asserted into the drools
-      working memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns
-      all <literal>Queen</literal> instances.</para>
+        <para>All objects returned by the <literal>getProblemFacts()</literal> method will be asserted into the drools
+        working memory. Those facts can be used by the score rules. For example, <literal>NQueens</literal> just returns
+        all <literal>Queen</literal> instances.</para>
 
-      <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
+        <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
         List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
         facts.addAll(columnList);
         facts.addAll(rowList);
         // Do not add the planning entity's (queenList) because that will be done automatically
         return facts;
     }</programlisting>
-    </section>
 
-    <section>
-      <title>The cloneSolution method</title>
+        <para>todo cached problem facts</para>
+      </section>
 
-      <para>Most solver algorithms use the <literal>cloneSolution()</literal> method to clone the solution each time
-      they encounter a new best solution, so they can recall it later.</para>
+      <section>
+        <title>The cloneSolution method</title>
 
-      <para>The <literal>NQueens</literal> implementation only deep clones all <literal>Queen</literal> instances, so
-      when the original solution is changed during planning, by changing a <literal>Queen</literal>, the clone stays the
-      same.</para>
+        <para>Most solver algorithms use the <literal>cloneSolution()</literal> method to clone the solution each time
+        they encounter a new best solution, so they can recall it later.</para>
 
-      <programlisting language="java">    /**
+        <para>The <literal>NQueens</literal> implementation only deep clones all <literal>Queen</literal> instances, so
+        when the original solution is changed during planning, by changing a <literal>Queen</literal>, the clone stays
+        the same.</para>
+
+        <programlisting language="java">    /**
      * Clone will only deep copy the {@link #queenList}.
      */
     public NQueens cloneSolution() {
@@ -257,25 +555,30 @@ public class Queen {
         return clone;
     }</programlisting>
 
-      <para>The <literal>cloneSolution()</literal> method should only deep clone the planning entities. Notice that the
-      problem facts, such as <literal>Column</literal> and <literal>Row</literal> are normally <emphasis>not</emphasis>
-      cloned: even their <literal>List</literal> instances are <emphasis>not</emphasis> cloned.</para>
+        <para>The <literal>cloneSolution()</literal> method should only deep clone the planning entities. Notice that
+        the problem facts, such as <literal>Column</literal> and <literal>Row</literal> are normally
+        <emphasis>not</emphasis> cloned: even their <literal>List</literal> instances are <emphasis>not</emphasis>
+        cloned.</para>
 
-      <note>
-        <para>If you were to clone the problem facts too, then you'd have to make sure that the new planning entity
-        clones also refer to the new problem facts clones used by the solution. For example, if you 'd clone all
-        <literal>Row</literal> instances, then each <literal>Queen</literal> clone and the <literal>NQueens</literal>
-        clone itself should refer to the same set of new <literal>Row</literal> clones.</para>
-      </note>
+        <note>
+          <para>If you were to clone the problem facts too, then you'd have to make sure that the new planning entity
+          clones also refer to the new problem facts clones used by the solution. For example, if you 'd clone all
+          <literal>Row</literal> instances, then each <literal>Queen</literal> clone and the <literal>NQueens</literal>
+          clone itself should refer to the same set of new <literal>Row</literal> clones.</para>
+        </note>
+      </section>
     </section>
   </section>
 
   <section>
-    <title>The Solver interface</title>
+    <title>Solver</title>
 
-    <para>This is the <literal>Solver</literal> interface, which you 'll build from a solver configuration:</para>
+    <section>
+      <title>The Solver interface</title>
 
-    <programlisting language="java">public interface Solver {
+      <para>This is the <literal>Solver</literal> interface, which you 'll build from a solver configuration:</para>
+
+      <programlisting language="java">public interface Solver {
 
     void setStartingSolution(Solution solution);
     
@@ -287,65 +590,88 @@ public class Queen {
 
 }</programlisting>
 
-    <para>A Solver can only solve 1 problem instance at a time. A <literal>Solver</literal> should only be accessed from
-    a single thread, except for the methods that are specifically javadocced as thread-safe.</para>
-  </section>
+      <para>A Solver can only solve 1 problem instance at a time. A <literal>Solver</literal> should only be accessed
+      from a single thread, except for the methods that are specifically javadocced as thread-safe.</para>
+    </section>
 
-  <section>
-    <title>Building a Solver</title>
+    <section>
+      <title>The starting solution</title>
 
-    <para>You can build a <literal>Solver</literal> instance with the <literal>XmlSolverConfigurer</literal>. Configure
-    it with a solver configuration XML file:</para>
+      <para>First, you will need to make a starting solution and set that on the solver:</para>
 
-    <programlisting language="java">    XmlSolverConfigurer configurer = new XmlSolverConfigurer();
-    configurer.configure("/org/drools/planner/examples/nqueens/solver/nqueensSolverConfig.xml");
-    Solver solver = configurer.buildSolver();</programlisting>
+      <programlisting language="java">solver.setStartingSolution(startingSolution);</programlisting>
 
-    <para>A basic solver configuration file looks something like this:</para>
+      <section>
+        <title>A simple filler algorithm</title>
 
-    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;solver&gt;
-  &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
-  &lt;solutionClass&gt;org.drools.planner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-  &lt;planningEntityClass&gt;org.drools.planner.examples.nqueens.domain.Queen&lt;/planningEntityClass&gt;
-  &lt;scoreDrl&gt;/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
-  &lt;scoreDefinition&gt;
-    &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-  &lt;/scoreDefinition&gt;
-  &lt;termination&gt;
-    &lt;scoreAttained&gt;0&lt;/scoreAttained&gt;
-  &lt;/termination&gt;
-  &lt;!-- Real world problems require to use of &lt;constructionHeuristic&gt;. --&gt;
-  &lt;localSearch&gt;
-    &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
-    &lt;/selector&gt;
-    &lt;acceptor&gt;
-      &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-      &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
-    &lt;/forager&gt;
-  &lt;/localSearch&gt;
-&lt;/solver&gt;</programlisting>
+        <para>For 4 queens we use a simple filler algorithm that creates a starting solution with all queens on a
+        different x and on the same y (with y = 0).</para>
 
-    <para>This is a tabu search configuration for n queens. We 'll explain the various parts of a configuration later in
-    this manual.</para>
+        <figure>
+          <title>Starting solution for the 4 queens puzzle</title>
 
-    <para><emphasis role="bold">Drools Planner makes it relatively easy to switch a solver type just by changing the
-    configuration.</emphasis> There's even a <literal>Benchmark</literal> utility which allows you to play out different
-    configurations against each other and report the most appropriate configuration for your problem. You could for
-    example play out tabu search versus simulated annealing, on 4 queens and 64 queens.</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Planner_configuration/unsolvedNQueens04.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Here's how we generate it:</para>
+
+        <programlisting language="java">    private NQueens createNQueens(int n) {
+        NQueens nQueens = new NQueens();
+        nQueens.setId(0L);
+        nQueens.setN(n);
+        List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
+        for (int x = 0; x &lt; n; x++) {
+            Queen queen = new Queen();
+            queen.setId((long) x);
+            queen.setX(x);
+            // Notice that we leave the PlanningVariable properties on null: no setY()
+            queenList.add(queen);
+        }
+        nQueens.setQueenList(queenList);
+        return nQueens;
+    }</programlisting>
+
+        <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
+        possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Solving a problem</title>
+
+      <para>Solving a problem is quite easy once you have a solver and the starting solution:</para>
+
+      <programlisting language="java">    solver.setStartingSolution(startingSolution);
+    solver.solve();
+    Solution bestSolution = solver.getBestSolution();</programlisting>
+
+      <para>The <literal>solve()</literal> method will take a long time (depending on the problem size and the solver
+      configuration). The solver will remember (actually clone) the best solution it encounters during its solving.
+      Depending on a number factors (including problem size, how long you allow the solver to work, which solver type
+      you use, ...), that best solution will be a feasible or even an optimal solution.</para>
+
+      <figure>
+        <title>Best solution for the 4 queens puzzle (also an optimal solution)</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/solvedNQueens04.png" format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>After a problem is solved, you can reuse the same solver instance to solve another problem (of the same
+      problem type).</para>
+    </section>
 
     <section>
       <title>Environment mode</title>
 
-      <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
-      <literal>Random</literal> instance a lot more than others. For example simulated annealing depends highly on
-      random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
-      seed of that <literal>Random</literal> instance.</para>
-
-      <para>The environment mode also allows you to detect common bugs in your implementation.</para>
+      <para>The environment mode allows you to detect common bugs in your implementation.</para>
 
       <para>You can set the environment mode in the solver configuration XML file:</para>
 
@@ -353,6 +679,11 @@ public class Queen {
   &lt;environmentMode&gt;DEBUG&lt;/environmentMode&gt;
   ...
 &lt;/solver&gt;</programlisting>
+
+      <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
+      <literal>Random</literal> instance a lot more than others. For example simulated annealing depends highly on
+      random numbers, while tabu search only depends on it to deal with score ties. The environment mode influences the
+      seed of that <literal>Random</literal> instance.</para>
 
       <para>There are 4 environment modes:</para>
 
@@ -384,8 +715,7 @@ public class Queen {
         <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
         runs on the same computer will execute the same code in the same order. They will also yield the same result,
         except if they use a time based termination and they have a sufficiently large difference in allocated CPU time.
-        This allows you to benchmark new optimizations (such as a new move implementation or a different
-        minimalAcceptedSelection setting) fairly.</para>
+        This allows you to benchmark new optimizations (such as a score constraint change) fairly.</para>
 
         <para>The reproducible mode is not much slower than the production mode.</para>
 
@@ -405,79 +735,5 @@ public class Queen {
         occasional bad result is far more likely caused by another issue (such as a score trap).</para>
       </section>
     </section>
-  </section>
-
-  <section>
-    <title>The starting solution</title>
-
-    <para>First, you will need to make a starting solution and set that on the solver:</para>
-
-    <programlisting language="java">solver.setStartingSolution(startingSolution);</programlisting>
-
-    <section>
-      <title>A simple filler algorithm</title>
-
-      <para>For 4 queens we use a simple filler algorithm that creates a starting solution with all queens on a
-      different x and on the same y (with y = 0).</para>
-
-      <figure>
-        <title>Starting solution for the 4 queens puzzle</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Planner_configuration/unsolvedNQueens04.png" format="PNG"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>Here's how we generate it:</para>
-
-      <programlisting language="java">    private NQueens createNQueens(int n) {
-        NQueens nQueens = new NQueens();
-        nQueens.setId(0L);
-        nQueens.setN(n);
-        List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
-        for (int x = 0; x &lt; n; x++) {
-            Queen queen = new Queen();
-            queen.setId((long) x);
-            queen.setX(x);
-            // Notice that we leave the PlanningVariable properties on null: no setY()
-            queenList.add(queen);
-        }
-        nQueens.setQueenList(queenList);
-        return nQueens;
-    }</programlisting>
-
-      <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
-      possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
-    </section>
-  </section>
-
-  <section>
-    <title>Solving a problem</title>
-
-    <para>Solving a problem is quite easy once you have a solver and the starting solution:</para>
-
-    <programlisting language="java">    solver.setStartingSolution(startingSolution);
-    solver.solve();
-    Solution bestSolution = solver.getBestSolution();</programlisting>
-
-    <para>The <literal>solve()</literal> method will take a long time (depending on the problem size and the solver
-    configuration). The solver will remember (actually clone) the best solution it encounters during its solving.
-    Depending on a number factors (including problem size, how long you allow the solver to work, which solver type you
-    use, ...), that best solution will be a feasible or even an optimal solution.</para>
-
-    <figure>
-      <title>Best solution for the 4 queens puzzle (also an optimal solution)</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Planner_configuration/solvedNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>After a problem is solved, you can reuse the same solver instance to solve another problem (of the same
-    problem type).</para>
   </section>
 </chapter>
