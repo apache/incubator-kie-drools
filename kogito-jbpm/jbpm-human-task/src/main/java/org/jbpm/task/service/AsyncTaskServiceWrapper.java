@@ -56,7 +56,7 @@ import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler
  */
 public class AsyncTaskServiceWrapper implements TaskService {
 
-    private int timeout = 3000;
+    private int timeout = 10000;
     private AsyncTaskService taskService;
 
     public AsyncTaskServiceWrapper(AsyncTaskService taskService) {

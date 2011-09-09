@@ -43,4 +43,16 @@ public class BlockingGetTaskResponseHandler extends AbstractBlockingResponseHand
 
         return task;
     }
+    
+    public Task getTask(int taskWaitTime) {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means task is available 
+        boolean done = waitTillDone(taskWaitTime);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve Task");
+        }
+
+        return task;
+    }
 }

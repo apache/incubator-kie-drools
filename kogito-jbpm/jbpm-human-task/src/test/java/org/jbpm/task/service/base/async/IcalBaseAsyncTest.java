@@ -85,8 +85,7 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
                 vars);
         client.addTask(task, null,
                 addTaskResponseHandler);
-        addTaskResponseHandler.waitTillDone( 5000 );
-        long taskId = addTaskResponseHandler.getTaskId();
+        long taskId = addTaskResponseHandler.getTaskId(20000);
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim(taskId,
@@ -194,8 +193,7 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
                 vars);
         client.addTask(task, null,
                 addTaskResponseHandler);
-        addTaskResponseHandler.waitTillDone( 5000 );
-        long taskId = addTaskResponseHandler.getTaskId();
+        long taskId = addTaskResponseHandler.getTaskId(20000);
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim(taskId,
@@ -274,8 +272,7 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
                 vars);
         client.addTask(task, null,
                 addTaskResponseHandler);
-        addTaskResponseHandler.waitTillDone( 5000 );
-        long taskId = addTaskResponseHandler.getTaskId();
+        long taskId = addTaskResponseHandler.getTaskId(20000);
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim(taskId,
@@ -350,8 +347,7 @@ public abstract class IcalBaseAsyncTest extends BaseTest {
                 vars);
         client.addTask(task, null,
                 addTaskResponseHandler);
-        addTaskResponseHandler.waitTillDone( 5000 );
-        long taskId = addTaskResponseHandler.getTaskId();
+        long taskId = addTaskResponseHandler.getTaskId(20000);
 
         BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
         client.claim(taskId,

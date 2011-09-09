@@ -42,4 +42,16 @@ public class BlockingAddTaskResponseHandler extends AbstractBlockingResponseHand
 
         return taskId;
     }
+    
+    public long getTaskId(int taskWaitTime) {
+        // note that this method doesn't need to be synced because if waitTillDone returns true,
+        // it means taskId is available 
+        boolean done = waitTillDone(taskWaitTime);
+
+        if (!done) {
+            throw new RuntimeException("Timeout : unable to retrieve Task Id");
+        }
+
+        return taskId;
+    }
 }

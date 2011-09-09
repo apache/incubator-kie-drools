@@ -1126,7 +1126,7 @@ public abstract class TaskServiceLifeCycleBaseTest extends BaseTest {
         
         getTaskResponseHandler = new BlockingGetTaskResponseHandler();  
         client.getTask( taskId, getTaskResponseHandler );        
-        Task task2 = getTaskResponseHandler.getTask();
+        Task task2 = getTaskResponseHandler.getTask(20000);
         assertFalse( task2.getPeopleAssignments().getPotentialOwners().contains( users.get( "darth" ) ) );
         assertTrue( task2.getPeopleAssignments().getPotentialOwners().contains( users.get( "tony" ) ) );
         assertNull( task2.getTaskData().getActualOwner() );
