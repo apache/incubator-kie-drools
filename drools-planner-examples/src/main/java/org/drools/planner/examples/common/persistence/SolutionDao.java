@@ -21,6 +21,9 @@ import java.io.InputStream;
 
 import org.drools.planner.core.solution.Solution;
 
+/**
+ * Data Access Object for the examples.
+ */
 public interface SolutionDao {
 
     String getDirName();

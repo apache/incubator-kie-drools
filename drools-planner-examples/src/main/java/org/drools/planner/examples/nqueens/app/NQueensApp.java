@@ -16,12 +16,29 @@
 
 package org.drools.planner.examples.nqueens.app;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.planner.config.XmlSolverConfigurer;
+import org.drools.planner.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
+import org.drools.planner.config.localsearch.LocalSearchSolverPhaseConfig;
+import org.drools.planner.config.phase.SolverPhaseConfig;
+import org.drools.planner.config.score.definition.ScoreDefinitionConfig;
+import org.drools.planner.config.solver.SolverConfig;
+import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.constructionheuristic.greedyFit.decider.ConstructionHeuristicPickEarlyType;
 import org.drools.planner.examples.common.app.CommonApp;
 import org.drools.planner.examples.common.persistence.SolutionDao;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
+import org.drools.planner.examples.nqueens.domain.NQueens;
+import org.drools.planner.examples.nqueens.domain.Queen;
 import org.drools.planner.examples.nqueens.persistence.NQueensDaoImpl;
+import org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory;
 import org.drools.planner.examples.nqueens.swingui.NQueensPanel;
 
 public class NQueensApp extends CommonApp {
@@ -38,6 +55,39 @@ public class NQueensApp extends CommonApp {
         XmlSolverConfigurer configurer = new XmlSolverConfigurer();
         configurer.configure(SOLVER_CONFIG);
         return configurer.buildSolver();
+    }
+
+    protected Solver createSolverByApi() {
+        // Not recommended! It is highly recommended to use XmlSolverConfigurer with an XML configuration instead.
+        SolverConfig solverConfig = new SolverConfig();
+
+        solverConfig.setSolutionClass(NQueens.class);
+        Set<Class<?>> planningEntityClassSet = new HashSet<Class<?>>();
+        planningEntityClassSet.add(Queen.class);
+        solverConfig.setPlanningEntityClassSet(planningEntityClassSet);
+
+        solverConfig.setScoreDrlList(
+                Arrays.asList("/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl"));
+        ScoreDefinitionConfig scoreDefinitionConfig = solverConfig.getScoreDefinitionConfig();
+        scoreDefinitionConfig.setScoreDefinitionType(
+                ScoreDefinitionConfig.ScoreDefinitionType.SIMPLE);
+
+        TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
+        terminationConfig.setScoreAttained("0");
+        List<SolverPhaseConfig> solverPhaseConfigList = new ArrayList<SolverPhaseConfig>();
+        ConstructionHeuristicSolverPhaseConfig constructionHeuristicSolverPhaseConfig
+                = new ConstructionHeuristicSolverPhaseConfig();
+        constructionHeuristicSolverPhaseConfig.setConstructionHeuristicType(
+                ConstructionHeuristicSolverPhaseConfig.ConstructionHeuristicType.FIRST_FIT_DECREASING);
+        constructionHeuristicSolverPhaseConfig.setConstructionHeuristicPickEarlyType(
+                ConstructionHeuristicPickEarlyType.FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING);
+        solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
+        LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
+        localSearchSolverPhaseConfig.getSelectorConfig().setMoveFactoryClass(RowChangeMoveFactory.class);
+        localSearchSolverPhaseConfig.getAcceptorConfig().setCompleteSolutionTabuSize(1000);
+        solverPhaseConfigList.add(localSearchSolverPhaseConfig);
+        solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
+        return solverConfig.buildSolver();
     }
 
     @Override

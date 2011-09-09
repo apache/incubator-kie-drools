@@ -35,7 +35,7 @@ public class SelectorConfig {
     private List<SelectorConfig> selectorConfigList = null;
 
     private MoveFactory moveFactory = null;
-    private Class<MoveFactory> moveFactoryClass = null;
+    private Class<? extends MoveFactory> moveFactoryClass = null;
     protected Boolean shuffle = null;
 
     private Integer topSize = null;
@@ -56,11 +56,11 @@ public class SelectorConfig {
         this.moveFactory = moveFactory;
     }
 
-    public Class<MoveFactory> getMoveFactoryClass() {
+    public Class<? extends MoveFactory> getMoveFactoryClass() {
         return moveFactoryClass;
     }
 
-    public void setMoveFactoryClass(Class<MoveFactory> moveFactoryClass) {
+    public void setMoveFactoryClass(Class<? extends MoveFactory> moveFactoryClass) {
         this.moveFactoryClass = moveFactoryClass;
     }
 

@@ -60,7 +60,7 @@ public class SolverConfig {
     protected EnvironmentMode environmentMode = null;
     protected Long randomSeed = null;
 
-    protected Class<Solution> solutionClass = null;
+    protected Class<? extends Solution> solutionClass = null;
     @XStreamImplicit(itemFieldName = "planningEntityClass")
     protected Set<Class<?>> planningEntityClassSet = null;
 
@@ -93,11 +93,11 @@ public class SolverConfig {
         this.randomSeed = randomSeed;
     }
 
-    public Class<Solution> getSolutionClass() {
+    public Class<? extends Solution> getSolutionClass() {
         return solutionClass;
     }
 
-    public void setSolutionClass(Class<Solution> solutionClass) {
+    public void setSolutionClass(Class<? extends Solution> solutionClass) {
         this.solutionClass = solutionClass;
     }
 
