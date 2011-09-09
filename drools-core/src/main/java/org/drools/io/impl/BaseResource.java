@@ -28,6 +28,9 @@ public abstract class BaseResource
     private ResourceType         resourceType;
     private ResourceConfiguration configuration;
 
+    private String name;
+    private String description;
+    
     public ResourceConfiguration getConfiguration() {
         return configuration;
     }
@@ -42,6 +45,22 @@ public abstract class BaseResource
 
     public ResourceType getResourceType() {
         return this.resourceType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
