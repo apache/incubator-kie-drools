@@ -1,0 +1,13 @@
+<change-set xmlns='http://drools.org/drools-5.0/change-set'
+            xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
+            xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >
+            
+    <add>
+      <resource name="resource1"  source='classpath:data/IntegrationExampleTest.xls' type="DTABLE">
+          <decisiontable-conf input-type="XLS" worksheet-name="Tables_2" />
+      </resource>
+      <resource name="secureResource" description="some useful description" basic-authentication="enabled" username="someUser" password="somePassword" type="DRL" source="http://someHost:1234/someDRLResource.drl"/>
+      <resource description="another description" type="DRL" source="http://someHost:1234/someOtherDRLResource.drl"/>
+      <resource type="DRL" source="http://someHost:1234/someOtherDRLResource2.drl"/>
+    </add>
+</change-set>
