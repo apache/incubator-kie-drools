@@ -63,6 +63,9 @@ public class ResourceHandler extends BaseAbstractHandler
         String basicAuthentication = attrs.getValue( "basicAuthentication" );
         String username = attrs.getValue( "username" );
         String password = attrs.getValue( "password" );
+        
+        String name = attrs.getValue( "name" );
+        String description = attrs.getValue( "description" );
 
         
         emptyAttributeCheck( localName,
@@ -86,6 +89,9 @@ public class ResourceHandler extends BaseAbstractHandler
         }
         
         resource.setResourceType( ResourceType.getResourceType( type ) );
+        
+        resource.setName(name);
+        resource.setDescription(description);
         
         return resource;
     }
