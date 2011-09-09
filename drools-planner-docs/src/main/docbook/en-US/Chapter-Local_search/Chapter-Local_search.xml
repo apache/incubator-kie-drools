@@ -464,10 +464,10 @@ INFO  Step index (0), time spend (6), score (-3), new best score (-3), accepted 
       &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
     &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
     &lt;selector&gt;
-      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory&lt;/moveFactoryClass&gt;
+      &lt;moveFactoryClass&gt;org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory&lt;/moveFactoryClass&gt;
     &lt;/selector&gt;
   &lt;/selector&gt;</programlisting>
     </section>

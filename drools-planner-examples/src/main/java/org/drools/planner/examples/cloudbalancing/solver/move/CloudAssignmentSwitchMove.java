@@ -27,9 +27,6 @@ import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEna
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
-import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.solver.move.NurseRosteringMoveHelper;
 
 public class CloudAssignmentSwitchMove implements Move, TabuPropertyEnabled {
 

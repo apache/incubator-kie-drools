@@ -781,7 +781,7 @@
   <dayOnRequestList class="java.util.Collections$EmptyList" id="125"/>
   <shiftOffRequestList id="126"/>
   <shiftOnRequestList class="java.util.Collections$EmptyList" reference="125"/>
-  <assignmentList id="127">
+  <shiftAssignmentList id="127">
     <Assignment id="128">
       <id>0</id>
       <shift reference="55"/>
@@ -877,7 +877,7 @@
       <shift reference="118"/>
       <employee reference="1011"/>
     </Assignment>
-  </assignmentList>
+  </shiftAssignmentList>
   <score class="org.drools.planner.core.score.DefaultHardAndSoftScore" id="147">
     <hardScore>0</hardScore>
     <softScore>0</softScore>

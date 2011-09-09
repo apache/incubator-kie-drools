@@ -28,19 +28,19 @@ import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeMultipleChangeMove;
 
-public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
+public class ShiftAssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Employee> employeeList = nurseRoster.getEmployeeList();
-        // This code assumes the assignmentList is sorted
-        List<Assignment> assignmentList = nurseRoster.getAssignmentList();
+        // This code assumes the shiftAssignmentList is sorted
+        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
 
         // Hash the assignments per employee
         Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap
@@ -50,19 +50,19 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
             employeeToAssignmentSequenceListMap.put(employee,
                     new ArrayList<AssignmentSequence>(assignmentSequenceCapacity));
         }
-        for (Assignment assignment : assignmentList) {
-            Employee employee = assignment.getEmployee();
+        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
+            Employee employee = shiftAssignment.getEmployee();
             List<AssignmentSequence> assignmentSequenceList = employeeToAssignmentSequenceListMap.get(employee);
             if (assignmentSequenceList.isEmpty()) {
-                AssignmentSequence assignmentSequence = new AssignmentSequence(employee, assignment);
+                AssignmentSequence assignmentSequence = new AssignmentSequence(employee, shiftAssignment);
                 assignmentSequenceList.add(assignmentSequence);
             } else {
                 AssignmentSequence lastAssignmentSequence = assignmentSequenceList // getLast()
                         .get(assignmentSequenceList.size() - 1);
-                if (lastAssignmentSequence.belongsHere(assignment)) {
-                    lastAssignmentSequence.add(assignment);
+                if (lastAssignmentSequence.belongsHere(shiftAssignment)) {
+                    lastAssignmentSequence.add(shiftAssignment);
                 } else {
-                    AssignmentSequence assignmentSequence = new AssignmentSequence(employee, assignment);
+                    AssignmentSequence assignmentSequence = new AssignmentSequence(employee, shiftAssignment);
                     assignmentSequenceList.add(assignmentSequence);
                 }
             }
@@ -103,7 +103,7 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
                     }
                     moveListByPillarPartDuo.add(new EmployeeMultipleChangeMove(
                             pillarPartAssignmentSequence.getEmployee(),
-                            pillarPartAssignmentSequence.getAssignmentList(),
+                            pillarPartAssignmentSequence.getShiftAssignmentList(),
                             otherEmployee));
                     // For every AssignmentSequence in that pillar part duo
                     while (lowestIt.hasNextWithMaximumFirstDayIndexes(
@@ -119,7 +119,7 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
                         }
                         moveListByPillarPartDuo.add(new EmployeeMultipleChangeMove(
                                 pillarPartAssignmentSequence.getEmployee(),
-                                pillarPartAssignmentSequence.getAssignmentList(),
+                                pillarPartAssignmentSequence.getShiftAssignmentList(),
                                 otherEmployee));
                     }
                     moveList.add(new CompositeMove(moveListByPillarPartDuo));
@@ -135,15 +135,15 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
     private static class AssignmentSequence {
 
         private Employee employee;
-        private List<Assignment> assignmentList;
+        private List<ShiftAssignment> shiftAssignmentList;
         private int firstDayIndex;
         private int lastDayIndex;
 
-        private AssignmentSequence(Employee employee, Assignment assignment) {
+        private AssignmentSequence(Employee employee, ShiftAssignment shiftAssignment) {
             this.employee = employee;
-            assignmentList = new ArrayList<Assignment>();
-            assignmentList.add(assignment);
-            firstDayIndex = assignment.getShiftDateDayIndex();
+            shiftAssignmentList = new ArrayList<ShiftAssignment>();
+            shiftAssignmentList.add(shiftAssignment);
+            firstDayIndex = shiftAssignment.getShiftDateDayIndex();
             lastDayIndex = firstDayIndex;
         }
 
@@ -151,8 +151,8 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
             return employee;
         }
 
-        public List<Assignment> getAssignmentList() {
-            return assignmentList;
+        public List<ShiftAssignment> getShiftAssignmentList() {
+            return shiftAssignmentList;
         }
 
         public int getFirstDayIndex() {
@@ -163,17 +163,17 @@ public class AssignmentPillarPartSwitchMoveFactory extends AbstractMoveFactory {
             return lastDayIndex;
         }
 
-        private void add(Assignment assignment) {
-            assignmentList.add(assignment);
-            int dayIndex = assignment.getShiftDateDayIndex();
+        private void add(ShiftAssignment shiftAssignment) {
+            shiftAssignmentList.add(shiftAssignment);
+            int dayIndex = shiftAssignment.getShiftDateDayIndex();
             if (dayIndex < lastDayIndex) {
-                throw new IllegalStateException("The assignmentList is expected to be sorted by shiftDate.");
+                throw new IllegalStateException("The shiftAssignmentList is expected to be sorted by shiftDate.");
             }
             lastDayIndex = dayIndex;
         }
 
-        private boolean belongsHere(Assignment assignment) {
-            return assignment.getShiftDateDayIndex() <= (lastDayIndex + 1);
+        private boolean belongsHere(ShiftAssignment shiftAssignment) {
+            return shiftAssignment.getShiftDateDayIndex() <= (lastDayIndex + 1);
         }
 
     }

@@ -25,46 +25,46 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
-public class AssignmentSwitchMove implements Move, TabuPropertyEnabled {
+public class ShiftAssignmentSwitchMove implements Move, TabuPropertyEnabled {
 
-    private Assignment leftAssignment;
-    private Assignment rightAssignment;
+    private ShiftAssignment leftShiftAssignment;
+    private ShiftAssignment rightShiftAssignment;
 
-    public AssignmentSwitchMove(Assignment leftAssignment, Assignment rightAssignment) {
-        this.leftAssignment = leftAssignment;
-        this.rightAssignment = rightAssignment;
+    public ShiftAssignmentSwitchMove(ShiftAssignment leftShiftAssignment, ShiftAssignment rightShiftAssignment) {
+        this.leftShiftAssignment = leftShiftAssignment;
+        this.rightShiftAssignment = rightShiftAssignment;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(leftAssignment.getEmployee(), rightAssignment.getEmployee());
+        return !ObjectUtils.equals(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new AssignmentSwitchMove(rightAssignment, leftAssignment);
+        return new ShiftAssignmentSwitchMove(rightShiftAssignment, leftShiftAssignment);
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        Employee oldLeftEmployee = leftAssignment.getEmployee();
-        Employee oldRightEmployee = rightAssignment.getEmployee();
-        NurseRosteringMoveHelper.moveEmployee(workingMemory, leftAssignment, oldRightEmployee);
-        NurseRosteringMoveHelper.moveEmployee(workingMemory, rightAssignment, oldLeftEmployee);
+        Employee oldLeftEmployee = leftShiftAssignment.getEmployee();
+        Employee oldRightEmployee = rightShiftAssignment.getEmployee();
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, leftShiftAssignment, oldRightEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, rightShiftAssignment, oldLeftEmployee);
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Arrays.<Assignment>asList(leftAssignment, rightAssignment);
+        return Arrays.<ShiftAssignment>asList(leftShiftAssignment, rightShiftAssignment);
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof AssignmentSwitchMove) {
-            AssignmentSwitchMove other = (AssignmentSwitchMove) o;
+        } else if (o instanceof ShiftAssignmentSwitchMove) {
+            ShiftAssignmentSwitchMove other = (ShiftAssignmentSwitchMove) o;
             return new EqualsBuilder()
-                    .append(leftAssignment, other.leftAssignment)
-                    .append(rightAssignment, other.rightAssignment)
+                    .append(leftShiftAssignment, other.leftShiftAssignment)
+                    .append(rightShiftAssignment, other.rightShiftAssignment)
                     .isEquals();
         } else {
             return false;
@@ -73,13 +73,13 @@ public class AssignmentSwitchMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(leftAssignment)
-                .append(rightAssignment)
+                .append(leftShiftAssignment)
+                .append(rightShiftAssignment)
                 .toHashCode();
     }
 
     public String toString() {
-        return leftAssignment + " <=> " + rightAssignment;
+        return leftShiftAssignment + " <=> " + rightShiftAssignment;
     }
 
 }

@@ -17,31 +17,28 @@
 package org.drools.planner.examples.nurserostering.solver.move.factory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.drools.planner.core.move.CompositeMove;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.AbstractMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
-public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFactory {
+public class ShiftAssignmentSequenceSwitchLength3MoveFactory extends AbstractMoveFactory {
 
     public List<Move> createMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Employee> employeeList = nurseRoster.getEmployeeList();
-        // This code assumes the assignmentList is sorted
-        List<Assignment> assignmentList = nurseRoster.getAssignmentList();
+        // This code assumes the shiftAssignmentList is sorted
+        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
 
         // Hash the assignments per employee
         Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap
@@ -51,19 +48,19 @@ public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFact
             employeeToAssignmentSequenceListMap.put(employee,
                     new ArrayList<AssignmentSequence>(assignmentSequenceCapacity));
         }
-        for (Assignment assignment : assignmentList) {
-            Employee employee = assignment.getEmployee();
+        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
+            Employee employee = shiftAssignment.getEmployee();
             List<AssignmentSequence> assignmentSequenceList = employeeToAssignmentSequenceListMap.get(employee);
             if (assignmentSequenceList.isEmpty()) {
-                AssignmentSequence assignmentSequence = new AssignmentSequence(assignment);
+                AssignmentSequence assignmentSequence = new AssignmentSequence(shiftAssignment);
                 assignmentSequenceList.add(assignmentSequence);
             } else {
                 AssignmentSequence lastAssignmentSequence = assignmentSequenceList // getLast()
                         .get(assignmentSequenceList.size() - 1);
-                if (lastAssignmentSequence.belongsHere(assignment)) {
-                    lastAssignmentSequence.add(assignment);
+                if (lastAssignmentSequence.belongsHere(shiftAssignment)) {
+                    lastAssignmentSequence.add(shiftAssignment);
                 } else {
-                    AssignmentSequence assignmentSequence = new AssignmentSequence(assignment);
+                    AssignmentSequence assignmentSequence = new AssignmentSequence(shiftAssignment);
                     assignmentSequenceList.add(assignmentSequence);
                 }
             }
@@ -82,23 +79,23 @@ public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFact
                 List<AssignmentSequence> rightAssignmentSequenceList
                         = employeeToAssignmentSequenceListMap.get(rightEmployee);
 
-                final int SWITCH_LENGTH = 2;
+                final int SWITCH_LENGTH = 3;
                 for (AssignmentSequence leftAssignmentSequence : leftAssignmentSequenceList) {
-                    List<Assignment> leftAssignmentList = leftAssignmentSequence.getAssignmentList();
-                    for (int leftIndex = 0; leftIndex <= leftAssignmentList.size() - SWITCH_LENGTH; leftIndex++) {
+                    List<ShiftAssignment> leftShiftAssignmentList = leftAssignmentSequence.getShiftAssignmentList();
+                    for (int leftIndex = 0; leftIndex <= leftShiftAssignmentList.size() - SWITCH_LENGTH; leftIndex++) {
 
                         for (AssignmentSequence rightAssignmentSequence : rightAssignmentSequenceList) {
-                            List<Assignment> rightAssignmentList = rightAssignmentSequence.getAssignmentList();
-                            for (int rightIndex = 0; rightIndex <= rightAssignmentList.size() - SWITCH_LENGTH; rightIndex++) {
+                            List<ShiftAssignment> rightShiftAssignmentList = rightAssignmentSequence.getShiftAssignmentList();
+                            for (int rightIndex = 0; rightIndex <= rightShiftAssignmentList.size() - SWITCH_LENGTH; rightIndex++) {
 
                                 List<Move> subMoveList = new ArrayList<Move>(SWITCH_LENGTH * 2);
-                                for (Assignment leftAssignment : leftAssignmentList
+                                for (ShiftAssignment leftShiftAssignment : leftShiftAssignmentList
                                         .subList(leftIndex, leftIndex + SWITCH_LENGTH)) {
-                                    subMoveList.add(new EmployeeChangeMove(leftAssignment, rightEmployee));
+                                    subMoveList.add(new EmployeeChangeMove(leftShiftAssignment, rightEmployee));
                                 }
-                                for (Assignment rightAssignment : rightAssignmentList
+                                for (ShiftAssignment rightShiftAssignment : rightShiftAssignmentList
                                         .subList(rightIndex, rightIndex + SWITCH_LENGTH)) {
-                                    subMoveList.add(new EmployeeChangeMove(rightAssignment, leftEmployee));
+                                    subMoveList.add(new EmployeeChangeMove(rightShiftAssignment, leftEmployee));
                                 }
                                 moveList.add(new CompositeMove(subMoveList));
                             }
@@ -115,19 +112,19 @@ public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFact
      */
     private static class AssignmentSequence {
 
-        private List<Assignment> assignmentList;
+        private List<ShiftAssignment> shiftAssignmentList;
         private int firstDayIndex;
         private int lastDayIndex;
 
-        private AssignmentSequence(Assignment assignment) {
-            assignmentList = new ArrayList<Assignment>();
-            assignmentList.add(assignment);
-            firstDayIndex = assignment.getShiftDateDayIndex();
+        private AssignmentSequence(ShiftAssignment shiftAssignment) {
+            shiftAssignmentList = new ArrayList<ShiftAssignment>();
+            shiftAssignmentList.add(shiftAssignment);
+            firstDayIndex = shiftAssignment.getShiftDateDayIndex();
             lastDayIndex = firstDayIndex;
         }
 
-        public List<Assignment> getAssignmentList() {
-            return assignmentList;
+        public List<ShiftAssignment> getShiftAssignmentList() {
+            return shiftAssignmentList;
         }
 
         public int getFirstDayIndex() {
@@ -138,17 +135,17 @@ public class AssignmentSequenceSwitchLength2MoveFactory extends AbstractMoveFact
             return lastDayIndex;
         }
 
-        private void add(Assignment assignment) {
-            assignmentList.add(assignment);
-            int dayIndex = assignment.getShiftDateDayIndex();
+        private void add(ShiftAssignment shiftAssignment) {
+            shiftAssignmentList.add(shiftAssignment);
+            int dayIndex = shiftAssignment.getShiftDateDayIndex();
             if (dayIndex < lastDayIndex) {
-                throw new IllegalStateException("The assignmentList is expected to be sorted by shiftDate.");
+                throw new IllegalStateException("The shiftAssignmentList is expected to be sorted by shiftDate.");
             }
             lastDayIndex = dayIndex;
         }
 
-        private boolean belongsHere(Assignment assignment) {
-            return assignment.getShiftDateDayIndex() <= (lastDayIndex + 1);
+        private boolean belongsHere(ShiftAssignment shiftAssignment) {
+            return shiftAssignment.getShiftDateDayIndex() <= (lastDayIndex + 1);
         }
 
     }

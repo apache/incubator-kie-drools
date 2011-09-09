@@ -26,18 +26,18 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
 public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
 
     private Employee fromEmployee;
-    private List<Assignment> assignmentList;
+    private List<ShiftAssignment> shiftAssignmentList;
     private Employee toEmployee;
 
-    public EmployeeMultipleChangeMove(Employee fromEmployee, List<Assignment> assignmentList, Employee toEmployee) {
+    public EmployeeMultipleChangeMove(Employee fromEmployee, List<ShiftAssignment> shiftAssignmentList, Employee toEmployee) {
         this.fromEmployee = fromEmployee;
-        this.assignmentList = assignmentList;
+        this.shiftAssignmentList = shiftAssignmentList;
         this.toEmployee = toEmployee;
     }
 
@@ -46,21 +46,21 @@ public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new EmployeeMultipleChangeMove(toEmployee, assignmentList, fromEmployee);
+        return new EmployeeMultipleChangeMove(toEmployee, shiftAssignmentList, fromEmployee);
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        for (Assignment assignment : assignmentList) {
-            if (!assignment.getEmployee().equals(fromEmployee)) {
-                throw new IllegalStateException("The assignment (" + assignment + ") should have the same employee ("
+        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
+            if (!shiftAssignment.getEmployee().equals(fromEmployee)) {
+                throw new IllegalStateException("The shiftAssignment (" + shiftAssignment + ") should have the same employee ("
                         + fromEmployee + ") as the fromEmployee (" + fromEmployee + ").");
             }
-            NurseRosteringMoveHelper.moveEmployee(workingMemory, assignment, toEmployee);
+            NurseRosteringMoveHelper.moveEmployee(workingMemory, shiftAssignment, toEmployee);
         }
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Collections.singletonList(assignmentList);
+        return Collections.singletonList(shiftAssignmentList);
     }
 
     public boolean equals(Object o) {
@@ -70,7 +70,7 @@ public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
             EmployeeMultipleChangeMove other = (EmployeeMultipleChangeMove) o;
             return new EqualsBuilder()
                     .append(fromEmployee, other.fromEmployee)
-                    .append(assignmentList, other.assignmentList)
+                    .append(shiftAssignmentList, other.shiftAssignmentList)
                     .append(toEmployee, other.toEmployee)
                     .isEquals();
         } else {
@@ -81,13 +81,13 @@ public class EmployeeMultipleChangeMove implements Move, TabuPropertyEnabled {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(fromEmployee)
-                .append(assignmentList)
+                .append(shiftAssignmentList)
                 .append(toEmployee)
                 .toHashCode();
     }
 
     public String toString() {
-        return assignmentList + " => " + toEmployee;
+        return shiftAssignmentList + " => " + toEmployee;
     }
 
 }

@@ -23,21 +23,21 @@ import java.util.ListIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
-import org.drools.planner.examples.nurserostering.solver.move.AssignmentSwitchMove;
+import org.drools.planner.examples.nurserostering.solver.move.ShiftAssignmentSwitchMove;
 
-public class AssignmentSwitchMoveFactory extends CachedMoveFactory {
+public class ShiftAssignmentSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         NurseRoster nurseRoster = (NurseRoster) solution;
-        List<Assignment> assignmentList = nurseRoster.getAssignmentList();
+        List<ShiftAssignment> shiftAssignmentList = nurseRoster.getShiftAssignmentList();
         List<Move> moveList = new ArrayList<Move>();
-        for (ListIterator<Assignment> leftIt = assignmentList.listIterator(); leftIt.hasNext();) {
-            Assignment leftAssignment = leftIt.next();
-            for (ListIterator<Assignment> rightIt = assignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                Assignment rightAssignment = rightIt.next();
-                moveList.add(new AssignmentSwitchMove(leftAssignment, rightAssignment));
+        for (ListIterator<ShiftAssignment> leftIt = shiftAssignmentList.listIterator(); leftIt.hasNext();) {
+            ShiftAssignment leftShiftAssignment = leftIt.next();
+            for (ListIterator<ShiftAssignment> rightIt = shiftAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                ShiftAssignment rightShiftAssignment = rightIt.next();
+                moveList.add(new ShiftAssignmentSwitchMove(leftShiftAssignment, rightShiftAssignment));
             }
         }
         return moveList;

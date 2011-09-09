@@ -25,12 +25,12 @@ import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
-import org.drools.planner.examples.nurserostering.domain.solver.AssignmentDifficultyComparator;
+import org.drools.planner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrengthComparator;
 
-@PlanningEntity(difficultyComparatorClass = AssignmentDifficultyComparator.class)
-@XStreamAlias("Assignment")
-public class Assignment extends AbstractPersistable implements Comparable<Assignment> {
+@PlanningEntity(difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
+@XStreamAlias("ShiftAssignment")
+public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
 
     private Shift shift;
 
@@ -59,15 +59,15 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
         return shift.getShiftType().getCode();
     }
 
-    public int compareTo(Assignment other) {
+    public int compareTo(ShiftAssignment other) {
         return new CompareToBuilder()
                 .append(shift, other.shift)
                 .append(employee, other.employee)
                 .toComparison();
     }
 
-    public Assignment clone() {
-        Assignment clone = new Assignment();
+    public ShiftAssignment clone() {
+        ShiftAssignment clone = new ShiftAssignment();
         clone.id = id;
         clone.shift = shift;
         clone.employee = employee;
@@ -82,8 +82,8 @@ public class Assignment extends AbstractPersistable implements Comparable<Assign
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof Assignment) {
-            Assignment other = (Assignment) o;
+        } else if (o instanceof ShiftAssignment) {
+            ShiftAssignment other = (ShiftAssignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(shift, other.shift)

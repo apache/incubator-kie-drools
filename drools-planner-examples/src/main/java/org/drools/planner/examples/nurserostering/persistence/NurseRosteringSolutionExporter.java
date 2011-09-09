@@ -20,7 +20,7 @@ import java.io.IOException;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionExporter;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 import org.jdom.Element;
@@ -63,8 +63,8 @@ public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter 
             softConstraintsPenaltyElement.setText(Integer.toString(nurseRoster.getScore().getSoftScore()));
             solutionElement.addContent(softConstraintsPenaltyElement);
 
-            for (Assignment assignment : nurseRoster.getAssignmentList()) {
-                Shift shift = assignment.getShift();
+            for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
+                Shift shift = shiftAssignment.getShift();
                 if (shift != null) {
                     Element assignmentElement = new Element("Assignment");
                     solutionElement.addContent(assignmentElement);
@@ -74,7 +74,7 @@ public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter 
                     assignmentElement.addContent(dateElement);
 
                     Element employeeElement = new Element("Employee");
-                    employeeElement.setText(assignment.getEmployee().getCode());
+                    employeeElement.setText(shiftAssignment.getEmployee().getCode());
                     assignmentElement.addContent(employeeElement);
 
                     Element shiftTypeElement = new Element("ShiftType");

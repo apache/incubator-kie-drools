@@ -19,16 +19,16 @@ package org.drools.planner.examples.nurserostering.domain.solver;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 
-public class AssignmentDifficultyComparator implements Comparator<Object> {
+public class ShiftAssignmentDifficultyComparator implements Comparator<Object> {
 
     public int compare(Object a, Object b) {
-        return compare((Assignment) a, (Assignment) b);
+        return compare((ShiftAssignment) a, (ShiftAssignment) b);
     }
 
-    public int compare(Assignment a, Assignment b) {
+    public int compare(ShiftAssignment a, ShiftAssignment b) {
         Shift aShift = a.getShift();
         Shift bShift = b.getShift();
         return new CompareToBuilder()

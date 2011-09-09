@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.solver.move.EmployeeChangeMove;
@@ -33,9 +33,9 @@ public class EmployeeChangeMoveFactory extends CachedMoveFactory {
         NurseRoster nurseRoster = (NurseRoster) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();
-        for (Assignment assignment : nurseRoster.getAssignmentList()) {
+        for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
             for (Employee employee : employeeList) {
-                moveList.add(new EmployeeChangeMove(assignment, employee));
+                moveList.add(new EmployeeChangeMove(shiftAssignment, employee));
             }
         }
         return moveList;

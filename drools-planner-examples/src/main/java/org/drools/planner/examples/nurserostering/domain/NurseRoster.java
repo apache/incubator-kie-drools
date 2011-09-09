@@ -56,7 +56,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
     private List<ShiftOffRequest> shiftOffRequestList;
     private List<ShiftOnRequest> shiftOnRequestList;
 
-    private List<Assignment> assignmentList;
+    private List<ShiftAssignment> shiftAssignmentList;
 
     private HardAndSoftScore score;
 
@@ -189,12 +189,12 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
     }
 
     @PlanningEntityCollectionProperty
-    public List<Assignment> getAssignmentList() {
-        return assignmentList;
+    public List<ShiftAssignment> getShiftAssignmentList() {
+        return shiftAssignmentList;
     }
 
-    public void setAssignmentList(List<Assignment> assignmentList) {
-        this.assignmentList = assignmentList;
+    public void setShiftAssignmentList(List<ShiftAssignment> shiftAssignmentList) {
+        this.shiftAssignmentList = shiftAssignmentList;
     }
 
     public HardAndSoftScore getScore() {
@@ -224,12 +224,12 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         facts.addAll(dayOnRequestList);
         facts.addAll(shiftOffRequestList);
         facts.addAll(shiftOnRequestList);
-        // Do not add the planning entity's (assignmentList) because that will be done automatically
+        // Do not add the planning entity's (shiftAssignmentList) because that will be done automatically
         return facts;
     }
 
     /**
-     * Clone will only deep copy the {@link #assignmentList}.
+     * Clone will only deep copy the {@link #shiftAssignmentList}.
      */
     public NurseRoster cloneSolution() {
         NurseRoster clone = new NurseRoster();
@@ -250,13 +250,13 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
         clone.dayOnRequestList = dayOnRequestList;
         clone.shiftOffRequestList = shiftOffRequestList;
         clone.shiftOnRequestList = shiftOnRequestList;
-        List<Assignment> clonedAssignmentList = new ArrayList<Assignment>(
-                assignmentList.size());
-        for (Assignment assignment : assignmentList) {
-            Assignment clonedAssignment = assignment.clone();
-            clonedAssignmentList.add(clonedAssignment);
+        List<ShiftAssignment> clonedShiftAssignmentList = new ArrayList<ShiftAssignment>(
+                shiftAssignmentList.size());
+        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
+            ShiftAssignment clonedShiftAssignment = shiftAssignment.clone();
+            clonedShiftAssignmentList.add(clonedShiftAssignment);
         }
-        clone.assignmentList = clonedAssignmentList;
+        clone.shiftAssignmentList = clonedShiftAssignmentList;
         clone.score = score;
         return clone;
     }
@@ -269,14 +269,14 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
             return false;
         } else {
             NurseRoster other = (NurseRoster) o;
-            if (assignmentList.size() != other.assignmentList.size()) {
+            if (shiftAssignmentList.size() != other.shiftAssignmentList.size()) {
                 return false;
             }
-            for (Iterator<Assignment> it = assignmentList.iterator(), otherIt = other.assignmentList.iterator(); it.hasNext();) {
-                Assignment assignment = it.next();
-                Assignment otherAssignment = otherIt.next();
+            for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(), otherIt = other.shiftAssignmentList.iterator(); it.hasNext();) {
+                ShiftAssignment shiftAssignment = it.next();
+                ShiftAssignment otherShiftAssignment = otherIt.next();
                 // Notice: we don't use equals()
-                if (!assignment.solutionEquals(otherAssignment)) {
+                if (!shiftAssignment.solutionEquals(otherShiftAssignment)) {
                     return false;
                 }
             }
@@ -286,9 +286,9 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardAnd
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (Assignment assignment : assignmentList) {
+        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(assignment.solutionHashCode());
+            hashCodeBuilder.append(shiftAssignment.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }

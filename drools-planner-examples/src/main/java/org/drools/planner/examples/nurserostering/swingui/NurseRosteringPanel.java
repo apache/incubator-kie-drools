@@ -33,7 +33,7 @@ import javax.swing.JPanel;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Employee;
@@ -83,10 +83,10 @@ public class NurseRosteringPanel extends SolutionPanel {
             createEmployeeLine(nurseRoster, employeeShiftDatePanelMap, employee);
         }
         createEmployeeLine(nurseRoster, employeeShiftDatePanelMap, null);
-        for (Assignment assignment : nurseRoster.getAssignmentList()) {
-            Employee employee = assignment.getEmployee();
-            EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(assignment.getShiftDate());
-            employeeShiftDatePanel.addAssignment(assignment);
+        for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
+            Employee employee = shiftAssignment.getEmployee();
+            EmployeeShiftDatePanel employeeShiftDatePanel = employeeShiftDatePanelMap.get(employee).get(shiftAssignment.getShiftDate());
+            employeeShiftDatePanel.addShiftAssignment(shiftAssignment);
         }
     }
 
@@ -124,31 +124,31 @@ public class NurseRosteringPanel extends SolutionPanel {
                     BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         }
 
-        public void addAssignment(Assignment assignment) {
-            JButton button = new JButton(new AssignmentAction(assignment));
+        public void addShiftAssignment(ShiftAssignment shiftAssignment) {
+            JButton button = new JButton(new ShiftAssignmentAction(shiftAssignment));
             add(button);
         }
 
     }
 
-    private class AssignmentAction extends AbstractAction {
+    private class ShiftAssignmentAction extends AbstractAction {
 
-        private Assignment assignment;
+        private ShiftAssignment shiftAssignment;
 
-        public AssignmentAction(Assignment assignment) {
-            super(assignment.getLabel());
-            this.assignment = assignment;
+        public ShiftAssignmentAction(ShiftAssignment shiftAssignment) {
+            super(shiftAssignment.getLabel());
+            this.shiftAssignment = shiftAssignment;
         }
 
         public void actionPerformed(ActionEvent e) {
             List<Employee> employeeList = getNurseRoster().getEmployeeList();
             JComboBox employeeListField = new JComboBox(employeeList.toArray());
-            employeeListField.setSelectedItem(assignment.getEmployee());
+            employeeListField.setSelectedItem(shiftAssignment.getEmployee());
             int result = JOptionPane.showConfirmDialog(NurseRosteringPanel.this.getRootPane(), employeeListField,
                     "Select employee", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Employee toEmployee = (Employee) employeeListField.getSelectedItem();
-                solutionBusiness.doMove(new EmployeeChangeMove(assignment, toEmployee));
+                solutionBusiness.doMove(new EmployeeChangeMove(shiftAssignment, toEmployee));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

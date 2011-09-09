@@ -23,7 +23,7 @@ import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
@@ -70,7 +70,7 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 //        $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize)
 //
 //        $totalEmployeeSize : Number(intValue != $requiredEmployeeSize) from accumulate(
-//            $assignment : Assignment(shift == $shift),
+//            $assignment : ShiftAssignment(shift == $shift),
 //            count($assignment)
 //        )
 //    then
@@ -82,8 +82,8 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
 rule "oneShiftPerDay"
     when
-        $leftAssignment : Assignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
-        $rightAssignment : Assignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
+        $leftAssignment : ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate)
+        $rightAssignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
     then
         insertLogical(new IntConstraintOccurrence("oneShiftPerDay", ConstraintType.NEGATIVE_HARD,
                 1,
@@ -101,7 +101,7 @@ rule "insertEmployeeAssignmentTotal"
             $contract : contract)
         $employee : Employee(contract == $contract)
         $assignmentTotal : Number() from accumulate(
-            $assignment : Assignment(employee == $employee),
+            $assignment : ShiftAssignment(employee == $employee),
             count($assignment)
         )
     then
@@ -142,26 +142,26 @@ end
 rule "insertEmployeeConsecutiveAssignmentStart"
         salience 2 // Do these rules first (optional, for performance)
     when
-        Assignment(
+        ShiftAssignment(
             $employee : employee,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
         )
         // The first day has no working day before it
-        not Assignment(employee == $employee, shiftDateDayIndex == ($dayIndex - 1))
+        not ShiftAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex - 1))
     then
         insertLogical(new EmployeeConsecutiveAssignmentStart($employee, $shiftDate));
 end
 rule "insertEmployeeConsecutiveAssignmentEnd"
         salience 2 // Do these rules first (optional, for performance)
     when
-        Assignment(
+        ShiftAssignment(
             $employee : employee,
             $dayIndex : shiftDateDayIndex,
             $shiftDate : shiftDate
         )
         // The last day has no working day after it
-        not Assignment(employee == $employee, shiftDateDayIndex == ($dayIndex + 1))
+        not ShiftAssignment(employee == $employee, shiftDateDayIndex == ($dayIndex + 1))
     then
         insertLogical(new EmployeeConsecutiveAssignmentEnd($employee, $shiftDate));
 end
@@ -343,13 +343,13 @@ end
 rule "insertEmployeeConsecutiveWeekendAssignmentStart"
         salience 2 // Do these rules first (optional, for performance)
     when
-        Assignment(
+        ShiftAssignment(
             weekend == true,
             $employee : employee,
             $weekendSundayIndex : weekendSundayIndex
         )
         // The first working weekend has no working weekend before it
-        not Assignment(
+        not ShiftAssignment(
             weekend == true,
             employee == $employee,
             weekendSundayIndex == ($weekendSundayIndex - 7)
@@ -360,13 +360,13 @@ end
 rule "insertEmployeeConsecutiveWeekendAssignmentEnd"
         salience 2 // Do these rules first (optional, for performance)
     when
-        Assignment(
+        ShiftAssignment(
             weekend == true,
             $employee : employee,
             $weekendSundayIndex : weekendSundayIndex
         )
         // The last working weekend has no working weekend after it
-        not Assignment(
+        not ShiftAssignment(
             weekend == true,
             employee == $employee,
             weekendSundayIndex == ($weekendSundayIndex + 7)
@@ -481,7 +481,7 @@ rule "identicalShiftTypesDuringWeekend"
         ShiftDate(dayOfWeek == DayOfWeek.SUNDAY, $sundayIndex : dayIndex)
         $shiftType : ShiftType()
         $weekendAssignmentTotal : Number(intValue > 0 && < $weekendLength) from accumulate(
-            $assignment : Assignment(
+            $assignment : ShiftAssignment(
                 weekend == true,
                 weekendSundayIndex == $sundayIndex,
                 employee == $employee,
@@ -501,7 +501,7 @@ end
 rule "dayOffRequest"
     when
         $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
-        $assignment : Assignment(employee == $employee, shiftDate == $shiftDate)
+        $assignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -510,7 +510,7 @@ end
 rule "dayOnRequest"
     when
         $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
-        not Assignment(employee == $employee, shiftDate == $shiftDate)
+        not ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
     then
         insertLogical(new IntConstraintOccurrence("dayOnRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -521,7 +521,7 @@ end
 rule "shiftOffRequest"
     when
         $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
-        $assignment : Assignment(employee == $employee, shift == $shift)
+        $assignment : ShiftAssignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOffRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -530,7 +530,7 @@ end
 rule "shiftOnRequest"
     when
         $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight)
-        not Assignment(employee == $employee, shift == $shift)
+        not ShiftAssignment(employee == $employee, shift == $shift)
     then
         insertLogical(new IntConstraintOccurrence("shiftOnRequest", ConstraintType.NEGATIVE_SOFT,
                 $weight,
@@ -542,7 +542,7 @@ rule "alternativeSkill"
     when
         $contractLine : BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY,
             $contract : contract)
-        $assignment : Assignment(contract == $contract, $employee : employee, $shiftType : shiftType)
+        $assignment : ShiftAssignment(contract == $contract, $employee : employee, $shiftType : shiftType)
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
         not SkillProficiency(employee == $employee, skill == $skill)
     then
@@ -562,12 +562,12 @@ rule "unwantedPatternFreeBefore2DaysWithAWorkDayPattern"
         )
         ShiftDate(dayOfWeek == $freeDayOfWeek, $freeDayIndex : dayIndex)
 
-        Assignment(
+        ShiftAssignment(
             contract == $contract,
             shiftDateDayIndex == ($freeDayIndex + 1) || shiftDateDayIndex == ($freeDayIndex + 2),
             $employee : employee
         )
-        not Assignment(
+        not ShiftAssignment(
             employee == $employee,
             shiftDateDayIndex == $freeDayIndex
         )
@@ -589,7 +589,7 @@ end
 //            pattern == $pattern, $contract : contract
 //        )
 //
-//        Assignment(
+//        ShiftAssignment(
 //            eval($workDayOfWeek == null) || (shiftDateDayOfWeek == $workDayOfWeek),
 //            eval($workShiftType == null) || (shiftType == $workShiftType),
 //            contract == $contract,
@@ -616,12 +616,12 @@ rule "unwantedPatternShiftType2DaysPattern"
             pattern == $pattern, $contract : contract
         )
 
-        Assignment(
+        ShiftAssignment(
             shiftType == $dayIndex0ShiftType,
             contract == $contract,
             $employee : employee, $firstDayIndex : shiftDateDayIndex
         )
-        Assignment(
+        ShiftAssignment(
             eval($dayIndex1ShiftType == null) || (shiftType == $dayIndex1ShiftType),
             employee == $employee,
             shiftDateDayIndex == ($firstDayIndex + 1)
@@ -642,17 +642,17 @@ rule "unwantedPatternShiftType3DaysPattern"
             pattern == $pattern, $contract : contract
         )
 
-        Assignment(
+        ShiftAssignment(
             shiftType == $dayIndex0ShiftType,
             contract == $contract,
             $employee : employee, $firstDayIndex : shiftDateDayIndex
         )
-        Assignment(
+        ShiftAssignment(
             shiftType == $dayIndex1ShiftType,
             employee == $employee,
             shiftDateDayIndex == ($firstDayIndex + 1)
         )
-        Assignment(
+        ShiftAssignment(
             shiftType == $dayIndex2ShiftType,
             employee == $employee,
             shiftDateDayIndex == ($firstDayIndex + 2)

@@ -28,7 +28,7 @@ import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.NurseRoster;
 import org.drools.planner.examples.nurserostering.domain.Shift;
@@ -51,17 +51,17 @@ public class NurseRosteringStartingSolutionInitializer implements CustomSolverPh
         WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
 
         // TODO the planning entity list from the solution should be used and might already contain initialized entities
-        List<Assignment> assignmentList = createAssignmentList(nurseRoster);
-        for (Assignment assignment : assignmentList) {
+        List<ShiftAssignment> shiftAssignmentList = createAssignmentList(nurseRoster);
+        for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
             FactHandle assignmentHandle = null;
             Score bestScore = DefaultHardAndSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
             Employee bestEmployee = null;
             for (Employee employee : employeeList) {
-                assignment.setEmployee(employee);
+                shiftAssignment.setEmployee(employee);
                 if (assignmentHandle == null) {
-                    assignmentHandle = workingMemory.insert(assignment);
+                    assignmentHandle = workingMemory.insert(shiftAssignment);
                 } else {
-                    workingMemory.update(assignmentHandle, assignment);
+                    workingMemory.update(assignmentHandle, shiftAssignment);
                 }
                 Score score = solutionDirector.calculateScoreFromWorkingMemory();
                 if (score.compareTo(bestScore) > 0) {
@@ -72,16 +72,16 @@ public class NurseRosteringStartingSolutionInitializer implements CustomSolverPh
             if (bestEmployee == null) {
                 throw new IllegalStateException("The bestEmployee (" + bestEmployee + ") cannot be null.");
             }
-            assignment.setEmployee(bestEmployee);
-            workingMemory.update(assignmentHandle, assignment);
-            logger.debug("    Assignment ({}) initialized for starting solution.", assignment);
+            shiftAssignment.setEmployee(bestEmployee);
+            workingMemory.update(assignmentHandle, shiftAssignment);
+            logger.debug("    ShiftAssignment ({}) initialized for starting solution.", shiftAssignment);
         }
 
-        Collections.sort(assignmentList, new PersistableIdComparator());
-        nurseRoster.setAssignmentList(assignmentList);
+        Collections.sort(shiftAssignmentList, new PersistableIdComparator());
+        nurseRoster.setShiftAssignmentList(shiftAssignmentList);
     }
 
-    public List<Assignment> createAssignmentList(NurseRoster nurseRoster) {
+    public List<ShiftAssignment> createAssignmentList(NurseRoster nurseRoster) {
         List<Shift> shiftList = nurseRoster.getShiftList();
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
 
@@ -92,20 +92,20 @@ public class NurseRosteringStartingSolutionInitializer implements CustomSolverPh
         }
         Collections.sort(shiftInitializationWeightList);
 
-        List<Assignment> assignmentList = new ArrayList<Assignment>(
+        List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(
                 shiftDateList.size() * nurseRoster.getEmployeeList().size());
         int assignmentId = 0;
         for (ShiftInitializationWeight shiftInitializationWeight : shiftInitializationWeightList) {
             Shift shift = shiftInitializationWeight.getShift();
             for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
-                Assignment assignment = new Assignment();
-                assignment.setId((long) assignmentId);
-                assignment.setShift(shift);
-                assignmentList.add(assignment);
+                ShiftAssignment shiftAssignment = new ShiftAssignment();
+                shiftAssignment.setId((long) assignmentId);
+                shiftAssignment.setShift(shift);
+                shiftAssignmentList.add(shiftAssignment);
                 assignmentId++;
             }
         }
-        return assignmentList;
+        return shiftAssignmentList;
     }
 
     private class ShiftInitializationWeight implements Comparable<ShiftInitializationWeight> {

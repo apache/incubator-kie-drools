@@ -17,16 +17,16 @@
 package org.drools.planner.examples.nurserostering.solver.move;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.FactHandle;
 
 public class NurseRosteringMoveHelper {
 
-    public static void moveEmployee(WorkingMemory workingMemory, Assignment assignment, Employee toEmployee) {
-        FactHandle factHandle = workingMemory.getFactHandle(assignment);
-        assignment.setEmployee(toEmployee);
-        workingMemory.update(factHandle, assignment);
+    public static void moveEmployee(WorkingMemory workingMemory, ShiftAssignment shiftAssignment, Employee toEmployee) {
+        FactHandle factHandle = workingMemory.getFactHandle(shiftAssignment);
+        shiftAssignment.setEmployee(toEmployee);
+        workingMemory.update(factHandle, shiftAssignment);
     }
 
     private NurseRosteringMoveHelper() {

@@ -26,32 +26,32 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.nurserostering.domain.Employee;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 
 public class EmployeeChangeMove implements Move, TabuPropertyEnabled {
 
-    private Assignment assignment;
+    private ShiftAssignment shiftAssignment;
     private Employee toEmployee;
 
-    public EmployeeChangeMove(Assignment assignment, Employee toEmployee) {
-        this.assignment = assignment;
+    public EmployeeChangeMove(ShiftAssignment shiftAssignment, Employee toEmployee) {
+        this.shiftAssignment = shiftAssignment;
         this.toEmployee = toEmployee;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(assignment.getEmployee(), toEmployee);
+        return !ObjectUtils.equals(shiftAssignment.getEmployee(), toEmployee);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new EmployeeChangeMove(assignment, assignment.getEmployee());
+        return new EmployeeChangeMove(shiftAssignment, shiftAssignment.getEmployee());
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        NurseRosteringMoveHelper.moveEmployee(workingMemory, assignment, toEmployee);
+        NurseRosteringMoveHelper.moveEmployee(workingMemory, shiftAssignment, toEmployee);
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Collections.singletonList(assignment);
+        return Collections.singletonList(shiftAssignment);
     }
 
     public boolean equals(Object o) {
@@ -60,7 +60,7 @@ public class EmployeeChangeMove implements Move, TabuPropertyEnabled {
         } else if (o instanceof EmployeeChangeMove) {
             EmployeeChangeMove other = (EmployeeChangeMove) o;
             return new EqualsBuilder()
-                    .append(assignment, other.assignment)
+                    .append(shiftAssignment, other.shiftAssignment)
                     .append(toEmployee, other.toEmployee)
                     .isEquals();
         } else {
@@ -70,13 +70,13 @@ public class EmployeeChangeMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(assignment)
+                .append(shiftAssignment)
                 .append(toEmployee)
                 .toHashCode();
     }
 
     public String toString() {
-        return assignment + " => " + toEmployee;
+        return shiftAssignment + " => " + toEmployee;
     }
 
 }

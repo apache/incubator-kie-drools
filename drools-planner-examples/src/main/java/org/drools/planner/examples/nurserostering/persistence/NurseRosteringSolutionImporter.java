@@ -33,7 +33,7 @@ import java.util.TimeZone;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractXmlSolutionImporter;
-import org.drools.planner.examples.nurserostering.domain.Assignment;
+import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.DayOfWeek;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.FreeBefore2DaysWithAWorkDayPattern;
@@ -111,7 +111,7 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             readDayOnRequestList(nurseRoster, schedulingPeriodElement.getChild("DayOnRequests"));
             readShiftOffRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOffRequests"));
             readShiftOnRequestList(nurseRoster, schedulingPeriodElement.getChild("ShiftOnRequests"));
-            createAssignmentList(nurseRoster);
+            createShiftAssignmentList(nurseRoster);
 
             logger.info("NurseRoster {} with {} skills, {} shiftTypes, {} patterns, {} contracts, {} employees," +
                     " {} shiftDates, {} shifts and {} requests.",
@@ -997,21 +997,21 @@ public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter 
             nurseRoster.setShiftOnRequestList(shiftOnRequestList);
         }
 
-        private void createAssignmentList(NurseRoster nurseRoster) {
+        private void createShiftAssignmentList(NurseRoster nurseRoster) {
             List<Shift> shiftList = nurseRoster.getShiftList();
-            List<Assignment> assignmentList = new ArrayList<Assignment>(shiftList.size());
+            List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(shiftList.size());
             long id = 0L;
             for (Shift shift : shiftList) {
                 for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {
-                    Assignment assignment = new Assignment();
-                    assignment.setId(id);
+                    ShiftAssignment shiftAssignment = new ShiftAssignment();
+                    shiftAssignment.setId(id);
                     id++;
-                    assignment.setShift(shift);
+                    shiftAssignment.setShift(shift);
                     // Notice that we leave the PlanningVariable properties on null
-                    assignmentList.add(assignment);
+                    shiftAssignmentList.add(shiftAssignment);
                 }
             }
-            nurseRoster.setAssignmentList(assignmentList);
+            nurseRoster.setShiftAssignmentList(shiftAssignmentList);
         }
 
     }

@@ -116,7 +116,7 @@
     <unsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</unsolvedSolutionFile>
     <solver>
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
+      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -133,10 +133,10 @@
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -154,7 +154,7 @@
     <unsolvedSolutionFile>data/nurserostering/unsolved/medium01.xml</unsolvedSolutionFile>
     <solver>
       <solutionClass>org.drools.planner.examples.nurserostering.domain.NurseRoster</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.Assignment</planningEntityClass>
+      <planningEntityClass>org.drools.planner.examples.nurserostering.domain.ShiftAssignment</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -171,10 +171,10 @@
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentSwitchMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.AssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwitchMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>

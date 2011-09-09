@@ -2572,614 +2572,614 @@
     </ShiftOffRequest>
   </shiftOffRequestList>
   <shiftOnRequestList class="java.util.Collections$EmptyList" reference="358"/>
-  <assignmentList id="410">
-    <Assignment id="411">
+  <shiftAssignmentList id="410">
+    <ShiftAssignment id="411">
       <id>0</id>
       <shift reference="90"/>
-    </Assignment>
-    <Assignment id="412">
+    </ShiftAssignment>
+    <ShiftAssignment id="412">
       <id>1</id>
       <shift reference="90"/>
-    </Assignment>
-    <Assignment id="413">
+    </ShiftAssignment>
+    <ShiftAssignment id="413">
       <id>2</id>
       <shift reference="91"/>
-    </Assignment>
-    <Assignment id="414">
+    </ShiftAssignment>
+    <ShiftAssignment id="414">
       <id>3</id>
       <shift reference="91"/>
-    </Assignment>
-    <Assignment id="415">
+    </ShiftAssignment>
+    <ShiftAssignment id="415">
       <id>4</id>
       <shift reference="92"/>
-    </Assignment>
-    <Assignment id="416">
+    </ShiftAssignment>
+    <ShiftAssignment id="416">
       <id>5</id>
       <shift reference="93"/>
-    </Assignment>
-    <Assignment id="417">
+    </ShiftAssignment>
+    <ShiftAssignment id="417">
       <id>6</id>
       <shift reference="96"/>
-    </Assignment>
-    <Assignment id="418">
+    </ShiftAssignment>
+    <ShiftAssignment id="418">
       <id>7</id>
       <shift reference="97"/>
-    </Assignment>
-    <Assignment id="419">
+    </ShiftAssignment>
+    <ShiftAssignment id="419">
       <id>8</id>
       <shift reference="98"/>
-    </Assignment>
-    <Assignment id="420">
+    </ShiftAssignment>
+    <ShiftAssignment id="420">
       <id>9</id>
       <shift reference="99"/>
-    </Assignment>
-    <Assignment id="421">
+    </ShiftAssignment>
+    <ShiftAssignment id="421">
       <id>10</id>
       <shift reference="102"/>
-    </Assignment>
-    <Assignment id="422">
+    </ShiftAssignment>
+    <ShiftAssignment id="422">
       <id>11</id>
       <shift reference="103"/>
-    </Assignment>
-    <Assignment id="423">
+    </ShiftAssignment>
+    <ShiftAssignment id="423">
       <id>12</id>
       <shift reference="104"/>
-    </Assignment>
-    <Assignment id="424">
+    </ShiftAssignment>
+    <ShiftAssignment id="424">
       <id>13</id>
       <shift reference="105"/>
-    </Assignment>
-    <Assignment id="425">
+    </ShiftAssignment>
+    <ShiftAssignment id="425">
       <id>14</id>
       <shift reference="108"/>
-    </Assignment>
-    <Assignment id="426">
+    </ShiftAssignment>
+    <ShiftAssignment id="426">
       <id>15</id>
       <shift reference="108"/>
-    </Assignment>
-    <Assignment id="427">
+    </ShiftAssignment>
+    <ShiftAssignment id="427">
       <id>16</id>
       <shift reference="109"/>
-    </Assignment>
-    <Assignment id="428">
+    </ShiftAssignment>
+    <ShiftAssignment id="428">
       <id>17</id>
       <shift reference="109"/>
-    </Assignment>
-    <Assignment id="429">
+    </ShiftAssignment>
+    <ShiftAssignment id="429">
       <id>18</id>
       <shift reference="110"/>
-    </Assignment>
-    <Assignment id="430">
+    </ShiftAssignment>
+    <ShiftAssignment id="430">
       <id>19</id>
       <shift reference="111"/>
-    </Assignment>
-    <Assignment id="431">
+    </ShiftAssignment>
+    <ShiftAssignment id="431">
       <id>20</id>
       <shift reference="114"/>
-    </Assignment>
-    <Assignment id="432">
+    </ShiftAssignment>
+    <ShiftAssignment id="432">
       <id>21</id>
       <shift reference="114"/>
-    </Assignment>
-    <Assignment id="433">
+    </ShiftAssignment>
+    <ShiftAssignment id="433">
       <id>22</id>
       <shift reference="115"/>
-    </Assignment>
-    <Assignment id="434">
+    </ShiftAssignment>
+    <ShiftAssignment id="434">
       <id>23</id>
       <shift reference="115"/>
-    </Assignment>
-    <Assignment id="435">
+    </ShiftAssignment>
+    <ShiftAssignment id="435">
       <id>24</id>
       <shift reference="116"/>
-    </Assignment>
-    <Assignment id="436">
+    </ShiftAssignment>
+    <ShiftAssignment id="436">
       <id>25</id>
       <shift reference="117"/>
-    </Assignment>
-    <Assignment id="437">
+    </ShiftAssignment>
+    <ShiftAssignment id="437">
       <id>26</id>
       <shift reference="120"/>
-    </Assignment>
-    <Assignment id="438">
+    </ShiftAssignment>
+    <ShiftAssignment id="438">
       <id>27</id>
       <shift reference="120"/>
-    </Assignment>
-    <Assignment id="439">
+    </ShiftAssignment>
+    <ShiftAssignment id="439">
       <id>28</id>
       <shift reference="121"/>
-    </Assignment>
-    <Assignment id="440">
+    </ShiftAssignment>
+    <ShiftAssignment id="440">
       <id>29</id>
       <shift reference="121"/>
-    </Assignment>
-    <Assignment id="441">
+    </ShiftAssignment>
+    <ShiftAssignment id="441">
       <id>30</id>
       <shift reference="122"/>
-    </Assignment>
-    <Assignment id="442">
+    </ShiftAssignment>
+    <ShiftAssignment id="442">
       <id>31</id>
       <shift reference="123"/>
-    </Assignment>
-    <Assignment id="443">
+    </ShiftAssignment>
+    <ShiftAssignment id="443">
       <id>32</id>
       <shift reference="126"/>
-    </Assignment>
-    <Assignment id="444">
+    </ShiftAssignment>
+    <ShiftAssignment id="444">
       <id>33</id>
       <shift reference="126"/>
-    </Assignment>
-    <Assignment id="445">
+    </ShiftAssignment>
+    <ShiftAssignment id="445">
       <id>34</id>
       <shift reference="127"/>
-    </Assignment>
-    <Assignment id="446">
+    </ShiftAssignment>
+    <ShiftAssignment id="446">
       <id>35</id>
       <shift reference="127"/>
-    </Assignment>
-    <Assignment id="447">
+    </ShiftAssignment>
+    <ShiftAssignment id="447">
       <id>36</id>
       <shift reference="128"/>
-    </Assignment>
-    <Assignment id="448">
+    </ShiftAssignment>
+    <ShiftAssignment id="448">
       <id>37</id>
       <shift reference="129"/>
-    </Assignment>
-    <Assignment id="449">
+    </ShiftAssignment>
+    <ShiftAssignment id="449">
       <id>38</id>
       <shift reference="132"/>
-    </Assignment>
-    <Assignment id="450">
+    </ShiftAssignment>
+    <ShiftAssignment id="450">
       <id>39</id>
       <shift reference="132"/>
-    </Assignment>
-    <Assignment id="451">
+    </ShiftAssignment>
+    <ShiftAssignment id="451">
       <id>40</id>
       <shift reference="133"/>
-    </Assignment>
-    <Assignment id="452">
+    </ShiftAssignment>
+    <ShiftAssignment id="452">
       <id>41</id>
       <shift reference="133"/>
-    </Assignment>
-    <Assignment id="453">
+    </ShiftAssignment>
+    <ShiftAssignment id="453">
       <id>42</id>
       <shift reference="134"/>
-    </Assignment>
-    <Assignment id="454">
+    </ShiftAssignment>
+    <ShiftAssignment id="454">
       <id>43</id>
       <shift reference="135"/>
-    </Assignment>
-    <Assignment id="455">
+    </ShiftAssignment>
+    <ShiftAssignment id="455">
       <id>44</id>
       <shift reference="138"/>
-    </Assignment>
-    <Assignment id="456">
+    </ShiftAssignment>
+    <ShiftAssignment id="456">
       <id>45</id>
       <shift reference="139"/>
-    </Assignment>
-    <Assignment id="457">
+    </ShiftAssignment>
+    <ShiftAssignment id="457">
       <id>46</id>
       <shift reference="140"/>
-    </Assignment>
-    <Assignment id="458">
+    </ShiftAssignment>
+    <ShiftAssignment id="458">
       <id>47</id>
       <shift reference="141"/>
-    </Assignment>
-    <Assignment id="459">
+    </ShiftAssignment>
+    <ShiftAssignment id="459">
       <id>48</id>
       <shift reference="144"/>
-    </Assignment>
-    <Assignment id="460">
+    </ShiftAssignment>
+    <ShiftAssignment id="460">
       <id>49</id>
       <shift reference="145"/>
-    </Assignment>
-    <Assignment id="461">
+    </ShiftAssignment>
+    <ShiftAssignment id="461">
       <id>50</id>
       <shift reference="146"/>
-    </Assignment>
-    <Assignment id="462">
+    </ShiftAssignment>
+    <ShiftAssignment id="462">
       <id>51</id>
       <shift reference="147"/>
-    </Assignment>
-    <Assignment id="463">
+    </ShiftAssignment>
+    <ShiftAssignment id="463">
       <id>52</id>
       <shift reference="150"/>
-    </Assignment>
-    <Assignment id="464">
+    </ShiftAssignment>
+    <ShiftAssignment id="464">
       <id>53</id>
       <shift reference="150"/>
-    </Assignment>
-    <Assignment id="465">
+    </ShiftAssignment>
+    <ShiftAssignment id="465">
       <id>54</id>
       <shift reference="151"/>
-    </Assignment>
-    <Assignment id="466">
+    </ShiftAssignment>
+    <ShiftAssignment id="466">
       <id>55</id>
       <shift reference="151"/>
-    </Assignment>
-    <Assignment id="467">
+    </ShiftAssignment>
+    <ShiftAssignment id="467">
       <id>56</id>
       <shift reference="152"/>
-    </Assignment>
-    <Assignment id="468">
+    </ShiftAssignment>
+    <ShiftAssignment id="468">
       <id>57</id>
       <shift reference="153"/>
-    </Assignment>
-    <Assignment id="469">
+    </ShiftAssignment>
+    <ShiftAssignment id="469">
       <id>58</id>
       <shift reference="156"/>
-    </Assignment>
-    <Assignment id="470">
+    </ShiftAssignment>
+    <ShiftAssignment id="470">
       <id>59</id>
       <shift reference="156"/>
-    </Assignment>
-    <Assignment id="471">
+    </ShiftAssignment>
+    <ShiftAssignment id="471">
       <id>60</id>
       <shift reference="157"/>
-    </Assignment>
-    <Assignment id="472">
+    </ShiftAssignment>
+    <ShiftAssignment id="472">
       <id>61</id>
       <shift reference="157"/>
-    </Assignment>
-    <Assignment id="473">
+    </ShiftAssignment>
+    <ShiftAssignment id="473">
       <id>62</id>
       <shift reference="158"/>
-    </Assignment>
-    <Assignment id="474">
+    </ShiftAssignment>
+    <ShiftAssignment id="474">
       <id>63</id>
       <shift reference="159"/>
-    </Assignment>
-    <Assignment id="475">
+    </ShiftAssignment>
+    <ShiftAssignment id="475">
       <id>64</id>
       <shift reference="162"/>
-    </Assignment>
-    <Assignment id="476">
+    </ShiftAssignment>
+    <ShiftAssignment id="476">
       <id>65</id>
       <shift reference="162"/>
-    </Assignment>
-    <Assignment id="477">
+    </ShiftAssignment>
+    <ShiftAssignment id="477">
       <id>66</id>
       <shift reference="163"/>
-    </Assignment>
-    <Assignment id="478">
+    </ShiftAssignment>
+    <ShiftAssignment id="478">
       <id>67</id>
       <shift reference="163"/>
-    </Assignment>
-    <Assignment id="479">
+    </ShiftAssignment>
+    <ShiftAssignment id="479">
       <id>68</id>
       <shift reference="164"/>
-    </Assignment>
-    <Assignment id="480">
+    </ShiftAssignment>
+    <ShiftAssignment id="480">
       <id>69</id>
       <shift reference="165"/>
-    </Assignment>
-    <Assignment id="481">
+    </ShiftAssignment>
+    <ShiftAssignment id="481">
       <id>70</id>
       <shift reference="168"/>
-    </Assignment>
-    <Assignment id="482">
+    </ShiftAssignment>
+    <ShiftAssignment id="482">
       <id>71</id>
       <shift reference="168"/>
-    </Assignment>
-    <Assignment id="483">
+    </ShiftAssignment>
+    <ShiftAssignment id="483">
       <id>72</id>
       <shift reference="169"/>
-    </Assignment>
-    <Assignment id="484">
+    </ShiftAssignment>
+    <ShiftAssignment id="484">
       <id>73</id>
       <shift reference="169"/>
-    </Assignment>
-    <Assignment id="485">
+    </ShiftAssignment>
+    <ShiftAssignment id="485">
       <id>74</id>
       <shift reference="170"/>
-    </Assignment>
-    <Assignment id="486">
+    </ShiftAssignment>
+    <ShiftAssignment id="486">
       <id>75</id>
       <shift reference="171"/>
-    </Assignment>
-    <Assignment id="487">
+    </ShiftAssignment>
+    <ShiftAssignment id="487">
       <id>76</id>
       <shift reference="174"/>
-    </Assignment>
-    <Assignment id="488">
+    </ShiftAssignment>
+    <ShiftAssignment id="488">
       <id>77</id>
       <shift reference="174"/>
-    </Assignment>
-    <Assignment id="489">
+    </ShiftAssignment>
+    <ShiftAssignment id="489">
       <id>78</id>
       <shift reference="175"/>
-    </Assignment>
-    <Assignment id="490">
+    </ShiftAssignment>
+    <ShiftAssignment id="490">
       <id>79</id>
       <shift reference="175"/>
-    </Assignment>
-    <Assignment id="491">
+    </ShiftAssignment>
+    <ShiftAssignment id="491">
       <id>80</id>
       <shift reference="176"/>
-    </Assignment>
-    <Assignment id="492">
+    </ShiftAssignment>
+    <ShiftAssignment id="492">
       <id>81</id>
       <shift reference="177"/>
-    </Assignment>
-    <Assignment id="493">
+    </ShiftAssignment>
+    <ShiftAssignment id="493">
       <id>82</id>
       <shift reference="180"/>
-    </Assignment>
-    <Assignment id="494">
+    </ShiftAssignment>
+    <ShiftAssignment id="494">
       <id>83</id>
       <shift reference="181"/>
-    </Assignment>
-    <Assignment id="495">
+    </ShiftAssignment>
+    <ShiftAssignment id="495">
       <id>84</id>
       <shift reference="182"/>
-    </Assignment>
-    <Assignment id="496">
+    </ShiftAssignment>
+    <ShiftAssignment id="496">
       <id>85</id>
       <shift reference="183"/>
-    </Assignment>
-    <Assignment id="497">
+    </ShiftAssignment>
+    <ShiftAssignment id="497">
       <id>86</id>
       <shift reference="186"/>
-    </Assignment>
-    <Assignment id="498">
+    </ShiftAssignment>
+    <ShiftAssignment id="498">
       <id>87</id>
       <shift reference="187"/>
-    </Assignment>
-    <Assignment id="499">
+    </ShiftAssignment>
+    <ShiftAssignment id="499">
       <id>88</id>
       <shift reference="188"/>
-    </Assignment>
-    <Assignment id="500">
+    </ShiftAssignment>
+    <ShiftAssignment id="500">
       <id>89</id>
       <shift reference="189"/>
-    </Assignment>
-    <Assignment id="501">
+    </ShiftAssignment>
+    <ShiftAssignment id="501">
       <id>90</id>
       <shift reference="192"/>
-    </Assignment>
-    <Assignment id="502">
+    </ShiftAssignment>
+    <ShiftAssignment id="502">
       <id>91</id>
       <shift reference="192"/>
-    </Assignment>
-    <Assignment id="503">
+    </ShiftAssignment>
+    <ShiftAssignment id="503">
       <id>92</id>
       <shift reference="193"/>
-    </Assignment>
-    <Assignment id="504">
+    </ShiftAssignment>
+    <ShiftAssignment id="504">
       <id>93</id>
       <shift reference="193"/>
-    </Assignment>
-    <Assignment id="505">
+    </ShiftAssignment>
+    <ShiftAssignment id="505">
       <id>94</id>
       <shift reference="194"/>
-    </Assignment>
-    <Assignment id="506">
+    </ShiftAssignment>
+    <ShiftAssignment id="506">
       <id>95</id>
       <shift reference="195"/>
-    </Assignment>
-    <Assignment id="507">
+    </ShiftAssignment>
+    <ShiftAssignment id="507">
       <id>96</id>
       <shift reference="198"/>
-    </Assignment>
-    <Assignment id="508">
+    </ShiftAssignment>
+    <ShiftAssignment id="508">
       <id>97</id>
       <shift reference="198"/>
-    </Assignment>
-    <Assignment id="509">
+    </ShiftAssignment>
+    <ShiftAssignment id="509">
       <id>98</id>
       <shift reference="199"/>
-    </Assignment>
-    <Assignment id="510">
+    </ShiftAssignment>
+    <ShiftAssignment id="510">
       <id>99</id>
       <shift reference="199"/>
-    </Assignment>
-    <Assignment id="511">
+    </ShiftAssignment>
+    <ShiftAssignment id="511">
       <id>100</id>
       <shift reference="200"/>
-    </Assignment>
-    <Assignment id="512">
+    </ShiftAssignment>
+    <ShiftAssignment id="512">
       <id>101</id>
       <shift reference="201"/>
-    </Assignment>
-    <Assignment id="513">
+    </ShiftAssignment>
+    <ShiftAssignment id="513">
       <id>102</id>
       <shift reference="204"/>
-    </Assignment>
-    <Assignment id="514">
+    </ShiftAssignment>
+    <ShiftAssignment id="514">
       <id>103</id>
       <shift reference="204"/>
-    </Assignment>
-    <Assignment id="515">
+    </ShiftAssignment>
+    <ShiftAssignment id="515">
       <id>104</id>
       <shift reference="205"/>
-    </Assignment>
-    <Assignment id="516">
+    </ShiftAssignment>
+    <ShiftAssignment id="516">
       <id>105</id>
       <shift reference="205"/>
-    </Assignment>
-    <Assignment id="517">
+    </ShiftAssignment>
+    <ShiftAssignment id="517">
       <id>106</id>
       <shift reference="206"/>
-    </Assignment>
-    <Assignment id="518">
+    </ShiftAssignment>
+    <ShiftAssignment id="518">
       <id>107</id>
       <shift reference="207"/>
-    </Assignment>
-    <Assignment id="519">
+    </ShiftAssignment>
+    <ShiftAssignment id="519">
       <id>108</id>
       <shift reference="210"/>
-    </Assignment>
-    <Assignment id="520">
+    </ShiftAssignment>
+    <ShiftAssignment id="520">
       <id>109</id>
       <shift reference="210"/>
-    </Assignment>
-    <Assignment id="521">
+    </ShiftAssignment>
+    <ShiftAssignment id="521">
       <id>110</id>
       <shift reference="211"/>
-    </Assignment>
-    <Assignment id="522">
+    </ShiftAssignment>
+    <ShiftAssignment id="522">
       <id>111</id>
       <shift reference="211"/>
-    </Assignment>
-    <Assignment id="523">
+    </ShiftAssignment>
+    <ShiftAssignment id="523">
       <id>112</id>
       <shift reference="212"/>
-    </Assignment>
-    <Assignment id="524">
+    </ShiftAssignment>
+    <ShiftAssignment id="524">
       <id>113</id>
       <shift reference="213"/>
-    </Assignment>
-    <Assignment id="525">
+    </ShiftAssignment>
+    <ShiftAssignment id="525">
       <id>114</id>
       <shift reference="216"/>
-    </Assignment>
-    <Assignment id="526">
+    </ShiftAssignment>
+    <ShiftAssignment id="526">
       <id>115</id>
       <shift reference="216"/>
-    </Assignment>
-    <Assignment id="527">
+    </ShiftAssignment>
+    <ShiftAssignment id="527">
       <id>116</id>
       <shift reference="217"/>
-    </Assignment>
-    <Assignment id="528">
+    </ShiftAssignment>
+    <ShiftAssignment id="528">
       <id>117</id>
       <shift reference="217"/>
-    </Assignment>
-    <Assignment id="529">
+    </ShiftAssignment>
+    <ShiftAssignment id="529">
       <id>118</id>
       <shift reference="218"/>
-    </Assignment>
-    <Assignment id="530">
+    </ShiftAssignment>
+    <ShiftAssignment id="530">
       <id>119</id>
       <shift reference="219"/>
-    </Assignment>
-    <Assignment id="531">
+    </ShiftAssignment>
+    <ShiftAssignment id="531">
       <id>120</id>
       <shift reference="222"/>
-    </Assignment>
-    <Assignment id="532">
+    </ShiftAssignment>
+    <ShiftAssignment id="532">
       <id>121</id>
       <shift reference="223"/>
-    </Assignment>
-    <Assignment id="533">
+    </ShiftAssignment>
+    <ShiftAssignment id="533">
       <id>122</id>
       <shift reference="224"/>
-    </Assignment>
-    <Assignment id="534">
+    </ShiftAssignment>
+    <ShiftAssignment id="534">
       <id>123</id>
       <shift reference="225"/>
-    </Assignment>
-    <Assignment id="535">
+    </ShiftAssignment>
+    <ShiftAssignment id="535">
       <id>124</id>
       <shift reference="228"/>
-    </Assignment>
-    <Assignment id="536">
+    </ShiftAssignment>
+    <ShiftAssignment id="536">
       <id>125</id>
       <shift reference="229"/>
-    </Assignment>
-    <Assignment id="537">
+    </ShiftAssignment>
+    <ShiftAssignment id="537">
       <id>126</id>
       <shift reference="230"/>
-    </Assignment>
-    <Assignment id="538">
+    </ShiftAssignment>
+    <ShiftAssignment id="538">
       <id>127</id>
       <shift reference="231"/>
-    </Assignment>
-    <Assignment id="539">
+    </ShiftAssignment>
+    <ShiftAssignment id="539">
       <id>128</id>
       <shift reference="234"/>
-    </Assignment>
-    <Assignment id="540">
+    </ShiftAssignment>
+    <ShiftAssignment id="540">
       <id>129</id>
       <shift reference="234"/>
-    </Assignment>
-    <Assignment id="541">
+    </ShiftAssignment>
+    <ShiftAssignment id="541">
       <id>130</id>
       <shift reference="235"/>
-    </Assignment>
-    <Assignment id="542">
+    </ShiftAssignment>
+    <ShiftAssignment id="542">
       <id>131</id>
       <shift reference="235"/>
-    </Assignment>
-    <Assignment id="543">
+    </ShiftAssignment>
+    <ShiftAssignment id="543">
       <id>132</id>
       <shift reference="236"/>
-    </Assignment>
-    <Assignment id="544">
+    </ShiftAssignment>
+    <ShiftAssignment id="544">
       <id>133</id>
       <shift reference="237"/>
-    </Assignment>
-    <Assignment id="545">
+    </ShiftAssignment>
+    <ShiftAssignment id="545">
       <id>134</id>
       <shift reference="240"/>
-    </Assignment>
-    <Assignment id="546">
+    </ShiftAssignment>
+    <ShiftAssignment id="546">
       <id>135</id>
       <shift reference="240"/>
-    </Assignment>
-    <Assignment id="547">
+    </ShiftAssignment>
+    <ShiftAssignment id="547">
       <id>136</id>
       <shift reference="241"/>
-    </Assignment>
-    <Assignment id="548">
+    </ShiftAssignment>
+    <ShiftAssignment id="548">
       <id>137</id>
       <shift reference="241"/>
-    </Assignment>
-    <Assignment id="549">
+    </ShiftAssignment>
+    <ShiftAssignment id="549">
       <id>138</id>
       <shift reference="242"/>
-    </Assignment>
-    <Assignment id="550">
+    </ShiftAssignment>
+    <ShiftAssignment id="550">
       <id>139</id>
       <shift reference="243"/>
-    </Assignment>
-    <Assignment id="551">
+    </ShiftAssignment>
+    <ShiftAssignment id="551">
       <id>140</id>
       <shift reference="246"/>
-    </Assignment>
-    <Assignment id="552">
+    </ShiftAssignment>
+    <ShiftAssignment id="552">
       <id>141</id>
       <shift reference="246"/>
-    </Assignment>
-    <Assignment id="553">
+    </ShiftAssignment>
+    <ShiftAssignment id="553">
       <id>142</id>
       <shift reference="247"/>
-    </Assignment>
-    <Assignment id="554">
+    </ShiftAssignment>
+    <ShiftAssignment id="554">
       <id>143</id>
       <shift reference="247"/>
-    </Assignment>
-    <Assignment id="555">
+    </ShiftAssignment>
+    <ShiftAssignment id="555">
       <id>144</id>
       <shift reference="248"/>
-    </Assignment>
-    <Assignment id="556">
+    </ShiftAssignment>
+    <ShiftAssignment id="556">
       <id>145</id>
       <shift reference="249"/>
-    </Assignment>
-    <Assignment id="557">
+    </ShiftAssignment>
+    <ShiftAssignment id="557">
       <id>146</id>
       <shift reference="252"/>
-    </Assignment>
-    <Assignment id="558">
+    </ShiftAssignment>
+    <ShiftAssignment id="558">
       <id>147</id>
       <shift reference="252"/>
-    </Assignment>
-    <Assignment id="559">
+    </ShiftAssignment>
+    <ShiftAssignment id="559">
       <id>148</id>
       <shift reference="253"/>
-    </Assignment>
-    <Assignment id="560">
+    </ShiftAssignment>
+    <ShiftAssignment id="560">
       <id>149</id>
       <shift reference="253"/>
-    </Assignment>
-    <Assignment id="561">
+    </ShiftAssignment>
+    <ShiftAssignment id="561">
       <id>150</id>
       <shift reference="254"/>
-    </Assignment>
-    <Assignment id="562">
+    </ShiftAssignment>
+    <ShiftAssignment id="562">
       <id>151</id>
       <shift reference="255"/>
-    </Assignment>
-  </assignmentList>
+    </ShiftAssignment>
+  </shiftAssignmentList>
 </NurseRoster>
