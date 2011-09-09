@@ -33,8 +33,9 @@ public class ShiftAssignmentDifficultyComparator implements Comparator<Object> {
         Shift bShift = b.getShift();
         return new CompareToBuilder()
                     .append(bShift.getShiftDate(), aShift.getShiftDate()) // Descending
-                    .append(aShift.getRequiredEmployeeSize(), bShift.getRequiredEmployeeSize())
                     .append(bShift.getShiftType(), aShift.getShiftType()) // Descending
+                    // For construction heuristics, scheduling the shifts in sequence is better
+                    .append(aShift.getRequiredEmployeeSize(), bShift.getRequiredEmployeeSize())
                     .toComparison();
     }
 
