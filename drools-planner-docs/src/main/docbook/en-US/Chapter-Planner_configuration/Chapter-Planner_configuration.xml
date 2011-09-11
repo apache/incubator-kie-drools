@@ -273,7 +273,7 @@ public class Queen {
     // ... getters and setters
 }</programlisting>
 
-        <para>A planning entity class can have multiple planning varibles. For example, a <literal>Lecture</literal> is
+        <para>A planning entity class can have multiple planning variables. For example, a <literal>Lecture</literal> is
         defined by it's <literal>Course</literal> and it's index in that course (because 1 course has multiple
         lectures). Each <literal>Lecture</literal> needs to be scheduled into a <literal>Period</literal> and a
         <literal>Room</literal> so it has 2 planning variables (period and room). For example: the course Mathematics
@@ -408,7 +408,7 @@ public class Queen {
 
         <para>A planning variable is a property (including getter and setter) on a planning entity. It changes during
         planning. For example, a <literal>Queen</literal>'s <literal>row</literal> property is a planning variable. Note
-        that even though a <literal>Queen</literal>'s <literal>row</literal> propertly changes to another
+        that even though a <literal>Queen</literal>'s <literal>row</literal> property changes to another
         <literal>Row</literal> during planning, no <literal>Row</literal> instance itself is changed. A planning
         variable points to a planning value.</para>
 
@@ -517,21 +517,21 @@ public class Queen {
           his room value range.</para>
 
           <note>
-            <para>By limiting the value range specificly of 1 planning entity, you are effectively making a
+            <para>By limiting the value range specifically of 1 planning entity, you are effectively making a
             <emphasis>build-in hard constraint</emphasis>. This can be a very good thing, as the number of possible
-            solutions is severly lowered. But this can also be a bad thing because it takes away the freedom of the
-            optimization algorithms to temporarly break such a hard constraint.</para>
+            solutions is severely lowered. But this can also be a bad thing because it takes away the freedom of the
+            optimization algorithms to temporarily break such a hard constraint.</para>
           </note>
 
           <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate it's value
-          range. That will only try to solve the planning problem itself and interfer with the optimization
+          range. It would only try to solve the planning problem itself and interfere with the optimization
           algorithms.</para>
         </section>
 
         <section>
           <title><literal>ValueRangeUndefined</literal></title>
 
-          <para>Leaves the value range undefinied. Some optimization algorithms do not support this value
+          <para>Leaves the value range undefined. Some optimization algorithms do not support this value
           range.<programlisting>    @PlanningVariable
     @ValueRangeUndefinied
     public Row getRow() {
@@ -625,7 +625,7 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
         <para><emphasis>None of the current planning variable state in any of the planning entities may be used to
         compare planning values.</emphasis> They are likely to be <literal>null</literal> anyway. For example, None of
-        the <literal>row</literal> variables of any <literal>Queen</literal> may be used to determine the strenght of a
+        the <literal>row</literal> variables of any <literal>Queen</literal> may be used to determine the strength of a
         <literal>Row</literal>.</para>
       </section>
     </section>
@@ -643,10 +643,10 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
         <para>A planning problem is actually a unsolved planning solution or - stated differently - an uninitialized
         <literal>Solution</literal>. Therefor, that wrapping class must implement the <literal>Solution</literal>
-        interface. For example in nqueens, that <literal>NQueens</literal> class implements <literal>Solution</literal>,
-        yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is assigned to a
-        <literal>Row</literal> yet. So it's not a feasible solution. It's not even a possible solution. It's an
-        uninitialized solution.</para>
+        interface. For example in n queens, that <literal>NQueens</literal> class implements
+        <literal>Solution</literal>, yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is
+        assigned to a <literal>Row</literal> yet. So it's not a feasible solution. It's not even a possible solution.
+        It's an uninitialized solution.</para>
       </section>
 
       <section>
@@ -836,7 +836,7 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
     }</programlisting>
 
         <figure>
-          <title>Unintialized solution for the 4 queens puzzle</title>
+          <title>Uninitialized solution for the 4 queens puzzle</title>
 
           <mediaobject>
             <imageobject>
