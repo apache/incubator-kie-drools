@@ -388,9 +388,9 @@ public class Queen {
 
         public int compareTo(QueenDifficultyWeight other) {
             return new CompareToBuilder()
-                    .append(distanceFromMiddle, other.distanceFromMiddle)
+                    // The more difficult queens have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
                     .append(queen.getColumnIndex(), other.queen.getColumnIndex())
-                    .append(queen.getId(), other.queen.getId())
                     .toComparison();
         }
 
@@ -398,9 +398,9 @@ public class Queen {
 
 }</programlisting>
 
-        <para><emphasis>None of the planning variables may be used to compare planning entities.</emphasis> They are
-        likely to be <literal>null</literal> anyway. For example, a <literal>Queens</literal>'s row variable must not be
-        used.</para>
+        <para><emphasis>None of the current planning variable state may be used to compare planning entities.</emphasis>
+        They are likely to be <literal>null</literal> anyway. For example, a <literal>Queen</literal>'s
+        <literal>row</literal> variable may not be used.</para>
       </section>
 
       <section>
@@ -529,7 +529,90 @@ public class Queen {
       <section>
         <title>Planning value strength comparison</title>
 
-        <para>TODO</para>
+        <para>Some optimization algorithms work more efficiently if they have an estimation of which planning values are
+        stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing bigger
+        containers are more likely to fit an item and in course scheduling bigger rooms are less likely to break the
+        student capacity constraint.</para>
+
+        <para>Therefore, you can set a <literal>strengthComparatorClass</literal> to the
+        <literal>@PlanningVariable</literal> annotation:</para>
+
+        <programlisting>    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
+    // ...
+    public CloudComputer getCloudComputer() {
+        // ...
+    }</programlisting>
+
+        <programlisting>public class CloudComputerStrengthComparator implements Comparator&lt;Object&gt; {
+
+    public int compare(Object a, Object b) {
+        return compare((CloudComputer) a, (CloudComputer) b);
+    }
+
+    public int compare(CloudComputer a, CloudComputer b) {
+        return new CompareToBuilder()
+                .append(a.getMultiplicand(), b.getMultiplicand())
+                .append(b.getCost(), a.getCost()) // Descending (but this is debatable)
+                .append(a.getId(), b.getId())
+                .toComparison();
+    }
+
+}</programlisting>
+
+        <para>Alternatively, you can also set a <literal>strengthWeightFactoryClass</literal> to the
+        <literal>@PlanningVariable</literal> annotation, so you have access to the rest of the problem facts from the
+        solution too:</para>
+
+        <programlisting>    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
+    // ...
+    public Row getRow() {
+        // ...
+    }</programlisting>
+
+        <programlisting>public interface PlanningValueStrengthWeightFactory {
+
+    Comparable createStrengthWeight(Solution solution, Object planningValue);
+
+}</programlisting>
+
+        <programlisting>
+public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
+
+    public Comparable createStrengthWeight(Solution solution, Object planningValue) {
+        NQueens nQueens = (NQueens) solution;
+        Row row = (Row) planningValue;
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
+        return new RowStrengthWeight(row, distanceFromMiddle);
+    }
+
+    // ...
+
+    public static class RowStrengthWeight implements Comparable&lt;RowStrengthWeight&gt; {
+
+        private final Row row;
+        private final int distanceFromMiddle;
+
+        public RowStrengthWeight(Row row, int distanceFromMiddle) {
+            this.row = row;
+            this.distanceFromMiddle = distanceFromMiddle;
+        }
+
+        public int compareTo(RowStrengthWeight other) {
+            return new CompareToBuilder()
+                    // The stronger rows have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing (but this is debatable)
+                    .append(row.getIndex(), other.row.getIndex())
+                    .toComparison();
+        }
+
+    }
+
+}</programlisting>
+
+        <para><emphasis>None of the current planning variable state in any of the planning entities may be used to
+        compare planning values.</emphasis> They are likely to be <literal>null</literal> anyway. For example, None of
+        the <literal>row</literal> variables of any <literal>Queen</literal> may be used to determine the strenght of a
+        <literal>Row</literal>.</para>
       </section>
 
       <section>

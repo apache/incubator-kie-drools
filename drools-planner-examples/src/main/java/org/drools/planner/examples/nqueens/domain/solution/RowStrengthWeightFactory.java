@@ -53,7 +53,8 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
         public int compareTo(RowStrengthWeight other) {
             return new CompareToBuilder()
-                    .append(distanceFromMiddle, other.distanceFromMiddle)
+                    // The stronger rows have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing (but this is debatable)
                     .append(row.getIndex(), other.row.getIndex())
                     .toComparison();
         }
