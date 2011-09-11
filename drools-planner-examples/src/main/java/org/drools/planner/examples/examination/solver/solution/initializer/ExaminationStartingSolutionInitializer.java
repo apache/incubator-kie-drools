@@ -162,7 +162,7 @@ public class ExaminationStartingSolutionInitializer implements CustomSolverPhase
                 workingMemory.update(examToHandle.getExamHandle(), examToHandle.getExam());
             }
         }
-        logger.debug("    Exam ({}) initialized for starting solution.", leader);
+        logger.debug("    Exam ({}) initialized.", leader);
     }
 
     private void scheduleNonLeader(List<Room> roomList,
@@ -200,7 +200,7 @@ public class ExaminationStartingSolutionInitializer implements CustomSolverPhase
             exam.setRoom(bestRoom);
             workingMemory.update(examHandle, exam);
         }
-        logger.debug("    Exam ({}) initialized for starting solution. *", exam);
+        logger.debug("    Exam ({}) initialized.", exam);
     }
 
     public static class ExamToHandle {

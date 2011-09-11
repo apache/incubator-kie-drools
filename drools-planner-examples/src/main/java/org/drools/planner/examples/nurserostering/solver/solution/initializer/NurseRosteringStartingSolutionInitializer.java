@@ -74,7 +74,7 @@ public class NurseRosteringStartingSolutionInitializer implements CustomSolverPh
             }
             shiftAssignment.setEmployee(bestEmployee);
             workingMemory.update(assignmentHandle, shiftAssignment);
-            logger.debug("    ShiftAssignment ({}) initialized for starting solution.", shiftAssignment);
+            logger.debug("    ShiftAssignment ({}) initialized.", shiftAssignment);
         }
 
         Collections.sort(shiftAssignmentList, new PersistableIdComparator());

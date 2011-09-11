@@ -110,7 +110,7 @@ public class TspStartingSolutionInitializer implements CustomSolverPhaseCommand 
             if (cityAssignment.getCity() == startCity) {
                 travelingSalesmanTour.setStartCityAssignment(cityAssignment);
             }
-            logger.debug("    CityAssignment ({}) initialized for starting solution.", cityAssignment);
+            logger.debug("    CityAssignment ({}) initialized.", cityAssignment);
         }
         Collections.sort(cityAssignmentList, new PersistableIdComparator());
         travelingSalesmanTour.setCityAssignmentList(cityAssignmentList);

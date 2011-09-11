@@ -1155,8 +1155,15 @@ After in  *.java:
         }
     });
 
-[MAJOR] XmlSolverConfigurer's method getConfig() has been rename to getSolverConfig()
+[MAJOR] The XmlSolverConfigurer method getConfig() has been renamed to getSolverConfig()
 Before in  *.java:
     ... configurer.getConfig() ...
 After in  *.java:
     ... configurer.getSolverConfig() ...
+
+[MAJOR] The Solver method setStartingSolution(Solution) has been renamed to setPlanningProblem(Solution)
+because using it to set an uninitialized Solution is more likely than to set an initialized starting Solution.
+Before in  *.java:
+    ... solver.setStartingSolution(...) ...
+After in  *.java:
+    ... solver.setPlanningProblem(...) ...

@@ -24,8 +24,8 @@
 
       <listitem>
         <para><emphasis role="bold">Load a problem data set</emphasis> from your data layer, for example a 4 Queens
-        instance. Set it as the starting solution on the <literal>Solver</literal> with
-        <literal>Solver.setStartingSolution(...)</literal>.</para>
+        instance. Set it as the planning problem on the <literal>Solver</literal> with
+        <literal>Solver.setPlanningProblem(...)</literal>.</para>
       </listitem>
 
       <listitem>
@@ -244,10 +244,10 @@
     </section>
 
     <section>
-      <title>Planning entity implementation</title>
+      <title>Planning entity and planning variables</title>
 
       <section>
-        <title>Planning entity class</title>
+        <title>Planning entity</title>
 
         <para>A planning entity is a JavaBean (POJO) that changes during solving, for example a <literal>Queen</literal>
         that changes to another row. A planning problem has multiple planning entities, for example for a single n
@@ -436,14 +436,28 @@ public class Queen {
       </section>
 
       <section>
+        <title>When is a planning entity initialized?</title>
+
+        <para>A planning entity is considered initialized if all it's planning variables are initialized.</para>
+
+        <para>By default, a planning variable is considered initialized if it's value is not
+        <literal>null</literal>.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Planning value and planning value ranges</title>
+
+      <section>
         <title>Planning value</title>
 
         <para>A planning value is a possible value for a planning variable. Usually, a planning value is problem fact,
         but it can also be any object, for example a double. Sometimes it can even be another planning entity.</para>
 
         <para>A planning value range is the set of possible planning values for a planning variable. This set can be a
-        discrete (for example row 1, 2, 3 or 4) or continuous (for example any double between <literal>0.0</literal> and
-        <literal>1.0</literal>). There are several ways to define the value range of your planning variables, each with
+        discrete (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
+        <literal>4</literal>) or continuous (for example any <literal>double</literal> between <literal>0.0</literal>
+        and <literal>1.0</literal>). There are several ways to define the value range of a planning variable, each with
         it's own <literal>@ValueRange*</literal> annotation.</para>
 
         <para>If <literal>null</literal> is a valid planning value, it should be included in the value range and the
@@ -614,24 +628,35 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         the <literal>row</literal> variables of any <literal>Queen</literal> may be used to determine the strenght of a
         <literal>Row</literal>.</para>
       </section>
-
-      <section>
-        <title>When is a planning entity initialized?</title>
-
-        <para>A planning entity is considered initialized if all it's planning variables are initialized.</para>
-
-        <para>By default, a planning variable is considered initialized if it is not <literal>null</literal>.</para>
-      </section>
     </section>
 
     <section>
-      <title>The <literal>Solution</literal> interface</title>
+      <title>Planning problem and planning solution</title>
 
-      <para>You need to present the problem as a starting <literal>Solution</literal> instance to the solver.</para>
+      <section>
+        <title>Planning problem instance</title>
 
-      <para>This means you need to implement the <literal>Solution</literal> interface:</para>
+        <para>A dataset for a planning problem needs to be wrapped in a class for the <literal>Solver</literal> to
+        solve. You must implement this class. For example in n queens, this in the <literal>NQueens</literal> class
+        which contains a <literal>Column</literal> list, a <literal>Row</literal> list and a <literal>Queen</literal>
+        list.</para>
 
-      <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
+        <para>A planning problem is actually a unsolved planning solution or - stated differently - an uninitialized
+        <literal>Solution</literal>. Therefor, that wrapping class must implement the <literal>Solution</literal>
+        interface. For example in nqueens, that <literal>NQueens</literal> class implements <literal>Solution</literal>,
+        yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is assigned to a
+        <literal>Row</literal> yet. So it's not a feasible solution. It's not even a possible solution. It's an
+        uninitialized solution.</para>
+      </section>
+
+      <section>
+        <title>The <literal>Solution</literal> interface</title>
+
+        <para>You need to present the problem as a <literal>Solution</literal> instance to the
+        <literal>Solver</literal>. So you need to have a class that implements the <literal>Solution</literal>
+        interface:</para>
+
+        <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
 
     S getScore();
     void setScore(S score);
@@ -642,10 +667,10 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
 }</programlisting>
 
-      <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
-      <literal>Queen</literal> instances:</para>
+        <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
+        <literal>Queen</literal> instances:</para>
 
-      <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+        <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     private int n;
 
@@ -657,8 +682,8 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
     private List&lt;Queen&gt; queenList;
 
     // ...
-
 }</programlisting>
+      </section>
 
       <section>
         <title>The getScore and setScore methods</title>
@@ -668,7 +693,9 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         property is usually typed to the specific <literal>Score</literal> implementation you use. For example,
         <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
 
-        <programlisting language="java">    private SimpleScore score;
+        <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+
+    private SimpleScore score;
 
     public SimpleScore getScore() {
         return score;
@@ -676,11 +703,30 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 
     public void setScore(SimpleScore score) {
         this.score = score;
-    }</programlisting>
+    }
+
+    // ...
+}</programlisting>
 
         <para>Most use cases use a <literal>HardAndSoftScore</literal> instead:</para>
 
-        <programlisting>    private HardAndSoftScore score;</programlisting>
+        <programlisting>public class CurriculumCourseSchedule implements Solution&lt;HardAndSoftScore&gt; {
+
+    private HardAndSoftScore score;
+
+    public HardAndSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(HardAndSoftScore score) {
+        this.score = score;
+    }
+
+    // ...
+}</programlisting>
+
+        <para>See the Score calculation section for more information on the <literal>Score</literal>
+        implementations.</para>
       </section>
 
       <section xml:id="getProblemFacts">
@@ -707,8 +753,8 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
       <section>
         <title>The cloneSolution method</title>
 
-        <para>Most solver algorithms use the <literal>cloneSolution()</literal> method to clone the solution each time
-        they encounter a new best solution (so they can recall it later) or to work with multiple solutions in
+        <para>Most optimization algorithms use the <literal>cloneSolution()</literal> method to clone the solution each
+        time they encounter a new best solution (so they can recall it later) or to work with multiple solutions in
         parallel.</para>
 
         <para>The <literal>NQueens</literal> implementation only deep clones all <literal>Queen</literal> instances.
@@ -745,6 +791,78 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
           clone itself should refer to the same set of new <literal>Row</literal> clones.</para>
         </note>
       </section>
+
+      <section>
+        <title>Build an uninitialized solution</title>
+
+        <para>Build a <literal>Solution</literal> instance to represent your planning problem, so you can set it on the
+        <literal>Solver</literal> as the planning problem to solve. For example in n queens, an
+        <literal>NQueens</literal> instance is created with the required <literal>Column</literal> and
+        <literal>Row</literal> instances and every <literal>Queen</literal> set to a different <literal>column</literal>
+        and every <literal>row</literal> set to <literal>null</literal>.</para>
+
+        <programlisting language="java">    private NQueens createNQueens(int n) {
+        NQueens nQueens = new NQueens();
+        nQueens.setId(0L);
+        nQueens.setN(n);
+        List&lt;Column&gt; columnList = new ArrayList&lt;Column&gt;(n);
+        for (int i = 0; i &lt; n; i++) {
+            Column column = new Column();
+            column.setId((long) i);
+            column.setIndex(i);
+            columnList.add(column);
+        }
+        nQueens.setColumnList(columnList);
+        List&lt;Row&gt; rowList = new ArrayList&lt;Row&gt;(n);
+        for (int i = 0; i &lt; n; i++) {
+            Row row = new Row();
+            row.setId((long) i);
+            row.setIndex(i);
+            rowList.add(row);
+        }
+        nQueens.setRowList(rowList);
+        List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
+        long id = 0;
+        for (Column column : columnList) {
+            Queen queen = new Queen();
+            queen.setId(id);
+            id++;
+            queen.setColumn(column);
+            // Notice that we leave the PlanningVariable properties (row) on null
+            queenList.add(queen);
+        }
+        nQueens.setQueenList(queenList);
+        return nQueens;
+    }</programlisting>
+
+        <figure>
+          <title>Unintialized solution for the 4 queens puzzle</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Chapter-Planner_configuration/uninitializedNQueens04.png" format="PNG"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para>Usually, most of this data comes from your data layer, and your <literal>Solution</literal> implementation
+        just aggregates that data and creates the uninitialized planning entity instances to plan:</para>
+
+        <programlisting>        private void createLectureList(CurriculumCourseSchedule schedule) {
+            List&lt;Course&gt; courseList = schedule.getCourseList();
+            List&lt;Lecture&gt; lectureList = new ArrayList&lt;Lecture&gt;(courseList.size());
+            for (Course course : courseList) {
+                for (int i = 0; i &lt; course.getLectureSize(); i++) {
+                    Lecture lecture = new Lecture();
+                    lecture.setCourse(course);
+                    lecture.setLectureIndexInCourse(i);
+                    // Notice that we leave the PlanningVariable properties (period and room) on null
+                    lectureList.add(lecture);
+                }
+            }
+            schedule.setLectureList(lectureList);
+        }</programlisting>
+      </section>
     </section>
   </section>
 
@@ -754,11 +872,12 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
     <section>
       <title>The Solver interface</title>
 
-      <para>This is the <literal>Solver</literal> interface, which you 'll build from a solver configuration:</para>
+      <para>The <literal>Solver</literal> implementation will solve your planning problem. It's build based from a
+      solver configuration, do not implement it yourself:</para>
 
       <programlisting language="java">public interface Solver {
 
-    void setStartingSolution(Solution solution);
+    void setPlanningProblem(Solution planningProblem);
     
     void solve();
 
@@ -769,71 +888,36 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
 }</programlisting>
 
       <para>A Solver can only solve 1 problem instance at a time. A <literal>Solver</literal> should only be accessed
-      from a single thread, except for the methods that are specifically javadocced as thread-safe.</para>
-    </section>
-
-    <section>
-      <title>The starting solution</title>
-
-      <para>First, you will need to make a starting solution and set that on the solver:</para>
-
-      <programlisting language="java">solver.setStartingSolution(startingSolution);</programlisting>
-
-      <section>
-        <title>A simple filler algorithm</title>
-
-        <para>For 4 queens we use a simple filler algorithm that creates a starting solution with all queens on a
-        different x and on the same y (with y = 0).</para>
-
-        <figure>
-          <title>Starting solution for the 4 queens puzzle</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Planner_configuration/unsolvedNQueens04.png" format="PNG"></imagedata>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para>Here's how we generate it:</para>
-
-        <programlisting language="java">    private NQueens createNQueens(int n) {
-        NQueens nQueens = new NQueens();
-        nQueens.setId(0L);
-        nQueens.setN(n);
-        List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
-        for (int x = 0; x &lt; n; x++) {
-            Queen queen = new Queen();
-            queen.setId((long) x);
-            queen.setX(x);
-            // Notice that we leave the PlanningVariable properties on null: no setY()
-            queenList.add(queen);
-        }
-        nQueens.setQueenList(queenList);
-        return nQueens;
-    }</programlisting>
-
-        <para>The starting solution will probably be far from optimal (or even feasible). Here, it's actually the worst
-        possible solution. However, we 'll let the solver find a much better solution for us anyway.</para>
-      </section>
+      from a single thread, except for the methods that are specifically javadocced as being thread-safe.</para>
     </section>
 
     <section>
       <title>Solving a problem</title>
 
-      <para>Solving a problem is quite easy once you have a solver and the starting solution:</para>
+      <para>Solving a problem is quite easy once you have:</para>
 
-      <programlisting language="java">    solver.setStartingSolution(startingSolution);
+      <itemizedlist>
+        <listitem>
+          <para>A <literal>Solver</literal> build from a solver configuration</para>
+        </listitem>
+
+        <listitem>
+          <para>A <literal>Solution</literal> that represents the planning problem instance</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Just set the planning problem, solve it and extract the best solution:</para>
+
+      <programlisting language="java">    solver.setPlanningProblem(planningProblem);
     solver.solve();
     Solution bestSolution = solver.getBestSolution();</programlisting>
 
-      <para>The <literal>solve()</literal> method will take a long time (depending on the problem size and the solver
-      configuration). The solver will remember (actually clone) the best solution it encounters during its solving.
-      Depending on a number factors (including problem size, how long you allow the solver to work, which solver type
-      you use, ...), that best solution will be a feasible or even an optimal solution.</para>
+      <para>For example in n queens, the method <literal>getBestSolution()</literal> will return an
+      <literal>NQueens</literal> instance with every <literal>Queen</literal> assigned to a
+      <literal>Row</literal>.</para>
 
       <figure>
-        <title>Best solution for the 4 queens puzzle (also an optimal solution)</title>
+        <title>Best solution for the 4 queens puzzle in 8 ms (also an optimal solution)</title>
 
         <mediaobject>
           <imageobject>
@@ -842,8 +926,25 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         </mediaobject>
       </figure>
 
-      <para>After a problem is solved, you can reuse the same solver instance to solve another problem (of the same
-      problem type).</para>
+      <para>The <literal>solve()</literal> method can take a long time (depending on the problem size and the solver
+      configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it encounters
+      during its solving. Depending on a number factors (including problem size, how time the <literal>Solver</literal>
+      has, the solver configuration, ...), that best solution will be a feasible or even an optimal solution.</para>
+
+      <note>
+        <para>The <literal>Solution</literal> instance given to the method <literal>setPlanningProblem()</literal> will
+        be changed by the <literal>Solver</literal>, but it do not mistake it for the best solution.</para>
+
+        <para>The <literal>Solution</literal> instance returned by the method <literal>getBestSolution()</literal> will
+        most likely be a clone of the instance given to the method <literal>setPlanningProblem()</literal>, which means
+        it's a different instance.</para>
+      </note>
+
+      <note>
+        <para>The <literal>Solution</literal> instance given to the method <literal>setPlanningProblem()</literal> does
+        not need to be uninitialized. It can be partially or fully initialized, which is likely in <link
+        linkend="repeatedPlanning">repeated planning</link>.</para>
+      </note>
     </section>
 
     <section>

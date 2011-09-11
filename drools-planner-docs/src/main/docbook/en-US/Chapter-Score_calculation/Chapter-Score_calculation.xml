@@ -130,7 +130,7 @@ end</programlisting>
 
     <para>This score rule will fire once for every 2 queens with the same <literal>y</literal>. The <literal>(id &gt;
     $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not for (B,
-    A), (A, A) or (B, B). Let's take a closer look at this score rule on the starting solution of 4 queens:</para>
+    A), (A, A) or (B, B). Let's take a closer look at this score rule on this unfeasible solution of 4 queens:</para>
 
     <figure>
       <title>Starting solution for the 4 queens puzzle</title>
@@ -142,7 +142,7 @@ end</programlisting>
       </mediaobject>
     </figure>
 
-    <para>In this starting solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A,
+    <para>In this solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A,
     C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this
     starting solution will have a score of <literal>-6</literal>. An optimal solution of 4 queens has a score of
     <literal>0</literal>.</para>

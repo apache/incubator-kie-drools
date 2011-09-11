@@ -185,12 +185,12 @@ public class SolutionBusiness {
 
     public void importSolution(File file) {
         Solution solution = importer.readSolution(file);
-        solver.setStartingSolution(solution);
+        solver.setPlanningProblem(solution);
     }
 
     public void openSolution(File file) {
         Solution solution = solutionDao.readSolution(file);
-        solver.setStartingSolution(solution);
+        solver.setPlanningProblem(solution);
     }
 
     public void saveSolution(File file) {

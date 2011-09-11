@@ -49,7 +49,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
 import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
@@ -59,7 +58,6 @@ import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.termination.TimeMillisSpendTermination;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
@@ -294,7 +292,7 @@ public class SolverBenchmarkSuite {
                 Solver solver = solverBenchmark.getSolverConfig().buildSolver();
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
-                solver.setStartingSolution(unsolvedSolution);
+                solver.setPlanningProblem(unsolvedSolution);
                 solver.solve();
                 solverBenchmark.getSolverConfig().setTerminationConfig(originalTerminationConfig);
                 long timeSpend = System.currentTimeMillis() - startingTimeMillis;
@@ -311,7 +309,7 @@ public class SolverBenchmarkSuite {
                 
                 File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
                 Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
-                solver.setStartingSolution(unsolvedSolution);
+                solver.setPlanningProblem(unsolvedSolution);
                 List<SolverStatistic> statisticList = getOrCreateStatisticList(unsolvedSolutionFileToStatisticMap, unsolvedSolutionFile);
                 for (SolverStatistic statistic : statisticList) {
                     statistic.addListener(solver, solverBenchmark.getName());

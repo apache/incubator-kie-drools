@@ -40,7 +40,7 @@ public class DefaultSolverScope {
 
     protected Random workingRandom;
 
-    protected Score startingInitializedScore; // TODO after initialization => ambiguous with setStartingSolution
+    protected Score startingInitializedScore; // TODO after initialization => ambiguous with setPlanningProblem
 
     protected Solution bestSolution;
     protected Score bestScore; // TODO remove me

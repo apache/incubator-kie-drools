@@ -91,8 +91,8 @@ public class DefaultSolver implements Solver {
         this.solverPhaseList = solverPhaseList;
     }
 
-    public void setStartingSolution(Solution startingSolution) {
-        solverScope.getSolutionDirector().setWorkingSolution(startingSolution);
+    public void setPlanningProblem(Solution planningProblem) {
+        solverScope.getSolutionDirector().setWorkingSolution(planningProblem);
     }
 
     public Solution getBestSolution() {
@@ -142,9 +142,9 @@ public class DefaultSolver implements Solver {
     }
 
     public void solvingStarted(DefaultSolverScope solverScope) {
-        if (solverScope.getWorkingSolution() == null) {
-            throw new IllegalStateException("The startingSolution must not be null." +
-                    " Use Solver.setStartingSolution(Solution).");
+        if (solverScope.getSolutionDirector().getWorkingSolution() == null) {
+            throw new IllegalStateException("The planningProblem must not be null." +
+                    " Use Solver.setPlanningProblem(Solution).");
         }
         solverScope.reset();
         if (randomSeed != null) {

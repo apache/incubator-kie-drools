@@ -67,9 +67,9 @@ public abstract class SolverPerformanceTest extends LoggingTest {
 
     private Solver solve(XmlSolverConfigurer configurer, File unsolvedDataFile) {
         SolutionDao solutionDao = createSolutionDao();
-        Solution startingSolution = solutionDao.readSolution(unsolvedDataFile);
+        Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
         Solver solver = configurer.buildSolver();
-        solver.setStartingSolution(startingSolution);
+        solver.setPlanningProblem(planningProblem);
         solver.solve();
         return solver;
     }

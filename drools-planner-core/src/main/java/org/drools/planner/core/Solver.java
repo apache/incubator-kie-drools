@@ -34,9 +34,9 @@ import org.drools.planner.core.termination.Termination;
 public interface Solver {
 
     /**
-     * @param startingSolution never null
+     * @param planningProblem never null
      */
-    void setStartingSolution(Solution startingSolution);
+    void setPlanningProblem(Solution planningProblem);
 
     /**
      * @return never null after solving
