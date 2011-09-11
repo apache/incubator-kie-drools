@@ -130,21 +130,17 @@ end</programlisting>
 
     <para>This score rule will fire once for every 2 queens with the same <literal>y</literal>. The <literal>(id &gt;
     $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not for (B,
-    A), (A, A) or (B, B). Let's take a closer look at this score rule on this unfeasible solution of 4 queens:</para>
+    A), (A, A) or (B, B). Let's take a closer look at this score rule on this solution of 4 queens:</para>
 
-    <figure>
-      <title>Starting solution for the 4 queens puzzle</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png" format="PNG"></imagedata>
+      </imageobject>
+    </mediaobject>
 
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Score_calculation/unsolvedNQueens04.png" format="PNG"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>In this solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A,
-    C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this
-    starting solution will have a score of <literal>-6</literal>. An optimal solution of 4 queens has a score of
+    <para>In this solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A, C), (A,
+    D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution
+    will have a score of <literal>-6</literal>. An optimal solution of 4 queens has a score of
     <literal>0</literal>.</para>
 
     <note>
@@ -253,14 +249,15 @@ end</programlisting>
   <section xml:id="deltaBasedScoreCalculation">
     <title>Delta based score calculation</title>
 
-    <para>It's recommended to use Drools in forward-chaining mode (which is the default behaviour), as for score
-    implementations this will create the effect of a <emphasis>delta based score calculation</emphasis> instead of a
-    full score calculation on each solution evaluation. For example, if a single queen A moves from y
-    <literal>0</literal> to <literal>3</literal>, it won't bother to recalculate the "multiple queens on the same
-    horizontal line" constraint between 2 queens if neither of those queens is queen A. This is a huge performance gain.
-    <emphasis role="bold">Drools Planner gives you this huge performance gain without forcing you to write a very
-    complicated delta based score calculation algorithm.</emphasis> Just let the Drools rule engine do the hard
-    work.</para>
+    <para>It's recommended to use Drools in forward-chaining mode (which is the default behaviour), because this will
+    create the effect of a <emphasis>delta based score calculation</emphasis>, instead of a full score calculation on
+    each solution evaluation. For example, if a single queen A moves from y <literal>0</literal> to
+    <literal>3</literal>, it won't bother to recalculate the "multiple queens on the same horizontal line" constraint
+    between 2 queens if neither of those involved queens is queen A.</para>
+
+    <para>This is a huge performance and scalibility gain. <emphasis role="bold">Drools Planner gives you this huge
+    scalibility gain without forcing you to write a very complicated delta based score calculation algorithm.</emphasis>
+    Just let the Drools rule engine do the hard work.</para>
 
     <figure>
       <title>Delta based score calculation for the 4 queens puzzle</title>
@@ -283,11 +280,11 @@ end</programlisting>
     <itemizedlist>
       <listitem>
         <para>If you know a certain constraint can never be broken, don't bother writing a score rule for it. For
-        example, the n queens example doesn't have a "multipleQueensVertical" rule because a queen's
-        <literal>x</literal> never changes and the starting solution puts each queen on a different
-        <literal>x</literal>. This tends to give a huge performance gain, not just because the score function is faster,
-        but mainly because most <literal>Solver</literal> implementations will spend less time evaluating unfeasible
-        solutions.</para>
+        example in n queens, there is no "multipleQueensVertical" rule because a <literal>Queen</literal>'s
+        <literal>column</literal> never changes and each <literal>Solution</literal> build puts each
+        <literal>Queen</literal> on a different <literal>column</literal>. This tends to give a huge performance gain,
+        not just because the score function is faster, but mainly because most <literal>Solver</literal> implementations
+        will spend less time evaluating unfeasible solutions.</para>
       </listitem>
 
       <listitem>
@@ -316,8 +313,8 @@ end</programlisting>
 
       <listitem>
         <para>Verify that your score calculation happens in the correct <literal>Number</literal> type. If you're making
-        the sum of integer values, don't let drools use Double's or your performance will hurt. Solver implementations
-        will usually spend most of their execution time running the score function.</para>
+        the sum of integer values, don't let drools use Double's or your performance will hurt. The
+        <literal>Solver</literal> will usually spend most of its execution time running the score function.</para>
       </listitem>
 
       <listitem>
@@ -326,8 +323,8 @@ end</programlisting>
       </listitem>
 
       <listitem>
-        <para>Currently, don't allow drools to backward chain instead of forward chain, so avoid query's. It kills
-        scalibilty.</para>
+        <para>Currently, don't allow drools to backward chain instead of forward chain, so avoid query's. It kills delta
+        based score calculation (so it kills scalibility).</para>
       </listitem>
 
       <listitem>
@@ -347,8 +344,8 @@ end</programlisting>
     </itemizedlist>
 
     <para>In case you haven't figured it out yet: performance (and scalability) is very important for solving planning
-    problems. What good is a real-time freight routing solver that takes a day to find a feasible solution? Even small
-    and innocent looking problems can hide an enormous problem size. For example, they probably still don't know the
-    optimal solution of the traveling tournament problem for as little as 12 traveling teams.</para>
+    problems well. What good is a real-time freight routing solver that takes a day to find a feasible solution? Even
+    small and innocent looking problems can hide an enormous problem size. For example, they probably still don't know
+    the optimal solution of the traveling tournament problem for as little as 12 traveling teams.</para>
   </section>
 </chapter>
