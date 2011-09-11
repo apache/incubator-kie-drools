@@ -238,8 +238,8 @@
         for the same teacher that teaches at 2 different departments, it's hard to write a correct score constraint that
         is constrains a teacher's spare time.</para>
 
-        <para>Alternatively, you can sometimes also introduce <link linkend="getProblemFacts"><emphasis>a cached problem
-        fact</emphasis></link> to enrich the domain model during planning without actually changing it.</para>
+        <para>Alternatively, you can sometimes also introduce <link linkend="cachedProblemFact"><emphasis>a cached
+        problem fact</emphasis></link> to enrich the domain model during planning without actually changing it.</para>
       </note>
     </section>
 
@@ -745,9 +745,55 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
     }</programlisting>
 
         <para><emphasis>All planning entities are automatically inserted into the drools working memory.</emphasis> Do
-        not add them in the <literal>getProblemFacts()</literal> method.</para>
+        not add them in the method <literal>getProblemFacts()</literal>.</para>
 
-        <para>todo cached problem facts</para>
+        <para>The method <literal>getProblemFacts()</literal> is not called much: at most only once per solver phase per
+        solver thread.</para>
+      </section>
+
+      <section xml:id="cachedProblemFact">
+        <title>Cached problem fact</title>
+
+        <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
+        before the <literal>Solver</literal> really starts solving. The method <literal>getProblemFacts()</literal> has
+        the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
+        constraints.</para>
+
+        <para>For example in examination, a cache problem fact <literal>TopicConflict</literal> is created for every 2
+        <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
+
+        <programlisting>    public Collection&lt;? extends Object&gt; getProblemFacts() {
+        List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
+        // ...
+        facts.addAll(calculateTopicConflictList());
+        // ...
+        return facts;
+    }
+
+    private List&lt;TopicConflict&gt; calculateTopicConflictList() {
+        List&lt;TopicConflict&gt; topicConflictList = new ArrayList&lt;TopicConflict&gt;();
+        for (Topic leftTopic : topicList) {
+            for (Topic rightTopic : topicList) {
+                if (leftTopic.getId() &lt; rightTopic.getId()) {
+                    int studentSize = 0;
+                    for (Student student : leftTopic.getStudentList()) {
+                        if (rightTopic.getStudentList().contains(student)) {
+                            studentSize++;
+                        }
+                    }
+                    if (studentSize &gt; 0) {
+                        topicConflictList.add(new TopicConflict(leftTopic, rightTopic, studentSize));
+                    }
+                }
+            }
+        }
+        return topicConflictList;
+    }</programlisting>
+
+        <para>Any score constraint that needs to check if no 2 exams have a topic which share a student are being
+        scheduled close together (depending on the constraint: at the same time, in a row or in the same day), can
+        simply use the <literal>TopicConflict</literal> instance as a problem fact, instead of having to combine every 2
+        <literal>Student</literal> instances.</para>
       </section>
 
       <section>
