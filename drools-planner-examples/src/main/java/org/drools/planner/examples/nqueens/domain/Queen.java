@@ -21,6 +21,7 @@ import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nqueens.domain.solution.QueenDifficultyWeightFactory;
+import org.drools.planner.examples.nqueens.domain.solution.RowStrengthWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
 public class Queen extends AbstractPersistable {
@@ -38,7 +39,7 @@ public class Queen extends AbstractPersistable {
         this.column = column;
     }
 
-    @PlanningVariable
+    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     @ValueRangeFromSolutionProperty(propertyName = "rowList")
     public Row getRow() {
         return row;

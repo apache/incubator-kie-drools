@@ -21,8 +21,48 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
+    <name>FIRST_FIT</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>FIRST_FIT_DECREASING</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>BEST_FIT_DECREASING</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
     <name>Solution tabu</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
       <localSearch>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
@@ -39,6 +79,10 @@
   <solverBenchmark>
     <name>Move tabu</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
       <localSearch>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
@@ -55,6 +99,10 @@
   <solverBenchmark>
     <name>Property tabu</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
       <localSearch>
         <selector>
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>

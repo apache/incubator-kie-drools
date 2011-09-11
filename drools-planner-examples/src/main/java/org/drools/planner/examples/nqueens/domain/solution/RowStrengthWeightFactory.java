@@ -17,19 +17,19 @@
 package org.drools.planner.examples.nqueens.domain.solution;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
+import org.drools.planner.api.domain.variable.PlanningValueStrengthWeightFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
+import org.drools.planner.examples.nqueens.domain.Row;
 
-public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWeightFactory {
+public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFactory {
 
-    public Comparable createDifficultyWeight(Solution solution, Object planningEntity) {
+    public Comparable createStrengthWeight(Solution solution, Object planningValue) {
         NQueens nQueens = (NQueens) solution;
-        Queen queen = (Queen) planningEntity;
-        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
-        return new QueenDifficultyWeight(queen, distanceFromMiddle);
+        Row row = (Row) planningValue;
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
+        return new RowStrengthWeight(row, distanceFromMiddle);
     }
 
     private static int calculateDistanceFromMiddle(int n, int columnIndex) {
@@ -41,20 +41,20 @@ public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWei
         return distanceFromMiddle;
     }
 
-    public static class QueenDifficultyWeight implements Comparable<QueenDifficultyWeight> {
+    public static class RowStrengthWeight implements Comparable<RowStrengthWeight> {
 
-        private final Queen queen;
+        private final Row row;
         private final int distanceFromMiddle;
 
-        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
-            this.queen = queen;
+        public RowStrengthWeight(Row row, int distanceFromMiddle) {
+            this.row = row;
             this.distanceFromMiddle = distanceFromMiddle;
         }
 
-        public int compareTo(QueenDifficultyWeight other) {
+        public int compareTo(RowStrengthWeight other) {
             return new CompareToBuilder()
                     .append(distanceFromMiddle, other.distanceFromMiddle)
-                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
+                    .append(row.getIndex(), other.row.getIndex())
                     .toComparison();
         }
 
