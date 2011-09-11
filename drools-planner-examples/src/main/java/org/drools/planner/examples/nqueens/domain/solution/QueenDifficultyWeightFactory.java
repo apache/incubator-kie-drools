@@ -19,7 +19,6 @@ package org.drools.planner.examples.nqueens.domain.solution;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.curriculumcourse.domain.Course;
 import org.drools.planner.examples.nqueens.domain.NQueens;
 import org.drools.planner.examples.nqueens.domain.Queen;
 
@@ -53,7 +52,8 @@ public class QueenDifficultyWeightFactory implements PlanningEntityDifficultyWei
 
         public int compareTo(QueenDifficultyWeight other) {
             return new CompareToBuilder()
-                    .append(distanceFromMiddle, other.distanceFromMiddle)
+                    // The more difficult queens have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
                     .append(queen.getColumnIndex(), other.queen.getColumnIndex())
                     .toComparison();
         }
