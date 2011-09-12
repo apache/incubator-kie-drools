@@ -242,4 +242,15 @@ public final class JavaRuleBuilderHelper {
         context.getDescrLookups().put( invokerClassName,
                                            descrLookup );
     }
+
+    public static void registerInvokerBytecode(RuleBuildContext context, Map<String, Object> vars, byte[] bytecode, Object invokerLookup) {
+        String packageName = (String)vars.get("package");
+        String invokerClassName = (String)vars.get("invokerClassName");
+        String className = packageName + "." + invokerClassName;
+        String resourceName = className.replace('.', '/') + ".class";
+
+        JavaDialectRuntimeData data = (JavaDialectRuntimeData)context.getPkg().getDialectRuntimeRegistry().getDialectData("java");
+        data.write(resourceName, bytecode);
+        data.putInvoker(className, invokerLookup);
+    }
 }
