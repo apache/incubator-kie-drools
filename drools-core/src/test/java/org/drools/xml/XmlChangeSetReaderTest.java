@@ -18,6 +18,7 @@ package org.drools.xml;
 import java.util.Collection;
 import org.drools.ChangeSet;
 import org.drools.io.Resource;
+import org.drools.io.internal.InternalResource;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,12 +47,13 @@ public class XmlChangeSetReaderTest {
         
         Assert.assertEquals(4, resourcesAdded.size());
         
-        Resource resource1 = null;
-        Resource resource2 = null;
-        Resource resource3 = null;
-        Resource secureResource = null;
+        InternalResource resource1 = null;
+        InternalResource resource2 = null;
+        InternalResource resource3 = null;
+        InternalResource secureResource = null;
         
-        for (Resource resource : resourcesAdded) {
+        for (Resource r : resourcesAdded) {
+            InternalResource resource = (InternalResource) r;
             if (resource.getName() != null && resource.getName().equals("resource1")){
                 resource1 = resource;
             } else if (resource.getName() != null && resource.getName().equals("secureResource")){
