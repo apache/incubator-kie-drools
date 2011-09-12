@@ -12,9 +12,19 @@
 		<level value="INFO"/>
 	</logger>
 	
-	<!-- logger name="org.hibernate">
-		<level value="INFO"/>
-	</logger -->
+    <logger name="org.hibernate.cfg.annotations">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.AnnotationBinder">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.SettingsFactory">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.tool.hbm2ddl">
+        <level value="WARN"/>
+    </logger>
+
 	<root>
 		<priority value="INFO"/>
 		<appender-ref ref="CONSOLE"/>
