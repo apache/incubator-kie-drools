@@ -12,7 +12,7 @@ public class ClassGeneratorTest {
     @Test
     public void testGenerate() {
         final String MY_NAME = "myName";
-        ClassGenerator generator = new ClassGenerator("pkg.Bean");
+        ClassGenerator generator = new ClassGenerator("pkg.Bean", getClass().getClassLoader());
 
         generator.addField(ACC_PRIVATE + ACC_FINAL, "name", String.class);
 

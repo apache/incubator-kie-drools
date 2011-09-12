@@ -3,6 +3,7 @@ package org.drools.rule.builder.dialect.asm;
 import org.drools.base.*;
 import org.mvel2.asm.*;
 
+import java.io.*;
 import java.util.*;
 
 import static org.mvel2.asm.Opcodes.*;
@@ -27,22 +28,14 @@ public class ClassGenerator {
     private byte[] bytecode;
     private Class<?> clazz;
 
-    public ClassGenerator(String className) {
-        this(className, null, null);
-    }
-
     public ClassGenerator(String className, ClassLoader classLoader) {
         this(className, classLoader, null);
-    }
-
-    public ClassGenerator(String className, TypeResolver typeResolver) {
-        this(className, null, typeResolver);
     }
 
     public ClassGenerator(String className, ClassLoader classLoader, TypeResolver typeResolver) {
         this.className = className;
         this.classDescriptor = className.replace('.', '/');
-        this.classLoader = classLoader == null ? INTERNAL_CLASS_LOADER : new InternalClassLoader(classLoader);
+        this.classLoader = new InternalClassLoader(classLoader);
         this.typeResolver = typeResolver == null ? INTERNAL_TYPE_RESOLVER : typeResolver;
     }
 
@@ -308,16 +301,74 @@ public class ClassGenerator {
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
         }
 
+        public void println(String msg) {
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitLdcInsn(msg);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
+        }
+
+        public void printRegistryValue(int reg, Class<?> clazz) {
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitVarInsn(Type.getType(clazz).getOpcode(ILOAD), reg);
+            invokeVirtual(PrintStream.class, "println", null, clazz);
+        }
+
+        public void printLastRegistry(Class<?> clazz) {
+            Type t = Type.getType(clazz);
+            mv.visitVarInsn(t.getOpcode(ISTORE), 100);
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitVarInsn(t.getOpcode(ILOAD), 100);
+            invokeVirtual(PrintStream.class, "println", null, clazz);
+        }
+
+        public void printStack() {
+            mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "()V");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/RuntimeException", "printStackTrace", "()V");
+            mv.visitInsn(RETURN);
+        }
+
+        public <T> void returnAsArray(T[] array) {
+            push(array.length);
+            mv.visitTypeInsn(ANEWARRAY, internalName(array.getClass().getComponentType()));
+            for (int i = 0; i < array.length; i++) {
+                mv.visitInsn(DUP);
+                push(i);
+                push(array[i]);
+                mv.visitInsn(AASTORE);
+            }
+            mv.visitInsn(ARETURN);
+        }
+
+        public <T> void returnAsArray(Collection<T> collection, Class<T> clazz) {
+            push(collection.size());
+            mv.visitTypeInsn(ANEWARRAY, internalName(clazz));
+            int i = 0;
+            for (T item : collection) {
+                mv.visitInsn(DUP);
+                push(i++);
+                push(item);
+                mv.visitInsn(AASTORE);
+            }
+            mv.visitInsn(ARETURN);
+        }
+
         public void push(Object obj) {
-            mv.visitLdcInsn(obj);
+            if (obj instanceof Boolean) push((Boolean)obj);
+            else mv.visitLdcInsn(obj);
+        }
+
+        public void push(Boolean b) {
+            mv.visitFieldInsn(GETSTATIC, "java/lang/Boolean", b ? "TRUE" : "FALSE", "Ljava/lang/Boolean;");
         }
 
         public void cast(Class<?> clazz) {
-            mv.visitTypeInsn(CHECKCAST, interalName(clazz));
+            mv.visitTypeInsn(CHECKCAST, internalName(clazz));
         }
 
         public void instanceOf(Class<?> clazz) {
-            mv.visitTypeInsn(INSTANCEOF, interalName(clazz));
+            mv.visitTypeInsn(INSTANCEOF, internalName(clazz));
         }
 
         public void invokeThis(String methodName, Class<?> returnedType, Class<?>... paramsType) {
@@ -341,7 +392,7 @@ public class ClassGenerator {
         }
 
         private void invoke(int opCode, Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
-            mv.visitMethodInsn(opCode, interalName(clazz), methodName, methodDescr(returnedType, paramsType));
+            mv.visitMethodInsn(opCode, internalName(clazz), methodName, methodDescr(returnedType, paramsType));
         }
 
         public void putField(String name, Class<?> type) {
@@ -377,11 +428,11 @@ public class ClassGenerator {
             return cg.toTypeDescriptor(className);
         }
 
-        public String interalName(Class<?> clazz) {
+        public String internalName(Class<?> clazz) {
             return cg.toInteralName(clazz);
         }
 
-        public String interalName(String className) {
+        public String internalName(String className) {
             return cg.toInteralName(className);
         }
     }
@@ -419,8 +470,6 @@ public class ClassGenerator {
     }
 
     // InternalClassLoader
-
-    private static final InternalClassLoader INTERNAL_CLASS_LOADER = new InternalClassLoader(ClassGenerator.class.getClassLoader());
 
     private static class InternalClassLoader extends ClassLoader {
 

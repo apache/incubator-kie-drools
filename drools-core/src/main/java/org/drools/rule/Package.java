@@ -29,13 +29,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.base.ClassFieldAccessorCache;
-import org.drools.base.ClassFieldAccessorStore;
+import org.drools.base.*;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.DroolsObjectOutputStream;
 import org.drools.definition.process.Process;
 import org.drools.definition.type.FactType;
 import org.drools.facttemplates.FactTemplate;
+import org.drools.util.*;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -96,6 +96,8 @@ public class Package
      * valid
      */
     private String                         errorSummary;
+
+    private transient TypeResolver         typeResolver;
 
     // ------------------------------------------------------------
     // Constructors
@@ -565,4 +567,11 @@ public class Package
         entryPointsIds.add( id );
     }
 
+    public TypeResolver getTypeResolver() {
+        return typeResolver;
+    }
+
+    public void setTypeResolver(TypeResolver typeResolver) {
+        this.typeResolver = typeResolver;
+    }
 }
