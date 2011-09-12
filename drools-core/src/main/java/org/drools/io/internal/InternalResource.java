@@ -44,6 +44,24 @@ public interface InternalResource extends Resource {
     long getLastModified();
     
     long getLastRead();
+    
+    /**
+     * Returns the name of the resource. This is just a descriptive name of
+     * the resource. 
+     * This is not a mandatory attribute
+     * 
+     * @return the name of the resource, or null if is not set.
+     */
+    String getName();
+    
+    /**
+     * Returns the description of the resource. This is just a text description
+     * of the resource used to add more information about it.
+     * This is not a mandatory attribute
+     * 
+     * @return the name of the resource, or null if is not set.
+     */
+    String getDescription();
 
     void setDescription(String description); 
 
