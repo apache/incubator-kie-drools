@@ -30,6 +30,7 @@ public class PackageRegistry {
                                                    this.pkg.getName() );
 
         this.typeResolver.addImport( pkg.getName() + ".*" );
+        pkg.setTypeResolver(typeResolver);
     }
 
     public String getDialect() {

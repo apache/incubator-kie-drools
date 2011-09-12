@@ -69,7 +69,7 @@ public class ClassTypeResolver
         this.classLoader = classLoader;
     }
 
-    public ClassTypeResolver(HashSet<String> imports,
+    public ClassTypeResolver(Set<String> imports,
                              CompositeClassLoader rootClassLoader,
                              String name) {
         this( imports, rootClassLoader );

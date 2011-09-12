@@ -91,7 +91,8 @@ public class JavaDialect
     private static final JavaPredicateBuilder        PREDICATE_BUILDER             = new JavaPredicateBuilder();
     private static final JavaReturnValueBuilder      RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
 //    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
-    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
+//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
+    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
     private static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
     private static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
     private static final JavaFunctionBuilder         FUNCTION_BUILDER              = new JavaFunctionBuilder();
