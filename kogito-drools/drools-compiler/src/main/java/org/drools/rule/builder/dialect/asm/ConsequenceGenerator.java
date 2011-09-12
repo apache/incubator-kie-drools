@@ -41,11 +41,10 @@ public class ConsequenceGenerator {
                                                             typeResolver)
                 .setInterfaces(Consequence.class, CompiledInvoker.class);
 
-        generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, ConsequenceBuilder.CONSEQUENCE_SERIAL_UID);
+        generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, ConsequenceBuilder.CONSEQUENCE_SERIAL_UID)
+                .addDefaultConstructor();
 
-        generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) { }
-        }).addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
+        generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 push(stub.getConsequenceClassName());
                 mv.visitInsn(ARETURN);
@@ -259,6 +258,52 @@ public class ConsequenceGenerator {
             invokeStatic(MethodComparator.class, "compareBytecode", Boolean.TYPE, List.class, List.class);
             // return MethodComparator.compareBytecode(getMethodBytecode(), ((CompiledInvoker)object).getMethodBytecode());
             mv.visitInsn(IRETURN);
+        }
+    }
+
+    public static abstract class EvaluateMethod extends ClassGenerator.MethodBody {
+        protected int offset;
+
+        protected int[] parseDeclarations(Declaration[] declarations, String[] declarationTypes, int declarReg, int tupleReg, int wmReg, boolean isLocal) {
+            int[] declarationsParamsPos = new int[declarations.length];
+            // DeclarationTypes[i] value[i] = (DeclarationTypes[i])localDeclarations[i].getValue((InternalWorkingMemory)workingMemory, object);
+            for (int i = 0; i < declarations.length; i++) {
+                declarationsParamsPos[i] = offset;
+                mv.visitVarInsn(ALOAD, declarReg); // declarations
+                push(i);
+                mv.visitInsn(AALOAD);  // declarations[i]
+                mv.visitVarInsn(ALOAD, wmReg); // workingMemory
+                cast(InternalWorkingMemory.class);
+                if (isLocal) {
+                    mv.visitVarInsn(ALOAD, 1); // object
+                } else {
+                    // tuple.get(declarations[i])).getObject()
+                    mv.visitVarInsn(ALOAD, tupleReg); // tuple
+                    mv.visitVarInsn(ALOAD, declarReg);
+                    push(i);
+                    mv.visitInsn(AALOAD);  // declarations[i]
+                    invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
+                }
+
+                String readMethod = declarations[i].getNativeReadMethod().getName();
+                boolean isObject = readMethod.equals("getValue");
+                String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
+                mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
+                offset += store(offset, declarationTypes[i]); // obj[i]
+            }
+            return declarationsParamsPos;
+        }
+
+        protected void parseGlobals(String[] globals, String[] globalTypes, int wmReg, StringBuilder methodDescr) {
+            for (int i = 0; i < globals.length; i++) {
+                mv.visitVarInsn(ALOAD, wmReg); // workingMemory
+                push(globals[i]);
+                invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
+                mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
+                methodDescr.append(typeDescr(globalTypes[i]));
+            }
         }
     }
 }

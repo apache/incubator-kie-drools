@@ -14,7 +14,7 @@ import java.util.*;
 import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 import static org.mvel2.asm.Opcodes.*;
 
-public class AsmPredicateBuilder implements PredicateBuilder {
+public class ASMPredicateBuilder implements PredicateBuilder {
 
     public void build(final RuleBuildContext context,
                       final BoundIdentifiers usedIdentifiers,
@@ -52,11 +52,10 @@ public class AsmPredicateBuilder implements PredicateBuilder {
                                                             ruleContext.getDialect("java").getPackageRegistry().getTypeResolver())
                 .setInterfaces(PredicateExpression.class, CompiledInvoker.class);
 
-        generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, new Long(510L));
+        generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, new Long(510L))
+                .addDefaultConstructor();
 
-        generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) { }
-        }).addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {
+        generator.addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 mv.visitInsn(ACONST_NULL);
                 mv.visitInsn(ARETURN);
@@ -81,9 +80,7 @@ public class AsmPredicateBuilder implements PredicateBuilder {
             }
         }).addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class),
                     new ConsequenceGenerator.EqualsMethod()
-        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
-            private int offset = 7;
-
+        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ConsequenceGenerator.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 final Declaration[] previousDeclarations = (Declaration[])vars.get("declarations");
                 final String[] previousDeclarationTypes = (String[])vars.get("declarationTypes");
@@ -92,8 +89,9 @@ public class AsmPredicateBuilder implements PredicateBuilder {
                 final String[] globals = (String[])vars.get("globals");
                 final String[] globalTypes = (String[])vars.get("globalTypes");
 
-                int[] previousDeclarationsParamsPos = parseDeclarations(previousDeclarations, previousDeclarationTypes, 3, false);
-                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, true);
+                offset = 7;
+                int[] previousDeclarationsParamsPos = parseDeclarations(previousDeclarations, previousDeclarationTypes, 3, 2, 5, false);
+                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, 2, 5, true);
 
                 // @{ruleClassName}.@{methodName}(@foreach{previousDeclarations}, @foreach{localDeclarations}, @foreach{globals})
                 StringBuilder predicateMethodDescr = new StringBuilder("(");
@@ -107,49 +105,11 @@ public class AsmPredicateBuilder implements PredicateBuilder {
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-                for (int i = 0; i < globals.length; i++) {
-                    mv.visitVarInsn(ALOAD, 5); // workingMemory
-                    push(globals[i]);
-                    invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
-                    mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
-                    predicateMethodDescr.append(typeDescr(globalTypes[i]));
-                }
+                parseGlobals(globals, globalTypes, 5, predicateMethodDescr);
 
                 predicateMethodDescr.append(")Z");
                 mv.visitMethodInsn(INVOKESTATIC, internalRuleClassName, methodName, predicateMethodDescr.toString());
                 mv.visitInsn(IRETURN);
-            }
-
-            private int[] parseDeclarations(Declaration[] declarations, String[] declarationTypes, int declarationRegistry, boolean isLocal) {
-                int[] declarationsParamsPos = new int[declarations.length];
-                // DeclarationTypes[i] value[i] = (DeclarationTypes[i])localDeclarations[i].getValue((InternalWorkingMemory)workingMemory, object);
-                for (int i = 0; i < declarations.length; i++) {
-                    declarationsParamsPos[i] = offset;
-                    mv.visitVarInsn(ALOAD, declarationRegistry); // declarations
-                    push(i);
-                    mv.visitInsn(AALOAD);  // declarations[i]
-                    mv.visitVarInsn(ALOAD, 5); // workingMemory
-                    cast(InternalWorkingMemory.class);
-                    if (isLocal) {
-                        mv.visitVarInsn(ALOAD, 1); // object
-                    } else {
-                        // tuple.get(declarations[i])).getObject()
-                        mv.visitVarInsn(ALOAD, 2); // tuple
-                        mv.visitVarInsn(ALOAD, declarationRegistry);
-                        push(i);
-                        mv.visitInsn(AALOAD);  // declarations[i]
-                        invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
-                        invokeInterface(InternalFactHandle.class, "getObject", Object.class);
-                    }
-
-                    String readMethod = declarations[i].getNativeReadMethod().getName();
-                    boolean isObject = readMethod.equals("getValue");
-                    String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
-                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                    if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                    offset += store(offset, declarationTypes[i]); // obj[i]
-                }
-                return declarationsParamsPos;
             }
         });
 
