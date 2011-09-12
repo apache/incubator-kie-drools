@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.persistence.jta;
 
 import javax.naming.InitialContext;
@@ -45,8 +60,6 @@ public class JtaTransactionManager
     Object                               tsr;
     javax.transaction.TransactionManager tm;
     
-    private boolean localTransaction;
-
     public JtaTransactionManager(Object ut,
                                  Object tsr,
                                  Object tm) {
@@ -146,23 +159,22 @@ public class JtaTransactionManager
         return null;
     }
 
-    public void begin() {
+    public boolean begin() {
         if ( getStatus() == TransactionManager.STATUS_NO_TRANSACTION ) {
-            this.localTransaction = true;
             try {
                 this.ut.begin();
+                return true;
             } catch ( Exception e ) {
                 logger.warn( "Unable to begin transaction", e);
                 throw new RuntimeException( "Unable to begin transaction",
                                             e );
             }
-        } else {
-            this.localTransaction = false;
-        }
+        } 
+        return false;
     }
 
-    public void commit() {
-        if ( this.localTransaction ) {
+    public void commit(boolean transactionOwner) {
+        if ( transactionOwner ) {
             try {
                 this.ut.commit();
             } catch ( Exception e ) {
@@ -170,16 +182,12 @@ public class JtaTransactionManager
                 throw new RuntimeException( "Unable to commit transaction",
                                             e );
             }
-        } else {
-            localTransaction = false;
-        }
+        } 
     }
     
-    public void rollback() {
-    	boolean wasLocal = localTransaction;
-        localTransaction = false;
+    public void rollback(boolean transactionOwner) {
         try {
-        	if (wasLocal) {
+        	if (transactionOwner) {
         		this.ut.rollback();
         	} else {
         		this.ut.setRollbackOnly();
