@@ -219,6 +219,10 @@ public class ClassGenerator {
         }
     }
 
+    public ClassGenerator addDefaultConstructor() {
+        return addDefaultConstructor(EMPTY_METHOD_BODY);
+    }
+
     public ClassGenerator addDefaultConstructor(final MethodBody body) {
         MethodBody constructorBody = new MethodBody() {
             public void body(MethodVisitor mv) {
@@ -228,10 +232,13 @@ public class ClassGenerator {
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitMethodInsn(INVOKESPECIAL, cg.getSuperClassDescriptor(), "<init>", "()V"); // super()
                 body.body(mv);
-                mv.visitInsn(RETURN); // return
             }
         };
         return addMethod(ACC_PUBLIC, "<init>", "()V", null, null, constructorBody);
+    }
+
+    public ClassGenerator addMethod(int access, String name, String desc) {
+        return addMethod(access, name, desc, null, null, EMPTY_METHOD_BODY);
     }
 
     public ClassGenerator addMethod(int access, String name, String desc, MethodBody body) {
@@ -250,6 +257,12 @@ public class ClassGenerator {
         classParts.add(new MethodDescr(access, name, desc, signature, exceptions, body));
         return this;
     }
+
+    private static final MethodBody EMPTY_METHOD_BODY = new MethodBody() {
+        public final void body(MethodVisitor mv) {
+            mv.visitInsn(RETURN); // return
+        }
+    };
 
     // MethodBody
 

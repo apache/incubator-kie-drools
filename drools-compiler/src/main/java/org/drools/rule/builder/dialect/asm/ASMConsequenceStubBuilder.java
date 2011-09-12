@@ -38,12 +38,10 @@ public class ASMConsequenceStubBuilder extends AbstractASMConsequenceBuilder {
         generator.setInterfaces(ConsequenceStub.class, CompiledInvoker.class);
 
         generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, CONSEQUENCE_SERIAL_UID)
-                .addField(ACC_PRIVATE, "consequence", Consequence.class);
+                .addField(ACC_PRIVATE, "consequence", Consequence.class)
+                .addDefaultConstructor();
 
-        generator.addDefaultConstructor(new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) {
-            }
-        }).addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
+        generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 push(name);
                 mv.visitInsn(ARETURN); // return the first object on the stack
