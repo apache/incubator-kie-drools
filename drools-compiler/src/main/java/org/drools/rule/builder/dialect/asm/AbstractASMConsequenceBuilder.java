@@ -19,7 +19,7 @@ public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilde
         generateMethodTemplate("consequenceMethod", context, vars);
 
         byte[] bytecode = createConsequenceBytecode(context, vars);
-        writeBytecode(context, vars, bytecode);
+        registerInvokerBytecode(context, vars, bytecode, context.getRule());
 
         // popping Rule.getLHS() from the build stack
         context.getBuildStack().pop();
@@ -45,17 +45,6 @@ public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilde
         fixedConsequence = KnowledgeHelperFixer.fix( fixedConsequence );
 
         return createConsequenceContext(context, consequenceName, className, fixedConsequence, decls, analysis.getBoundIdentifiers());
-    }
-
-    private void writeBytecode(RuleBuildContext context, Map<String, Object> consequenceContext, byte[] bytecode) {
-        String packageName = (String)consequenceContext.get("package");
-        String invokerClassName = (String)consequenceContext.get("invokerClassName");
-        String className = packageName + "." + invokerClassName;
-        String resourceName = className.replace('.', '/') + ".class";
-
-        JavaDialectRuntimeData data = (JavaDialectRuntimeData)context.getPkg().getDialectRuntimeRegistry().getDialectData("java");
-        data.write(resourceName, bytecode);
-        data.putInvoker(className, context.getRule());
     }
 
     protected abstract byte[] createConsequenceBytecode(RuleBuildContext ruleContext, final Map<String, Object> consequenceContext);

@@ -88,7 +88,8 @@ public class JavaDialect
     private static final EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
     private static final JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
     private static final JavaEvalBuilder             EVAL_BUILDER                  = new JavaEvalBuilder();
-    private static final JavaPredicateBuilder        PREDICATE_BUILDER             = new JavaPredicateBuilder();
+//    private static final PredicateBuilder            PREDICATE_BUILDER             = new JavaPredicateBuilder();
+    private static final PredicateBuilder            PREDICATE_BUILDER             = new AsmPredicateBuilder();
     private static final JavaReturnValueBuilder      RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
 //    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
 //    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
