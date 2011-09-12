@@ -1,3 +1,18 @@
+/*
+ * Copyright 2011 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.persistence.map.impl;
 
 import org.drools.KnowledgeBase;
@@ -8,13 +23,18 @@ import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ByteArrayResource;
+import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class MapPersistenceTest {
 
+    private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
+    
     @Test
     public void createPersistentSession() {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -46,7 +66,7 @@ public abstract class MapPersistenceTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors != null && errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.out.println( "Error: " + error.getMessage() );
+                logger.warn( "Error: " + error.getMessage() );
             }
             Assert.fail( "KnowledgeBase did not build" );
         }
