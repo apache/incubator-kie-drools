@@ -11,38 +11,24 @@ import org.mvel2.asm.*;
 import java.util.*;
 
 import static org.mvel2.asm.Opcodes.*;
+import static org.drools.rule.builder.dialect.asm.InvokerGenerator.*;
 
 public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
 
     protected byte[] createConsequenceBytecode(RuleBuildContext ruleContext, final Map<String, Object> consequenceContext) {
-        final ConsequenceDataProvider data = new ConsequenceContext(consequenceContext);
-        final String invokerClassName = (String)consequenceContext.get("invokerClassName");
+        final InvokerDataProvider data = new InvokerContext(consequenceContext);
         final String name = (String)consequenceContext.get("consequenceName");
         final Declaration[] declarations = (Declaration[])consequenceContext.get("declarations");
 
-        final ClassGenerator generator = new ClassGenerator(data.getPackageName() + "." + invokerClassName,
-                                                            ruleContext.getPackageBuilder().getRootClassLoader(),
-                                                            ruleContext.getDialect("java").getPackageRegistry().getTypeResolver())
+        final ClassGenerator generator = createInvokerClassGenerator(data, ruleContext)
                 .setInterfaces(Consequence.class, CompiledInvoker.class);
 
-        generator.addStaticField(ACC_PRIVATE + ACC_FINAL, "serialVersionUID", Long.TYPE, CONSEQUENCE_SERIAL_UID)
-                .addDefaultConstructor();
-        
         generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 push(name);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "hashCode", generator.methodDescr(Integer.TYPE), new ClassGenerator.MethodBody() {
-            public void body(MethodVisitor mv) {
-                push(data.hashCode());
-                mv.visitInsn(IRETURN);
-            }
-        }).addMethod(ACC_PUBLIC, "getMethodBytecode", generator.methodDescr(List.class),
-                     new ConsequenceGenerator.GetMethodBytecodeMethod(data)
-        ).addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class),
-                    new ConsequenceGenerator.EqualsMethod()
-        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
@@ -59,6 +45,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 invokeVirtual(RuleTerminalNode.class, "getDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
+                Boolean[] notPatterns = (Boolean[])consequenceContext.get("notPatterns");
                 String[] declarationTypes = data.getDeclarationTypes();
                 int[] paramsPos = new int[declarations.length];
                 int offset = 5;
@@ -77,7 +64,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     mv.visitInsn(AALOAD); // handles[declaration[i].getPattern().getOffset()]
                     mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
-                    if (data.getNotPatterns()[i]) {
+                    if (notPatterns[i]) {
                         // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
                         mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
                         push(i); // i
@@ -118,15 +105,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-                String[] globals = data.getGlobals();
-                String[] globalTypes = data.getGlobalTypes();
-                for (int i = 0; i < globals.length; i++) {
-                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
-                    push(globals[i]);
-                    invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
-                    mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
-                    consequenceMethodDescr.append(typeDescr(globalTypes[i]));
-                }
+                parseGlobals(data.getGlobals(), data.getGlobalTypes(), 2, consequenceMethodDescr);
 
                 consequenceMethodDescr.append(")V");
                 mv.visitMethodInsn(INVOKESTATIC, data.getInternalRuleClassName(), data.getMethodName(), consequenceMethodDescr.toString());
