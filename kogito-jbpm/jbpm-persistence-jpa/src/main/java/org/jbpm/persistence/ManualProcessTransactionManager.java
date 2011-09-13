@@ -17,11 +17,11 @@ public class ManualProcessTransactionManager extends ManualTransactionManager {
     }
     
     @Override
-    public void commit() {
+    public void commit(boolean transactionOwner) {
         for ( ProcessInstanceInfo processInstanceInfo : session.getStoredProcessInstances() ) {
             storage.saveOrUpdate( processInstanceInfo );
         }
         session.clearStoredProcessInstances();
-        super.commit();
+        super.commit(transactionOwner);
     }
 }
