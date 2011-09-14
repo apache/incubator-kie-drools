@@ -24,7 +24,6 @@ public class KnowledgeStoreServiceImpl
 
     private Class< ? extends CommandExecutor>               commandServiceClass;
     private Class< ? extends WorkItemManagerFactory>        workItemManagerFactoryClass;
-    private Class< ? extends TimerService>                  timerServiceClass;
 
     private Properties                                      configProps = new Properties();
 
@@ -37,7 +36,6 @@ public class KnowledgeStoreServiceImpl
         setProcessInstanceManagerFactoryClass( "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory" );
         setWorkItemManagerFactoryClass( JPAWorkItemManagerFactory.class );
         setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
-        setTimerServiceClass( JpaJDKTimerService.class );
     }
 
     public StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase,
@@ -133,6 +131,7 @@ public class KnowledgeStoreServiceImpl
 
     private KnowledgeSessionConfiguration mergeConfig(KnowledgeSessionConfiguration configuration) {
         ((SessionConfiguration) configuration).addProperties( configProps );
+        ((SessionConfiguration) configuration).setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
         return configuration;
     }
 
@@ -156,17 +155,6 @@ public class KnowledgeStoreServiceImpl
         return commandServiceClass;
     }
 
-    public void setTimerServiceClass(Class< ? extends TimerService> timerServiceClass) {
-        if ( timerServiceClass != null ) {
-            this.timerServiceClass = timerServiceClass;
-            configProps.put( "drools.timerService",
-                             timerServiceClass.getName() );
-        }
-    }
-
-    public Class< ? extends TimerService> getTimerServiceClass() {
-        return timerServiceClass;
-    }
 
     public void setProcessInstanceManagerFactoryClass(String processInstanceManagerFactoryClass) {
         configProps.put( "drools.processInstanceManagerFactory",

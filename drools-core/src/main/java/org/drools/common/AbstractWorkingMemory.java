@@ -100,6 +100,7 @@ import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
+import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.TimerServiceFactory;
@@ -321,7 +322,8 @@ public abstract class AbstractWorkingMemory
         this.lock = new ReentrantLock();
         this.liaPropagations = Collections.EMPTY_LIST;
 
-        timerService = TimerServiceFactory.getTimerService( this.config );
+        timerService = TimerServiceFactory.getTimerService( this.config );        
+        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
 
         this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
 
@@ -715,6 +717,8 @@ public abstract class AbstractWorkingMemory
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
             try {
+                startOperation();
+                
                 synchronized ( this ) {
                     // If we're already firing a rule, then it'll pick up
                     // the firing for any other assertObject(..) that get
@@ -735,6 +739,7 @@ public abstract class AbstractWorkingMemory
                     return fireCount;
                 }
             } finally {
+                endOperation();
                 this.firing.set( false );
             }
         }

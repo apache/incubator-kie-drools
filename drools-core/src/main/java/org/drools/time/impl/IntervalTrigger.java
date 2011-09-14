@@ -73,6 +73,30 @@ public class IntervalTrigger
         updateToNextIncludeDate();
     }
 
+    public int getRepeatLimit() {
+        return repeatLimit;
+    }
+
+    public int getRepeatCount() {
+        return repeatCount;
+    }
+
+    public Date getNextFireTime() {
+        return nextFireTime;
+    }
+
+    public long getPeriod() {
+        return period;
+    }
+
+    public String[] getCalendarNames() {
+        return calendarNames;
+    }
+
+    public Calendars getCalendars() {
+        return calendars;
+    }
+
     public Date getStartTime() {
         return this.startTime;
     }
@@ -207,4 +231,30 @@ public class IntervalTrigger
             }
         }
     }
+
+    public void setRepeatLimit(int repeatLimit) {
+        this.repeatLimit = repeatLimit;
+    }
+
+    public void setRepeatCount(int repeatCount) {
+        this.repeatCount = repeatCount;
+    }
+
+    public void setNextFireTime(Date nextFireTime) {
+        this.nextFireTime = nextFireTime;
+    }
+
+    public void setPeriod(long period) {
+        this.period = period;
+    }
+
+    public void setCalendarNames(String[] calendarNames) {
+        this.calendarNames = calendarNames;
+    }
+
+    public void setCalendars(Calendars calendars) {
+        this.calendars = calendars;
+    }
+    
+    
 }

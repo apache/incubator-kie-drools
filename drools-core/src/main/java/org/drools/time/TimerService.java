@@ -16,6 +16,10 @@
 
 package org.drools.time;
 
+import java.util.Collection;
+
+import org.drools.time.impl.TimerJobInstance;
+
 /**
  * An interface for all timer service implementations used in a drools session.
  */
@@ -43,5 +47,11 @@ public interface TimerService extends SchedulerService {
      *         there is no job scheduled
      */
     public long getTimeToNextJob();
+    
+    /**
+     * This method may return null for some TimerService implementations that do not want the overhead of maintain this.
+     * @return
+     */
+    public Collection<TimerJobInstance> getTimerJobInstances();
 
 }

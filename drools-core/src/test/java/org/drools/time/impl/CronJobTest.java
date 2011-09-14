@@ -38,14 +38,11 @@ public class CronJobTest {
     public void testCronTriggerJob() throws Exception {
         SessionConfiguration config = new SessionConfiguration();
         config.setClockType(ClockType.PSEUDO_CLOCK);
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) TimerServiceFactory.getTimerService( config );
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) TimerServiceFactory.getTimerService( config );       
         
-        DateFormat df = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" );
-        Date date = df.parse( "2009-01-01T00:00:00.000-0000" );
+        timeService.advanceTime(0, TimeUnit.MILLISECONDS );
         
-        timeService.advanceTime( date.getTime(), TimeUnit.MILLISECONDS );
-        
-        CronTrigger trigger = new CronTrigger(date.getTime(), null, null, -1, "15 * * * * ?", null, null);
+        CronTrigger trigger = new CronTrigger(0, null, null, -1, "15 * * * * ?", null, null);
         
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);

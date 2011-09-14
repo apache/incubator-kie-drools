@@ -29,15 +29,21 @@ import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Scheduler.ActivationTimerJobContext;
+import org.drools.common.Scheduler.ActivationTimerOutputMarshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.SlidingTimeWindow;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
+
+import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
+import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext            stream;
@@ -53,6 +59,9 @@ public class MarshallerReaderContext extends ObjectInputStream {
 
     public final ObjectMarshallingStrategyStore     resolverStrategyFactory;
     public final Map<String, EntryPoint>            entryPoints;
+    
+    public final Map<Short, TimersInputMarshaller>  readersByInt;
+    public final Map<Class, TimersInputMarshaller>  readersByClass;    
 
     public final Map<Long, PropagationContext>      propagationContexts;
 
@@ -83,6 +92,16 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.stream = this;
         this.ruleBase = ruleBase;
         this.sinks = sinks;
+        
+        this.readersByInt = new HashMap<Short, TimersInputMarshaller>();
+        this.readersByClass = new HashMap<Class, TimersInputMarshaller>();        
+        
+        this.readersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerInputMarshaller() );
+        this.readersByInt.put( PersisterEnums.BEHAVIOR_TIMER, this.readersByClass.get( SlidingTimeWindow.BehaviorJobContext.class ) );
+        
+        this.readersByClass.put( ActivationTimerJobContext.class, new ActivationTimerInputMarshaller() );
+        this.readersByInt.put( PersisterEnums.ACTIVATION_TIMER,  this.readersByClass.get(ActivationTimerJobContext.class) );        
+        
         this.handles = new HashMap<Integer, InternalFactHandle>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();

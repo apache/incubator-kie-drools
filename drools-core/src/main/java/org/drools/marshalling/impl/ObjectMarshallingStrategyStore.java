@@ -16,9 +16,6 @@
 
 package org.drools.marshalling.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.marshalling.ObjectMarshallingStrategy;
 
 public class ObjectMarshallingStrategyStore {

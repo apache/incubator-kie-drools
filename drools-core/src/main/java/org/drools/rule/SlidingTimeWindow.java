@@ -30,8 +30,14 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
+import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.RightTupleKey;
+import org.drools.marshalling.impl.TimersInputMarshaller;
+import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.RightTuple;
+import org.drools.reteoo.RightTupleSink;
 import org.drools.spi.PropagationContext;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -46,7 +52,7 @@ public class SlidingTimeWindow
 
     private long              size;
     // stateless job
-    private final BehaviorJob job = new BehaviorJob();
+    public static final BehaviorJob job = new BehaviorJob();
 
     public SlidingTimeWindow() {
         this( 0 );
@@ -115,6 +121,7 @@ public class SlidingTimeWindow
             // update next expiration time 
             updateNextExpiration( rightTuple,
                                   workingMemory,
+                                  this,
                                   queue );
         }
         return true;
@@ -137,6 +144,7 @@ public class SlidingTimeWindow
                 // update next expiration time 
                 updateNextExpiration( queue.queue.peek(),
                                       workingMemory,
+                                      this,
                                       queue );
             } else {
                 queue.queue.remove( rightTuple );
@@ -175,6 +183,7 @@ public class SlidingTimeWindow
         // update next expiration time 
         updateNextExpiration( tuple,
                               workingMemory,
+                              this,
                               queue );
     }
 
@@ -187,14 +196,15 @@ public class SlidingTimeWindow
      * @param rightTuple
      * @param workingMemory
      */
-    private void updateNextExpiration(final RightTuple rightTuple,
+    private static void updateNextExpiration(final RightTuple rightTuple,
                                       final InternalWorkingMemory workingMemory,
+                                      final SlidingTimeWindow stw,
                                       final Object context) {
         TimerService clock = workingMemory.getTimerService();
         if ( rightTuple != null ) {
-            long nextTimestamp = ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + this.size;
+            long nextTimestamp = ((EventFactHandle) rightTuple.getFactHandle()).getStartTimestamp() + stw.getSize();
             JobContext jobctx = new BehaviorJobContext( workingMemory,
-                                                        this,
+                                                        stw,
                                                         context );
             JobHandle handle = clock.scheduleJob( job,
                                                   jobctx,
@@ -248,9 +258,104 @@ public class SlidingTimeWindow
             out.writeObject( this.expiringTuple );
         }
 
-    }
+        public PriorityQueue<RightTuple> getQueue() {
+            return queue;
+        }
 
-    private static class BehaviorJobContext
+        public void setQueue(PriorityQueue<RightTuple> queue) {
+            this.queue = queue;
+        }
+
+        public RightTuple getExpiringTuple() {
+            return expiringTuple;
+        }
+
+        public void setExpiringTuple(RightTuple expiringTuple) {
+            this.expiringTuple = expiringTuple;
+        }
+
+    }
+    
+    public static class BehaviorJobContextTimerOutputMarshaller implements TimersOutputMarshaller {
+        public void write(JobContext jobCtx,
+                        MarshallerWriteContext outputCtx) throws IOException {   
+            outputCtx.writeShort( PersisterEnums.BEHAVIOR_TIMER );
+            // BehaviorJob, no state            
+            BehaviorJobContext bjobCtx = ( BehaviorJobContext ) jobCtx;
+            
+            outputCtx.writeObject( bjobCtx.behavior );
+            
+            // write out SlidingTimeWindowContext
+            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
+            if ( slCtx.expiringTuple != null ) {
+                outputCtx.writeBoolean( true );
+                
+                if ( slCtx.expiringTuple != null ) {
+                    outputCtx.writeBoolean( true );
+                    outputCtx.writeInt( slCtx.expiringTuple.getRightTupleSink().getId() );
+                    outputCtx.writeInt(  slCtx.expiringTuple.getFactHandle().getId() );
+                } else {
+                    outputCtx.writeBoolean( false );
+                }
+                
+                if ( slCtx.getQueue() != null ) {
+                    outputCtx.writeBoolean( true );                    
+                    outputCtx.writeInt( slCtx.getQueue().size() ); 
+                    for ( RightTuple rightTuple :  slCtx.getQueue() ) {
+                        outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );
+                        outputCtx.writeInt(  rightTuple.getFactHandle().getId() );                        
+                    }
+                } else {
+                    outputCtx.writeBoolean( false );    
+                }
+            } else {
+                outputCtx.writeBoolean( false );                
+            }
+        }
+    }
+    
+    public static class BehaviorJobContextTimerInputMarshaller implements TimersInputMarshaller {
+        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {    
+            
+            SlidingTimeWindow beh = ( SlidingTimeWindow) inCtx.readObject();
+            
+            SlidingTimeWindowContext slCtx = new SlidingTimeWindowContext();
+            if ( inCtx.readBoolean() ) {
+                if ( inCtx.readBoolean() ) {
+                    int sinkId = inCtx.readInt();
+                    int factHandleId = inCtx.readInt();
+                    
+                    RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
+                    RightTupleKey key = new RightTupleKey( factHandleId,
+                                                           sink );  
+                    slCtx.expiringTuple = inCtx.rightTuples.get( key );
+                }
+                
+                if ( inCtx.readBoolean() ) {
+                    int size = inCtx.readInt();
+                    for ( int i = 0; i < size; i++ ) {
+                        int sinkId = inCtx.readInt();
+                        int factHandleId = inCtx.readInt();
+                        
+                        RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
+                        RightTupleKey key = new RightTupleKey( factHandleId,
+                                                               sink ); 
+                        slCtx.queue.add( inCtx.rightTuples.get( key ) );
+                    }
+                }
+                
+                if ( slCtx.queue.peek() != null ) {
+                    updateNextExpiration( ( RightTuple) slCtx.queue.peek(),
+                                          inCtx.wm,
+                                          beh,
+                                          slCtx );
+                }              
+            }
+        }
+    }    
+    
+
+    public static class BehaviorJobContext
         implements
         JobContext,
         Externalizable {
@@ -293,7 +398,7 @@ public class SlidingTimeWindow
 
     }
 
-    private static class BehaviorJob
+    public static class BehaviorJob
         implements
         Job {
 
@@ -305,7 +410,7 @@ public class SlidingTimeWindow
 
     }
 
-    private static class BehaviorExpireWMAction
+    public static class BehaviorExpireWMAction
         implements
         WorkingMemoryAction {
         private final Behavior behavior;
