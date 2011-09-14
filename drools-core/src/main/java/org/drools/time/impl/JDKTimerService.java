@@ -16,13 +16,17 @@
 
 package org.drools.time.impl;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.time.AcceptsTimerJobFactoryManager;
+import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -38,9 +42,15 @@ import org.drools.time.Trigger;
 public class JDKTimerService
     implements
     TimerService,
-    SessionClock {
-    
+    SessionClock,
+    InternalSchedulerService,
+    AcceptsTimerJobFactoryManager {
+
+    private AtomicLong                    idCounter = new AtomicLong();
+
     protected ScheduledThreadPoolExecutor scheduler;
+
+    protected TimerJobFactoryManager        jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
     public JDKTimerService() {
         this( 1 );
@@ -50,13 +60,25 @@ public class JDKTimerService
         this.scheduler = new ScheduledThreadPoolExecutor( size );
     }
 
+    public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
+        this.jobFactoryManager = timerJobFactoryManager;
+    }
+
+    public void setCounter(long counter) {
+        idCounter = new AtomicLong( counter );
+    }
+    
+    public TimerJobFactoryManager getTimerJobFactoryManager() {
+        return this.jobFactoryManager;
+    }    
+
     /**
      * @inheritDoc
      */
     public long getCurrentTime() {
         return System.currentTimeMillis();
     }
-    
+
     public void shutdown() {
         // forcing a shutdownNow instead of a regular shutdown()
         // to avoid delays on shutdown. This is an irreversible 
@@ -67,122 +89,80 @@ public class JDKTimerService
     public JobHandle scheduleJob(Job job,
                                  JobContext ctx,
                                  Trigger trigger) {
-        JDKJobHandle jobHandle = new JDKJobHandle();
+        JDKJobHandle jobHandle = new JDKJobHandle( idCounter.getAndIncrement() );
 
-        Date date = trigger.nextFireTime();
+        Date date = trigger.hasNextFireTime();
 
         if ( date != null ) {
-            Callable<Void> callableJob = createCallableJob( job,
-                                                            ctx,
-                                                            trigger,
-                                                            jobHandle,
-                                                            this.scheduler );
-            ScheduledFuture future = schedule( date,
-                                               callableJob,
-                                               this.scheduler );
-            jobHandle.setFuture( future );
+            TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job,
+                                                                                     ctx,
+                                                                                     trigger,
+                                                                                     jobHandle,
+                                                                                     this );
+            jobHandle.setTimerJobInstance( (TimerJobInstance) jobInstance );
+            internalSchedule( (TimerJobInstance) jobInstance );
 
             return jobHandle;
         } else {
             return null;
         }
     }
-    
-    protected Callable<Void> createCallableJob(Job job,
-                                               JobContext ctx,
-                                               Trigger trigger,
-                                               JDKJobHandle handle,
-                                               ScheduledThreadPoolExecutor scheduler) {
-        return new JDKCallableJob( job,
-                                   ctx,
-                                   trigger,
-                                   handle,
-                                   this.scheduler );
-    }
 
-    public boolean removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel( true );
-        return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
-    }
+    public void internalSchedule(TimerJobInstance timerJobInstance) {
+        Date date = timerJobInstance.getTrigger().hasNextFireTime();
+        Callable<Void> item = (Callable<Void>) timerJobInstance;
 
-    private static ScheduledFuture schedule(Date date,
-                                            Callable<Void> callableJob,
-                                            ScheduledThreadPoolExecutor scheduler) {
+        JDKJobHandle jobHandle = (JDKJobHandle) timerJobInstance.getJobHandle();
         long then = date.getTime();
         long now = System.currentTimeMillis();
         ScheduledFuture<Void> future = null;
         if ( then >= now ) {
-            future = scheduler.schedule( callableJob,
+            future = scheduler.schedule( item,
                                          then - now,
                                          TimeUnit.MILLISECONDS );
         } else {
-            future = scheduler.schedule( callableJob,
+            future = scheduler.schedule( item,
                                          0,
                                          TimeUnit.MILLISECONDS );
         }
-        return future;
+
+        jobHandle.setFuture( future );
+        jobFactoryManager.addTimerJobInstance( timerJobInstance );
     }
 
-    public static class JDKCallableJob
-        implements
-        Callable<Void> {
-        private final Job                         job;
-        private final Trigger                     trigger;
-        private final JobContext                  ctx;
-        private final ScheduledThreadPoolExecutor scheduler;
-        private final JDKJobHandle                handle;
-
-        public JDKCallableJob(Job job,
-                              JobContext ctx,
-                              Trigger trigger,
-                              JDKJobHandle handle,
-                              ScheduledThreadPoolExecutor scheduler) {
-            this.job = job;
-            this.ctx = ctx;
-            this.trigger = trigger;
-            this.handle = handle;
-            this.scheduler = scheduler;
-        }
-
-        public Void call() throws Exception {
-            if ( handle.isCancel() ) {
-                return null;
-            }            
-            this.job.execute( this.ctx );            
-            if ( handle.isCancel() ) {
-                return null;
-            }
-
-            // our triggers allow for flexible rescheduling
-            Date date = this.trigger.nextFireTime();
-            if ( date != null ) {
-                ScheduledFuture<Void> future = schedule( date,
-                                                         this,
-                                                         this.scheduler );
-                this.handle.setFuture( future );
-            }
-
-            return null;
-        }
+    public boolean removeJob(JobHandle jobHandle) {
+        jobHandle.setCancel( true );
+        jobFactoryManager.removeTimerJobInstance( ((JDKJobHandle) jobHandle).getTimerJobInstance() );
+        return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
     }
 
     public static class JDKJobHandle
         implements
-        JobHandle{
+        JobHandle {
 
-        private static final long serialVersionUID = 510l;
+        private static final long     serialVersionUID = 510l;
 
-        private AtomicBoolean cancel = new AtomicBoolean(false);
-        
+        private AtomicBoolean         cancel           = new AtomicBoolean( false );
+
         private ScheduledFuture<Void> future;
 
-        public JDKJobHandle() {
+        private long                  id;
+        
+
+        private TimerJobInstance      timerJobInstance;        
+
+        public JDKJobHandle(long id) {
+            this.id = id;
         }
 
         public void setCancel(boolean cancel) {
             this.cancel.set( cancel );
         }
-        
+
+        public long getId() {
+            return id;
+        }
+
         public boolean isCancel() {
             return cancel.get();
         }
@@ -194,11 +174,23 @@ public class JDKTimerService
         public void setFuture(ScheduledFuture<Void> future) {
             this.future = future;
         }
+        
+        public void setTimerJobInstance(TimerJobInstance scheduledJob) {
+            this.timerJobInstance = scheduledJob;
+        }
+
+        public TimerJobInstance getTimerJobInstance() {
+            return this.timerJobInstance;
+        }        
 
     }
 
     public long getTimeToNextJob() {
         return 0;
+    }
+
+    public Collection<TimerJobInstance> getTimerJobInstances() {
+        return jobFactoryManager.getTimerJobInstances();
     }
 
 }

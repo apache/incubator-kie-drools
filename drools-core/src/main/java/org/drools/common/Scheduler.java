@@ -16,7 +16,18 @@
 
 package org.drools.common;
 
+import java.io.IOException;
+
 import org.drools.Agenda;
+import org.drools.marshalling.impl.InputMarshaller;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.OutputMarshaller;
+import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.TimersInputMarshaller;
+import org.drools.marshalling.impl.TimersOutputMarshaller;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.RightTuple;
 import org.drools.runtime.Calendars;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
@@ -27,7 +38,7 @@ import org.drools.time.impl.PointInTimeTrigger;
 /**
  * Scheduler for rules requiring truth duration.
  */
-final class Scheduler {
+public final class Scheduler {
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -88,8 +99,8 @@ final class Scheduler {
         
         public ActivationTimerJobContext(Trigger trigger,
                                          ScheduledAgendaItem scheduledAgendaItem,
-                                   Agenda agenda) {
-            this.trigger = trigger;
+                                         Agenda agenda) {
+            this.trigger =               trigger;
             this.scheduledAgendaItem = scheduledAgendaItem;
             this.agenda = agenda;
         }
@@ -113,5 +124,48 @@ final class Scheduler {
         public Trigger getTrigger() {
             return trigger;
         }
+
+        public void setScheduledAgendaItem(ScheduledAgendaItem scheduledAgendaItem) {
+            this.scheduledAgendaItem = scheduledAgendaItem;
+        }
+
+        public void setAgenda(Agenda agenda) {
+            this.agenda = agenda;
+        }
+
+        public void setTrigger(Trigger trigger) {
+            this.trigger = trigger;
+        }               
     }
+    
+    
+    public static class ActivationTimerOutputMarshaller  implements TimersOutputMarshaller {
+        public void write(JobContext jobCtx,
+                          MarshallerWriteContext outputCtx) throws IOException {     
+            outputCtx.writeShort( PersisterEnums.ACTIVATION_TIMER );
+            ActivationTimerJobContext ajobCtx = ( ActivationTimerJobContext ) jobCtx;
+            int leftTupleId = outputCtx.terminalTupleMap.get( ajobCtx.getScheduledAgendaItem().getTuple() );
+            outputCtx.writeInt( leftTupleId );
+            
+            OutputMarshaller.writeTrigger(ajobCtx.getTrigger(), outputCtx);
+        }
+    }
+    
+    public static class ActivationTimerInputMarshaller implements TimersInputMarshaller  {
+        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {                       
+            int leftTupleId = inCtx.readInt();
+            LeftTuple leftTuple = inCtx.terminalTupleMap.get( leftTupleId  );
+            ScheduledAgendaItem item = ( ScheduledAgendaItem ) leftTuple.getObject();
+            
+            Trigger trigger = InputMarshaller.readTrigger( inCtx ); 
+            
+            DefaultAgenda agenda = ( DefaultAgenda ) inCtx.wm.getAgenda();
+            ActivationTimerJob job = new ActivationTimerJob();
+            ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
+                    
+            JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
+            item.setJobHandle( jobHandle );            
+        }
+    }    
+        
 }

@@ -94,4 +94,9 @@ public class MapGlobalResolver
         return new MapGlobalResolver( clone );
     }
 
+    @Override
+    public String toString() {
+        return "MapGlobalResolver [map=" + map + ", delegate=" + delegate + "]";
+    }
+
 }
