@@ -18,6 +18,7 @@ package org.jbpm.task;
 import java.util.List;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventKey;
+import org.jbpm.eventmessaging.EventResponseHandler;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.FaultData;
@@ -94,7 +95,7 @@ public interface TaskService {
 
     void register(long taskId, String userId);
 
-    void registerForEvent(EventKey key, boolean remove, WorkItemManager manager);
+    void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler);
 
     void release(long taskId, String userId);
 

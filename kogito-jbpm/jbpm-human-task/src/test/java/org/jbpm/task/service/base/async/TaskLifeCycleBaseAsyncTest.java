@@ -174,7 +174,7 @@ public abstract class TaskLifeCycleBaseAsyncTest extends BaseTest {
         responseHandler = new BlockingTaskOperationResponseHandler();
         client.complete(taskId2, users.get("bobba").getId(), null, responseHandler);
 
-        payload = handler.getPayload();
+        payload = handler2.getPayload();
         event = (TaskCompletedEvent) payload.get();
         assertNotNull(event);
 

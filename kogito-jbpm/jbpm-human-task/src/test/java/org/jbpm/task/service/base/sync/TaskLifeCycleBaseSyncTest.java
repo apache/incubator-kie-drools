@@ -25,14 +25,16 @@ import java.util.Map;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.jbpm.eventmessaging.EventKey;
+import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.event.TaskCompletedEvent;
 import org.jbpm.task.event.TaskEventKey;
 import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.TaskService;
 import org.jbpm.task.service.TaskServer;
+import org.jbpm.task.service.responsehandlers.BlockingEventResponseHandler;
 
 public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
@@ -60,37 +62,27 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
         long taskId = task.getId();
 
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
-        MyWorkItemManager manager = new MyWorkItemManager();
-        client.registerForEvent(key, true, manager);
-
-
+        BlockingEventResponseHandler handler = new BlockingEventResponseHandler();
+        client.registerForEvent(key, true, handler);
 
         List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
         assertEquals(Status.Reserved, tasks.get(0).getStatus());
 
-
         client.start(taskId, users.get("bobba").getId());
-
-
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
         assertEquals(Status.InProgress, tasks.get(0).getStatus());
 
-
         client.complete(taskId, users.get("bobba").getId(), null);
-
-
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(0, tasks.size());
-        // I will replace this code for the sync behavior
-        //        Payload payload = handler.getPayload();
-        //        TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();
-        //        assertNotNull( event );
-        //
-        assertEquals(1, manager.getCompleted().size());
+
+        Payload payload = handler.getPayload();
+        TaskCompletedEvent event = (TaskCompletedEvent) payload.get();
+        assertNotNull(event);
 
         Task task1 = client.getTask(taskId);
         assertEquals(Status.Completed, task1.getTaskData().getStatus());
@@ -119,64 +111,50 @@ public abstract class TaskLifeCycleBaseSyncTest extends BaseTest {
 
         EventKey key = new TaskEventKey(TaskCompletedEvent.class, taskId);
 
-        client.registerForEvent(key, true, manager);
-
-
+        BlockingEventResponseHandler handler = new BlockingEventResponseHandler();
+        client.registerForEvent(key, true, handler);
 
         List<TaskSummary> tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
         assertEquals(Status.Reserved, tasks.get(0).getStatus());
 
-
         client.start(taskId, users.get("bobba").getId());
-
-
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
         assertEquals(Status.InProgress, tasks.get(0).getStatus());
-
 
         Task task2 = (Task) eval(new StringReader(str), vars);
         client.addTask(task2, null);
         long taskId2 = task2.getId();
 
         EventKey key2 = new TaskEventKey(TaskCompletedEvent.class, taskId2);
-        client.registerForEvent(key2, true, manager);
-
-
+        BlockingEventResponseHandler handler2 = new BlockingEventResponseHandler();
+        client.registerForEvent(key2, true, handler2);
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(2, tasks.size());
 
-
         client.complete(taskId, users.get("bobba").getId(), null);
 
-
         client.start(taskId2, users.get("bobba").getId());
-
-
 
         tasks = client.getTasksAssignedAsPotentialOwner(users.get("bobba").getId(), "en-UK");
         assertEquals(1, tasks.size());
 
-//        Payload payload = handler.getPayload();
-//        TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();
-//        assertNotNull( event );
-
+        Payload payload = handler.getPayload();
+        TaskCompletedEvent event = ( TaskCompletedEvent ) payload.get();
+        assertNotNull( event );
 
 
         task = client.getTask(taskId);
         assertEquals(Status.Completed, task.getTaskData().getStatus());
 
-
         client.complete(taskId2, users.get("bobba").getId(), null);
 
-//        payload = handler.getPayload();
-//        event = ( TaskCompletedEvent ) payload.get();
-//        assertNotNull( event );
-
-
+        payload = handler2.getPayload();
+        event = ( TaskCompletedEvent ) payload.get();
+        assertNotNull( event );
 
         task2 = client.getTask(taskId2);
         assertEquals(Status.Completed, task2.getTaskData().getStatus());

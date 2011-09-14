@@ -76,10 +76,13 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.workitem.wsht.CommandBasedWSHumanTaskHandler;
+import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
+import org.jbpm.task.service.TaskService;
+import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
 public class CommandDelegate {
-    
+	
     private static StatefulKnowledgeSession ksession;
     
     public CommandDelegate() {
@@ -188,13 +191,19 @@ public class CommandDelegate {
                 }
             }
             new WorkingMemoryDbLogger(ksession);
-            CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
-            handler.setConnection(
+            if ("Mina".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
+                CommandBasedWSHumanTaskHandler handler = new CommandBasedWSHumanTaskHandler(ksession);
+                handler.setConnection(
                     jbpmconsoleproperties.getProperty("jbpm.console.task.service.host"),
-                new Integer(jbpmconsoleproperties.getProperty("jbpm.console.task.service.port")));
-            ksession.getWorkItemManager().registerWorkItemHandler(
-                "Human Task", handler);
-            handler.connect();
+                    new Integer(jbpmconsoleproperties.getProperty("jbpm.console.task.service.port")));
+                ksession.getWorkItemManager().registerWorkItemHandler(
+                    "Human Task", handler);
+                handler.connect();
+            } else if ("Local".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
+				TaskService taskService = HumanTaskService.getService();
+	            SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService.createSession()));
+	            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+            }
             final org.drools.event.AgendaEventListener agendaEventListener = new org.drools.event.AgendaEventListener() {
                 public void activationCreated(ActivationCreatedEvent event,
                         WorkingMemory workingMemory){

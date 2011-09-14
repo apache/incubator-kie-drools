@@ -15,22 +15,44 @@
  */
 package org.jbpm.process.workitem.wsht;
 
-import org.jbpm.task.*;
-import org.jbpm.task.event.*;
-import org.jbpm.task.service.ContentData;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
+import org.jbpm.eventmessaging.EventResponseHandler;
+import org.jbpm.eventmessaging.Payload;
+import org.jbpm.task.AccessType;
+import org.jbpm.task.Content;
+import org.jbpm.task.Group;
+import org.jbpm.task.I18NText;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Status;
+import org.jbpm.task.SubTasksStrategy;
+import org.jbpm.task.SubTasksStrategyFactory;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.TaskService;
+import org.jbpm.task.User;
+import org.jbpm.task.event.TaskCompletedEvent;
+import org.jbpm.task.event.TaskEvent;
+import org.jbpm.task.event.TaskEventKey;
+import org.jbpm.task.event.TaskFailedEvent;
+import org.jbpm.task.event.TaskSkippedEvent;
+import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
+import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class SyncWSHumanTaskHandler implements WorkItemHandler {
 
@@ -39,6 +61,7 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private TaskService client;
     private WorkItemManager manager = null;
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
+	private boolean initialized = false;
     
     public SyncWSHumanTaskHandler() {
     }
@@ -57,25 +80,29 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     }
 
     public void connect() {
-        if (client == null) {
-            throw new IllegalStateException("You must set the client to the work item to work");
-        }
-        if (client != null) {
-            boolean connected = client.connect(ipAddress, port);
-            if (!connected) {
-                throw new IllegalArgumentException("Could not connect task client");
-            }
-        }
-        registerTaskEvents();
+    	if (!initialized) {
+	        if (client == null) {
+	            throw new IllegalStateException("You must set the client to the work item to work");
+	        }
+	        if (client != null) {
+	            boolean connected = client.connect(ipAddress, port);
+	            if (!connected) {
+	                throw new IllegalArgumentException("Could not connect task client");
+	            }
+	        }
+	        registerTaskEvents();
+	        initialized = true;
+    	}
     }
 
     private void registerTaskEvents() {
+		TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler();
         TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);
-        client.registerForEvent(key, false, this.manager);
+        client.registerForEvent(key, false, eventResponseHandler);
         key = new TaskEventKey(TaskFailedEvent.class, -1);
-        client.registerForEvent(key, false, this.manager);
+        client.registerForEvent(key, false, eventResponseHandler);
         key = new TaskEventKey(TaskSkippedEvent.class, -1);
-        client.registerForEvent(key, false, this.manager);
+        client.registerForEvent(key, false, eventResponseHandler);
     }
 
     public void setManager(WorkItemManager manager) {
@@ -201,20 +228,63 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     }
 
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-
         Task task = client.getTaskByWorkItemId(workItem.getId());
         if (task != null) {
-
             try {
-
                 client.skip(task.getId(), "Administrator");
-
             } catch (PermissionDeniedException e) {
-
                 logger.info(e.getMessage());
-
             }
+        }
+    }
 
+    private class TaskCompletedHandler extends AbstractBaseResponseHandler implements EventResponseHandler {
+        
+        public void execute(Payload payload) {
+            TaskEvent event = ( TaskEvent ) payload.get();
+        	long taskId = event.getTaskId();
+        	Task task = client.getTask(taskId);
+			long workItemId = task.getTaskData().getWorkItemId();
+			if (task.getTaskData().getStatus() == Status.Completed) {
+				System.out.println("Notification of completed task " + workItemId);
+				String userId = task.getTaskData().getActualOwner().getId();
+				Map<String, Object> results = new HashMap<String, Object>();
+				results.put("ActorId", userId);
+				long contentId = task.getTaskData().getOutputContentId();
+				if (contentId != -1) {
+					Content content = client.getContent(contentId);
+					ByteArrayInputStream bis = new ByteArrayInputStream(content.getContent());
+					ObjectInputStream in;
+					try {
+						in = new ObjectInputStream(bis);
+						Object result = in.readObject();
+						in.close();
+						results.put("Result", result);
+						if (result instanceof Map) {
+							Map<?, ?> map = (Map) result;
+							for (Map.Entry<?, ?> entry: map.entrySet()) {
+								if (entry.getKey() instanceof String) {
+									results.put((String) entry.getKey(), entry.getValue());
+								}
+							}
+						}
+						manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+				} else {
+					manager.completeWorkItem(workItemId, results);
+				}
+			} else {
+				System.out.println("Notification of aborted task " + workItemId);
+				manager.abortWorkItem(workItemId);
+			}
+        }
+        
+        public boolean isRemove() {
+        	return false;
         }
     }
 }

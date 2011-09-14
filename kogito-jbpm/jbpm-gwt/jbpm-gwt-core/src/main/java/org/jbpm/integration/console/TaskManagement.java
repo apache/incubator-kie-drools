@@ -32,23 +32,27 @@ import java.util.Properties;
 
 import org.drools.SystemEventListenerFactory;
 import org.jboss.bpm.console.client.model.TaskRef;
-import org.jbpm.process.workitem.wsht.BlockingGetTaskResponseHandler;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TaskService;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.TaskClient;
+import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
 import org.jbpm.task.service.mina.MinaTaskClientHandler;
+import org.jbpm.task.service.responsehandlers.BlockingGetTaskResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskOperationResponseHandler;
 import org.jbpm.task.service.responsehandlers.BlockingTaskSummaryResponseHandler;
 
 public class TaskManagement implements org.jboss.bpm.console.server.integration.TaskManagement {
 	
-	// TODO: make this configurable
+	public static String TASK_SERVICE_STRATEGY = "Mina";
+    
 	private String ipAddress = "127.0.0.1";
 	private int port = 9123;
+	private TaskService service;
 	private TaskClient client;
 	private Map<String, List<String>> groupListMap = new HashMap<String, List<String>>();
 
@@ -58,15 +62,27 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 	}
 	
 	public void connect() {
-		if (client == null) {
-			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
-									new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-			boolean connected = client.connect(ipAddress, port);
-			if (!connected) {
-				throw new IllegalArgumentException(
-					"Could not connect task client");
+		if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+			if (client == null) {
+				client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
+										new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+				boolean connected = client.connect(ipAddress, port);
+				if (!connected) {
+					throw new IllegalArgumentException(
+						"Could not connect task client");
+				}
+				loadUserGroups();
+			}
+		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+			if (service == null) {
+				org.jbpm.task.service.TaskService taskService = HumanTaskService.getService();
+				service = new LocalTaskService(taskService.createSession());
+				loadUserGroups();
 			}
 		}
+	}
+	
+	private void loadUserGroups() {
 		try {
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			URL url = null;
@@ -95,52 +111,68 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 					String key = (String) propertyNames.nextElement();
 					String value = bundle.getProperty(key);
 					groupListMap.put(key, Arrays.asList(value.split(",")));
-					System.out.print("Loaded user " + key + ":");
-					for (String role: groupListMap.get(key)) {
-						System.out.print(" " + role);
-					}
-					System.out.println();
 				}
 			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
-
 	}
 	
 	public TaskRef getTaskById(long taskId) {
 		connect();
-		BlockingGetTaskResponseHandler responseHandler = new BlockingGetTaskResponseHandler();
-		client.getTask(taskId, responseHandler);
-		Task task = responseHandler.getTask();
+		Task task = null;
+		if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+			BlockingGetTaskResponseHandler responseHandler = new BlockingGetTaskResponseHandler();
+			client.getTask(taskId, responseHandler);
+			task = responseHandler.getTask();
+		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+			task = service.getTask(taskId);
+		}
         return Transform.task(task);
 	}
 
 	public void assignTask(long taskId, String idRef, String userId) {
 		connect();
-		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		if (idRef == null) {
-			client.release(taskId, userId, responseHandler);
-		} else if (idRef.equals(userId)) {
-			List<String> roles = groupListMap.get(userId);
-			if (roles == null) {
-				client.claim(taskId, idRef, responseHandler);
+		if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+			BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+			if (idRef == null) {
+				client.release(taskId, userId, responseHandler);
+			} else if (idRef.equals(userId)) {
+				List<String> roles = groupListMap.get(userId);
+				if (roles == null) {
+					client.claim(taskId, idRef, responseHandler);
+				} else {
+					client.claim(taskId, idRef, roles, responseHandler);
+				}
 			} else {
-				client.claim(taskId, idRef, roles, responseHandler);
+				client.delegate(taskId, userId, idRef, responseHandler);
 			}
-		} else {
-			client.delegate(taskId, userId, idRef, responseHandler);
+			responseHandler.waitTillDone(5000);
+		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+			if (idRef == null) {
+				service.release(taskId, userId);
+			} else if (idRef.equals(userId)) {
+				List<String> roles = groupListMap.get(userId);
+				if (roles == null) {
+					service.claim(taskId, idRef);
+				} else {
+					service.claim(taskId, idRef, roles);
+				}
+			} else {
+				service.delegate(taskId, userId, idRef);
+			}
 		}
-		responseHandler.waitTillDone(5000);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void completeTask(long taskId, Map data, String userId) {
 		connect();
-		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		client.start(taskId, userId, responseHandler);
-		responseHandler.waitTillDone(5000);
-		responseHandler = new BlockingTaskOperationResponseHandler();
+		if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+			BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+			client.start(taskId, userId, responseHandler);
+			responseHandler.waitTillDone(5000);
+		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+			service.start(taskId, userId);
+		}
 		ContentData contentData = null;
 		if (data != null) {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -156,8 +188,13 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 				e.printStackTrace();
 			}
 		}
-		client.complete(taskId, userId, contentData, responseHandler);
-		responseHandler.waitTillDone(5000);
+		if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+			BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+			client.complete(taskId, userId, contentData, responseHandler);
+			responseHandler.waitTillDone(5000);
+		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+			service.complete(taskId, userId, contentData);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -170,18 +207,27 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 		// TODO: this method is not being invoked, it's using
 		// assignTask with null parameter instead
 		connect();
-		BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
-		client.release(taskId, userId, responseHandler);
-		responseHandler.waitTillDone(5000);
+		if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+			BlockingTaskOperationResponseHandler responseHandler = new BlockingTaskOperationResponseHandler();
+			client.release(taskId, userId, responseHandler);
+			responseHandler.waitTillDone(5000);			
+		} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+			service.release(taskId, userId);
+		}
 	}
 
 	public List<TaskRef> getAssignedTasks(String idRef) {
 		connect();
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
-			BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
-			client.getTasksOwned(idRef, "en-UK", responseHandler);
-	        List<TaskSummary> tasks = responseHandler.getResults();
+			List<TaskSummary> tasks = null;
+			if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+				BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+				client.getTasksOwned(idRef, "en-UK", responseHandler);
+		        tasks = responseHandler.getResults();
+			} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+				tasks = service.getTasksOwned(idRef, "en-UK");
+			}
 	        for (TaskSummary task: tasks) {
 	        	if (task.getStatus() == Status.Reserved) {
 	        		result.add(Transform.task(task));
@@ -198,14 +244,23 @@ public class TaskManagement implements org.jboss.bpm.console.server.integration.
 		connect();
         List<TaskRef> result = new ArrayList<TaskRef>();
 		try {
-			BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
 			List<String> roles = groupListMap.get(idRef);
-			if (roles == null) {
-				client.getTasksAssignedAsPotentialOwner(idRef, "en-UK", responseHandler);
-			} else {
-				client.getTasksAssignedAsPotentialOwner(idRef, roles, "en-UK", responseHandler);
+			List<TaskSummary> tasks = null;
+			if ("Mina".equals(TASK_SERVICE_STRATEGY)) {
+				BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+				if (roles == null) {
+					client.getTasksAssignedAsPotentialOwner(idRef, "en-UK", responseHandler);
+				} else {
+					client.getTasksAssignedAsPotentialOwner(idRef, roles, "en-UK", responseHandler);
+				}
+		        tasks = responseHandler.getResults();				
+			} else if ("Local".equals(TASK_SERVICE_STRATEGY)) {
+				if (roles == null) {
+					tasks = service.getTasksAssignedAsPotentialOwner(idRef, "en-UK");
+				} else {
+					tasks = service.getTasksAssignedAsPotentialOwner(idRef, roles, "en-UK");
+				}
 			}
-	        List<TaskSummary> tasks = responseHandler.getResults();
 	        for (TaskSummary task: tasks) {
 	        	result.add(Transform.task(task));
 	        }

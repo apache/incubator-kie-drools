@@ -453,8 +453,7 @@ public class AsyncTaskServiceWrapper implements TaskService {
         }
     }
 
-    public void registerForEvent(EventKey key, boolean remove, WorkItemManager manager) {
-        TaskCompletedHandler responseHandler = new TaskCompletedHandler(manager, taskService);
+    public void registerForEvent(EventKey key, boolean remove, EventResponseHandler responseHandler) {
         taskService.registerForEvent(key, remove, responseHandler);
 
     }

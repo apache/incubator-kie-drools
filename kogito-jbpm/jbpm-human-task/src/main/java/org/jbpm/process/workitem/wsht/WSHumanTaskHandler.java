@@ -44,6 +44,7 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	private int port = 9123;
 	private TaskClient client;
 	private WorkItemManager manager = null;
+	private boolean initialized = false;
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
@@ -55,22 +56,24 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	}
 	
 	public void connect() {
-		if (client == null) {
-			client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
-										new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
-			
-			boolean connected = client.connect(ipAddress, port);
-			if (!connected) {
-				throw new IllegalArgumentException("Could not connect task client");
+		if (!initialized) {
+			if (client == null) {
+				client = new TaskClient(new MinaTaskClientConnector("org.drools.process.workitem.wsht.WSHumanTaskHandler",
+											new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())));
+				boolean connected = client.connect(ipAddress, port);
+				if (!connected) {
+					throw new IllegalArgumentException("Could not connect task client");
+				}
 			}
+			TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
+			TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, client);
+			client.registerForEvent(key, false, eventResponseHandler);
+			key = new TaskEventKey(TaskFailedEvent.class, -1);           
+			client.registerForEvent(key, false, eventResponseHandler);
+			key = new TaskEventKey(TaskSkippedEvent.class, -1);           
+			client.registerForEvent(key, false, eventResponseHandler);
+			initialized = true;
 		}
-		TaskEventKey key = new TaskEventKey(TaskCompletedEvent.class, -1);           
-		TaskCompletedHandler eventResponseHandler = new TaskCompletedHandler(manager, client);
-		client.registerForEvent(key, false, eventResponseHandler);
-		key = new TaskEventKey(TaskFailedEvent.class, -1);           
-		client.registerForEvent(key, false, eventResponseHandler);
-		key = new TaskEventKey(TaskSkippedEvent.class, -1);           
-		client.registerForEvent(key, false, eventResponseHandler);
 	}
 	
 	public void setManager(WorkItemManager manager) {
