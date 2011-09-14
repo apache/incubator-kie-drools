@@ -1,6 +1,6 @@
 package org.drools.adventures;
 
-public enum CommandEnum {
+public enum Action {
     MOVE,
     PICKUP,
     DROP,

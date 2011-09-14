@@ -146,7 +146,7 @@ public class GameEngine {
         }
     }
 
-    public void receiveCommand(UserSession session,
+    public void receiveMessage(UserSession session,
                                List cmd) {
         ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
         String baseStr = "import  org.drools.adventures.*;  import org.drools.adventures.commands.*;\n";
@@ -156,7 +156,7 @@ public class GameEngine {
             vars.put( "args",
                       cmd );
             MapVariableResolverFactory f = new MapVariableResolverFactory( vars );
-            CommandEnum c = (CommandEnum) cmd.get( 0 );
+            Action c = (Action) cmd.get( 0 );
             switch ( c ) {
                 case MOVE : {
                     ksession.insert( new Request( session,
