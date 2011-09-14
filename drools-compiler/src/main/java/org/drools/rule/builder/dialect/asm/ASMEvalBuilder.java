@@ -42,7 +42,7 @@ public class ASMEvalBuilder extends AbstractASMEvalBuilder {
                 final String[] globalTypes = (String[])vars.get("globalTypes");
 
                 offset = 5;
-                int[] declarationsParamsPos = parseDeclarations(declarations, declarationTypes, 2, 1, 3, false);
+                int[] declarationsParamsPos = parseDeclarations(declarations, declarationTypes, 2, 1, 3, true);
 
                 // @{ruleClassName}.@{methodName}(@foreach{declarations}, @foreach{globals})
                 StringBuilder evalMethodDescr = new StringBuilder("(");
