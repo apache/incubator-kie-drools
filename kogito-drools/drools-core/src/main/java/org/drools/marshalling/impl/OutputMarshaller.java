@@ -21,7 +21,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -48,6 +50,7 @@ import org.drools.common.LogicalDependency;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.common.Scheduler.ActivationTimerJobContext;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
@@ -70,12 +73,29 @@ import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.runtime.Calendars;
 import org.drools.runtime.rule.impl.OpenQueryViewChangedEventListenerAdapter;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.time.Job;
+import org.drools.time.JobContext;
+import org.drools.time.JobHandle;
+import org.drools.time.SelfRemovalJob;
+import org.drools.time.SelfRemovalJobContext;
+import org.drools.time.Trigger;
+import org.drools.time.impl.CompositeMaxDurationTimer;
+import org.drools.time.impl.CronTimer;
+import org.drools.time.impl.CronTrigger;
+import org.drools.time.impl.IntervalTimer;
+import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.time.impl.JDKTimerServiceTest.DelayedTrigger;
+import org.drools.time.impl.PointInTimeTrigger;
+import org.drools.time.impl.Timer;
+import org.drools.time.impl.TimerJobInstance;
 
 public class OutputMarshaller {
 
@@ -101,23 +121,28 @@ public class OutputMarshaller {
             wm.stopPartitionManagers();
         } else {
             context.writeBoolean( false );
-        }
+        }        
+        
+        context.writeLong( context.clockTime );
 
         context.writeInt( wm.getFactHandleFactory().getId() );
         context.writeLong( wm.getFactHandleFactory().getRecency() );
         ////context.out.println( "FactHandleFactory int:" + wm.getFactHandleFactory().getId() + " long:" + wm.getFactHandleFactory().getRecency() );
 
+
+        
         InternalFactHandle handle = context.wm.getInitialFactHandle();
         context.writeInt( handle.getId() );
         context.writeLong( handle.getRecency() );
         //context.out.println( "InitialFact int:" + handle.getId() + " long:" + handle.getRecency() );
 
         context.writeLong( wm.getPropagationIdCounter() );
-        //context.out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );
-
-        writeAgenda( context );
-
+        //context.out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );        
+        
+        writeAgenda( context );        
+        
         writeFactHandles( context );
+
 
         writeActionQueue( context );
 
@@ -132,8 +157,12 @@ public class OutputMarshaller {
         }
 
         if ( processMarshaller != null ) {
+            // this now just assigns the writer, it will not write out any timer information
             processMarshaller.writeProcessTimers( context );
         }
+        
+        // Only works for JpaJDKTimerService
+        writeTimers( context.wm.getTimerService().getTimerJobInstances(), context );
 
         if ( multithread ) {
             wm.startPartitionManagers();
@@ -971,6 +1000,78 @@ public class OutputMarshaller {
 
         }
 
+    }         
+    
+    public static void writeTimers(Collection<TimerJobInstance> timers, MarshallerWriteContext outCtx) throws IOException {
+        List<TimerJobInstance> sortedTimers = new ArrayList<TimerJobInstance>( timers );
+        Collections.sort( sortedTimers,
+                          new Comparator<TimerJobInstance>() {
+                              public int compare(TimerJobInstance o1,
+                                                 TimerJobInstance o2) {
+                                  return (int) (o2.getJobHandle().getId() - o1.getJobHandle().getId());
+                              }
+                          } );
+        
+        for ( TimerJobInstance timer : sortedTimers ) {
+            outCtx.writeShort( PersisterEnums.DEFAULT_TIMER );
+            JobContext jctx = ((SelfRemovalJobContext)timer.getJobContext()).getJobContext();
+            TimersOutputMarshaller writer =  outCtx.writersByClass.get( jctx.getClass() );
+            writer.write( jctx, outCtx );              
+        }
+        outCtx.writeShort( PersisterEnums.END );
+    }
+    
+    public static void writeTrigger(Trigger trigger, MarshallerWriteContext outCtx) throws IOException {
+        if ( trigger instanceof CronTrigger ) {
+            outCtx.writeShort( PersisterEnums.CRON_TRIGGER );           
+            
+            CronTrigger cronTrigger = ( CronTrigger ) trigger;
+            outCtx.writeLong( cronTrigger.getStartTime().getTime() );
+            if ( cronTrigger.getEndTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( cronTrigger.getEndTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }
+            outCtx.writeInt( cronTrigger.getRepeatLimit() );  
+            outCtx.writeInt( cronTrigger.getRepeatCount() );
+            outCtx.writeUTF( cronTrigger.getCronEx().getCronExpression() );            
+            if ( cronTrigger.getNextFireTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( cronTrigger.getNextFireTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }             
+            outCtx.writeObject( cronTrigger.getCalendarNames() );
+        } else if ( trigger instanceof IntervalTrigger ) {
+            outCtx.writeShort( PersisterEnums.INT_TRIGGER );
+            
+            IntervalTrigger intTrigger = ( IntervalTrigger ) trigger;
+            outCtx.writeLong( intTrigger.getStartTime().getTime() );
+            if ( intTrigger.getEndTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( intTrigger.getEndTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }
+            outCtx.writeInt( intTrigger.getRepeatLimit() );
+            outCtx.writeInt( intTrigger.getRepeatCount() );
+            if ( intTrigger.getNextFireTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( intTrigger.getNextFireTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }            
+            outCtx.writeLong( intTrigger.getPeriod() );
+            outCtx.writeObject( intTrigger.getCalendarNames() );
+        } 
+//        else if ( trigger instanceof DelayedTrigger ) {
+//            
+//        } else if ( trigger instanceof PointInTimeTrigger ) {
+//            
+//        } else if ( trigger instanceof CompositeMaxDurationTimer ) {
+//            
+//        }        
     }
 
 }

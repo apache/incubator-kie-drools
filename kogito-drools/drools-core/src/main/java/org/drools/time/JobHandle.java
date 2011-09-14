@@ -21,6 +21,8 @@ package org.drools.time;
  * An interface for Job Handles
  */
 public interface JobHandle {
+    
+    public long getId();
 
     public void setCancel(boolean cancel);
     

@@ -77,7 +77,7 @@ public class PseudoClockSchedulerTest {
 
     @Test public void timerIsSetToJobTriggerTimeForExecution() {
         final Date triggerTime = new Date(1000);
-        when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime, triggerTime, null);
+        when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime, triggerTime, triggerTime, null);
         when( mockTrigger_1.nextFireTime() ).thenReturn(triggerTime);
 
         Job job = new Job() {
@@ -101,7 +101,7 @@ public class PseudoClockSchedulerTest {
 
     @Test public void timerIsResetWhenJobThrowsExceptions() {
         final Date triggerTime = new Date(1000);
-        when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime, triggerTime, null);
+        when( mockTrigger_1.hasNextFireTime() ).thenReturn(triggerTime, triggerTime, triggerTime, null);
         when( mockTrigger_1.nextFireTime() ).thenReturn(triggerTime);
 
         Job job = new Job() {

@@ -18,9 +18,7 @@ package org.drools.time.impl;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.drools.time.Job;
 import org.drools.time.JobHandle;
-import org.drools.time.impl.PseudoClockScheduler.ScheduledJob;
 
 /**
  * A default implementation for the JobHandle interface
@@ -28,33 +26,43 @@ import org.drools.time.impl.PseudoClockScheduler.ScheduledJob;
 public class DefaultJobHandle
     implements
     JobHandle {
-    
-    private static final long serialVersionUID = 510l;
-    
-    private AtomicBoolean cancel = new AtomicBoolean(false);    
-    
-    private final ScheduledJob     scheduledJob;
 
-    public DefaultJobHandle(ScheduledJob scheduledJob) {
-        this.scheduledJob = scheduledJob;
+    private static final long serialVersionUID = 510l;
+
+    private AtomicBoolean     cancel           = new AtomicBoolean( false );
+
+    private long              id;
+
+    private TimerJobInstance  timerJobInstance;
+
+    public DefaultJobHandle(long id) {
+        this.id = id;
     }
-    
+
+    public long getId() {
+        return id;
+    }
+
     public void setCancel(boolean cancel) {
         this.cancel.set( cancel );
     }
-    
+
     public boolean isCancel() {
         return cancel.get();
-    }    
+    }
 
     public Object getJob() {
-        return scheduledJob.getJob();
+        return timerJobInstance.getJob();
     }
 
-    public ScheduledJob getScheduledJob() {
-        return this.scheduledJob;
+    public void setTimerJobInstance(TimerJobInstance scheduledJob) {
+        this.timerJobInstance = scheduledJob;
     }
-    
+
+    public TimerJobInstance getTimerJobInstance() {
+        return this.timerJobInstance;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

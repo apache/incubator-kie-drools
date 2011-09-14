@@ -120,11 +120,16 @@ public class DefaultMarshaller
 
     }
 
+    public void marshall(final OutputStream stream,
+                         final StatefulKnowledgeSession ksession) throws IOException {
+        marshall(stream, ksession, ksession.getSessionClock().getCurrentTime() );
+    }
     /* (non-Javadoc)
      * @see org.drools.marshalling.Marshaller#write(java.io.OutputStream, org.drools.common.InternalRuleBase, org.drools.StatefulSession)
      */
     public void marshall(final OutputStream stream,
-                         final StatefulKnowledgeSession ksession) throws IOException {
+                         final StatefulKnowledgeSession ksession,
+                         final long clockTime) throws IOException {
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
                                                                      (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase(),
                                                                      (InternalWorkingMemory) ((StatefulKnowledgeSessionImpl) ksession).session,

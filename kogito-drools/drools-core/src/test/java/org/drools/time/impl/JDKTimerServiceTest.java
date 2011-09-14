@@ -72,13 +72,13 @@ public class JDKTimerServiceTest {
         SessionConfiguration config = new SessionConfiguration();
         config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
-        Trigger trigger = new DelayedTrigger( new long[] { 100, 100, 100, 100, 100 } );
+        Trigger trigger = new DelayedTrigger(  new long[] {100, 100, 100, 100, 100, 100, 100, 100} ); 
         HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
         ctx.setLimit( 3 );
         timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
         Thread.sleep( 1000 );
         timeService.shutdown();
-        assertEquals( 4, ctx.getList().size() );
+        assertEquals( 5, ctx.getList().size() );
     }
 
     public static class HelloWorldJob implements Job {
@@ -149,7 +149,7 @@ public class JDKTimerServiceTest {
         public DelayedTrigger(long[] delay) {
             this.stack = new Stack<Date>();
             for( int i = delay.length-1; i >= 0; i-- ) {
-                this.stack.push( new Date( delay[i] ) );
+                this.stack.push( new Date( new Date().getTime() + delay[i] ) );
             }
         }
 

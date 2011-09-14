@@ -25,6 +25,7 @@ import java.util.Map;
 import org.drools.InitialFact;
 import org.drools.RuntimeDroolsException;
 import org.drools.common.AgendaItem;
+import org.drools.reteoo.InitialFactImpl;
 import org.drools.runtime.rule.Activation;
 import org.drools.spi.ObjectType;
 
@@ -39,7 +40,7 @@ public class ClassObjectType
     ObjectType,
     Externalizable {
     
-    public static final ClassObjectType InitialFact_ObjectType = new ClassObjectType( InitialFact.class );
+    public static final ClassObjectType InitialFact_ObjectType = new ClassObjectType( InitialFactImpl.class );
     
     public static final ClassObjectType DroolsQuery_ObjectType = new ClassObjectType( DroolsQuery.class );
     

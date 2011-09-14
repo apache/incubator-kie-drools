@@ -20,15 +20,18 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.PriorityQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.SystemEventListenerFactory;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.time.AcceptsTimerJobFactoryManager;
+import org.drools.time.InternalSchedulerService;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
@@ -44,11 +47,17 @@ public class PseudoClockScheduler
     implements
     TimerService,
     SessionPseudoClock,
-    Externalizable {
+    Externalizable,
+    InternalSchedulerService,
+    AcceptsTimerJobFactoryManager {
 
     private volatile long                   timer;
-    private PriorityQueue<ScheduledJob>     queue;
+    private PriorityQueue<Callable<Void>>   queue;
     private transient InternalWorkingMemory session;
+
+    private TimerJobFactoryManager          jobFactoryManager = DefaultTimerJobFactoryManager.instance;
+
+    private AtomicLong                      idCounter         = new AtomicLong();
 
     public PseudoClockScheduler() {
         this( null );
@@ -56,7 +65,7 @@ public class PseudoClockScheduler
 
     public PseudoClockScheduler(InternalWorkingMemory session) {
         this.timer = 0;
-        this.queue = new PriorityQueue<ScheduledJob>();
+        this.queue = new PriorityQueue<Callable<Void>>();
         this.session = session;
     }
 
@@ -64,7 +73,7 @@ public class PseudoClockScheduler
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = in.readLong();
-        PriorityQueue<ScheduledJob> tmp = (PriorityQueue<ScheduledJob>) in.readObject();
+        PriorityQueue<Callable<Void>> tmp = (PriorityQueue<Callable<Void>>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
@@ -77,6 +86,14 @@ public class PseudoClockScheduler
         // when trying to de-serialize an empty priority queue.
         out.writeObject( queue.isEmpty() ? null : queue );
     }
+
+    public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
+        this.jobFactoryManager = timerJobFactoryManager;
+    }
+    
+    public TimerJobFactoryManager getTimerJobFactoryManager() {
+        return this.jobFactoryManager;
+    }    
 
     /**
      * @inheritDoc
@@ -99,14 +116,24 @@ public class PseudoClockScheduler
         Date date = trigger.hasNextFireTime();
 
         if ( date != null ) {
-            ScheduledJob callableJob = new ScheduledJob( job,
-                                                         ctx,
-                                                         trigger );
-            queue.add( callableJob );
-            return callableJob.getHandle();
+            DefaultJobHandle jobHandle = new DefaultJobHandle( idCounter.getAndIncrement() );
+            TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job,
+                                                                                   ctx,
+                                                                                   trigger,
+                                                                                   jobHandle,
+                                                                                   this );
+            jobHandle.setTimerJobInstance( (TimerJobInstance) jobInstance );
+            internalSchedule( (TimerJobInstance) jobInstance );
+
+            return jobHandle;
         }
 
         return null;
+    }
+
+    public void internalSchedule(TimerJobInstance timerJobInstance) {
+        jobFactoryManager.addTimerJobInstance( timerJobInstance );
+        queue.add( ( Callable<Void> ) timerJobInstance );
     }
 
     /**
@@ -116,7 +143,8 @@ public class PseudoClockScheduler
      */
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel( true );
-        return this.queue.remove( ((DefaultJobHandle) jobHandle).getScheduledJob() );
+        jobFactoryManager.removeTimerJobInstance( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
+        return this.queue.remove( (Callable<Void>) ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
     }
 
     /**
@@ -155,105 +183,41 @@ public class PseudoClockScheduler
     }
 
     private void runCallBacks() {
-        ScheduledJob item = queue.peek();
+        TimerJobInstance item = (TimerJobInstance) queue.peek();
         long fireTime;
-        while ( item != null && ((fireTime = item.getTrigger().hasNextFireTime().getTime()) <= this.timer) ) {
+        while ( item != null && ((item.getTrigger().hasNextFireTime() != null && ( ( fireTime = item.getTrigger().hasNextFireTime().getTime()) <= this.timer) ) )  ) {
             // remove the head
             queue.remove();
-            
-            if ( item.getHandle().isCancel() ) {
+
+            if ( item.getJobHandle().isCancel() ) {
                 // do not call it, do not reschedule it
                 continue;
             }
             
-            // updates the trigger
-            item.getTrigger().nextFireTime();
-            
-            if ( item.getTrigger().hasNextFireTime() != null ) {
-                // reschedule for the next fire time, if one exists
-                queue.add( item );
-            }
             // save the current timer because we are going to override to to the job's trigger time
             long savedTimer = this.timer;
             try {
                 // set the clock back to the trigger's fire time
                 this.timer = fireTime;
                 // execute the call
-                item.call();
+                ((Callable<Void>) item).call();
             } catch ( Exception e ) {
                 SystemEventListenerFactory.getSystemEventListener().exception( e );
             } finally {
                 this.timer = savedTimer;
             }
             // get next head
-            item = queue.peek();
+            item = (TimerJobInstance) queue.peek();
         }
     }
 
     public synchronized long getTimeToNextJob() {
-        ScheduledJob item = queue.peek();
-        return ( item != null ) ? item.getTrigger().hasNextFireTime().getTime() - this.timer : -1;
+        TimerJobInstance item = (TimerJobInstance) queue.peek();
+        return (item != null) ? item.getTrigger().hasNextFireTime().getTime() - this.timer : -1;
     }
 
-    /**
-     * An Scheduled Job class with all fields final to make it
-     * multi-thread safe.
-     */
-    public static final class ScheduledJob
-        implements
-        Comparable<ScheduledJob>,
-        Callable<Void>,
-        Serializable {
-
-        private static final long serialVersionUID = 510l;
-
-        private final Job         job;
-        private final Trigger     trigger;
-        private final JobContext  ctx;
-
-        /**
-         * @param timestamp
-         * @param behavior
-         * @param behaviorContext 
-         */
-        public ScheduledJob(final Job job,
-                            final JobContext context,
-                            final Trigger trigger) {
-            super();
-            this.job = job;
-            this.ctx = context;
-            this.trigger = trigger;
-        }
-
-        public int compareTo(ScheduledJob o) {
-            return this.trigger.hasNextFireTime().compareTo( o.getTrigger().hasNextFireTime() );
-        }
-
-        public Void call() throws Exception {
-            this.job.execute( this.ctx );
-            return null;
-        }
-
-        public Job getJob() {
-            return job;
-        }
-
-        public Trigger getTrigger() {
-            return trigger;
-        }
-
-        public JobContext getCtx() {
-            return ctx;
-        }
-
-        public JobHandle getHandle() {
-            return new DefaultJobHandle( this );
-        }
-
-        public String toString() {
-            return "ScheduledJob( job=" + job + " trigger=" + trigger + " context=" + ctx + " )";
-        }
-
+    public Collection<TimerJobInstance> getTimerJobInstances() {
+        return jobFactoryManager.getTimerJobInstances();
     }
 
 }

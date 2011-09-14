@@ -60,10 +60,17 @@ public class PersisterEnums {
     public static final short EVENT_NODE_INSTANCE       = 32;
 
     public static final short UNIFICATION_COlLECTOR     = 33;
-    
+
     public static final short DEFAULT_FACTHANDLE        = 34;
     public static final short QUERY_ELEMENT_FACTHANDLE  = 35;
+
+    public static final short DEFAULT_TIMER             = 50;
+    public static final short BEHAVIOR_TIMER            = 50;
+    public static final short ACTIVATION_TIMER          = 51;
+    public static final short PROCESS_TIMER             = 52;
     
     
+    public static final short CRON_TRIGGER              = 70;
+    public static final short INT_TRIGGER               = 71;
 
 }

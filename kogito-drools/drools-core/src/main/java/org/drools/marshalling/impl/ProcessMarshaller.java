@@ -12,7 +12,7 @@ public interface ProcessMarshaller {
 
     void readProcessInstances( MarshallerReaderContext context ) throws IOException;
 
-    void readProcessTimers( MarshallerReaderContext context ) throws IOException;
+    void readProcessTimers( MarshallerReaderContext context ) throws IOException, ClassNotFoundException;
 
     void readWorkItems( MarshallerReaderContext context ) throws IOException;
 

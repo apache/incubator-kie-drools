@@ -39,6 +39,7 @@ import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
+import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.runtime.Environment;
@@ -47,6 +48,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.InternalProcessRuntime;
 import org.drools.runtime.process.ProcessRuntime;
+import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,7 +127,7 @@ public class SingleSessionCommandService
 
         this.commandService = new DefaultCommandService(kContext);
         
-        ((JpaJDKTimerService) ((InternalKnowledgeRuntime) ksession).getTimerService()).setCommandService( this );
+        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
         
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession,
                                                                   conf );
@@ -222,9 +224,7 @@ public class SingleSessionCommandService
         // update the session id to be the same as the session info id
         ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
 
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
-
-        ((JpaJDKTimerService) ((InternalKnowledgeRuntime) ksession).getTimerService()).setCommandService( this );
+        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );       
         
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
@@ -237,6 +237,8 @@ public class SingleSessionCommandService
         }
 
         this.commandService = new DefaultCommandService(kContext);
+        
+        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );        
     }
     
     public void initTransactionManager(Environment env) {

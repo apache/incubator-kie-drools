@@ -19,23 +19,26 @@ package org.drools.marshalling.impl;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
-import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
+import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
@@ -44,6 +47,7 @@ import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleFlowGroupImpl;
+import org.drools.common.ScheduledAgendaItem;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
@@ -54,9 +58,11 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.instance.WorkItem;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
-import org.drools.reteoo.EntryPointNode;
+import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.LeftTupleImpl;
@@ -71,11 +77,7 @@ import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RightTupleSink;
 import org.drools.reteoo.RuleTerminalNode;
-import org.drools.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.GroupElement;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
@@ -83,9 +85,13 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
-import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
+import org.drools.time.AcceptsTimerJobFactoryManager;
+import org.drools.time.Trigger;
+import org.drools.time.impl.CronTrigger;
+import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.PseudoClockScheduler;
 
 public class InputMarshaller {
 
@@ -114,6 +120,7 @@ public class InputMarshaller {
                                                     MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
         boolean multithread = context.readBoolean();
+        long time = context.readLong();
         int handleId = context.readInt();
         long handleCounter = context.readLong();
         long propagationCounter = context.readLong();
@@ -126,6 +133,11 @@ public class InputMarshaller {
                        handleCounter,
                        propagationCounter );
         DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
+        
+        if ( session.getTimerService() instanceof PseudoClockScheduler ) {            
+            PseudoClockScheduler clock = ( PseudoClockScheduler )  session.getTimerService();
+            clock.advanceTime( time, TimeUnit.MILLISECONDS );
+        }        
 
         readAgenda( context,
                     agenda );
@@ -143,9 +155,7 @@ public class InputMarshaller {
 
         readActionQueue( context );
 
-        if ( context.readBoolean() ) {
-            readTruthMaintenanceSystem( context );
-        }
+        readTruthMaintenanceSystem( context );
 
         if ( context.marshalProcessInstances && processMarshaller != null) {
             processMarshaller.readProcessInstances( context );
@@ -156,7 +166,15 @@ public class InputMarshaller {
         }
 
         if (processMarshaller != null) {
+            // This actually does ALL timers, due to backwards compatability issues
+            // It will read in old JBPM binaries, but always write to the new binary format.
             processMarshaller.readProcessTimers( context );
+        } else {
+            // no legacy jBPM timers, so handle locally
+            int token;
+            while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
+                InputMarshaller.readTimer( context ); 
+            }             
         }
         
         if( multithread ) {
@@ -191,6 +209,8 @@ public class InputMarshaller {
 
         boolean multithread = context.readBoolean();
         
+        long time = context.readLong();
+        
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( context.readInt(),
                                                                                  context.readLong() );
 
@@ -217,9 +237,14 @@ public class InputMarshaller {
                                                                    config,  
                                                                    agenda,
                                                                    environment );
-        session.setKnowledgeRuntime(new StatefulKnowledgeSessionImpl(session));
+        session.setKnowledgeRuntime(new StatefulKnowledgeSessionImpl(session));         
         
         initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
+        
+        if ( session.getTimerService() instanceof PseudoClockScheduler ) {            
+            PseudoClockScheduler clock = ( PseudoClockScheduler )  session.getTimerService();
+            clock.advanceTime( time, TimeUnit.MILLISECONDS );
+        }
 
         // RuleFlowGroups need to reference the session
         for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
@@ -240,10 +265,18 @@ public class InputMarshaller {
         if ( context.marshalWorkItems  && processMarshaller != null ) {
             processMarshaller.readWorkItems( context );
         }
-
-        if (  processMarshaller != null ) {
+        
+        if (processMarshaller != null) {
+            // This actually does ALL timers, due to backwards compatability issues
+            // It will read in old JBPM binaries, but always write to the new binary format.
             processMarshaller.readProcessTimers( context );
-        }
+        } else {
+            // no legacy jBPM timers, so handle locally
+            int token;
+            while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
+                InputMarshaller.readTimer( context ); 
+            }             
+        }        
 
         if( multithread ) {
             session.startPartitionManagers();
@@ -801,13 +834,24 @@ public class InputMarshaller {
         RuleTerminalNode ruleTerminalNode = (RuleTerminalNode) leftTuple.getLeftTupleSink();
 
         PropagationContext pc = context.propagationContexts.get( stream.readLong() );
-
-        AgendaItem activation = new AgendaItem( activationNumber,
-                                                leftTuple,
-                                                salience,
-                                                pc,
-                                                ruleTerminalNode );
-
+        
+        AgendaItem activation;
+        
+        boolean scheduled = false;
+        if ( rule.getTimer() != null ) {
+            activation = new ScheduledAgendaItem( activationNumber,
+                                                  leftTuple,
+                                                  (InternalAgenda) wm.getAgenda(),
+                                                  pc,
+                                                  ruleTerminalNode );  
+            scheduled = true;
+        } else {
+            activation = new AgendaItem( activationNumber,
+                                         leftTuple,
+                                         salience,
+                                         pc,
+                                         ruleTerminalNode );            
+        }
         leftTuple.setObject( activation );
 
         if ( stream.readBoolean() ) {
@@ -837,7 +881,7 @@ public class InputMarshaller {
 
         activation.setAgendaGroup( agendaGroup );
 
-        if ( activated ) {
+        if ( !scheduled && activated ) {
             if ( rule.getRuleFlowGroup() == null ) {
                 agendaGroup.add( activation );
             } else {
@@ -950,6 +994,70 @@ public class InputMarshaller {
         return workItem;
     }
 
+    public static void readTimer(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
+        short timerType = inCtx.readShort();        
+        TimersInputMarshaller reader = inCtx.readersByInt.get( timerType );
+        reader.read( inCtx );
+    }
+    
+    public static Trigger readTrigger(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
+        short triggerInt = inCtx.readShort();
+        
+        switch ( triggerInt ) {
+            case PersisterEnums.CRON_TRIGGER: {
+                long startTime = inCtx.readLong();
+                                                                                
+
+                CronTrigger trigger = new CronTrigger();
+                trigger.setStartTime( new Date( startTime ) );
+                if ( inCtx.readBoolean() ) {
+                    long endTime = inCtx.readLong();
+                    trigger.setEndTime( new Date( endTime) );
+                }
+                
+                int repeatLimit = inCtx.readInt();
+                trigger.setRepeatLimit( repeatLimit );
+                
+                int repeatCount = inCtx.readInt();
+                trigger.setRepeatCount( repeatCount );  
+                
+                String expr = inCtx.readUTF();
+                trigger.setCronExpression( expr ); 
+                if ( inCtx.readBoolean() ) {
+                    long nextFireTime = inCtx.readLong();
+                    trigger.setNextFireTime( new Date( nextFireTime) );
+                }
+                
+                String[] calendarNames = ( String[] ) inCtx.readObject();                
+                trigger.setCalendarNames( calendarNames );                
+                return trigger;
+            }
+            case PersisterEnums.INT_TRIGGER: {                
+                IntervalTrigger trigger = new IntervalTrigger();
+                long startTime = inCtx.readLong();
+                trigger.setStartTime( new Date( startTime ) );
+                if ( inCtx.readBoolean() ) {
+                    long endTime = inCtx.readLong();
+                    trigger.setEndTime( new Date( endTime) );
+                }
+                int repeatLimit = inCtx.readInt();
+                trigger.setRepeatLimit( repeatLimit );
+                int repeatCount = inCtx.readInt();
+                trigger.setRepeatCount( repeatCount );
+                if ( inCtx.readBoolean() ) {
+                    long nextFireTime = inCtx.readLong();
+                    trigger.setNextFireTime( new Date( nextFireTime) );
+                }
+              long period = inCtx.readLong();
+              trigger.setPeriod( period );
+              String[] calendarNames = ( String[] ) inCtx.readObject();                                
+              trigger.setCalendarNames( calendarNames );
+              return trigger;
+            }
+        }
+        throw new RuntimeException( "Unable to persist Trigger for type: " + triggerInt );
+        
+    }
    
 
 }

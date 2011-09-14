@@ -42,6 +42,8 @@ import org.drools.runtime.conf.SingleValueKnowledgeSessionOption;
 import org.drools.runtime.conf.WorkItemHandlerOption;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.time.TimerService;
+import org.drools.time.impl.DefaultTimerJobFactoryManager;
+import org.drools.time.impl.TimerJobFactoryManager;
 import org.drools.util.ChainedProperties;
 import org.drools.util.ClassLoaderUtil;
 import org.drools.util.CompositeClassLoader;
@@ -86,6 +88,8 @@ public class SessionConfiguration
     private CommandService                 commandService;
 
     private transient CompositeClassLoader classLoader;
+    
+    private TimerJobFactoryManager         timerJobFactoryManager;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
@@ -109,6 +113,7 @@ public class SessionConfiguration
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
         queryListener = (QueryListenerOption) in.readObject();
+        timerJobFactoryManager = DefaultTimerJobFactoryManager.instance;
     }
 
     /**
@@ -157,6 +162,16 @@ public class SessionConfiguration
 
         setQueryListenerClass( this.chainedProperties.getProperty( QueryListenerOption.PROPERTY_NAME,
                                                                    QueryListenerOption.STANDARD.getAsString() ) );
+        
+        timerJobFactoryManager = new DefaultTimerJobFactoryManager();
+    }
+
+    public TimerJobFactoryManager getTimerJobFactoryManager() {
+        return timerJobFactoryManager;
+    }
+
+    public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
+        this.timerJobFactoryManager = timerJobFactoryManager;
     }
 
     public void addProperties(Properties properties) {
@@ -386,6 +401,7 @@ public class SessionConfiguration
 
         if ( clazz != null ) {
             try {
+                //setTimerJobFactoryManager();
                 return clazz.newInstance();
             } catch ( Exception e ) {
                 throw new IllegalArgumentException(

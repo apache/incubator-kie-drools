@@ -40,6 +40,10 @@ public class CronTrigger
     private String[]           calendarNames;
     private Calendars          calendars;
 
+    public CronTrigger() {
+        
+    }
+    
     public CronTrigger(long timestamp,
                        Date startTime,
                        Date endTime,
@@ -233,6 +237,48 @@ public class CronTrigger
         this.cronEx = cronExpression;
         this.cronEx.setTimeZone( origTz );
     }
+    
+    
+
+    public CronExpression getCronEx() {
+        return cronEx;
+    }
+
+    public void setCronEx(CronExpression cronEx) {
+        this.cronEx = cronEx;
+    }
+
+    public int getRepeatLimit() {
+        return repeatLimit;
+    }
+
+    public void setRepeatLimit(int repeatLimit) {
+        this.repeatLimit = repeatLimit;
+    }
+
+    public int getRepeatCount() {
+        return repeatCount;
+    }
+
+    public void setRepeatCount(int repeatCount) {
+        this.repeatCount = repeatCount;
+    }
+
+    public String[] getCalendarNames() {
+        return calendarNames;
+    }
+
+    public void setCalendarNames(String[] calendarNames) {
+        this.calendarNames = calendarNames;
+    }
+
+    public Calendars getCalendars() {
+        return calendars;
+    }
+
+    public void setCalendars(Calendars calendars) {
+        this.calendars = calendars;
+    }
 
     public static CronExpression determineCronExpression(String cronExpression) {
         try {
@@ -324,5 +370,7 @@ public class CronTrigger
             }
         }
     }
+    
+    
 
 }

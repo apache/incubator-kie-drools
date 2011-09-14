@@ -31,13 +31,20 @@ public class MultiJobHandle
     
     private static final long serialVersionUID = 510l;
     
+    private long id;
+    
     private AtomicBoolean cancel = new AtomicBoolean(false);    
     
     private final List<JobHandle>     jobHandles;
 
-    public MultiJobHandle(List<JobHandle>   jobHandles) {
+    public MultiJobHandle(long id, List<JobHandle>   jobHandles) {
+        this.id = id;
         this.jobHandles = jobHandles;
     }
+    
+    public long getId() {
+        return this.id;
+    }   
 
     public Object getJobHandles() {
         return jobHandles;
