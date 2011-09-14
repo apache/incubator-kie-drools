@@ -98,5 +98,11 @@ public class TimerInstance {
 	public void setProcessInstanceId(long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}
+
+    @Override
+    public String toString() {
+        return "TimerInstance [id=" + id + ", timerId=" + timerId + ", delay=" + delay + ", period=" + period + ", jobHandle=" + jobHandle + ", activated=" + activated + ", lastTriggered=" + lastTriggered + ", processInstanceId=" + processInstanceId
+               + "]";
+    }
     
 }

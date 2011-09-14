@@ -26,6 +26,7 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
+import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
@@ -589,9 +590,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                 JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
                                 JPASignalManagerFactory.class.getName() );
-        properties.setProperty( "drools.timerService",
-                                JpaJDKTimerService.class.getName() );
+        
         SessionConfiguration config = new SessionConfiguration( properties );
+        config.setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessTimer();
@@ -605,6 +606,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         startProcessCommand.setProcessId( "org.drools.test.TestProcess" );
         ProcessInstance processInstance = service.execute( startProcessCommand );
         System.out.println( "Started process instance " + processInstance.getId() );
+        
+        
+        Thread.sleep( 500 );
         service.dispose();
 
         service = new SingleSessionCommandService( sessionId,
@@ -621,7 +625,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                                    kbase,
                                                    config,
                                                    env );
-        Thread.sleep( 3000 );
+        Thread.sleep( 5000 );
         getProcessInstanceCommand = new GetProcessInstanceCommand();
         getProcessInstanceCommand.setProcessInstanceId( processInstance.getId() );
         processInstance = service.execute( getProcessInstanceCommand );
@@ -695,10 +699,10 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
                                 JPAWorkItemManagerFactory.class.getName() );
         properties.setProperty( "drools.processSignalManagerFactory",
                                 JPASignalManagerFactory.class.getName() );
-        properties.setProperty( "drools.timerService",
-								JpaJDKTimerService.class.getName() );
-        SessionConfiguration config = new SessionConfiguration( properties );
 
+        SessionConfiguration config = new SessionConfiguration( properties );
+        config.setTimerJobFactoryManager( new JpaTimeJobFactoryManager( ) );
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessTimer2();
         kbase.addKnowledgePackages( kpkgs );
