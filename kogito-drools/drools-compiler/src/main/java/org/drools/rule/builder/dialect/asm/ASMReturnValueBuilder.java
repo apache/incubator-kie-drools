@@ -14,21 +14,21 @@ import static org.drools.rule.builder.dialect.asm.InvokerGenerator.*;
 import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
 import static org.mvel2.asm.Opcodes.*;
 
-public class ASMPredicateBuilder extends AbstractASMPredicateBuilder {
+public class ASMReturnValueBuilder extends AbstractASMReturnValueBuilder {
 
-    protected byte[] createPredicateBytecode(final RuleBuildContext ruleContext, final Map vars) {
+    protected byte[] createReturnValueBytecode(final RuleBuildContext ruleContext, final Map vars, final boolean readLocalsFromTuple) {
         final InvokerDataProvider data = new InvokerContext(vars);
-        final String invokerClassName = (String) vars.get("invokerClassName");
 
         final ClassGenerator generator = createInvokerClassGenerator(data, ruleContext)
-                .setInterfaces(PredicateExpression.class, CompiledInvoker.class);
+                .setInterfaces(ReturnValueExpression.class, CompiledInvoker.class);
 
         generator.addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
                 mv.visitInsn(ACONST_NULL);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
+        ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(FieldValue.class, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 final Declaration[] previousDeclarations = (Declaration[])vars.get("declarations");
                 final String[] previousDeclarationTypes = (String[])vars.get("declarationTypes");
@@ -39,7 +39,7 @@ public class ASMPredicateBuilder extends AbstractASMPredicateBuilder {
 
                 offset = 7;
                 int[] previousDeclarationsParamsPos = parseDeclarations(previousDeclarations, previousDeclarationTypes, 3, 2, 5, true);
-                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, 2, 5, false);
+                int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, 2, 5, readLocalsFromTuple);
 
                 // @{ruleClassName}.@{methodName}(@foreach{previousDeclarations}, @foreach{localDeclarations}, @foreach{globals})
                 StringBuilder predicateMethodDescr = new StringBuilder("(");
@@ -55,9 +55,9 @@ public class ASMPredicateBuilder extends AbstractASMPredicateBuilder {
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
                 parseGlobals(globals, globalTypes, 5, predicateMethodDescr);
 
-                predicateMethodDescr.append(")Z");
+                predicateMethodDescr.append(")Lorg/drools/spi/FieldValue;");
                 mv.visitMethodInsn(INVOKESTATIC, data.getInternalRuleClassName(), data.getMethodName(), predicateMethodDescr.toString());
-                mv.visitInsn(IRETURN);
+                mv.visitInsn(ARETURN);
             }
         });
 

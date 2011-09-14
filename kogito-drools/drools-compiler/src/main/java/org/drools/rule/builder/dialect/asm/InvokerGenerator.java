@@ -243,7 +243,7 @@ public class InvokerGenerator {
     public static abstract class EvaluateMethod extends ClassGenerator.MethodBody {
         protected int offset;
 
-        protected int[] parseDeclarations(Declaration[] declarations, String[] declarationTypes, int declarReg, int tupleReg, int wmReg, boolean isLocal) {
+        protected int[] parseDeclarations(Declaration[] declarations, String[] declarationTypes, int declarReg, int tupleReg, int wmReg, boolean readLocalsFromTuple) {
             int[] declarationsParamsPos = new int[declarations.length];
             // DeclarationTypes[i] value[i] = (DeclarationTypes[i])localDeclarations[i].getValue((InternalWorkingMemory)workingMemory, object);
             for (int i = 0; i < declarations.length; i++) {
@@ -253,9 +253,7 @@ public class InvokerGenerator {
                 mv.visitInsn(AALOAD);  // declarations[i]
                 mv.visitVarInsn(ALOAD, wmReg); // workingMemory
                 cast(InternalWorkingMemory.class);
-                if (isLocal) {
-                    mv.visitVarInsn(ALOAD, 1); // object
-                } else {
+                if (readLocalsFromTuple) {
                     // tuple.get(declarations[i])).getObject()
                     mv.visitVarInsn(ALOAD, tupleReg); // tuple
                     mv.visitVarInsn(ALOAD, declarReg);
@@ -263,6 +261,8 @@ public class InvokerGenerator {
                     mv.visitInsn(AALOAD);  // declarations[i]
                     invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class);
+                } else {
+                    mv.visitVarInsn(ALOAD, 1); // object
                 }
 
                 String readMethod = declarations[i].getNativeReadMethod().getName();
