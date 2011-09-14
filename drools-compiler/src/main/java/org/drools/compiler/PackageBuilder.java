@@ -628,9 +628,7 @@ public class PackageBuilder {
             } else if ( ResourceType.PMML.equals( type ) ) {
                 PMMLCompiler compiler = getPMMLCompiler();
                 if (compiler != null) {
-
-                    String theory = compiler.compile( resource.getInputStream(), getPackageRegistry() );
-
+                    String theory = compiler.compile( resource.getInputStream() );
                     addKnowledgeResource( new ByteArrayResource( theory.getBytes() ),
                                       ResourceType.DRL,
                                       configuration );
@@ -1108,15 +1106,10 @@ public class PackageBuilder {
         
         // build up a set of all the super classes and interfaces
         Set<TypeDeclaration> tdecls = new LinkedHashSet<TypeDeclaration>();
-<<<<<<< HEAD
-        buildTypeDeclarations(cls, tdecls);
-        
-=======
         
         tdecls.add( tdecl );
         buildTypeDeclarations(cls, tdecls);
 
->>>>>>> d201631... JBRULES-3148 Dynamic Declarative Conflict Resolution
         // Iterate and for each typedeclr assign it's value if it's not already set
         // We start from the rear as those are the furthest away classes and interfaces
         TypeDeclaration[] tarray = tdecls.toArray( new   TypeDeclaration[tdecls.size()] );
@@ -1723,7 +1716,23 @@ public class PackageBuilder {
         // prepares a class definition
         ClassDefinition def = new ClassDefinition( fullName,
                                                    fullSuperType,
-                                                   interfaces );
+                                                   interfaces);
+
+            for ( String annotationName : typeDescr.getAnnotationNames() ) {
+                Class annotation = resolveAnnotation(annotationName, pkgRegistry.getTypeResolver());
+                if ( annotation != null ) {
+                    try {
+                        AnnotationDefinition annotationDefinition = AnnotationDefinition.build(
+                                                                    annotation,
+                                                                    typeDescr.getAnnotations().get(annotationName).getValueMap(),
+                                                                    pkgRegistry.getTypeResolver());
+                        def.addAnnotation(annotationDefinition);
+                    } catch (NoSuchMethodException nsme) {
+                        this.results.add( new TypeDeclarationError( "Annotated type " + fullName +"  - wrong property in annotation " + annotationName + ": " + nsme.getMessage() + ";",
+                                                            typeDescr.getLine() ) );
+                    }
+                }
+            }
 
             for ( String annotationName : typeDescr.getAnnotationNames() ) {
                 Class annotation = resolveAnnotation(annotationName, pkgRegistry.getTypeResolver());

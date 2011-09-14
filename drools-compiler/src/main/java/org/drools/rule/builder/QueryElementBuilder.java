@@ -286,7 +286,6 @@ public class QueryElementBuilder
                                     String expression,
                                     ConstraintConnectiveDescr result ) {
         int position = ((ExprConstraintDescr) base).getPosition();
-<<<<<<< HEAD
         if ( position >= arguments.size() ) {
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           base,
@@ -294,8 +293,6 @@ public class QueryElementBuilder
                                                           "Unable to parse query '" + query.getName() + "', as postion " + (position-1) + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
             return;            
         }
-=======
->>>>>>> 5c69cb0... JBRULES-3172 Minor fixes to builder to wrap extensions and catch more invlid chars
         if ( isVariable( expression ) ) {
             // is this already bound?
             Declaration declr = context.getDeclarationResolver().getDeclaration( query,
