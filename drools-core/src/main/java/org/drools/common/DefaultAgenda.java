@@ -178,7 +178,7 @@ public class DefaultAgenda
             this.consequenceExceptionHandler = (org.drools.runtime.rule.ConsequenceExceptionHandler) object;
         }
         
-        this.declarativeAgenda =  rb.getConfiguration().isDeclarativeAgenda();
+        this.declarativeAgenda =  false; // hard coded to false for 5.2., so it's disabled.
     }
 
     public AgendaItem createAgendaItem(final LeftTuple tuple,
