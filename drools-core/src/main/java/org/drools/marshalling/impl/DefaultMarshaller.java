@@ -138,6 +138,7 @@ public class DefaultMarshaller
                                                                      this.marshallingConfig.isMarshallProcessInstances(),
                                                                      this.marshallingConfig.isMarshallWorkItems(), 
                                                                      ksession.getEnvironment());
+        context.clockTime = clockTime;
         OutputMarshaller.writeSession( context );
         context.close();
     }
