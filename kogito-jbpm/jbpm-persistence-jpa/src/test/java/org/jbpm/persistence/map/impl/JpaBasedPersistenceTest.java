@@ -1,21 +1,15 @@
 package org.jbpm.persistence.map.impl;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.*;
 
-import java.util.List;
-import java.util.Properties;
-
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.transaction.Transaction;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.base.MapGlobalResolver;
-import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -29,13 +23,24 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
     private PoolingDataSource ds1;
     private EntityManagerFactory emf;
+    private JtaTransactionManager txm;
+    private boolean useTransactions = false;
     
     @Before
     public void setUp() throws Exception {
         ds1 = setupPoolingDataSource();
         ds1.init();
         
-        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
+        emf = Persistence.createEntityManagerFactory( JBPM_PERSISTENCE_UNIT_NAME );
+        
+        if( useTransactions() ) { 
+            useTransactions = true;
+            Environment env = createEnvironment();
+            Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
+            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
+                env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
+                tm );
+        }
     }
     
     @After
@@ -59,12 +64,28 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
     @Override
     protected int getProcessInstancesCount() {
-        return emf.createEntityManager().createQuery( "FROM ProcessInstanceInfo" ).getResultList().size();
+        boolean txOwner = false;
+        if( useTransactions ) { 
+            txOwner = txm.begin();
+        }
+        int size =  emf.createEntityManager().createQuery( "FROM ProcessInstanceInfo" ).getResultList().size();
+        if( useTransactions ) { 
+            txm.commit(txOwner);
+        }
+        return size;
     }
 
     @Override
     protected int getKnowledgeSessionsCount() {
-        return emf.createEntityManager().createQuery( "FROM SessionInfo" ).getResultList().size();
+        boolean transactionOwner = false;
+        if( useTransactions ) { 
+            transactionOwner = txm.begin();
+        }
+        int size = emf.createEntityManager().createQuery( "FROM SessionInfo" ).getResultList().size();
+        if( useTransactions ) { 
+            txm.commit(transactionOwner);
+        }
+        return size;
     }
 
     private Environment createEnvironment(){
