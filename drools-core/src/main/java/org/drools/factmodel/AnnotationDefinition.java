@@ -17,7 +17,6 @@
 package org.drools.factmodel;
 
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import org.drools.base.TypeResolver;
 
 import java.lang.reflect.InvocationTargetException;
