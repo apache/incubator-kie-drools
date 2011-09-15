@@ -16,6 +16,7 @@ import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.DefaultMarshaller;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -61,6 +62,10 @@ public class SerializationHelper {
                                                                boolean dispose) throws Exception {
         // Serialize to a byte array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        
+        ((ReteooStatefulSession)session).getTimerService();
+        
+        
         ObjectOutput out = new ObjectOutputStream( bos );
         out.writeObject( session );
         out.close();
