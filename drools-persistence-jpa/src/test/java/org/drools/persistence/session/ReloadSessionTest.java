@@ -139,13 +139,9 @@ public class ReloadSessionTest {
         emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
         env = initializeEnvironment(emf);
        
-        // Re-initialize the knowledge session _and knowledge base_: 
-        //  - a KnowledgeBase instantiation (can) contain a hierarchy of references 
-        //    that eventually references an object store 
-        //    This means it _must_ be reinitialized when reloading the persistence context.
-        KnowledgeBase newkbase = initializeKnowledgeBase(simpleRule);
+        // Re-initialize the knowledge session:
         StatefulKnowledgeSession newCommandKSession 
-            = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionInfoId, newkbase, null, env);
+            = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionInfoId, kbase, null, env);
        
         // Test that the session has been successfully reinitialized
         factHandles =  newCommandKSession.getFactHandles();
