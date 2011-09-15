@@ -40,11 +40,8 @@ public class FieldDefinition
     private int                index      = -1;
     private String             initExpr   = null;
 
-<<<<<<< HEAD
     private List<AnnotationDefinition> annotations;
 
-=======
->>>>>>> e62e733... JBRULES 2945 - Support "extends" feature in declared beans
     private ClassFieldAccessor accessor   = null;
 
     public FieldDefinition() {
@@ -227,7 +224,6 @@ public class FieldDefinition
 
     public boolean isInherited() {
         return inherited;
-<<<<<<< HEAD
     }
 
     public void setInherited(boolean inherited) {
@@ -272,8 +268,6 @@ public class FieldDefinition
 
     public String getDefaultValueAsString() {
         return initExpr == null ? null : initExpr.substring(1,initExpr.length()-1);
-=======
->>>>>>> e62e733... JBRULES 2945 - Support "extends" feature in declared beans
     }
     public Boolean getDefaultValueAsBoolean() {
         return "true".equals(initExpr);
@@ -325,88 +319,6 @@ public class FieldDefinition
     }
 
 
-<<<<<<< HEAD
-=======
-    public void setInherited(boolean inherited) {
-        this.inherited = inherited;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    public String getInitExpr() {
-        return initExpr;
-    }
-
-    public void setInitExpr(String initExpr) {
-        this.initExpr = initExpr;
-    }
-
-
-    public int compareTo(FieldDefinition other) {
-        return (this.index - other.index);
-    }
-
-
-    public String getDefaultValueAsString() {
-        return initExpr == null ? null : initExpr.substring(1,initExpr.length()-1);
-    }
-    public Boolean getDefaultValueAsBoolean() {
-        return "true".equals(initExpr);
-    }
-    public Byte getDefaultValueAsByte() {
-        try {
-            return initExpr == null ? 0 : Byte.parseByte(initExpr);
-        } catch (NumberFormatException nfe) {
-            return 0;
-        }
-    }
-    public Character getDefaultValueAsChar() {
-        return initExpr == null ? ' ' : initExpr.charAt(0);
-    }
-    public Double getDefaultValueAsDouble() {
-        try {
-            return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
-        } catch (NumberFormatException nfe) {
-            return 0.0;
-        }
-    }
-    public Float getDefaultValueAsFloat() {
-        try {
-            return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
-        } catch (NumberFormatException nfe) {
-            return 0.0f;
-        }
-    }
-    public Integer getDefaultValueAsInt() {
-        try {
-            return initExpr == null ? 0 : Integer.parseInt(initExpr);
-        } catch (NumberFormatException nfe) {
-            return 0;
-        }
-    }
-    public Long getDefaultValueAsLong() {
-        try {
-            return initExpr == null ? 0L : Long.parseLong(initExpr);
-        } catch (NumberFormatException nfe) {
-            return 0L;
-        }
-    }
-    public Short getDefaultValueAsShort() {
-        try {
-            return initExpr == null ? 0 : Short.parseShort(initExpr);
-        } catch (NumberFormatException nfe) {
-            return 0;
-        }
-    }
-
-
->>>>>>> e62e733... JBRULES 2945 - Support "extends" feature in declared beans
     public boolean getDefaultValueAs_boolean() {
         return "true".equals(initExpr);
     }

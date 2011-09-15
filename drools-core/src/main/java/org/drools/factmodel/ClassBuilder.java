@@ -19,14 +19,19 @@ package org.drools.factmodel;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.RuntimeDroolsException;
-import org.drools.definition.type.FactField;
-import org.mvel2.asm.*;
+import org.mvel2.asm.AnnotationVisitor;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 /**
  * A builder to dynamically build simple Javabean(TM) classes
@@ -156,13 +161,10 @@ public class ClassBuilder {
                 null,
                 getInternalType( classDef.getSuperClass() ),
                 interfaces );
-<<<<<<< HEAD
 
         buildClassAnnotations(classDef, cw);
 
 
-=======
->>>>>>> e62e733... JBRULES 2945 - Support "extends" feature in declared beans
 
         cw.visitSource( classDef.getClassName() + ".java",
                 null );
@@ -184,13 +186,10 @@ public class ClassBuilder {
                 getTypeDescriptor( fieldDef.getTypeName() ),
                 null,
                 null );
-<<<<<<< HEAD
 
 
         buildFieldAnnotations(fieldDef, fv);
 
-=======
->>>>>>> e62e733... JBRULES 2945 - Support "extends" feature in declared beans
         fv.visitEnd();
     }
 
@@ -226,7 +225,6 @@ public class ClassBuilder {
                 sup = Type.getInternalName(Class.forName(classDef.getSuperClass()));
             } catch (ClassNotFoundException e) {
                 sup = getInternalType( classDef.getSuperClass() );
-<<<<<<< HEAD
             }
             mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
                     sup,
@@ -258,39 +256,6 @@ public class ClassBuilder {
                     }
                 }
             }
-=======
-            }
-            mv.visitMethodInsn( Opcodes.INVOKESPECIAL,
-                    sup,
-                    "<init>",
-                    Type.getMethodDescriptor( Type.VOID_TYPE,
-                            new Type[]{} ) );
-
-            for (FieldDefinition field : classDef.getFieldsDefinitions()) {
-
-                if (! field.isInherited()) {
-                    Object val = getDefaultValue(field);
-
-                    if (val != null) {
-                        mv.visitVarInsn(Opcodes.ALOAD, 0);
-                        mv.visitLdcInsn(val);
-
-                        if (isBoxed(field.getTypeName())) {
-                            mv.visitMethodInsn(Opcodes.INVOKESTATIC,
-                                    getInternalType(field.getTypeName()),
-                                    "valueOf",
-                                    "("+unBox(field.getTypeName())+")"+getTypeDescriptor(field.getTypeName()));
-                        }
-
-                        mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                getInternalType( classDef.getClassName() ),
-                                field.getName(),
-                                getTypeDescriptor( field.getTypeName() ) );
-
-                    }
-                }
-            }
->>>>>>> e62e733... JBRULES 2945 - Support "extends" feature in declared beans
 
 
 
