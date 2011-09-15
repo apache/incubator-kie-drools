@@ -74,6 +74,7 @@ import org.drools.time.SelfRemovalJobContext;
 import org.drools.time.Trigger;
 import org.drools.time.impl.CronTrigger;
 import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TimerJobInstance;
 
 public class OutputMarshaller {
@@ -102,7 +103,11 @@ public class OutputMarshaller {
             context.writeBoolean( false );
         }        
         
-        context.writeLong( context.clockTime );
+        long time = 0;
+        if ( context.wm.getTimerService() instanceof PseudoClockScheduler ) {
+        	time = context.clockTime;
+        }
+        context.writeLong( time );
 
         context.writeInt( wm.getFactHandleFactory().getId() );
         context.writeLong( wm.getFactHandleFactory().getRecency() );
