@@ -10,10 +10,7 @@
     <title>What is Drools Planner?</title>
 
     <para><emphasis role="bold"><link xlink:href="http://www.jboss.org/drools/drools-planner">Drools Planner</link>
-    optimizes automated planning</emphasis> by combining search algorithms with the power of the Drools rule
-    engine.</para>
-
-    <para>It solves use cases, such as:</para>
+    optimizes planning problems.</emphasis> It solves use cases, such as:</para>
 
     <itemizedlist>
       <listitem>
@@ -59,6 +56,18 @@
         spreading, ...</para>
       </listitem>
     </itemizedlist>
+
+    <para>Every organization faces planning problems: they have a number of things to do and a limited set of
+    <emphasis>constrained</emphasis> resources to do them with.</para>
+
+    <para>Drools Planner enables normal Java<superscript>TM</superscript> programmers to solve planning problems
+    efficiently. Under the hood, it combines optimization algorithms (including <emphasis>Metaheuristics</emphasis> such
+    as <emphasis>Tabu Search</emphasis> and <emphasis>Simulated Annealing</emphasis>) with the power of score
+    calculation by a rule engine.</para>
+
+    <para>Drools Planner, like the rest of Drools, is business-friendly <emphasis>open source</emphasis> software under
+    <link xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
+    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>).</para>
   </section>
 
   <section>
@@ -82,7 +91,7 @@
 
       <note>
         <para>(*) At least, none of the smartest computer scientists in the world have found such a silver bullet yet.
-        But if they find one for 1 NP-complete problem, they find one for all of them.</para>
+        But if they find one for 1 NP-complete problem, it will work for every NP-complete problem.</para>
 
         <para>In fact, there's a $ 1,000,000 reward for anyone that proves if <link
         xlink:href="http://en.wikipedia.org/wiki/P_%3D_NP_problem">such a silver bullet actually exists or
@@ -139,9 +148,9 @@
       constraints, for example hard, medium and soft constraints.</para>
 
       <para>These constraints define the <emphasis>score function</emphasis> (AKA <emphasis>fitness function</emphasis>)
-      of a planning problem. So each solution of a planning problem can be graded with a score. Because we 'll define
-      these constraints as rules in the Drools Expert rule engine, <emphasis role="bold">adding constraints in Drools
-      Planner is easy and scalable</emphasis>.</para>
+      of a planning problem. Each solution of a planning problem can be graded with a score. Because we 'll define these
+      constraints as rules in the Drools Expert rule engine, <emphasis role="bold">adding constraints in Drools Planner
+      is easy and scalable</emphasis>.</para>
     </section>
 
     <section>
@@ -165,8 +174,8 @@
 
         <listitem>
           <para>An <emphasis>optimal solution</emphasis> is a solution with the highest score. Planning problems tend to
-          have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the case that that are
-          no feasible solutions and the optimal solution isn't feasible.</para>
+          have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the case that there
+          are no feasible solutions and the optimal solution isn't feasible.</para>
         </listitem>
 
         <listitem>
@@ -195,10 +204,6 @@
     xlink:href="https://github.com/droolsjbpm/drools-planner/blob/master/drools-planner-distribution/src/main/assembly/filtered-resources/UpgradeFromPreviousVersionRecipe.txt"><filename>UpgradeFromPreviousVersionRecipe.txt</filename></link>
     you can easily upgrade and deal with any backwards incompatible changes between versions. That recipe file is
     included in every release.</para>
-
-    <para>Drools Planner, like Drools, is business-friendly <emphasis>open source</emphasis> software under <link
-    xlink:href="http://www.apache.org/licenses/LICENSE-2.0">the Apache Software License 2.0</link> (<link
-    xlink:href="http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN">layman's explanation</link>).</para>
   </section>
 
   <section>
@@ -208,8 +213,8 @@
       <title>Getting the release package and running the examples</title>
 
       <para>You can download a release of Drools Planner from <link
-      xlink:href="http://www.jboss.org/drools/downloads.html">the drools download site</link>. To run an example, just
-      open the directory <filename>examples</filename> and run the script (<filename>runExamples.sh</filename> on linux
+      xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. To run an example, just
+      open the directory <filename>examples</filename> and run the script (<filename>runExamples.sh</filename> on Linux
       and mac or <filename>runExamples.bat</filename> on windows) and pick an example in the GUI:</para>
 
       <programlisting>$ cd examples
