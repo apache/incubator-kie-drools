@@ -69,6 +69,10 @@ public interface RuleBase
     StatefulSession newStatefulSession(java.io.InputStream stream,
                                                            boolean keepReference);
     
+    public StatefulSession newStatefulSession(java.io.InputStream stream,
+                                              boolean keepReference,
+                                              SessionConfiguration conf);    
+    
     /**
      * Create a new <code>WorkingMemory</code> session for this
      * <code>RuleBase</code>.

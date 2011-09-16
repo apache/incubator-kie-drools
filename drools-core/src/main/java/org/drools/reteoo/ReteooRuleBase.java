@@ -295,9 +295,17 @@ public class ReteooRuleBase extends AbstractRuleBase {
         return newStatefulSession( stream,
                                    true );
     }
-
+    
     public StatefulSession newStatefulSession(java.io.InputStream stream,
                                               boolean keepReference) {
+        return newStatefulSession( stream, 
+                                   keepReference,
+                                   SessionConfiguration.getDefaultInstance() );
+    }
+
+    public StatefulSession newStatefulSession(java.io.InputStream stream,
+                                              boolean keepReference,
+                                              SessionConfiguration conf) {
         StatefulSession session = null;
         try {
             readLock();
@@ -313,7 +321,7 @@ public class ReteooRuleBase extends AbstractRuleBase {
                 ByteArrayInputStream bais = new ByteArrayInputStream( rsession.bytes );
                 Marshaller marshaller = MarshallerFactory.newMarshaller( new KnowledgeBaseImpl( this ),  new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() }   );
                 StatefulKnowledgeSession ksession = marshaller.unmarshall( bais,
-                                                                           SessionConfiguration.getDefaultInstance(),
+                                                                           conf,
                                                                            EnvironmentFactory.newEnvironment() );
                 session = (StatefulSession) ((StatefulKnowledgeSessionImpl) ksession).session;
     
