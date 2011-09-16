@@ -73,6 +73,10 @@
       &lt;termination&gt;
         &lt;maximumSecondsSpend&gt;20&lt;/maximumSecondsSpend&gt;
       &lt;/termination&gt;
+      &lt;constructionHeuristic&gt;
+        &lt;constructionHeuristicType&gt;FIRST_FIT_DECREASING&lt;/constructionHeuristicType&gt;
+        &lt;constructionHeuristicPickEarlyType&gt;FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING&lt;/constructionHeuristicPickEarlyType&gt;
+      &lt;/constructionHeuristic&gt;
     &lt;/solver&gt;
   &lt;/inheritedSolverBenchmark&gt;
 
@@ -131,10 +135,13 @@
 
       <para>Every <literal>solverBenchmark</literal> entity contains a solver configuration (for example a local search
       solver) and one or more <literal>unsolvedSolutionFile</literal> entities. It will run the solver configuration on
-      each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent. The common
-      part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
+      each of those unsolved solution files. A <literal>name</literal> is optional and generated if absent.</para>
+
+      <para>The common part of multiple <literal>solverBenchmark</literal> entities can be extracted to the
       <literal>inheritedSolverBenchmark</literal> entity, but that can still be overwritten per
-      <literal>solverBenchmark</literal> entity.</para>
+      <literal>solverBenchmark</literal> entity. Note that inherited solver phases such as
+      <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
+      instead are added to the head of the solver phases list.</para>
 
       <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). The best
       solution of each solver run and a handy overview HTML webpage will be written in that directory.</para>
