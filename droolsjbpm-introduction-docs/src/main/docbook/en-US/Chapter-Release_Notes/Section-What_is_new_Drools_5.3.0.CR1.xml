@@ -13,7 +13,11 @@
     <title>Guvnor</title>
 
     <section>
-      <title>Guvnor Guided Decision Table - Wizard</title>
+      <title>Solid URLs and working browser history</title>
+      <para>Guvnor URLs point to what ever is currently open in the active tab. Because of this you can bookmark the URL or email it to your collegue. Forward and next page directs you to the previously opened tab or to the next tab.</para>
+    </section>
+    <section>
+     <title>Guvnor Guided Decision Table - Wizard</title>
 
       <para>A wizard has been created to assist with the construction of a new
       table.</para>
