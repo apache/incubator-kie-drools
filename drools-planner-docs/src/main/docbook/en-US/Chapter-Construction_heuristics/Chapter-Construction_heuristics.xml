@@ -25,7 +25,7 @@
       <para>The <emphasis>First Fit</emphasis> algorithm cycles through all the planning entity (in default order),
       initializing 1 planning entity at a time. It assigns the planning entity to the best available planning value,
       taking the already initialized planning entities into account. It terminates when all planning entities have been
-      initialized. It never changes a planning entity after it has been initialized.</para>
+      initialized. It never changes a planning entity after it has been assigned.</para>
 
       <mediaobject>
         <imageobject>
@@ -80,6 +80,9 @@
       <para>Like <literal>First Fit</literal>, but assigns the more difficult planning entities first, because they are
       less likely to fit in the leftovers. So it sorts the planning entities on decreasing difficulty.</para>
 
+      <para>Requires the model to support <link linkend="planningEntityDifficulty">planning entity difficulty
+      comparison</link>.</para>
+
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Construction_heuristics/greedyFirstFitDecreasingNQueens04.png"></imagedata>
@@ -115,6 +118,9 @@
       values are more likely to be able to accomodate later planning entities. So it sorts the planning values on
       increasing strength.</para>
 
+      <para>Requires the model to support <link linkend="planningValueStrength">planning value strength
+      comparison</link>.</para>
+
       <note>
         <para>One would expect that this algorithm always performs better than <literal>First Fit</literal>. That's not
         always the case.</para>
@@ -142,6 +148,9 @@
 
       <para>Combines <literal>First Fit Decreasing</literal> and <literal>Best Fit</literal>. So it sorts the planning
       entities on decreasing difficulty and the planning values on increasing strength.</para>
+
+      <para>Requires the model to support <link linkend="planningEntityDifficulty">planning entity difficulty
+      comparison</link> and <link linkend="planningValueStrength">planning value strength comparison</link>.</para>
 
       <note>
         <para>One would expect that this algorithm always performs better than <literal>First Fit</literal>,

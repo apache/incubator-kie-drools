@@ -319,8 +319,8 @@ public class Lecture {
         </note>
       </section>
 
-      <section>
-        <title>Planning entity difficulty comparison</title>
+      <section xml:id="planningEntityDifficulty">
+        <title>Planning entity difficulty</title>
 
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning entities
         are more difficult to plan. For example: in bin packing bigger items are harder to fit, in course scheduling
@@ -540,8 +540,8 @@ public class Queen {
         </section>
       </section>
 
-      <section>
-        <title>Planning value strength comparison</title>
+      <section xml:id="planningValueStrength">
+        <title>Planning value strength</title>
 
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning values are
         stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing bigger
