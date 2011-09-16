@@ -7,21 +7,28 @@
   <title>Optimization algorithms</title>
 
   <section>
-    <title>Introduction</title>
+    <title>The size of real world problems</title>
 
     <para>In number of possible solutions for a planning problem can be mind blowing. For example:</para>
 
     <itemizedlist>
       <listitem>
-        <para>4 queens has 256 possible solutions (<literal>n ^ n</literal>) and 2 optimal solutions.</para>
+        <para>4 queens has <literal>256</literal> possible solutions (<literal>4 ^ 4</literal>) and 2 optimal
+        solutions.</para>
       </listitem>
 
       <listitem>
-        <para>5 queens has 3125 possible solutions (<literal>n ^ n</literal>) and 1 optimal solution.</para>
+        <para>5 queens has <literal>3125</literal> possible solutions (<literal>5 ^ 5</literal>) and 1 optimal
+        solution.</para>
       </listitem>
 
       <listitem>
-        <para>8 queens has 16777216 possible solutions (<literal>n ^ n</literal>) and 92 optimal solutions.</para>
+        <para>8 queens has <literal>16777216</literal> possible solutions (<literal>8 ^ 8</literal>) and 92 optimal
+        solutions.</para>
+      </listitem>
+
+      <listitem>
+        <para>64 queens has more than <literal>10^115</literal> possible solutions (<literal>64 ^ 64</literal>).</para>
       </listitem>
 
       <listitem>
@@ -30,12 +37,23 @@
       </listitem>
     </itemizedlist>
 
-    <para>An optimization algorithm that checks every possible solution (even with pruning) can easily run for billions
-    of years on a single real-life planning problem. Most of the time, we are happy with a feasible solution found in a
-    limited amount of time.</para>
+    <para>For comparison: the minimal number of atoms in the known universe (10^80). As a planning problem gets bigger,
+    the search space tends to blow up really fast. Adding only 1 extra planning entity or planning value can heavily
+    multiply the running time of some algorithms.</para>
 
-    <para>The combination of Drools Planner's optimization algorithms and the Drools Expert rule engine turn out to be a
-    very efficient, because:</para>
+    <para>An algorithm that checks every possible solution (even with pruning) can easily run for billions of years on a
+    single real-life planning problem. What we really want is to <emphasis role="bold">find the best solution in the
+    limited time at our disposal</emphasis>. Planning competitions (such as the International Timetabling Competition)
+    show that local search variations (tabu search, simulated annealing, ...) usually perform best for real-world
+    problems given real-world time limitations.</para>
+  </section>
+
+  <section>
+    <title>The secret sauce of Drools Planner</title>
+
+    <para>Drools Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score
+    calculation by a rule engine such as Drools Expert. This combination turns out to be a very efficient,
+    because:</para>
 
     <itemizedlist>
       <listitem>
@@ -51,32 +69,90 @@
         solution and offers no support in calculating that score efficiently.</para>
       </listitem>
     </itemizedlist>
-
-    <para>Drools Planner's implementation combines both. On top of that, it also offers additional support for
-    benchmarking, etc.</para>
   </section>
 
   <section>
-    <title>The size of real world problems</title>
+    <title>Optimization algorithms overview</title>
 
-    <para>As a planning problem gets bigger, the search space tends to blow up really fast. It's not uncommon to see
-    that it's possible to optimally plan 20 people in less then a second, while planning 21 people optimally would take
-    years with the same algorithm. Take a look at the problem size of the examples: many instances have a lot more
-    possible solutions than the minimal number of atoms in the known universe (10^80).</para>
+    <itemizedlist>
+      <listitem>
+        <para>Exact algorithms</para>
 
-    <para>The cold, hard reality is that <emphasis role="bold">for many real-world planning problems we will not find
-    the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we do better than the solutions created
-    by human planners (which is easy) and other software.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Brute force</para>
+          </listitem>
 
-    <para>Planning competitions (such as the International Timetabling Competition) show that local search variations
-    (tabu search, simulated annealing, ...) usually perform best for real-world problems given real-world time
-    limitations.</para>
-  </section>
+          <listitem>
+            <para>Branch and bound</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
 
-  <section>
-    <title>Algorithms overview</title>
+      <listitem>
+        <para>Construction heuristics</para>
 
-    <para>TODO</para>
+        <itemizedlist>
+          <listitem>
+            <para>First Fit</para>
+          </listitem>
+
+          <listitem>
+            <para>First Fit Decreasing</para>
+          </listitem>
+
+          <listitem>
+            <para>Best Fit</para>
+          </listitem>
+
+          <listitem>
+            <para>Best Fit Decreasing</para>
+          </listitem>
+
+          <listitem>
+            <para>Cheapest insertion</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Metaheuristics</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Local search</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Hill-climbing</para>
+              </listitem>
+
+              <listitem>
+                <para>Tabu search</para>
+              </listitem>
+
+              <listitem>
+                <para>Simulated annealing</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Evolutionary algorithms</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Evolutionary strategies</para>
+              </listitem>
+
+              <listitem>
+                <para>Genetic algorithms</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
 
     <para>If you want to learn more about metaheuristics, read the free book <link
     xlink:href="http://www.cs.gmu.edu/~sean/book/metaheuristics/">Essentials of Metaheuristics</link> or <link
