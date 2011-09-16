@@ -1167,3 +1167,14 @@ Before in  *.java:
     ... solver.setStartingSolution(...) ...
 After in  *.java:
     ... solver.setPlanningProblem(...) ...
+
+[MAJOR] Logging level changes: most debug statements have been changed to trace, most info statements have been changed to debug.
+If you were using info logging, you probably want to use debug now.
+Before in log4j*.xml:
+  <category name="org.drools.planner">
+    <priority value="info" />
+  </category>
+After in log4j*.xml:
+  <category name="org.drools.planner">
+    <priority value="debug" />
+  </category>

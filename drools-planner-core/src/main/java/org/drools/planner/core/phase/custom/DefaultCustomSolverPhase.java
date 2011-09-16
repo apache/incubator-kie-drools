@@ -85,9 +85,10 @@ public class DefaultCustomSolverPhase extends AbstractSolverPhase
 
     public void phaseEnded(CustomSolverPhaseScope customSolverPhaseScope) {
         super.phaseEnded(customSolverPhaseScope);
-        logger.info("Custom phase ended at step index ({}) for best score ({}).",
-                customSolverPhaseScope.getLastCompletedStepScope().getStepIndex(),
-                customSolverPhaseScope.getBestScore());
+        logger.info("Phase custom finished: step total ({}), time spend ({}), best score ({}).",
+                new Object[]{customSolverPhaseScope.getLastCompletedStepScope().getStepIndex() + 1,
+                customSolverPhaseScope.calculateSolverTimeMillisSpend(),
+                customSolverPhaseScope.getBestScore()});
     }
 
 }

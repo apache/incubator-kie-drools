@@ -153,7 +153,7 @@ public class DefaultSolver implements Solver {
             solverScope.setWorkingRandom(new Random());
         }
         bestSolutionRecaller.solvingStarted(solverScope);
-        logger.info("Solver started with time spend ({}), score ({}), new best score ({}), random seed ({}).",
+        logger.info("Solver started: time spend ({}), score ({}), new best score ({}), random seed ({}).",
                 new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
                         solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed")});
     }
@@ -175,12 +175,10 @@ public class DefaultSolver implements Solver {
             timeMillisSpend = 1L;
         }
         long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L / timeMillisSpend;
-        logger.info("Solved with time spend ({}) for best score ({})"
-                + " with average calculate count per second ({}).", new Object[]{
-                timeMillisSpend,
+        logger.info("Solved: time spend ({}), best score ({}), average calculate count per second ({}).",
+                new Object[]{timeMillisSpend,
                 solverScope.getBestScore(),
-                averageCalculateCountPerSecond
-        });
+                averageCalculateCountPerSecond});
     }
 
     private void checkProblemFactChanges() {
@@ -196,14 +194,15 @@ public class DefaultSolver implements Solver {
                 count++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
-            logger.info("Executed {} ProblemFactChange(s), score ({}), possibly uninitialized. Restarting solver.", count, score);
+            logger.info("Done {} ProblemFactChange(s): new score ({}) possibly uninitialized. Restarting solver.",
+                    count, score);
         }
     }
 
     private Score doProblemFactChange(ProblemFactChange problemFactChange) {
         problemFactChange.doChange(solverScope.getSolutionDirector());
         Score score = solverScope.calculateScoreFromWorkingMemory();
-        logger.debug("    ProblemFactChange done with new score ({}).", score);
+        logger.debug("    Done ProblemFactChange: new score ({}).", score);
         return score;
     }
 
