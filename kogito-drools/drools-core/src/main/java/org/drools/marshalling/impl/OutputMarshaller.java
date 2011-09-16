@@ -138,12 +138,12 @@ public class OutputMarshaller {
 
         if ( context.marshalWorkItems && processMarshaller != null ) {
             processMarshaller.writeWorkItems( context );
-        }
-
+        }     
+        
         if ( processMarshaller != null ) {
             // this now just assigns the writer, it will not write out any timer information
             processMarshaller.writeProcessTimers( context );
-        }
+        }                
         
         // Only works for JpaJDKTimerService
         writeTimers( context.wm.getTimerService().getTimerJobInstances(), context );
@@ -992,7 +992,7 @@ public class OutputMarshaller {
                           new Comparator<TimerJobInstance>() {
                               public int compare(TimerJobInstance o1,
                                                  TimerJobInstance o2) {
-                                  return (int) (o2.getJobHandle().getId() - o1.getJobHandle().getId());
+                                  return (int) (o1.getJobHandle().getId() - o2.getJobHandle().getId());
                               }
                           } );
         
