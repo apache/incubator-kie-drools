@@ -185,7 +185,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
                 new ClassObjectFilter(ConstraintOccurrence.class));
         while (it.hasNext()) {
             ConstraintOccurrence occurrence = it.next();
-            logger.trace("Adding ConstraintOccurrence ({})", occurrence);
+            logger.trace("    Adding ConstraintOccurrence ({})", occurrence);
             SummaryLine summaryLine = summaryLineMap.get(occurrence.getRuleId());
             if (summaryLine == null) {
                 summaryLine = new SummaryLine();

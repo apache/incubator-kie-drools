@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
         super.stepTaken(localSearchStepScope);
         decider.stepTaken(localSearchStepScope);
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = localSearchStepScope.getLocalSearchSolverPhaseScope();
-        logger.info("Step index ({}), time spend ({}), score ({}), {} best score ({}), accepted move size ({})" +
+        logger.debug("    Step index ({}), time spend ({}), score ({}), {} best score ({}), accepted move size ({})" +
                 " for picked step ({}).",
                 new Object[]{localSearchStepScope.getStepIndex(),
                         localSearchSolverPhaseScope.calculateSolverTimeMillisSpend(),

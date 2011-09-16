@@ -120,17 +120,17 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             // Doesn't use the deciderScoreComparator because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
                     moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getBestScore()) > 0) {
-                logger.debug("    Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
+                logger.trace("        Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
                 return 1.0;
             }
         }
         int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex - 1;
         if (tabuStepCount < completeTabuSize) {
-            logger.debug("    Proposed move ({}) is complete tabu.", moveScope.getMove());
+            logger.trace("        Proposed move ({}) is complete tabu.", moveScope.getMove());
             return 0.0;
         }
         double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - completeTabuSize);
-        logger.debug("    Proposed move ({}) is partially tabu with accept chance ({}).",
+        logger.trace("        Proposed move ({}) is partially tabu with accept chance ({}).",
                 moveScope.getMove(), acceptChance);
         return acceptChance;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -148,16 +148,14 @@ public class DefaultSolver implements Solver {
         }
         solverScope.reset();
         if (randomSeed != null) {
-            logger.info("Solving with random seed ({}).", randomSeed);
             solverScope.setWorkingRandom(new Random(randomSeed));
         } else {
-            logger.info("Solving with a non-fixed random seed.");
             solverScope.setWorkingRandom(new Random());
         }
         bestSolutionRecaller.solvingStarted(solverScope);
-        logger.info("Starting with time spend ({}), score ({}), new best score ({}).",
+        logger.info("Solver started with time spend ({}), score ({}), new best score ({}), random seed ({}).",
                 new Object[]{solverScope.calculateTimeMillisSpend(), solverScope.getStartingInitializedScore(),
-                        solverScope.getBestScore()});
+                        solverScope.getBestScore(), (randomSeed != null ? randomSeed : "not fixed")});
     }
 
     protected void runSolverPhases() {
@@ -198,14 +196,14 @@ public class DefaultSolver implements Solver {
                 count++;
                 problemFactChange = problemFactChangeQueue.poll();
             }
-            logger.info("Done {} ProblemFactChange(s), score ({}), possibly uninitialized. Restarting solver.", count, score);
+            logger.info("Executed {} ProblemFactChange(s), score ({}), possibly uninitialized. Restarting solver.", count, score);
         }
     }
 
     private Score doProblemFactChange(ProblemFactChange problemFactChange) {
         problemFactChange.doChange(solverScope.getSolutionDirector());
         Score score = solverScope.calculateScoreFromWorkingMemory();
-        logger.debug("ProblemFactChange done with new score ({}).", score);
+        logger.debug("    ProblemFactChange done with new score ({}).", score);
         return score;
     }
 
