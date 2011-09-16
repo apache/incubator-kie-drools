@@ -60,11 +60,11 @@
     <title>The size of real world problems</title>
 
     <para>As a planning problem gets bigger, the search space tends to blow up really fast. It's not uncommon to see
-    that it's possible to optimally plan 5 people in less then a second, while planning 6 people optimally would take
-    years. Take a look at the problem size of the examples: many instances have a lot more possible solutions than the
-    minimal number of atoms in the known universe (10^80).</para>
+    that it's possible to optimally plan 20 people in less then a second, while planning 21 people optimally would take
+    years with the same algorithm. Take a look at the problem size of the examples: many instances have a lot more
+    possible solutions than the minimal number of atoms in the known universe (10^80).</para>
 
-    <para>The cold, hard reality is that <emphasis role="bold">for most real-world planning problems we will not find
+    <para>The cold, hard reality is that <emphasis role="bold">for many real-world planning problems we will not find
     the optimal solution in our lifetimes.</emphasis> But that's OK, as long as we do better than the solutions created
     by human planners (which is easy) and other software.</para>
 
@@ -79,7 +79,8 @@
     <para>TODO</para>
 
     <para>If you want to learn more about metaheuristics, read the free book <link
-    xlink:href="Essentials of Metaheuristics">Essentials of Metaheuristics</link>.</para>
+    xlink:href="http://www.cs.gmu.edu/~sean/book/metaheuristics/">Essentials of Metaheuristics</link> or <link
+    xlink:href="http://www.cleveralgorithms.com/">Clever Algorithms</link>.</para>
   </section>
 
   <section>
@@ -172,8 +173,10 @@
     </orderedlist>
 
     <para>At this point <emphasis>the free lunch is over</emphasis>. The return on invested time lowers. The result is
-    probably already more than good enough, but we can do even better. Use the Benchmarker and try a couple of simulated
-    annealing configurations:</para>
+    probably already more than good enough.</para>
+
+    <para>But you can do even better, at a lower return on invested time. Use the Benchmarker and try a couple of
+    simulated annealing configurations:</para>
 
     <orderedlist>
       <listitem>
@@ -185,7 +188,7 @@
       </listitem>
     </orderedlist>
 
-    <para>And try this too:</para>
+    <para>And combine them with tabu search:</para>
 
     <orderedlist>
       <listitem>
@@ -201,8 +204,60 @@
       </listitem>
     </orderedlist>
 
-    <para>If you have time, continue experimenting even further (and blog about your experiments!), but the return on
-    investment will be low.</para>
+    <para>If you have time, continue experimenting even further. Blog about your experiments!</para>
+  </section>
+
+  <section>
+    <title>Logging level: What is the <literal>Solver</literal> doing?</title>
+
+    <para>The best way to illuminate the black box that is a <literal>Solver</literal>, is to play with the logging
+    level:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">WARN</emphasis>: Log only when things go wrong.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">INFO</emphasis>: Log every phase and the solver itself.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">DEBUG</emphasis>: Log every step of every phase.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Set the logging level on the category <literal>org.drools.planner</literal>, for example with log4j:</para>
+
+    <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+
+    &lt;category name="org.drools.planner"&gt;
+        &lt;priority value="debug" /&gt;
+    &lt;/category&gt;
+
+    ...
+
+&lt;/log4j:configuration&gt;</programlisting>
+
+    <para>For example, set it to <literal>DEBUG</literal> logging, to see when the phases end and how fast steps are
+    taken:</para>
+
+    <programlisting>INFO  Solver started: time spend (0), score (null), new best score (null), random seed (0).
+DEBUG     Step index (0), time spend (1), score (0), initialized planning entity (2 @ 0).
+DEBUG     Step index (1), time spend (3), score (0), initialized planning entity (1 @ 2).
+DEBUG     Step index (2), time spend (4), score (0), initialized planning entity (3 @ 3).
+DEBUG     Step index (3), time spend (5), score (-1), initialized planning entity (0 @ 1).
+INFO  Phase construction heuristic finished: step total (4), time spend (6), best score (-1).
+DEBUG     Step index (0), time spend (10), score (-1),     best score (-1), accepted move size (12) for picked step (1 @ 2 =&gt; 3).
+DEBUG     Step index (1), time spend (12), score (0), new best score (0), accepted move size (12) for picked step (3 @ 3 =&gt; 2).
+INFO  Phase local search finished: step total (2), time spend (13), best score (0).
+INFO  Solved: time spend (13), best score (0), average calculate count per second (4846).</programlisting>
+
+    <para>All time spends are in milliseconds.</para>
   </section>
 
   <section>
