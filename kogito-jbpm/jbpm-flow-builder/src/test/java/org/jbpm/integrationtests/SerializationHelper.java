@@ -15,6 +15,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
+import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.StatefulKnowledgeSession;
 
 /**
@@ -65,10 +66,10 @@ public class SerializationHelper {
         bos.close();
 
         // Get the bytes of the serialized object
-        final byte[] b1 = bos.toByteArray();
+        final byte[] b1 = bos.toByteArray();        
 
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulSession session2 = ruleBase.newStatefulSession( bais );
+        StatefulSession session2 = ruleBase.newStatefulSession( bais, true, ((ReteooStatefulSession)session).getSessionConfiguration() );
         bais.close();
 
         bos = new ByteArrayOutputStream();

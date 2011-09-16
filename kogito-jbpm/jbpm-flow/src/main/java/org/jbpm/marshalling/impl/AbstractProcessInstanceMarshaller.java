@@ -73,13 +73,13 @@ public abstract class AbstractProcessInstanceMarshaller implements
 
     // Output methods
     public void writeProcessInstance(MarshallerWriteContext context,
-            ProcessInstance processInstance) throws IOException {
+            ProcessInstance processInstance) throws IOException {        
         WorkflowProcessInstanceImpl workFlow = (WorkflowProcessInstanceImpl) processInstance;
         ObjectOutputStream stream = context.stream;
         stream.writeLong(workFlow.getId());
         stream.writeUTF(workFlow.getProcessId());
         stream.writeInt(workFlow.getState());
-        stream.writeLong(workFlow.getNodeInstanceCounter());
+        stream.writeLong(workFlow.getNodeInstanceCounter());        
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance(SwimlaneContext.SWIMLANE_SCOPE);
         if (swimlaneContextInstance != null) {
@@ -107,7 +107,7 @@ public abstract class AbstractProcessInstanceMarshaller implements
             writeNodeInstance(context,
                     nodeInstance);
         }
-        stream.writeShort(PersisterEnums.END);
+        stream.writeShort(PersisterEnums.END);              
         
         List<ContextInstance> exclusiveGroupInstances =
         	workFlow.getContextInstances(ExclusiveGroup.EXCLUSIVE_GROUP);

@@ -237,8 +237,8 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		return globals;
 	}
 
-	public <T extends SessionClock> T getSessionClock() {
-		throw new UnsupportedOperationException();
+	public SessionClock getSessionClock() {
+        return (SessionClock) this.timerService;
 	}
 
 	public void registerChannel(String name, Channel channel) {

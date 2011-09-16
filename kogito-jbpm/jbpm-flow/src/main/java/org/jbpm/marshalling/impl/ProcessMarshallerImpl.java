@@ -36,6 +36,7 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
                                   return (int) (o1.getId() - o2.getId());
                               }
                           } );
+
         for ( org.drools.runtime.process.ProcessInstance processInstance : processInstances ) {
             stream.writeShort(PersisterEnums.PROCESS_INSTANCE);
             String processType = processInstance.getProcess().getType();
@@ -194,6 +195,7 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
 
         TimerManager timerManager = ((InternalProcessRuntime) ((InternalWorkingMemory) inCtx.wm).getProcessRuntime()).getTimerManager();
         timerManager.internalSetTimerId( stream.readLong() );
+
         
         int token;
         while ((token = inCtx.readShort()) != PersisterEnums.END) {
@@ -228,3 +230,4 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
     }
 
 }
+    

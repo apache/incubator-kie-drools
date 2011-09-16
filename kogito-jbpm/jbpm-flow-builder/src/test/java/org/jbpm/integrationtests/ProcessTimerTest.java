@@ -8,14 +8,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.drools.ClockType;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.drools.runtime.KnowledgeSessionConfiguration;
+import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.time.SessionPseudoClock;
 import org.jbpm.JbpmTestCase;
 import org.jbpm.Message;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -685,7 +692,15 @@ public class ProcessTimerTest extends JbpmTestCase {
 		Package pkg = builder.getPackage();
 		RuleBase ruleBase = RuleBaseFactory.newRuleBase();
 		ruleBase.addPackage( pkg );
-		final StatefulSession session = ruleBase.newStatefulSession();
+		
+		SessionConfiguration conf = new SessionConfiguration();
+        conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );  
+        
+		final StatefulSession session = ruleBase.newStatefulSession(conf, null);
+        SessionPseudoClock clock = ( SessionPseudoClock) session.getSessionClock();
+        clock.advanceTime( 300,
+                           TimeUnit.MILLISECONDS ); 
+        
 		List<String> myList = new ArrayList<String>();
 		session.setGlobal("myList", myList);
 		
@@ -695,11 +710,10 @@ public class ProcessTimerTest extends JbpmTestCase {
 			}
         }).start();
 
-        ProcessInstance processInstance = ( ProcessInstance )
-        	session.startProcess("org.drools.timer");
+        ProcessInstance processInstance = ( ProcessInstance ) session.startProcess("org.drools.timer");
         assertEquals(0, myList.size());
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        assertEquals(2, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());
+        assertEquals(2, ((InternalProcessRuntime) ((InternalWorkingMemory) session).getProcessRuntime()).getTimerManager().getTimers().size());        
         
         final StatefulSession session2 = getSerialisedStatefulSession( session );
         myList = (List<String>) session2.getGlobal( "myList" );
@@ -712,16 +726,15 @@ public class ProcessTimerTest extends JbpmTestCase {
 		
         assertEquals(2, ((InternalProcessRuntime) ((InternalWorkingMemory) session2).getProcessRuntime()).getTimerManager().getTimers().size());
 
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            // do nothing
-        }
+        clock = ( SessionPseudoClock) session2.getSessionClock();
+        clock.advanceTime( 500,
+                           TimeUnit.MILLISECONDS );  
         assertEquals(1, myList.size());
         assertEquals("Executing timer2", myList.get(0));
         session2.halt();
         
         final StatefulSession session3 = getSerialisedStatefulSession( session2 );
+        session3.setGlobal("myList", myList);
         myList = (List<String>) session.getGlobal( "myList" );
         
 		new Thread(new Runnable() {
@@ -730,11 +743,9 @@ public class ProcessTimerTest extends JbpmTestCase {
 			}
         }).start();
 		
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            // do nothing
-        }
+        clock = ( SessionPseudoClock) session3.getSessionClock();
+        clock.advanceTime( 500,
+                           TimeUnit.MILLISECONDS ); 
         assertEquals(2, myList.size());
         
         session3.halt();
