@@ -459,7 +459,7 @@ public class SolverBenchmarkSuite {
         renderer.setBaseItemLabelGenerator(generator);
         renderer.setBaseItemLabelsVisible(true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "summary.png");
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "bestScoreSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
