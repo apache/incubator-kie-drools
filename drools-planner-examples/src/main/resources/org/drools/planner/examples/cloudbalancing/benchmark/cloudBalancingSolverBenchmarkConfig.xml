@@ -5,9 +5,12 @@
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/cloudbalancing/unsolved/unsolvedCloudBalance100-100.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/cloudbalancing/unsolved/unsolvedCloudBalance100-200.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/cloudbalancing/unsolved/unsolvedCloudBalance100-250.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0002comp-0006proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0003comp-0009proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0004comp-0012proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0100comp-0300proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0300comp-0900proc.xml</unsolvedSolutionFile>
 
     <solver>
       <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>

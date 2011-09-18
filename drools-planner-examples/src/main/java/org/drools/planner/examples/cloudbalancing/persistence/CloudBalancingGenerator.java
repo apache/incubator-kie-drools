@@ -57,31 +57,31 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private static final Price[] CPU_POWER_PRICES = { // in gigahertz
-            new Price(2, "single core 2ghz", 100),
             new Price(3, "single core 3ghz", 110),
             new Price(4, "dual core 2ghz", 140),
             new Price(6, "dual core 3ghz", 180),
             new Price(8, "quad core 2ghz", 270),
             new Price(12, "quad core 3ghz", 400),
             new Price(16, "quad core 4ghz", 1000),
+            new Price(24, "eight core 3ghz", 3000),
     };
     private static final Price[] MEMORY_PRICES = { // in gigabyte RAM
-            new Price(1, "1 gigabyte", 100),
             new Price(2, "2 gigabyte", 140),
             new Price(4, "4 gigabyte", 180),
             new Price(8, "8 gigabyte", 220),
             new Price(16, "16 gigabyte", 300),
             new Price(32, "32 gigabyte", 400),
-            new Price(64, "64 gigabyte", 500),
+            new Price(64, "64 gigabyte", 600),
+            new Price(96, "96 gigabyte", 1000),
     };
     private static final Price[] NETWORK_BANDWIDTH_PRICES = { // in gigabyte per hour
-            new Price(1, "1 gigabyte", 50),
             new Price(2, "2 gigabyte", 100),
             new Price(4, "4 gigabyte", 200),
             new Price(6, "6 gigabyte", 300),
             new Price(8, "8 gigabyte", 400),
             new Price(12, "12 gigabyte", 600),
             new Price(16, "16 gigabyte", 800),
+            new Price(20, "20 gigabyte", 1000),
     };
 
     private static final int MAXIMUM_MINIMAL_CPU_POWER = 12; // in gigahertz
@@ -103,13 +103,12 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     public void generate() {
-        writeCloudBalance(5, 7);
-        writeCloudBalance(6, 8);
-        writeCloudBalance(7, 10);
-        writeCloudBalance(10, 15);
-        writeCloudBalance(100, 100);
-        writeCloudBalance(100, 200);
-        writeCloudBalance(100, 250);
+        writeCloudBalance(2, 6);
+        writeCloudBalance(3, 9);
+        writeCloudBalance(4, 12);
+        writeCloudBalance(100, 300);
+        writeCloudBalance(200, 600);
+        writeCloudBalance(300, 900);
     }
 
     private void checkConfiguration() {
