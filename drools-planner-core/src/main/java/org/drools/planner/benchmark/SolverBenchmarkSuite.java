@@ -28,10 +28,13 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -72,12 +75,14 @@ import org.slf4j.LoggerFactory;
 @XStreamAlias("solverBenchmarkSuite")
 public class SolverBenchmarkSuite {
 
-    public static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+    private static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
+    private static final DateFormat TIMESTAMP_DIRECTORY_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 
     @XStreamOmitField
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private File benchmarkDirectory = null;
+    private File benchmarkInstanceDirectory = null;
     private File solvedSolutionFilesDirectory = null;
     private File solverStatisticFilesDirectory = null;
     @XStreamImplicit(itemFieldName = "solverStatisticType")
@@ -103,6 +108,14 @@ public class SolverBenchmarkSuite {
 
     public void setBenchmarkDirectory(File benchmarkDirectory) {
         this.benchmarkDirectory = benchmarkDirectory;
+    }
+
+    public File getBenchmarkInstanceDirectory() {
+        return benchmarkInstanceDirectory;
+    }
+
+    public void setBenchmarkInstanceDirectory(File benchmarkInstanceDirectory) {
+        this.benchmarkInstanceDirectory = benchmarkInstanceDirectory;
     }
 
     public File getSolvedSolutionFilesDirectory() {
@@ -219,11 +232,16 @@ public class SolverBenchmarkSuite {
         }
         benchmarkDirectory.mkdirs();
         if (solvedSolutionFilesDirectory == null) {
-            solvedSolutionFilesDirectory = new File(benchmarkDirectory, "solved");
+            String timestampDirectory = TIMESTAMP_DIRECTORY_FORMAT.format(new Date());
+            benchmarkInstanceDirectory = new File(benchmarkDirectory, timestampDirectory);
+        }
+        benchmarkInstanceDirectory.mkdirs();
+        if (solvedSolutionFilesDirectory == null) {
+            solvedSolutionFilesDirectory = new File(benchmarkInstanceDirectory, "solved");
         }
         solvedSolutionFilesDirectory.mkdirs();
         if (solverStatisticFilesDirectory == null) {
-            solverStatisticFilesDirectory = new File(benchmarkDirectory, "statistic");
+            solverStatisticFilesDirectory = new File(benchmarkInstanceDirectory, "statistic");
         }
         solverStatisticFilesDirectory.mkdirs();
         if (solverBenchmarkComparator == null) {
@@ -504,7 +522,7 @@ public class SolverBenchmarkSuite {
     }
 
     public void writeBenchmarkResult(XStream xStream) {
-        File benchmarkResultFile = new File(benchmarkDirectory, "benchmarkResult.xml");
+        File benchmarkResultFile = new File(benchmarkInstanceDirectory, "benchmarkResult.xml");
         OutputStreamWriter writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(benchmarkResultFile), "utf-8");
