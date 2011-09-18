@@ -989,7 +989,8 @@ public class CronExpression implements Serializable, Cloneable {
                 stopAt = CronTrigger.YEAR_TO_GIVEUP_SCHEDULING_AT;
             }
             if (startAt == -1 || startAt == ALL_SPEC_INT) {
-                startAt = 1970;
+                // needs to start at 1969 because timezones can make dates before 1970
+                startAt = 1969;
             }
         }
 

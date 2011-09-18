@@ -16,21 +16,16 @@
 
 package org.drools.time.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.ClockType;
 import org.drools.SessionConfiguration;
 import org.drools.time.TimerServiceFactory;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
+import org.junit.Test;
 
 
 public class CronJobTest {
