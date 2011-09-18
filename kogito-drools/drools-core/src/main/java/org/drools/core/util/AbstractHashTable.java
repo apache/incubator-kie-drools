@@ -126,9 +126,10 @@ public abstract class AbstractHashTable
             Entry next = null;
             while ( entry != null ) {
                 next = entry.getNext();
-
-                final int index = indexOf( entry.hashCode(),
+                
+                final int index = indexOf(  this.comparator.hashCodeOf( entry ),
                                            newTable.length );
+                
                 entry.setNext( newTable[index] );
                 newTable[index] = entry;
 
