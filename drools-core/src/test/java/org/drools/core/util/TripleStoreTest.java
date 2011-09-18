@@ -2,6 +2,9 @@ package org.drools.core.util;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 public class TripleStoreTest {
@@ -66,7 +69,43 @@ public class TripleStoreTest {
         
         tKey = new TripleImpl(ind, "hasName", null );
         assertNull( store.get( tKey ) );        
-    }     
+    }   
+    
+    @Test
+    public void testMassAddRemove() {
+        TripleStore store = new TripleStore( );
+        
+        int instanceLength = 1 * 1000 * 30;
+        int tripleLength = 70;
+        
+        Triple t = null;
+        List<Individual> inds = new ArrayList<Individual>(instanceLength);
+        for ( int i = 0; i < instanceLength; i++) {
+            Individual ind = new Individual();
+            inds.add( ind );
+            for (int j = 0; j < tripleLength; j++) {  
+                t = new TripleImpl(ind, getPropertyName(j), i*j);            
+                assertFalse( store.put( t ) );                
+            }
+        }
+        
+        assertEquals( instanceLength * tripleLength, store.size() );
+        
+        for ( int i = 0; i < instanceLength; i++) {
+            for (int j = 0; j < tripleLength; j++) {  
+                t = new TripleImpl(inds.get( i ),getPropertyName(j), null);            
+                assertTrue( store.remove( t ) );                
+            }
+        }        
+        
+        assertEquals( 0,  store.size()  );    
+    }
+    
+    public String getPropertyName(int i) {
+        char c1 = (char) (65+(i/3));
+        char c2 = (char) (97+(i/3));        
+        return c1 + "bl" + i + "" + c2 + "blah";
+    }
     
     public static class Individual {
         
