@@ -119,10 +119,22 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void writeCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
-        String outputFileName = "unsolvedCloudBalance" + cloudComputerListSize + "-" + cloudProcessListSize + ".xml";
-        File outputFile = new File(outputDir, outputFileName);
+        File outputFile = determineOutputFile(cloudComputerListSize, cloudProcessListSize);
         CloudBalance cloudBalance = createCloudBalance(cloudComputerListSize, cloudProcessListSize);
         solutionDao.writeSolution(cloudBalance, outputFile);
+    }
+
+    private File determineOutputFile(int cloudComputerListSize, int cloudProcessListSize) {
+        String cloudComputerListSizeString = Integer.toString(cloudComputerListSize);
+        if (cloudComputerListSizeString.length() < 4) {
+            cloudComputerListSizeString = "0000".substring(0, 4 - cloudComputerListSizeString.length()) + cloudComputerListSizeString;
+        }
+        String cloudProcessListSizeString = Integer.toString(cloudProcessListSize);
+        if (cloudProcessListSizeString.length() < 4) {
+            cloudProcessListSizeString = "0000".substring(0, 4 - cloudProcessListSizeString.length()) + cloudProcessListSizeString;
+        }
+        String outputFileName = "cb-" + cloudComputerListSizeString + "comp-" + cloudProcessListSizeString + "proc.xml";
+        return new File(outputDir, outputFileName);
     }
 
     private CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
