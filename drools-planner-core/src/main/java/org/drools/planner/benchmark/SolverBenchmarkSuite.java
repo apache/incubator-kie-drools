@@ -52,8 +52,11 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
+import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticListener;
+import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticPoint;
 import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
 import org.drools.planner.benchmark.statistic.memoryuse.MemoryUseStatistic;
 import org.drools.planner.config.termination.TerminationConfig;
@@ -63,12 +66,28 @@ import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
+import org.jfree.chart.urls.StandardCategoryURLGenerator;
+import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.TextAnchor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -405,9 +424,8 @@ public class SolverBenchmarkSuite {
         // 2 lines at 80 chars per line give a max of 160 per entry
         StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
-        htmlFragment.append("  <h2>Summary chart</h2>\n");
         htmlFragment.append(writeBestScoreSummaryChart());
-        htmlFragment.append("  <h2>Summary table</h2>\n");
+        htmlFragment.append(writeTimeSpendSummaryChart());
         htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistics</h1>\n");
         for (Map.Entry<File, List<SolverStatistic>> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
@@ -469,12 +487,57 @@ public class SolverBenchmarkSuite {
         } finally {
             IOUtils.closeQuietly(out);
         }
-        return "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+        return "  <h2>Best score summary chart</h2>\n"
+                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+    }
+
+    private CharSequence writeTimeSpendSummaryChart() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                long timeMillisSpend = result.getTimeMillisSpend();
+                String solverLabel = solverBenchmark.getName();
+                dataset.addValue(timeMillisSpend, solverLabel, result.getUnsolvedSolutionFile().getName());
+            }
+        }
+        CategoryAxis xAxis = new CategoryAxis("Data");
+        NumberAxis yAxis = new NumberAxis("Time millis spend");
+        yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
+        BarRenderer renderer = new BarRenderer();
+        ItemLabelPosition position1 = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
+        renderer.setBasePositiveItemLabelPosition(position1);
+        ItemLabelPosition position2 = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
+        renderer.setBaseNegativeItemLabelPosition(position2);
+        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator(
+                StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, new MillisecondsSpendNumberFormat()));
+        renderer.setBaseItemLabelsVisible(true);
+        renderer.setBaseToolTipGenerator(
+                new StandardCategoryToolTipGenerator());
+        CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis,
+                renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)", JFreeChart.DEFAULT_TITLE_FONT,
+                plot, true);
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "bestSpendSummary.png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartSummaryFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+        return "  <h2>Time spend summary chart</h2>\n"
+                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
     private CharSequence writeBestScoreSummaryTable() {
-
         StringBuilder htmlFragment = new StringBuilder(solverBenchmarkList.size() * 160);
+        htmlFragment.append("  <h2>Best score summary table</h2>\n");
         htmlFragment.append("  <table border=\"1\">\n");
         htmlFragment.append("    <tr><th/>");
         if (inheritedSolverBenchmark != null && inheritedSolverBenchmark.getUnsolvedSolutionFileList() != null) {
@@ -485,7 +548,7 @@ public class SolverBenchmarkSuite {
         htmlFragment.append("<th>Average</th><th>Ranking</th></tr>\n");
         boolean oddLine = true;
         for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            String backgroundColor = solverBenchmark.getRanking() == 0 ? "Yellow" : oddLine ? "White" : "Gray";
+            String backgroundColor = solverBenchmark.getRanking() == 0 ? "Yellow" : oddLine ? "White" : "LightGray";
             htmlFragment.append("    <tr style=\"background-color: ").append(backgroundColor).append("\"><th>")
                     .append(solverBenchmark.getName()).append("</th>");
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
