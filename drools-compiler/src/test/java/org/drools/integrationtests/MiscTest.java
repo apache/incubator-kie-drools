@@ -405,7 +405,8 @@ public class MiscTest {
             ksession_1.insert( object );
             org.drools.runtime.rule.FactHandle factHandle = ksession_1.getFactHandle( object );
             assertNotNull( factHandle );
-            assertEquals( object, ksession_1.getObject(factHandle) );
+            assertEquals( object,
+                          ksession_1.getObject( factHandle ) );
         }
         ksession_1.dispose();
     }
@@ -1269,21 +1270,27 @@ public class MiscTest {
             fail( builder.getErrors().toString() );
         }
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.setGlobal("list", new ArrayList<String>());
+        ksession.setGlobal( "list",
+                            new ArrayList<String>() );
 
-        FactType addressType = kbase.getFactType("org.drools", "Address");
+        FactType addressType = kbase.getFactType( "org.drools",
+                                                  "Address" );
         Object address = addressType.newInstance();
-        addressType.set(address, "Street", "5th Avenue");
+        addressType.set( address,
+                         "Street",
+                         "5th Avenue" );
 
-        ksession.insert(address);
+        ksession.insert( address );
 
         ksession.fireAllRules();
 
-        List list = (List)ksession.getGlobal( "list" );
-        assertEquals(1, list.size());
-        assertEquals("5th Avenue", list.get(0));
+        List list = (List) ksession.getGlobal( "list" );
+        assertEquals( 1,
+                      list.size() );
+        assertEquals( "5th Avenue",
+                      list.get( 0 ) );
 
         ksession.dispose();
     }
@@ -4652,15 +4659,6 @@ public class MiscTest {
 
         assertEquals( 1,
                       fired );
-    }
-
-    @Test
-    public void testAutomaticBindingsErrors() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_AutoBindingsErrors.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        assertNotNull( pkg.getErrorSummary() );
     }
 
     @Test
@@ -9103,7 +9101,7 @@ public class MiscTest {
     @Test
     public void testEventsInDifferentPackages() {
         String str = "package org.drools.test\n" +
-        		     "import org.drools.*\n" +
+                     "import org.drools.*\n" +
                      "declare StockTick\n" +
                      "    @role( event )\n" +
                      "end\n" +
@@ -9140,6 +9138,52 @@ public class MiscTest {
                       rules );
     }
 
+    public void testFreeFormExpressions() {
+        String str = "package org.drools\n" +
+                         "rule r1\n" +
+                         "when\n" +
+                         "    $p1 : Person( age > 2*10, 10 < age )\n" +
+                         "    $p2 : Person( age > 2*$p1.age )\n" +
+                         "then\n" +
+                         "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person bob = new Person( "bob",
+                                 30 );
+        Person mark = new Person( "mark",
+                                  61 );
+        ksession.insert( bob );
+        ksession.insert( mark );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                          rules );
+    }
+
+    @Test
+    public void testJBRULES_2995() {
+        String str = "package org.drools\n" +
+                     "rule r1\n" +
+                     "when\n" +
+                     "    Primitives( classAttr == (java.lang.String.class), \n" +
+                     "                eval(classAttr.equals( java.lang.String.class ) ),\n" +
+                     "                classAttr == String.class )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Primitives primitives = new Primitives();
+        primitives.setClassAttr( String.class );
+        ksession.insert( primitives );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+
     @Test
     public void testJBRULES2872() {
         String str = "package org.drools.test\n" +
@@ -9167,7 +9211,7 @@ public class MiscTest {
     @Test
     public void testModifyJava() {
         String str = "package org.drools\n" +
-        		     "import java.util.List\n" +
+                     "import java.util.List\n" +
                      "rule \"test\"\n" +
                      "when\n" +
                      "    $l : List() from collect ( Person( alive == false ) );\n" +
@@ -9206,7 +9250,7 @@ public class MiscTest {
         Assert.assertFalse( kbuilder.getErrors().toString(),
                             kbuilder.hasErrors() );
     }
-    
+
     @Test
     @Ignore("TODO unignore when fixing JBRULES-2749")
     public void testPackageNameOfTheBeast() throws Exception {

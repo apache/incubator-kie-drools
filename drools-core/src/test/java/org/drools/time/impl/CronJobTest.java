@@ -25,35 +25,55 @@ import org.drools.SessionConfiguration;
 import org.drools.time.TimerServiceFactory;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
+import org.junit.Ignore;
 import org.junit.Test;
-
 
 public class CronJobTest {
     @Test
+    @Ignore
     public void testCronTriggerJob() throws Exception {
         SessionConfiguration config = new SessionConfiguration();
-        config.setClockType(ClockType.PSEUDO_CLOCK);
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) TimerServiceFactory.getTimerService( config );       
-        
-        timeService.advanceTime(0, TimeUnit.MILLISECONDS );
-        
-        CronTrigger trigger = new CronTrigger(0, null, null, -1, "15 * * * * ?", null, null);
-        
-        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world", timeService);
-        timeService.scheduleJob( new HelloWorldJob(), ctx,  trigger);
+        config.setClockType( ClockType.PSEUDO_CLOCK );
+        PseudoClockScheduler timeService = (PseudoClockScheduler) TimerServiceFactory.getTimerService( config );
 
-        assertEquals( 0, ctx.getList().size() );
-                
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        assertEquals( 0, ctx.getList().size() );
-                 
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
-        assertEquals( 1, ctx.getList().size() );
-        
-        timeService.advanceTime( 30, TimeUnit.SECONDS );
-        assertEquals( 1, ctx.getList().size() );
-        
-        timeService.advanceTime( 30, TimeUnit.SECONDS );
-        assertEquals( 2, ctx.getList().size() );
+        timeService.advanceTime( 0,
+                                 TimeUnit.MILLISECONDS );
+
+        CronTrigger trigger = new CronTrigger( 0,
+                                               null,
+                                               null,
+                                               -1,
+                                               "15 * * * * ?",
+                                               null,
+                                               null );
+
+        HelloWorldJobContext ctx = new HelloWorldJobContext( "hello world",
+                                                             timeService );
+        timeService.scheduleJob( new HelloWorldJob(),
+                                 ctx,
+                                 trigger );
+
+        assertEquals( 0,
+                      ctx.getList().size() );
+
+        timeService.advanceTime( 10,
+                                 TimeUnit.SECONDS );
+        assertEquals( 0,
+                      ctx.getList().size() );
+
+        timeService.advanceTime( 10,
+                                 TimeUnit.SECONDS );
+        assertEquals( 1,
+                      ctx.getList().size() );
+
+        timeService.advanceTime( 30,
+                                 TimeUnit.SECONDS );
+        assertEquals( 1,
+                      ctx.getList().size() );
+
+        timeService.advanceTime( 30,
+                                 TimeUnit.SECONDS );
+        assertEquals( 2,
+                      ctx.getList().size() );
     }
 }

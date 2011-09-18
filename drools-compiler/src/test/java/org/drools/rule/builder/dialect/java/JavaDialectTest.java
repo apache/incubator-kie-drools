@@ -23,12 +23,14 @@ import org.drools.io.ResourceFactory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.ObjectTypeNode;
+import org.drools.rule.LiteralConstraint;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.CompiledInvoker;
+import org.drools.spi.FieldValue;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
 import org.junit.Test;
@@ -76,11 +78,9 @@ public class JavaDialectTest {
         assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
         
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
-        ReturnValueRestriction r = (ReturnValueRestriction) (( VariableConstraint ) alphanode.getConstraint()).getRestriction();
+        FieldValue fieldVal = (( LiteralConstraint ) alphanode.getConstraint()).getField();
         
-        assertTrue( r.getExpression() instanceof ReturnValueExpression );
-        assertTrue( r.getExpression() instanceof CompiledInvoker );
-        assertTrue( !(r.getExpression() instanceof MVELReturnValueExpression ) );        
+        assertEquals( "xxx", fieldVal.getValue() );
     }
     
 
