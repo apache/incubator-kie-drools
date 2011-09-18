@@ -62,7 +62,7 @@ public class TimerAndCalendarTest {
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );         
         
-        // build timer rule, if the rule is fired, the list size will increase every 300ms
+        // build timer rule, if the rule is fired, the list size will increase every 500ms
         String timerRule = "package org.drools.test\n" + 
                             "global java.util.List list \n" + 
                             "rule TimerRule \n" + 
@@ -102,7 +102,7 @@ public class TimerAndCalendarTest {
         ksession.setGlobal( "list", list );
         
         clock = ksession.getSessionClock();
-        clock.advanceTime( 800,
+        clock.advanceTime( 1000,
                            TimeUnit.MILLISECONDS ); 
         
         // if the rule is fired, the list size will greater than one.
