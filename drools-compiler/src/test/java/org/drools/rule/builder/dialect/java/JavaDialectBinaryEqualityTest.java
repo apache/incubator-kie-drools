@@ -20,6 +20,7 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.ResourceFactory;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.LiteralConstraint;
 import org.drools.rule.Pattern;
 import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
@@ -47,22 +48,19 @@ public class JavaDialectBinaryEqualityTest{
         
         // test return value
         Pattern p1 = ( Pattern ) rule1.getLhs().getChildren().get( 0 );
-        VariableConstraint rvc1 = ( VariableConstraint ) p1.getConstraints().get( 0 );        
-        ReturnValueExpression rve1 = ((ReturnValueRestriction) rvc1.getRestriction()).getExpression();
+        LiteralConstraint rvc1 = ( LiteralConstraint ) p1.getConstraints().get( 0 );        
         
         Pattern p2 = ( Pattern ) rule2.getLhs().getChildren().get( 0 );        
-        VariableConstraint rvc2 = ( VariableConstraint ) p2.getConstraints().get( 0 );        
-        ReturnValueExpression rve2 = ((ReturnValueRestriction) rvc2.getRestriction()).getExpression();        
+        LiteralConstraint rvc2 = ( LiteralConstraint ) p2.getConstraints().get( 0 );        
         
-        assertNotSame( rve1, rve2 );
-        assertEquals( rve1, rve2 );
+        assertNotSame( rvc1, rvc2 );
+        assertEquals( rvc1, rvc2 );
         
         Pattern p3 = ( Pattern ) rule3.getLhs().getChildren().get( 0 );
-        VariableConstraint rvc3 = ( VariableConstraint ) p3.getConstraints().get( 0 );        
-        ReturnValueExpression rve3 = ((ReturnValueRestriction) rvc3.getRestriction()).getExpression();
+        LiteralConstraint rvc3 = ( LiteralConstraint ) p3.getConstraints().get( 0 );        
         
-        assertNotSame( rve1, rve3 );
-        assertThat(rve1, not( equalTo( rve3 ) ) );
+        assertNotSame( rvc1, rvc3 );
+        assertThat(rvc1, not( equalTo( rvc3 ) ) );
         
         // test inline eval
         PredicateConstraint pc1 = ( PredicateConstraint )  p1.getConstraints().get( 1 );

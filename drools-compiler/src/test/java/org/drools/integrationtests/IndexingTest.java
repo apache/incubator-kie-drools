@@ -1,7 +1,8 @@
 package org.drools.integrationtests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
@@ -12,16 +13,12 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.Person;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
-import org.drools.base.mvel.MVELPredicateExpression;
-import org.drools.base.mvel.MVELReturnValueExpression;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.common.DoubleBetaConstraints;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.SingleBetaConstraints;
-import org.drools.common.TripleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.util.LeftTupleIndexHashTable;
 import org.drools.core.util.LeftTupleList;
@@ -32,18 +29,12 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.JoinNode;
 import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.PredicateConstraint;
-import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
-import org.drools.spi.BetaNodeFieldConstraint;
-import org.drools.spi.CompiledInvoker;
-import org.drools.spi.PredicateExpression;
-import org.drools.spi.ReturnValueExpression;
 import org.junit.Test;
 
 
