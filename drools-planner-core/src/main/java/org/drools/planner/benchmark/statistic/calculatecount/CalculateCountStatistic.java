@@ -34,6 +34,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
+import org.drools.planner.benchmark.statistic.SolverStatisticType;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.solver.DefaultSolver;
@@ -52,6 +53,10 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
     // key is the configName
     private Map<String, CalculateCountStatisticListener> statisticListenerMap
             = new LinkedHashMap<String, CalculateCountStatisticListener>();
+
+    public CalculateCountStatistic() {
+        super(SolverStatisticType.CALCULATE_COUNT_PER_SECOND);
+    }
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -72,13 +77,6 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
     // ************************************************************************
     // Write methods
     // ************************************************************************
-
-    public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
-        StringBuilder htmlFragment = new StringBuilder();
-        htmlFragment.append(writeCsvStatistic(solverStatisticFilesDirectory, baseName));
-        htmlFragment.append(writeGraphStatistic(solverStatisticFilesDirectory, baseName));
-        return htmlFragment;
-    }
 
     private List<CalculateCountScvLine> extractCsvLineList() {
         Map<Long, CalculateCountScvLine> timeToBestScoresLineMap = new HashMap<Long, CalculateCountScvLine>();
@@ -124,7 +122,7 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
 
     }
 
-    private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
         List<CalculateCountScvLine> csvLineList = extractCsvLineList();
         File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "CalculateCountStatistic.csv");
         Writer writer = null;
@@ -154,7 +152,7 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
     }
 
-    private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, CalculateCountStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();

@@ -34,6 +34,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
+import org.drools.planner.benchmark.statistic.SolverStatisticType;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
@@ -54,6 +55,10 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     private Map<String, BestScoreStatisticListener> bestScoreStatisticListenerMap
             = new LinkedHashMap<String, BestScoreStatisticListener>();
     private ScoreDefinition scoreDefinition = null;
+
+    public BestScoreStatistic() {
+        super(SolverStatisticType.BEST_SOLUTION_CHANGED);
+    }
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -82,13 +87,6 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     // ************************************************************************
     // Write methods
     // ************************************************************************
-
-    public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
-        StringBuilder htmlFragment = new StringBuilder();
-        htmlFragment.append(writeCsvStatistic(solverStatisticFilesDirectory, baseName));
-        htmlFragment.append(writeGraphStatistic(solverStatisticFilesDirectory, baseName));
-        return htmlFragment;
-    }
 
     private List<BestScoreScvLine> extractCsvLineList() {
         Map<Long, BestScoreScvLine> timeToBestScoresLineMap = new HashMap<Long, BestScoreScvLine>();
@@ -135,7 +133,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
 
     }
 
-    private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
         List<BestScoreScvLine> scvLineList = extractCsvLineList();
         File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "BestScoreStatistic.csv");
         Writer writer = null;
@@ -168,7 +166,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
     }
 
-    private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
         NumberAxis xAxis = new NumberAxis("Time millis spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");

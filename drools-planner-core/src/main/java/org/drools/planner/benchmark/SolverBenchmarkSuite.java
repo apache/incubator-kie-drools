@@ -54,11 +54,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
-import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatistic;
-import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticListener;
-import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticPoint;
-import org.drools.planner.benchmark.statistic.calculatecount.CalculateCountStatistic;
-import org.drools.planner.benchmark.statistic.memoryuse.MemoryUseStatistic;
+import org.drools.planner.benchmark.statistic.SolverStatisticType;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
@@ -68,7 +64,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
@@ -76,17 +71,9 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
-import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.chart.renderer.xy.XYStepRenderer;
-import org.jfree.chart.urls.StandardCategoryURLGenerator;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -433,9 +420,7 @@ public class SolverBenchmarkSuite {
             List<SolverStatistic> statisticList = entry.getValue();
             String baseName = FilenameUtils.getBaseName(unsolvedSolutionFile.getName());
             htmlFragment.append("  <h2>").append(baseName).append("</h2>\n");
-            Iterator<SolverStatisticType> typeIt = solverStatisticTypeList.iterator(); // hack
             for (SolverStatistic statistic : statisticList) {
-                htmlFragment.append("  <h3>").append(typeIt.next().toString()).append("</h3>\n");
                 htmlFragment.append(statistic.writeStatistic(solverStatisticFilesDirectory, baseName));
             }
         }
@@ -597,25 +582,6 @@ public class SolverBenchmarkSuite {
                     "Could not create benchmarkResultFile (" + benchmarkResultFile + ").", e);
         } finally {
             IOUtils.closeQuietly(writer);
-        }
-    }
-
-    public static enum SolverStatisticType {
-        BEST_SOLUTION_CHANGED,
-        CALCULATE_COUNT_PER_SECOND,
-        MEMORY_USE;
-
-        public SolverStatistic create() {
-            switch (this) {
-                case BEST_SOLUTION_CHANGED:
-                    return new BestScoreStatistic();
-                case CALCULATE_COUNT_PER_SECOND:
-                    return new CalculateCountStatistic();
-                case MEMORY_USE:
-                    return new MemoryUseStatistic();
-                default:
-                    throw new IllegalStateException("The solverStatisticType (" + this + ") is not implemented");
-            }
         }
     }
 

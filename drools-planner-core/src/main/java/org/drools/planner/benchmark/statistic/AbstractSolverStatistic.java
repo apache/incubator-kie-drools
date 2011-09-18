@@ -16,6 +16,26 @@
 
 package org.drools.planner.benchmark.statistic;
 
+import java.io.File;
+
 public abstract class AbstractSolverStatistic implements SolverStatistic {
+
+    protected SolverStatisticType solverStatisticType;
+
+    protected AbstractSolverStatistic(SolverStatisticType solverStatisticType) {
+        this.solverStatisticType = solverStatisticType;
+    }
+
+    public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
+        StringBuilder htmlFragment = new StringBuilder();
+        htmlFragment.append("  <h3>").append(solverStatisticType.toString()).append("</h3>\n");
+        htmlFragment.append(writeCsvStatistic(solverStatisticFilesDirectory, baseName));
+        htmlFragment.append(writeGraphStatistic(solverStatisticFilesDirectory, baseName));
+        return htmlFragment;
+    }
+
+    protected abstract CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName);
+
+    protected abstract CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName);
 
 }

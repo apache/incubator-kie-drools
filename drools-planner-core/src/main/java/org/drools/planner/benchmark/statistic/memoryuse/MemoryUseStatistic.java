@@ -34,6 +34,7 @@ import javax.imageio.ImageIO;
 import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.AbstractSolverStatistic;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
+import org.drools.planner.benchmark.statistic.SolverStatisticType;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.localsearch.LocalSearchSolverPhase;
 import org.drools.planner.core.solver.DefaultSolver;
@@ -52,6 +53,10 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
     // key is the configName
     private Map<String, MemoryUseStatisticListener> statisticListenerMap
             = new LinkedHashMap<String, MemoryUseStatisticListener>();
+
+    public MemoryUseStatistic() {
+        super(SolverStatisticType.MEMORY_USE);
+    }
 
     public void addListener(Solver solver, String configName) {
         if (configNameList.contains(configName)) {
@@ -72,13 +77,6 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
     // ************************************************************************
     // Write methods
     // ************************************************************************
-
-    public CharSequence writeStatistic(File solverStatisticFilesDirectory, String baseName) {
-        StringBuilder htmlFragment = new StringBuilder();
-        htmlFragment.append(writeCsvStatistic(solverStatisticFilesDirectory, baseName));
-        htmlFragment.append(writeGraphStatistic(solverStatisticFilesDirectory, baseName));
-        return htmlFragment;
-    }
 
     private List<MemoryUseScvLine> extractCsvLineList() {
         Map<Long, MemoryUseScvLine> timeToBestScoresLineMap = new HashMap<Long, MemoryUseScvLine>();
@@ -124,7 +122,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
 
     }
 
-    private CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName) {
         List<MemoryUseScvLine> csvLineList = extractCsvLineList();
         File csvStatisticFile = new File(solverStatisticFilesDirectory, baseName + "MemoryUseStatistic.csv");
         Writer writer = null;
@@ -158,7 +156,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         return "  <p><a href=\"" + csvStatisticFile.getName() + "\">CVS file</a></p>\n";
     }
 
-    private CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
+    protected CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         for (Map.Entry<String, MemoryUseStatisticListener> listenerEntry : statisticListenerMap.entrySet()) {
             String configName = listenerEntry.getKey();
