@@ -172,11 +172,11 @@ public class SingleSessionCommandService
 
         boolean transactionOwner = false;
         try {
+            initKsession( sessionId, kbase, conf );
+            
             transactionOwner = txm.begin();
             
-            registerRollbackSync();
-            
-            initKsession( sessionId, kbase, conf );
+            registerRollbackSync();            
             
             txm.commit(transactionOwner);
         }catch (RuntimeException re){
@@ -308,17 +308,20 @@ public class SingleSessionCommandService
     public synchronized <T> T execute(Command<T> command) {
         boolean transactionOwner = false;
         try {
-            transactionOwner = txm.begin();
-            
             initKsession( this.sessionInfo.getId(),
                           this.marshallingHelper.getKbase(),
                           this.marshallingHelper.getConf() );
+            
+            transactionOwner = txm.begin();            
             
             this.jpm.beginCommandScopedEntityManager();
 
             registerRollbackSync();
 
-            T result = commandService.execute((GenericCommand<T>) command);
+            T result = null;
+            if ( !( command instanceof DisposeCommand) ) {
+                result = commandService.execute((GenericCommand<T>) command);
+            }
 
             txm.commit(transactionOwner);
 
@@ -332,8 +335,9 @@ public class SingleSessionCommandService
             throw new RuntimeException("Wrapped exception see cause", t1);
         } finally {
             if ( command instanceof DisposeCommand ) {
+                commandService.execute((GenericCommand<T>) command);
                 this.jpm.dispose();
-            }
+            }            
         }
     }
 
@@ -402,6 +406,10 @@ public class SingleSessionCommandService
 
         }
 
+    }
+    
+    public StatefulKnowledgeSession getStatefulKnowledgeSession() {
+        return this.ksession;
     }
     
     public void addInterceptor(Interceptor interceptor) {
