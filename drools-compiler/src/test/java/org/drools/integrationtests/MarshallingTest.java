@@ -87,6 +87,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Consequence;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.KnowledgeHelper;
@@ -2829,6 +2830,84 @@ public class MarshallingTest {
         assertFalse(fired.isEmpty());
 
     }
+    
+    @Test
+    public void testMarshallEntryPoints() throws Exception {
+        String str =
+                "package org.domain.test \n" +
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                		"global java.util.List list\n" +
+                        "declare A\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "declare B\n" +
+                        "" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "" +
+                        "declare C\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "" +                        
+                        "rule a1\n" +
+                        "when\n" +
+                        "   $a : A() from entry-point 'a-ep'\n" +
+                        "then\n" +
+                        "list.add( $a );" +
+                        "end\n" +
+                        ""+
+                        "rule b1\n" +
+                        "when\n" +
+                        "   $b : B() from entry-point 'b-ep'\n" +
+                        "then\n" +
+                        "list.add( $b );" +
+                        "end\n" +  
+                        ""+
+                        "rule c1\n" +
+                        "when\n" +
+                        "   $c : C() from entry-point 'c-ep'\n" +
+                        "then\n" +
+                        "list.add( $c );" +
+                        "end\n";           
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        WorkingMemoryEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        
+        WorkingMemoryEntryPoint bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
+        bep.insert( new B() );
+        
+        WorkingMemoryEntryPoint cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
+        cep.insert( new C() );
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        MarshallerFactory.newMarshaller( knowledgeBase ).marshall( out,
+                                                                   ksession );
+
+        ksession = MarshallerFactory.newMarshaller( knowledgeBase ).unmarshall( new ByteArrayInputStream( out.toByteArray() ) );
+        ksession.setGlobal( "list", list );
+        
+        ksession.fireAllRules();
+        
+        assertEquals( 3,
+                      list.size() );
+    }    
     
     private void readWrite(KnowledgeBase knowledgeBase, StatefulKnowledgeSession ksession, KnowledgeSessionConfiguration config) {
         try {

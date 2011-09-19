@@ -44,6 +44,7 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.ObjectStore;
 import org.drools.common.RuleFlowGroupImpl;
@@ -66,6 +67,7 @@ import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
 import org.drools.spi.AgendaGroup;
@@ -127,7 +129,19 @@ public class OutputMarshaller {
         
         writeAgenda( context );        
         
-        writeFactHandles( context );
+        
+        writeInitialFactHandleRightTuples( context );
+        for ( WorkingMemoryEntryPoint wmep : wm.getEntryPoints().values() ) {
+            context.stream.writeShort( PersisterEnums.ENTRY_POINT );
+            context.stream.writeUTF( wmep.getEntryPointId() );
+            writeFactHandles( context, (( NamedEntryPoint )wmep).getObjectStore() );
+        }
+        context.stream.writeShort( PersisterEnums.END );
+        writeInitialFactHandleLeftTuples( context );
+        
+        writePropagationContexts( context );
+
+        writeActivations( context );        
 
 
         writeActionQueue( context );
@@ -284,12 +298,10 @@ public class OutputMarshaller {
         }
     }
 
-    public static void writeFactHandles(MarshallerWriteContext context) throws IOException {
+    public static void writeFactHandles(MarshallerWriteContext context, ObjectStore objectStore) throws IOException {
         ObjectOutputStream stream = context.stream;
         InternalWorkingMemory wm = context.wm;
         ObjectMarshallingStrategyStore objectMarshallingStrategyStore = context.objectMarshallingStrategyStore;
-
-        writeInitialFactHandleRightTuples( context );
 
         List<InternalFactHandle> matchFactHandles = null;
         
@@ -301,10 +313,10 @@ public class OutputMarshaller {
             }
         }
 
-        stream.writeInt( wm.getObjectStore().size() + ((matchFactHandles == null) ? 0 : matchFactHandles.size()) );
+        stream.writeInt( objectStore.size() + ((matchFactHandles == null) ? 0 : matchFactHandles.size()) );
 
         // Write out FactHandles
-        for ( InternalFactHandle handle : orderFacts( wm.getObjectStore() ) ) {
+        for ( InternalFactHandle handle : orderFacts( objectStore ) ) {
             //stream.writeShort( PersisterEnums.FACT_HANDLE );
             //InternalFactHandle handle = (InternalFactHandle) it.next();
             writeFactHandle( context,
@@ -330,11 +342,9 @@ public class OutputMarshaller {
             }
         }
 
-        writeInitialFactHandleLeftTuples( context );
-
         //writeLeftTuples( context );
         writeLeftTuples( context,
-                         orderFacts( wm.getObjectStore() ) );
+                         orderFacts( objectStore ) );
         
         if ( matchFactHandles != null ) {
             stream.writeBoolean( true );
@@ -343,10 +353,6 @@ public class OutputMarshaller {
         } else {
             stream.writeBoolean( false );
         }
-
-        writePropagationContexts( context );
-
-        writeActivations( context );
     }
 
     private static void writeFactHandle(MarshallerWriteContext context,
