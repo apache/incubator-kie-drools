@@ -15,6 +15,7 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
 import org.drools.io.Resource;
+import org.drools.io.impl.BaseResource;
 import org.drools.rule.Package;
 
 public class KnowledgeBuilderImpl implements KnowledgeBuilder {
@@ -25,7 +26,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     public void add(Resource resource, ResourceType type) {
-        pkgBuilder.addKnowledgeResource( resource, type, null )  ;
+        ResourceConfiguration resourceConfiguration;
+        if (resource instanceof BaseResource) {
+            resourceConfiguration = ((BaseResource) resource).getConfiguration();
+        } else {
+            resourceConfiguration = null;
+        }
+        pkgBuilder.addKnowledgeResource( resource, type, resourceConfiguration )  ;
     }
 
     public void add(Resource resource,
