@@ -75,6 +75,10 @@ public class Person {
         return this.alive;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public void setAlive(final boolean alive) {
         this.alive = alive;
     }
