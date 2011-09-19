@@ -439,25 +439,22 @@ public class InputMarshaller {
         InternalFactHandle handle = null;
         switch( type ) {
             case 0: {
+                
+                handle = new DefaultFactHandle( id,
+                                                object,
+                                                recency,
+                                                entryPoint );               
+                break;                
+
+            }
+            case 1: {
                 handle = new QueryElementFactHandle( object, 
                                                      id, 
                                                      recency );   
                 break; 
             }
-            case 1: {
- 
-                handle = new DefaultFactHandle( id,
-                                                object,
-                                                recency,
-                                                entryPoint );               
-                break;
-            }
             case 2: {
-                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );
-//                handle = new DefaultFactHandle( id,
-//                                                object,
-//                                                recency,
-//                                                entryPoint );               
+                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );               
                 break;
             }            
             default: {
