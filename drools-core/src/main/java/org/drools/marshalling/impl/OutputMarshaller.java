@@ -410,7 +410,7 @@ public class OutputMarshaller {
         writeFactHandle( context,
                          stream,
                          objectMarshallingStrategyStore,
-                         ( handle instanceof EventFactHandle ) ? 2 : 1,
+                         ( handle instanceof EventFactHandle ) ? 2 : 0,
                          handle );
 
     }
