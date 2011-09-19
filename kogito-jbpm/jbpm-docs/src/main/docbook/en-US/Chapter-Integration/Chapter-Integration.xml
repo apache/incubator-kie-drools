@@ -138,16 +138,68 @@ StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 </programlisting>      
     </section>
     
-    <!-- section>
+    <section>
       <title>Spring</title>
       
-    <para>A Spring XML configuration file can be used to define and configure knowledge bases
-    and sessions.  This allows you to simply access a session from your Spring application.</para>
+    <para>A Spring XML configuration file can be used to easily define and configure knowledge
+    bases and sessions in a Spring environment.  This allows you to simply access a session and
+    invoke processes from within your Spring application.</para>
     
     <para>For example, the following configuration file sets up a new session based on a
-    knowledge base with one process definition.  The session is configured to use persistence
-    (JPA using an in-memory database) and transaction (using the Spring transaction manager).
-    </para>
+    knowledge base with one process definition (loaded from the classpath).</para>
+    
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jbpm="http://drools.org/schema/drools-spring"       
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+                           http://drools.org/schema/drools-spring org/drools/container/spring/drools-spring-1.2.0.xsd&gt;
+   
+  &lt;jbpm:kbase id="kbase"&gt;
+    &lt;jbpm:resources&gt;
+      &lt;jbpm:resource type="BPMN2" source="classpath:HelloWorld.bpmn2"/&gt;
+    &lt;/jbpm:resources&gt;
+  &lt;/jbpm:kbase&gt;
+
+  &lt;jbpm:ksession id="ksession" type="stateful" kbase="kbase" /&gt;
+
+&lt;/beans&gt;
+    </programlisting>
+    
+    <para>The following piece of code can be used to load the above Spring configuration, retrieve
+    the session and start the process.</para>
+    
+    <programlisting>ClassPathXmlApplicationContext context = 
+    new ClassPathXmlApplicationContext("spring-conf.xml");
+StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) context.getBean("ksession");
+ksession.startProcess("com.sample.HelloWorld");
+    </programlisting>
+    
+    <para>Note that you can also inject the session in one of your domain objects, for example by adding
+    the following fragment in the configuration file.</para>
+    
+    <programlisting>&lt;bean id="myObject" class="org.jbpm.sample.MyObject"&gt;
+  &lt;property name="session" ref="ksession" /&gt;
+&lt;/bean&gt;
+    </programlisting>
+    
+    <para>As a result, the session will be injected in your domain object can then be accessed directly.
+    For example:</para>
+    
+    <programlisting>public class MyObject {
+  private StatefulKnowledgeSession ksession;
+  public void setSession(StatefulKnowledgeSession ksession) {
+    this.ksession = ksession;
+  }
+  public void doSomething() {
+    ksession.startProcess("com.sample.HelloWorld");
+  }
+}
+    </programlisting>
+    
+    <!--para>The following example shows a slightly more complex example, where the session is
+    configured to use persistence (JPA using an in-memory database) and transaction (using 
+    the Spring transaction manager).</para>
     
     <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;beans xmlns="http://www.springframework.org/schema/beans"
@@ -200,12 +252,8 @@ StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
   &lt;/bean&gt;
 
 &lt;/beans&gt;
-    </programlisting>
+    </programlisting-->
     
-    <para>Inside your code, you can then </para>
-    
-    // TODO can I create an entire session using spring config so the session is injected?
-    // TODO can I inject a workitemhandler that for example has access to an injected Spring bean?
-    </section-->
+    </section>
 
 </chapter>
