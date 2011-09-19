@@ -72,5 +72,7 @@ public class PersisterEnums {
     
     public static final short CRON_TRIGGER              = 70;
     public static final short INT_TRIGGER               = 71;
+    
+    public static final short ENTRY_POINT               = 90;
 
 }
