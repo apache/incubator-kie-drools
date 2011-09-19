@@ -130,7 +130,6 @@ public class StatelessKnowledgeSessionImpl
                                                                                       new KnowledgeBaseImpl( this.ruleBase ) );
 
             ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
-            wm.setKnowledgeRuntime( ksession );
             if (!initialized) {
             	// copy over the default generated listeners that are used for internal stuff once
             	for (org.drools.event.AgendaEventListener listener: wm.getAgendaEventSupport().getEventListeners()) {
@@ -294,6 +293,7 @@ public class StatelessKnowledgeSessionImpl
 
         ksession.insert( object );
         ksession.fireAllRules( );
+        ksession.dispose();
     }
 
     public void execute(Iterable objects) {
@@ -303,6 +303,7 @@ public class StatelessKnowledgeSessionImpl
             ksession.insert( object );
         }
         ksession.fireAllRules( );
+        ksession.dispose();
     }
     
     public Environment getEnvironment() {
