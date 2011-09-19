@@ -44,7 +44,9 @@ import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalRuleFlowGroup;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.NodeMemory;
+import org.drools.common.ObjectStore;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.QueryElementFactHandle;
 import org.drools.common.RuleFlowGroupImpl;
@@ -133,57 +135,13 @@ public class InputMarshaller {
         session.reset( handleId,
                        handleCounter,
                        propagationCounter );
-        DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
-        
-        if ( session.getTimerService() instanceof PseudoClockScheduler ) {            
-            PseudoClockScheduler clock = ( PseudoClockScheduler )  session.getTimerService();
-            clock.advanceTime( time, TimeUnit.MILLISECONDS );
-        }        
+        DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();            
 
         readAgenda( context,
-                    agenda );
+                    agenda );    
         
-        // RuleFlowGroups need to reference the session
-        for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
-            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
-        }
-
-        context.wm = session;
-        
-        context.handles.put( context.wm.getInitialFactHandle().getId(),  context.wm.getInitialFactHandle() );
-
-        readFactHandles( context );
-
-        readActionQueue( context );
-
-        readTruthMaintenanceSystem( context );
-
-        if ( context.marshalProcessInstances && processMarshaller != null) {
-            processMarshaller.readProcessInstances( context );
-        }
-
-        if ( context.marshalWorkItems  && processMarshaller != null) {
-            processMarshaller.readWorkItems( context );
-        }
-
-        if (processMarshaller != null) {
-            // This actually does ALL timers, due to backwards compatability issues
-            // It will read in old JBPM binaries, but always write to the new binary format.
-            processMarshaller.readProcessTimers( context );
-        } else {
-            // no legacy jBPM timers, so handle locally
-            int token;
-            while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
-                InputMarshaller.readTimer( context ); 
-            }             
-        }
-        
-        if( multithread ) {
-            session.startPartitionManagers();
-        }
-
-        return session;
-    }
+        return readSession( session, agenda, time, multithread, context);
+    }    
 
     /**
      * Create a new session into which to read the stream data
@@ -242,50 +200,89 @@ public class InputMarshaller {
         
         initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
         
-        if ( session.getTimerService() instanceof PseudoClockScheduler ) {            
-            PseudoClockScheduler clock = ( PseudoClockScheduler )  session.getTimerService();
-            clock.advanceTime( time, TimeUnit.MILLISECONDS );
-        }
-
-        // RuleFlowGroups need to reference the session
-        for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
-            ((RuleFlowGroupImpl) group).setWorkingMemory( session );
-        }
-        context.wm = session;
-
-        readFactHandles( context );
-
-        readActionQueue( context );
-
-        readTruthMaintenanceSystem( context );
-                
-        if ( context.marshalProcessInstances && processMarshaller != null ) {
-            processMarshaller.readProcessInstances( context );
-        }
-
-        if ( context.marshalWorkItems  && processMarshaller != null ) {
-            processMarshaller.readWorkItems( context );
-        }
-        
-        if (processMarshaller != null) {
-            // This actually does ALL timers, due to backwards compatability issues
-            // It will read in old JBPM binaries, but always write to the new binary format.
-            processMarshaller.readProcessTimers( context );
-        } else {
-            // no legacy jBPM timers, so handle locally
-            int token;
-            while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
-                InputMarshaller.readTimer( context ); 
-            }             
-        }        
-
-        if( multithread ) {
-            session.startPartitionManagers();
-        }
-
-        return session;
+        return readSession( session, agenda, time, multithread, context);
     }
 
+    public static ReteooStatefulSession readSession (ReteooStatefulSession session, 
+                                                     DefaultAgenda agenda, 
+                                                     long time, 
+                                                     boolean multithread,
+                                                     MarshallerReaderContext context) throws IOException, ClassNotFoundException {
+               if ( session.getTimerService() instanceof PseudoClockScheduler ) {            
+                   PseudoClockScheduler clock = ( PseudoClockScheduler )  session.getTimerService();
+                   clock.advanceTime( time, TimeUnit.MILLISECONDS );
+               }           
+               
+               // RuleFlowGroups need to reference the session
+               for ( RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values() ) {
+                   ((RuleFlowGroupImpl) group).setWorkingMemory( session );
+               }
+
+               context.wm = session;
+               
+               context.handles.put( context.wm.getInitialFactHandle().getId(),  context.wm.getInitialFactHandle() );
+
+               int token;
+               
+               if ( context.stream.readBoolean() ) {
+                   InternalFactHandle initialFactHandle = context.wm.getInitialFactHandle();
+                   int sinkId = context.stream.readInt();
+                   ObjectTypeNode initialFactNode = (ObjectTypeNode) context.sinks.get( sinkId );
+                   ObjectHashSet initialFactMemory = (ObjectHashSet) context.wm.getNodeMemory( initialFactNode );
+
+                   initialFactMemory.add( initialFactHandle );
+                   readRightTuples( initialFactHandle,
+                                    context );
+               }           
+               while ((token = context.readShort()) == PersisterEnums.ENTRY_POINT) {
+                   String entryPointId = context.stream.readUTF();
+                   WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( entryPointId );
+                   readFactHandles( context,  (( NamedEntryPoint )wmep).getObjectStore() ); 
+               }
+               InternalFactHandle handle = context.wm.getInitialFactHandle();
+               while ( context.stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
+                   LeftTupleSink sink = (LeftTupleSink) context.sinks.get( context.stream.readInt() );
+                   LeftTuple leftTuple = sink.createLeftTuple( handle,
+                                                               sink,
+                                                               true );
+                   readLeftTuple( leftTuple,
+                                  context );
+               }               
+               
+               readPropagationContexts( context );
+
+               readActivations( context ); 
+
+               readActionQueue( context );
+
+               readTruthMaintenanceSystem( context );
+
+               if ( context.marshalProcessInstances && processMarshaller != null) {
+                   processMarshaller.readProcessInstances( context );
+               }
+
+               if ( context.marshalWorkItems  && processMarshaller != null) {
+                   processMarshaller.readWorkItems( context );
+               }
+
+               if (processMarshaller != null) {
+                   // This actually does ALL timers, due to backwards compatability issues
+                   // It will read in old JBPM binaries, but always write to the new binary format.
+                   processMarshaller.readProcessTimers( context );
+               } else {
+                   // no legacy jBPM timers, so handle locally
+                   while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
+                       InputMarshaller.readTimer( context ); 
+                   }             
+               }
+               
+               if( multithread ) {
+                   session.startPartitionManagers();
+               }
+
+               return session;        
+           }    
+    
     public static void readAgenda(MarshallerReaderContext context,
                                   DefaultAgenda agenda) throws IOException {
         ObjectInputStream stream = context.stream;
@@ -361,23 +358,13 @@ public class InputMarshaller {
         }
     }
 
-    public static void readFactHandles(MarshallerReaderContext context) throws IOException,
+    public static void readFactHandles(MarshallerReaderContext context,
+                                       ObjectStore objectStore) throws IOException,
                                                                        ClassNotFoundException {
         ObjectInputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
-
-        if ( stream.readBoolean() ) {
-            InternalFactHandle initialFactHandle = wm.getInitialFactHandle();
-            int sinkId = stream.readInt();
-            ObjectTypeNode initialFactNode = (ObjectTypeNode) context.sinks.get( sinkId );
-            ObjectHashSet initialFactMemory = (ObjectHashSet) context.wm.getNodeMemory( initialFactNode );
-
-            initialFactMemory.add( initialFactHandle );
-            readRightTuples( initialFactHandle,
-                             context );
-        }
-
+        
         int size = stream.readInt();
 
         // load the handles
@@ -390,33 +377,19 @@ public class InputMarshaller {
             handles[i] = handle;
 
             if ( handle.getObject() != null ) {
-                context.wm.getObjectStore().addHandle( handle,
-                                                       handle.getObject() );
+                objectStore.addHandle( handle,
+                                       handle.getObject() );
             }
 
             readRightTuples( handle,
                              context );
         }
 
-        InternalFactHandle handle = wm.getInitialFactHandle();
-        while ( stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
-            LeftTupleSink sink = (LeftTupleSink) context.sinks.get( stream.readInt() );
-            LeftTuple leftTuple = sink.createLeftTuple( handle,
-                                                        sink,
-                                                        true );
-            readLeftTuple( leftTuple,
-                           context );
-        }
-
         readLeftTuples( context ); // object store
         
         if ( stream.readBoolean() ) {
             readLeftTuples( context ); // activation fact handles
-        }
- 
-        readPropagationContexts( context );
-
-        readActivations( context );        
+        }       
 
         // add handles to object type nodes
         for ( InternalFactHandle factHandle : handles ) {
