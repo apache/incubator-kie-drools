@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.agent.KnowledgeAgent;
+import org.drools.agent.KnowledgeAgentFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +50,7 @@ public class ChangeSetTest {
     }
     
     @Test
-    public void testIntegregation() {
+    public void testIntegration() {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( "changeset1Test.xml", getClass()), ResourceType.CHANGE_SET );
         assertFalse( kbuilder.hasErrors() );
@@ -77,4 +79,26 @@ public class ChangeSetTest {
         assertEquals( "rule2",
                       list.get( 2 ) );
     }
+
+    @Test
+    public void testCSV() {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newClassPathResource( "changeSetTestCSV.xml", getClass()), ResourceType.CHANGE_SET );
+        assertFalse( kbuilder.hasErrors() );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        assertEquals(1, kbase.getKnowledgePackages().size());
+        assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
+    }
+
+    @Test
+    public void testCSVByKnowledgeAgent() {
+        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
+        kagent.applyChangeSet(ResourceFactory.newClassPathResource("changeSetTestCSV.xml", getClass()));
+        KnowledgeBase kbase = kagent.getKnowledgeBase();
+        
+        assertEquals(1, kbase.getKnowledgePackages().size());
+        assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
+    }
+
 }
