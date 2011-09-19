@@ -2738,7 +2738,6 @@ public class MarshallingTest {
     }    
 
     @Test
-    @Ignore
     public void testMarshallEvents() throws Exception {
         String str =
                 "import " + getClass().getCanonicalName() + ".*\n" +

@@ -35,7 +35,9 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.ActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
@@ -355,6 +357,13 @@ public class OutputMarshaller {
         stream.writeInt( type );
         stream.writeInt( handle.getId() );
         stream.writeLong( handle.getRecency() );
+        
+        if ( type == 2) {
+            // is event
+            EventFactHandle efh = ( EventFactHandle ) handle;
+            stream.writeLong( efh.getStartTimestamp() );
+            stream.writeLong( efh.getDuration() );
+        }
 
         //context.out.println( "Object : int:" + handle.getId() + " long:" + handle.getRecency() );
         //context.out.println( handle.getObject() );
@@ -395,7 +404,7 @@ public class OutputMarshaller {
         writeFactHandle( context,
                          stream,
                          objectMarshallingStrategyStore,
-                         0,
+                         ( handle instanceof EventFactHandle ) ? 2 : 1,
                          handle );
 
     }
@@ -720,11 +729,12 @@ public class OutputMarshaller {
                     for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                         stream.writeShort( PersisterEnums.LEFT_TUPLE );
                         stream.writeInt( childLeftTuple.getLeftTupleSink().getId() );
+                        InternalFactHandle factHandle = childLeftTuple.getLastHandle();
                         writeFactHandle( context,
                                          stream,
                                          context.objectMarshallingStrategyStore,
                                          1,
-                                         childLeftTuple.getLastHandle() );
+                                         factHandle );
                         writeLeftTuple( childLeftTuple,
                                         context,
                                         recurse );
