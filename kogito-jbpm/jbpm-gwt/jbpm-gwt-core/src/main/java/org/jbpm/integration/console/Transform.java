@@ -59,7 +59,7 @@ public class Transform {
 		return new TaskRef(
 			task.getId(),
 			Long.toString(task.getProcessInstanceId()),
-			"",
+			task.getProcessId() == null ? "" : task.getProcessId(),
 			task.getName(),
 			task.getActualOwner() == null ? null : task.getActualOwner().getId(),
 			false,
@@ -76,7 +76,7 @@ public class Transform {
 		return new TaskRef(
 			task.getId(),
 			Long.toString(task.getTaskData().getProcessInstanceId()),
-			"",
+			task.getTaskData().getProcessId() == null ? "" : task.getTaskData().getProcessId(),
 			name,
 			task.getTaskData().getActualOwner() == null ? null : task.getTaskData().getActualOwner().getId(),
 			false,

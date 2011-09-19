@@ -15,7 +15,7 @@
  */
 package org.jbpm.process.workitem.wsht;
 
-import org.drools.SystemEventListenerFactory;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
@@ -24,11 +24,8 @@ import org.jbpm.eventmessaging.Payload;
 import org.jbpm.task.*;
 import org.jbpm.task.event.*;
 import org.jbpm.task.service.ContentData;
-import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskClientHandler.GetContentResponseHandler;
 import org.jbpm.task.service.TaskClientHandler.GetTaskResponseHandler;
-import org.jbpm.task.service.mina.MinaTaskClientConnector;
-import org.jbpm.task.service.mina.MinaTaskClientHandler;
 import org.jbpm.task.service.responsehandlers.AbstractBaseResponseHandler;
 
 import java.io.*;
@@ -43,12 +40,18 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
     private int port = 9123;
     private AsyncTaskService client;
     private WorkItemManager manager = null;
+    private KnowledgeRuntime session;
 
     public AsyncWSHumanTaskHandler() {
     }
 
     public AsyncWSHumanTaskHandler(AsyncTaskService client) {
         this.client = client;
+    }
+    
+    public AsyncWSHumanTaskHandler(AsyncTaskService client, KnowledgeRuntime session) {
+        this.client = client;
+        this.session = session;
     }
 
     public void setConnection(String ipAddress, int port) {
@@ -123,6 +126,9 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
         TaskData taskData = new TaskData();
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
+        if(session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
+			taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
+		}
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
         Long parentId = (Long) workItem.getParameter("ParentId");
@@ -281,7 +287,8 @@ public class AsyncWSHumanTaskHandler implements WorkItemHandler {
                 in.close();
                 results.put("Result", result);
                 if (result instanceof Map) {
-                    Map<?, ?> map = (Map) result;
+                    @SuppressWarnings("rawtypes")
+					Map<?, ?> map = (Map) result;
                     for (Map.Entry<?, ?> entry : map.entrySet()) {
                         if (entry.getKey() instanceof String) {
                             results.put((String) entry.getKey(), entry.getValue());

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
@@ -60,6 +61,8 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     private int port = 9123;
     private TaskService client;
     private WorkItemManager manager = null;
+    private KnowledgeRuntime session;
+    
     private static final Logger logger = LoggerFactory.getLogger(SyncWSHumanTaskHandler.class);
 	private boolean initialized = false;
     
@@ -68,6 +71,11 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 
     public SyncWSHumanTaskHandler(TaskService client) {
         this.client = client;
+    }
+    
+    public SyncWSHumanTaskHandler(TaskService client, KnowledgeRuntime session) {
+        this.client = client;
+        this.session = session;
     }
 
     public void setConnection(String ipAddress, int port) {
@@ -149,6 +157,9 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         TaskData taskData = new TaskData();
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
+        if(session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
+			taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
+		}
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
         Long parentId = (Long) workItem.getParameter("ParentId");

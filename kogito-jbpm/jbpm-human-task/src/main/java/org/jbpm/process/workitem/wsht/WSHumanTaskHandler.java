@@ -17,6 +17,7 @@
 package org.jbpm.process.workitem.wsht;
 
 import org.drools.SystemEventListenerFactory;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
@@ -45,6 +46,15 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 	private TaskClient client;
 	private WorkItemManager manager = null;
 	private boolean initialized = false;
+	private KnowledgeRuntime session;
+	
+	public WSHumanTaskHandler() { 
+		
+	}
+	
+	public WSHumanTaskHandler(KnowledgeRuntime session) {
+		this.session = session;
+	}
 
 	public void setConnection(String ipAddress, int port) {
 		this.ipAddress = ipAddress;
@@ -120,6 +130,9 @@ public class WSHumanTaskHandler implements WorkItemHandler {
 		TaskData taskData = new TaskData();
 		taskData.setWorkItemId(workItem.getId());
 		taskData.setProcessInstanceId(workItem.getProcessInstanceId());
+		if(session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
+			taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
+		}
 		taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
         Long parentId = (Long) workItem.getParameter("ParentId");

@@ -19,7 +19,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy    
@@ -66,7 +67,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy
@@ -113,7 +115,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t
     left join t.taskData.createdBy
@@ -163,7 +166,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy 
@@ -214,7 +218,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy 
@@ -265,7 +270,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy 
@@ -317,7 +323,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t
     left join t.subjects as subject
@@ -365,7 +372,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy
@@ -412,7 +420,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy
@@ -459,7 +468,8 @@ select
      t.taskData.createdBy,
      t.taskData.createdOn,
      t.taskData.activationTime,
-     t.taskData.expirationTime)
+     t.taskData.expirationTime,
+     t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy
@@ -506,7 +516,8 @@ select
     t.taskData.createdBy,
     t.taskData.createdOn,
     t.taskData.activationTime,
-    t.taskData.expirationTime)
+    t.taskData.expirationTime,
+    t.taskData.processId)
 from
     Task t 
     left join t.taskData.createdBy

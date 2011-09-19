@@ -78,6 +78,8 @@ public class TaskData
     private long faultContentId = -1;
 
     private long parentId = -1;
+    
+    private String processId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
@@ -229,6 +231,13 @@ public class TaskData
         } else {
             out.writeBoolean(false);
         }
+        
+        if (processId != null) {
+            out.writeBoolean(true);
+            out.writeUTF(processId);
+        } else {
+            out.writeBoolean(false);
+        }
 
         CollectionUtils.writeCommentList(comments,
                 out);
@@ -320,6 +329,10 @@ public class TaskData
 
         if (in.readBoolean()) {
             parentId = in.readLong();
+        }
+        
+        if (in.readBoolean()) {
+            processId = in.readUTF();
         }
         comments = CollectionUtils.readCommentList(in);
         attachments = CollectionUtils.readAttachmentList(in);
@@ -481,8 +494,16 @@ public class TaskData
     public long getProcessInstanceId() {
     	return processInstanceId;
     }
+    
+    public String getProcessId() {
+		return processId;
+	}
 
-    /**
+	public void setProcessId(String processId) {
+		this.processId = processId;
+	}
+
+	/**
      * Sets the document content data for this task data. It will set the <field>documentContentId</field> from the specified
      * documentID, <field>documentAccessType</field>, <field>documentType</field> from the specified
      * documentConentData.
