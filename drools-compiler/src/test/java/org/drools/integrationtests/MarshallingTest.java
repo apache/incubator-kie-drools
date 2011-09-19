@@ -2781,7 +2781,7 @@ public class MarshallingTest {
                       ksession.getObjects().size() );
     }
     
-    @Test @Ignore
+    @Test
     public void testScheduledActivation() {
         KnowledgeBaseImpl knowledgeBase = (KnowledgeBaseImpl) KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackageImp impl = new KnowledgePackageImp();
