@@ -170,10 +170,10 @@ public class SingleSessionCommandService
         
         initTransactionManager( this.env );
 
+        initKsession( sessionId, kbase, conf );
+        
         boolean transactionOwner = false;
         try {
-            initKsession( sessionId, kbase, conf );
-            
             transactionOwner = txm.begin();
             
             registerRollbackSync();            
