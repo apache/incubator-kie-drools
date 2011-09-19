@@ -35,6 +35,7 @@ import org.drools.common.BinaryHeapQueueAgendaGroup;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
 import org.drools.common.InternalFactHandle;
@@ -438,6 +439,13 @@ public class InputMarshaller {
         int type = context.stream.readInt();
         int id = context.stream.readInt();        
         long recency = context.stream.readLong();
+        
+        long startTimeStamp = 0;
+        long duration = 0;
+        if ( type == 2 ) {
+            startTimeStamp = context.stream.readLong();
+            duration = context.stream.readLong();
+        }
 
         int strategyIndex = context.stream.readInt();
         Object object;
@@ -458,18 +466,27 @@ public class InputMarshaller {
         InternalFactHandle handle = null;
         switch( type ) {
             case 0: {
+                handle = new QueryElementFactHandle( object, 
+                                                     id, 
+                                                     recency );   
+                break; 
+            }
+            case 1: {
+ 
                 handle = new DefaultFactHandle( id,
                                                 object,
                                                 recency,
-                                                entryPoint );
+                                                entryPoint );               
                 break;
             }
-            case 1: {
-                handle = new QueryElementFactHandle( object, 
-                                                     id, 
-                                                     recency );                
+            case 2: {
+                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );
+//                handle = new DefaultFactHandle( id,
+//                                                object,
+//                                                recency,
+//                                                entryPoint );               
                 break;
-            }
+            }            
             default: {
                 throw new IllegalStateException( "Unable to marshal FactHandle, as type does not exist:" + type);
             }
