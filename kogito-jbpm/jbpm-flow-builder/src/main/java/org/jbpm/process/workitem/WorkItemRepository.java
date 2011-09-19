@@ -25,6 +25,10 @@ public class WorkItemRepository {
 				workDefinition.setDisplayName((String) workDefinitionMap.get("displayName"));
 				workDefinition.setIcon((String) workDefinitionMap.get("icon"));
 				workDefinition.setCustomEditor((String) workDefinitionMap.get("customEditor"));
+				workDefinition.setCategory((String) workDefinitionMap.get("category"));
+				workDefinition.setPath((String) workDefinitionMap.get("path"));
+				workDefinition.setFile((String) workDefinitionMap.get("file"));
+				workDefinition.setDocumentation((String) workDefinitionMap.get("documentation"));
 				Set<ParameterDefinition> parameters = new HashSet<ParameterDefinition>();
 				Map<String, DataType> parameterMap = (Map<String, DataType>) workDefinitionMap.get("parameters");
 				if (parameterMap != null) {
@@ -57,7 +61,7 @@ public class WorkItemRepository {
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
-			workDefinitions.addAll(getWorkDefinitionsMap(directory + "/" + s + "/" + s + ".conf"));
+			workDefinitions.addAll(getWorkDefinitionsMap(directory, s));
 		}
 		return workDefinitions;
 	}
@@ -71,14 +75,20 @@ public class WorkItemRepository {
 		return content.split(System.getProperty("line.separator"));
 	}
 
-	private static List<Map<String, Object>> getWorkDefinitionsMap(String path) {
+	private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
+		String path = parentPath + "/" + file + "/" + file + ".wid";
 		String content = ConfFileUtils.URLContentsToString(
 			ConfFileUtils.getURL(path, null, null));
 		if (content == null) {
 			return new ArrayList<Map<String, Object>>();
 		}
 		try {
-			return (List<Map<String, Object>>) MVEL.eval(content, new HashMap());
+			List<Map<String, Object>> result = (List<Map<String, Object>>) MVEL.eval(content, new HashMap());
+			for (Map<String, Object> wid: result) {
+				wid.put("path", parentPath + "/" + file);
+				wid.put("file", file + ".wid");
+			}
+			return result;
 		} catch (Throwable t) {
 			System.err.println("Error occured while loading work definitions " + path);
 			t.printStackTrace();
