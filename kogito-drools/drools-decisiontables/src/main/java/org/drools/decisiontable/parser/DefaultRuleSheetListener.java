@@ -71,6 +71,7 @@ implements RuleSheetListener {
     public static final String            FUNCTIONS_TAG          = "Functions";
     public static final String            IMPORT_TAG             = "Import";
     public static final String            SEQUENTIAL_FLAG        = "Sequential";
+    public static final String            ESCAPE_QUOTES_FLAG     = "EscapeQuotes";
     public static final String            VARIABLES_TAG          = "Variables";
     public static final String            RULE_TABLE_TAG         = "ruletable";
     public static final String            RULESET_TAG            = "RuleSet";
@@ -80,14 +81,15 @@ implements RuleSheetListener {
     private static final int              LABEL_ROW              = 4;
 
     //state machine variables for this parser
-    private boolean                       _isInRuleTable         = false;
+    private boolean                       _isInRuleTable           = false;
     private int                           _ruleRow;
     private int                           _ruleStartColumn;
     private int                           _ruleStartRow;
     private Rule                          _currentRule;
     private String                        _currentRulePrefix;
-    private boolean                       _currentSequentialFlag = false;                        // indicates that we are in sequential mode
-
+    private boolean                       _currentSequentialFlag   = false;                       // indicates that we are in sequential mode
+    private boolean                       _currentEscapeQuotesFlag = true;                        // indicates that we are escaping quotes
+    
     //accumulated output
     private Map<Integer, ActionType>       _actions;
     private final HashMap<Integer, String> _cellComments          = new HashMap<Integer, String>();
@@ -327,6 +329,7 @@ implements RuleSheetListener {
         // important !)
         this._currentRulePrefix = RuleSheetParserUtil.getRuleName( value );
         this._currentSequentialFlag = getSequentialFlag();
+        this._currentEscapeQuotesFlag = getEscapeQuotesFlag();
 
         String headCell = RuleSheetParserUtil.rc2name( this._ruleStartRow, this._ruleStartColumn );
         String ruleCell = RuleSheetParserUtil.rc2name( this._ruleRow, this._ruleStartColumn );
@@ -362,6 +365,11 @@ implements RuleSheetListener {
     private boolean getSequentialFlag() {
         final String seqFlag = getProperties().getSingleProperty( SEQUENTIAL_FLAG, "false" );
         return RuleSheetParserUtil.isStringMeaningTrue( seqFlag );
+    }
+    
+    private boolean getEscapeQuotesFlag() {
+        final String escFlag = getProperties().getSingleProperty( ESCAPE_QUOTES_FLAG, "true" );
+        return RuleSheetParserUtil.isStringMeaningTrue( escFlag );
     }
 
     private void finishRuleTable() {
@@ -558,7 +566,7 @@ implements RuleSheetListener {
         case CONDITION:
         case ACTION:
         case METADATA:
-            actionType.addCellValue( row, column, value );
+            actionType.addCellValue( row, column, value, _currentEscapeQuotesFlag );
             break;
         case SALIENCE:
             // Only if rule set is not sequential!
