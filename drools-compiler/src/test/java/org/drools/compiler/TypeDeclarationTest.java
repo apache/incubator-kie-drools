@@ -15,7 +15,7 @@ public class TypeDeclarationTest {
     public void testClassNameClashing() {
         String str = "";
         str += "package org.drools \n" +
-        		"declare Character \n" +
+        		"declare org.drools.Character \n" +
         		"    name : String \n" +
         		"end \n";
 

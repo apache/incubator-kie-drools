@@ -78,29 +78,11 @@ import org.drools.io.impl.ClassPathResource;
 import org.drools.io.impl.DescrResource;
 import org.drools.io.impl.ReaderResource;
 import org.drools.io.internal.InternalResource;
-import org.drools.lang.descr.AnnotationDescr;
-import org.drools.lang.descr.AttributeDescr;
-import org.drools.lang.descr.BaseDescr;
-import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FieldTemplateDescr;
-import org.drools.lang.descr.FunctionDescr;
-import org.drools.lang.descr.FunctionImportDescr;
-import org.drools.lang.descr.GlobalDescr;
-import org.drools.lang.descr.ImportDescr;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.RuleDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.descr.*;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
-import org.drools.rule.Function;
-import org.drools.rule.ImportDeclaration;
-import org.drools.rule.JavaDialectRuntimeData;
-import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.*;
 import org.drools.rule.Package;
 import org.drools.rule.builder.RuleBuildContext;
@@ -1523,7 +1505,24 @@ public class PackageBuilder {
                 }
             }
 
-
+            if ( isEmpty( typeDescr.getNamespace() ) && typeDescr.getFields().isEmpty() ) {
+                // might be referencing a class imported with a package import (.*)
+                PackageRegistry pkgReg = this.pkgRegistryMap.get( packageDescr.getName() );
+                if( pkgReg != null ) {
+                    try {
+                        Class<?> clz = pkgReg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                        java.lang.Package pkg = clz.getPackage();
+                        if( pkg != null ) {
+                            typeDescr.setNamespace( pkg.getName() );
+                            int index = typeDescr.getNamespace() != null && typeDescr.getNamespace().length() > 0 ? typeDescr.getNamespace().length()+1 : 0;
+                            typeDescr.setTypeName( clz.getCanonicalName().substring( index ) );
+                        }
+                    } catch ( Exception e ) {
+                        // intentionally eating the exception as we will fallback to default namespace
+                    }
+                }
+            }
+            
             if ( isEmpty( typeDescr.getNamespace() ) ) {
                 typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
             }
