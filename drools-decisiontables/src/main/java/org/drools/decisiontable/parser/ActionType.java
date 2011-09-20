@@ -172,17 +172,17 @@ public class ActionType {
      * Values are added to populate the template.
      * The source builder contained needs to be "cleared" when the resultant snippet is extracted.
      */
-    public void addCellValue(int row, int column, String content) {
-        //Michael Neale:
-        // For single standard quotes we escape them - eg they may mean "inches" 
-        // as in "I want a Stonehenge replica 19" tall"
-        int idx = content.indexOf("\"");
-        if (idx > 0 && content.indexOf("\"", idx) > -1) {
-            content = content.replace("\"", "\\\"");
+    public void addCellValue(int row, int column, String content, boolean _escapeQuotesFlag) {
+        if (_escapeQuotesFlag){
+            //Michael Neale:
+            // For single standard quotes we escape them - eg they may mean "inches" 
+            // as in "I want a Stonehenge replica 19" tall"
+            int idx = content.indexOf("\"");
+            if (idx > 0 && content.indexOf("\"", idx) > -1) {
+                content = content.replace("\"", "\\\"");
+            }
         }
-//        if( this.sourceBuilder != null ){
         this.sourceBuilder.addCellValue( row, column, content );
-//        }
     }
 
 }
