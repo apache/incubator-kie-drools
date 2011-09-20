@@ -1533,7 +1533,24 @@ public class PackageBuilder {
                 }
             }
 
-
+            if ( isEmpty( typeDescr.getNamespace() ) && typeDescr.getFields().isEmpty() ) {
+                // might be referencing a class imported with a package import (.*)
+                PackageRegistry pkgReg = this.pkgRegistryMap.get( packageDescr.getName() );
+                if( pkgReg != null ) {
+                    try {
+                        Class<?> clz = pkgReg.getTypeResolver().resolveType( typeDescr.getTypeName() );
+                        java.lang.Package pkg = clz.getPackage();
+                        if( pkg != null ) {
+                            typeDescr.setNamespace( pkg.getName() );
+                            int index = typeDescr.getNamespace() != null && typeDescr.getNamespace().length() > 0 ? typeDescr.getNamespace().length()+1 : 0;
+                            typeDescr.setTypeName( clz.getCanonicalName().substring( index ) );
+                        }
+                    } catch ( Exception e ) {
+                        // intentionally eating the exception as we will fallback to default namespace
+                    }
+                }
+            }
+            
             if ( isEmpty( typeDescr.getNamespace() ) ) {
                 typeDescr.setNamespace( packageDescr.getNamespace() ); // set the default namespace
             }
