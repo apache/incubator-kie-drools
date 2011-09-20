@@ -9061,6 +9061,28 @@ public class MiscTest {
     }
 
     @Test
+    public void testEventsInDifferentPackages() {
+        String str = "package org.drools.test\n" +
+        		     "import org.drools.*\n" +
+                     "declare StockTick\n" +
+                     "    @role( event )\n" +
+                     "end\n" +
+                     "rule r1\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    StockTick st = new StockTick();\n" +
+                     "    st.setCompany(\"RHT\");\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+
+    @Test
     public void testJBRULES2872() {
         String str = "package org.drools.test\n" +
                      "import org.drools.FactA\n" +
