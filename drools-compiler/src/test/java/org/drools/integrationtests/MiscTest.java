@@ -1249,6 +1249,46 @@ public class MiscTest {
     }
 
     @Test
+    public void testUppercaseField() throws Exception {
+        String rule = "package org.drools;\n";
+        rule += "global java.util.List list\n";
+        rule += "declare Address\n";
+        rule += "    Street: String\n";
+        rule += "end\n";
+        rule += "rule \"r1\"\n";
+        rule += "when\n";
+        rule += "    Address($street: Street)\n";
+        rule += "then\n";
+        rule += "    list.add($street);\n";
+        rule += "end\n";
+
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl( new StringReader( rule ) );
+
+        if ( builder.hasErrors() ) {
+            fail( builder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("list", new ArrayList<String>());
+
+        FactType addressType = kbase.getFactType("org.drools", "Address");
+        Object address = addressType.newInstance();
+        addressType.set(address, "Street", "5th Avenue");
+
+        ksession.insert(address);
+
+        ksession.fireAllRules();
+
+        List list = (List)ksession.getGlobal( "list" );
+        assertEquals(1, list.size());
+        assertEquals("5th Avenue", list.get(0));
+
+        ksession.dispose();
+    }
+
+    @Test
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
