@@ -25,7 +25,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -269,12 +269,12 @@ public class MiscTest {
         final Cheesery cheesery1 = new Cheesery();
         cheesery1.setStatus( Cheesery.SELLING_CHEESE );
         cheesery1.setMaturity( Maturity.OLD );
-        session.insert(cheesery1);
+        session.insert( cheesery1 );
         session = SerializationHelper.getSerialisedStatefulSession( session,
                                                                     ruleBase );
 
         final Cheesery cheesery2 = new Cheesery();
-        cheesery2.setStatus(Cheesery.MAKING_CHEESE);
+        cheesery2.setStatus( Cheesery.MAKING_CHEESE );
         cheesery2.setMaturity( Maturity.YOUNG );
         session.insert( cheesery2 );
         session = SerializationHelper.getSerialisedStatefulSession( session,
@@ -344,20 +344,20 @@ public class MiscTest {
         results = (List) session.getGlobal( "results" );
 
         session.fireAllRules();
-        assertEquals(3,
-                results.size());
-        assertTrue(results.contains("1"));
-        assertTrue(results.contains("2"));
-        assertTrue(results.contains("3"));
+        assertEquals( 3,
+                      results.size() );
+        assertTrue( results.contains( "1" ) );
+        assertTrue( results.contains( "2" ) );
+        assertTrue( results.contains( "3" ) );
 
     }
 
     @Test
     public void testGetStatefulKnowledgeSessions() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("empty.drl",
-                getClass()),
-                ResourceType.DRL);
+        kbuilder.add( ResourceFactory.newClassPathResource( "empty.drl",
+                                                            getClass() ),
+                      ResourceType.DRL );
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -374,10 +374,10 @@ public class MiscTest {
         StatefulKnowledgeSession ksession_2 = coll_1.iterator().next();
         Object actual_1 = ksession_2.getObject( handle_1 );
         Object actual_2 = ksession_2.getObject( handle_2 );
-        assertEquals(expected_1,
-                actual_1);
-        assertEquals(expected_2,
-                actual_2);
+        assertEquals( expected_1,
+                      actual_1 );
+        assertEquals( expected_2,
+                      actual_2 );
 
         ksession_1.dispose();
         Collection<StatefulKnowledgeSession> coll_2 = kbase.getStatefulKnowledgeSessions();
@@ -400,12 +400,12 @@ public class MiscTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatefulKnowledgeSession ksession_1 = kbase.newStatefulKnowledgeSession();
-        for (int i = 0; i < 20; i++) {
+        for ( int i = 0; i < 20; i++ ) {
             Object object = new Object();
-            ksession_1.insert(object);
-            org.drools.runtime.rule.FactHandle factHandle = ksession_1.getFactHandle(object);
-            assertNotNull(factHandle);
-            assertEquals(object, ksession_1.getObject(factHandle));
+            ksession_1.insert( object );
+            org.drools.runtime.rule.FactHandle factHandle = ksession_1.getFactHandle( object );
+            assertNotNull( factHandle );
+            assertEquals( object, ksession_1.getObject(factHandle) );
         }
         ksession_1.dispose();
     }
