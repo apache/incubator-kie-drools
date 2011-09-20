@@ -111,6 +111,10 @@ public class SessionMarshallingHelper {
     public KnowledgeSessionConfiguration getConf() {
         return conf;
     }
+    
+    public Marshaller getMarshaller() {
+    	return marshaller;
+    }
 
     
 }

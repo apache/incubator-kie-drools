@@ -142,5 +142,9 @@ public class DefaultMarshaller
         OutputMarshaller.writeSession( context );
         context.close();
     }
+    
+    public MarshallingConfiguration getMarshallingConfiguration() {
+    	return marshallingConfig;
+    }
 
 }
