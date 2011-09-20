@@ -51,7 +51,7 @@ public class MarshallerProviderImpl implements MarshallerProvider {
     }
     
     public Marshaller newMarshaller(KnowledgeBase kbase, ObjectMarshallingStrategy[] strategies) {
-        return new DefaultMarshaller( kbase , new MarshallingConfigurationImpl( strategies, false, false ) );
+        return new DefaultMarshaller( kbase , new MarshallingConfigurationImpl( strategies, true, true ) );
     }
     
 }
