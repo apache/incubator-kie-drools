@@ -427,6 +427,47 @@ public class RuleWorksheetParseTest {
         assertFalse( drl.contains( "@Version(-)" ) );
     }
 
+    @Test
+    public void testQuoteEscapingEnabled() throws Exception {
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/QuoteEscapeEnabledWorkbook.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
+
+        final Package ruleset = listener.getRuleSet();
+        assertNotNull( ruleset );
+        DRLOutput dout = new DRLOutput();
+        ruleset.renderDRL(dout);
+        String drl = dout.getDRL();
+        System.out.println(drl);
+        
+        // check rules
+        Rule rule = (Rule) ruleset.getRules().get( 0 );
+        Condition cond = (Condition) rule.getConditions().get( 0 );
+        assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > 12\\\")",
+                cond.getSnippet() );
+    }
+    
+    @Test
+    public void testQuoteEscapingDisabled() throws Exception {
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/QuoteEscapeDisabledWorkbook.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
+
+        final Package ruleset = listener.getRuleSet();
+        assertNotNull( ruleset );
+        DRLOutput dout = new DRLOutput();
+        ruleset.renderDRL(dout);
+        String drl = dout.getDRL();
+        System.out.println(drl);
+        
+        // check rules
+        Rule rule = (Rule) ruleset.getRules().get( 0 );
+        Condition cond = (Condition) rule.getConditions().get( 0 );
+        assertEquals( "Foo(myObject.getColour().equals(red), myObject.size () > \"12\")",
+                cond.getSnippet() );
+        rule = (Rule) ruleset.getRules().get( 1 );
+        cond = (Condition) rule.getConditions().get( 0 );
+        assertEquals( "Foo(myObject.getColour().equals(blue), myObject.size () > 12\")",
+                cond.getSnippet() );
+    }
 
     /**
      * See if it can cope with odd shaped rule table, including missing
