@@ -28,9 +28,9 @@
   <url>http://www.jboss.org/jbpm/</url>
 
   <properties>
-    <!-- Hack tmp undone on the droolsjbpm-parent pom because Drools 5.3.0 is released without a jBPM release -->
-    <!--<jbpm.version>5.2.0-SNAPSHOT</jbpm.version>-->
-    <!--<jbpm.osgi.version>5.2.0.SNAPSHOT</jbpm.osgi.version>-->
+    <!-- Hack done on the droolsjbpm-parent pom because Drools 5.3.0 is released without a jBPM release -->
+    <jbpm.version>5.2.0-SNAPSHOT</jbpm.version>
+    <jbpm.osgi.version>5.2.0.SNAPSHOT</jbpm.osgi.version>
     <!--
      These are properties used in the database profiles. Some of them must be initialized
      empty so that Maven applies them via filtering to the resources. 
