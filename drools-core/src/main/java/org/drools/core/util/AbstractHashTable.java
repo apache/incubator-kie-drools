@@ -260,6 +260,25 @@ public abstract class AbstractHashTable
                              Object object2);
     }
 
+    public abstract static class AbstractObjectComparator implements ObjectComparator {
+        public int hashCodeOf(final Object key) {
+            // TODO: This method is invoked with an Entry when the HashTable get resized
+            // During the resize the hashCode should NOT be rehashed again, since it get already rehashed once in the put
+            // The drawback of this implementation is that if a class implementing Entry is used as key, it gets NEVER rehashed
+            // To overcome this issue, if necessary, consider to use a different method to calculate hashing during resize
+            if (key instanceof Entry) return key.hashCode();
+            return rehash( key.hashCode() );
+        }
+
+        public int rehash(int h) {
+            h += ~(h << 9);
+            h ^= (h >>> 14);
+            h += (h << 4);
+            h ^= (h >>> 10);
+            return h;
+        }
+    }
+
     /**
      * Fast re-usable iterator
      */
@@ -331,8 +350,8 @@ public abstract class AbstractHashTable
     }
 
     public static class InstanceEquals
-        implements
-        ObjectComparator {
+        extends
+        AbstractObjectComparator {
 
         private static final long      serialVersionUID = 510l;
         public static ObjectComparator INSTANCE         = new InstanceEquals();
@@ -348,18 +367,6 @@ public abstract class AbstractHashTable
             return InstanceEquals.INSTANCE;
         }
 
-        public int hashCodeOf(final Object key) {
-            return rehash( key.hashCode() );
-        }
-
-        public int rehash(int h) {
-            h += ~(h << 9);
-            h ^= (h >>> 14);
-            h += (h << 4);
-            h ^= (h >>> 10);
-            return h;
-        }
-
         private InstanceEquals() {
 
         }
@@ -371,8 +378,8 @@ public abstract class AbstractHashTable
     }
 
     public static class EqualityEquals
-        implements
-        ObjectComparator {
+        extends
+        AbstractObjectComparator {
 
         private static final long      serialVersionUID = 510l;
         public static ObjectComparator INSTANCE         = new EqualityEquals();
@@ -386,18 +393,6 @@ public abstract class AbstractHashTable
 
         public static ObjectComparator getInstance() {
             return EqualityEquals.INSTANCE;
-        }
-
-        public int hashCodeOf(final Object key) {
-            return rehash( key.hashCode() );
-        }
-
-        public int rehash(int h) {
-            h += ~(h << 9);
-            h ^= (h >>> 14);
-            h += (h << 4);
-            h ^= (h >>> 10);
-            return h;
         }
 
         public EqualityEquals() {

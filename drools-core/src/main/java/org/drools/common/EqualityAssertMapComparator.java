@@ -22,11 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
-import org.drools.core.util.AbstractHashTable.ObjectComparator;
+import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
 public class EqualityAssertMapComparator
-    implements
-    ObjectComparator {
+    extends
+    AbstractObjectComparator {
     private static final long serialVersionUID = 510l;
 
     public EqualityAssertMapComparator() {
@@ -43,14 +43,6 @@ public class EqualityAssertMapComparator
             return rehash( ((InternalFactHandle) obj).getObjectHashCode() );
         }
         return rehash( obj.hashCode() );
-    }
-
-    public int rehash(int h) {
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        return h;
     }
 
     /**

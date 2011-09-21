@@ -20,11 +20,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.util.AbstractHashTable.ObjectComparator;
+import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
 public class EqualityKeyComparator
-    implements
-    ObjectComparator {
+    extends
+    AbstractObjectComparator {
     private static final long            serialVersionUID = 510l;
 
     private static EqualityKeyComparator instance;
@@ -41,18 +41,6 @@ public class EqualityKeyComparator
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-    }
-
-    public int hashCodeOf(final Object key) {
-        return rehash( key.hashCode() );
-    }
-
-    public int rehash(int h) {
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        return h;
     }
 
     /**
