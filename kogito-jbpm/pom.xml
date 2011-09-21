@@ -111,7 +111,7 @@
             </includes>
             <excludes>
               <exclude>**/*AbstractTest.java</exclude>
-              <exclude>**/*JMSTest.java</exclude>
+              <exclude>**/*JMS*Test.java</exclude>
             </excludes>
             <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
           </configuration>
