@@ -40,7 +40,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 public class GuvnorConnectionUtils {
     public static final String GUVNOR_PROTOCOL_KEY = "guvnor.protocol";
@@ -49,15 +49,20 @@ public class GuvnorConnectionUtils {
     public static final String GUVNOR_PWD_KEY = "guvnor.pwd";
     public static final String GUVNOR_PACKAGES_KEY = "guvnor.packages";
     public static final String GUVNOR_SUBDOMAIN_KEY = "guvnor.subdomain";
+    public static final String GUVNOR_CONNECTTIMEOUT_KEY = "guvnor.connect.timeout";
+    public static final String GUVNOR_READTIMEOUT_KEY = "guvnor.read.timeout";
     public static final String EXT_BPMN = "bpmn";
     public static final String EXT_BPMN2 = "bpmn2";
     
     private static final Logger logger = LoggerFactory.getLogger(GuvnorConnectionUtils.class);
+    private static Properties properties = new Properties();
     
-    private Properties properties;
-    
-    public GuvnorConnectionUtils(Properties properties) {
-        this.properties = properties;
+    static {
+    	try {
+    		properties.load(GuvnorConnectionUtils.class.getResourceAsStream("/jbpm.console.properties"));
+    	} catch (IOException e) {
+            throw new RuntimeException("Could not load jbpm.console.properties", e);
+        }
     }
     
     public String getProcessImageURLFromGuvnor(String processId) {
@@ -113,7 +118,8 @@ public class GuvnorConnectionUtils {
                 HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
                 checkConnection.setRequestMethod("GET");
                 checkConnection.setRequestProperty("Accept", "application/atom+xml");
-                checkConnection.setReadTimeout(2 * 1000);
+                checkConnection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
+                checkConnection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
                 applyAuth(checkConnection);
                 checkConnection.connect();
                 if(checkConnection.getResponseCode() == 200) {
@@ -307,6 +313,14 @@ public class GuvnorConnectionUtils {
         return isEmpty(properties.getProperty(GUVNOR_PACKAGES_KEY)) ? "" : properties.getProperty(GUVNOR_PACKAGES_KEY);
     }
     
+    public String getGuvnorConnectTimeout() {
+    	return isEmpty(properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY)) ? "" : properties.getProperty(GUVNOR_CONNECTTIMEOUT_KEY);
+    }
+    
+    public String getGuvnorReadTimeout() {
+    	return isEmpty(properties.getProperty(GUVNOR_READTIMEOUT_KEY)) ? "" : properties.getProperty(GUVNOR_READTIMEOUT_KEY);
+    }
+    
     private List<String> getPackageNamesFromGuvnor() {
         List<String> packages = new ArrayList<String>();
         String packagesURL = getGuvnorProtocol()
@@ -351,7 +365,8 @@ public class GuvnorConnectionUtils {
                 HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
                 checkConnection.setRequestMethod("GET");
                 checkConnection.setRequestProperty("Accept", "application/atom+xml");
-                checkConnection.setReadTimeout(2 * 1000);
+                checkConnection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
+                checkConnection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
                 applyAuth(checkConnection);
                 checkConnection.connect();
                 if(checkConnection.getResponseCode() == 200) {
@@ -367,13 +382,10 @@ public class GuvnorConnectionUtils {
     }
     
     private void applyAuth(HttpURLConnection connection) {
-        BASE64Encoder enc = new sun.misc.BASE64Encoder();
-        String userpassword = getGuvnorUsr() + ":" + getGuvnorPwd();
-        String encodedAuthorization = enc.encode(userpassword.getBytes());
-        connection.setRequestProperty("Authorization", "Basic "
-                + encodedAuthorization);
+		String auth = getGuvnorUsr() + ":" + getGuvnorPwd();
+		connection.setRequestProperty("Authorization", "Basic " + Base64.encodeBase64URLSafeString(auth.getBytes()));
     }
-    
+
     private InputStream getInputStreamForImageURL(String urlLocation, String requestMethod) throws Exception {
         URL url = new URL(urlLocation);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -389,8 +401,8 @@ public class GuvnorConnectionUtils {
         connection.setRequestProperty("Accept-Language", "en-us,en;q=0.5");
         connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
         connection.setRequestProperty("charset", "UTF-8");
-        connection.setReadTimeout(10 * 1000);
-
+        connection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
+        connection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
         applyAuth(connection);
 
         connection.connect();
@@ -413,10 +425,9 @@ public class GuvnorConnectionUtils {
         connection.setRequestProperty("Accept-Language", "en-us,en;q=0.5");
         connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
         connection.setRequestProperty("charset", "UTF-8");
-        connection.setReadTimeout(10 * 1000);
-
+        connection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
+        connection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
         applyAuth(connection);
-
         connection.connect();
 
         BufferedReader sreader = new BufferedReader(new InputStreamReader(
@@ -427,7 +438,7 @@ public class GuvnorConnectionUtils {
         while ((line = sreader.readLine()) != null) {
             stringBuilder.append(line + "\n");
         }
-
+        
         return new ByteArrayInputStream(stringBuilder.toString().getBytes(
                 "UTF-8"));
     }
@@ -468,8 +479,8 @@ public class GuvnorConnectionUtils {
                 sb.append("<resource source=\"");
                 sb.append(protocol).append("://");
                 sb.append(host).append("/");
-                sb.append(subdomain).append("/").append("org.drools.guvnor.Guvnor/package/");
-                sb.append(pkg).append("/LATEST\"");
+                sb.append(subdomain).append("/rest/packages/");
+                sb.append(pkg).append("/binary\"");
                 sb.append(" type=\"PKG\"");
                 if(!isEmpty(usr) && !isEmpty(pwd)) {
                     sb.append(" basicAuthentication=\"enabled\"");

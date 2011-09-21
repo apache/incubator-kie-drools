@@ -89,16 +89,9 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 		        return nameResult;
 		    }
 		}
-		// try to find in repository
-		Properties properties = new Properties();
+		// try to find in guvnor repository
         try {
-            properties.load(AbstractFormDispatcher.class.getResourceAsStream("/jbpm.console.properties"));
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load jbpm.console.properties", e);
-        }
-		
-        try {
-            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils(properties);
+            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
             String templateName;
             if(guvnorUtils.templateExistsInRepo(name + "-taskform")) {
                 templateName = name + "-taskform";

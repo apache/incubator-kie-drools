@@ -80,8 +80,11 @@ import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandDelegate {
+	private static final Logger logger = LoggerFactory.getLogger(CommandDelegate.class);
 	
     private static StatefulKnowledgeSession ksession;
     
@@ -99,7 +102,7 @@ public class CommandDelegate {
                 throw new RuntimeException("Could not load jbpm.console.properties", e);
             }
             try {
-                GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils(jbpmconsoleproperties);
+                GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
                 ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
                 sconf.setProperty( "drools.resource.scanner.interval", "10" );
                 ResourceFactory.getResourceChangeScannerService().configure( sconf );
@@ -110,18 +113,15 @@ public class CommandDelegate {
                 KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
                 kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
                 kbase = kagent.getKnowledgeBase();
-                for (Process process: kbase.getProcesses()) {
-                    System.out.println("Loading process from Guvnor: " + process.getId());
-                }
             } catch (Throwable t) {
                 if (t instanceof RuntimeException
                         && "KnowledgeAgent exception while trying to deserialize".equals(t.getMessage())) {
-                    System.out.println("Could not connect to guvnor");
+                    logger.error("Could not connect to guvnor");
                     if (t.getCause() != null) {
-                        System.out.println(t.getCause().getMessage());
+                    	logger.error("Could not connect to guvnor", t);
                     }
                 }
-                System.out.println("Could not load processes from guvnor: " + t.getMessage());
+                logger.error("Could not load processes from guvnor: " + t.getMessage());
                 t.printStackTrace();
             }
             if (kbase == null) {
@@ -129,7 +129,7 @@ public class CommandDelegate {
             }
             String directory = System.getProperty("jbpm.console.directory");
             if (directory == null) {
-                System.out.println("jbpm.console.directory property not found");
+                logger.error("jbpm.console.directory property not found");
             } else {
                 File file = new File(directory);
                 if (!file.exists()) {
@@ -147,7 +147,7 @@ public class CommandDelegate {
                         public boolean accept(File dir, String name) {
                             return name.endsWith(".bpmn") || name.endsWith("bpmn2");
                         }})) {
-                    System.out.println("Loading process from file system: " + subfile.getName());
+                    logger.info("Loading process from file system: " + subfile.getName());
                     kbuilder.add(ResourceFactory.newFileResource(subfile), ResourceType.BPMN2);
                 }
                 kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
@@ -162,31 +162,31 @@ public class CommandDelegate {
             sessionconfigproperties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
             KnowledgeSessionConfiguration config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(sessionconfigproperties);
             try {
-                System.out.println("Loading session data ...");
+                logger.info("Loading session data ...");
                 ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(
                     1, kbase, config, env);
             } catch (RuntimeException e) {
-                System.out.println("Error loading session data: " + e.getMessage());
+                logger.error("Error loading session data: " + e.getMessage());
                 if (e instanceof IllegalStateException) {
                     Throwable cause = ((IllegalStateException) e).getCause();
                     if (cause instanceof InvocationTargetException) {
                         cause = cause.getCause();
                         if (cause != null && "Could not find session data for id 1".equals(cause.getMessage())) {
-                            System.out.println("Creating new session data ...");
+                            logger.info("Creating new session data ...");
                             env = KnowledgeBaseFactory.newEnvironment();
                             env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
                             ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
                                 kbase, config, env);
                         } else {
-                            System.err.println("Error loading session data: " + cause);
+                            logger.error("Error loading session data: " + cause);
                             throw e;
                         }
                     } else {
-                        System.err.println("Error loading session data: " + cause);
+                    	logger.error("Error loading session data: " + cause);
                         throw e;
                     }
                 } else {
-                    System.err.println("Error loading session data: " + e.getMessage());
+                	logger.error("Error loading session data: " + e.getMessage());
                     throw e;
                 }
             }
@@ -241,7 +241,7 @@ public class CommandDelegate {
             ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
                     .getCommandService().getContext()).getStatefulKnowledgesession() )
                     .session.addEventListener(agendaEventListener);
-            System.out.println("Successfully loaded default package from Guvnor");
+            logger.info("Successfully loaded default package from Guvnor");
             return ksession;
         } catch (Throwable t) {
             throw new RuntimeException(
