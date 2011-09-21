@@ -22,11 +22,12 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
-import org.drools.core.util.AbstractHashTable.ObjectComparator;
+import org.drools.core.util.Entry;
+import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
 public class IdentityAssertMapComparator
-    implements
-    ObjectComparator {
+    extends
+    AbstractObjectComparator {
     private static final long serialVersionUID = 510l;
 
     public IdentityAssertMapComparator() {
@@ -39,20 +40,11 @@ public class IdentityAssertMapComparator
     }
 
     public int hashCodeOf(final Object obj) {
-        Object realObject = obj;
-        if ( realObject instanceof FactHandle ) {
-            return rehash( ((InternalFactHandle) obj).getIdentityHashCode() );
-        } else {
-            return rehash( System.identityHashCode( realObject ) );
-        }
-    }
-
-    public int rehash(int h) {
-        h += ~(h << 9);
-        h ^= (h >>> 14);
-        h += (h << 4);
-        h ^= (h >>> 10);
-        return h;
+        if (obj instanceof Entry)
+            return obj.hashCode();
+        if (obj instanceof InternalFactHandle)
+            return rehash(((InternalFactHandle)obj).getIdentityHashCode());
+        return rehash( System.identityHashCode( obj ) );
     }
 
     /**
