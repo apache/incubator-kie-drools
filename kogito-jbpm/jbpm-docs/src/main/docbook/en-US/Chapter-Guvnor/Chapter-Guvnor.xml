@@ -23,7 +23,7 @@
 
   <para>Actually, it would be better to talk about a knowledge repository, as the repository will not only store your process definitions, but possibly also other related artefacts like task forms, your domain model, associated business rules, etc. Luckily, we don't have to reinvent the wheel for this, as the Guvnor project acts as a generic knowledge repository to store any type of artefacts and already supports most of these features.</para>
 
-  <para>The following screencast shows how you can upload your process definition to Guvnor, along with the process form (that is used when you try to start a new instance of that process to collect the necessary data), task forms (for the human tasks inside the process), and the process image (that can be annotated to show runtime progress). The jbpm-console is configured to get all this information from Guvnor whenever necessary and show them in the console.</para>
+  <para>The following screencast shows how you can upload your process definition to Guvnor, along with the process form (that is used when you try to start a new instance of that process to collect the necessary data), task forms (for the human tasks inside the process), and the process image (that can be annotated to show runtime progress). The jBPM-console is configured to get all this information from Guvnor whenever necessary and show them in the console.</para>
 
     <figure>
       <ulink url="http://people.redhat.com/kverlaen/jBPM5-guvnor-integration.swf">
@@ -37,24 +37,26 @@
 
   <para>If you use the installer, that should automatically download and install the latest version of Guvnor as well. So simply deploy your assets (for example using the Guvnor Eclipse integration as shown in the screencast, also automatically installed) to Guvnor (taking some naming conventions into account, as explained below), build the package and start up the console.</para>
 
-  <para>The current integration of jbpm-console with Guvnor uses the following naming conventions to find the artefacts it needs:</para>
+  <para>The current integration of jBPM-console with Guvnor uses the following conventions to find the artefacts it needs:</para>
 
   <itemizedlist>
-    <listitem>jbpm-console looks up artefacts from all available Guvnor packages (it does not look for assets in the Global Area). You can
-    alternatively modify the guvnor.packages property in jbpm.console.properties to limit the lookup to only the packages you need, for example:
+    <listitem>jBPM-console looks up artefacts from all available Guvnor packages (it does not look for assets in the Global Area). You can
+    alternatively modify the guvnor.packages property in jBPM.console.properties to limit the lookup to only the packages you need, for example:
     guvnor.packages=defaultPackage, myPackageA, myPackageB</listitem>
-    <listitem>A process should define the correct package name attribute, which needs to match the Guvnor package name it belongs to (otherwise you won't be able to build your package on Guvnor)</listitem>
-    <listitem>Don't forget to build the packages in Guvnor before opening the console, as Guvnor will only publish the latest version of your processes once you build the package</listitem>
-    <listitem>Currently, the console will load the process definitions the first time the list of processes is requested in the console.  At this point, automatic updating from Guvnor when the package is rebuilt is turned off by default, so you will have to either configure this or restart the application server to get the latest versions.</listitem>
+    <listitem>A process should define the correct package name attribute, which needs to match the Guvnor package name it belongs to (otherwise you won't be able to build your package in Guvnor)</listitem>
+    <listitem>Don't forget to build all of your packages in Guvnor before trying to view available processes in the console. Otherwise jBPM-console will not be able to retrieve the pkg from Guvnor.</listitem>
+    <listitem>Currently, the console will load the process definitions the first time the list of processes is requested in the console. At this point, automatic updating from Guvnor when the package is rebuilt is turned off by default, so you will have to either configure this or restart the application server to get the latest versions.</listitem>
     <listitem>Task forms that should be associated with a specific process definition should have the name "{processDefinitionId}.ftl" or "{processDefinitionId}-taskform.ftl"</listitem>
     <listitem>Task forms for a specific human task should have the name "{taskName}.ftl" or "{taskName}-taskform.ftl"</listitem>
     <listitem>The process diagram for a specific process should have the name "{processDefinitionId}-image.png"</listitem>
-    <listitem>By default jbpm-console looks up your Guvnor instance under http://localhost:8080/drools-guvnor. To change this, locate jbpm.console.properties and modify
+    <listitem>By default jBPM-console looks up your Guvnor instance under http://localhost:8080/drools-guvnor. To change this, locate jbpm.console.properties and modify
     the guvnor.protocol, guvnor.host, and  guvnor.subdomain property values as needed</listitem>
-    <listitem>If you are using Guvnor with JAAS authentication enabled, jbpm-console uses by default admin/admin credentials. To change this information again
+    <listitem>jBPM-console communicates with Guvnor via its REST api. The default connect and read timeouts for this communication are set to 10 seconds via the guvnor.connect.timeout,
+    and guvnor.read.timeout properties in jbpm.console.properties. You can edit values of these properties to set your specific timeout values (in milliseconds)</listitem>
+    <listitem>If you are using Guvnor with JAAS authentication enabled, jBPM-console uses by default admin/admin credentials. To change this information again
     locate jbpm.console.properties and change the guvnor.usr, and guvnor.pwd property values.</listitem>
   </itemizedlist>
 
-  <para>If you follow these rules, your processes, forms and images should show up without any issues in the jbpm-console.</para>
+  <para>If you follow these rules, your processes, forms and images should show up without any issues in the jBPM-console.</para>
 
 </chapter>
