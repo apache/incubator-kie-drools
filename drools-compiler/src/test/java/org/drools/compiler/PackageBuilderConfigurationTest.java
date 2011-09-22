@@ -11,6 +11,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.base.TypeResolver;
+import org.drools.builder.ProblemSeverity;
+import org.drools.builder.conf.ProblemSeverityOption;
 import org.drools.io.Resource;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -57,6 +59,8 @@ public class PackageBuilderConfigurationTest {
     public void tearDown() throws Exception {
         System.getProperties().remove( "drools.dialect.java.compiler" );
         System.getProperties().remove( "drools.dialect.default" );
+        System.getProperties().remove( "drools.warning.filters" );
+        System.getProperties().remove( "drools.problem.severity." + DuplicateFunctionProblem.KEY);
     }
 
     @Test
@@ -170,6 +174,26 @@ public class PackageBuilderConfigurationTest {
                     javaConf2 );
         assertEquals( JavaDialectConfiguration.JANINO,
                       javaConf2.getCompiler() );
+    }
+    
+    @Test
+    public void testProblemSeverity() {
+        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY,
+        "ERROR" );
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        assertEquals(cfg.getOptionKeys(ProblemSeverityOption.class).size(), 1);
+        assertEquals(cfg.getOption(ProblemSeverityOption.class, DuplicateFunctionProblem.KEY).getSeverity(), ProblemSeverity.ERROR);
+        
+    }
+    
+    @Test
+    public void testProblemSeverityNonExistingValueDefaultToInfo() {
+        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY,
+        "FOO" );
+        PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
+        assertEquals(cfg.getOptionKeys(ProblemSeverityOption.class).size(), 1);
+        assertEquals(cfg.getOption(ProblemSeverityOption.class, DuplicateFunctionProblem.KEY).getSeverity(), ProblemSeverity.INFO);
+        
     }
 
     @Test
