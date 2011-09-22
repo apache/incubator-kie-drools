@@ -373,7 +373,6 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
 
     public void updateEntryPointsCache() {
-
         if (ruleBase.getAddedEntryNodeCache() != null) {
             for (EntryPointNode addedNode : ruleBase.getAddedEntryNodeCache()) {
                 EntryPoint id = addedNode.getEntryPoint();
@@ -388,28 +387,6 @@ public abstract class AbstractWorkingMemory
                 entryPoints.remove(removedNode.getEntryPoint().getEntryPointId());
             }
         }
-/*/
-        Map<EntryPoint, EntryPointNode> reteEPs = this.ruleBase.getRete().getEntryPointNodes();
-
-        // first create a temporary cache to find which entry points were removed from the network
-        Set<String> cache = new HashSet<String>( this.entryPoints.keySet() );
-
-        // now, add any entry point that was added to the knowledge base
-        for ( EntryPointNode entryPointNode : reteEPs.values() ) {
-            EntryPoint id = entryPointNode.getEntryPoint();
-            cache.remove( id.getEntryPointId() );
-            if ( !EntryPoint.DEFAULT.equals( id ) && !this.entryPoints.containsKey( id ) ) {
-                WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( id,
-                                                                            entryPointNode,
-                                                                            this );
-                this.entryPoints.put( entryPointNode.getEntryPoint().getEntryPointId(),
-                                      wmEntryPoint );
-            }
-        }
-
-        // now, if there is any element left in the cache, remove them as they were removed from the network
-        this.entryPoints.keySet().removeAll(cache);
-*/
     }
 
     /**
