@@ -16,7 +16,6 @@
 
 package org.drools.osgi.core;
 
-import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.drools.KnowledgeBaseFactoryService;
@@ -26,14 +25,11 @@ import org.drools.io.ResourceFactoryService;
 import org.drools.io.impl.ResourceFactoryServiceImpl;
 import org.drools.marshalling.MarshallerProvider;
 import org.drools.marshalling.impl.MarshallerProviderImpl;
-import org.drools.osgi.api.Activator.BundleContextInstantiator;
-import org.drools.util.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator
     implements
@@ -41,9 +37,12 @@ public class Activator
     private ServiceRegistration resourceReg;
     private ServiceRegistration kbaseReg;
     private ServiceRegistration marshallerProviderReg;
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public void start(BundleContext bc) throws Exception {
-        System.out.println( "registering core  services" );
+
+        this.logger.debug("registering core services");
+
         this.resourceReg = bc.registerService( new String[]{ResourceFactoryService.class.getName(), Service.class.getName()},
                                                new ResourceFactoryServiceImpl(),
                                                new Hashtable() );
@@ -56,7 +55,7 @@ public class Activator
                 new MarshallerProviderImpl(),
                 new Hashtable() );
         
-        System.out.println( "core services registered" );
+        this.logger.debug("core services registered");
     }
 
     public void stop(BundleContext bc) throws Exception {

@@ -4,6 +4,8 @@
     import java.util.List;
     import java.util.ArrayList;
     import org.drools.compiler.ParserError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import org.antlr.runtime.*;
@@ -13,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 public class DSLMapLexer extends Lexer {
+    
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    
     public static final int EOF=-1;
     public static final int VT_DSL_GRAMMAR=4;
     public static final int VT_ENTRY=5;
@@ -624,7 +629,7 @@ public class DSLMapLexer extends Lexer {
         try {
             synpred1_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: "+re);
         }
         boolean success = !state.failed;
         input.rewind(start);

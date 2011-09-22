@@ -21,9 +21,13 @@ import org.antlr.runtime.tree.CommonTree;
 import org.antlr.runtime.tree.CommonTreeNodeStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.ParserError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DSLTokenizedMappingFile extends DSLMappingFile {
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+    
     public DSLTokenizedMappingFile() {
         super();
     }
@@ -87,7 +91,7 @@ public class DSLTokenizedMappingFile extends DSLMappingFile {
         if( inEntry ) sb.append( '\n' );
 
         lnr.close();
-//        System.out.println( "====== DSL definition:" );
+//        logger.debug( "====== DSL definition:" );
 //        System.out.println( sb.toString() );
 
         return sb.toString();

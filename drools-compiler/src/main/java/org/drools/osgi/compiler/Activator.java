@@ -19,6 +19,8 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator
     implements
@@ -29,9 +31,10 @@ public class Activator
     private ServiceTracker      bpmn2Tracker;
     private ServiceTracker      processRuntimeTracker;
     private ServiceTracker      processMarshallerTracker;
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public void start(BundleContext bc) throws Exception {
-        System.out.println( "registering compiler services" );
+        this.logger.debug("registering compiler services");
         this.kbuilderReg = bc.registerService( new String[]{KnowledgeBuilderFactoryService.class.getName(), Service.class.getName()},
                                                new KnowledgeBuilderFactoryServiceImpl(),
                                                new Hashtable() );
@@ -64,7 +67,7 @@ public class Activator
                                                                                       this ) );
         this.processRuntimeTracker.open();
 
-        System.out.println( "compiler services registered" );
+        this.logger.debug("compiler services registered");
     }
 
     public void stop(BundleContext bc) throws Exception {
@@ -80,6 +83,7 @@ public class Activator
         ServiceTrackerCustomizer {
         private BundleContext bc;
         private Activator     activator;
+        private Logger logger = LoggerFactory.getLogger(getClass());
 
         public DroolsServiceTracker(BundleContext bc,
                                     Activator activator) {
@@ -89,7 +93,9 @@ public class Activator
 
         public Object addingService(ServiceReference ref) {
             Service service = (Service) this.bc.getService( ref );
-            System.out.println( "registering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
+
+            this.logger.debug("registering compiler : " + service + " : "
+					+ service.getClass().getInterfaces()[0]);
 
             Dictionary dic = new Hashtable();
             ServiceReference regServiceRef = this.activator.kbuilderReg.getReference();
@@ -116,7 +122,8 @@ public class Activator
                                    Object arg1) {
             Service service = (Service) bc.getService( ref );
             ServiceRegistryImpl.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
-            System.out.println( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
+            this.logger.debug("unregistering compiler : " + service + " : "
+					+ service.getClass().getInterfaces()[0]);
         }
     }
 

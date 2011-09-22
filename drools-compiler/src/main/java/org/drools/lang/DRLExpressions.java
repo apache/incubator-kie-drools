@@ -1,28 +1,34 @@
 // $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/DRLExpressions.g 2011-06-17 11:00:27
 
-    package org.drools.lang;
+package org.drools.lang;
 
-    import java.util.LinkedList;
-    import org.drools.compiler.DroolsParserException;
-    import org.drools.lang.ParserHelper;
-    import org.drools.lang.DroolsParserExceptionFactory;
-    import org.drools.lang.Location;
-    import org.drools.CheckedDroolsException;
-
-    import org.drools.lang.descr.AtomicExprDescr;
-    import org.drools.lang.descr.BaseDescr;
-    import org.drools.lang.descr.ConstraintConnectiveDescr;
-    import org.drools.lang.descr.RelationalExprDescr;
-    import org.drools.lang.descr.BindingDescr;
-    
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Stack;
+
+import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.IntStream;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.drools.compiler.DroolsParserException;
+import org.drools.lang.descr.AtomicExprDescr;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.BindingDescr;
+import org.drools.lang.descr.ConstraintConnectiveDescr;
+import org.drools.lang.descr.RelationalExprDescr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DRLExpressions extends Parser {
     public static final String[] tokenNames = new String[] {
         "<invalid>", "<EOR>", "<DOWN>", "<UP>", "EOL", "WS", "Exponent", "FloatTypeSuffix", "FLOAT", "HexDigit", "IntegerTypeSuffix", "HEX", "DECIMAL", "EscapeSequence", "STRING", "TIME_INTERVAL", "UnicodeEscape", "OctalEscape", "BOOL", "NULL", "AT", "PLUS_ASSIGN", "MINUS_ASSIGN", "MULT_ASSIGN", "DIV_ASSIGN", "AND_ASSIGN", "OR_ASSIGN", "XOR_ASSIGN", "MOD_ASSIGN", "UNIFY", "DECR", "INCR", "ARROW", "SEMICOLON", "COLON", "EQUALS", "NOT_EQUALS", "GREATER_EQUALS", "LESS_EQUALS", "GREATER", "LESS", "EQUALS_ASSIGN", "LEFT_PAREN", "RIGHT_PAREN", "LEFT_SQUARE", "RIGHT_SQUARE", "LEFT_CURLY", "RIGHT_CURLY", "COMMA", "DOT", "DOUBLE_AMPER", "DOUBLE_PIPE", "QUESTION", "NEGATION", "TILDE", "PIPE", "AMPER", "XOR", "MOD", "STAR", "MINUS", "PLUS", "SH_STYLE_SINGLE_LINE_COMMENT", "C_STYLE_SINGLE_LINE_COMMENT", "MULTI_LINE_COMMENT", "IdentifierStart", "IdentifierPart", "ID", "DIV", "MISC"
@@ -94,6 +100,8 @@ public class DRLExpressions extends Parser {
     public static final int ID=67;
     public static final int DIV=68;
     public static final int MISC=69;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     // delegates
     // delegators
@@ -6528,7 +6536,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred13_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6542,7 +6550,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred11_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6556,7 +6564,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred17_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6570,7 +6578,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred24_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6584,7 +6592,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred3_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6598,7 +6606,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred23_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6612,7 +6620,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred6_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6626,7 +6634,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred2_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6640,7 +6648,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred20_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6654,7 +6662,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred30_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6668,7 +6676,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred36_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6682,7 +6690,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred12_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6696,7 +6704,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred26_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6710,7 +6718,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred10_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6724,7 +6732,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred33_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6738,7 +6746,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred22_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6752,7 +6760,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred27_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6766,7 +6774,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred4_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6780,7 +6788,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred7_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6794,7 +6802,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred21_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6808,7 +6816,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred15_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6822,7 +6830,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred8_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6836,7 +6844,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred18_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6850,7 +6858,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred16_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6864,7 +6872,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred35_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6878,7 +6886,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred1_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6892,7 +6900,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred19_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6906,7 +6914,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred28_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6920,7 +6928,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred32_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6934,7 +6942,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred29_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6948,7 +6956,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred25_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6962,7 +6970,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred9_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6976,7 +6984,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred40_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -6990,7 +6998,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred34_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7004,7 +7012,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred41_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7018,7 +7026,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred5_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7032,7 +7040,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred37_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7046,7 +7054,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred14_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7060,7 +7068,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred38_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7074,7 +7082,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred31_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -7088,7 +7096,7 @@ public class DRLExpressions extends Parser {
         try {
             synpred39_DRLExpressions_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);

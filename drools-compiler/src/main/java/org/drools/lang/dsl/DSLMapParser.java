@@ -1,20 +1,31 @@
 // $ANTLR 3.3 Nov 30, 2010 12:45:30 /home/etirelli/workspace/jboss/drools/core/drools-compiler/src/main/resources/org/drools/lang/dsl/DSLMap.g 2011-06-09 17:38:12
 
     package org.drools.lang.dsl;
-    import java.util.List;
     import java.util.ArrayList;
-    import java.util.regex.Pattern;
-    import org.drools.compiler.ParserError;
-
-
-import org.antlr.runtime.*;
-import java.util.Stack;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.regex.Pattern;
 
-import org.antlr.runtime.tree.*;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
+import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.antlr.runtime.tree.RewriteEarlyExitException;
+import org.antlr.runtime.tree.RewriteEmptyStreamException;
+import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
+import org.antlr.runtime.tree.RewriteRuleTokenStream;
+import org.antlr.runtime.tree.TreeAdaptor;
+import org.drools.compiler.ParserError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DSLMapParser extends Parser {
     public static final String[] tokenNames = new String[] {
@@ -51,6 +62,8 @@ public class DSLMapParser extends Parser {
     public static final int DOT=31;
     public static final int IdentifierPart=32;
     public static final int MISC=33;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     // delegates
     // delegators
@@ -2796,7 +2809,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred3_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2810,7 +2823,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred25_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2824,7 +2837,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred12_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2838,7 +2851,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred7_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2852,7 +2865,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred8_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2866,7 +2879,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred6_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2880,7 +2893,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred23_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2894,7 +2907,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred15_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2908,7 +2921,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred17_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2922,7 +2935,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred16_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
@@ -2936,7 +2949,7 @@ public class DSLMapParser extends Parser {
         try {
             synpred21_DSLMap_fragment(); // can never throw exception
         } catch (RecognitionException re) {
-            System.err.println("impossible: "+re);
+            logger.error("impossible: " + re);
         }
         boolean success = !state.failed;
         input.rewind(start);
