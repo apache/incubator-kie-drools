@@ -129,7 +129,10 @@ public class EntryPointNode extends ObjectSource
      */
     public EntryPoint getEntryPoint() {
         return entryPoint;
-    }        
+    }
+    void setEntryPoint(EntryPoint entryPoint) {
+        this.entryPoint = entryPoint;
+    }
     
     public void assertQuery(final InternalFactHandle factHandle,
                             final PropagationContext context,

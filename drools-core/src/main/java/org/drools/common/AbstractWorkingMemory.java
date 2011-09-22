@@ -16,20 +16,18 @@
 
 package org.drools.common;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
@@ -49,14 +47,10 @@ import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuleBaseConfiguration.LogicalOverride;
 import org.drools.base.CalendarsImpl;
-import org.drools.base.ClassObjectType;
 import org.drools.base.MapGlobalResolver;
-import org.drools.concurrent.ExecutorService;
 import org.drools.concurrent.ExternalExecutorService;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
@@ -72,10 +66,8 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
-import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
-import org.drools.reteoo.Rete;
 import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
@@ -98,8 +90,6 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
-import org.drools.spi.ObjectType;
-import org.drools.spi.PropagationContext;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
@@ -119,7 +109,7 @@ public abstract class AbstractWorkingMemory
     protected int                                                id;
 
     /** The actual memory for the <code>JoinNode</code>s. */
-    protected NodeMemories                                       nodeMemories;
+    private   NodeMemories                                       nodeMemories;
 
     protected NamedEntryPoint                                    defaultEntryPoint;
 
@@ -141,12 +131,12 @@ public abstract class AbstractWorkingMemory
 
     protected FactHandleFactory                                  handleFactory;
 
-    protected TruthMaintenanceSystem                             tms;
+    private   TruthMaintenanceSystem                             tms;
 
     /** Rule-firing agenda. */
     protected InternalAgenda                                     agenda;
 
-    protected Queue<WorkingMemoryAction>                         actionQueue;
+    private   Queue<WorkingMemoryAction>                         actionQueue;
 
     protected AtomicBoolean                                      evaluatingActionQueue;
 
@@ -162,7 +152,7 @@ public abstract class AbstractWorkingMemory
 
     private boolean                                              sequential;
 
-    private List                                                 liaPropagations;
+    private List<LIANodePropagation>                             liaPropagations;
 
     /** Flag to determine if a rule is currently being fired. */
     protected volatile AtomicBoolean                             firing;
@@ -313,34 +303,23 @@ public abstract class AbstractWorkingMemory
             this.initialFactHandle = initialFactHandle;
         }
 
-        this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
         this.evaluatingActionQueue = new AtomicBoolean( false );
 
         this.workingMemoryEventSupport = workingMemoryEventSupport;
         this.agendaEventSupport = agendaEventSupport;
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
-        this.liaPropagations = Collections.EMPTY_LIST;
 
         timerService = TimerServiceFactory.getTimerService( this.config );        
         ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
 
-        this.nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
-
-        this.tms = new TruthMaintenanceSystem( this );
-
         this.propagationIdCounter = new AtomicLong( propagationContext );
 
         // Only takes effect if are using idententity behaviour for assert
-        if ( LogicalOverride.DISCARD.equals( conf.getLogicalOverride() ) ) {
-            this.discardOnLogicalOverride = true;
-        } else {
-            this.discardOnLogicalOverride = false;
-        }
+        this.discardOnLogicalOverride = LogicalOverride.DISCARD.equals(conf.getLogicalOverride());
 
         this.firing = new AtomicBoolean( false );
-        this.exitPoints = new ConcurrentHashMap<String, ExitPoint>();
-        this.channels = new ConcurrentHashMap<String, Channel>();
+
         initPartitionManagers();
         initTransient();
 
@@ -394,10 +373,26 @@ public abstract class AbstractWorkingMemory
     // ------------------------------------------------------------
 
     public void updateEntryPointsCache() {
+
+        if (ruleBase.getAddedEntryNodeCache() != null) {
+            for (EntryPointNode addedNode : ruleBase.getAddedEntryNodeCache()) {
+                EntryPoint id = addedNode.getEntryPoint();
+                if (EntryPoint.DEFAULT.equals(id)) continue;
+                WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(id, addedNode, this);
+                entryPoints.put(id.getEntryPointId(), wmEntryPoint);
+            }
+        }
+
+        if (ruleBase.getRemovedEntryNodeCache() != null) {
+            for (EntryPointNode removedNode : ruleBase.getRemovedEntryNodeCache()) {
+                entryPoints.remove(removedNode.getEntryPoint().getEntryPointId());
+            }
+        }
+/*/
         Map<EntryPoint, EntryPointNode> reteEPs = this.ruleBase.getRete().getEntryPointNodes();
 
         // first create a temporary cache to find which entry points were removed from the network
-        Map<String, WorkingMemoryEntryPoint> cache = new HashMap<String, WorkingMemoryEntryPoint>( this.entryPoints );
+        Set<String> cache = new HashSet<String>( this.entryPoints.keySet() );
 
         // now, add any entry point that was added to the knowledge base
         for ( EntryPointNode entryPointNode : reteEPs.values() ) {
@@ -413,7 +408,8 @@ public abstract class AbstractWorkingMemory
         }
 
         // now, if there is any element left in the cache, remove them as they were removed from the network
-        this.entryPoints.keySet().removeAll( cache.keySet() );
+        this.entryPoints.keySet().removeAll(cache);
+*/
     }
 
     /**
@@ -499,7 +495,7 @@ public abstract class AbstractWorkingMemory
     public void reset(int handleId,
                       long handleCounter,
                       long propagationCounter) {
-        this.nodeMemories.clear();
+        if (nodeMemories != null) nodeMemories.clear();
         this.agenda.clear();
 
         for ( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
@@ -510,9 +506,9 @@ public abstract class AbstractWorkingMemory
 
         this.handleFactory.clear( handleId,
                                   handleCounter );
-        this.tms.clear();
-        this.liaPropagations.clear();
-        this.actionQueue.clear();
+        if (tms != null) tms.clear();
+        if (liaPropagations != null) liaPropagations.clear();
+        if (actionQueue != null) actionQueue.clear();
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );
         this.opCounter.set( 0 );
@@ -537,10 +533,8 @@ public abstract class AbstractWorkingMemory
     }
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
-        if ( this.liaPropagations == Collections.EMPTY_LIST ) {
-            this.liaPropagations = new ArrayList();
-        }
-        this.liaPropagations.add( liaNodePropagation );
+        if (liaPropagations == null) liaPropagations = new ArrayList();
+        liaPropagations.add( liaNodePropagation );
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
@@ -724,8 +718,8 @@ public abstract class AbstractWorkingMemory
                     // the firing for any other assertObject(..) that get
                     // nested inside, avoiding concurrent-modification
                     // exceptions, depending on code paths of the actions.
-                    if ( isSequential() ) {
-                        for ( Iterator it = this.liaPropagations.iterator(); it.hasNext(); ) {
+                    if ( liaPropagations != null && isSequential() ) {
+                        for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
                             ((LIANodePropagation) it.next()).doPropagation( this );
                         }
                     }
@@ -859,7 +853,8 @@ public abstract class AbstractWorkingMemory
     }
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        return this.tms;
+        if (tms == null) tms = new TruthMaintenanceSystem(this);
+        return tms;
     }
 
     /**
@@ -991,7 +986,7 @@ public abstract class AbstractWorkingMemory
             if ( evaluatingActionQueue.compareAndSet( false,
                                                       true ) ) {
                 try {
-                    if ( !this.actionQueue.isEmpty() ) {
+                    if ( actionQueue!= null && !actionQueue.isEmpty() ) {
                         WorkingMemoryAction action = null;
 
                         while ( (action = actionQueue.poll()) != null ) {
@@ -1014,13 +1009,14 @@ public abstract class AbstractWorkingMemory
     }
 
     public Queue<WorkingMemoryAction> getActionQueue() {
-        return this.actionQueue;
+        if (actionQueue == null) actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
+        return actionQueue;
     }
 
     public void queueWorkingMemoryAction(final WorkingMemoryAction action) {
         try {
             startOperation();
-            this.actionQueue.add( action );
+            getActionQueue().add( action );
             this.agenda.notifyHalt();
         } finally {
             endOperation();
@@ -1037,11 +1033,12 @@ public abstract class AbstractWorkingMemory
      * @return The node's memory.
      */
     public Object getNodeMemory(final NodeMemory node) {
-        return this.nodeMemories.getNodeMemory( node );
+        if (nodeMemories == null) nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
+        return nodeMemories.getNodeMemory( node );
     }
 
     public void clearNodeMemory(final NodeMemory node) {
-        this.nodeMemories.clearNodeMemory( node );
+        if (nodeMemories != null) nodeMemories.clearNodeMemory( node );
     }
 
     public WorkingMemoryEventSupport getWorkingMemoryEventSupport() {
@@ -1275,8 +1272,7 @@ public abstract class AbstractWorkingMemory
     @Deprecated
     public void registerExitPoint(String name,
                                   ExitPoint exitPoint) {
-        this.exitPoints.put( name,
-                             exitPoint );
+        getExitPoints().put(name, exitPoint);
     }
 
     /**
@@ -1284,7 +1280,7 @@ public abstract class AbstractWorkingMemory
      */
     @Deprecated
     public void unregisterExitPoint(String name) {
-        this.exitPoints.remove( name );
+        if (exitPoints != null) exitPoints.remove(name);
     }
 
     /**
@@ -1292,21 +1288,22 @@ public abstract class AbstractWorkingMemory
      */
     @Deprecated
     public Map<String, ExitPoint> getExitPoints() {
-        return this.exitPoints;
+        if (exitPoints == null) exitPoints = new ConcurrentHashMap<String, ExitPoint>();
+        return exitPoints;
     }
 
     public void registerChannel(String name,
                                 Channel channel) {
-        this.channels.put( name,
-                           channel );
+        getChannels().put(name, channel);
     }
 
     public void unregisterChannel(String name) {
-        this.channels.remove( name );
+        if (channels != null) channels.remove( name );
     }
 
     public Map<String, Channel> getChannels() {
-        return this.channels;
+        if (channels == null) channels = new ConcurrentHashMap<String, Channel>();
+        return channels;
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {

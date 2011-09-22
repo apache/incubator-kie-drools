@@ -150,13 +150,14 @@ public class Rete extends ObjectSource
      */
     public void addObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
-        this.entryPoints.put( node.getEntryPoint(),
-                              node );
+        entryPoints.put(node.getEntryPoint(), node);
+        ruleBase.registerAddedEntryNodeCache(node);
     }
 
     protected void removeObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
-        this.entryPoints.remove( node.getEntryPoint() );
+        entryPoints.remove(node.getEntryPoint());
+        ruleBase.registeRremovedEntryNodeCache(node);
     }
 
     public void attach() {
@@ -239,6 +240,11 @@ public class Rete extends ObjectSource
                                             ClassNotFoundException {
         entryPoints = (Map<EntryPoint, EntryPointNode>) in.readObject();
         ruleBase = ((DroolsObjectInputStream)in).getRuleBase();
+        for (Map.Entry<EntryPoint, EntryPointNode> entry : entryPoints.entrySet()) {
+            EntryPointNode node = entry.getValue();
+            if (node.getEntryPoint() == null) node.setEntryPoint(entry.getKey());
+            ruleBase.registerAddedEntryNodeCache(node);
+        }
         super.readExternal( in );
     }
 

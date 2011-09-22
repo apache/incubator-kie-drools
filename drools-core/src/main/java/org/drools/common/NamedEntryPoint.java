@@ -35,7 +35,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftTupleImpl;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.Rete;
@@ -165,15 +164,16 @@ public class NamedEntryPoint
                 this.ruleBase.readLock();
                 this.lock.lock();
                 // check if the object already exists in the WM
-                handle = (InternalFactHandle) this.objectStore.getHandleForObject( object );
+                handle = this.objectStore.getHandleForObject( object );
 
                 if ( typeConf.isTMSEnabled() ) {
                   
-                    EqualityKey key = null;
+                    EqualityKey key;
 
+                    TruthMaintenanceSystem tms = wm.getTruthMaintenanceSystem();
                     if ( handle == null ) {
                         // lets see if the object is already logical asserted
-                        key = this.wm.tms.get( object );
+                        key = tms.get( object );
                     } else {
                         // Object is already asserted, so check and possibly correct its
                         // status and then return the handle
@@ -187,10 +187,10 @@ public class NamedEntryPoint
                         if ( !logical ) {
                             // this object was previously justified, so we have to override it to stated
                             key.setStatus( EqualityKey.STATED );
-                            this.wm.tms.removeLogicalDependencies( handle );
+                            tms.removeLogicalDependencies( handle );
                         } else {
                             // this was object is already justified, so just add new logical dependency
-                            this.wm.tms.addLogicalDependency( handle,
+                            tms.addLogicalDependency( handle,
                                                               activation,
                                                               activation.getPropagationContext(),
                                                               rule );
@@ -207,13 +207,13 @@ public class NamedEntryPoint
 
                         key = createEqualityKey(handle);
                         
-                        this.wm.tms.put( key );
+                        tms.put( key );
                         
                         if ( !logical ) {
                             key.setStatus( EqualityKey.STATED );
                         } else {
                             key.setStatus( EqualityKey.JUSTIFIED );
-                            this.wm.tms.addLogicalDependency( handle,
+                            tms.addLogicalDependency( handle,
                                                            activation,
                                                            activation.getPropagationContext(),
                                                            rule );
@@ -222,7 +222,7 @@ public class NamedEntryPoint
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                             // Its previous justified, so switch to stated and remove logical dependencies
                             final InternalFactHandle justifiedHandle = key.getFactHandle();
-                            this.wm.tms.removeLogicalDependencies( justifiedHandle );
+                            tms.removeLogicalDependencies( justifiedHandle );
 
                             if ( this.wm.discardOnLogicalOverride ) {
                                 // override, setting to new instance, and return
@@ -239,8 +239,6 @@ public class NamedEntryPoint
                                     // end up with a leak.
                                     this.objectStore.updateHandle( handle,
                                                                    object );
-                                } else {
-                                    Object oldObject = handle.getObject();
                                 }
                                 return handle;
                             } else {
@@ -264,7 +262,7 @@ public class NamedEntryPoint
                     } else {
                         if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
                             // only add as logical dependency if this wasn't previously stated
-                            this.wm.tms.addLogicalDependency( key.getFactHandle(),
+                            tms.addLogicalDependency( key.getFactHandle(),
                                                            activation,
                                                            activation.getPropagationContext(),
                                                            rule );
@@ -345,7 +343,7 @@ public class NamedEntryPoint
         
         if ( rule == null ) {
             // This is not needed for internal WM actions as the firing rule will unstage
-            ((DefaultAgenda)this.wm.getAgenda()).unstageActivations();
+            this.wm.getAgenda().unstageActivations();
         }        
     }
 
@@ -383,7 +381,7 @@ public class NamedEntryPoint
 
             // the handle might have been disconnected, so reconnect if it has
             if ( handle.isDisconnected() ) {
-                handle = ( InternalFactHandle ) this.objectStore.reconnect( factHandle );
+                handle = this.objectStore.reconnect( factHandle );
             }
             
             if ( handle.getEntryPoint() != this ) {
@@ -426,18 +424,19 @@ public class NamedEntryPoint
                 EqualityKey key = handle.getEqualityKey();
                 key.removeFactHandle( handle );
             
+                TruthMaintenanceSystem tms = wm.getTruthMaintenanceSystem();
 
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
-                    this.wm.tms.remove( key );
+                    tms.remove( key );
                 }
     
                 // now use an existing EqualityKey, if it exists, else create a new one
-                key = this.wm.tms.get( object );
+                key = tms.get( object );
                 if ( key == null ) {
                     key = new EqualityKey( handle,
                                            status );
-                    this.wm.tms.put( key );
+                    tms.put( key );
                 } else {
                     key.addFactHandle( handle );
                 }
@@ -465,7 +464,7 @@ public class NamedEntryPoint
             propagationContext.evaluateActionQueue( this.wm );
 
             this.wm.workingMemoryEventSupport.fireObjectUpdated( propagationContext,
-                                                              (org.drools.FactHandle) factHandle,
+                                                              factHandle,
                                                               originalObject,
                                                               object,
                                                               this.wm );
@@ -474,7 +473,7 @@ public class NamedEntryPoint
            
            if ( rule == null ) {
                // This is not needed for internal WM actions as the firing rule will unstage
-               ((DefaultAgenda)this.wm.getAgenda()).unstageActivations();
+               this.wm.getAgenda().unstageActivations();
            }           
         } finally {
             this.wm.endOperation();
@@ -546,6 +545,7 @@ public class NamedEntryPoint
                                                this.wm );
 
             if ( typeConf.isTMSEnabled() ) {
+                TruthMaintenanceSystem tms = wm.getTruthMaintenanceSystem();
 
                 // Update the equality key, which maintains a list of stated
                 // FactHandles
@@ -555,7 +555,7 @@ public class NamedEntryPoint
                 // for
                 // the handle
                 if ( key.getStatus() == EqualityKey.JUSTIFIED ) {
-                    this.wm.tms.removeLogicalDependencies( handle );
+                    tms.removeLogicalDependencies( handle );
                 }
 
                 key.removeFactHandle( handle );
@@ -563,7 +563,7 @@ public class NamedEntryPoint
 
                 // If the equality key is now empty, then remove it
                 if ( key.isEmpty() ) {
-                    this.wm.tms.remove( key );
+                    tms.remove( key );
                 }
             }
 
@@ -583,7 +583,7 @@ public class NamedEntryPoint
             
             if ( rule == null ) {
                 // This is not needed for internal WM actions as the firing rule will unstage
-                ((DefaultAgenda)this.wm.getAgenda()).unstageActivations();
+                this.wm.getAgenda().unstageActivations();
             }            
         } finally {
             this.wm.endOperation();
@@ -675,7 +675,7 @@ public class NamedEntryPoint
     }
 
     public Object getObject(org.drools.runtime.rule.FactHandle factHandle) {
-        return this.objectStore.getObjectForHandle( (InternalFactHandle) factHandle );
+        return this.objectStore.getObjectForHandle(factHandle);
     }
 
     @SuppressWarnings("unchecked")
@@ -764,7 +764,7 @@ public class NamedEntryPoint
             if ( handle != null) {
                 EqualityKey key = createEqualityKey(handle);
                 key.setStatus(EqualityKey.STATED);
-                this.wm.tms.put(key);
+                this.wm.getTruthMaintenanceSystem().put(key);
             }
         }
       

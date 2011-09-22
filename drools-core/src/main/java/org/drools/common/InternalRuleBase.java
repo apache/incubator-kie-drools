@@ -18,8 +18,10 @@ package org.drools.common;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
@@ -27,6 +29,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.StatefulSession;
 import org.drools.definition.process.Process;
+import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.Rete;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -43,23 +46,23 @@ public interface InternalRuleBase
     /**
      * @return the id
      */
-    public String getId();
+    String getId();
     
-    public int nextWorkingMemoryCounter();
+    int nextWorkingMemoryCounter();
 
-    public FactHandleFactory newFactHandleFactory();
+    FactHandleFactory newFactHandleFactory();
     
-    public FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException ;
+    FactHandleFactory newFactHandleFactory(int id, long counter) throws IOException ;
 
-    public Map getGlobals();
+    Map getGlobals();
     
-    public Map getAgendaGroupRuleTotals();
+    Map getAgendaGroupRuleTotals();
     
-    public RuleBaseConfiguration getConfiguration();
+    RuleBaseConfiguration getConfiguration();
     
-    public Package getPackage(String name);
+    Package getPackage(String name);
     
-    public Map getPackagesMap();
+    Map getPackagesMap();
 
     void disposeStatefulSession(StatefulSession statefulSession);
     
@@ -80,7 +83,7 @@ public interface InternalRuleBase
      * @throws FactException
      *             If an error occurs while performing the assertion.
      */
-    public void assertObject(FactHandle handle,
+    void assertObject(FactHandle handle,
                              Object object,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) throws FactException;
@@ -96,19 +99,19 @@ public interface InternalRuleBase
      * @throws FactException
      *             If an error occurs while performing the retraction.
      */
-    public void retractObject(FactHandle handle,
+    void retractObject(FactHandle handle,
                               PropagationContext context,
                               ReteooWorkingMemory workingMemory) throws FactException;
  
-    public CompositeClassLoader getRootClassLoader();
+    CompositeClassLoader getRootClassLoader();
     
-    public Rete getRete();
+    Rete getRete();
     
-    public InternalWorkingMemory[] getWorkingMemories();
+    InternalWorkingMemory[] getWorkingMemories();
     
-    public Process getProcess(String id);
+    Process getProcess(String id);
     
-    public Process[] getProcesses();
+    Process[] getProcesses();
     
     /**
      * Returns true if clazz represents an Event class. False otherwise.
@@ -116,9 +119,9 @@ public interface InternalRuleBase
      * @param clazz
      * @return
      */
-    public boolean isEvent( Class<?> clazz );
+    boolean isEvent( Class<?> clazz );
 
-    public int getNodeCount();
+    int getNodeCount();
 
     /**
      * Returns the type declaration associated to the given class
@@ -126,21 +129,21 @@ public interface InternalRuleBase
      * @param clazz
      * @return
      */
-    public TypeDeclaration getTypeDeclaration(Class<?> clazz);
+    TypeDeclaration getTypeDeclaration(Class<?> clazz);
 
     /**
      * Returns a collection with all TypeDeclarations in this rulebase
      * 
      * @return
      */
-    public Collection<TypeDeclaration> getTypeDeclarations();
+    Collection<TypeDeclaration> getTypeDeclarations();
 
     /**
      * Creates and allocates a new partition ID for this rulebase
      * 
      * @return
      */
-    public RuleBasePartitionId createNewPartitionId();
+    RuleBasePartitionId createNewPartitionId();
 
     /**
      * Return the list of Partition IDs for this rulebase
@@ -151,12 +154,16 @@ public interface InternalRuleBase
     /**
      * Acquires a read lock on the rulebase
      */
-    public void readLock();
+    void readLock();
     
     /**
      * Releases a read lock on the rulebase
      */
-    public void readUnlock();
+    void readUnlock();
     
+    void registerAddedEntryNodeCache(EntryPointNode node);
+    Set<EntryPointNode> getAddedEntryNodeCache();
 
+    void registeRremovedEntryNodeCache(EntryPointNode node);
+    Set<EntryPointNode> getRemovedEntryNodeCache();
 }
