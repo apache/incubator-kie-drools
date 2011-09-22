@@ -7,13 +7,24 @@
   <title>What is New and Noteworthy in Drools 5.3.0.CR1</title>
 
   <section>
+     <title>Core</title>
+
+     <section>
+       <title>Faster compilation</title>
+
+       <para>Thanks to many improvements and optimizations made on both MVEL library and Drools internals,
+       the DRL compilation is now at least 3 times faster for both MVEL and Java dialects.</para>
+     </section>
+  </section>
+
+  <section>
     <title>Guvnor</title>
 
     <section>
       <title>Solid URLs and working browser history</title>
 
       <para>Guvnor URLs point to what ever is currently open in the active tab. Because of this you can bookmark the URL
-      or email it to your collegue. Forward and next page directs you to the previously opened tab or to the next
+      or email it to your colleague. Forward and next page directs you to the previously opened tab or to the next
       tab.</para>
     </section>
 
