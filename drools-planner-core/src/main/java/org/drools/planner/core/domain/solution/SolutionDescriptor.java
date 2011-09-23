@@ -120,9 +120,11 @@ public class SolutionDescriptor implements Serializable {
         facts.addAll(solution.getProblemFacts());
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
-            PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
-            if (entity != null && planningEntityDescriptor.isInitialized(entity)) {
-                facts.add(entity);
+            if (entity != null) {
+                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
+                if (planningEntityDescriptor.isInitialized(entity)) {
+                    facts.add(entity);
+                }
             }
         }
         for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
