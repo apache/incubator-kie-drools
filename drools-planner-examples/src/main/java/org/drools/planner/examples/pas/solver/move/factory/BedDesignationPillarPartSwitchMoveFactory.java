@@ -126,7 +126,7 @@ public class BedDesignationPillarPartSwitchMoveFactory extends AbstractMoveFacto
         return moveList;
     }
 
-    private class LowestFirstNightBedDesignationIterator implements Iterator<BedDesignation> {
+    private static class LowestFirstNightBedDesignationIterator implements Iterator<BedDesignation> {
 
         private Iterator<BedDesignation> leftIterator;
         private Iterator<BedDesignation> rightIterator;
