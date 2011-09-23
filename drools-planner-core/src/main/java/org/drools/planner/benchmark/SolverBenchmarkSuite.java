@@ -28,7 +28,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +54,8 @@ import org.apache.commons.io.IOUtils;
 import org.drools.planner.benchmark.statistic.MillisecondsSpendNumberFormat;
 import org.drools.planner.benchmark.statistic.SolverStatistic;
 import org.drools.planner.benchmark.statistic.SolverStatisticType;
+import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticListener;
+import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticPoint;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.score.Score;
@@ -71,9 +72,15 @@ import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -412,6 +419,7 @@ public class SolverBenchmarkSuite {
         htmlFragment.append("  <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart());
         htmlFragment.append(writeTimeSpendSummaryChart());
+        htmlFragment.append(writeScalabilitySummaryChart());
         htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistics</h1>\n");
         for (Map.Entry<File, List<SolverStatistic>> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
@@ -488,24 +496,22 @@ public class SolverBenchmarkSuite {
         NumberAxis yAxis = new NumberAxis("Time millis spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         BarRenderer renderer = new BarRenderer();
-        ItemLabelPosition position1 = new ItemLabelPosition(
+        ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
                 ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
-        renderer.setBasePositiveItemLabelPosition(position1);
-        ItemLabelPosition position2 = new ItemLabelPosition(
+        renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
+        ItemLabelPosition negativeItemLabelPosition = new ItemLabelPosition(
                 ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
-        renderer.setBaseNegativeItemLabelPosition(position2);
+        renderer.setBaseNegativeItemLabelPosition(negativeItemLabelPosition);
         renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator(
                 StandardCategoryItemLabelGenerator.DEFAULT_LABEL_FORMAT_STRING, new MillisecondsSpendNumberFormat()));
         renderer.setBaseItemLabelsVisible(true);
-        renderer.setBaseToolTipGenerator(
-                new StandardCategoryToolTipGenerator());
         CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis,
                 renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
         JFreeChart chart = new JFreeChart("Time spend summary (lower time is better)", JFreeChart.DEFAULT_TITLE_FONT,
                 plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
-        File chartSummaryFile = new File(solverStatisticFilesDirectory, "bestSpendSummary.png");
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "timeSpendSummary.png");
         OutputStream out = null;
         try {
             out = new FileOutputStream(chartSummaryFile);
@@ -516,6 +522,54 @@ public class SolverBenchmarkSuite {
             IOUtils.closeQuietly(out);
         }
         return "  <h2>Time spend summary chart</h2>\n"
+                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+    }
+
+    private CharSequence writeScalabilitySummaryChart() {
+        NumberAxis xAxis = new NumberAxis("Score");
+        xAxis.setAutoRangeIncludesZero(false);
+        NumberAxis yAxis = new NumberAxis("Time millis spend");
+        yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        int seriesIndex = 0;
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            XYSeries series = new XYSeries(solverBenchmark.getName());
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
+                    .buildScoreDefinition();
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                Long timeMillisSpend = result.getTimeMillisSpend();
+                Score score = result.getScore();
+                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                if (scoreGraphValue != null) {
+                    series.add(scoreGraphValue, timeMillisSpend);
+                }
+            }
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
+            seriesCollection.addSeries(series);
+            plot.setDataset(seriesIndex, seriesCollection);
+            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
+            ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
+                    ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
+            renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
+            renderer.setBaseItemLabelsVisible(true);
+            plot.setRenderer(seriesIndex, renderer);
+            seriesIndex++;
+        }
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart("Scalability summary",
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "scalabilitySummary.png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartSummaryFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+        return "  <h2>Scalability summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
