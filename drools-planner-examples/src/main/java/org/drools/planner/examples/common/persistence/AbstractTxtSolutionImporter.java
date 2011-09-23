@@ -78,6 +78,10 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public void readConstantLine(String constantValue) throws IOException {
             String line = bufferedReader.readLine();
+            if (line == null) {
+                throw new IllegalArgumentException("File ends before a line is expected to be a constant value ("
+                        + constantValue + ").");
+            }
             String value = line.trim();
             if (!value.equals(constantValue)) {
                 throw new IllegalArgumentException("Read line (" + line + ") is expected to be a constant value ("
@@ -86,12 +90,16 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         }
 
         public void readUntilConstantLine(String constantValue) throws IOException {
-            String line = bufferedReader.readLine();
-            String value = line.trim();
-            while (!value.equals(constantValue)) {
+            String line;
+            String value;
+            do {
                 line = bufferedReader.readLine();
+                if (line == null) {
+                    throw new IllegalArgumentException("File ends before a line is expected to be a constant value ("
+                            + constantValue + ").");
+                }
                 value = line.trim();
-            }
+            } while (!value.equals(constantValue));
         }
 
         public int readIntegerValue() throws IOException {
@@ -104,6 +112,10 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public int readIntegerValue(String prefix, String suffix) throws IOException {
             String line = bufferedReader.readLine();
+            if (line == null) {
+                throw new IllegalArgumentException("File ends before a line is expected to contain an integer value ("
+                        + prefix + "<value>" + suffix + ").");
+            }
             String value = removePrefixSuffixFromLine(line, prefix, suffix);
             try {
                 return Integer.parseInt(value);
@@ -123,6 +135,10 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
         public String readStringValue(String prefix, String suffix) throws IOException {
             String line = bufferedReader.readLine();
+            if (line == null) {
+                throw new IllegalArgumentException("File ends before a line is expected to contain an string value ("
+                        + prefix + "<value>" + suffix + ").");
+            }
             return removePrefixSuffixFromLine(line, prefix, suffix);
         }
 
