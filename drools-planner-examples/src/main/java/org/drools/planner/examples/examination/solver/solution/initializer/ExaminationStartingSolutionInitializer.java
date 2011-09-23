@@ -289,7 +289,7 @@ public class ExaminationStartingSolutionInitializer implements CustomSolverPhase
         return examList;
     }
 
-    private class ExamInitializationWeight implements Comparable<ExamInitializationWeight> {
+    private static class ExamInitializationWeight implements Comparable<ExamInitializationWeight> {
 
         private Exam exam;
         private int totalStudentSize;
