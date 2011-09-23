@@ -17,7 +17,6 @@
 package org.drools.factmodel.traits;
 
 import org.drools.factmodel.BuildUtils;
-import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.mvel2.asm.ClassWriter;

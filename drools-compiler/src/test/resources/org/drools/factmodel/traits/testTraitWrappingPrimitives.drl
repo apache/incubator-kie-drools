@@ -1,7 +1,5 @@
 package org.test;
  
- 
-import org.drools.factmodel.traits.IThing;
 
 global java.util.List list;
 

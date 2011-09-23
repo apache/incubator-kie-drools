@@ -25,17 +25,13 @@ import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuilder {
+public class TraitTripleWrapperClassBuilderImpl implements TraitProxyClassBuilder {
 
 
     private ClassDefinition trait;
-    private String wrapperName;
-    private String proxyName;
-    private String pack;
 
     public void init(ClassDefinition trait) {
         this.trait = trait;
-        this.pack = trait.getDefinedClass().getPackage().toString();
     }
 
 
@@ -76,11 +72,12 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER,
                 internalWrapper,
-                "Ljava/lang/Object;Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;Lorg/drools/factmodel/traits/MapWrapper;",
-                "java/lang/Object",
-                new String[]{"java/util/Map", "org/drools/factmodel/traits/MapWrapper"});
+                null,
+                "org/drools/factmodel/traits/TripleBasedStruct",
+                null );
 
         cw.visitInnerClass("java/util/Map$Entry", "java/util/Map", "Entry", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE);
+
 
 
         for ( FieldDefinition fld : core.getFieldsDefinitions() ) {
@@ -96,30 +93,32 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
             fv.visitEnd();
         }
 
-        {
-            fv = cw.visitField(0, "map", "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null);
-            fv.visitEnd();
-        }
 
         {
-            mv = cw.visitMethod(ACC_PUBLIC, "<init>",
-                    "(" + descrCore + "Ljava/util/Map;)V",
-                    "(" + descrCore + "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V",
+            mv = cw.visitMethod(ACC_PUBLIC,
+                    "<init>",
+                    "(" +
+                    descrCore +
+                    "Lorg/drools/core/util/TripleStore;)V",
+                    null,
                     null);
+
+
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V" );
+
+            mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "<init>", "()V");
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
             mv.visitFieldInsn(PUTFIELD, internalWrapper, "object", descrCore );
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 2);
-            mv.visitFieldInsn(PUTFIELD, internalWrapper, "map", "Ljava/util/Map;" );
+            mv.visitFieldInsn(PUTFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
 
-            int stackSize = initSoftFields(mv, trait, mask, 2);
+            int stackSize = initSoftFields( mv, internalWrapper, trait, mask );
 
             mv.visitInsn(RETURN);
-            mv.visitMaxs( 2 + stackSize,
+            mv.visitMaxs( 4 + stackSize,
                     3 );
             mv.visitEnd();
 
@@ -150,18 +149,12 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
         buildCommonMethods( cw, name );
 
+        buildSpecificMethods( cw, name, core );
 
         cw.visitEnd();
 
         return cw.toByteArray();
     }
-
-
-
-
-
-
-
 
 
 
@@ -176,7 +169,9 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", null, null);
         mv.visitCode();
 
+        int stack = 0;
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
+            stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
             mv.visitLdcInsn( field.getName() );
             mv.visitVarInsn(ALOAD, 1);
             mv.visitMethodInsn( INVOKEVIRTUAL, "java/lang/String", "equals", "(Ljava/lang/Object;)Z");
@@ -198,7 +193,6 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         }
 
         int j = 0;
-        int stack = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = (mask & (1 << j++)) == 0;
             if ( isSoftField ) {
@@ -210,18 +204,21 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
                 Label l2 = new Label();
                 mv.visitJumpInsn(IFEQ, l2);
                 mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
+                mv.visitFieldInsn(GETFIELD, internalWrapper, "store", "Lorg/drools/core/util/TripleStore;");
+                mv.visitVarInsn(ALOAD, 0);
                 mv.visitLdcInsn( field.getName() );
-                mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+                mv.visitMethodInsn(INVOKEVIRTUAL, internalWrapper, "key", "(Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+                mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/core/util/TripleStore", "get", "(Lorg/drools/core/util/Triple;)Lorg/drools/core/util/Triple;");
+
                 mv.visitVarInsn(ASTORE, 2);
                 mv.visitVarInsn(ALOAD, 0);
-                mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
                 mv.visitLdcInsn( field.getName() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
+
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactory.valueOf( mv, field.getTypeName() );
                 }
-                mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+                mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
                 mv.visitInsn(POP);
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitInsn(ARETURN);
@@ -229,31 +226,32 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
             }
         }
 
-
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;");
+
         mv.visitVarInsn(ASTORE, 2);
         mv.visitVarInsn(ALOAD, 2);
         mv.visitInsn(ARETURN);
-        mv.visitMaxs( 4 + stack,
-                3);
+        mv.visitMaxs( 2+stack, 3 );
         mv.visitEnd();
     }
 
 
 
 
-    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, long mask, int varNum ) {
+    private int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, long mask ) {
+
         int j = 0;
         int nonPrimitiveFields = 0;
         int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = (mask & (1 << j++)) == 0;
             if ( isSoftField ) {
-                mv.visitVarInsn(ALOAD, varNum);
-                mv.visitLdcInsn( field.getName() );
+                        mv.visitVarInsn(ALOAD, 0);
+                        mv.visitFieldInsn(GETFIELD, wrapperName, "store", "Lorg/drools/core/util/TripleStore;");
+                        mv.visitVarInsn(ALOAD, 0);
+                        mv.visitLdcInsn( field.getName() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactory.valueOf( mv, field.getTypeName() );
@@ -262,8 +260,16 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
                 } else {
                     stackSize = Math.max( stackSize, 2 );
                 }
-                mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                                    wrapperName,
+                                    "property",
+                                    "(Ljava/lang/String;Ljava/lang/Object;)Lorg/drools/core/util/TripleImpl;");
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                                    "org/drools/core/util/TripleStore",
+                                    "put",
+                                    "(Lorg/drools/core/util/Triple;)Z");
                 mv.visitInsn(POP);
+
             }
         }
         return stackSize;
@@ -301,10 +307,9 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         }
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "clear", "()V");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "clear", "()V");
 
-        int num = initSoftFields(mv, trait, mask, 0);
+        int num = initSoftFields(mv, internalWrapper, trait, mask);
         stack += num;
 
 
@@ -319,6 +324,11 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
 
 
+
+
+
+
+
     private void buildContainsValue(ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
         String internalCore = BuildUtils.getInternalType( coreName );
@@ -327,54 +337,37 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "containsValue", "(Ljava/lang/Object;)Z", null, null);
         mv.visitCode();
 
-
         // null check
         mv.visitVarInsn(ALOAD, 1);
         Label l99 = new Label();
         mv.visitJumpInsn(IFNONNULL, l99);
 
+        int j = 0;
+        int N = core.getFieldsDefinitions().size();
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
+            j++;
             if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
                 TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
-                Label l1 = new Label();
-                mv.visitJumpInsn(IFNONNULL, l1);
-                mv.visitInsn(ICONST_1);
-                mv.visitInsn(IRETURN);
-                mv.visitLabel(l1);
+                if ( j != N ) {
+                    Label l1 = new Label();
+                    mv.visitJumpInsn(IFNONNULL, l1);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitInsn(IRETURN);
+                    mv.visitLabel( l1 );
+                } else {
+                    mv.visitJumpInsn(IFNONNULL, l99);
+                    mv.visitInsn(ICONST_1);
+                    mv.visitInsn(IRETURN);
+                    mv.visitLabel( l99 );
+                }
+
             }
         }
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-        mv.visitInsn(ACONST_NULL);
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "containsValue", "(Ljava/lang/Object;)Z");
-        mv.visitInsn(IRETURN);
-        mv.visitLabel(l99);
-
-        // non-null values check
-        for ( FieldDefinition field : core.getFieldsDefinitions() )   {
-
-            mv.visitVarInsn(ALOAD, 1);
-
-            TraitFactory.invokeExtractor( mv, wrapperName, trait, core, field );
-
-            if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-                TraitFactory.valueOf( mv, field.getTypeName() );
-            }
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
-
-            Label l0 = new Label();
-            mv.visitJumpInsn(IFEQ, l0);
-            mv.visitInsn(ICONST_1);
-            mv.visitInsn(IRETURN);
-            mv.visitLabel(l0);
-
-        }
-
-        mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "containsValue", "(Ljava/lang/Object;)Z");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "containsValue", "(Ljava/lang/Object;)Z");
+
         mv.visitInsn(IRETURN);
         mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 3 : 2
                 , 2);
@@ -400,9 +393,9 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         }
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "containsKey", "(Ljava/lang/Object;)Z");
+
         mv.visitInsn(IRETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();
@@ -415,8 +408,7 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "size", "()I", null, null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "size", "()I");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "size", "()I");
 
         int n = core.getFieldsDefinitions().size();
         for ( int j = 0; j < n; j++ ) {
@@ -428,6 +420,7 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         mv.visitMaxs( core.getFieldsDefinitions().size() > 0 ? 2 : 1,
                 1 );
         mv.visitEnd();
+
     }
 
 
@@ -441,12 +434,11 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
         if ( ! hasHardFields ) {
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "isEmpty", "()Z");
+            mv.visitMethodInsn( INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "isEmpty", "()Z" );
         } else {
-            mv.visitInsn(ICONST_0);
+            mv.visitInsn( ICONST_0 );
         }
-        mv.visitInsn(IRETURN);
+        mv.visitInsn( IRETURN );
         mv.visitMaxs(1, 1);
         mv.visitEnd();
     }
@@ -487,9 +479,9 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
         }
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+
         mv.visitInsn(ARETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();
@@ -533,10 +525,9 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
 
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 2);
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
         mv.visitInsn(ARETURN);
         mv.visitMaxs(4,5);
         mv.visitEnd();
@@ -574,9 +565,8 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "entrySet", "()Ljava/util/Set;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "entrySet", "()Ljava/util/Set;");
+        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");                    
         mv.visitInsn(POP);
 
         mv.visitVarInsn(ALOAD, 1);
@@ -608,15 +598,18 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "keySet", "()Ljava/util/Set;");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "keySet", "()Ljava/util/Set;");
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "addAll", "(Ljava/util/Collection;)Z");
         mv.visitInsn(POP);
+        
         mv.visitVarInsn(ALOAD, 1);
         mv.visitInsn(ARETURN);
         mv.visitMaxs(2, 2);
         mv.visitEnd();
     }
+
+            
+         
 
 
 
@@ -649,10 +642,10 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
         mv.visitVarInsn(ALOAD, 1);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitFieldInsn(GETFIELD, internalWrapper, "map", "Ljava/util/Map;");
-        mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "values", "()Ljava/util/Collection;");
+        mv.visitMethodInsn(INVOKESPECIAL, "org/drools/factmodel/traits/TripleBasedStruct", "values", "()Ljava/util/Collection;");
         mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Collection", "addAll", "(Ljava/util/Collection;)Z");
         mv.visitInsn(POP);
+        
         mv.visitVarInsn(ALOAD, 1);
         mv.visitInsn(ARETURN);
 
@@ -663,8 +656,10 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
 
 
+      
+    
 
-
+            
 
 
 
@@ -681,9 +676,29 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
 
 
     public void buildCommonMethods( ClassVisitor cw, String wrapper ) {
+        MethodVisitor mv;
+        
 
         {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null, null);
+            mv = cw.visitMethod(ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
+            mv.visitCode();
+            mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V");
+            mv.visitLdcInsn("[[");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "entrySet", "()Ljava/util/Set;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
+            mv.visitLdcInsn("]]");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(2, 1);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC + ACC_BRIDGE + ACC_SYNTHETIC, "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
             mv.visitVarInsn(ALOAD, 1);
@@ -695,105 +710,38 @@ public class TraitPropertyWrapperClassBuilderImpl implements TraitProxyClassBuil
             mv.visitEnd();
         }
 
-        {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "equals", "(Ljava/lang/Object;)Z", null, null);
-            mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 1);
-            Label l0 = new Label();
-            mv.visitJumpInsn(IF_ACMPNE, l0);
-            mv.visitInsn(ICONST_1);
-            mv.visitInsn(IRETURN);
-            mv.visitLabel(l0);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/MapWrapper");
-            mv.visitVarInsn(ASTORE, 2);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "map", "Ljava/util/Map;");
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEINTERFACE, "org/drools/factmodel/traits/MapWrapper", "getInnerMap", "()Ljava/util/Map;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "equals", "(Ljava/lang/Object;)Z");
-            mv.visitInsn(IRETURN);
-            mv.visitMaxs(2, 3);
-            mv.visitEnd();
-        }
+    }
 
-        {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "hashCode", "()I", null, null);
+
+
+    private void buildSpecificMethods(ClassWriter cw, String wrapper, ClassDefinition core) {
+        MethodVisitor mv;
+
+         {
+            mv = cw.visitMethod(ACC_PUBLIC, "hashCode", "()I", null, null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "map", "Ljava/util/Map;");
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ));
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "getTriplesForSubject", "(Ljava/lang/Object;)Ljava/util/Collection;");
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "hashCode", "()I");
             mv.visitInsn(IRETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
-
-        {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "getInnerMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null);
-            mv.visitCode();
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "map", "Ljava/util/Map;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
-
-
-        {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "putAll", "(Ljava/util/Map;)V", "(Ljava/util/Map<+Ljava/lang/String;+Ljava/lang/Object;>;)V", null);
-            mv.visitCode();
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "keySet", "()Ljava/util/Set;");
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Set", "iterator", "()Ljava/util/Iterator;");
-            mv.visitVarInsn(ASTORE, 2);
-            Label l0 = new Label();
-            mv.visitLabel(l0);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Iterator", "hasNext", "()Z");
-            Label l1 = new Label();
-            mv.visitJumpInsn(IFEQ, l1);
-            mv.visitVarInsn(ALOAD, 2);
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Iterator", "next", "()Ljava/lang/Object;");
-            mv.visitTypeInsn(CHECKCAST, "java/lang/String");
-            mv.visitVarInsn(ASTORE, 3);
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitVarInsn(ALOAD, 3);
-            mv.visitVarInsn(ALOAD, 1);
-            mv.visitVarInsn(ALOAD, 3);
-            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "put", "(Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;");
-            mv.visitInsn(POP);
-            mv.visitJumpInsn(GOTO, l0);
-            mv.visitLabel(l1);
-            mv.visitInsn(RETURN);
-            mv.visitMaxs(4, 4);
-            mv.visitEnd();
-        }
-
-        {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
-            mv.visitCode();
-            mv.visitTypeInsn(NEW, "java/lang/StringBuilder");
-            mv.visitInsn(DUP);
-            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/StringBuilder", "<init>", "()V");
-            mv.visitLdcInsn("[[[[");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-            mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapper ), "entrySet", "()Ljava/util/Set;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/Object;)Ljava/lang/StringBuilder;");
-            mv.visitLdcInsn("]]]]");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;");
-            mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "toString", "()Ljava/lang/String;");
-            mv.visitInsn(ARETURN);
             mv.visitMaxs(2, 1);
             mv.visitEnd();
         }
 
-
-
+        {
+            mv = cw.visitMethod(ACC_PROTECTED, "getObject", "()Ljava/lang/Object;", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapper ), "object", BuildUtils.getTypeDescriptor( core.getName() ));
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(1, 1);
+            mv.visitEnd();
+        }
 
     }
+
 
 
 

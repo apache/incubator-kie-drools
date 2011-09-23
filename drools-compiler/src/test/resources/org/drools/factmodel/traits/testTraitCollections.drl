@@ -1,8 +1,8 @@
 package org.test;
  
  
-import org.drools.factmodel.traits.IThing;
-import org.drools.factmodel.traits.Individual;
+import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.Entity;
 import java.util.*;
 
 
@@ -30,6 +30,7 @@ end
  
 declare Bean
 @Traitable
+    id      : String           @key
 //    names   : String[]
     addrex  : Set               = new java.util.HashSet()
 end
@@ -47,6 +48,7 @@ rule "Init"
 when
 then
  Bean core = new Bean( );
+    core.setId( "asd" );
  insert( core );
 end
 
@@ -61,15 +63,14 @@ then
     complex.getAges().add(22);
     complex.getAges().add(18);
 
-//    complex.setAddrex( new HashSet() );
     complex.getAddrex().add( "here" );
 
-    Individual i1 = new Individual();
-    SimpleTrait<Individual> st = drools.<SimpleTrait,Individual>don( i1, SimpleTrait.class, true );
+    Entity i1 = new Entity();
+    SimpleTrait<Entity> st = drools.<SimpleTrait,Entity>don( i1, SimpleTrait.class, true );
     st.setName("xyz");
 
-    Individual i2 = new Individual();
-    AnotherTrait<Individual> at = drools.<AnotherTrait,Individual>don( i1, AnotherTrait.class, true );
+    Entity i2 = new Entity();
+    AnotherTrait<Entity> at = drools.<AnotherTrait,Entity>don( i2, AnotherTrait.class, true );
     at.setField(new LinkedList());
     at.getField().add("aaa");
 

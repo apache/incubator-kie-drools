@@ -26,7 +26,7 @@ import java.util.Date;
 
 import org.drools.RuntimeDroolsException;
 import org.drools.common.EventFactHandle;
-import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.Thing;
 import org.drools.facttemplates.FactTemplate;
 
 public class ValueType
@@ -118,7 +118,7 @@ public class ValueType
                                                                       SimpleValueType.OBJECT );
 
     public static final ValueType  TRAIT_TYPE        = new ValueType( "Trait",
-                                                                      IThing.class,
+                                                                      Thing.class,
                                                                       SimpleValueType.OBJECT );
 
     public static final ValueType  CLASS_TYPE        = new ValueType( "Class",

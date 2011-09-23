@@ -2,9 +2,7 @@ package org.test;
 
 
 // Individual is an empty traitable, based solely on a property map.
-import org.drools.factmodel.traits.Individual;
-
-import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.Entity;
 
 import org.drools.factmodel.traits.Imp;
 
@@ -54,7 +52,7 @@ when
     // use only pure Objs
     $core: Imp()
 then
-    Person<Object> p = drools.<Person,Object>don( $core, Person.class, true );
+    Person<Object> p = don( $core, Person.class, true );
     p.setName( "john" );
     p.setAge( 30 );
 
@@ -72,9 +70,9 @@ then
     System.out.println( "John the Person is here >>> " + $p );
     list.add("OK");
 
-    IRole role = drools.don( $core, IRole.class, true );
+    IRole role = don( $core, IRole.class, true );
     role.setRoleName("myRole");
-
+    System.out.println( "John the Role is here >>> " + role.getRoleName() );
     update( role );
 
 end

@@ -20,11 +20,10 @@ import java.io.Serializable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
-import org.drools.factmodel.traits.IThing;
-import org.drools.factmodel.traits.ITraitable;
+import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.rule.Declaration;
 import org.drools.rule.Rule;
 import org.drools.runtime.Channel;
@@ -149,13 +148,13 @@ public interface KnowledgeHelper
 
     <T, K> T don( K core, Class<T> trait, boolean logical );
 
-    <T, K> T don( IThing<K> core, Class<T> trait, boolean logical );
+    <T, K> T don( Thing<K> core, Class<T> trait, boolean logical );
 
     <T, K> T don( K core, Class<T> trait );
 
-    <T, K> T don( IThing<K> core, Class<T> trait );
+    <T, K> T don( Thing<K> core, Class<T> trait );
 
-    <T,K> IThing<K> shed( IThing<K> thing, Class<T> trait );
+    <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait );
 
-    <T,K> IThing<K> shed( ITraitable<K> core, Class<T> trait );
+    <T,K> Thing<K> shed( TraitableBean<K> core, Class<T> trait );
 }
