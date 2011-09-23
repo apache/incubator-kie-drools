@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>What is New and Noteworthy in Drools 5.3.0.CR1</title>
 
   <section>
-     <title>Core</title>
+    <title>Core</title>
 
-     <section>
-       <title>Faster compilation</title>
+    <section>
+      <title>Faster compilation</title>
 
-       <para>Thanks to many improvements and optimizations made on both MVEL library and Drools internals,
-       the DRL compilation is now at least 3 times faster for both MVEL and Java dialects.</para>
-     </section>
+      <para>Thanks to many improvements and optimizations made on both MVEL
+      library and Drools internals, the DRL compilation is now at least 3
+      times faster for both MVEL and Java dialects.</para>
+    </section>
   </section>
 
   <section>
@@ -23,25 +27,30 @@
     <section>
       <title>Solid URLs and working browser history</title>
 
-      <para>Guvnor URLs point to what ever is currently open in the active tab. Because of this you can bookmark the URL
-      or email it to your colleague. Forward and next page directs you to the previously opened tab or to the next
-      tab.</para>
+      <para>Guvnor URLs point to what ever is currently open in the active
+      tab. Because of this you can bookmark the URL or email it to your
+      colleague. Forward and next page directs you to the previously opened
+      tab or to the next tab.</para>
     </section>
 
     <section>
       <title>Guvnor Guided Decision Table - Wizard</title>
 
-      <para>A wizard has been created to assist with the construction of a new table.</para>
+      <para>A wizard has been created to assist with the construction of a new
+      table.</para>
 
-      <para>The wizard takes the user through the definition process, from adding patterns to creating constraints and
-      generating an expanded form.</para>
+      <para>The wizard takes the user through the definition process, from
+      adding patterns to creating constraints and generating an expanded
+      form.</para>
 
       <figure>
         <title>Invoke the ewizard</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard-invoke.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard-invoke.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -51,7 +60,9 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard1.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard1.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -61,7 +72,9 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard2.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard2.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -71,7 +84,9 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard3.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard3.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -81,7 +96,9 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard4.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard4.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -91,7 +108,9 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard5.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard5.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -101,17 +120,22 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard6a.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard6a.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
 
       <figure>
-        <title>Choose how rows are created - select the columns you want to expand upon</title>
+        <title>Choose how rows are created - select the columns you want to
+        expand upon</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard6b.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard6b.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -121,7 +145,40 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-Release_Notes/wizard7.png" format="PNG" scalefit="1"></imagedata>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard7.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Asset Viewer</title>
+
+      <para>The Asset Viewer now only shows sections that contain
+      Assets.</para>
+
+      <figure>
+        <title>A package with assets</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/asset-viewer2.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>An empty package</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/asset-viewer3.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -130,7 +187,8 @@
     <section>
       <title>Works on JBoss AS 7</title>
 
-      <para>The Guvnor distribution now includes a war that runs on JBoss AS 7.0.1 (not on JBoss AS 7.0.0).</para>
+      <para>The Guvnor distribution now includes a war that runs on JBoss AS
+      7.0.1 (not on JBoss AS 7.0.0).</para>
     </section>
   </section>
 
@@ -144,7 +202,8 @@
 
       <itemizedlist>
         <listitem>
-          <para>detailed documentation on planning entity and planning variable</para>
+          <para>detailed documentation on planning entity and planning
+          variable</para>
         </listitem>
 
         <listitem>
@@ -160,14 +219,15 @@
         </listitem>
       </itemizedlist>
 
-      <para>The <literal>NQueens</literal> examples has been refactored to feel more like a real-world example.</para>
+      <para>The <literal>NQueens</literal> examples has been refactored to
+      feel more like a real-world example.</para>
     </section>
 
     <section>
       <title>Logging revised</title>
 
-      <para>INFO and DEBUG logging is far less verbose. Use TRACE logging to see everything. The log is also now easier
-      to read.</para>
+      <para>INFO and DEBUG logging is far less verbose. Use TRACE logging to
+      see everything. The log is also now easier to read.</para>
     </section>
   </section>
 </section>
