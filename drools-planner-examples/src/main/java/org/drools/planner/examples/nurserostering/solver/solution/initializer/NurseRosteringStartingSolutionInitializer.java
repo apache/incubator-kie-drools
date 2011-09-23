@@ -108,7 +108,7 @@ public class NurseRosteringStartingSolutionInitializer implements CustomSolverPh
         return shiftAssignmentList;
     }
 
-    private class ShiftInitializationWeight implements Comparable<ShiftInitializationWeight> {
+    private static class ShiftInitializationWeight implements Comparable<ShiftInitializationWeight> {
 
         private Shift shift;
 
