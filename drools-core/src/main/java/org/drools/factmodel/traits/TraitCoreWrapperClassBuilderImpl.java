@@ -17,10 +17,10 @@
 package org.drools.factmodel.traits;
 
 import org.drools.factmodel.BuildUtils;
-import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassDefinition;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
 import java.beans.IntrospectionException;
@@ -64,13 +64,19 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             fv.visitEnd();
         }
         {
-            fv = cw.visitField(ACC_PRIVATE, ITraitable.MAP_FIELD_NAME, "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null);
+            fv = cw.visitField(ACC_PRIVATE, TraitableBean.MAP_FIELD_NAME, "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;", null);
             fv.visitEnd();
         }
+//        {
+//            fv = cw.visitField(ACC_PRIVATE, TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Class;>;", null);
+//            fv.visitEnd();
+//        }
+
         {
-            fv = cw.visitField(ACC_PRIVATE, ITraitable.TRAITSET_FIELD_NAME, "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Ljava/lang/Class;>;", null);
+            fv = cw.visitField(ACC_PRIVATE, TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;", "Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null);
             fv.visitEnd();
         }
+
         {
             mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
             mv.visitCode();
@@ -82,7 +88,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
             mv.visitFieldInsn( PUTFIELD,
                     BuildUtils.getInternalType( wrapperName ),
-                    ITraitable.MAP_FIELD_NAME,
+                    TraitableBean.MAP_FIELD_NAME,
                     "Ljava/util/Map;");
             mv.visitVarInsn(ALOAD, 0);
             mv.visitTypeInsn(NEW, "java/util/HashMap");
@@ -90,7 +96,7 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
             mv.visitFieldInsn( PUTFIELD,
                     BuildUtils.getInternalType( wrapperName ),
-                    ITraitable.TRAITSET_FIELD_NAME,
+                    TraitableBean.TRAITSET_FIELD_NAME,
                     "Ljava/util/Map;");
             mv.visitInsn(RETURN);
             mv.visitMaxs(3, 1);
@@ -102,20 +108,121 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitVarInsn(ALOAD, 0);
             mv.visitFieldInsn( GETFIELD,
                     BuildUtils.getInternalType( wrapperName ),
-                    ITraitable.MAP_FIELD_NAME,
+                    TraitableBean.MAP_FIELD_NAME,
                     "Ljava/util/Map;");
             mv.visitInsn(ARETURN);
             mv.visitMaxs(1, 1);
             mv.visitEnd();
-        }
-        {
-            mv = cw.visitMethod(ACC_PUBLIC, "getTraits", "()Ljava/util/Map;", null, null);
+
+            mv = cw.visitMethod( ACC_PUBLIC,
+                    "setDynamicProperties",
+                    "(Ljava/util/Map;)V",
+                    "(Ljava/util/Map<Ljava/lang/String;Ljava/lang/Object;>;)V",
+                    null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitFieldInsn( GETFIELD,
-                    BuildUtils.getInternalType( wrapperName ),
-                    ITraitable.TRAITSET_FIELD_NAME,
-                    "Ljava/util/Map;");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.MAP_FIELD_NAME, "Ljava/util/Map;");
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+//        {
+//            mv = cw.visitMethod(ACC_PUBLIC, "getTraits", "()Ljava/util/Map;", null, null);
+//            mv.visitCode();
+//            mv.visitVarInsn(ALOAD, 0);
+//            mv.visitFieldInsn( GETFIELD,
+//                    BuildUtils.getInternalType( wrapperName ),
+//                    TraitableBean.TRAITSET_FIELD_NAME,
+//                    "Ljava/util/Map;");
+//            mv.visitInsn(ARETURN);
+//            mv.visitMaxs(1, 1);
+//            mv.visitEnd();
+//        }
+
+        {
+            mv = cw.visitMethod(ACC_PROTECTED, "getTraitMap", "()Ljava/util/Map;", "()Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+            Label l0 = new Label();
+            mv.visitJumpInsn(IFNONNULL, l0);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitTypeInsn(NEW, "java/util/HashMap");
+            mv.visitInsn(DUP);
+            mv.visitMethodInsn(INVOKESPECIAL, "java/util/HashMap", "<init>", "()V");
+            mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+            mv.visitLabel(l0);
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitFieldInsn(GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(3, 1);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "setTraitMap", "(Ljava/util/Map;)V", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitFieldInsn(PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, "Ljava/util/Map;");
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "addTrait", "(Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;)V", "(Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;)V", null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "getTraitMap", "()Ljava/util/Map;");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 2);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+            mv.visitInsn(POP);
+            mv.visitInsn(RETURN);
+            mv.visitMaxs(3, 3);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "getTrait", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "getTraitMap", "()Ljava/util/Map;");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/Thing");
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "hasTrait", "(Ljava/lang/String;)Z", null, null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "getTraitMap", "()Ljava/util/Map;");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "containsKey", "(Ljava/lang/Object;)Z");
+            mv.visitInsn(IRETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "removeTrait", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", "(Ljava/lang/String;)Lorg/drools/factmodel/traits/Thing;", null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "getTraitMap", "()Ljava/util/Map;");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;");
+            mv.visitTypeInsn(CHECKCAST, "org/drools/factmodel/traits/Thing");
+            mv.visitInsn(ARETURN);
+            mv.visitMaxs(2, 2);
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod(ACC_PUBLIC, "getTraits", "()Ljava/util/Collection;", "()Ljava/util/Collection<Ljava/lang/String;>;", null);
+            mv.visitCode();
+            mv.visitVarInsn(ALOAD, 0);
+            mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType( wrapperName ), "getTraitMap", "()Ljava/util/Map;");
+            mv.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "keySet", "()Ljava/util/Set;");
             mv.visitInsn(ARETURN);
             mv.visitMaxs(1, 1);
             mv.visitEnd();

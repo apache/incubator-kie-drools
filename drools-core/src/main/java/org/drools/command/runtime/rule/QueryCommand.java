@@ -109,4 +109,12 @@ public class QueryCommand  implements GenericCommand<QueryResults> {
 
         return results;
     }
+
+    public String toString() {
+        return "QueryCommand{" +
+                "outIdentifier='" + outIdentifier + '\'' +
+                ", name='" + name + '\'' +
+                ", arguments=" + arguments +
+                '}';
+    }
 }

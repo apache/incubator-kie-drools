@@ -1,8 +1,8 @@
 package org.test;
 
 import org.drools.factmodel.traits.Traitable;
-import org.drools.factmodel.traits.Individual;
-import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Thing;
 
 global java.util.List list;
 
@@ -11,7 +11,7 @@ global java.util.List list;
 
 declare Imp
     @Traitable
-    name    : String
+    name    : String        @key
     school  : String
 end
 
@@ -44,7 +44,7 @@ then
     Imp core = new Imp( "adam", "skool" );
     insert( core );
 
-    Individual ind = new Individual();
+    Entity ind = new Entity();
     insert( ind );
 end
 
@@ -54,7 +54,7 @@ when
     $core: Imp( "adam", "skool" ;)
 then
     Student<Imp> s = drools.<Student,Imp>don( $core, Student.class, true );
-    IThing<Imp> t = drools.<IThing,Imp>don( $core, IThing.class, true );
+    Thing<Imp> t = drools.<Thing,Imp>don( $core, Thing.class, true );
 
     Worker<Imp> w = drools.<Worker,Imp>don( $core, Worker.class, true );
 
@@ -64,9 +64,9 @@ end
 rule "Trait2"
 no-loop
 when
-    $core: Individual( )
+    $core: Entity( )
 then
-    Student<Individual> s = drools.<Student,Individual>don( $core, Student.class, true );
+    Student<Entity> s = drools.<Student,Entity>don( $core, Student.class, true );
     list.add( "0" );
 end
 
