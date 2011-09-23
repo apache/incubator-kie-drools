@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.score.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.drools.planner.core.score.HardAndSoftScore;
@@ -24,7 +25,7 @@ import org.drools.planner.core.score.Score;
 /**
  * Compares 2 HardAndSoftScore based on the calculation the hard multiplied by a weight to the soft.
  */
-public class FlatteningHardAndSoftScoreComparator implements Comparator<Score> {
+public class FlatteningHardAndSoftScoreComparator implements Comparator<Score>, Serializable {
 
     private int hardWeight;
 
