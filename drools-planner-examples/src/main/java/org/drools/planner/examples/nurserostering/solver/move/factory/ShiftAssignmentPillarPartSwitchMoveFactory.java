@@ -178,7 +178,7 @@ public class ShiftAssignmentPillarPartSwitchMoveFactory extends AbstractMoveFact
 
     }
 
-    private class LowestDayIndexAssignmentSequenceIterator implements Iterator<AssignmentSequence> {
+    private static class LowestDayIndexAssignmentSequenceIterator implements Iterator<AssignmentSequence> {
 
         private Iterator<AssignmentSequence> leftIterator;
         private Iterator<AssignmentSequence> rightIterator;
