@@ -1,10 +1,8 @@
 package org.test;
 
 
-// Individual is an empty traitable, based solely on a property map.
-import org.drools.factmodel.traits.Individual;
-
-import org.drools.factmodel.traits.IThing;
+// Entity is an empty traitable, based solely on a property map.
+import org.drools.factmodel.traits.Entity;
 
 
 import org.drools.factmodel.traits.IStudent;
@@ -65,20 +63,20 @@ end
 rule "Init"
 when
 then
-    Individual core = new Individual();
+    Entity core = new Entity();
     insert( core );
 end
 
 rule "Trait"
 no-loop
 when
-    $core: Individual( )
+    $core: Entity( )
 then
     IRole r = drools.don( $core, IRole.class, true );
-    IStudent<Individual> s = drools.<IStudent,Individual>don( $core, IStudent.class, true );
-    IPerson<Individual> x = drools.<IPerson,Individual>don( $core, IPerson.class, true );
-    Person<Individual> p = drools.<Person,Individual>don( $core, Person.class, true );
-    Worker<Individual> w = drools.<Worker,Individual>don( $core, Worker.class, true );
+    IStudent<Entity> s = drools.<IStudent,Entity>don( $core, IStudent.class, true );
+    IPerson<Entity> x = drools.<IPerson,Entity>don( $core, IPerson.class, true );
+    Person<Entity> p = drools.<Person,Entity>don( $core, Person.class, true );
+    Worker<Entity> w = drools.<Worker,Entity>don( $core, Worker.class, true );
     p.setName( "john" );
     s.setSchool( "skol" );
     w.setAge( 30 );

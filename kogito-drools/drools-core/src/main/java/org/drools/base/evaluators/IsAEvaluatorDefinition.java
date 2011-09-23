@@ -20,7 +20,6 @@ import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.factmodel.traits.*;
-import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
@@ -156,14 +155,14 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 typeName = ((Class) typeName).getName();
             }
 
-            ITraitable core = null;
-            if ( objectValue instanceof IThing ) {
-                IThing thing = (IThing) objectValue;
-                core = (ITraitable) thing.getCore();
-                return this.getOperator().isNegated() ^ core.getTraits().containsKey( typeName );
+            TraitableBean core = null;
+            if ( objectValue instanceof Thing) {
+                Thing thing = (Thing) objectValue;
+                core = (TraitableBean) thing.getCore();
+                return this.getOperator().isNegated() ^ core.hasTrait(typeName.toString());
             } else if ( objectValue.getClass().getAnnotation( Traitable.class ) != null ) {
-                core = (ITraitable) objectValue;
-                return this.getOperator().isNegated() ^ core.getTraits().containsKey( typeName );
+                core = (TraitableBean) objectValue;
+                return this.getOperator().isNegated() ^ core.hasTrait( typeName.toString() );
             }
 
 
@@ -204,18 +203,18 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
 
         private boolean compare(Object source, Object target) {
-            Set sourceTraits = null;
-            Set targetTraits = null;
-            if ( source instanceof IThing ) {
-                sourceTraits = ((ITraitable) ((IThing) source).getCore()).getTraits().keySet();
+            Collection sourceTraits = null;
+            Collection targetTraits = null;
+            if ( source instanceof Thing) {
+                sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getTraits();
             } else if ( source.getClass().getAnnotation( Traitable.class ) != null ) {
-                sourceTraits = ((ITraitable) source).getTraits().keySet();
+                sourceTraits = ((TraitableBean) source).getTraits();
             }
 
-            if ( target instanceof IThing ) {
-                targetTraits = ((ITraitable) ((IThing) target).getCore()).getTraits().keySet();
+            if ( target instanceof Thing) {
+                targetTraits = ((TraitableBean) ((Thing) target).getCore()).getTraits();
             } else if ( source.getClass().getAnnotation( Traitable.class ) != null ) {
-                targetTraits = ((ITraitable) target).getTraits().keySet();
+                targetTraits = ((TraitableBean) target).getTraits();
             }
 
             return ( targetTraits != null &&

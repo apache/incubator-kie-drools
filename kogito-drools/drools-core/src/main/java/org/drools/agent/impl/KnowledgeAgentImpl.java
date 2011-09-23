@@ -992,7 +992,7 @@ public class KnowledgeAgentImpl
      *
      *
      * @param changeSetState the object containing the added resources list and
-     * created pacages list.
+     * created packages list.
      */
     private void addResourcesToKnowledgeBase(ChangeSetState changeSetState) {
 

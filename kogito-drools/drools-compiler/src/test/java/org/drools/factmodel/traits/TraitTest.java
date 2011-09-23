@@ -26,7 +26,9 @@ import org.drools.definition.type.FactType;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.*;
@@ -36,6 +38,17 @@ import static junit.framework.Assert.*;
 
 public class TraitTest {
 
+    private static long t0;
+
+    @BeforeClass
+    public static void init() {
+        t0 = new Date().getTime();
+    }
+
+    @AfterClass
+    public static void finish() {
+        System.out.println("TIME : "+  (new Date().getTime()-t0));
+    }
 
     @Before
     public void reset() {
@@ -59,7 +72,7 @@ public class TraitTest {
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
-            ITraitable imp = (ITraitable) impClass.newInstance();
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
             Class trait = kb.getFactType("org.test","Student").getFactClass();
             TraitProxy proxy = (TraitProxy) new TraitFactory( kb ).getProxy( imp, trait );
 
@@ -70,6 +83,7 @@ public class TraitTest {
 
             wrapper.put( "virtualField" , "xyz" );
 
+            wrapper.entrySet();
             assertEquals( 4, wrapper.size() );
             assertEquals( 2, virtualFields.size() );
 
@@ -151,8 +165,12 @@ public class TraitTest {
 
         ks.fireAllRules();
 
+        Collection<Object> wm = ks.getObjects();
+
         ks.insert( "die" );
         ks.fireAllRules();
+
+
 
         Assert.assertTrue(info.contains("DON"));
         Assert.assertTrue( info.contains( "SHED" ) );
@@ -275,14 +293,17 @@ public class TraitTest {
         TraitFactory traitBuilder = new TraitFactory( kb );
 
         try {
-            ITraitable imp = (ITraitable) kb.getFactType("org.test","Imp").newInstance();
+            FactType impClass = kb.getFactType("org.test","Imp");
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
+                impClass.set(imp, "name", "aaa");
+
             Class trait = kb.getFactType("org.test","Student").getFactClass();
             Class trait2 = kb.getFactType("org.test","Role").getFactClass();
 
             assertNotNull( trait);
             TraitProxy proxy = (TraitProxy) traitBuilder.getProxy(imp, trait);
             proxy.getFields().put("field", "xyz");
-            proxy.getFields().put("name", "aaa");
+//            proxy.getFields().put("name", "aaa");
 
             assertNotNull(proxy);
 
@@ -295,13 +316,13 @@ public class TraitTest {
             assertEquals( "xyz", proxy3.getFields().get( "field" ));
             assertEquals( "aaa", proxy3.getFields().get( "name" ));
 
-            System.out.println( proxy2.equals( proxy3 ) );
 
-
-            ITraitable imp2 = (ITraitable) kb.getFactType("org.test","Imp").newInstance();
+            TraitableBean imp2 = (TraitableBean) impClass.newInstance();
+                impClass.set(imp2, "name", "aaa");
             TraitProxy proxy4 = (TraitProxy) traitBuilder.getProxy(imp2, trait);
-            proxy4.getFields().put("name", "aaa");
+//            proxy4.getFields().put("name", "aaa");
             proxy4.getFields().put("field", "xyz");
+
 
 
             Assert.assertEquals( proxy2, proxy4 );
@@ -340,7 +361,7 @@ public class TraitTest {
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
-            ITraitable imp = (ITraitable) impClass.newInstance();
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
             FactType traitClass = kb.getFactType("org.test","Student");
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) traitBuilder.getProxy(imp, trait);
@@ -363,9 +384,9 @@ public class TraitTest {
             assertEquals( 2, virtualFields.size() );
 
 
-//            FactType indClass = kb.getFactType("org.test","Individual");
-//            ITraitable ind = (ITraitable) indClass.newInstance();
-            ITraitable ind = new Individual();
+//            FactType indClass = kb.getFactType("org.test","Entity");
+//            TraitableBean ind = (TraitableBean) indClass.newInstance();
+            TraitableBean ind = new Entity();
 
             TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy(ind, trait);
 
@@ -390,8 +411,8 @@ public class TraitTest {
 
             FactType traitClass2 = kb.getFactType("org.test","Role");
             Class trait2 = traitClass2.getFactClass();
-//            ITraitable ind2 = (ITraitable) indClass.newInstance();
-            ITraitable ind2 = new Individual();
+//            TraitableBean ind2 = (TraitableBean) indClass.newInstance();
+            TraitableBean ind2 = new Entity();
 
             TraitProxy proxy99 = (TraitProxy) traitBuilder.getProxy(ind2, trait2);
 
@@ -437,7 +458,7 @@ public class TraitTest {
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
-            ITraitable imp = (ITraitable) impClass.newInstance();
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
 
             FactType studentClass = kb.getFactType("org.test","Student");
             Class trait = studentClass.getFactClass();
@@ -459,8 +480,8 @@ public class TraitTest {
             assertFalse( wrapper.isEmpty() );
 
 
-//            FactType indClass = kb.getFactType("org.test","Individual");
-            ITraitable ind = new Individual();
+//            FactType indClass = kb.getFactType("org.test","Entity");
+            TraitableBean ind = new Entity();
 
             FactType RoleClass = kb.getFactType("org.test","Role");
             Class trait2 = RoleClass.getFactClass();
@@ -511,7 +532,9 @@ public class TraitTest {
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
-            ITraitable imp = (ITraitable) impClass.newInstance();
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
+                impClass.set(imp, "name", "john");
+
             FactType traitClass = kb.getFactType("org.test","Student");
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) traitBuilder.getProxy(imp, trait);
@@ -519,7 +542,7 @@ public class TraitTest {
             Map<String,Object> virtualFields = imp.getDynamicProperties();
             Map<String,Object> wrapper = proxy.getFields();
 
-            impClass.set(imp, "name", "john");
+
             assertTrue( wrapper.containsKey( "name" ) );
             assertTrue( wrapper.containsKey( "school" ) );
             assertTrue( wrapper.containsKey( "age" ) );
@@ -529,8 +552,8 @@ public class TraitTest {
             proxy.getFields().put( "surname", "xxx");
             assertTrue( wrapper.containsKey( "surname" ) );
 
-//            FactType indClass = kb.getFactType("org.test","Individual");
-            ITraitable ind = new Individual();
+//            FactType indClass = kb.getFactType("org.test","Entity");
+            TraitableBean ind = new Entity();
 
             TraitProxy proxy2 = (TraitProxy) traitBuilder.getProxy(ind, trait);
 
@@ -549,7 +572,7 @@ public class TraitTest {
 
             FactType traitClass2 = kb.getFactType("org.test","Role");
             Class trait2 = traitClass2.getFactClass();
-            ITraitable ind2 = new Individual();
+            TraitableBean ind2 = new Entity();
 
             TraitProxy proxy99 = (TraitProxy) traitBuilder.getProxy(ind2, trait2);
             Map<String,Object> wrapper99 = proxy99.getFields();
@@ -573,7 +596,7 @@ public class TraitTest {
 
 
 
-            ITraitable ind0 = new Individual();
+            TraitableBean ind0 = new Entity();
 
             TraitProxy proxy100 = (TraitProxy) traitBuilder.getProxy(ind0, trait2);
             Map<String,Object> wrapper100 = proxy100.getFields();
@@ -617,7 +640,7 @@ public class TraitTest {
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
-            ITraitable imp = (ITraitable) impClass.newInstance();
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
             FactType traitClass = kb.getFactType("org.test","Student");
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) traitBuilder.getProxy(imp, trait);
@@ -682,6 +705,8 @@ public class TraitTest {
 
 
 
+
+
     @Test
     public void testTraitWrapper_ClearAndRemove() {
         String source = "org/drools/factmodel/traits/testTraitDon.drl";
@@ -700,12 +725,13 @@ public class TraitTest {
 
         try {
             FactType impClass = kb.getFactType("org.test","Imp");
-            ITraitable imp = (ITraitable) impClass.newInstance();
+            TraitableBean imp = (TraitableBean) impClass.newInstance();
+                impClass.set(imp, "name", "john");
             FactType traitClass = kb.getFactType("org.test","Student");
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) traitBuilder.getProxy(imp, trait);
 
-            impClass.set(imp, "name", "john");
+
             proxy.getFields().put( "surname", "xxx");
             proxy.getFields().put( "name2", "john");
             proxy.getFields().put( "nfield", null );
@@ -731,11 +757,10 @@ public class TraitTest {
 
             assertEquals( 0, fields.get( "age" ) );
             assertNull( fields.get( "school") );
-            assertNull( fields.get( "name") );
+            assertNotNull( fields.get( "name") );
 
 
 
-            impClass.set(imp, "name", "john");
             proxy.getFields().put( "surname", "xxx");
             proxy.getFields().put( "name2", "john");
             proxy.getFields().put("nfield", null);
@@ -749,7 +774,6 @@ public class TraitTest {
             assertEquals( null, proxy.getFields().get( "school" ) );
 
 
-            proxy.getFields().remove( "name" );
             proxy.getFields().remove( "surname" );
             proxy.getFields().remove( "name2" );
             proxy.getFields().remove( "age" );
@@ -759,7 +783,7 @@ public class TraitTest {
 
             assertEquals( 0, proxy.getFields().get( "age" ) );
             assertEquals( null, proxy.getFields().get( "school" ) );
-            assertEquals( null, proxy.getFields().get( "name" ) );
+            assertEquals( "john", proxy.getFields().get( "name" ) );
 
             assertEquals( null, proxy.getFields().get( "nfield" ) );
             assertFalse( proxy.getFields().containsKey( "nfield" ) );
@@ -833,6 +857,8 @@ public class TraitTest {
         ks.setGlobal( "list", info );
 
         ks.fireAllRules();
+
+        Collection wm = ks.getObjects();
 
         assertTrue( info.contains("OK") );
 
@@ -960,6 +986,7 @@ public class TraitTest {
 
 
     }
+
 
 
 

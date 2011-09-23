@@ -1,14 +1,23 @@
 package org.drools.core.util;
 
-public class TripleImpl implements Entry, Triple {
+public class TripleImpl implements Triple {
     private Entry next;
     
     private Object instance;
-    private String property;
+    private Object property;
     private Object value;
-    
+
     public TripleImpl(Object instance,
                   String property,
+                  Object value) {
+        super();
+        this.instance = instance;
+        this.property = property;
+        this.value = value;
+    }
+
+    public TripleImpl(Object instance,
+                  Object property,
                   Object value) {
         super();
         this.instance = instance;
@@ -38,11 +47,11 @@ public class TripleImpl implements Entry, Triple {
     /* (non-Javadoc)
      * @see org.drools.core.util.Triple#getProperty()
      */
-    public String getProperty() {
+    public Object getProperty() {
         return property;
     }
 
-    public void setProperty(String property) {
+    public void setProperty(Object property) {
         this.property = property;
     }
 
@@ -67,25 +76,30 @@ public class TripleImpl implements Entry, Triple {
         return result;
     }
 
-    @Override
     public boolean equals(Object obj) {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         TripleImpl other = (TripleImpl) obj;
+
         if ( instance == null ) {
             if ( other.instance != null ) return false;
-        } else if ( !instance.equals( other.instance ) ) return false;
+        } else if ( ! this.instance.equals( other.instance ) )
+            return false;
+
         if ( property == null ) {
             if ( other.property != null ) return false;
-        } else if ( !property.equals( other.property ) ) return false;
+        } else if ( !property.equals( other.property ) )
+            return false;
+
         if ( value == null ) {
             if ( other.value != null ) return false;
-        } else if ( !value.equals( other.value ) ) return false;
+        } else if ( !value.equals( other.value ) )
+            return false;
+
         return true;
     }
 
-    @Override
     public String toString() {
         return "Triple [instance=" + instance + ", property=" + property + ", value=" + value + "]";
     }

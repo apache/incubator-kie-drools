@@ -1,6 +1,6 @@
 package org.test;
 
-import org.drools.factmodel.traits.Individual;
+import org.drools.factmodel.traits.Entity;
 
 import org.drools.factmodel.traits.ISomethingWithBehaviour;
 
@@ -17,7 +17,7 @@ end
 rule "Init"
 when 
 then 
-    Individual core = new Individual();
+    Entity core = new Entity();
     insert( core );
 end
 
@@ -25,7 +25,7 @@ end
 rule "Mixin'"
 dialect "java"
 when
-    $core: Individual( )
+    $core: Entity( )
 then
     ISomethingWithBehaviour x = don( $core, ISomethingWithBehaviour.class );
     x.setName( "john" );

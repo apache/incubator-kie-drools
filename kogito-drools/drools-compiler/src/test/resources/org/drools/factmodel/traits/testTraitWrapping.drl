@@ -1,8 +1,4 @@
 package org.test;
- 
- 
-import org.drools.factmodel.traits.IThing;
-
 
 
 global java.util.List list;
@@ -70,7 +66,7 @@ then
     t.setByteh( Byte.valueOf("1") );
     if ( $core.getByteh() != 1 ) list.add( " hard byte setter on trait failed, core reports " + $core.getByteh() );
     if ( t.getByteh() != 1 ) list.add( " hard byte getter on trait failed, after set trait reports " + t.getByteh() );
-    if ( ! t.getFields().containsValue( 0 ) ) list.add( " ByteH not found in list of values ");
+    if ( ! t.getFields().containsValue( (byte) 1 ) ) list.add( " ByteH not found in list of values ");
 
     Character c0 = t.getCharh();
     if ( c0 != Character.valueOf('\u0000'.charAt(0)) ) list.add( " hard char default value != '\u0000' <" + c0 + ">");
@@ -143,7 +139,7 @@ then
     if ( b0 != null ) list.add( " soft byte default value != 0 " + b0 );
     t.setBytes( Byte.valueOf("1") );
     if ( t.getBytes() != 1 ) list.add( " soft byte getter on trait failed, after set trait reports " + t.getBytes() );
-    if ( ! t.getFields().containsValue( Byte.valueOf("1") ) ) list.add( " ByteS not found in list of values ");
+    if ( ! t.getFields().containsValue( (byte) 1 ) ) list.add( " ByteS not found in list of values ");
 
     Character c0 = t.getChars();
     if ( c0 != null ) list.add( " soft char default value != '' <" + c0 + ">" );

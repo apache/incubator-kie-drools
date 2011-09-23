@@ -1,7 +1,7 @@
 package org.test;
 
-import org.drools.factmodel.traits.Individual;
-import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Thing;
 
 global java.util.List list;
 
@@ -75,7 +75,7 @@ end
 
 rule "Nothing Left"
 when
-    $t : IThing( this not isA Student && this not isA Worker )
+    $t : Thing( this not isA Student && this not isA Worker )
 then
     list.add("Nothing");
 end

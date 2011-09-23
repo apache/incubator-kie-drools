@@ -16,16 +16,31 @@
 
 package org.drools.factmodel.traits;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
-public interface ITraitable<K> {
+public interface TraitableBean<K> {
 
     public static final String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
-    public String TRAITSET_FIELD_NAME = "__$$dynamic_traits_set$$";
+    public String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
 
     public Map<String,Object> getDynamicProperties();
 
-    public Map<String, ? extends IThing<K>> getTraits();
+    public void setDynamicProperties( Map<String,Object> map );
+
+    public Map<String,Thing> getTraitMap();
+
+    public void setTraitMap( Map<String,Thing> map );
+
+
+    public void addTrait(String type, Thing<K> proxy);
+
+    public Thing<K> getTrait( String type );
+
+    public boolean hasTrait( String type );
+
+    public Thing<K> removeTrait( String type );
+
+    public Collection<String> getTraits();
 
 }

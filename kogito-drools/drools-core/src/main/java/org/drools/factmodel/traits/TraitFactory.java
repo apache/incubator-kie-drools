@@ -20,6 +20,7 @@ import org.drools.KnowledgeBase;
 import org.drools.base.ClassFieldAccessor;
 import org.drools.base.ClassFieldAccessorStore;
 import org.drools.common.AbstractRuleBase;
+import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
@@ -27,17 +28,25 @@ import org.drools.factmodel.FieldDefinition;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.Package;
-import org.mvel2.asm.*;
-
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
 
 import java.io.IOException;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TraitFactory<T extends IThing<K>, K extends ITraitable > implements Opcodes {
+public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes {
 
+    private static TripleStore store = new TripleStore( 500, 0.6f );
+
+    public enum VirtualPropertyMode { MAP, TRIPLES }
+
+    private VirtualPropertyMode mode = VirtualPropertyMode.TRIPLES;
 
     public final static String SUFFIX = "_Trait__Extension";
 
@@ -62,8 +71,8 @@ public class TraitFactory<T extends IThing<K>, K extends ITraitable > implements
     public T getProxy( K core, Class<?> trait ) {
         String traitName = trait.getName();
 
-        if ( core.getTraits().containsKey( traitName ) ) {
-            return (T) core.getTraits().get( traitName );
+        if ( core.hasTrait( traitName ) ) {
+            return (T) core.getTrait( traitName );
         }
 
         String key = getKey( core.getClass(), trait );
@@ -76,8 +85,16 @@ public class TraitFactory<T extends IThing<K>, K extends ITraitable > implements
 
         T proxy = null;
         try {
-            proxy = konst.newInstance( core, core.getDynamicProperties() );
-            core.getTraits().put( traitName, proxy );
+
+            switch ( mode ) {
+                case MAP    :   proxy = konst.newInstance( core, core.getDynamicProperties() );
+                    break;
+                case TRIPLES:   proxy = konst.newInstance( core, store );
+                    break;
+                default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+            }
+
+            core.addTrait( traitName, proxy );
             return proxy;
         } catch (InstantiationException e) {
             e.printStackTrace();
@@ -102,10 +119,19 @@ public class TraitFactory<T extends IThing<K>, K extends ITraitable > implements
             return null;
         }
         try {
-            Constructor konst = proxyClass.getConstructor( core.getClass(), Map.class );
+            Constructor konst;
+            switch ( mode ) {
+                case MAP    :   konst = proxyClass.getConstructor( core.getClass(), Map.class );
+                    break;
+                case TRIPLES:   konst = proxyClass.getConstructor( core.getClass(), TripleStore.class );
+                    break;
+                default     :   throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+            }
+
             factoryCache.put( key, konst );
             return konst;
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -143,23 +169,37 @@ public class TraitFactory<T extends IThing<K>, K extends ITraitable > implements
 
 
 
-        TraitProxyClassBuilder propWrapperBuilder = new TraitPropertyWrapperClassBuilderImpl();
+        TraitProxyClassBuilder propWrapperBuilder;
+        switch ( mode ) {
+            case TRIPLES    : propWrapperBuilder = new TraitTripleWrapperClassBuilderImpl();
+                    break;
+            case MAP        : propWrapperBuilder = new TraitPropertyWrapperClassBuilderImpl();
+                    break;
+            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+        }
             propWrapperBuilder.init( tdef );
         try {
             byte[] propWrapper = propWrapperBuilder.buildClass( cdef );
             data.write(JavaDialectRuntimeData.convertClassToResourcePath( wrapperName ), propWrapper );
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
 
-        TraitProxyClassBuilder proxyBuilder = new TraitProxyClassBuilderImpl();
+        TraitProxyClassBuilder proxyBuilder;
+        switch ( mode ) {
+            case TRIPLES    : proxyBuilder = new TraitTripleProxyClassBuilderImpl();
+                    break;
+            case MAP        : proxyBuilder = new TraitProxyClassBuilderImpl();
+                    break;
+            default         : throw new RuntimeException( " This should not happen : unexpected property wrapping method " + mode );
+        }
             proxyBuilder.init( tdef );
         try {
             byte[] proxy = proxyBuilder.buildClass( cdef );
             data.write(JavaDialectRuntimeData.convertClassToResourcePath( proxyName ), proxy);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
         data.onBeforeExecute();

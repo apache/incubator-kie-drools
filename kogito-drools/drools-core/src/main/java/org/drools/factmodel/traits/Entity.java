@@ -19,49 +19,71 @@ package org.drools.factmodel.traits;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
-public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
+@Traitable
+public class Entity implements TraitableBean {
 
-    private Imp core;
+
+    private String id;
+
     private Map<String,Object> __$$dynamic_properties_map$$;
     private Map<String,Thing> __$$dynamic_traits_map$$;
 
-    public Map<String, Object> getDynamicProperties() {
-        if ( __$$dynamic_properties_map$$ == null ) {
-             __$$dynamic_properties_map$$ = new HashMap<String, Object>();
-        }
-        return __$$dynamic_properties_map$$;
+    public Entity() {
+        id = UUID.randomUUID().toString();
     }
 
-    public void setDynamicProperties(Map<String, Object> map) {
+    public Entity(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Map<String, Object> getDynamicProperties() {
+        if ( __$$dynamic_properties_map$$ == null ) {
+            __$$dynamic_properties_map$$ = new HashMap<String,Object>();
+        }
+        return  __$$dynamic_properties_map$$;
+    }
+
+    public void setDynamicProperties(Map map) {
         __$$dynamic_properties_map$$ = map;
     }
 
 
-    public Map<String,Thing> getTraitMap() {
+
+    public void setTraitMap(Map map) {
+        __$$dynamic_traits_map$$ = map;
+    }
+
+
+    public Map<String, Thing> getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
             __$$dynamic_traits_map$$ = new HashMap<String, Thing>();
         }
         return __$$dynamic_traits_map$$;
     }
 
-    public void setTraitMap(Map map) {
-        this.__$$dynamic_traits_map$$ = map;
-    }
-
-    public void addTrait(String type, Thing<Imp> proxy) {
+    public void addTrait(String type, Thing proxy) {
         getTraitMap().put(type, proxy);
     }
 
-    public Thing<Imp> getTrait(String type) {
+    public Thing getTrait(String type) {
         return getTraitMap().get( type );
     }
 
     public boolean hasTrait(String type) {
-        return getTraitMap().containsKey( type );
+        return getTraitMap().containsKey(type);
     }
 
-    public Thing<Imp> removeTrait(String type) {
+    public Thing removeTrait(String type) {
         return getTraitMap().remove( type );
     }
 
@@ -69,58 +91,18 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp> {
         return getTraitMap().keySet();
     }
 
-//    public Map getTraits() {
-//        return __$$dynamic_traits_set$$;
-//    }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Entity that = (Entity) o;
 
+        return !(id != null ? !id.equals(that.id) : that.id != null);
 
-
-
-    public void init(Imp core) {
-        this.core = core;
-    }
-
-
-
-
-
-    public String getSchool() {
-        return core.getSchool();
-    }
-
-    public void setSchool( String school ) {
-        core.setSchool( school );
-    }
-
-    public String getName() {
-        return core.getName();
-    }
-
-    public void setName( String name ) {
-        core.setSchool( name );
-    }
-
-
-
-
-
-    public double testMethod( String arg1, int arg2, Object arg3, double arg4 ) {
-        return core.testMethod(arg1,arg2, arg3, arg4);
-    }
-
-
-    public boolean equals( Object other ) {
-        return core.equals( other );
-    }
-
-    public String toString() {
-        return core.toString();
     }
 
     public int hashCode() {
-        return core.hashCode();
+        return id != null ? id.hashCode() : 0;
     }
-
-
 }
+

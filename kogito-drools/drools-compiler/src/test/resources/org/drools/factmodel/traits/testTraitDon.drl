@@ -1,6 +1,6 @@
 package org.test;
 
-import org.drools.factmodel.traits.Individual;
+import org.drools.factmodel.traits.Entity;
 
 
 global java.util.List list;
@@ -32,7 +32,7 @@ end
  
 declare Imp
     @Traitable 
-    name    : String
+    name    : String    @key
     school  : String
 end
  
@@ -81,7 +81,6 @@ then
     Student s = don( $core, Student.class, true );
     Imp core = (Imp) s.getCore();
 
-    s.setName( "abc" );
     s.setAge( 88 );
     s.setSchool( "skl" );
 
@@ -91,7 +90,7 @@ end
 rule "Check" 
 no-loop 
 when
-    $z: Student( $s : school == "skl", fields[ "name" ] == "abc", $a : age == 88 )
+    $z: Student( $s : school == "skl", fields[ "name" ] == "xx", $a : age == 88 )
 then
     list.add( "DON" );
 end 

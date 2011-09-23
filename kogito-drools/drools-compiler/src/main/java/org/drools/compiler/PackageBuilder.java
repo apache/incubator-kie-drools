@@ -56,10 +56,10 @@ import org.drools.factmodel.ClassBuilder;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.factmodel.traits.TraitRegistry;
-import org.drools.factmodel.traits.IThing;
+import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitFactory;
-import org.drools.factmodel.traits.ITraitable;
+import org.drools.factmodel.traits.TraitRegistry;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.Traitable;
 import org.drools.factmodel.traits.Trait;
 import org.drools.facttemplates.FactTemplate;
@@ -311,14 +311,14 @@ public class PackageBuilder {
         builtinTypes.put( Activation.class.getCanonicalName(),
                           activationType );
 
-        TypeDeclaration thingType = new TypeDeclaration( IThing.class.getName() );
+        TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
         thingType.setFormat( TypeDeclaration.Format.TRAIT );
-        thingType.setTypeClass( IThing.class );
-        builtinTypes.put( IThing.class.getCanonicalName(),
+        thingType.setTypeClass( Thing.class );
+        builtinTypes.put( Thing.class.getCanonicalName(),
                           thingType );
         ClassDefinition def = new ClassDefinition();
             def.setClassName( thingType.getTypeClass().getName() );
-            def.setDefinedClass( IThing.class );
+            def.setDefinedClass( Thing.class );
         TraitRegistry.getInstance().addTrait( def );
 
 
@@ -1929,14 +1929,14 @@ public class PackageBuilder {
         for ( TypeDeclarationDescr.QualifiedName qname : typeDescr.getSuperTypes() ) {
             fullSuperTypes[ j++ ] = qname.getFullName();
         }
-        fullSuperTypes[ j++ ] = IThing.class.getName();
+        fullSuperTypes[ j++ ] = Thing.class.getName();
 
 
 
         List<String> interfaceList = new ArrayList<String>();
             interfaceList.add( Serializable.class.getName() );
             if ( traitable ) {
-                interfaceList.add( ITraitable.class.getName() );
+                interfaceList.add( TraitableBean.class.getName() );
             }
         String[] interfaces = interfaceList.toArray( new String[ interfaceList.size() ] );
 
@@ -2022,7 +2022,7 @@ public class PackageBuilder {
                     PackageRegistry reg = this.pkgRegistryMap.get( typeDescr.getNamespace() );
                     String availableName = typeDescr.getType().getFullName();
                     Class< ? > resolvedType = reg.getTypeResolver().resolveType( availableName );
-                    if ( ! IThing.class.isAssignableFrom( resolvedType) ) {
+                    if ( ! Thing.class.isAssignableFrom( resolvedType) ) {
                         updateTraitDefinition( type, resolvedType );
 
                             String target = typeDescr.getTypeName() + TraitFactory.SUFFIX;
@@ -2685,7 +2685,7 @@ public class PackageBuilder {
         }
     }
 
-    //Individual rules inherit package attributes
+    //Entity rules inherit package attributes
     private void inheritPackageAttributes(Map<String, AttributeDescr> pkgAttributes,
                                           RuleDescr ruleDescr) {
         if ( pkgAttributes == null ) {

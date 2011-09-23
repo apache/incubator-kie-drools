@@ -37,8 +37,8 @@ import org.drools.common.LogicalDependency;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.traits.CoreWrapper;
-import org.drools.factmodel.traits.IThing;
-import org.drools.factmodel.traits.ITraitable;
+import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ReteooWorkingMemory;
@@ -474,9 +474,9 @@ public class DefaultKnowledgeHelper
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
         TraitFactory builder = new TraitFactory( this.getKnowledgeRuntime().getKnowledgeBase() );
 
-        ITraitable inner;
-        if ( core instanceof ITraitable ) {
-            inner = (ITraitable) core;
+        TraitableBean inner;
+        if ( core instanceof TraitableBean) {
+            inner = (TraitableBean) core;
         } else {
             CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
             if ( wrapper == null ) {
@@ -489,8 +489,8 @@ public class DefaultKnowledgeHelper
 
         T thing = (T) builder.getProxy( inner, trait );
 
-        if ( ! inner.getTraits().containsKey(IThing.class.getName() ) ) {
-            insert( don( inner, IThing.class, false) );
+        if ( ! inner.hasTrait( Thing.class.getName() ) ) {
+            insert( don( inner, Thing.class, false ) );
         }
 
         if ( logical ) {
@@ -502,7 +502,7 @@ public class DefaultKnowledgeHelper
         return thing;
     }
 
-    public <T, K> T don( IThing<K> core, Class<T> trait, boolean logical ) {
+    public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical ) {
         return don( core.getCore(), trait, logical );
     }
 
@@ -510,17 +510,17 @@ public class DefaultKnowledgeHelper
         return don( core, trait, false );
     }
 
-    public <T, K> T don( IThing<K> core, Class<T> trait ) {
+    public <T, K> T don( Thing<K> core, Class<T> trait ) {
         return don( core.getCore(), trait );
     }
 
-    public <T,K> IThing<K> shed( IThing<K> thing, Class<T> trait ) {
-        return shed((ITraitable<K>) thing.getCore(), trait);
+    public <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait ) {
+        return shed((TraitableBean<K>) thing.getCore(), trait);
     }
 
-    public <T,K> IThing<K> shed( ITraitable<K> core, Class<T> trait ) {
-        retract( core.getTraits().remove(trait.getName() ) );
-        IThing thing = core.getTraits().get( IThing.class.getName() );
+    public <T,K> Thing<K> shed( TraitableBean<K> core, Class<T> trait ) {
+        retract( core.removeTrait( trait.getName() ) );
+        Thing thing = core.getTrait( Thing.class.getName() );
         update( thing );
         return thing;
     }

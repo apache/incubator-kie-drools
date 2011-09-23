@@ -17,7 +17,7 @@
 package org.drools.factmodel.traits;
 
 @Trait
-public interface IStudent<K> extends IPerson<K>,IThing<K> {
+public interface IStudent<K> extends IPerson<K>,Thing<K> {
 
     public String getSchool();
     public void setSchool( String school );
