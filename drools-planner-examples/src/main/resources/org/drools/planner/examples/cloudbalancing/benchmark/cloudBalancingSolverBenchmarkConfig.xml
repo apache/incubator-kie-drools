@@ -10,8 +10,8 @@
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0004comp-0012proc.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0100comp-0300proc.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0300comp-0900proc.xml</unsolvedSolutionFile>
-    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-1000comp-3000proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0400comp-1200proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0800comp-2400proc.xml</unsolvedSolutionFile>
 
     <solver>
       <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>

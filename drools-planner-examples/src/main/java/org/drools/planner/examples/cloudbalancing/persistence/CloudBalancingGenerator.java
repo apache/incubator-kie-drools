@@ -108,8 +108,8 @@ public class CloudBalancingGenerator extends LoggingMain {
         writeCloudBalance(4, 12);
         writeCloudBalance(100, 300);
         writeCloudBalance(200, 600);
-        writeCloudBalance(300, 900);
-        writeCloudBalance(1000, 3000);
+        writeCloudBalance(400, 1200);
+        writeCloudBalance(800, 2400);
     }
 
     private void checkConfiguration() {

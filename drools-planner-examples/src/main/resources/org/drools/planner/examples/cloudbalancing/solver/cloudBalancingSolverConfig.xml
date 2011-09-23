@@ -7,16 +7,14 @@
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
-  <termination>
-    <maximumSecondsSpend>120</maximumSecondsSpend>
-  </termination>
-  <!--<bruteForce>-->
-  <!--</bruteForce>-->
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
     <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
   </constructionHeuristic>
   <localSearch>
+    <termination>
+      <maximumSecondsSpend>120</maximumSecondsSpend>
+    </termination>
     <selector>
       <selector>
         <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
