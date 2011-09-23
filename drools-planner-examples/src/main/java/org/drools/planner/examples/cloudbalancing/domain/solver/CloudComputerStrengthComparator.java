@@ -16,13 +16,14 @@
 
 package org.drools.planner.examples.cloudbalancing.domain.solver;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
-public class CloudComputerStrengthComparator implements Comparator<Object> {
+public class CloudComputerStrengthComparator implements Comparator<Object>, Serializable {
 
     public int compare(Object a, Object b) {
         return compare((CloudComputer) a, (CloudComputer) b);

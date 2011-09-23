@@ -16,12 +16,13 @@
 
 package org.drools.planner.examples.cloudbalancing.domain.solver;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 
-public class CloudAssignmentDifficultyComparator implements Comparator<Object> {
+public class CloudAssignmentDifficultyComparator implements Comparator<Object>, Serializable {
 
     public int compare(Object a, Object b) {
         return compare((CloudAssignment) a, (CloudAssignment) b);
