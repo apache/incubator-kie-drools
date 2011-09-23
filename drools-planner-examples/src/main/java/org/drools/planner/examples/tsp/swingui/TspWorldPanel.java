@@ -74,7 +74,7 @@ public class TspWorldPanel extends JPanel {
         repaint();
     }
 
-    private class LatitudeLongitudeTranslator {
+    private static class LatitudeLongitudeTranslator {
 
         private double minimumLatitude = Double.MAX_VALUE;
         private double maximumLatitude = -Double.MAX_VALUE;
