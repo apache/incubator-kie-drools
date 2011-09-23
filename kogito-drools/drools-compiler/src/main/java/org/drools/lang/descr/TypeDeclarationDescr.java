@@ -102,6 +102,18 @@ public class TypeDeclarationDescr extends AnnotatedBaseDescr
         type = new QualifiedName( name, namespace );
     }
 
+    public String getSuperTypeName() {
+        return superTypes == null ? null : superTypes.get(0).getName();
+    }
+
+    public String getSuperTypeNamespace() {
+        return superTypes == null ? null : superTypes.get(0).getNamespace();
+    }
+
+    public String getSupertTypeFullName() {
+        return superTypes == null ? null : superTypes.get(0).getFullName();
+    }
+
 
     /**
     * @return the fields
