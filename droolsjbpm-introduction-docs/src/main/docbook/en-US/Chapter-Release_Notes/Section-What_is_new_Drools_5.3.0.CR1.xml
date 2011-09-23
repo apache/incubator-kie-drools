@@ -243,4 +243,47 @@ end
       see everything. The log is also now easier to read.</para>
     </section>
   </section>
+
+    <section>
+        <title>Expert</title>
+        <section>
+            <title>Traits (experimental)</title>
+            <para>A Drools Trait is a bean interface which can be attached - and removed - to and from an individual object at runtime.
+            While an object wears a trait, a reference of the trait type is returned, so methods defined in the trait interface can
+            be called normally. A trait, then, adds a type and some fields to an object. If a bean has a field of the given name and
+            type, that field will be used to support the interface. ''Virtual'' fields, instead, will be stored as entries in a map,
+            or as triples in an in-memory store.</para>
+            <para>Traits are <literal>declared</literal> with the attribute <literal>@format(trait)</literal>. Unlike normal beans,
+            declared traits will generate interfaces instead of classes: the declared fields will be mapped to getters/setters.
+            Notice that multiple traits can be worn at the same time.</para>
+            <section>
+                <title><literal>IsA operator</literal></title>
+                <para>The operator isA can be used in patterns to check whether an object is wearing a trait or not</para>
+                <para>E.g. <literal>Worker( this isA Student )</literal></para>
+            </section>
+            <section>
+                <title>Special Classes</title>
+                <itemizedlist>
+                    <listitem>
+                        <para><literal>Thing</literal> : Interface, automatically extended by all traits </para>
+                    </listitem>
+                    <listitem>
+                        <para><literal>Entity</literal> : Class without concrete fields, optimized for virtual fields </para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+            <section>
+                <title>Usage</title>
+                <para>To add/remove a trait to an object, in the RHS:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para><literal>TraitClass traited = don( $object, TraitClass )</literal></para>
+                    </listitem>
+                    <listitem>
+                        <para><literal>Thing stripped = shed( $traitedObject, TraitClass )</literal></para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+        </section>
+    </section>
 </section>
