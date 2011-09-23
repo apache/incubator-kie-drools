@@ -57,11 +57,11 @@ public class Patient extends AbstractPersistable implements Comparable<Patient> 
         this.age = age;
     }
 
-    public int getPreferredMaximumRoomCapacity() {
+    public Integer getPreferredMaximumRoomCapacity() {
         return preferredMaximumRoomCapacity;
     }
 
-    public void setPreferredMaximumRoomCapacity(int preferredMaximumRoomCapacity) {
+    public void setPreferredMaximumRoomCapacity(Integer preferredMaximumRoomCapacity) {
         this.preferredMaximumRoomCapacity = preferredMaximumRoomCapacity;
     }
 
