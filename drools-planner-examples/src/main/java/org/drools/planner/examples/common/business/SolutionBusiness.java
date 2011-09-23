@@ -231,7 +231,7 @@ public class SolutionBusiness {
         solver.terminateEarly();
     }
 
-    public class SolverExampleFileFilter implements FileFilter {
+    public static class SolverExampleFileFilter implements FileFilter {
 
         public boolean accept(File file) {
             if (file.isDirectory() || file.isHidden()) {
