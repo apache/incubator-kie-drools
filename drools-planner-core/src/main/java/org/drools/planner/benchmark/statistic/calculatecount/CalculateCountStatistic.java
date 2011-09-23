@@ -98,7 +98,7 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected class CalculateCountScvLine extends AbstractSolverStatisticScvLine {
+    protected static class CalculateCountScvLine extends AbstractSolverStatisticScvLine {
 
         private Map<String, Long> configNameToCalculateCountPerSecondMap;
 

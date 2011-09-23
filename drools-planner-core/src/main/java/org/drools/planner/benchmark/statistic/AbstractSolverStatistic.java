@@ -40,7 +40,7 @@ public abstract class AbstractSolverStatistic implements SolverStatistic {
 
     protected abstract CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName);
 
-    protected abstract class AbstractSolverStatisticScvLine implements Comparable<AbstractSolverStatisticScvLine> {
+    protected static abstract class AbstractSolverStatisticScvLine implements Comparable<AbstractSolverStatisticScvLine> {
 
         protected long timeMillisSpend;
 

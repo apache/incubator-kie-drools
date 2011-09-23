@@ -98,7 +98,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected class MemoryUseScvLine extends AbstractSolverStatisticScvLine {
+    protected static class MemoryUseScvLine extends AbstractSolverStatisticScvLine {
 
         private Map<String, MemoryUseMeasurement> configNameToMemoryUseMeasurementMap;
 

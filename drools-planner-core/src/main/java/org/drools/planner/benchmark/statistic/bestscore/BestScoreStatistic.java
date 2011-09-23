@@ -109,7 +109,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected class BestScoreScvLine extends AbstractSolverStatisticScvLine {
+    protected static class BestScoreScvLine extends AbstractSolverStatisticScvLine {
 
         private Map<String, Score> configNameToScoreMap;
 
