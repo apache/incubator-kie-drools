@@ -19,9 +19,9 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <!--<termination>-->
-        <!--<maximumMinutesSpend>2</maximumMinutesSpend>-->
-      <!--</termination>-->
+      <termination>
+        <maximumMinutesSpend>10</maximumMinutesSpend>
+      </termination>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -59,6 +59,59 @@
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
+    <name>propertyTabu7</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>7</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>propertyTabu11</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <completePropertyTabuSize>11</completePropertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
     </solver>
   </solverBenchmark>
 </solverBenchmarkSuite>
