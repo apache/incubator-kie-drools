@@ -163,8 +163,11 @@ public class SolutionDescriptor implements Serializable {
     public boolean isInitialized(Solution solution) {
         for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
             Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+            if (entity == null) {
+                return false;
+            }
             PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
-            if (entity == null || !planningEntityDescriptor.isInitialized(entity)) {
+            if (!planningEntityDescriptor.isInitialized(entity)) {
                 return false;
             }
         }
