@@ -98,26 +98,17 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected class MemoryUseScvLine implements Comparable<MemoryUseScvLine> {
+    protected class MemoryUseScvLine extends AbstractSolverStatisticScvLine {
 
-        private long timeMillisSpend;
         private Map<String, MemoryUseMeasurement> configNameToMemoryUseMeasurementMap;
 
         public MemoryUseScvLine(long timeMillisSpend) {
-            this.timeMillisSpend = timeMillisSpend;
+            super(timeMillisSpend);
             configNameToMemoryUseMeasurementMap = new HashMap<String, MemoryUseMeasurement>();
-        }
-
-        public long getTimeMillisSpend() {
-            return timeMillisSpend;
         }
 
         public Map<String, MemoryUseMeasurement> getConfigNameToMemoryUseMeasurementMap() {
             return configNameToMemoryUseMeasurementMap;
-        }
-
-        public int compareTo(MemoryUseScvLine other) {
-            return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 
     }

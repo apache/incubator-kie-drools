@@ -109,26 +109,17 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected class BestScoreScvLine implements Comparable<BestScoreScvLine> {
+    protected class BestScoreScvLine extends AbstractSolverStatisticScvLine {
 
-        private long timeMillisSpend;
         private Map<String, Score> configNameToScoreMap;
 
         public BestScoreScvLine(long timeMillisSpend) {
-            this.timeMillisSpend = timeMillisSpend;
+            super(timeMillisSpend);
             configNameToScoreMap = new HashMap<String, Score>();
-        }
-
-        public long getTimeMillisSpend() {
-            return timeMillisSpend;
         }
 
         public Map<String, Score> getConfigNameToScoreMap() {
             return configNameToScoreMap;
-        }
-
-        public int compareTo(BestScoreScvLine other) {
-            return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 
     }

@@ -63,6 +63,7 @@ public class XmlSolverBenchmarker {
             throw new IllegalStateException("This vm does not support utf-8 encoding.", e);
         } finally {
             IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(in);
         }
     }
 

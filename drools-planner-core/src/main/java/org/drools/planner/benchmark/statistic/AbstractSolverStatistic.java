@@ -17,6 +17,8 @@
 package org.drools.planner.benchmark.statistic;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class AbstractSolverStatistic implements SolverStatistic {
 
@@ -37,5 +39,23 @@ public abstract class AbstractSolverStatistic implements SolverStatistic {
     protected abstract CharSequence writeCsvStatistic(File solverStatisticFilesDirectory, String baseName);
 
     protected abstract CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName);
+
+    protected abstract class AbstractSolverStatisticScvLine implements Comparable<AbstractSolverStatisticScvLine> {
+
+        protected long timeMillisSpend;
+
+        public AbstractSolverStatisticScvLine(long timeMillisSpend) {
+            this.timeMillisSpend = timeMillisSpend;
+        }
+
+        public long getTimeMillisSpend() {
+            return timeMillisSpend;
+        }
+
+        public int compareTo(AbstractSolverStatisticScvLine other) {
+            return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
+        }
+
+    }
 
 }

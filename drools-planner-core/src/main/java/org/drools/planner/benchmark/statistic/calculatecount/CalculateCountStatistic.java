@@ -98,26 +98,17 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
         return csvLineList;
     }
 
-    protected class CalculateCountScvLine implements Comparable<CalculateCountScvLine> {
+    protected class CalculateCountScvLine extends AbstractSolverStatisticScvLine {
 
-        private long timeMillisSpend;
         private Map<String, Long> configNameToCalculateCountPerSecondMap;
 
         public CalculateCountScvLine(long timeMillisSpend) {
-            this.timeMillisSpend = timeMillisSpend;
+            super(timeMillisSpend);
             configNameToCalculateCountPerSecondMap = new HashMap<String, Long>();
-        }
-
-        public long getTimeMillisSpend() {
-            return timeMillisSpend;
         }
 
         public Map<String, Long> getConfigNameToCalculateCountPerSecondMap() {
             return configNameToCalculateCountPerSecondMap;
-        }
-
-        public int compareTo(CalculateCountScvLine other) {
-            return timeMillisSpend < other.timeMillisSpend ? -1 : (timeMillisSpend > other.timeMillisSpend ? 1 : 0);
         }
 
     }
