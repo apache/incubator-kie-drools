@@ -180,7 +180,7 @@ public class PatientAdmissionScheduleStartingSolutionInitializer implements Cust
         return bedDesignationList;
     }
 
-    private class BedDesignationInitializationWeight implements Comparable<BedDesignationInitializationWeight> {
+    private static class BedDesignationInitializationWeight implements Comparable<BedDesignationInitializationWeight> {
 
         private BedDesignation bedDesignation;
         private int nightCount;
