@@ -47,9 +47,9 @@ public class TraitRegistry {
 
     private TraitRegistry() {
         ClassDefinition individualDef = new ClassDefinition();
-            individualDef.setClassName( Individual.class.getName() );
-            individualDef.setDefinedClass(Individual.class);
-            individualDef.setInterfaces( new String[] { Serializable.class.getName(), ITraitable.class.getName() } );
+            individualDef.setClassName( Entity.class.getName() );
+            individualDef.setDefinedClass(Entity.class);
+            individualDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
             individualDef.setTraitable( true );
         addTraitable( individualDef );
 

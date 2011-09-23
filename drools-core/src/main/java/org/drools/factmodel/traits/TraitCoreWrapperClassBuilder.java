@@ -17,9 +17,7 @@
 package org.drools.factmodel.traits;
 
 import org.drools.factmodel.ClassBuilder;
-import org.drools.factmodel.ClassDefinition;
 
 public interface TraitCoreWrapperClassBuilder extends ClassBuilder {
-
 
 }

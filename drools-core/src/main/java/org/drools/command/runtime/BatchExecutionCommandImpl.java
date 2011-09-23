@@ -164,4 +164,11 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
     public String getLookup() {
         return lookup;
     }
+
+    public String toString() {
+        return "BatchExecutionCommandImpl{" +
+                "lookup='" + lookup + '\'' +
+                ", commands=" + commands +
+                '}';
+    }
 }

@@ -20,12 +20,11 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.common.InternalWorkingMemoryActions;
-import org.drools.factmodel.traits.IThing;
-import org.drools.factmodel.traits.ITraitable;
+import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.rule.Declaration;
@@ -186,7 +185,7 @@ public class SequentialKnowledgeHelper
         return null;
     }
 
-    public <T, K> T don(IThing<K> core, Class<T> trait, boolean logical) {
+    public <T, K> T don(Thing<K> core, Class<T> trait, boolean logical) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -194,15 +193,15 @@ public class SequentialKnowledgeHelper
         return don( core, trait, false );
     }
 
-    public <T, K> T don(IThing<K> core, Class<T> trait) {
+    public <T, K> T don(Thing<K> core, Class<T> trait) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public <T,K> IThing<K> shed( IThing<K> thing, Class<T> trait ) {
+    public <T,K> Thing<K> shed( Thing<K> thing, Class<T> trait ) {
         return null;
     }
 
-    public <T, K> IThing<K> shed( ITraitable<K> core, Class<T> trait) {
+    public <T, K> Thing<K> shed( TraitableBean<K> core, Class<T> trait) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

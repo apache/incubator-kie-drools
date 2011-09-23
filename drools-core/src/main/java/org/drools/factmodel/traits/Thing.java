@@ -16,20 +16,13 @@
 
 package org.drools.factmodel.traits;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Traitable
-public class Individual implements ITraitable {
+@Trait
+public interface Thing<K> {
 
-    private Map<String,Object> __$$dynamic_properties_map$$ = new HashMap<String, Object>();
-    private Map<String,Class> __$$dynamic_traits_set$$ = new HashMap<String, Class>();
+    public Map<String,Object> getFields();
 
-    public Map<String, Object> getDynamicProperties() {
-        return __$$dynamic_properties_map$$;
-    }
+    public K getCore();
 
-    public Map getTraits() {
-        return __$$dynamic_traits_set$$;
-    }
 }
