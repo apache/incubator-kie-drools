@@ -213,7 +213,7 @@ public class DefaultSolutionDirector implements SolutionDirector {
         return summary.toString();
     }
 
-    private class SummaryLine {
+    private static class SummaryLine {
         private int count = 0;
         private Number weightTotal = null;
 
