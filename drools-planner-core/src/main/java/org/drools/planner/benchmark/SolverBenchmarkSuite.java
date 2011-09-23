@@ -422,7 +422,8 @@ public class SolverBenchmarkSuite {
         htmlFragment.append("  <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart());
         htmlFragment.append(writeTimeSpendSummaryChart());
-        htmlFragment.append(writeScalabilitySummaryChart());
+        // TODO scalability summary chart must be n based instead of score based (the latter is misleading)
+//        htmlFragment.append(writeScalabilitySummaryChart());
         htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistics</h1>\n");
         for (Map.Entry<File, List<SolverStatistic>> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
