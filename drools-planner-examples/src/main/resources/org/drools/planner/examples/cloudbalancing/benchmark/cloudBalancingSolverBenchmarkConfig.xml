@@ -11,6 +11,7 @@
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0100comp-0300proc.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-0300comp-0900proc.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/cloudbalancing/unsolved/cb-1000comp-3000proc.xml</unsolvedSolutionFile>
 
     <solver>
       <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
@@ -19,11 +20,16 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <termination>
-        <maximumMinutesSpend>10</maximumMinutesSpend>
-      </termination>
     </solver>
   </inheritedSolverBenchmark>
+
+  <!--<solverBenchmark>-->
+    <!--<name>bruteForce</name>-->
+    <!--<solver>-->
+      <!--<bruteForce>-->
+      <!--</bruteForce>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
 
   <solverBenchmark>
     <name>FIRST_FIT</name>
@@ -62,56 +68,62 @@
     </solver>
   </solverBenchmark>
 
-  <solverBenchmark>
-    <name>propertyTabu7</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>7</completePropertyTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>propertyTabu11</name>
-    <solver>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-      </constructionHeuristic>
-      <localSearch>
-        <selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
-          </selector>
-          <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
-          </selector>
-        </selector>
-        <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>11</completePropertyTabuSize>
-        </acceptor>
-        <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
+  <!--<solverBenchmark>-->
+    <!--<name>propertyTabu7</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+        <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<termination>-->
+          <!--<maximumUnimprovedStepCount>10</maximumUnimprovedStepCount>-->
+        <!--</termination>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+          <!--<completePropertyTabuSize>7</completePropertyTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>1000</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+  <!--<solverBenchmark>-->
+    <!--<name>propertyTabu11</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+        <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
+      <!--</constructionHeuristic>-->
+      <!--<localSearch>-->
+        <!--<termination>-->
+          <!--<maximumUnimprovedStepCount>10</maximumUnimprovedStepCount>-->
+        <!--</termination>-->
+        <!--<selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+          <!--<selector>-->
+            <!--<moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>-->
+          <!--</selector>-->
+        <!--</selector>-->
+        <!--<acceptor>-->
+          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
+          <!--<completePropertyTabuSize>11</completePropertyTabuSize>-->
+        <!--</acceptor>-->
+        <!--<forager>-->
+          <!--<minimalAcceptedSelection>1000</minimalAcceptedSelection>-->
+        <!--</forager>-->
+      <!--</localSearch>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
 </solverBenchmarkSuite>

@@ -109,6 +109,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         writeCloudBalance(100, 300);
         writeCloudBalance(200, 600);
         writeCloudBalance(300, 900);
+        writeCloudBalance(1000, 3000);
     }
 
     private void checkConfiguration() {
@@ -137,7 +138,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
-        random = new Random(37);
+        random = new Random(47);
         CloudBalance cloudBalance = new CloudBalance();
         cloudBalance.setId(0L);
         createCloudComputerList(cloudBalance,cloudComputerListSize);
