@@ -348,7 +348,7 @@ public class ExaminationStartingSolutionInitializer implements CustomSolverPhase
 
     }
 
-    private class PeriodScoring implements Comparable<PeriodScoring> {
+    private static class PeriodScoring implements Comparable<PeriodScoring> {
 
         private Period period;
         private Score score;
