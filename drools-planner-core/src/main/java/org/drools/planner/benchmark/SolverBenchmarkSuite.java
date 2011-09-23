@@ -16,6 +16,7 @@
 
 package org.drools.planner.benchmark;
 
+import java.awt.BasicStroke;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -549,11 +550,15 @@ public class SolverBenchmarkSuite {
             seriesCollection.addSeries(series);
             plot.setDataset(seriesIndex, seriesCollection);
             XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
+            // Use dashed line
+            renderer.setSeriesStroke(0, new BasicStroke(
+                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
+            ));
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
         plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart("Scalability summary",
+        JFreeChart chart = new JFreeChart("Scalability summary (lower and lefter is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File chartSummaryFile = new File(solverStatisticFilesDirectory, "scalabilitySummary.png");
