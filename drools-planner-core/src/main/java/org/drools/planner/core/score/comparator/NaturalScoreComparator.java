@@ -16,6 +16,7 @@
 
 package org.drools.planner.core.score.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.drools.planner.core.score.Score;
@@ -23,7 +24,7 @@ import org.drools.planner.core.score.Score;
 /**
  * Compares by the natural order of scores.
  */
-public class NaturalScoreComparator implements Comparator<Score> {
+public class NaturalScoreComparator implements Comparator<Score>, Serializable {
 
     public int compare(Score score1, Score score2) {
         return score1.compareTo(score2);
