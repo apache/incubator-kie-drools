@@ -16,6 +16,7 @@
 
 package org.drools.planner.benchmark;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.score.Score;
 
-public class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark> {
+public class WorstScoreSolverBenchmarkComparator implements Comparator<SolverBenchmark>, Serializable {
 
     public int compare(SolverBenchmark a, SolverBenchmark b) {
         List<Score> aScoreList = a.getScoreList();
