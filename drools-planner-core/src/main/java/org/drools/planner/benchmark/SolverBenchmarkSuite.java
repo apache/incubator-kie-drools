@@ -70,6 +70,8 @@ import org.jfree.chart.labels.ItemLabelAnchor;
 import org.jfree.chart.labels.ItemLabelPosition;
 import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
 import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
+import org.jfree.chart.labels.StandardXYItemLabelGenerator;
+import org.jfree.chart.labels.XYItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -465,8 +467,7 @@ public class SolverBenchmarkSuite {
                 dataset, PlotOrientation.VERTICAL, true, true, false
         );
         CategoryItemRenderer renderer = ((CategoryPlot) chart.getPlot()).getRenderer();
-        CategoryItemLabelGenerator generator = new StandardCategoryItemLabelGenerator();
-        renderer.setBaseItemLabelGenerator(generator);
+        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         renderer.setBaseItemLabelsVisible(true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File chartSummaryFile = new File(solverStatisticFilesDirectory, "bestScoreSummary.png");
@@ -527,7 +528,7 @@ public class SolverBenchmarkSuite {
 
     private CharSequence writeScalabilitySummaryChart() {
         NumberAxis xAxis = new NumberAxis("Score");
-        xAxis.setAutoRangeIncludesZero(false);
+        xAxis.setInverted(true);
         NumberAxis yAxis = new NumberAxis("Time millis spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
@@ -547,11 +548,7 @@ public class SolverBenchmarkSuite {
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
             plot.setDataset(seriesIndex, seriesCollection);
-            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES);
-            ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
-                    ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
-            renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
-            renderer.setBaseItemLabelsVisible(true);
+            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
