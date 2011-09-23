@@ -47,8 +47,8 @@ public class DoubleConstraintOccurrence extends ConstraintOccurrence {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof IntConstraintOccurrence) {
-            IntConstraintOccurrence other = (IntConstraintOccurrence) o;
+        } else if (o instanceof DoubleConstraintOccurrence) {
+            DoubleConstraintOccurrence other = (DoubleConstraintOccurrence) o;
             return new EqualsBuilder()
                     .appendSuper(super.equals(other))
                     .append(weight, other.weight)
