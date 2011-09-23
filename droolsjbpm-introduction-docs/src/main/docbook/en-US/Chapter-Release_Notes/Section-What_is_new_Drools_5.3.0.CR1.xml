@@ -14,10 +14,23 @@
 
     <section>
       <title>Faster compilation</title>
-
       <para>Thanks to many improvements and optimizations made on both MVEL
       library and Drools internals, the DRL compilation is now at least 3
       times faster for both MVEL and Java dialects.</para>
+    </section>
+
+    <section>
+      <title>Entry-point declarations</title>
+
+      <para>Entry points can now be explicitly declared. Syntax is:</para>
+
+      <para><programlisting>entryPointDeclaration := DECLARE ENTRY-POINT stringId annotation* END</programlisting>Example
+      use:<example>
+          <programlisting>declare entry-point X
+    @doc( "This entry point is receives events from the message queue X" )
+end
+</programlisting>
+        </example></para>
     </section>
   </section>
 
