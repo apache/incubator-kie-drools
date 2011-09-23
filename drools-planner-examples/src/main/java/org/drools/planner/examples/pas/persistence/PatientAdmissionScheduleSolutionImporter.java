@@ -369,8 +369,6 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                 patientList.add(patient);
 
                 String[] admissionPartTokens = splitBySpace(lineTokens[2]);
-                if (admissionPartTokens.length % 2 != 1) {
-                }
                 int patientAdmissionPartListSize = Integer.parseInt(admissionPartTokens[0]);
                 if (admissionPartTokens.length != ((patientAdmissionPartListSize * 2) + 1)) {
                     throw new IllegalArgumentException("Read line (" + line
