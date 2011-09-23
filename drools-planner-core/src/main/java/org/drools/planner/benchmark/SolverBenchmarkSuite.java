@@ -82,7 +82,6 @@ import org.slf4j.LoggerFactory;
 public class SolverBenchmarkSuite {
 
     private static final NumberFormat TIME_FORMAT = NumberFormat.getIntegerInstance(Locale.ENGLISH);
-    private static final DateFormat TIMESTAMP_DIRECTORY_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
 
     @XStreamOmitField
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
@@ -238,7 +237,7 @@ public class SolverBenchmarkSuite {
         }
         benchmarkDirectory.mkdirs();
         if (solvedSolutionFilesDirectory == null) {
-            String timestampDirectory = TIMESTAMP_DIRECTORY_FORMAT.format(new Date());
+            String timestampDirectory = new SimpleDateFormat("yyyy-MM-dd_HHmmss").format(new Date());
             benchmarkInstanceDirectory = new File(benchmarkDirectory, timestampDirectory);
         }
         benchmarkInstanceDirectory.mkdirs();
