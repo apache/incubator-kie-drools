@@ -163,7 +163,7 @@ public class MemoryUseStatistic extends AbstractSolverStatistic {
             seriesCollection.addSeries(usedSeries);
             seriesCollection.addSeries(maxSeries);
         }
-        NumberAxis xAxis = new NumberAxis("Time millis spend");
+        NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Memory");
         yAxis.setAutoRangeIncludesZero(false);

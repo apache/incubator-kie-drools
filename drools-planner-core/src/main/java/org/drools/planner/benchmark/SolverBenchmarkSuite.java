@@ -499,7 +499,7 @@ public class SolverBenchmarkSuite {
             }
         }
         CategoryAxis xAxis = new CategoryAxis("Data");
-        NumberAxis yAxis = new NumberAxis("Time millis spend");
+        NumberAxis yAxis = new NumberAxis("Time spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         BarRenderer renderer = new BarRenderer();
         ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
@@ -533,7 +533,7 @@ public class SolverBenchmarkSuite {
 
     private CharSequence writeScalabilitySummaryChart() {
         NumberAxis xAxis = new NumberAxis("Planning entity count");
-        NumberAxis yAxis = new NumberAxis("Time millis spend");
+        NumberAxis yAxis = new NumberAxis("Time spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;

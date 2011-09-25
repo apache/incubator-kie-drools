@@ -158,7 +158,7 @@ public class BestScoreStatistic extends AbstractSolverStatistic {
     }
 
     protected CharSequence writeGraphStatistic(File solverStatisticFilesDirectory, String baseName) {
-        NumberAxis xAxis = new NumberAxis("Time millis spend");
+        NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Score");
         yAxis.setAutoRangeIncludesZero(false);

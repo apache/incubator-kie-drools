@@ -156,7 +156,7 @@ public class CalculateCountStatistic extends AbstractSolverStatistic {
             }
             seriesCollection.addSeries(series);
         }
-        NumberAxis xAxis = new NumberAxis("Time millis spend");
+        NumberAxis xAxis = new NumberAxis("Time spend");
         xAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         NumberAxis yAxis = new NumberAxis("Calculate count per second");
         yAxis.setAutoRangeIncludesZero(false);
