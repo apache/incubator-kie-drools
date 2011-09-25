@@ -34,7 +34,7 @@
     </intermediateCatchEvent>
     <intermediateCatchEvent id="_4" name="timer" >
       <timerEventDefinition>
-        <timeCycle>500ms</timeCycle>
+        <timeCycle xsi:type="tFormalExpression">500ms</timeCycle>
       </timerEventDefinition>
     </intermediateCatchEvent>
     <exclusiveGateway id="_5" name="Join" gatewayDirection="Converging" />
