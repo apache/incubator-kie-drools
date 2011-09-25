@@ -353,7 +353,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
-            context.writeInt( WorkingMemoryAction.WorkingMemoryReteAssertAction );
+            context.writeShort( WorkingMemoryAction.WorkingMemoryReteAssertAction );
 
             context.writeInt( this.factHandle.getId() );
             context.writeBoolean( this.removeLogical );
@@ -376,22 +376,22 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
 
         }
 
-        //        public void readExternal(ObjectInput in) throws IOException,
-        //                                                ClassNotFoundException {
-        //            factHandle = (InternalFactHandle) in.readObject();
-        //            removeLogical = in.readBoolean();
-        //            updateEqualsMap = in.readBoolean();
-        //            ruleOrigin = (Rule) in.readObject();
-        //            leftTuple = (LeftTuple) in.readObject();
-        //        }
-        //
-        //        public void writeExternal(ObjectOutput out) throws IOException {
-        //            out.writeObject( factHandle );
-        //            out.writeBoolean( removeLogical );
-        //            out.writeBoolean( updateEqualsMap );
-        //            out.writeObject( ruleOrigin );
-        //            out.writeObject( leftTuple );
-        //        }
+        public void readExternal(ObjectInput in) throws IOException,
+                                                ClassNotFoundException {
+            factHandle = (InternalFactHandle) in.readObject();
+            removeLogical = in.readBoolean();
+            updateEqualsMap = in.readBoolean();
+            ruleOrigin = (Rule) in.readObject();
+            leftTuple = (LeftTuple) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( factHandle );
+            out.writeBoolean( removeLogical );
+            out.writeBoolean( updateEqualsMap );
+            out.writeObject( ruleOrigin );
+            out.writeObject( leftTuple );
+        }
 
         public void execute(InternalWorkingMemory workingMemory) {
 
@@ -412,17 +412,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
             execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
         }
 
-        public void writeExternal(ObjectOutput out) throws IOException {
-            // TODO Auto-generated method stub
-
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            // TODO Auto-generated method stub
-
-        }
-
     }
 
     public static class WorkingMemoryReteExpireAction
@@ -436,6 +425,22 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
                                              final ObjectTypeNode node) {
             this.factHandle = factHandle;
             this.node = node;
+        }  
+
+        public InternalFactHandle getFactHandle() {
+            return factHandle;
+        }
+
+        public void setFactHandle(InternalFactHandle factHandle) {
+            this.factHandle = factHandle;
+        }
+
+        public ObjectTypeNode getNode() {
+            return node;
+        }
+
+        public void setNode(ObjectTypeNode node) {
+            this.node = node;
         }
 
         public WorkingMemoryReteExpireAction(MarshallerReaderContext context) throws IOException {
@@ -445,7 +450,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory {
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
-            context.writeInt( WorkingMemoryAction.WorkingMemoryReteExpireAction );
+            context.writeShort( WorkingMemoryAction.WorkingMemoryReteExpireAction );
             context.writeInt( this.factHandle.getId() );
             context.writeInt( this.node.getId() );
         }

@@ -24,10 +24,11 @@ import org.drools.common.TruthMaintenanceSystem.LogicalRetractCallback;
 import org.drools.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
+import org.drools.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 
 public class PersisterHelper {
     public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
-        int type = context.readInt();
+        int type = context.readShort();
         switch(type) {
             case WorkingMemoryAction.WorkingMemoryReteAssertAction : {
                 return new WorkingMemoryReteAssertAction(context);
@@ -44,6 +45,10 @@ public class PersisterHelper {
             case WorkingMemoryAction.WorkingMemoryReteExpireAction : {
                 return new WorkingMemoryReteExpireAction(context);
             }
+            case WorkingMemoryAction.WorkingMemoryBehahviourRetract : {
+                return new BehaviorExpireWMAction( context );
+
+            }            
         }
         return null;
     }

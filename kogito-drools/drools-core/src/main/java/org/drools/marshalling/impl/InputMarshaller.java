@@ -83,6 +83,10 @@ import org.drools.reteoo.RuleTerminalNode;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.drools.rule.SlidingLengthWindow;
+import org.drools.rule.SlidingLengthWindow.SlidingLengthWindowContext;
+import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.SlidingTimeWindow.SlidingTimeWindowContext;
 import org.drools.runtime.Environment;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
@@ -94,6 +98,7 @@ import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.Trigger;
 import org.drools.time.impl.CronTrigger;
 import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 
 public class InputMarshaller {
@@ -415,9 +420,13 @@ public class InputMarshaller {
         
         long startTimeStamp = 0;
         long duration = 0;
+        boolean expired = false;
+        long activationsCount = 0;
         if ( type == 2 ) {
             startTimeStamp = context.stream.readLong();
             duration = context.stream.readLong();
+            expired = context.stream.readBoolean();
+            activationsCount = context.stream.readLong();
         }
 
         int strategyIndex = context.stream.readInt();
@@ -454,7 +463,9 @@ public class InputMarshaller {
                 break; 
             }
             case 2: {
-                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );               
+                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );
+                ((EventFactHandle)handle).setExpired( expired );
+                ((EventFactHandle)handle).setActivationsCount( activationsCount );
                 break;
             }            
             default: {
@@ -529,8 +540,9 @@ public class InputMarshaller {
         LeftTupleSink sink = parentLeftTuple.getLeftTupleSink();
 
         switch ( sink.getType() ) {
-            case NodeTypeEnums.JoinNode : {
+            case NodeTypeEnums.JoinNode : {                
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                readBehaviors( ( BetaNode ) sink, memory, context);
                 addToLeftMemory( parentLeftTuple, memory );
 
                 while ( stream.readShort() == PersisterEnums.RIGHT_TUPLE ) {
@@ -566,6 +578,7 @@ public class InputMarshaller {
             case NodeTypeEnums.NotNode : 
             case NodeTypeEnums.ForallNotNode : {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                readBehaviors( ( BetaNode ) sink, memory, context);                
                 int type = stream.readShort();
                 if ( type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED ) {
                     addToLeftMemory( parentLeftTuple, memory );
@@ -592,6 +605,7 @@ public class InputMarshaller {
             }
             case NodeTypeEnums.ExistsNode : {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
+                readBehaviors( ( BetaNode ) sink, memory, context);                
                 int type = stream.readShort();
                 if ( type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED ) {
                     addToLeftMemory( parentLeftTuple, memory );
@@ -620,6 +634,8 @@ public class InputMarshaller {
                 AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 memory.betaMemory.getLeftTupleMemory().add( parentLeftTuple );
 
+                readBehaviors( ( BetaNode ) sink, memory.betaMemory, context);
+                
                 AccumulateContext accctx = new AccumulateContext();
                 parentLeftTuple.setObject( accctx );
                 
@@ -786,6 +802,94 @@ public class InputMarshaller {
             }
         }
     }
+    
+    public static void readBehaviors(BetaNode betaNode, 
+                                     BetaMemory betaMemory,
+                                     MarshallerReaderContext inCtx) throws IOException {
+        short token = -1;
+        while ( (token = inCtx.readShort()) != PersisterEnums.END ) {
+            int i = inCtx.readInt();
+            Object object = ((Object[]) betaMemory.getBehaviorContext())[i];
+            switch ( token ) {
+                case PersisterEnums.SLIDING_TIME_WIN : {
+                    readSlidingTimeWindowBehaviour( betaNode, betaMemory,
+                                                    (SlidingTimeWindow) betaNode.getBehaviors()[i],
+                                                    (SlidingTimeWindowContext) object,
+                                                    inCtx );
+                    break;
+                }
+                case PersisterEnums.SLIDING_LENGTH_WIN : {
+                    readSlidingLengthWindowBehaviour( betaNode, betaMemory,
+                                                      (SlidingLengthWindow) betaNode.getBehaviors()[i],
+                                                      (SlidingLengthWindowContext) object,
+                                                      inCtx );                    
+                    break;
+                }                
+            }
+            
+        }
+    }
+    
+    public static void readSlidingTimeWindowBehaviour(BetaNode betaNode, 
+                                                      BetaMemory betaMemory,
+                                                      SlidingTimeWindow stw,
+                                                      SlidingTimeWindowContext stwCtx,
+                                                      MarshallerReaderContext inCtx) throws IOException {
+        
+        if ( inCtx.readBoolean() ) {
+            int sinkId = inCtx.readInt();
+            int factId = inCtx.readInt();
+            
+            RightTupleSink sink = ( RightTupleSink ) inCtx.sinks.get( sinkId );            
+            RightTupleKey key = new RightTupleKey( factId,
+                                                   sink );
+            RightTuple rightTuple = inCtx.rightTuples.get( key );  
+            
+            stwCtx.expiringTuple = rightTuple;
+        }
+        
+        if ( inCtx.readBoolean() ) {
+            int size = inCtx.readInt();
+            for ( int i = 0; i < size; i++ ) {
+                int sinkId = inCtx.readInt();
+                int factId = inCtx.readInt();
+                
+                RightTupleSink sink = ( RightTupleSink ) inCtx.sinks.get( sinkId );            
+                RightTupleKey key = new RightTupleKey( factId,
+                                                       sink );
+                RightTuple rightTuple = inCtx.rightTuples.get( key ); 
+                
+                stwCtx.queue.add( rightTuple );
+            }
+        }             
+    }
+    
+    public static void readSlidingLengthWindowBehaviour(BetaNode betaNode, 
+                                                        BetaMemory betaMemory,
+                                                        SlidingLengthWindow slw,
+                                                        SlidingLengthWindowContext slwCtx,
+                                                        MarshallerReaderContext inCtx) throws IOException {      
+        int pos = inCtx.readInt();        
+        int length = inCtx.readInt();
+        
+        slwCtx.pos = pos;
+        slwCtx.rightTuples = new RightTuple[length];
+        for ( int i = 0; i < length; i++ ) {
+            int factId = inCtx.readInt();
+            
+            if ( factId >= 0 ) {
+                int sinkId = inCtx.readInt();
+                
+                RightTupleSink sink = ( RightTupleSink ) inCtx.sinks.get( sinkId );            
+                RightTupleKey key = new RightTupleKey( factId,
+                                                       sink );
+                RightTuple rightTuple = inCtx.rightTuples.get( key );  
+                
+                slwCtx.rightTuples[i] = rightTuple;
+            }
+            
+        }
+    }    
     
     private static void addToLeftMemory(LeftTuple parentLeftTuple,
             BetaMemory memory) {
@@ -1035,11 +1139,17 @@ public class InputMarshaller {
                     long nextFireTime = inCtx.readLong();
                     trigger.setNextFireTime( new Date( nextFireTime) );
                 }
-              long period = inCtx.readLong();
-              trigger.setPeriod( period );
-              String[] calendarNames = ( String[] ) inCtx.readObject();                                
-              trigger.setCalendarNames( calendarNames );
-              return trigger;
+                long period = inCtx.readLong();
+                trigger.setPeriod( period );
+                String[] calendarNames = ( String[] ) inCtx.readObject();                                
+                trigger.setCalendarNames( calendarNames );
+                return trigger;
+            }
+            case PersisterEnums.POINT_IN_TIME_TRIGGER: {
+                long startTime = inCtx.readLong();
+                
+                PointInTimeTrigger trigger = new PointInTimeTrigger( startTime, null, null );
+                return trigger;
             }
         }
         throw new RuntimeException( "Unable to persist Trigger for type: " + triggerInt );

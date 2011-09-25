@@ -485,7 +485,7 @@ public class PropagationQueuingNode extends ObjectSource
         }
 
         public void write( MarshallerWriteContext context ) throws IOException {
-            context.writeInt( WorkingMemoryAction.PropagateAction );
+            context.writeShort( WorkingMemoryAction.PropagateAction );
             context.write( node.getId() );
         }
 

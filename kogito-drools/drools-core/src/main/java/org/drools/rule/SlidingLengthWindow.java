@@ -160,7 +160,7 @@ public class SlidingLengthWindow
     /**
      * A Context object for length windows
      */
-    private static class SlidingLengthWindowContext
+    public static class SlidingLengthWindowContext
         implements
         Externalizable {
 

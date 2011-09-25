@@ -126,6 +126,10 @@ public class EventFactHandle extends DefaultFactHandle {
     public long getActivationsCount() {
         return activationsCount;
     }
+    
+    public void setActivationsCount(long activationsCount) {
+        this.activationsCount = activationsCount;
+    }
 
     public void increaseActivationsCount() {
         this.activationsCount++;

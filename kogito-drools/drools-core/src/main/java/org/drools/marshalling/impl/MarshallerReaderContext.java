@@ -35,6 +35,9 @@ import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
+import org.drools.reteoo.ObjectTypeNode.ExpireJob;
+import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
+import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.SlidingTimeWindow;
 import org.drools.runtime.Environment;
@@ -61,7 +64,6 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final Map<String, EntryPoint>            entryPoints;
     
     public final Map<Short, TimersInputMarshaller>  readersByInt;
-    public final Map<Class, TimersInputMarshaller>  readersByClass;    
 
     public final Map<Long, PropagationContext>      propagationContexts;
 
@@ -93,14 +95,13 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.ruleBase = ruleBase;
         this.sinks = sinks;
         
-        this.readersByInt = new HashMap<Short, TimersInputMarshaller>();
-        this.readersByClass = new HashMap<Class, TimersInputMarshaller>();        
+        this.readersByInt = new HashMap<Short, TimersInputMarshaller>();        
         
-        this.readersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerInputMarshaller() );
-        this.readersByInt.put( PersisterEnums.BEHAVIOR_TIMER, this.readersByClass.get( SlidingTimeWindow.BehaviorJobContext.class ) );
+        this.readersByInt.put( PersisterEnums.BEHAVIOR_TIMER, new BehaviorJobContextTimerInputMarshaller() );
         
-        this.readersByClass.put( ActivationTimerJobContext.class, new ActivationTimerInputMarshaller() );
-        this.readersByInt.put( PersisterEnums.ACTIVATION_TIMER,  this.readersByClass.get(ActivationTimerJobContext.class) );        
+        this.readersByInt.put( PersisterEnums.ACTIVATION_TIMER,  new ActivationTimerInputMarshaller() );        
+
+        this.readersByInt.put( PersisterEnums.EXPIRE_TIMER,  new ExpireJobContextTimerInputMarshaller() );
         
         this.handles = new HashMap<Integer, InternalFactHandle>();
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();

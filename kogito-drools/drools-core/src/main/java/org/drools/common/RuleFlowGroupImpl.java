@@ -292,7 +292,7 @@ public class RuleFlowGroupImpl
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
-            context.writeInt( WorkingMemoryAction.DeactivateCallback );
+            context.writeShort( WorkingMemoryAction.DeactivateCallback );
             context.writeUTF( ruleFlowGroup.getName() );
         }
 
