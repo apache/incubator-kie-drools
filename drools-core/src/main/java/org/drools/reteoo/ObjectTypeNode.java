@@ -36,6 +36,12 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.marshalling.impl.MarshallerReaderContext;
+import org.drools.marshalling.impl.MarshallerWriteContext;
+import org.drools.marshalling.impl.PersisterEnums;
+import org.drools.marshalling.impl.RightTupleKey;
+import org.drools.marshalling.impl.TimersInputMarshaller;
+import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.reteoo.builder.BuildContext;
@@ -43,6 +49,8 @@ import org.drools.reteoo.compiled.CompiledNetwork;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.EvalCondition;
+import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.SlidingTimeWindow.BehaviorJobContext;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -50,6 +58,7 @@ import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
 import org.drools.time.TimerService;
+import org.drools.time.impl.DefaultJobHandle;
 import org.drools.time.impl.PointInTimeTrigger;
 
 /**
@@ -90,7 +99,7 @@ public class ObjectTypeNode extends ObjectSource
 
     private long                expirationOffset = -1;
 
-    private transient ExpireJob job              = new ExpireJob();
+    public static final transient ExpireJob job              = new ExpireJob();
     
     private boolean             queryNode;
 
@@ -543,7 +552,7 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    private static class ExpireJob
+    public static class ExpireJob
         implements
         Job {
 
@@ -554,7 +563,7 @@ public class ObjectTypeNode extends ObjectSource
 
     }
 
-    private static class ExpireJobContext
+    public static class ExpireJobContext
         implements
         JobContext,
         Externalizable {
@@ -582,6 +591,30 @@ public class ObjectTypeNode extends ObjectSource
             this.handle = jobHandle;
         }
 
+        public WorkingMemoryReteExpireAction getExpireAction() {
+            return expireAction;
+        }
+
+        public void setExpireAction(WorkingMemoryReteExpireAction expireAction) {
+            this.expireAction = expireAction;
+        }
+
+        public InternalWorkingMemory getWorkingMemory() {
+            return workingMemory;
+        }
+
+        public void setWorkingMemory(InternalWorkingMemory workingMemory) {
+            this.workingMemory = workingMemory;
+        }
+
+        public JobHandle getHandle() {
+            return handle;
+        }
+
+        public void setHandle(JobHandle handle) {
+            this.handle = handle;
+        }
+
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             //this.behavior = (O)
@@ -591,6 +624,88 @@ public class ObjectTypeNode extends ObjectSource
             // TODO Auto-generated method stub
 
         }
-
     }
+    
+    public static class ExpireJobContextTimerOutputMarshaller implements TimersOutputMarshaller {
+        public void write(JobContext jobCtx,
+                        MarshallerWriteContext outputCtx) throws IOException {   
+            outputCtx.writeShort( PersisterEnums.EXPIRE_TIMER );
+            
+            // ExpireJob, no state            
+            ExpireJobContext ejobCtx = ( ExpireJobContext ) jobCtx;
+            WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
+            outputCtx.writeInt( expireAction.getFactHandle().getId() );
+            outputCtx.writeUTF( expireAction.getNode().getEntryPoint().getEntryPointId() );
+            
+            outputCtx.writeUTF( ((ClassObjectType)expireAction.getNode().getObjectType()).getClassType().getName() );
+            
+            DefaultJobHandle jobHandle = ( DefaultJobHandle ) ejobCtx.getJobHandle();
+            PointInTimeTrigger trigger = ( PointInTimeTrigger ) jobHandle.getTimerJobInstance().getTrigger();
+            outputCtx.writeLong( trigger.hasNextFireTime().getTime() );           
+            
+        }
+    }
+    
+    public static class ExpireJobContextTimerInputMarshaller implements TimersInputMarshaller {
+        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
+            
+            InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
+            
+            String entryPointId = inCtx.readUTF();            
+            EntryPointNode epn = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPoint( entryPointId ) );
+            
+            String className = inCtx.readUTF();
+            Class cls = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( className );
+            ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
+            
+            long nextTimeStamp = inCtx.readLong();
+            
+            TimerService clock = inCtx.wm.getTimerService();
+            
+            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction(factHandle, otn),
+                                                      inCtx.wm );
+            JobHandle handle = clock.scheduleJob( job,
+                                                  jobctx,
+                                                  new PointInTimeTrigger( nextTimeStamp,
+                                                                          null,
+                                                                          null ) );
+            jobctx.setJobHandle( handle );
+            
+            
+//            SlidingTimeWindow beh = ( SlidingTimeWindow) inCtx.readObject();
+//            
+//            SlidingTimeWindowContext slCtx = new SlidingTimeWindowContext();
+//            if ( inCtx.readBoolean() ) {
+//                if ( inCtx.readBoolean() ) {
+//                    int sinkId = inCtx.readInt();
+//                    int factHandleId = inCtx.readInt();
+//                    
+//                    RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
+//                    RightTupleKey key = new RightTupleKey( factHandleId,
+//                                                           sink );  
+//                    slCtx.expiringTuple = inCtx.rightTuples.get( key );
+//                }
+//                
+//                if ( inCtx.readBoolean() ) {
+//                    int size = inCtx.readInt();
+//                    for ( int i = 0; i < size; i++ ) {
+//                        int sinkId = inCtx.readInt();
+//                        int factHandleId = inCtx.readInt();
+//                        
+//                        RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
+//                        RightTupleKey key = new RightTupleKey( factHandleId,
+//                                                               sink ); 
+//                        slCtx.queue.add( inCtx.rightTuples.get( key ) );
+//                    }
+//                }
+//                
+//                if ( slCtx.queue.peek() != null ) {
+//                    updateNextExpiration( ( RightTuple) slCtx.queue.peek(),
+//                                          inCtx.wm,
+//                                          beh,
+//                                          slCtx );
+//                }              
+//            }
+        }
+    }        
 }

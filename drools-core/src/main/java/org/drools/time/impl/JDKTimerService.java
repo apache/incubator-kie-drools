@@ -136,52 +136,25 @@ public class JDKTimerService
         return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
     }
 
-    public static class JDKJobHandle
+    public static class JDKJobHandle extends DefaultJobHandle
         implements
         JobHandle {
 
         private static final long     serialVersionUID = 510l;
 
-        private AtomicBoolean         cancel           = new AtomicBoolean( false );
-
-        private ScheduledFuture<Void> future;
-
-        private long                  id;
-        
-
-        private TimerJobInstance      timerJobInstance;        
+        private ScheduledFuture<Void> future;       
 
         public JDKJobHandle(long id) {
-            this.id = id;
+            super(id);
         }
-
-        public void setCancel(boolean cancel) {
-            this.cancel.set( cancel );
-        }
-
-        public long getId() {
-            return id;
-        }
-
-        public boolean isCancel() {
-            return cancel.get();
-        }
-
+        
         public ScheduledFuture<Void> getFuture() {
             return future;
         }
 
         public void setFuture(ScheduledFuture<Void> future) {
             this.future = future;
-        }
-        
-        public void setTimerJobInstance(TimerJobInstance scheduledJob) {
-            this.timerJobInstance = scheduledJob;
-        }
-
-        public TimerJobInstance getTimerJobInstance() {
-            return this.timerJobInstance;
-        }        
+        }    
 
     }
 

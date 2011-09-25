@@ -244,7 +244,7 @@ public class TruthMaintenanceSystem {
         }
 
         public void write(MarshallerWriteContext context) throws IOException {
-            context.writeInt( WorkingMemoryAction.LogicalRetractCallback );
+            context.writeShort( WorkingMemoryAction.LogicalRetractCallback );
             
             context.writeInt( this.handle.getId() );
             context.writeLong( this.context.getPropagationNumber() );

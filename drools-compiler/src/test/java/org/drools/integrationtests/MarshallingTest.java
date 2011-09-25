@@ -5,6 +5,7 @@ import static org.drools.integrationtests.SerializationHelper.getSerialisedState
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -15,6 +16,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,14 +87,17 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.Globals;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Consequence;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.KnowledgeHelper;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.drools.time.impl.TrackableTimeJobFactoryManager;
 
 public class MarshallingTest {
 
@@ -2690,16 +2695,30 @@ public class MarshallingTest {
     public static class A
         implements
         Serializable {
+
+        @Override
+        public String toString() {
+            return "A[]";
+        }
+        
     }
 
     public static class B
         implements
         Serializable {
+        @Override
+        public String toString() {
+            return "B[]";
+        }        
     }
 
     public static class C
         implements
         Serializable {
+        @Override
+        public String toString() {
+            return "C[]";
+        }        
     }
     
     @Test
@@ -2769,16 +2788,21 @@ public class MarshallingTest {
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
+        
         ksession.insert( new A() );
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MarshallerFactory.newMarshaller( knowledgeBase ).marshall( out,
-                                                                   ksession );
 
-        ksession = MarshallerFactory.newMarshaller( knowledgeBase ).unmarshall( new ByteArrayInputStream( out.toByteArray() ) );
+        ksession = marsallStatefulKnowledgeSession(ksession);   
+        
         ksession.insert( new B() );
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);   
+        
         ksession.fireAllRules();
-        assertEquals( 3,
+        assertEquals( 2,
                       ksession.getObjects().size() );
     }
     
@@ -2832,24 +2856,24 @@ public class MarshallingTest {
     }
     
     @Test
-    public void testMarshallEntryPoints() throws Exception {
+    public void testMarshallEntryPointsWithExpires() throws Exception {
         String str =
                 "package org.domain.test \n" +
                 "import " + getClass().getCanonicalName() + ".*\n" +
                 		"global java.util.List list\n" +
                         "declare A\n" +
                         " @role( event )\n" +
-                        " @expires( 10m )\n" +
+                        " @expires( 10s )\n" +
                         "end\n" +
                         "declare B\n" +
                         "" +
                         " @role( event )\n" +
-                        " @expires( 10m )\n" +
+                        " @expires( 10s )\n" +
                         "end\n" +
                         "" +
                         "declare C\n" +
                         " @role( event )\n" +
-                        " @expires( 10m )\n" +
+                        " @expires( 15s )\n" +
                         "end\n" +
                         "" +                        
                         "rule a1\n" +
@@ -2878,36 +2902,308 @@ public class MarshallingTest {
                       ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             throw new RuntimeException( kbuilder.getErrors().toString() );
-        }
+        }                
+        
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.STREAM );
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+        
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
+        
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         WorkingMemoryEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
         aep.insert( new A() );
         
+        ksession = marsallStatefulKnowledgeSession(ksession);        
+        
         WorkingMemoryEntryPoint bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
         bep.insert( new B() );
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);       
         
         WorkingMemoryEntryPoint cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
         cep.insert( new C() );
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MarshallerFactory.newMarshaller( knowledgeBase ).marshall( out,
-                                                                   ksession );
-
-        ksession = MarshallerFactory.newMarshaller( knowledgeBase ).unmarshall( new ByteArrayInputStream( out.toByteArray() ) );
-        ksession.setGlobal( "list", list );
+        ksession = marsallStatefulKnowledgeSession(ksession);     
         
         ksession.fireAllRules();
         
+        ksession = marsallStatefulKnowledgeSession(ksession);          
+        
         assertEquals( 3,
                       list.size() );
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        assertEquals( 1, aep.getFactHandles().size() );
+        
+        bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
+        assertEquals( 1, bep.getFactHandles().size() );
+        
+        cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
+        assertEquals( 1, cep.getFactHandles().size() );
+        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        timeService.advanceTime( 11, TimeUnit.SECONDS );       
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        ksession.fireAllRules();
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);        
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        assertEquals( 0, aep.getFactHandles().size() );
+        
+        bep = ksession.getWorkingMemoryEntryPoint( "b-ep" );
+        assertEquals( 0, bep.getFactHandles().size() );
+        
+        cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
+        assertEquals( 1, cep.getFactHandles().size() );
     }    
+    
+    @Test
+    public void testMarshallEntryPointsWithNot() throws Exception {
+        String str =
+                "package org.domain.test \n" +
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                        "global java.util.List list\n" +
+                        "declare A\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "declare B\n" +
+                        "" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "" +                        
+                        "rule a1\n" +
+                        "when\n" +
+                        "   $a : A() from entry-point 'a-ep'\n" +
+                        "   not B( this after[0s, 10s] $a) from entry-point 'a-ep'\n" +
+                        "then\n" +
+                        "list.add( $a );" +
+                        "end\n";           
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }                
+        
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        WorkingMemoryEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        timeService.advanceTime( 3, TimeUnit.SECONDS );  
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        ksession.fireAllRules();
+        
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        assertEquals( 0,
+                      list.size() );                
+    }        
+    
+    @Test
+    public void testMarshallEntryPointsWithSlidingTimeWindow() throws Exception {
+        String str =
+                "package org.domain.test \n" +
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                "import java.util.List\n" +        
+                "global java.util.List list\n" +
+                        "declare A\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "declare B\n" +
+                        "" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "" +                        
+                        "rule a1\n" +
+                        "when\n" +
+                        "   $l : List() from collect( A()  over window:time(30s) from entry-point 'a-ep') \n" +
+                        "then\n" +
+                        "   list.add( $l );" +
+                        "end\n";           
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }                
+        
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        WorkingMemoryEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        list.clear();
+        ksession.fireAllRules();
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        assertEquals( 2, ((List)list.get( 0 )).size() );
+        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        timeService.advanceTime( 15, TimeUnit.SECONDS );          
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        list.clear();
+        ksession.fireAllRules();
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        assertEquals( 4, ((List)list.get( 0 )).size() );
+        
+        timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        list.clear();
+        ksession.fireAllRules();
+        assertEquals( 2, ((List)list.get( 0 )).size() );        
+    }
+    
+    @Test
+    public void testMarshallEntryPointsWithSlidingLengthWindow() throws Exception {
+        String str =
+                "package org.domain.test \n" +
+                "import " + getClass().getCanonicalName() + ".*\n" +
+                "import java.util.List\n" +        
+                "global java.util.List list\n" +
+                        "declare A\n" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "declare B\n" +
+                        "" +
+                        " @role( event )\n" +
+                        " @expires( 10m )\n" +
+                        "end\n" +
+                        "" +                        
+                        "rule a1\n" +
+                        "when\n" +
+                        "   $l : List() from collect( A()  over window:length(3) from entry-point 'a-ep') \n" +
+                        "then\n" +
+                        "   list.add( $l );" +
+                        "end\n";           
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( str ) ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            throw new RuntimeException( kbuilder.getErrors().toString() );
+        }                
+        
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
+        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
+        
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        
+        WorkingMemoryEntryPoint aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        list.clear();
+        ksession.fireAllRules();
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        assertEquals( 2, ((List)list.get( 0 )).size() );
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        aep = ksession.getWorkingMemoryEntryPoint( "a-ep" );
+        aep.insert( new A() );
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        
+        list.clear();
+        ksession.fireAllRules();
+        ksession = marsallStatefulKnowledgeSession(ksession);
+        assertEquals( 3, ((List)list.get( 0 )).size() );       
+    }    
+    
+    private StatefulKnowledgeSession marsallStatefulKnowledgeSession(StatefulKnowledgeSession ksession) throws IOException, ClassNotFoundException {
+        Globals globals = ksession.getGlobals();
+        
+        KnowledgeBase kbase = ksession.getKnowledgeBase();        
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        MarshallerFactory.newMarshaller( kbase ).marshall( out,
+                                                           ksession );
+        
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();        
+        ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
+        ksconf.setOption( ClockTypeOption.get( "pseudo" ) ); 
+        
+        
+        ksession = MarshallerFactory.newMarshaller( kbase ).unmarshall( new ByteArrayInputStream( out.toByteArray() ), ksconf, null );
+        ((StatefulKnowledgeSessionImpl)ksession).session.setGlobalResolver( (GlobalResolver) globals );  
+        
+        return ksession;
+    }
     
     private void readWrite(KnowledgeBase knowledgeBase, StatefulKnowledgeSession ksession, KnowledgeSessionConfiguration config) {
         try {
