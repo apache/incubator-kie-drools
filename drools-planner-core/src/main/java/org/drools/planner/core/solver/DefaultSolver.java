@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.planner.core.Solver;
 import org.drools.planner.core.bestsolution.BestSolutionRecaller;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.event.SolverEventListener;
 import org.drools.planner.core.event.SolverEventSupport;
 import org.drools.planner.core.phase.SolverPhase;
@@ -101,6 +102,10 @@ public class DefaultSolver implements Solver {
 
     public long getTimeMillisSpend() {
         return solverScope.calculateTimeMillisSpend();
+    }
+
+    public SolutionDescriptor getSolutionDescriptor() {
+        return solverScope.getSolutionDescriptor();
     }
 
     public DefaultSolverScope getSolverScope() {

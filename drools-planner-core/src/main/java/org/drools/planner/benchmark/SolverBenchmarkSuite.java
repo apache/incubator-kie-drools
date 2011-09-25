@@ -59,9 +59,11 @@ import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticListen
 import org.drools.planner.benchmark.statistic.bestscore.BestScoreStatisticPoint;
 import org.drools.planner.config.termination.TerminationConfig;
 import org.drools.planner.core.Solver;
+import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solver.DefaultSolver;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -351,6 +353,8 @@ public class SolverBenchmarkSuite {
                 result.setTimeMillisSpend(solver.getTimeMillisSpend());
                 Solution solvedSolution = solver.getBestSolution();
                 result.setScore(solvedSolution.getScore());
+                SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
+                result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
                 for (SolverStatistic statistic : statisticList) {
                     statistic.removeListener(solver, solverBenchmark.getName());
                 }
@@ -422,8 +426,7 @@ public class SolverBenchmarkSuite {
         htmlFragment.append("  <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart());
         htmlFragment.append(writeTimeSpendSummaryChart());
-        // TODO scalability summary chart must be n based instead of score based (the latter is misleading)
-//        htmlFragment.append(writeScalabilitySummaryChart());
+        htmlFragment.append(writeScalabilitySummaryChart());
         htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistics</h1>\n");
         for (Map.Entry<File, List<SolverStatistic>> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
@@ -529,8 +532,7 @@ public class SolverBenchmarkSuite {
     }
 
     private CharSequence writeScalabilitySummaryChart() {
-        NumberAxis xAxis = new NumberAxis("Score");
-        xAxis.setInverted(true);
+        NumberAxis xAxis = new NumberAxis("Planning entity count");
         NumberAxis yAxis = new NumberAxis("Time millis spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
@@ -541,11 +543,8 @@ public class SolverBenchmarkSuite {
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
                 Long timeMillisSpend = result.getTimeMillisSpend();
-                Score score = result.getScore();
-                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
-                if (scoreGraphValue != null) {
-                    series.add(scoreGraphValue, timeMillisSpend);
-                }
+                Integer planningEntityCount = result.getPlanningEntityCount();
+                series.add(planningEntityCount, timeMillisSpend);
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
@@ -559,7 +558,7 @@ public class SolverBenchmarkSuite {
             seriesIndex++;
         }
         plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart("Scalability summary (lower and lefter is better)",
+        JFreeChart chart = new JFreeChart("Scalability summary (lower is better)",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File chartSummaryFile = new File(solverStatisticFilesDirectory, "scalabilitySummary.png");

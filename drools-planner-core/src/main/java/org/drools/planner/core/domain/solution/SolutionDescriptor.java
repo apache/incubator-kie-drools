@@ -156,6 +156,10 @@ public class SolutionDescriptor {
         return planningEntityList;
     }
 
+    public int getPlanningEntityCount(Solution solution) {
+        return getPlanningEntityList(solution).size();
+    }
+
     /**
      * @param solution never null
      * @return true if all the planning entities are initialized

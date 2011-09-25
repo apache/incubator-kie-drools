@@ -27,6 +27,7 @@ public class SolverBenchmarkResult {
     private File unsolvedSolutionFile = null;
     private Score score = null;
     private Long timeMillisSpend = null;
+    private Integer planningEntityCount = null;
     private File solvedSolutionFile = null;
 
     public File getUnsolvedSolutionFile() {
@@ -51,6 +52,14 @@ public class SolverBenchmarkResult {
 
     public void setTimeMillisSpend(Long timeMillisSpend) {
         this.timeMillisSpend = timeMillisSpend;
+    }
+
+    public Integer getPlanningEntityCount() {
+        return planningEntityCount;
+    }
+
+    public void setPlanningEntityCount(Integer planningEntityCount) {
+        this.planningEntityCount = planningEntityCount;
     }
 
     public File getSolvedSolutionFile() {
