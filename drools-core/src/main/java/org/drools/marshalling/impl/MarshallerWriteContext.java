@@ -30,6 +30,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
+import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerOutputMarshaller;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 
@@ -47,7 +49,6 @@ public class MarshallerWriteContext extends ObjectOutputStream {
     
     public long clockTime;
 
-    public final Map<Short, TimersOutputMarshaller>   writersByInt;
     public final Map<Class, TimersOutputMarshaller>   writersByClass;
 
     public final PrintStream                         out = System.out;
@@ -89,14 +90,13 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.ruleBase = ruleBase;
         this.wm = wm;
         this.sinks = sinks;
-        this.writersByInt = new HashMap<Short, TimersOutputMarshaller>();
         this.writersByClass = new HashMap<Class, TimersOutputMarshaller>();
         
         this.writersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerOutputMarshaller() );
-        this.writersByInt.put( PersisterEnums.BEHAVIOR_TIMER, this.writersByClass.get( SlidingTimeWindow.BehaviorJobContext.class ) );
         
         this.writersByClass.put( ActivationTimerJobContext.class, new ActivationTimerOutputMarshaller() );
-        this.writersByInt.put( PersisterEnums.ACTIVATION_TIMER,  this.writersByClass.get(ActivationTimerJobContext.class) );
+        
+        this.writersByClass.put( ExpireJobContext.class, new ExpireJobContextTimerOutputMarshaller() );        
 
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );

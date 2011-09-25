@@ -35,7 +35,6 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.ActivationIterator;
 import org.drools.common.AgendaItem;
 import org.drools.common.DefaultAgenda;
-import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityKey;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalAgenda;
@@ -55,6 +54,11 @@ import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.instance.WorkItem;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.AccumulateNode;
+import org.drools.reteoo.AccumulateNode.AccumulateContext;
+import org.drools.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.reteoo.BetaMemory;
+>>>>>>> b869611... JBRULES-3223 Enable marshalling of sliding time and length windows
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.LeftTuple;
@@ -65,8 +69,16 @@ import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
+<<<<<<< HEAD
+=======
+import org.drools.rule.Behavior;
+>>>>>>> b869611... JBRULES-3223 Enable marshalling of sliding time and length windows
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
+import org.drools.rule.SlidingLengthWindow;
+import org.drools.rule.SlidingLengthWindow.SlidingLengthWindowContext;
+import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.SlidingTimeWindow.SlidingTimeWindowContext;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Activation;
 import org.drools.spi.ActivationGroup;
@@ -78,6 +90,7 @@ import org.drools.time.SelfRemovalJobContext;
 import org.drools.time.Trigger;
 import org.drools.time.impl.CronTrigger;
 import org.drools.time.impl.IntervalTrigger;
+import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TimerJobInstance;
 
@@ -369,6 +382,8 @@ public class OutputMarshaller {
             EventFactHandle efh = ( EventFactHandle ) handle;
             stream.writeLong( efh.getStartTimestamp() );
             stream.writeLong( efh.getDuration() );
+            stream.writeBoolean( efh.isExpired() );
+            stream.writeLong( efh.getActivationsCount() );
         }
 
         //context.out.println( "Object : int:" + handle.getId() + " long:" + handle.getRecency() );
@@ -556,6 +571,7 @@ public class OutputMarshaller {
 
         switch ( sink.getType() ) {
             case NodeTypeEnums.JoinNode : {
+                writeBehaviours( (BetaNode) sink, context);
                 //context.out.println( "JoinNode" );
                 for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getLeftParentNext() ) {
                     stream.writeShort( PersisterEnums.RIGHT_TUPLE );
@@ -587,6 +603,7 @@ public class OutputMarshaller {
             }
             case NodeTypeEnums.NotNode :
             case NodeTypeEnums.ForallNotNode : {
+                writeBehaviours( (BetaNode) sink, context);
                 if ( leftTuple.getBlocker() == null ) {
                     // is not blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
@@ -607,6 +624,7 @@ public class OutputMarshaller {
                 break;
             }
             case NodeTypeEnums.ExistsNode : {
+                writeBehaviours( (BetaNode) sink, context);
                 if ( leftTuple.getBlocker() == null ) {
                     // is blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
@@ -626,6 +644,7 @@ public class OutputMarshaller {
                 break;
             }
             case NodeTypeEnums.AccumulateNode : {
+                writeBehaviours( (BetaNode) sink, context);
                 //context.out.println( ".... AccumulateNode" );
                 // accumulate nodes generate new facts on-demand and need special procedures when serializing to persistent storage
                 AccumulateMemory memory = (AccumulateMemory) context.wm.getNodeMemory( (BetaNode) sink );
@@ -811,7 +830,80 @@ public class OutputMarshaller {
             }
         }
     }
+    
+    public static void writeBehaviours(BetaNode betaNode,
+                                       MarshallerWriteContext outCtx) throws IOException {
+        Behavior[] behaviors = betaNode.getBehaviors();
+        
+        BetaMemory betaMemory = null;       
+        if ( betaNode instanceof AccumulateNode ) {
+            betaMemory = (( AccumulateMemory ) outCtx.wm.getNodeMemory( betaNode )).betaMemory;
+        } else {
+            betaMemory = ( BetaMemory ) outCtx.wm.getNodeMemory( betaNode );
+        }
+        
+        Object[] behaviorContexts = ( Object[] ) betaMemory.getBehaviorContext();
+        
+        for ( int i = 0; i < behaviors.length; i++ ) {
+            if ( betaNode.getBehaviors()[i] instanceof SlidingTimeWindow) {
+                outCtx.writeShort( PersisterEnums.SLIDING_TIME_WIN );
+                outCtx.writeInt( i );
+                writeSlidingTimeWindowBehaviour( ( SlidingTimeWindow) betaNode.getBehaviors()[i], 
+                                                 ( SlidingTimeWindowContext ) behaviorContexts[i], 
+                                                 outCtx);
+            } else if ( betaNode.getBehaviors()[i] instanceof SlidingLengthWindow) {
+                outCtx.writeShort( PersisterEnums.SLIDING_LENGTH_WIN );
+                outCtx.writeInt( i );
+                writeSlidingLengthWindowBehaviour( ( SlidingLengthWindow) betaNode.getBehaviors()[i], 
+                                                 ( SlidingLengthWindowContext ) behaviorContexts[i], 
+                                                 outCtx);                
+            }
+        } 
+        outCtx.writeShort( PersisterEnums.END );
+    }
+    
+    public static void writeSlidingTimeWindowBehaviour(SlidingTimeWindow stw,
+                                                       SlidingTimeWindowContext slCtx,
+                                                       MarshallerWriteContext outputCtx) throws IOException {
+        // It's timers are restored by writeTimers
+        if ( slCtx.expiringTuple != null ) {
+            outputCtx.writeBoolean( true );
 
+            outputCtx.writeInt( slCtx.expiringTuple.getRightTupleSink().getId() );
+            outputCtx.writeInt( slCtx.expiringTuple.getFactHandle().getId() );
+        } else {
+            outputCtx.writeBoolean( false );
+        }
+
+        if ( slCtx.getQueue() != null ) {
+            outputCtx.writeBoolean( true );
+            outputCtx.writeInt( slCtx.getQueue().size() );
+            for ( RightTuple rightTuple : slCtx.getQueue() ) {
+                outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );
+                outputCtx.writeInt( rightTuple.getFactHandle().getId() );
+            }
+        } else {
+            outputCtx.writeBoolean( false );
+        }
+    }
+
+    public static void writeSlidingLengthWindowBehaviour(SlidingLengthWindow stw,
+                                                         SlidingLengthWindowContext slCtx,
+                                                         MarshallerWriteContext outputCtx) throws IOException {
+        outputCtx.writeInt( slCtx.pos );
+        
+        outputCtx.writeInt( slCtx.rightTuples.length );
+        
+        for ( RightTuple rightTuple : slCtx.rightTuples ) {
+            if ( rightTuple == null ) {
+                outputCtx.writeInt( -1 );
+            } else {
+                outputCtx.writeInt( rightTuple.getFactHandle().getId() );
+                outputCtx.writeInt( rightTuple.getRightTupleSink().getId() );                
+            }
+        }
+    }
+    
     public static void writeActivations(MarshallerWriteContext context) throws IOException {
         ObjectOutputStream stream = context.stream;
 
@@ -1064,7 +1156,14 @@ public class OutputMarshaller {
             }            
             outCtx.writeLong( intTrigger.getPeriod() );
             outCtx.writeObject( intTrigger.getCalendarNames() );
-        } 
+        } else if ( trigger instanceof PointInTimeTrigger ) {
+            outCtx.writeShort( PersisterEnums.POINT_IN_TIME_TRIGGER );
+            
+            PointInTimeTrigger pinTrigger = ( PointInTimeTrigger ) trigger;
+            
+            outCtx.writeLong( pinTrigger.hasNextFireTime().getTime() );
+        }
+        
 //        else if ( trigger instanceof DelayedTrigger ) {
 //            
 //        } else if ( trigger instanceof PointInTimeTrigger ) {
