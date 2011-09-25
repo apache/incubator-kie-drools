@@ -65,14 +65,19 @@ public class PersisterEnums {
     public static final short QUERY_ELEMENT_FACTHANDLE  = 35;
 
     public static final short DEFAULT_TIMER             = 50;
-    public static final short BEHAVIOR_TIMER            = 50;
-    public static final short ACTIVATION_TIMER          = 51;
-    public static final short PROCESS_TIMER             = 52;
+    public static final short BEHAVIOR_TIMER            = 51;
+    public static final short ACTIVATION_TIMER          = 52;
+    public static final short PROCESS_TIMER             = 53;
+    public static final short EXPIRE_TIMER              = 54;
     
     
     public static final short CRON_TRIGGER              = 70;
     public static final short INT_TRIGGER               = 71;
+    public static final short POINT_IN_TIME_TRIGGER     = 72;
     
     public static final short ENTRY_POINT               = 90;
+    
 
+    public static final short SLIDING_TIME_WIN          = 100;
+    public static final short SLIDING_LENGTH_WIN        = 101;
 }
