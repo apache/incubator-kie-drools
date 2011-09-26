@@ -16,17 +16,16 @@
 
 package org.drools.base.field;
 
-import org.drools.base.TypeResolver;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.reteoo.ReteooRuleBase;
-import org.drools.spi.FieldValue;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.spi.FieldValue;
 
 public class ClassFieldImpl implements FieldValue, Externalizable {
 
