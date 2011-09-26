@@ -130,12 +130,17 @@
   <section>
     <title>Configuring Designer</title>
     <para>Designer is tightly integrated with Guvnor. By default Designer expects to find a Guvnor instance on
-    http://localhost:8080/drools-guvnor/. In cases where Guvnor is configured to use https, or is running on a different
+    http://localhost:8080/drools-guvnor/. Guvnor, by default, expects to find the Designer on http://localhost:8080/designer.
+    Here we show how to configure both Designer and Guvnor to be able to change these default settings when needed.</para>
+	
+	<section> 
+	<title>Changing the default configuration in Designer</title>
+	<para>   
+    In cases where Guvnor is configured to use https, or is running on a different
     host/port/domain/subdomain you have to configure Designer to reflect these settings. in order to change Designer 
     configurations you have to deploy it as an exploded war. In $designer.war/profiles/jbpm.xml notice the section 
     on the bottom:
-    </para>
-    
+    </para> 
     <programlisting language="xml">
       &lt;externalloadurl protocol="http" host="localhost:8080" subdomain="drools-guvnor/org.drools.guvnor.Guvnor/oryxeditor" usr="admin" pwd="admin"/&gt;
     </programlisting>
@@ -165,6 +170,32 @@
     <para>
     If you choose to use system properties you do not have to deploy the designer war as exploded.
     </para>
+    </section>
+    <section> 
+	<title>Changing the default configuration in Guvnor</title>
+	<para>To configure Guvnor to reflect the host/port/domain/subdomain and the default profile settings of the Designer, we need to edit $drools-guvnor.war/WEB-INF/preferences.properties:</para>
+	<programlisting language="text">
+#Designer configuration
+designer.url=http://localhost:8080
+#Do not change this unless you know what are you doing
+designer.context=designer
+designer.profile=jbpm
+	</programlisting>
+	
+	<para>
+      The configuration attributes include:
+      <itemizedlist>
+        <listitem>designer.url: set the protocol, host, and port where Designer is located at</listitem>
+        <listitem>designer.context: this sets the configured subdomain of Designer. Should not change unless you deploy it under some other subdomain</listitem>
+        <listitem>designer.profile: Designer can have multiple profiles defined. Profiles determine the used stencil set, the saving/loading strategy of processes, etc. The default 
+        profile name used is "jbpm" and this should not be changes unless you create a custom profile to be used</listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+    Note that in order to be able to edit $drools-guvnor.war/WEB-INF/preferences.properties, you have to deploy Guvnor as an exploded archive.
+    </para>
+	</section>
   </section>
   
   <section>
