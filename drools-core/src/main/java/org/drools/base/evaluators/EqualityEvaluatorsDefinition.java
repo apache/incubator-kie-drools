@@ -1768,7 +1768,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1, final FieldValue object2) {
             Object value1 = extractor.getValue( workingMemory, object1 );
             Object value2 = object2.getValue();
-            if ( value2 == null ) {
+            if ( !object2.isNull() && value2 == null ) {
                 ClassFieldImpl classField = (ClassFieldImpl) object2;
                 value2 = classField.resolve( workingMemory );
             }
@@ -1820,7 +1820,7 @@ public class EqualityEvaluatorsDefinition implements EvaluatorDefinition {
                                 final Object object1, final FieldValue object2) {
             Object value1 = extractor.getValue( workingMemory, object1 );
             Object value2 = object2.getValue();
-            if ( value2 == null ) {
+            if ( !object2.isNull() && value2 == null ) {
                 ClassFieldImpl classField = (ClassFieldImpl) object2;
                 value2 = classField.resolve( workingMemory );
             }
