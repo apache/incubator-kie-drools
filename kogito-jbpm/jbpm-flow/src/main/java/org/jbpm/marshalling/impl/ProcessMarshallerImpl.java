@@ -49,8 +49,6 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
 
     public void writeProcessTimers(MarshallerWriteContext outCtx) throws IOException {
         outCtx.writersByClass.put( ProcessJobContext.class, new TimerManager.ProcessTimerOutputMarshaller() );
-        outCtx.writersByInt.put( PersisterEnums.PROCESS_TIMER,  outCtx.writersByClass.get( ProcessJobContext.class ));
-        
         
         // this is deprecated, will delete soon (mdp)
 //        ObjectOutputStream stream = context.stream;
@@ -188,8 +186,7 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
     }
 
     public void readProcessTimers(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
-        inCtx.readersByClass.put( ProcessJobContext.class, new TimerManager.ProcessTimerInputMarshaller() );
-        inCtx.readersByInt.put( PersisterEnums.PROCESS_TIMER,  inCtx.readersByClass.get( ProcessJobContext.class ));
+        inCtx.readersByInt.put( PersisterEnums.PROCESS_TIMER,  new TimerManager.ProcessTimerInputMarshaller());
         
         ObjectInputStream stream = inCtx.stream;
 
