@@ -52,6 +52,8 @@ public class Primitives
 
     private Object            object;
     
+    private Class<?>          classAttr;
+    
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
     }
@@ -278,6 +280,20 @@ public class Primitives
             if ( other.stringAttribute != null ) return false;
         } else if ( !stringAttribute.equals( other.stringAttribute ) ) return false;
         return true;
+    }
+
+    /**
+     * @return the classAttr
+     */
+    public Class< ? > getClassAttr() {
+        return classAttr;
+    }
+
+    /**
+     * @param classAttr the classAttr to set
+     */
+    public void setClassAttr( Class< ? > classAttr ) {
+        this.classAttr = classAttr;
     }
 
 }

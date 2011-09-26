@@ -9123,6 +9123,24 @@ public class MiscTest {
     }
 
     @Test
+    public void testClassTypeAttributes() {
+        String str = "package org.drools\n" +
+                     "rule r1\n" +
+                     "when\n" +
+                     "    Primitives( classAttr == null )" +
+                     "then\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert( new Primitives() );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1,
+                      rules );
+    }
+
+    @Test
     public void testJBRULES2872() {
         String str = "package org.drools.test\n" +
                      "import org.drools.FactA\n" +

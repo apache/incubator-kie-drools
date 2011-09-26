@@ -41,12 +41,11 @@ public class TraitClassBuilderImpl implements TraitClassBuilder {
             if ( Object.class.getName().equals( classDef.getSuperClass() ) ) {
                 intfaces = BuildUtils.getInternalTypes( classDef.getInterfaces() );
             } else {
-                intfaces = BuildUtils.getInternalTypes( classDef.getInterfaces() );
-                intfaces = Arrays.copyOf(intfaces, intfaces.length + 1);
+                String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() ); 
+                intfaces = new String[ tmp.length + 1 ];
+                System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ intfaces.length - 1 ] = BuildUtils.getInternalType( classDef.getSuperClass() );
-
             }
-
 
             cw.visit(V1_5, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
                     cName,
