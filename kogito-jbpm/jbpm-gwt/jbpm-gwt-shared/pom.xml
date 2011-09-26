@@ -39,6 +39,16 @@
   		   <artifactId>commons-codec</artifactId>
   		   <version>1.5</version>
 		</dependency>
+        <dependency>
+            <groupId>com.sun.xml.stream</groupId>
+            <artifactId>sjsxp</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml</groupId>
+            <artifactId>jsr173</artifactId>
+            <version>1.0</version>
+        </dependency>
 	</dependencies>
 
 </project>
