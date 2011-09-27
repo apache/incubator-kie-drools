@@ -42,6 +42,7 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.concurrent.CommandExecutor;
 import org.drools.concurrent.ExecutorService;
+import org.drools.conf.EventProcessingOption;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -447,10 +448,13 @@ public class ReteooRuleBase extends AbstractRuleBase {
     protected void updateDependentTypes( Package newPkg,
                                          TypeDeclaration typeDeclaration ) {
         // update OTNs
-        for( EntryPointNode ep : this.rete.getEntryPointNodes().values() ) {
-            for( ObjectTypeNode node : ep.getObjectTypeNodes().values() ) {
-                if( node.isAssignableFrom( typeDeclaration.getObjectType() ) ) {
-                    node.setExpirationOffset( Math.max( node.getExpirationOffset(), typeDeclaration.getExpirationOffset()+1 ) );
+        if( this.getConfiguration().getEventProcessingMode().equals( EventProcessingOption.STREAM ) ) {
+            // if we are running in STREAM mode, update expiration offset
+            for( EntryPointNode ep : this.rete.getEntryPointNodes().values() ) {
+                for( ObjectTypeNode node : ep.getObjectTypeNodes().values() ) {
+                    if( node.isAssignableFrom( typeDeclaration.getObjectType() ) ) {
+                        node.setExpirationOffset( Math.max( node.getExpirationOffset(), typeDeclaration.getExpirationOffset()+1 ) );
+                    }
                 }
             }
         }
