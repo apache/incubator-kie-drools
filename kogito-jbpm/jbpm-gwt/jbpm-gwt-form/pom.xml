@@ -22,22 +22,18 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
-      <version>2.1</version>
     </dependency>
     <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
-      <version>2.3.15</version>
     </dependency>
     <dependency>
       <groupId>org.apache.mina</groupId>
       <artifactId>mina-core</artifactId>
-      <version>2.0.0-M3</version>
     </dependency> 
     <dependency>
     	<groupId>org.jbpm</groupId>
     	<artifactId>jbpm-gwt-shared</artifactId>
-        <version>${jbpm.version}</version>
     	<scope>compile</scope>
     </dependency>
   </dependencies>

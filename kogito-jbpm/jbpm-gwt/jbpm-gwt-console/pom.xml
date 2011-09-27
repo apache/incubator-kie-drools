@@ -20,7 +20,6 @@
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console</artifactId>
       <classifier>jbpm</classifier>
-      <version>2.1</version>
       <type>war</type>
     </dependency>
     <dependency>

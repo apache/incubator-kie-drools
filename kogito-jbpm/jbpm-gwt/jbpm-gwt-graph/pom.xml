@@ -26,7 +26,6 @@
     <dependency>
       <groupId>org.jboss.bpm</groupId>
       <artifactId>gwt-console-server-integration</artifactId>
-      <version>2.1</version>
     </dependency>
     <!-- Following 2 dependencies needed for making the build work with JDK5 -->
     <dependency>
@@ -42,7 +41,6 @@
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-gwt-shared</artifactId>
-      <version>${jbpm.version}</version>
       <scope>compile</scope>
    </dependency>
   </dependencies>
