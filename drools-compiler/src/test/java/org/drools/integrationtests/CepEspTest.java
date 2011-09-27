@@ -2264,7 +2264,7 @@ public class CepEspTest {
         		"        message : String\n" + 
         		"        type : String\n" + 
         		"end\n" + 
-        		"declare TestEvent\n" + 
+        		"declare StockTick\n" + 
         		"        @role ( event )\n" + 
         		"end\n" + 
         		"rule \"two events\"\n" + 
