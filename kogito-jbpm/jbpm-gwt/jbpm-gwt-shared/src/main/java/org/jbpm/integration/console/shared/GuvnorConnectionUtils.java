@@ -336,7 +336,10 @@ public class GuvnorConnectionUtils {
             while (reader.hasNext()) {
                 if (reader.next() == XMLStreamReader.START_ELEMENT) {
                     if ("title".equals(reader.getLocalName())) {
-                        packages.add(reader.getElementText());
+                    	String pname = reader.getElementText();
+                    	if(!pname.equalsIgnoreCase("Packages")) {
+                    		 packages.add(pname);
+                    	}
                     }
                 }
             }
@@ -383,7 +386,8 @@ public class GuvnorConnectionUtils {
     
     private void applyAuth(HttpURLConnection connection) {
 		String auth = getGuvnorUsr() + ":" + getGuvnorPwd();
-		connection.setRequestProperty("Authorization", "Basic " + Base64.encodeBase64URLSafeString(auth.getBytes()));
+		connection.setRequestProperty("Authorization", "Basic "
+                + Base64.encodeBase64String(auth.getBytes()));
     }
 
     private InputStream getInputStreamForImageURL(String urlLocation, String requestMethod) throws Exception {
@@ -392,14 +396,10 @@ public class GuvnorConnectionUtils {
 
         connection.setRequestMethod(requestMethod);
         connection
-                .setRequestProperty(
-                        "User-Agent",
-                        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.16) Gecko/20110319 Firefox/3.6.16");
-        connection
-                .setRequestProperty("Accept",
-                        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        connection.setRequestProperty("Accept-Language", "en-us,en;q=0.5");
-        connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
+        .setRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.16) Gecko/20110319 Firefox/3.6.16");
+        connection.setRequestProperty("Accept", "text/plain,text/html,application/xhtml+xml,application/xml");
         connection.setRequestProperty("charset", "UTF-8");
         connection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
         connection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
@@ -416,14 +416,10 @@ public class GuvnorConnectionUtils {
 
         connection.setRequestMethod(requestMethod);
         connection
-                .setRequestProperty(
-                        "User-Agent",
-                        "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.16) Gecko/20110319 Firefox/3.6.16");
-        connection
-                .setRequestProperty("Accept",
-                        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        connection.setRequestProperty("Accept-Language", "en-us,en;q=0.5");
-        connection.setRequestProperty("Accept-Encoding", "gzip,deflate");
+        .setRequestProperty(
+                "User-Agent",
+                "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.2.16) Gecko/20110319 Firefox/3.6.16");
+        connection.setRequestProperty("Accept", "text/plain,text/html,application/xhtml+xml,application/xml");
         connection.setRequestProperty("charset", "UTF-8");
         connection.setConnectTimeout(Integer.parseInt(getGuvnorConnectTimeout()));
         connection.setReadTimeout(Integer.parseInt(getGuvnorReadTimeout()));
@@ -472,15 +468,15 @@ public class GuvnorConnectionUtils {
     private class TemplateInfo {
         List<String> data = new ArrayList<String>();
         
-        public TemplateInfo(String protocol, String host, String usr, String pwd, 
+        public TemplateInfo(String protocol, String host, String usr, String pwd,
                 String subdomain, List<String> packages) {
             for(String pkg : packages) {
                 StringBuffer sb = new StringBuffer();
                 sb.append("<resource source=\"");
                 sb.append(protocol).append("://");
                 sb.append(host).append("/");
-                sb.append(subdomain).append("/rest/packages/");
-                sb.append(pkg).append("/binary\"");
+                sb.append(subdomain).append("/").append("org.drools.guvnor.Guvnor/package/");
+                sb.append(pkg).append("/LATEST\"");
                 sb.append(" type=\"PKG\"");
                 if(!isEmpty(usr) && !isEmpty(pwd)) {
                     sb.append(" basicAuthentication=\"enabled\"");
