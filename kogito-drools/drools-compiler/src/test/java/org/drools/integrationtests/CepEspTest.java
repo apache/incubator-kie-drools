@@ -67,6 +67,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.FactType;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -2248,4 +2249,56 @@ public class CepEspTest {
 
     }
 
+    @Test
+    public void testCloudModeExpiration() throws IOException,
+                                            ClassNotFoundException, InstantiationException, IllegalAccessException, InterruptedException {
+        String str = "package org.drools.cloud\n" + 
+        		"import org.drools.*\n" + 
+        		"declare Event\n" + 
+        		"        @role ( event )\n" + 
+        		"        name : String\n" + 
+        		"        value : Object\n" + 
+        		"end\n" + 
+        		"declare AnotherEvent\n" + 
+        		"        @role ( event )\n" + 
+        		"        message : String\n" + 
+        		"        type : String\n" + 
+        		"end\n" + 
+        		"declare TestEvent\n" + 
+        		"        @role ( event )\n" + 
+        		"end\n" + 
+        		"rule \"two events\"\n" + 
+        		"    when\n" + 
+        		"        Event( value != null ) from entry-point X\n" + 
+        		"        StockTick( company != null ) from entry-point X\n" + 
+        		"    then\n" + 
+        		"end";
+
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.CLOUD );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
+                                                 config );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+
+        ep.insert(new StockTick(1, "RHT", 10, 1000 ));
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 0, rulesFired );
+
+        org.drools.definition.type.FactType event = kbase.getFactType("org.drools.cloud", "Event");
+        Object e1 = event.newInstance();
+        event.set(e1, "name", "someKey");
+        event.set(e1, "value", "someValue");
+
+        ep.insert(e1);
+        rulesFired = ksession.fireAllRules();
+        assertEquals( 1, rulesFired );
+        
+        // let some time be spent
+        Thread.currentThread().sleep( 1000 ); 
+        
+        // check both events are still in memory as we are running in CLOUD mode
+        assertEquals( 2, ep.getFactCount() ); 
+    }
 }
