@@ -52,13 +52,10 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.process.instance.WorkItem;
-import org.drools.reteoo.AccumulateNode.AccumulateContext;
-import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.AccumulateNode;
 import org.drools.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.reteoo.BetaMemory;
->>>>>>> b869611... JBRULES-3223 Enable marshalling of sliding time and length windows
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.FromNode.FromMemory;
 import org.drools.reteoo.LeftTuple;
@@ -69,10 +66,7 @@ import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
 import org.drools.reteoo.RuleTerminalNode;
-<<<<<<< HEAD
-=======
 import org.drools.rule.Behavior;
->>>>>>> b869611... JBRULES-3223 Enable marshalling of sliding time and length windows
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
 import org.drools.rule.SlidingLengthWindow;
