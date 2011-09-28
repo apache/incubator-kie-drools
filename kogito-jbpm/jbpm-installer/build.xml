@@ -446,11 +446,11 @@
       <arg value="${jboss.bind.address}" />
       <arg value="-Djbpm.console.directory=${install.home}/sample/evaluation/src/main/resources" />
     </exec>
-    <waitfor maxwait="5" maxwaitunit="minute" checkevery="30"
+    <waitfor maxwait="10" maxwaitunit="minute" checkevery="30"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
       <socket server="${jboss.bind.address}" port="8080" />
     </waitfor>
-    <fail if="jboss.timeout" message="jboss did not start within 5 minutes"/>
+    <fail if="jboss.timeout" message="jboss did not start within 10 minutes"/>
   </target>
   <!-- Stop JBoss AS -->
   <target name="stop.jboss">
