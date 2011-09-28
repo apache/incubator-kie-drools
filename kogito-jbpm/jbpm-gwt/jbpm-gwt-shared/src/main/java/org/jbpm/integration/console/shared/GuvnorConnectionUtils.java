@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -463,6 +465,29 @@ public class GuvnorConnectionUtils {
         } finally {
             scanner.close();
         }
+    }
+    
+    public boolean guvnorExists() {
+    	String checkURLStr = getGuvnorProtocol()
+                + "://"
+                + getGuvnorHost()
+                + "/"
+                + getGuvnorSubdomain()
+                + "/rest/packages/";
+    	
+    	try {
+			URL checkURL = new URL(checkURLStr);
+			HttpURLConnection checkConnection = (HttpURLConnection) checkURL.openConnection();
+			checkConnection.setRequestMethod("GET");
+			checkConnection.setRequestProperty("Accept", "application/atom+xml");
+			checkConnection.setConnectTimeout(4000);
+			applyAuth(checkConnection);
+			checkConnection.connect();
+			return (checkConnection.getResponseCode() == 200);
+		} catch (Exception e) {
+			logger.error("Error checking guvnor existence: " + e.getMessage());
+			return false;
+		} 
     }
     
     private class TemplateInfo {

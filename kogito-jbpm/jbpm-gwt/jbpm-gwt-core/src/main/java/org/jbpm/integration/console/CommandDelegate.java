@@ -101,28 +101,24 @@ public class CommandDelegate {
             } catch (IOException e) {
                 throw new RuntimeException("Could not load jbpm.console.properties", e);
             }
-            try {
-                GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
-                ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-                sconf.setProperty( "drools.resource.scanner.interval", "10" );
-                ResourceFactory.getResourceChangeScannerService().configure( sconf );
-                ResourceFactory.getResourceChangeScannerService().start();
-                ResourceFactory.getResourceChangeNotifierService().start();
-                KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
-                aconf.setProperty("drools.agent.newInstance", "false");
-                KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
-                kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
-                kbase = kagent.getKnowledgeBase();
-            } catch (Throwable t) {
-                if (t instanceof RuntimeException
-                        && "KnowledgeAgent exception while trying to deserialize".equals(t.getMessage())) {
-                    logger.error("Could not connect to guvnor");
-                    if (t.getCause() != null) {
-                    	logger.error("Could not connect to guvnor", t);
-                    }
-                }
-                logger.error("Could not load processes from guvnor: " + t.getMessage());
-                t.printStackTrace();
+            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
+            if(guvnorUtils.guvnorExists()) {
+            	try {
+            		ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+					sconf.setProperty( "drools.resource.scanner.interval", "10" );
+					ResourceFactory.getResourceChangeScannerService().configure( sconf );
+					ResourceFactory.getResourceChangeScannerService().start();
+					ResourceFactory.getResourceChangeNotifierService().start();
+					KnowledgeAgentConfiguration aconf = KnowledgeAgentFactory.newKnowledgeAgentConfiguration();
+					aconf.setProperty("drools.agent.newInstance", "false");
+					KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("Guvnor default", aconf);
+					kagent.applyChangeSet(ResourceFactory.newReaderResource(guvnorUtils.createChangeSet()));
+					kbase = kagent.getKnowledgeBase();
+				} catch (Throwable t) {
+					logger.error("Could not load processes from Guvnor: " + t.getMessage());
+				}
+            } else {
+            	logger.warn("Could not connect to Guvnor.");
             }
             if (kbase == null) {
                 kbase = KnowledgeBaseFactory.newKnowledgeBase();

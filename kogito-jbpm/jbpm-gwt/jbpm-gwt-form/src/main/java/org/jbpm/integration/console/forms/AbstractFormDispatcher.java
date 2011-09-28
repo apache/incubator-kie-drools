@@ -35,6 +35,8 @@ import javax.activation.DataSource;
 import org.jboss.bpm.console.server.plugin.FormAuthorityRef;
 import org.jboss.bpm.console.server.plugin.FormDispatcherPlugin;
 import org.jbpm.integration.console.shared.GuvnorConnectionUtils; 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
@@ -44,6 +46,8 @@ import freemarker.template.Template;
  */
 public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 
+	private static final Logger logger = LoggerFactory.getLogger(AbstractFormDispatcher.class);
+	
 	public URL getDispatchUrl(FormAuthorityRef ref) {
 		StringBuffer sb = new StringBuffer();
 		Properties properties = new Properties();
@@ -79,7 +83,27 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 	}
 	
 	public InputStream getTemplate(String name) {
-		// try to find on classpath
+		// try to find in guvnor repository
+        GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
+        if(guvnorUtils.guvnorExists()) {
+        	try {
+				String templateName;
+				if(guvnorUtils.templateExistsInRepo(name + "-taskform")) {
+					templateName = name + "-taskform";
+				} else if(guvnorUtils.templateExistsInRepo(name)) {
+					templateName = name;
+				} else {
+					return null;
+				}
+				return guvnorUtils.getFormTemplateFromGuvnor(templateName);
+			} catch (Throwable t) {
+				logger.error("Could not load process template from Guvnor: " + t.getMessage());
+				return null;
+			}
+        } else {
+        	logger.warn("Could not connect to Guvnor.");
+        }
+        // try to find on classpath
 	    InputStream nameTaskformResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + "-taskform.ftl");
 		if (nameTaskformResult != null) {
 			return nameTaskformResult;
@@ -87,23 +111,9 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 		    InputStream nameResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
 		    if (nameResult != null) {
 		        return nameResult;
+		    } else {
+		    	return null;
 		    }
-		}
-		// try to find in guvnor repository
-        try {
-            GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
-            String templateName;
-            if(guvnorUtils.templateExistsInRepo(name + "-taskform")) {
-                templateName = name + "-taskform";
-            } else if(guvnorUtils.templateExistsInRepo(name)) {
-                templateName = name;
-            } else {
-                return null;
-            }
-            return guvnorUtils.getFormTemplateFromGuvnor(templateName);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			return null;
 		}
 	}
 
