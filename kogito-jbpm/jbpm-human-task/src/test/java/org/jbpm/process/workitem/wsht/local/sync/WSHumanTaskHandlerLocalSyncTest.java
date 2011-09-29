@@ -17,6 +17,7 @@ package org.jbpm.process.workitem.wsht.local.sync;
 
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.local.LocalTaskService;
 
@@ -30,7 +31,7 @@ public class WSHumanTaskHandlerLocalSyncTest extends WSHumanTaskHandlerBaseSyncT
        
         setClient(new LocalTaskService(taskSession));
         
-        setHandler(new SyncWSHumanTaskHandler(getClient()));
+        setHandler(new SyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession()));
     }
 
     protected void tearDown() throws Exception {

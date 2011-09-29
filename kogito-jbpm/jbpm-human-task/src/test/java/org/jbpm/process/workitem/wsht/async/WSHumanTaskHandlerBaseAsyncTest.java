@@ -33,6 +33,7 @@ import org.jbpm.task.AsyncTaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
@@ -362,6 +363,7 @@ public abstract class WSHumanTaskHandlerBaseAsyncTest extends BaseTest {
         getClient().getTask(taskSummary.getId(), getTaskResponseHandler);
         Task task = getTaskResponseHandler.getTask();
         assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
         BlockingGetContentResponseHandler getContentResponseHandler = new BlockingGetContentResponseHandler();

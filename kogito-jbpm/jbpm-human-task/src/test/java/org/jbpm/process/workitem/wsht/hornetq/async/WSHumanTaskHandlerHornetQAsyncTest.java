@@ -18,6 +18,7 @@ package org.jbpm.process.workitem.wsht.hornetq.async;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.hornetq.HornetQTaskClientConnector;
@@ -42,7 +43,7 @@ public class WSHumanTaskHandlerHornetQAsyncTest extends WSHumanTaskHandlerBaseAs
         setClient(new TaskClient(new HornetQTaskClientConnector("client 1",
                 new HornetQTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
         
-        AsyncWSHumanTaskHandler handler = new AsyncWSHumanTaskHandler(getClient());
+        AsyncWSHumanTaskHandler handler = new AsyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession());
         handler.setConnection("127.0.0.1", 5446);
         setHandler(handler);
     }

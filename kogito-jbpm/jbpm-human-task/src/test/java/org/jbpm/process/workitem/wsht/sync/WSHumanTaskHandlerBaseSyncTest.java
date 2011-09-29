@@ -33,6 +33,7 @@ import org.jbpm.task.TaskService;
 import org.jbpm.task.BaseTest;
 import org.jbpm.task.Status;
 import org.jbpm.task.Task;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.ContentData;
 import org.jbpm.task.service.PermissionDeniedException;
@@ -310,10 +311,6 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         workItem.setParameter("Content", "This is the content");
         getHandler().executeWorkItem(workItem, manager);
 
-        
-
-        
-        
         List<TaskSummary> tasks = getClient().getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
         assertEquals(1, tasks.size());
         TaskSummary taskSummary = tasks.get(0);
@@ -322,14 +319,12 @@ public abstract class WSHumanTaskHandlerBaseSyncTest extends BaseTest {
         assertEquals("Comment", taskSummary.getDescription());
         assertEquals(Status.Reserved, taskSummary.getStatus());
         assertEquals("Darth Vader", taskSummary.getActualOwner().getId());
-
-        
         
         Task task = getClient().getTask(taskSummary.getId());
         assertEquals(AccessType.Inline, task.getTaskData().getDocumentAccessType());
+        assertEquals(task.getTaskData().getProcessSessionId(), TestStatefulKnowledgeSession.testSessionId);
         long contentId = task.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
-        
         
         ByteArrayInputStream bis = new ByteArrayInputStream(getClient().getContent(contentId).getContent());
         ObjectInputStream in = new ObjectInputStream(bis);

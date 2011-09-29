@@ -19,6 +19,7 @@ import org.drools.SystemEventListenerFactory;
 import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.sync.WSHumanTaskHandlerBaseSyncTest;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.AsyncTaskServiceWrapper;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
@@ -44,7 +45,7 @@ public class WSHumanTaskHandlerMinaSyncTest extends WSHumanTaskHandlerBaseSyncTe
         setClient(new AsyncTaskServiceWrapper(new TaskClient(new MinaTaskClientConnector("client 1",
                 new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener())))));
         
-        setHandler(new SyncWSHumanTaskHandler(getClient()));
+        setHandler(new SyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession()));
     }
 
     protected void tearDown() throws Exception {

@@ -18,6 +18,7 @@ package org.jbpm.process.workitem.wsht.mina.async;
 import org.drools.SystemEventListenerFactory;
 import org.jbpm.process.workitem.wsht.AsyncWSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.async.WSHumanTaskHandlerBaseAsyncTest;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
@@ -42,7 +43,7 @@ public class WSHumanTaskHandlerMinaAsyncTest extends WSHumanTaskHandlerBaseAsync
         setClient(new TaskClient(new MinaTaskClientConnector("client 1",
                 new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
         
-        setHandler(new AsyncWSHumanTaskHandler(getClient()));
+        setHandler(new AsyncWSHumanTaskHandler(getClient(), new TestStatefulKnowledgeSession()));
     }
 
     protected void tearDown() throws Exception {

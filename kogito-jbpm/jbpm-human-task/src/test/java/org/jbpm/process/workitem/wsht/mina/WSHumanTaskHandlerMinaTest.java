@@ -17,8 +17,10 @@
 package org.jbpm.process.workitem.wsht.mina;
 
 import org.drools.SystemEventListenerFactory;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandler;
 import org.jbpm.process.workitem.wsht.WSHumanTaskHandlerBaseTest;
+import org.jbpm.task.TestStatefulKnowledgeSession;
 import org.jbpm.task.service.TaskClient;
 import org.jbpm.task.service.TaskServer;
 import org.jbpm.task.service.mina.MinaTaskClientConnector;
@@ -43,7 +45,7 @@ public class WSHumanTaskHandlerMinaTest extends WSHumanTaskHandlerBaseTest {
 		setClient(new TaskClient(new MinaTaskClientConnector("client 1",
 								new MinaTaskClientHandler(SystemEventListenerFactory.getSystemEventListener()))));
 		getClient().connect("127.0.0.1", 9123);
-		setHandler(new WSHumanTaskHandler());
+		setHandler(new WSHumanTaskHandler(new TestStatefulKnowledgeSession()));
 	}
 
 	protected void tearDown() throws Exception {

@@ -197,7 +197,7 @@ public class CommandDelegate {
                 handler.connect();
             } else if ("Local".equals(TaskManagement.TASK_SERVICE_STRATEGY)) {
 				TaskService taskService = HumanTaskService.getService();
-	            SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService.createSession()));
+	            SyncWSHumanTaskHandler handler = new SyncWSHumanTaskHandler(new LocalTaskService(taskService.createSession()), ksession);
 	            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
             }
             final org.drools.event.AgendaEventListener agendaEventListener = new org.drools.event.AgendaEventListener() {

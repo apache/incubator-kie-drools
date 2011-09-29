@@ -80,6 +80,8 @@ public class TaskData
     private long parentId = -1;
     
     private String processId;
+    
+    private int processSessionId;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
@@ -238,6 +240,13 @@ public class TaskData
         } else {
             out.writeBoolean(false);
         }
+        
+        if (processSessionId != -1) {
+            out.writeBoolean(true);
+            out.writeInt(processSessionId);
+        } else {
+            out.writeBoolean(false);
+        }
 
         CollectionUtils.writeCommentList(comments,
                 out);
@@ -334,6 +343,11 @@ public class TaskData
         if (in.readBoolean()) {
             processId = in.readUTF();
         }
+        
+        if (in.readBoolean()) {
+            processSessionId = in.readInt();
+        }
+        
         comments = CollectionUtils.readCommentList(in);
         attachments = CollectionUtils.readAttachmentList(in);
 
@@ -501,6 +515,14 @@ public class TaskData
 
 	public void setProcessId(String processId) {
 		this.processId = processId;
+	}
+	
+	public int getProcessSessionId() {
+		return processSessionId;
+	}
+
+	public void setProcessSessionId(int processSessionId) {
+		this.processSessionId = processSessionId;
 	}
 
 	/**
@@ -785,7 +807,10 @@ public class TaskData
         } else if (!documentType.equals(other.documentType)) return false;
         // I think this is OK!
         if (parentId != other.parentId) return false;
-
+        if (processId == null) {
+            if (other.processId != null) return false;
+        } else if (!processId.equals(other.processId)) return false;
+        if (processSessionId != other.processSessionId) return false;
         return CollectionUtils.equals(attachments,
                 other.attachments) && CollectionUtils.equals(comments,
                 other.comments);
