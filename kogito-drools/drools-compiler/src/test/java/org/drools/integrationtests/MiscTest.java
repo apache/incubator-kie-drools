@@ -1296,6 +1296,33 @@ public class MiscTest {
     }
 
     @Test
+    public void testUppercaseField2() throws Exception {
+        String rule = "package org.drools\n" +
+        		"declare SomeFact\n" +
+        		"    Field : String\n" +
+        		"    aField : String\n" +
+        		"end\n" +
+        		"rule X\n" +
+        		"when\n" +
+        		"    SomeFact( Field == \"foo\", aField == \"bar\" )\n" +
+        		"then\n" +
+        		"end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factType = kbase.getFactType("org.drools", "SomeFact");
+        Object fact = factType.newInstance();
+        factType.set(fact, "Field", "foo");
+        factType.set(fact, "aField", "bar");
+
+        ksession.insert(fact);
+        int rules = ksession.fireAllRules();
+
+        assertEquals(1, rules);
+        ksession.dispose();
+    }
+    
+    @Test
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_NullHandling.drl" ) ) );
