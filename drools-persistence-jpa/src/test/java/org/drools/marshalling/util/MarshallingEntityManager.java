@@ -1,7 +1,7 @@
 package org.drools.marshalling.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -9,14 +9,14 @@ import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
-import junit.framework.TestCase;
-
 import org.drools.persistence.info.SessionInfo;
-import org.junit.Test;
 
 public class MarshallingEntityManager implements EntityManager {
 
     private EntityManager em;
+    private ConcurrentHashMap<SessionInfo, byte []> marshalledDataMap = new ConcurrentHashMap<SessionInfo, byte []>();
+    private ConcurrentHashMap<String, byte[]> testMethodByteArrayMap = new ConcurrentHashMap<String, byte[]>();
+    
     public MarshallingEntityManager(EntityManager em) { 
         this.em = em;
     }
@@ -27,10 +27,11 @@ public class MarshallingEntityManager implements EntityManager {
     public void persist(Object entity) {
         em.persist(entity);
         if( entity instanceof SessionInfo ) { 
-           MarshalledData marshalledData = new MarshalledData((SessionInfo) entity);
-           marshalledData.testMethodName = getTestMethodName();
+           SessionInfo sessionInfo = (SessionInfo) entity;
+           marshalledDataMap.put(sessionInfo, sessionInfo.getData().clone());
+           MarshalledData marshalledData = new MarshalledData(sessionInfo);
            em.persist(marshalledData);
-           marshalledData.toString();
+           System.out.println("-.-: " + marshalledData);
         }
     }
 
@@ -40,73 +41,86 @@ public class MarshallingEntityManager implements EntityManager {
     public <T> T merge(T entity) {
         T updatedEntity = em.merge(entity);
         if( entity instanceof SessionInfo ) { 
+            // do stuff???
+            // - if updatedEntity.rulesByteArray != entity.rulesByteArray
+            // -> then.. ?
+            //     ? save a new MarshalledData object
            MarshalledData marshalledData = new MarshalledData((SessionInfo) entity);
+           System.out.println("- MERGE: " + marshalledData);
         }
         return updatedEntity;
     }
 
-    /**
-     * Retrieve the name of the actual method running the test, via reflection magic. 
-     * @return The method of the (Junit) test running at this moment.
-     */
-    private static String getTestMethodName() { 
-        String testMethodName = null;
-        
-        StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-        // 0: getStackTrace
-        // 1: getTestMethodName (this method)
-        // 2: this.persist() or this.merge().. etc.
-        FINDTESTMETHOD: for( int i = 3; i < ste.length; ++i ) { 
-            Class testClass = getSTEClass(ste[i]);
-            if( testClass == null ) { 
-                RuntimeException re = new RuntimeException("Unable to determine test method name");
-                re.setStackTrace(Thread.currentThread().getStackTrace());
-                throw re;
-            }
-            
-            Method [] classMethods = testClass.getMethods();
-            String methodName = ste[i].getMethodName();
-            for( int m = 0; m < classMethods.length; ++m ) { 
-                if( classMethods[m].getName().equals(methodName) ) { 
-                   Annotation [] annos = classMethods[m].getAnnotations(); 
-                   for( int a = 0; a < annos.length; ++a ) { 
-                       if( annos[a] instanceof Test ) { 
-                           testMethodName = testClass.getName() + "." + methodName;
-                           break FINDTESTMETHOD;
-                       }
-                   }
-                }
-            }
-        }
-        
-        for( int i = 0; testMethodName == null && i < ste.length; ++i ) { 
-            Class steClass = getSTEClass(ste[i]);
-            if( steClass.equals(TestCase.class) && ste[i].getMethodName().equals("runTest") ) { 
-                StackTraceElement testMethodSTE = ste[i-5];
-                testMethodName = getSTEClass(testMethodSTE).getName() + "." + testMethodSTE.getMethodName();
-            }
-        }
-        
-        return testMethodName;
-    }
 
-    private static Class getSTEClass(StackTraceElement ste) { 
-        Class steClass = null;
-        try { 
-            steClass =  Class.forName(ste.getClassName());
-        }
-        catch( ClassNotFoundException cnfe ) { 
-            // do nothing.. 
-        }
-            
-        return steClass; 
-    }
 
     /**
      * merge.. magic!
      */
     public void remove(Object entity) {
         em.remove(entity);
+    }
+
+    // OCRAM: MarshallingEntityManager comments: lock, find, getReference, refresh, contains
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void flush() {
+        em.flush();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setFlushMode(FlushModeType flushMode) {
+        em.setFlushMode(flushMode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public FlushModeType getFlushMode() {
+        return em.getFlushMode();
+    }
+
+    // Queries
+    
+    // Transaction methods
+    
+    /**
+     * {@inheritDoc}
+     */
+    public void joinTransaction() {
+        em.joinTransaction();
+        for( SessionInfo sessionInfo : marshalledDataMap.keySet()) { 
+           byte [] origMarshalledBytes = marshalledDataMap.get(sessionInfo); 
+           boolean newMarshalledData = ! Arrays.equals(origMarshalledBytes, sessionInfo.getData());
+
+           byte [] lastMarshalledData = testMethodByteArrayMap.get(MarshallingTestUtil.getTestMethodName());
+           if( lastMarshalledData != null && Arrays.equals(lastMarshalledData, sessionInfo.getData()) ) {
+              newMarshalledData = false; 
+           }
+           if( newMarshalledData ) { 
+               MarshalledData marshalledData = new MarshalledData(sessionInfo);
+               em.persist(marshalledData);
+               testMethodByteArrayMap.put(marshalledData.testMethodName, marshalledData.rulesByteArray);
+               System.out.println("-!-: " + marshalledData);
+           }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public EntityTransaction getTransaction() {
+        return em.getTransaction();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object getDelegate() {
+        return em.getDelegate();
     }
 
     // lock, find, getReference, refresh, contains
@@ -146,31 +160,6 @@ public class MarshallingEntityManager implements EntityManager {
         return em.contains(entity);
     }
 
-    // flush 
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void flush() {
-        em.flush();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setFlushMode(FlushModeType flushMode) {
-        em.setFlushMode(flushMode);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public FlushModeType getFlushMode() {
-        return em.getFlushMode();
-    }
-
-    // Queries
-    
     /**
      * {@inheritDoc}
      */
@@ -207,29 +196,6 @@ public class MarshallingEntityManager implements EntityManager {
     }
 
      // Transaction methods
-    
-    /**
-     * {@inheritDoc}
-     */
-    public void joinTransaction() {
-        em.joinTransaction();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public EntityTransaction getTransaction() {
-        return em.getTransaction();
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public Object getDelegate() {
-        return em.getDelegate();
-    }
-
-     // clear, open, close..
     
     /**
      * {@inheritDoc}

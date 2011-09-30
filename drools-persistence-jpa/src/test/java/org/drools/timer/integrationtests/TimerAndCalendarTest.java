@@ -39,7 +39,6 @@ import org.junit.Test;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TimerAndCalendarTest {
-    private PoolingDataSource    ds1;
     private EntityManagerFactory emf;
 
     @Test
@@ -244,19 +243,8 @@ public class TimerAndCalendarTest {
 
     @Before
     public void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
-        ds1.init();
-        emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        testContext = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME, true);
+        emf = (EntityManagerFactory) testContext.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
     }
 
     @After

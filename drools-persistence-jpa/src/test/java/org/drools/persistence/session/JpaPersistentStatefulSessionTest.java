@@ -46,16 +46,14 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        ds1 = setupPoolingDataSource();
-        ds1.init();
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, true);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
         
         env = KnowledgeBaseFactory.newEnvironment();
-        emf = Persistence.createEntityManagerFactory( DROOLS_PERSISTENCE_UNIT_NAME );
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
-
     }
 
     @Override

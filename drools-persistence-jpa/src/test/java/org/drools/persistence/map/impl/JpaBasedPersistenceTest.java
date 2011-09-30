@@ -48,10 +48,9 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @Before
     public void setUp() throws Exception {
-        ds1 = setupPoolingDataSource();
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, true);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
         
-        ds1.init();
-        emf = Persistence.createEntityManagerFactory( DROOLS_PERSISTENCE_UNIT_NAME );
         if( useTransactions() ) { 
             useTransactions = true;
             Environment env = createEnvironment();

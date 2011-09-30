@@ -1,5 +1,6 @@
 package org.drools.marshalling.util;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -25,7 +26,6 @@ public class MarshallingEntityManagerFactory implements EntityManagerFactory {
     }
 
     public void close() {
-        MarshallingTestUtil.goLookAtTheMarshallingDataAndDoStuff(emf.createEntityManager());
         emf.close();
     }
 

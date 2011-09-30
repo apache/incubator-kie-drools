@@ -1,11 +1,10 @@
 package org.drools.marshalling.util;
 
-import static junit.framework.Assert.*;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.Connection;
@@ -14,14 +13,19 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.persistence.Table;
+
+import org.drools.persistence.util.PersistenceUtil;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @SuppressWarnings("rawtypes")
 public class MarshallingDBUtil {
 
-
-    protected static final String MARSHALLING_TEST_DB = "marshalling/testData";
-    protected static final String MARSHALLING_BASE_DB = "marshalling/baseData";
+    private static final String MARSHALLING_TEST_DB = "marshalling/baseData";
+    private static final String MARSHALLING_BASE_DB = "marshalling/baseData";
 
     protected static boolean clearMarshallingTestDb = true;
 
@@ -41,11 +45,11 @@ public class MarshallingDBUtil {
      * @return A Sting containing the URL (in src/test/resources) of the database.
      */
     public static String initializeTestDb(Properties jdbcProps, Class testClass) { 
-        URL dbUrl = testClass.getResource("/" + MARSHALLING_TEST_DB + ".h2.db");
         String dbPath = generateJDBCUrl(testClass);
         
         if( clearMarshallingTestDb ) {
             clearMarshallingTestDb = false;
+            URL dbUrl = Object.class.getResource("/" + MARSHALLING_TEST_DB + ".h2.db");
             deleteTestDatabase(dbUrl, dbPath);
             createMarshallingTestDatabase(dbPath, jdbcProps.getProperty("driverClassName"));
         }
@@ -60,7 +64,8 @@ public class MarshallingDBUtil {
      * @param testClass The class of the test doing this, in order to access the classLoader/resources.
      * @return A String containg the absolute URL/path of the test DB.
      */
-    private static String generateJDBCUrl(Class testClass) { 
+    // DBG: make private
+    public static String generateJDBCUrl(Class testClass) { 
         URL classUrl = testClass.getResource(testClass.getSimpleName() + ".class");
         String projectPath = classUrl.getPath().replaceFirst("target.*", "");
         String resourcesPath = projectPath + "src/test/resources/";
@@ -71,11 +76,7 @@ public class MarshallingDBUtil {
     }
     
     /**
-     * This class quickly creates a H2 database containing a table for the MarshalledData entity. 
-     * A direct JDBC connection is used for this.
-     * <p/>
-     * It does NOT matter that the MarshalledData entity table is made -- it was _an_ entity
-     *  that was used to create and access the database.
+     * This method quickly creates a H2 database: a direct JDBC connection is used for this.
      * <p/>
      * @param dbPath The path to the database.
      * @param driverClass The name of the JDBC driver class.
@@ -89,9 +90,6 @@ public class MarshallingDBUtil {
             Statement stat = conn.createStatement();
             String dropTableQuery = "drop table if exists " + getTableName(MarshalledData.class);
             stat.executeUpdate(dropTableQuery);
-            
-             String createTableQuery = generateH2QLCreateTableQuery(MarshalledData.class);
-             stat.executeUpdate(createTableQuery);
             
             conn.close();
         }
@@ -113,18 +111,6 @@ public class MarshallingDBUtil {
         new File(dbPath + ".h2.db").delete();
     }
     
-    
-    private static HashMap<Class, String> _typeMapping = null;
-   
-    private static HashMap<Class, String> getTypeMapping() {
-        if( _typeMapping == null ) { 
-            _typeMapping = new HashMap<Class, String>();
-            _typeMapping.put(Integer.class, "INT");
-            _typeMapping.put(String.class, "VARCHAR(255)");
-            _typeMapping.put((new byte [0]).getClass(), "BLOB");
-        }
-        return _typeMapping;
-    }
     
     private static String getTableName(Class dataClass) { 
         String tableName = null;
@@ -153,24 +139,35 @@ public class MarshallingDBUtil {
         }
         return tableName;
     }
-    
-    public static String generateH2QLCreateTableQuery(Class dataClass) { 
-        StringBuffer queryString = new StringBuffer("create table ");
-   
-        String tableName = getTableName(dataClass);
-        queryString.append(tableName + "(");
-       
-        HashMap<Class, String> typeMapping = getTypeMapping();
+
+    public static HashMap<String, Object> initializeBaseDataEMF(String persistenceUnitName, Class<?> testClass) { 
+        HashMap<String, Object> testContext = new HashMap<String, Object>();
         
-        Field fields [] = dataClass.getDeclaredFields();
-        for( int i = 0; i < fields.length; ++i ) { 
-            String fieldName = fields[i].getName();
-            Class fieldType = fields[i].getType();
-            if( i > 0 ) { queryString.append(", "); }
-            queryString.append(fieldName + " " + typeMapping.get(fieldType));
+        Properties dsProps = PersistenceUtil.getDatasourceProperties();
+        String driverClass = dsProps.getProperty("driverClassName");
+        if ( ! driverClass.startsWith("org.h2")) {
+            return null;
         }
-        queryString.append(")");
+    
+        String dbPath = generateJDBCUrl(testClass);
+        dbPath = dbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
         
-        return queryString.toString(); 
+        String jdbcURLBase = dsProps.getProperty("url");
+        String jdbcUrl =  jdbcURLBase + dbPath;
+    
+        // Setup the datasource
+        PoolingDataSource ds1 = setupPoolingDataSource();
+        ds1.getDriverProperties().setProperty("url", jdbcUrl);
+        ds1.init();
+        testContext.put(DATASOURCE, ds1);
+    
+        // Setup persistence
+        Properties overrideProperties = new Properties();
+        overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
+        testContext.put(ENTITY_MANAGER_FACTORY, emf);
+        
+        return testContext;
     }
+    
 }

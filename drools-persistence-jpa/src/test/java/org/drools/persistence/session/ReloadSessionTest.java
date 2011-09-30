@@ -67,11 +67,8 @@ public class ReloadSessionTest {
 
     @Before
     public void setup() {
-        // Initialize datasource and global settings
-        ds1 = setupPoolingDataSource();
-        ds1.init();
-        
-        emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, true);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
     @After
