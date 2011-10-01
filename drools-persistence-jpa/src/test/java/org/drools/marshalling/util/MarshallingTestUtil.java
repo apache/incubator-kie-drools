@@ -5,19 +5,38 @@ import static junit.framework.Assert.fail;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Transient;
+import javax.persistence.EntityManagerFactory;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.SessionConfiguration;
+import org.drools.base.MapGlobalResolver;
 import org.drools.core.util.StringUtils;
+import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
+import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import bitronix.tm.TransactionManagerServices;
 
 
 public class MarshallingTestUtil {
@@ -36,18 +55,13 @@ public class MarshallingTestUtil {
        }
     }
     
-    public static void compareTestAndBaseMarshallingData(HashMap<String, MarshalledData> testData, 
-            HashMap<String, MarshalledData> baseData ) { 
-   
-        // OCRAM: fill in
-    }
-    
-    public static HashMap<String, MarshalledData> retrieveMarshallingData(EntityManager em) { 
-        HashMap<String, MarshalledData> marshalledDataMap = new HashMap<String, MarshalledData>();
+    public static ArrayList<MarshalledData> retrieveMarshallingData(EntityManagerFactory emf) { 
+        ArrayList<MarshalledData> marshalledDataList = new ArrayList<MarshalledData>();
         
         JtaTransactionManager txm = new JtaTransactionManager(null, null, null);
         boolean txOwner = txm.begin();
-        
+       
+        EntityManager em = emf.createEntityManager();
         @SuppressWarnings("unchecked")
         List<Object> mdList = em.createQuery("SELECT m FROM MarshalledData m").getResultList();
         for( Object resultObject : mdList ) { 
@@ -55,14 +69,14 @@ public class MarshallingTestUtil {
             if( StringUtils.isEmpty(marshalledData.testMethodName) || marshalledData.snapshotNumber == null ) {
                fail("MarshalledData object does not contain the proper identification information.");
             }
-            marshalledDataMap.put(marshalledData.getTestMethodAndSnapshotNum(), marshalledData);
+            marshalledDataList.add(marshalledData);
             // DBG delete when ready MarshallingTestUtil.retrieveMarshallingData() out.println
             System.out.println("->  " + marshalledData);
         }
         
         txm.commit(txOwner);
         
-        return marshalledDataMap;
+        return marshalledDataList;
     }
     
     private static Class<?> getSTEClass(StackTraceElement ste) { 
@@ -142,5 +156,111 @@ public class MarshallingTestUtil {
             e.printStackTrace();
         } 
         return hashCode.toString();
+    }
+
+    private static HashMap<String, List<MarshalledData>> extractSnapshotsPerTestMethodMap(Class testClass, List<MarshalledData> marshalledDataList) { 
+        String testClassName = testClass.getName();
+        HashMap<String, List<MarshalledData>> snapshotsPerTestMethod = new HashMap<String, List<MarshalledData>>();
+        for( MarshalledData marshalledData : marshalledDataList ) {
+            if( ! marshalledData.testMethodName.contains(testClassName) ) { 
+                marshalledData.testMethodName.length();
+                continue;
+            }
+            List<MarshalledData> testMethodMarshalledDataList = snapshotsPerTestMethod.get(marshalledData.testMethodName);
+            if( testMethodMarshalledDataList == null ) { 
+                testMethodMarshalledDataList = new ArrayList<MarshalledData>();
+                snapshotsPerTestMethod.put(marshalledData.testMethodName, testMethodMarshalledDataList); 
+            }
+            testMethodMarshalledDataList.add(marshalledData);  
+        }
+        return snapshotsPerTestMethod;
+    }
+   
+    public static void compareTestAndBaseMarshallingData(Class testClass, List<MarshalledData> testData, 
+            List<MarshalledData> baseData ) { 
+
+        sanityCheckMarshalledData(testClass, testData, baseData);
+        
+        HashMap<String, MarshalledData> testMarshalledDataSnapshotMap = new HashMap<String, MarshalledData>();
+        HashMap<String, MarshalledData> baseMarshalledDataSnapshotMap = new HashMap<String, MarshalledData>();
+
+        for( MarshalledData testMarshalledData : testData ) { 
+           testMarshalledDataSnapshotMap.put(testMarshalledData.getTestMethodAndSnapshotNum(), testMarshalledData);
+        }
+        for( MarshalledData baseMarshalledData : baseData ) { 
+            //OCRAM: limit to this test class
+           baseMarshalledDataSnapshotMap.put(baseMarshalledData.getTestMethodAndSnapshotNum(), baseMarshalledData);
+        }
+        
+        EntityManagerFactory testCacheEMF = new CacheEntityManagerFactory(testData);
+        EntityManagerFactory baseCacheEMF = new CacheEntityManagerFactory(baseData);
+        for( String testMethodVer : testMarshalledDataSnapshotMap.keySet() ) { 
+            // Test
+            MarshalledData testMarshalledData = testMarshalledDataSnapshotMap.get(testMethodVer);
+            StatefulKnowledgeSession testKSession = unmarshallSession(testCacheEMF, testMarshalledData);
+            // Base 
+            // OCRAM: refactor into one method.. 
+            MarshalledData baseMarshalledData = baseMarshalledDataSnapshotMap.get(testMethodVer);
+            StatefulKnowledgeSession baseKSession = unmarshallSession(baseCacheEMF, baseMarshalledData);
+           
+            baseKSession.getId();
+            // OCRAM: compare via reflection..
+        }
+        
+        // x eerst, selecteer een test method
+        // x pak alle snapshots from test voor die test method
+        // x pak alle snapshots from base voor die test method
+        // x bevestig dat je hetzelfde aantal heb
+            // x zo niet.. waarschuw, of faal!
+        // een voor een 
+        // - pak de snapshot van _test
+        //   + gebruik inputMarshaller om iets te maken
+        //   + bewaar de staat (xml/dump tree-achtig??)
+        //   + reflection, anders worden toekomstige veranderingen niet gezien
+        // - pak de snapshot van base
+        //   + gebruik inputMarshaller om iets te maken
+        //   + bewaar de staat (xml/dump tree-achtig??)
+        //   + reflection, anders worden toekomstige veranderingen niet gezien
+        // ! verglijk de twee bewaarde staten!! 
+        
+    }
+    
+    private static void sanityCheckMarshalledData(Class testClass, List<MarshalledData> testData, 
+            List<MarshalledData> baseData) { 
+        HashMap<String, List<MarshalledData>> testSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, testData);
+        HashMap<String, List<MarshalledData>> baseSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, baseData);
+       
+        Set<String> baseTestMethods = baseSnapshotsPerTestMap.keySet(); 
+        List<String> testTestMethods = new ArrayList<String>();
+        testTestMethods.addAll(testSnapshotsPerTestMap.keySet());
+        for( String baseTestMethod : baseTestMethods ) { 
+            if( testSnapshotsPerTestMap.get(baseTestMethod) == null ) { 
+                logger.error("Marshalled data snapshots for test " + baseTestMethod 
+                        + " exist in the base db, but not in the test db generated by this test run!");
+            }
+            else { 
+               Assert.assertNotNull("Empty list of marshalled data snapshots in base for " + baseTestMethod, 
+                       baseSnapshotsPerTestMap.get(baseTestMethod));
+               Assert.assertEquals("Unequal number of marshalled data snapshots for test " + baseTestMethod 
+                       + ": unable to compare marshalled data compatibility for this test.", 
+                       baseSnapshotsPerTestMap.get(baseTestMethod).size(), testSnapshotsPerTestMap.get(baseTestMethod).size());
+               testTestMethods.remove(baseTestMethod);
+            }
+        }
+        
+        for( String testMethod : testTestMethods ) { 
+            logger.error("Marshalled data snapshots for test " + testMethod + " have not been added to the base db yet.");
+        }
+    }
+    
+    private static StatefulKnowledgeSession unmarshallSession(EntityManagerFactory emf, MarshalledData marshalledData) { 
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        Environment env = KnowledgeBaseFactory.newEnvironment();
+        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+        env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
+        env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+        
+        return JPAKnowledgeService.loadStatefulKnowledgeSession(marshalledData.marshalledObjectId.intValue(), kbase, null, env);
     }
 }

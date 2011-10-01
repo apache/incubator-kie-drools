@@ -124,15 +124,14 @@ public class OutputMarshaller {
         context.writeLong( wm.getFactHandleFactory().getRecency() );
         ////context.out.println( "FactHandleFactory int:" + wm.getFactHandleFactory().getId() + " long:" + wm.getFactHandleFactory().getRecency() );
 
-
+        context.writeLong( wm.getPropagationIdCounter() );
+        //context.out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );        
         
         InternalFactHandle handle = context.wm.getInitialFactHandle();
         context.writeInt( handle.getId() );
         context.writeLong( handle.getRecency() );
         //context.out.println( "InitialFact int:" + handle.getId() + " long:" + handle.getRecency() );
 
-        context.writeLong( wm.getPropagationIdCounter() );
-        //context.out.println( "PropagationCounter long:" + wm.getPropagationIdCounter() );        
         
         writeAgenda( context );        
         

@@ -178,6 +178,8 @@ public class InputMarshaller {
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( context.readInt(),
                                                                                  context.readLong() );
 
+        long propagationCounter = context.readLong();
+        
         InternalFactHandle initialFactHandle = new DefaultFactHandle( context.readInt(), //id
                                                                       InitialFactImpl.getInstance(),
                                                                       context.readLong(),
@@ -186,7 +188,6 @@ public class InputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        long propagationCounter = context.readLong();
 
         DefaultAgenda agenda = new DefaultAgenda( context.ruleBase,
                                                   false );
@@ -229,9 +230,9 @@ public class InputMarshaller {
 
                int token;
                
-               if ( context.stream.readBoolean() ) {
+               if ( context.readBoolean() ) {
                    InternalFactHandle initialFactHandle = context.wm.getInitialFactHandle();
-                   int sinkId = context.stream.readInt();
+                   int sinkId = context.readInt();
                    ObjectTypeNode initialFactNode = (ObjectTypeNode) context.sinks.get( sinkId );
                    ObjectHashSet initialFactMemory = (ObjectHashSet) context.wm.getNodeMemory( initialFactNode );
 
@@ -240,13 +241,13 @@ public class InputMarshaller {
                                     context );
                }           
                while ((token = context.readShort()) == PersisterEnums.ENTRY_POINT) {
-                   String entryPointId = context.stream.readUTF();
+                   String entryPointId = context.readUTF();
                    WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( entryPointId );
                    readFactHandles( context,  (( NamedEntryPoint )wmep).getObjectStore() ); 
                }
                InternalFactHandle handle = context.wm.getInitialFactHandle();
-               while ( context.stream.readShort() == PersisterEnums.LEFT_TUPLE ) {
-                   LeftTupleSink sink = (LeftTupleSink) context.sinks.get( context.stream.readInt() );
+               while ( context.readShort() == PersisterEnums.LEFT_TUPLE ) {
+                   LeftTupleSink sink = (LeftTupleSink) context.sinks.get( context.readInt() );
                    LeftTuple leftTuple = sink.createLeftTuple( handle,
                                                                sink,
                                                                true );
@@ -414,22 +415,22 @@ public class InputMarshaller {
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
-        int type = context.stream.readInt();
-        int id = context.stream.readInt();        
-        long recency = context.stream.readLong();
+        int type = context.readInt();
+        int id = context.readInt();        
+        long recency = context.readLong();
         
         long startTimeStamp = 0;
         long duration = 0;
         boolean expired = false;
         long activationsCount = 0;
         if ( type == 2 ) {
-            startTimeStamp = context.stream.readLong();
-            duration = context.stream.readLong();
-            expired = context.stream.readBoolean();
-            activationsCount = context.stream.readLong();
+            startTimeStamp = context.readLong();
+            duration = context.readLong();
+            expired = context.readBoolean();
+            activationsCount = context.readLong();
         }
 
-        int strategyIndex = context.stream.readInt();
+        int strategyIndex = context.readInt();
         Object object;
         if ( strategyIndex >= 0 ) {
             ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );

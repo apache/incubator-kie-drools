@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
@@ -22,6 +23,8 @@ import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.OutputMarshaller;
 import org.drools.process.instance.WorkItem;
 import org.drools.runtime.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")
@@ -81,6 +84,10 @@ public class WorkItemInfo  {
     public long getState() {
         return state;
     }
+    
+    public byte [] getWorkItemByteArray() { 
+       return workItemByteArray;
+    }
 
     public WorkItem getWorkItem(Environment env) {
         this.env = env;
@@ -102,10 +109,10 @@ public class WorkItemInfo  {
         return workItem;
     }
 
-     
-
     @PreUpdate
+//    @PrePersist
     public void update() {
+        LoggerFactory.getLogger(this.getClass()).info("UPDATE!");
         this.state = workItem.getState();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {

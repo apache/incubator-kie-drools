@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -57,8 +58,6 @@ public class PersistenceUtil {
     // Setup and marshalling setup constants
     public static String DATASOURCE = "org.drools.persistence.datasource";
     public static String ENTITY_MANAGER_FACTORY = "org.drools.persistence.entityManagerFactory";
-    public static String MARSHALLING_TEST_CLASS = "org.drools.persistence.test.class";
-    public static String PERSISTENCE_UNIT_NAME = "org.drools.persistence.unit";
 
     /**
      * @see #setupWithPoolingDataSource(String, boolean)
@@ -80,7 +79,6 @@ public class PersistenceUtil {
      */
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
         HashMap<String, Object> context = new HashMap<String, Object>();
-        context.put(PERSISTENCE_UNIT_NAME, persistenceUnitName);
 
         // set the right jdbc url
         Properties dsProps = getDatasourceProperties();
@@ -99,7 +97,6 @@ public class PersistenceUtil {
             } catch (ClassNotFoundException e) {
                 fail("Unable to resolve test class: " + e.getMessage());
             }
-            context.put(MARSHALLING_TEST_CLASS, testClass);
             jdbcUrl = initializeTestDb(dsProps, testClass);
         }
         else { 
@@ -143,16 +140,10 @@ public class PersistenceUtil {
     public static void tearDown(HashMap<String, Object> context) {
         if (context != null) {
             
-            HashMap<String, MarshalledData> testData = null;
-            Class<?> marshallingTestClass = (Class<?>) context.get(MARSHALLING_TEST_CLASS);
-            
             Object emfObject = context.remove(ENTITY_MANAGER_FACTORY);
             if (emfObject != null) {
                 try {
                     EntityManagerFactory emf = (EntityManagerFactory) emfObject;
-                    if( marshallingTestClass != null ) { 
-                        testData = retrieveMarshallingData(emf.createEntityManager());
-                    }
                     emf.close();
                 } catch (Throwable t) {
                     t.printStackTrace();
@@ -169,16 +160,38 @@ public class PersistenceUtil {
                 }
             }
             
-            if( marshallingTestClass != null && false) { 
-                HashMap<String, Object> baseContext = initializeBaseDataEMF((String) context.get(PERSISTENCE_UNIT_NAME), marshallingTestClass);
-                EntityManagerFactory baseEMF = (EntityManagerFactory) baseContext.get(ENTITY_MANAGER_FACTORY);
-                HashMap<String, MarshalledData> baseData 
-                    = retrieveMarshallingData(baseEMF.createEntityManager());
-                compareTestAndBaseMarshallingData(testData, baseData);
-                tearDown(baseContext);
-            }
         }
         
+    }
+    
+    public static void compareMarshallingDataFromTest(Class testClass, String persistenceUnitName) { 
+        // Retrieve the test data
+        List<MarshalledData> testDataList = null;
+        HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, false);
+        try { 
+            EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
+            testDataList  = retrieveMarshallingData(testEMF);
+        }
+        finally { 
+           tearDown(testContext); 
+        }
+        assertNotNull("Not marshalled data found for " + testClass.getSimpleName(), 
+                testDataList != null && ! testDataList.isEmpty() );
+       
+        // Retrieve the base data
+        HashMap<String, Object> baseContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, true);
+        List<MarshalledData> baseDataList =  null;
+        try { 
+            EntityManagerFactory baseEMF = (EntityManagerFactory) baseContext.get(ENTITY_MANAGER_FACTORY);
+            baseDataList = retrieveMarshallingData(baseEMF);
+        }
+        finally {
+            tearDown(baseContext);
+        }
+        assertTrue("Not base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
+        
+        // Compare!
+        compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
     }
     
     /**
@@ -210,45 +223,35 @@ public class PersistenceUtil {
         }
         else { 
             pds.setClassName(dsProps.getProperty("className"));
-            
-            if( driverClass.startsWith("oracle") ) {
-	            pds.getDriverProperties().put("driverType", "thin");
-	            pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
-	        }
-	        else if( driverClass.startsWith("com.ibm.db2") ) { 
-	            // placeholder for eventual future modifications
-	        }
-	        else if( driverClass.startsWith("com.microsoft") ) { 
-	            for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
-	                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
-	            }
-	            pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
-	            pds.getDriverProperties().put("selectMethod", "cursor");
-	            pds.getDriverProperties().put("InstanceName", "MSSQL01");
-	            // pds.getDriverProperties().put("instanceName", dsProps.getProperty("databaseName"));
-	            // do nothing
-	            // pds.getDriverProperties().put("instanceName", "mssql");
-	        }
-	        else if( driverClass.startsWith("com.mysql") ) { 
-	            for (String propertyName : new String[] { "databaseName", "serverName", "portNumber", "url" }) {
-	                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
-	            }
-	        }
-	        else if( driverClass.startsWith("com.sybase") ) { 
-	            for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
-	                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
-	            }
-	            pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
-	            pds.getDriverProperties().put("networkProtocol", "Tds");
-	        }
-	        else if( driverClass.startsWith("org.postgresql") ) { 
-	            for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
-	                pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
-	            }
-	        }
-	        else { 
-	            throw new RuntimeException("Unknown driver class: " + driverClass);
-	        }
+            if (driverClass.startsWith("oracle")) {
+                pds.getDriverProperties().put("driverType", "thin");
+                pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
+            } else if (driverClass.startsWith("com.ibm.db2")) {
+                // placeholder for eventual future modifications
+            } else if (driverClass.startsWith("com.microsoft")) {
+                for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+                pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
+                pds.getDriverProperties().put("selectMethod", "cursor");
+                pds.getDriverProperties().put("InstanceName", "MSSQL01");
+            } else if (driverClass.startsWith("com.mysql")) {
+                for (String propertyName : new String[] { "databaseName", "serverName", "portNumber", "url" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+            } else if (driverClass.startsWith("com.sybase")) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+                pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
+                pds.getDriverProperties().put("networkProtocol", "Tds");
+            } else if (driverClass.startsWith("org.postgresql")) {
+                for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
+            } else {
+                throw new RuntimeException("Unknown driver class: " + driverClass);
+            }
         }
 
         return pds;
@@ -289,6 +292,7 @@ public class PersistenceUtil {
         String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
         boolean propertiesNotFound = false;
 
+        // OCRAM: PersistenceUtil.getDatasourceProperties: check that this works when PU is in a jar.. 
         InputStream propsInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
         assertNotNull(propertiesNotFoundMessage, propsInputStream);
         Properties props = new Properties();

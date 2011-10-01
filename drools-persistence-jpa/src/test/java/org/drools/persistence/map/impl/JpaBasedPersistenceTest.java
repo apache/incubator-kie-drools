@@ -30,6 +30,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,11 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     public void tearDown() throws Exception {
         emf.close();
         ds1.close();
+    }
+    
+    @AfterClass
+    public static void compareMarshallingData() { 
+        PersistenceUtil.compareMarshallingDataFromTest(JpaBasedPersistenceTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
     }
     
     @Override

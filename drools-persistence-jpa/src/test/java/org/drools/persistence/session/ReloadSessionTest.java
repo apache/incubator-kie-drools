@@ -32,22 +32,21 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
-import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.PersistenceContextManager;
-import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.jpa.JpaPersistenceContextManager;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class ReloadSessionTest {
 
@@ -77,6 +76,11 @@ public class ReloadSessionTest {
         ds1.close();
     }
 
+    @AfterClass
+    public static void compareMarshalledData() { 
+//       PersistenceUtil.compareMarshallingDataFromTest(ReloadSessionTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
+    }
+    
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
         // Initialize knowledge base/session/etc..
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

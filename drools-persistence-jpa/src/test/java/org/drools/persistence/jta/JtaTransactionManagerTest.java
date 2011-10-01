@@ -26,7 +26,6 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.drools.KnowledgeBase;
@@ -36,7 +35,6 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
@@ -47,16 +45,12 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.codemodel.JPackage;
-
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.internal.BitronixRollbackException;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class JtaTransactionManagerTest {
 

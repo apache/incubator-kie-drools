@@ -14,6 +14,7 @@ import org.drools.persistence.info.SessionInfo;
 public class MarshallingEntityManager implements EntityManager {
 
     private EntityManager em;
+    // OCRAM: processInstance.. and WorkItem.. 
     private ConcurrentHashMap<SessionInfo, byte []> marshalledDataMap = new ConcurrentHashMap<SessionInfo, byte []>();
     private ConcurrentHashMap<String, byte[]> testMethodByteArrayMap = new ConcurrentHashMap<String, byte[]>();
     
@@ -26,6 +27,7 @@ public class MarshallingEntityManager implements EntityManager {
      */
     public void persist(Object entity) {
         em.persist(entity);
+        // OCRAM: processInstance.. and WorkItem.. 
         if( entity instanceof SessionInfo ) { 
            SessionInfo sessionInfo = (SessionInfo) entity;
            marshalledDataMap.put(sessionInfo, sessionInfo.getData().clone());
@@ -40,6 +42,7 @@ public class MarshallingEntityManager implements EntityManager {
      */
     public <T> T merge(T entity) {
         T updatedEntity = em.merge(entity);
+        // OCRAM: processInstance.. and WorkItem.. 
         if( entity instanceof SessionInfo ) { 
             // do stuff???
             // - if updatedEntity.rulesByteArray != entity.rulesByteArray
@@ -92,6 +95,7 @@ public class MarshallingEntityManager implements EntityManager {
      */
     public void joinTransaction() {
         em.joinTransaction();
+        // OCRAM: processInstance.. and WorkItem.. 
         for( SessionInfo sessionInfo : marshalledDataMap.keySet()) { 
            byte [] origMarshalledBytes = marshalledDataMap.get(sessionInfo); 
            boolean newMarshalledData = ! Arrays.equals(origMarshalledBytes, sessionInfo.getData());

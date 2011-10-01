@@ -1,11 +1,11 @@
 package org.drools.persistence.session;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import junit.framework.TestCase;
 
@@ -26,7 +26,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.InternalAgenda;
 
 import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class RuleFlowGroupRollbackTest extends TestCase {
 	

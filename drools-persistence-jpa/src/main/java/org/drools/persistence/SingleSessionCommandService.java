@@ -183,7 +183,7 @@ public class SingleSessionCommandService
             registerRollbackSync();            
             
             txm.commit(transactionOwner);
-        }catch (RuntimeException re){
+        } catch (RuntimeException re){
             rollbackTransaction(re, transactionOwner);
             throw re;
         } catch ( Exception t1 ) {

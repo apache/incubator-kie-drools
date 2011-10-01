@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import junit.framework.TestCase;
@@ -34,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class JpaPersistentStatefulSessionTest extends TestCase {
 

@@ -21,10 +21,9 @@ import org.drools.persistence.util.PersistenceUtil;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-@SuppressWarnings("rawtypes")
 public class MarshallingDBUtil {
 
-    private static final String MARSHALLING_TEST_DB = "marshalling/baseData";
+    private static String MARSHALLING_TEST_DB = "marshalling/testData";
     private static final String MARSHALLING_BASE_DB = "marshalling/baseData";
 
     protected static boolean clearMarshallingTestDb = true;
@@ -44,7 +43,7 @@ public class MarshallingDBUtil {
      * @param testClass The class of the test being run (that will generate marshalled data).
      * @return A Sting containing the URL (in src/test/resources) of the database.
      */
-    public static String initializeTestDb(Properties jdbcProps, Class testClass) { 
+    public static String initializeTestDb(Properties jdbcProps, Class<?> testClass) { 
         String dbPath = generateJDBCUrl(testClass);
         
         if( clearMarshallingTestDb ) {
@@ -64,8 +63,7 @@ public class MarshallingDBUtil {
      * @param testClass The class of the test doing this, in order to access the classLoader/resources.
      * @return A String containg the absolute URL/path of the test DB.
      */
-    // DBG: make private
-    public static String generateJDBCUrl(Class testClass) { 
+    private static String generateJDBCUrl(Class<?> testClass) { 
         URL classUrl = testClass.getResource(testClass.getSimpleName() + ".class");
         String projectPath = classUrl.getPath().replaceFirst("target.*", "");
         String resourcesPath = projectPath + "src/test/resources/";
@@ -112,11 +110,16 @@ public class MarshallingDBUtil {
     }
     
     
-    private static String getTableName(Class dataClass) { 
+    /**
+     * This method uses reflection to get the name of the table used for an entity.
+     * @param dataClass The class for which we want the table name. 
+     * @return A String containing the name of the table for the given class.
+     */
+    private static String getTableName(Class<?> dataClass) { 
         String tableName = null;
         Annotation [] anno = dataClass.getDeclaredAnnotations();
         for( int i = 0; i < anno.length; ++i ) { 
-            Class annoClass = anno[i].annotationType();
+            Class<?> annoClass = anno[i].annotationType();
             if( annoClass.equals(Table.class) )  { 
                 Method [] annoMethod = annoClass.getMethods();
                 int a = 0;
@@ -140,7 +143,14 @@ public class MarshallingDBUtil {
         return tableName;
     }
 
-    public static HashMap<String, Object> initializeBaseDataEMF(String persistenceUnitName, Class<?> testClass) { 
+    /**
+     * This method initializes an EntityManagerFactory with a connection to the base (marshalled) data DB. 
+     * This database stores the marshalled data that we expect (for a given drools/jbpm version).
+     * @param persistenceUnitName The persistence unit name.
+     * @param testClass The class of the (local) unit test running.
+     * @return A HashMap<String, Object> containg the datasource and entity manager factory.
+     */
+    public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, boolean useBaseDb) { 
         HashMap<String, Object> testContext = new HashMap<String, Object>();
         
         Properties dsProps = PersistenceUtil.getDatasourceProperties();
@@ -150,13 +160,15 @@ public class MarshallingDBUtil {
         }
     
         String dbPath = generateJDBCUrl(testClass);
-        dbPath = dbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
+        if( useBaseDb ) { 
+            dbPath = dbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
+        }
         
         String jdbcURLBase = dsProps.getProperty("url");
         String jdbcUrl =  jdbcURLBase + dbPath;
     
         // Setup the datasource
-        PoolingDataSource ds1 = setupPoolingDataSource();
+        PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
         ds1.getDriverProperties().setProperty("url", jdbcUrl);
         ds1.init();
         testContext.put(DATASOURCE, ds1);
