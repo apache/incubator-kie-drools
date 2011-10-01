@@ -90,25 +90,33 @@ public class SolutionBusiness {
     }
 
     public void updateDataDirs() {
+        File dataDir = getDataDir();
+        if (!dataDir.exists()) {
+            throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
+                    + ") does not exist." +
+                    " The working directory should be set to the directory that contains the data directory." +
+                    " This is different in a git clone (drools-planner/drools-planner-examples)" +
+                    " and the release zip (examples).");
+        }
         if (hasImporter()) {
-            importDataDir = new File(getDataDir(), "input");
+            importDataDir = new File(dataDir, "input");
             if (!importDataDir.exists()) {
                 throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
-                        + ") does not exist. The working directory should be set to drools-planner-examples.");
+                        + ") does not exist.");
             }
         }
-        unsolvedDataDir = new File(getDataDir(), "unsolved");
+        unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
-                    + ") does not exist. The working directory should be set to drools-planner-examples.");
+                    + ") does not exist.");
         }
-        solvedDataDir = new File(getDataDir(), "solved");
+        solvedDataDir = new File(dataDir, "solved");
         if (!solvedDataDir.exists() && !solvedDataDir.mkdir()) {
             throw new IllegalStateException("The directory solvedDataDir (" + solvedDataDir.getAbsolutePath()
                     + ") does not exist and could not be created.");
         }
         if (hasExporter()) {
-            exportDataDir = new File(getDataDir(), "output");
+            exportDataDir = new File(dataDir, "output");
             if (!exportDataDir.exists() && !exportDataDir.mkdir()) {
                 throw new IllegalStateException("The directory exportDataDir (" + exportDataDir.getAbsolutePath()
                         + ") does not exist and could not be created.");

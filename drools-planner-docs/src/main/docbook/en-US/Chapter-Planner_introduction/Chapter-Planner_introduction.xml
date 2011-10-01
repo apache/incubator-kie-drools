@@ -207,21 +207,69 @@
   </section>
 
   <section>
-    <title>Getting Drools Planner and running the examples</title>
+    <title>Get Drools Planner and run the examples</title>
 
     <section>
-      <title>Getting the release package and running the examples</title>
+      <title>Get the release zip and run the examples</title>
 
-      <para>You can download a release of Drools Planner from <link
-      xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. To run an example, just
-      open the directory <filename>examples</filename> and run the script (<filename>runExamples.sh</filename> on Linux
-      and mac or <filename>runExamples.bat</filename> on windows) and pick an example in the GUI:</para>
+      <para>You can download a release zip of Drools Planner from <link
+      xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. Unzip it. To run an
+      example, just open the directory <filename>examples</filename> and run the script
+      (<filename>runExamples.sh</filename> on Linux and mac or <filename>runExamples.bat</filename> on windows) and pick
+      an example in the GUI:</para>
 
       <programlisting>$ cd examples
 $ ./runExamples.sh</programlisting>
 
       <programlisting>$ cd examples
 $ runExamples.bat</programlisting>
+    </section>
+
+    <section>
+      <title>Run the examples in an IDE (IntelliJ, Eclipse, NetBeans)</title>
+
+      <para>To run the examples in your favorite IDE, first configure your IDE:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>In IntelliJ and NetBeans, just open the file <filename>examples/sources/pom.xml</filename> as a new
+          project, the maven integration will take care of the rest.</para>
+        </listitem>
+
+        <listitem>
+          <para>In Eclipse, open a new project for the directory <filename>examples/sources</filename>.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Add all the jars to the classpath from the directory <filename>binaries</filename> and the directory
+              <filename>examples/binaries</filename>, except for the file
+              <filename>examples/binaries/drools-planner-examples-*.jar</filename>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Add the java source directory <filename>src/main/java</filename> and the java resources directory
+              <filename>src/main/resources</filename>.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>Next, create a run configuration:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Main class: <literal>org.drools.planner.examples.app.DroolsPlannerExamplesApp</literal></para>
+        </listitem>
+
+        <listitem>
+          <para>VM parameters (optional): <literal>-Xmx512M -server</literal></para>
+        </listitem>
+
+        <listitem>
+          <para>Working directory: <literal>examples</literal> (this is the directory that contains the directory
+          <literal>data</literal>)</para>
+        </listitem>
+      </itemizedlist>
     </section>
 
     <section>
