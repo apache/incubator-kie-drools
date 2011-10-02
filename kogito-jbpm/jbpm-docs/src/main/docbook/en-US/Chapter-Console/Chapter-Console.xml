@@ -183,7 +183,7 @@
 
       <para>You can inspect the state of a specific process instance by clicking on
       the "Diagram" button.  This will show you the process flow chart, where a red
-      traingle is shown at each node that is currently active (like for example a human
+      triangle is shown at each node that is currently active (like for example a human
       task node waiting for the task to be completed or a join node waiting for more
       incoming connections before continuing). [Note that multiple instances of one node
       could be executing simultaneously. They will still be shown using only one red
@@ -364,7 +364,7 @@ Comment:&lt;BR/&gt;
     
     <para>For example, this allows you to close a task using</para>
     <para>/gwt-console-server/rs/task/{taskId}/close</para>
-    <para>or starting a new process instances using</para>
+    <para>or starting a new process instance using</para>
     <para>/gwt-console-server/rs/process/definition/{id}/new_instance</para>
 
   </section>
