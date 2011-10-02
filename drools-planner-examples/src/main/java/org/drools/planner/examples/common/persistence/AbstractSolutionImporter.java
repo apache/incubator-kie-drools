@@ -56,9 +56,9 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         }
         Arrays.sort(inputFiles);
         for (File inputFile : inputFiles) {
-            String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(getInputFileSuffix())) {
+            if (acceptInputFile(inputFile)) {
                 Solution solution = readSolution(inputFile);
+                String inputFileName = inputFile.getName();
                 String outputFileName = inputFileName.substring(0,
                         inputFileName.length() - getInputFileSuffix().length())
                         + getOutputFileSuffix();
@@ -66,6 +66,10 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
                 solutionDao.writeSolution(solution, outputFile);
             }
         }
+    }
+
+    public boolean acceptInputFile(File inputFile) {
+        return inputFile.getName().endsWith(getInputFileSuffix());
     }
 
     public abstract Solution readSolution(File inputFile);
