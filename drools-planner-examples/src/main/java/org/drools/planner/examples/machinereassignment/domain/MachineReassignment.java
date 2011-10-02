@@ -47,6 +47,9 @@ import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 public class MachineReassignment extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
     private List<MrResource> resourceList;
+    private List<MrMachine> machineList;
+    private List<MrService> serviceList;
+    private List<MrProcess> processList;
 
     private List<BedDesignation> bedDesignationList;
 
@@ -58,6 +61,30 @@ public class MachineReassignment extends AbstractPersistable implements Solution
 
     public void setResourceList(List<MrResource> resourceList) {
         this.resourceList = resourceList;
+    }
+
+    public List<MrMachine> getMachineList() {
+        return machineList;
+    }
+
+    public void setMachineList(List<MrMachine> machineList) {
+        this.machineList = machineList;
+    }
+
+    public List<MrService> getServiceList() {
+        return serviceList;
+    }
+
+    public void setServiceList(List<MrService> serviceList) {
+        this.serviceList = serviceList;
+    }
+
+    public List<MrProcess> getProcessList() {
+        return processList;
+    }
+
+    public void setProcessList(List<MrProcess> processList) {
+        this.processList = processList;
     }
 
     @PlanningEntityCollectionProperty
@@ -80,6 +107,9 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(resourceList);
+        facts.addAll(machineList);
+        facts.addAll(serviceList);
+        facts.addAll(processList);
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
     }
@@ -91,6 +121,9 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         MachineReassignment clone = new MachineReassignment();
         clone.id = id;
         clone.resourceList = resourceList;
+        clone.machineList = machineList;
+        clone.serviceList = serviceList;
+        clone.processList = processList;
         List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
         for (BedDesignation bedDesignation : bedDesignationList) {
             BedDesignation clonedBedDesignation = bedDesignation.clone();

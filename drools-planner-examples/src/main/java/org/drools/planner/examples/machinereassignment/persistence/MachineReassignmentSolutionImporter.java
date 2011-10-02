@@ -28,6 +28,7 @@ import java.util.Map;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
+import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
@@ -77,6 +78,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             machineReassignment = new MachineReassignment();
             machineReassignment.setId(0L);
             readResourceList();
+            readMachineList();
 //            createBedDesignationList();
             logger.info("MachineReassignment with {} resources.",
                     new Object[]{machineReassignment.getResourceList().size()});
@@ -103,6 +105,23 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 resourceList.add(resource);
             }
             machineReassignment.setResourceList(resourceList);
+        }
+
+        private void readMachineList() throws IOException {
+            int machineListSize = readIntegerValue();
+            List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
+            long machineId = 0L;
+            for (int i = 0; i < machineListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitBySpace(line);
+                MrMachine machine = new MrMachine();
+                machine.setId(machineId);
+                machineId++;
+//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
+//                machine.setWeight(Integer.parseInt(lineTokens[1]));
+                machineList.add(machine);
+            }
+            machineReassignment.setMachineList(machineList);
         }
 
 //        private void createBedDesignationList() {
