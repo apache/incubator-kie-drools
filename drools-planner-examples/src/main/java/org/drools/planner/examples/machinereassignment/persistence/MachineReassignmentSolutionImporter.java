@@ -18,36 +18,20 @@ package org.drools.planner.examples.machinereassignment.persistence;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
+import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
+import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
+import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
-import org.drools.planner.examples.pas.domain.AdmissionPart;
-import org.drools.planner.examples.pas.domain.Bed;
-import org.drools.planner.examples.pas.domain.BedDesignation;
-import org.drools.planner.examples.pas.domain.Department;
-import org.drools.planner.examples.pas.domain.DepartmentSpecialism;
-import org.drools.planner.examples.pas.domain.Equipment;
-import org.drools.planner.examples.pas.domain.Gender;
-import org.drools.planner.examples.pas.domain.GenderLimitation;
-import org.drools.planner.examples.pas.domain.Night;
-import org.drools.planner.examples.pas.domain.Patient;
-import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
-import org.drools.planner.examples.pas.domain.PreferredPatientEquipment;
-import org.drools.planner.examples.pas.domain.RequiredPatientEquipment;
-import org.drools.planner.examples.pas.domain.Room;
-import org.drools.planner.examples.pas.domain.RoomEquipment;
-import org.drools.planner.examples.pas.domain.RoomSpecialism;
+import org.drools.planner.examples.machinereassignment.domain.MrService;
 import org.drools.planner.examples.pas.domain.Specialism;
-import sun.security.util.BigInt;
 
 public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -79,6 +63,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             machineReassignment.setId(0L);
             readResourceList();
             readMachineList();
+            readServiceList();
+            readProcessList();
+            readBalancePenaltyList();
+            readGlobalPenaltyInfo();
 //            createBedDesignationList();
             logger.info("MachineReassignment with {} resources.",
                     new Object[]{machineReassignment.getResourceList().size()});
@@ -95,7 +83,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             List<MrResource> resourceList = new ArrayList<MrResource>(resourceListSize);
             long resourceId = 0L;
             for (int i = 0; i < resourceListSize; i++) {
-                String line = bufferedReader.readLine();
+                String line = readStringValue();
                 String[] lineTokens = splitBySpace(line, 2);
                 MrResource resource = new MrResource();
                 resource.setId(resourceId);
@@ -112,7 +100,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
             long machineId = 0L;
             for (int i = 0; i < machineListSize; i++) {
-                String line = bufferedReader.readLine();
+                String line = readStringValue();
                 String[] lineTokens = splitBySpace(line);
                 MrMachine machine = new MrMachine();
                 machine.setId(machineId);
@@ -122,6 +110,69 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 machineList.add(machine);
             }
             machineReassignment.setMachineList(machineList);
+        }
+
+        private void readServiceList() throws IOException {
+            int serviceListSize = readIntegerValue();
+            List<MrService> serviceList = new ArrayList<MrService>(serviceListSize);
+            long serviceId = 0L;
+            for (int i = 0; i < serviceListSize; i++) {
+                String line = readStringValue();
+                String[] lineTokens = splitBySpace(line);
+                MrService service = new MrService();
+                service.setId(serviceId);
+                serviceId++;
+//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
+//                machine.setWeight(Integer.parseInt(lineTokens[1]));
+                serviceList.add(service);
+            }
+            machineReassignment.setServiceList(serviceList);
+        }
+
+        private void readProcessList() throws IOException {
+            int processListSize = readIntegerValue();
+            List<MrProcess> processList = new ArrayList<MrProcess>(processListSize);
+            long processId = 0L;
+            for (int i = 0; i < processListSize; i++) {
+                String line = readStringValue();
+                String[] lineTokens = splitBySpace(line);
+                MrProcess process = new MrProcess();
+                process.setId(processId);
+                processId++;
+//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
+//                machine.setWeight(Integer.parseInt(lineTokens[1]));
+                processList.add(process);
+            }
+            machineReassignment.setProcessList(processList);
+        }
+
+        private void readBalancePenaltyList() throws IOException {
+            int balancePenaltyListSize = readIntegerValue();
+            List<MrBalancePenalty> balancePenaltyList = new ArrayList<MrBalancePenalty>(balancePenaltyListSize);
+            long balancePenaltyId = 0L;
+            for (int i = 0; i < balancePenaltyListSize; i++) {
+                String line = readStringValue();
+                String[] lineTokens = splitBySpace(line);
+                MrBalancePenalty balancePenalty = new MrBalancePenalty();
+                balancePenalty.setId(balancePenaltyId);
+                balancePenaltyId++;
+//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
+//                machine.setWeight(Integer.parseInt(lineTokens[1]));
+                int weight = readIntegerValue(); // TODO
+                balancePenaltyList.add(balancePenalty);
+            }
+            machineReassignment.setBalancePenaltyList(balancePenaltyList);
+        }
+
+        private void readGlobalPenaltyInfo() throws IOException {
+            MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
+            globalPenaltyInfo.setId(0L);
+            String line = readStringValue();
+            String[] lineTokens = splitBySpace(line, 3);
+            globalPenaltyInfo.setProcessMoveCost(Integer.parseInt(lineTokens[0]));
+            globalPenaltyInfo.setServiceMoveCost(Integer.parseInt(lineTokens[1]));
+            globalPenaltyInfo.setMachineMoveCost(Integer.parseInt(lineTokens[2]));
+            machineReassignment.setGlobalPenaltyInfo(globalPenaltyInfo);
         }
 
 //        private void createBedDesignationList() {

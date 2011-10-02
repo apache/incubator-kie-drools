@@ -46,14 +46,24 @@ import org.drools.planner.examples.pas.domain.solver.AdmissionPartConflict;
 @XStreamAlias("MachineReassignment")
 public class MachineReassignment extends AbstractPersistable implements Solution<HardAndSoftScore> {
 
+    private MrGlobalPenaltyInfo globalPenaltyInfo;
     private List<MrResource> resourceList;
     private List<MrMachine> machineList;
     private List<MrService> serviceList;
     private List<MrProcess> processList;
+    private List<MrBalancePenalty> balancePenaltyList;
 
     private List<BedDesignation> bedDesignationList;
 
     private HardAndSoftScore score;
+
+    public MrGlobalPenaltyInfo getGlobalPenaltyInfo() {
+        return globalPenaltyInfo;
+    }
+
+    public void setGlobalPenaltyInfo(MrGlobalPenaltyInfo globalPenaltyInfo) {
+        this.globalPenaltyInfo = globalPenaltyInfo;
+    }
 
     public List<MrResource> getResourceList() {
         return resourceList;
@@ -87,6 +97,14 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.processList = processList;
     }
 
+    public List<MrBalancePenalty> getBalancePenaltyList() {
+        return balancePenaltyList;
+    }
+
+    public void setBalancePenaltyList(List<MrBalancePenalty> balancePenaltyList) {
+        this.balancePenaltyList = balancePenaltyList;
+    }
+
     @PlanningEntityCollectionProperty
     public List<BedDesignation> getBedDesignationList() {
         return bedDesignationList;
@@ -106,10 +124,12 @@ public class MachineReassignment extends AbstractPersistable implements Solution
 
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
+        facts.add(globalPenaltyInfo);
         facts.addAll(resourceList);
         facts.addAll(machineList);
         facts.addAll(serviceList);
         facts.addAll(processList);
+        facts.addAll(balancePenaltyList);
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
     }
@@ -120,10 +140,12 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     public MachineReassignment cloneSolution() {
         MachineReassignment clone = new MachineReassignment();
         clone.id = id;
+        clone.globalPenaltyInfo = globalPenaltyInfo;
         clone.resourceList = resourceList;
         clone.machineList = machineList;
         clone.serviceList = serviceList;
         clone.processList = processList;
+        clone.balancePenaltyList = balancePenaltyList;
         List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
         for (BedDesignation bedDesignation : bedDesignationList) {
             BedDesignation clonedBedDesignation = bedDesignation.clone();
