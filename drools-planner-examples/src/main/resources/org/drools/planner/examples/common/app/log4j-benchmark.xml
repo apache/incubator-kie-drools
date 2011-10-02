@@ -9,6 +9,17 @@
       <param name="ConversionPattern" value="%d [%t] %-5p %m%n" />
     </layout>
   </appender>
+  <!--<appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">-->
+    <!--<param name="file" value="local/log/droolsPlannerBenchmarker.log"/>-->
+    <!--<param name="MaxFileSize" value="5MB"/>-->
+    <!--&lt;!&ndash; Keep one backup file &ndash;&gt;-->
+    <!--<param name="MaxBackupIndex" value="4"/>-->
+    <!--<layout class="org.apache.log4j.PatternLayout">-->
+      <!--&lt;!&ndash; %l lowers performance &ndash;&gt;-->
+      <!--&lt;!&ndash;<param name="ConversionPattern" value="%d [%t] %-5p %l%n  %m%n" />&ndash;&gt;-->
+      <!--<param name="ConversionPattern" value="%d [%t] %-5p %m%n" />-->
+    <!--</layout>-->
+  <!--</appender>-->
 
   <category name="org.drools.planner">
     <priority value="debug" />
@@ -17,6 +28,7 @@
   <root>
     <priority value="warn" />
     <appender-ref ref="consoleAppender" />
+    <!--<appender-ref ref="fileAppender" />-->
   </root>
 
 </log4j:configuration>
