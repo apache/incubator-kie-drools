@@ -1,6 +1,6 @@
 package org.drools.marshalling.util;
 
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -202,9 +202,9 @@ public class MarshallingTestUtil {
             // OCRAM: refactor into one method.. 
             MarshalledData baseMarshalledData = baseMarshalledDataSnapshotMap.get(testMethodVer);
             StatefulKnowledgeSession baseKSession = unmarshallSession(baseCacheEMF, baseMarshalledData);
-           
-            baseKSession.getId();
-            // OCRAM: compare via reflection..
+            
+            assertTrue( "Unmarshalled " + baseKSession.getClass().getSimpleName() + " objects are not equal.", 
+                    CompareViaReflectionUtil.compareInstances(null, baseKSession, testKSession) );
         }
         
         // x eerst, selecteer een test method
