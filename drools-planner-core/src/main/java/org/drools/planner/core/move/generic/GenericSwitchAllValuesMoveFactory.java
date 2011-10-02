@@ -19,6 +19,7 @@ package org.drools.planner.core.move.generic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.drools.FactHandle;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
@@ -53,14 +54,16 @@ public class GenericSwitchAllValuesMoveFactory extends CachedMoveFactory {
     public List<Move> createCachedMoveList(Solution solution) {
         List<Move> moveList = new ArrayList<Move>();
         List<Object> planningEntityList = solutionDescriptor.getPlanningEntityList(solution);
-        for (Object leftPlanningEntity : planningEntityList) {
+        for (ListIterator<Object> leftIt = planningEntityList.listIterator(); leftIt.hasNext();) {
+            Object leftPlanningEntity = leftIt.next();
             FactHandle leftPlanningEntityFactHandle = solutionDirector.getWorkingMemory()
                     .getFactHandle(leftPlanningEntity);
             PlanningEntityDescriptor leftPlanningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
                     leftPlanningEntity.getClass());
             Collection<PlanningVariableDescriptor> planningVariableDescriptors
                     = leftPlanningEntityDescriptor.getPlanningVariableDescriptors();
-            for (Object rightPlanningEntity : planningEntityList) {
+            for (ListIterator<Object> rightIt = planningEntityList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                Object rightPlanningEntity = rightIt.next();
                 PlanningEntityDescriptor rightPlanningEntityDescriptor = solutionDescriptor.getPlanningEntityDescriptor(
                         leftPlanningEntity.getClass());
                 if (leftPlanningEntityDescriptor.getPlanningEntityClass().equals(
