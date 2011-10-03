@@ -22,19 +22,19 @@ import org.drools.rule.Function;
 
 
 
-public class DuplicateFunctionProblem extends ConfigurableSeverityProblem {
+public class DuplicateFunction extends ConfigurableSeverityResult {
     public static final String KEY = "duplicateFunction";
     
     private String functionName;
     private String functionNamespace;
     
-    public DuplicateFunctionProblem(FunctionDescr func, KnowledgeBuilderConfiguration config) {
+    public DuplicateFunction(FunctionDescr func, KnowledgeBuilderConfiguration config) {
         super(config);
         functionName = func.getName();
         functionNamespace = func.getNamespace();
     }
     
-    public DuplicateFunctionProblem(Function func, KnowledgeBuilderConfiguration config) {
+    public DuplicateFunction(Function func, KnowledgeBuilderConfiguration config) {
         super(config);
         functionName = func.getName();
         functionName = func.getNamespace();
@@ -48,7 +48,7 @@ public class DuplicateFunctionProblem extends ConfigurableSeverityProblem {
     }
 
     @Override
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return null;
     }
 

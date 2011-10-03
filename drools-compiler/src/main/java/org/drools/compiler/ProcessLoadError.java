@@ -16,7 +16,7 @@ public class ProcessLoadError extends DroolsError {
         this.exception = nested;
     }
     
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.lines;
     }
     

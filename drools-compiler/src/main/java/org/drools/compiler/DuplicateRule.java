@@ -19,7 +19,7 @@ package org.drools.compiler;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.lang.descr.PackageDescr;
 
-public class DuplicateRuleProblem extends ConfigurableSeverityProblem {
+public class DuplicateRule extends ConfigurableSeverityResult {
     
     public static final String KEY = "duplicateRule";
     
@@ -27,7 +27,7 @@ public class DuplicateRuleProblem extends ConfigurableSeverityProblem {
     
     private PackageDescr pkgDescr;
     
-    public DuplicateRuleProblem(String ruleName, PackageDescr pkg, KnowledgeBuilderConfiguration config) {
+    public DuplicateRule(String ruleName, PackageDescr pkg, KnowledgeBuilderConfiguration config) {
         super(config);
         rule = ruleName;
         pkgDescr = pkg;
@@ -40,7 +40,7 @@ public class DuplicateRuleProblem extends ConfigurableSeverityProblem {
 	}
 
 	@Override
-	public int[] getErrorLines() {
+	public int[] getLines() {
 		return null;
 	}
 

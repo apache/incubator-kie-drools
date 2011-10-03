@@ -9231,7 +9231,7 @@ public class MiscTest {
                       errors.size() );
         KnowledgeBuilderError error = errors.iterator().next();
         assertEquals( 5,
-                      error.getErrorLines()[0] );
+                      error.getLines()[0] );
 
     }
 

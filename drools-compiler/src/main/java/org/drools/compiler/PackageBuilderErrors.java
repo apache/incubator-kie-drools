@@ -44,7 +44,7 @@ public class PackageBuilderErrors extends ArrayList<KnowledgeBuilderError>
             int i = 0;
             for ( DroolsError error : this.errors ) {
                 temp[i] = new SerializableDroolsError( error.getMessage(),
-                                                       error.getErrorLines(),
+                                                       error.getLines(),
                                                        error.getClass().getName() );
             }
             out.writeObject( temp );

@@ -1,18 +1,20 @@
 package org.drools.compiler;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.base.TypeResolver;
-import org.drools.builder.ProblemSeverity;
-import org.drools.builder.conf.ProblemSeverityOption;
+import org.drools.builder.ResultSeverity;
+import org.drools.builder.conf.KBuilderSeverityOption;
 import org.drools.io.Resource;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -31,7 +33,6 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.builder.AccumulateBuilder;
 import org.drools.rule.builder.ConsequenceBuilder;
 import org.drools.rule.builder.EnabledBuilder;
-import org.drools.rule.builder.EngineElementBuilder;
 import org.drools.rule.builder.EntryPointBuilder;
 import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.GroupElementBuilder;
@@ -46,6 +47,9 @@ import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.util.ChainedProperties;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 public class PackageBuilderConfigurationTest {
 
@@ -60,7 +64,7 @@ public class PackageBuilderConfigurationTest {
         System.getProperties().remove( "drools.dialect.java.compiler" );
         System.getProperties().remove( "drools.dialect.default" );
         System.getProperties().remove( "drools.warning.filters" );
-        System.getProperties().remove( "drools.problem.severity." + DuplicateFunctionProblem.KEY);
+        System.getProperties().remove( "drools.kbuilder.severity." + DuplicateFunction.KEY );
     }
 
     @Test
@@ -74,7 +78,6 @@ public class PackageBuilderConfigurationTest {
         assertNotNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                       null ) );
 
-
         // now check that chained properties can ignore defaults
         chainedProperties = new ChainedProperties( "packagebuilder.conf",
                                                    getClass().getClassLoader(),
@@ -83,7 +86,6 @@ public class PackageBuilderConfigurationTest {
         //                                                   null ) );
         assertNull( chainedProperties.getProperty( "drools.dialect.java.compiler",
                                                    null ) );
-
 
         // now check it can find defaults again.
         chainedProperties = new ChainedProperties( "packagebuilder.conf",
@@ -138,13 +140,14 @@ public class PackageBuilderConfigurationTest {
     @Test
     public void testProgrammaticProperties() {
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        assertTrue( cfg.getDefaultDialect().equals( "java") );
+        assertTrue( cfg.getDefaultDialect().equals( "java" ) );
 
         Properties properties = new Properties();
         properties.setProperty( "drools.dialect.default",
                                 "mvel" );
         PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration( properties );
-        assertEquals("mvel", cfg1.getDefaultDialect() );
+        assertEquals( "mvel",
+                      cfg1.getDefaultDialect() );
 
         final PackageBuilderConfiguration cfg2 = new PackageBuilderConfiguration( properties );
         assertEquals( cfg1.getDefaultDialect().getClass(),
@@ -153,47 +156,55 @@ public class PackageBuilderConfigurationTest {
 
     @Test
     public void testProgramaticProperties2() {
-        JavaDialectConfiguration javaConf =  new JavaDialectConfiguration( );
-        javaConf.init(new PackageBuilderConfiguration());
+        JavaDialectConfiguration javaConf = new JavaDialectConfiguration();
+        javaConf.init( new PackageBuilderConfiguration() );
         javaConf.setCompiler( JavaDialectConfiguration.ECLIPSE );
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        cfg.setDialectConfiguration( "java", javaConf );
+        cfg.setDialectConfiguration( "java",
+                                     javaConf );
         JavaDialectConfiguration javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
         assertSame( javaConf,
                     javaConf2 );
         assertEquals( JavaDialectConfiguration.ECLIPSE,
                       javaConf2.getCompiler() );
 
-        javaConf =  new JavaDialectConfiguration();
-        javaConf.init(new PackageBuilderConfiguration());
+        javaConf = new JavaDialectConfiguration();
+        javaConf.init( new PackageBuilderConfiguration() );
         javaConf.setCompiler( JavaDialectConfiguration.JANINO );
         cfg = new PackageBuilderConfiguration();
-        cfg.setDialectConfiguration( "java", javaConf );
+        cfg.setDialectConfiguration( "java",
+                                     javaConf );
         javaConf2 = (JavaDialectConfiguration) cfg.getDialectConfiguration( "java" );
         assertSame( javaConf,
                     javaConf2 );
         assertEquals( JavaDialectConfiguration.JANINO,
                       javaConf2.getCompiler() );
     }
-    
+
     @Test
-    public void testProblemSeverity() {
-        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY,
-        "ERROR" );
+    public void testResultSeverity() {
+        System.setProperty( "drools.kbuilder.severity." + DuplicateFunction.KEY,
+                            "ERROR" );
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        assertEquals(cfg.getOptionKeys(ProblemSeverityOption.class).size(), 1);
-        assertEquals(cfg.getOption(ProblemSeverityOption.class, DuplicateFunctionProblem.KEY).getSeverity(), ProblemSeverity.ERROR);
-        
+        assertEquals( cfg.getOptionKeys( KBuilderSeverityOption.class ).size(),
+                      1 );
+        assertEquals( cfg.getOption( KBuilderSeverityOption.class,
+                                     DuplicateFunction.KEY ).getSeverity(),
+                      ResultSeverity.ERROR );
+
     }
-    
+
     @Test
-    public void testProblemSeverityNonExistingValueDefaultToInfo() {
-        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY,
-        "FOO" );
+    public void testResultSeverityNonExistingValueDefaultToInfo() {
+        System.setProperty( "drools.kbuilder.severity." + DuplicateFunction.KEY,
+                            "FOO" );
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
-        assertEquals(cfg.getOptionKeys(ProblemSeverityOption.class).size(), 1);
-        assertEquals(cfg.getOption(ProblemSeverityOption.class, DuplicateFunctionProblem.KEY).getSeverity(), ProblemSeverity.INFO);
-        
+        assertEquals( cfg.getOptionKeys( KBuilderSeverityOption.class ).size(),
+                      1 );
+        assertEquals( cfg.getOption( KBuilderSeverityOption.class,
+                                     DuplicateFunction.KEY ).getSeverity(),
+                      ResultSeverity.INFO );
+
     }
 
     @Test
@@ -202,10 +213,11 @@ public class PackageBuilderConfigurationTest {
 
         PackageBuilderConfiguration cfg1 = new PackageBuilderConfiguration();
         MockDialectConfiguration mockConf = new MockDialectConfiguration();
-//        cfg1.buildDialectRegistry().addDialect( "mock",
-//                                                mockConf.getDialect() );
-        
-        cfg1.addDialect("mock", mockConf );
+        //        cfg1.buildDialectRegistry().addDialect( "mock",
+        //                                                mockConf.getDialect() );
+
+        cfg1.addDialect( "mock",
+                         mockConf );
         cfg1.setDefaultDialect( "mock" );
 
         PackageBuilder builder = new PackageBuilder( pkg,
@@ -259,15 +271,19 @@ public class PackageBuilderConfigurationTest {
         DialectConfiguration {
         private PackageBuilderConfiguration conf;
 
-        public Dialect newDialect(PackageBuilder pkgBuilder, PackageRegistry pkgRegistry, Package pkg) {
-            return new MockDialect( pkgBuilder, pkgRegistry, pkg);
+        public Dialect newDialect( PackageBuilder pkgBuilder,
+                                   PackageRegistry pkgRegistry,
+                                   Package pkg ) {
+            return new MockDialect( pkgBuilder,
+                                    pkgRegistry,
+                                    pkg );
         }
 
         public PackageBuilderConfiguration getPackageBuilderConfiguration() {
             return this.conf;
         }
 
-        public void init(PackageBuilderConfiguration configuration) {
+        public void init( PackageBuilderConfiguration configuration ) {
             this.conf = configuration;
         }
 
@@ -285,13 +301,15 @@ public class PackageBuilderConfigurationTest {
         private List           staticImports = new ArrayList();
 
         private boolean        compileAll    = false;
-        
-        public MockDialect(PackageBuilder builder, PackageRegistry pkgRegistry, Package pkg) {
+
+        public MockDialect(PackageBuilder builder,
+                           PackageRegistry pkgRegistry,
+                           Package pkg) {
             this.builder = builder;
             this.pkg = pkg;
         }
 
-        public void init(RuleDescr ruleDescr) {
+        public void init( RuleDescr ruleDescr ) {
             this.ruleDescr = ruleDescr;
         }
 
@@ -307,13 +325,13 @@ public class PackageBuilderConfigurationTest {
             return ruleDescr;
         }
 
-        public void addFunction(FunctionDescr functionDescr,
-                                TypeResolver typeResolver) {
+        public void addFunction( FunctionDescr functionDescr,
+                                 TypeResolver typeResolver ) {
             // TODO Auto-generated method stub
 
         }
 
-        public void addImport(String importEntry) {
+        public void addImport( String importEntry ) {
             this.imports.add( importEntry );
         }
 
@@ -321,7 +339,7 @@ public class PackageBuilderConfigurationTest {
             return this.imports;
         }
 
-        public void addStaticImport(String importEntry) {
+        public void addStaticImport( String importEntry ) {
             this.imports.add( importEntry );
         }
 
@@ -329,10 +347,10 @@ public class PackageBuilderConfigurationTest {
             return this.imports;
         }
 
-        public void addRule(RuleBuildContext context) {
+        public void addRule( RuleBuildContext context ) {
             this.rule = context.getRule();
         }
-        
+
         public Rule getRule() {
             return this.rule;
         }
@@ -350,7 +368,7 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public RuleConditionBuilder getBuilder(Class clazz) {
+        public RuleConditionBuilder getBuilder( Class clazz ) {
             if ( clazz == EvalDescr.class ) {
                 return getEvalBuilder();
             } else if ( clazz == AndDescr.class ) {
@@ -363,6 +381,7 @@ public class PackageBuilderConfigurationTest {
         public Map getBuilders() {
             return null;
         }
+
         public ConsequenceBuilder getConsequenceBuilder() {
             return new MockConsequenceBuilder();
         }
@@ -402,7 +421,7 @@ public class PackageBuilderConfigurationTest {
         public RuleClassBuilder getRuleClassBuilder() {
             return null;
         }
-        
+
         public SalienceBuilder getSalienceBuilder() {
             return null;
         }
@@ -410,14 +429,14 @@ public class PackageBuilderConfigurationTest {
         public TypeResolver getTypeResolver() {
             return null;
         }
-        
+
         public String getId() {
             return "mock";
         }
 
-        public void init(ProcessDescr processDescr) {
+        public void init( ProcessDescr processDescr ) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public EntryPointBuilder getEntryPointBuilder() {
@@ -425,16 +444,16 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public void postCompileAddFunction(FunctionDescr functionDescr,
-                TypeResolver typeResolver) {
+        public void postCompileAddFunction( FunctionDescr functionDescr,
+                                            TypeResolver typeResolver ) {
             // TODO Auto-generated method stub
 
         }
 
-        public void preCompileAddFunction(FunctionDescr functionDescr,
-                                          TypeResolver typeResolver) {
+        public void preCompileAddFunction( FunctionDescr functionDescr,
+                                           TypeResolver typeResolver ) {
             // TODO Auto-generated method stub
-            
+
         }
 
         public EnabledBuilder getEnabledBuilder() {
@@ -442,29 +461,29 @@ public class PackageBuilderConfigurationTest {
             return null;
         }
 
-        public void addFunction(FunctionDescr functionDescr,
-                                TypeResolver typeResolver,
-                                Resource resource) {
+        public void addFunction( FunctionDescr functionDescr,
+                                 TypeResolver typeResolver,
+                                 Resource resource ) {
             // TODO Auto-generated method stub
-            
+
         }
 
-        public AnalysisResult analyzeExpression(PackageBuildContext context,
-                                                BaseDescr descr,
-                                                Object content,
-                                                BoundIdentifiers availableIdentifiers) {
+        public AnalysisResult analyzeExpression( PackageBuildContext context,
+                                                 BaseDescr descr,
+                                                 Object content,
+                                                 BoundIdentifiers availableIdentifiers ) {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public AnalysisResult analyzeBlock(PackageBuildContext context,
-                                           BaseDescr descr,
-                                           String text,
-                                           BoundIdentifiers availableIdentifiers) {
+        public AnalysisResult analyzeBlock( PackageBuildContext context,
+                                            BaseDescr descr,
+                                            String text,
+                                            BoundIdentifiers availableIdentifiers ) {
             // TODO Auto-generated method stub
             return null;
         }
-        
+
         public PackageRegistry getPackageRegistry() {
             // TODO Auto-generated method stub
             return null;
@@ -476,16 +495,16 @@ public class PackageBuilderConfigurationTest {
         implements
         RuleConditionBuilder {
 
-        public RuleConditionElement build(RuleBuildContext context,
-                                          BaseDescr descr) {
+        public RuleConditionElement build( RuleBuildContext context,
+                                           BaseDescr descr ) {
             EvalDescr evalDescr = (EvalDescr) descr;
             evalDescr.setContent( "eval was built" );
             return null;
         }
 
-        public RuleConditionElement build(RuleBuildContext context,
-                                          BaseDescr descr,
-                                          Pattern prefixPattern) {
+        public RuleConditionElement build( RuleBuildContext context,
+                                           BaseDescr descr,
+                                           Pattern prefixPattern ) {
             return null;
         }
 
@@ -495,7 +514,8 @@ public class PackageBuilderConfigurationTest {
         implements
         ConsequenceBuilder {
 
-        public void build(RuleBuildContext context, String name) {
+        public void build( RuleBuildContext context,
+                           String name ) {
             context.getRuleDescr().setConsequence( "consequence was built" );
         }
 

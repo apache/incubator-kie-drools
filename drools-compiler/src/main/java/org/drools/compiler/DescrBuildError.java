@@ -50,7 +50,7 @@ public class DescrBuildError extends DroolsError {
         return this.object;
     }
 
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.errorLines;
     }
 
@@ -100,29 +100,4 @@ public class DescrBuildError extends DroolsError {
         }
         return buf.toString();
     }
-
-    //    private String createMessage( String message ) {
-    //        StringBuilder detail = new StringBuilder();
-    //        detail.append( this.message );
-    //        detail.append( " : " );
-    //        detail.append( this.rule );
-    //        detail.append( "\n" );
-    //        if( object instanceof CompilationProblem[] ) {
-    //            CompilationProblem[] cp = (CompilationProblem[]) object;
-    //            this.errorLines = new int[cp.length];
-    //            for( int i = 0; i < cp.length ; i ++ ) {
-    //               this.errorLines[i] = cp[i].getStartLine() - this.descr.getOffset() + this.descr.getLine() - 1;
-    //               detail.append( this.rule.getName() );
-    //               detail.append( " (line:" );
-    //               detail.append( this.errorLines[i] );
-    //               detail.append( "): " );
-    //               detail.append( cp[i].getMessage() );
-    //               detail.append( "\n" );
-    //            }
-    //        } else {
-    //            this.errorLines = new int[0];
-    //        }
-    //        return "[ "+this.rule.getName()+" : "+message + "\n"+detail.toString()+" ]";
-    //    }
-
 }
