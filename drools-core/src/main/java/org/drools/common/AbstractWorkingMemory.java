@@ -769,7 +769,11 @@ public abstract class AbstractWorkingMemory
      *            The <code>FactHandle</code> reference for the
      *            <code>Object</code> lookup
      */
-    public Object getObject(final org.drools.runtime.rule.FactHandle handle) {
+    public Object getObject(org.drools.runtime.rule.FactHandle handle) {
+        // the handle might have been disconnected, so reconnect if it has
+        if ( ((InternalFactHandle)handle).isDisconnected() ) {
+            handle = this.defaultEntryPoint.getObjectStore().reconnect( handle );
+        }        
         return this.defaultEntryPoint.getObject( handle );
     }
 
