@@ -64,7 +64,7 @@ public class MappingError extends DroolsError {
         return this.errorCode;
     }
     
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.line;
     }
 

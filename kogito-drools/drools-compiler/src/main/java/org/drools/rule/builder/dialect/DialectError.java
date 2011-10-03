@@ -11,7 +11,7 @@ public class DialectError extends DroolsError {
         this.message = message;
     }
 
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return line;
     }
     

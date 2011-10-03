@@ -16,25 +16,25 @@
 package org.drools.compiler;
 
 import org.drools.builder.KnowledgeBuilderConfiguration;
-import org.drools.builder.ProblemSeverity;
-import org.drools.builder.conf.ProblemSeverityOption;
+import org.drools.builder.ResultSeverity;
+import org.drools.builder.conf.KBuilderSeverityOption;
 
 
 /**
  *
  */
-public abstract class ConfigurableSeverityProblem extends DroolsProblem {
+public abstract class ConfigurableSeverityResult extends BaseKnowledgeBuilderResultImpl {
     
-    public ConfigurableSeverityProblem(KnowledgeBuilderConfiguration config) {
-        severity = config.getOption(ProblemSeverityOption.class, getOptionKey()).getSeverity();
+    public ConfigurableSeverityResult(KnowledgeBuilderConfiguration config) {
+        severity = config.getOption(KBuilderSeverityOption.class, getOptionKey()).getSeverity();
     }
     
-    private ProblemSeverity severity;
+    private ResultSeverity severity;
     /* (non-Javadoc)
      * @see org.drools.compiler.DroolsProblem#getProblemType()
      */
     @Override
-    public ProblemSeverity getProblemSeverity() {
+    public ResultSeverity getSeverity() {
         return severity;
     }
     

@@ -25,7 +25,7 @@ public class TypeDeclarationError extends DroolsError {
         this.line = new int[] { line };
     }
 
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.line;
     }
 

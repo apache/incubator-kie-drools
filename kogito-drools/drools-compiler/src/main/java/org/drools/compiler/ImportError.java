@@ -29,7 +29,7 @@ public class ImportError extends DroolsError {
         return this.importName;
     }
 
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.line;
     }
 

@@ -48,7 +48,7 @@ public class SerializableDroolsError extends DroolsError implements Externalizab
      * Returns the lines of the error in the source file
      * @return
      */
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.errorLines;
     }
     

@@ -17,13 +17,12 @@
 package org.drools.compiler;
 
 import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.ProblemSeverity;
+import org.drools.builder.ResultSeverity;
 
-public abstract class DroolsError extends DroolsProblem implements KnowledgeBuilderError {
-
+public abstract class DroolsError extends BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderError {
    
-    public ProblemSeverity getProblemSeverity() {
-        return ProblemSeverity.ERROR;
+    public ResultSeverity getSeverity() {
+        return ResultSeverity.ERROR;
     }
 
 }

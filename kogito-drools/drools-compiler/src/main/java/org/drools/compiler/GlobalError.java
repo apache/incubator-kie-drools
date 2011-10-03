@@ -29,7 +29,7 @@ public class GlobalError extends DroolsError {
         return this.global;
     }
     
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.line;
     }
 

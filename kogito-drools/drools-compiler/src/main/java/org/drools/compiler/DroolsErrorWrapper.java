@@ -15,15 +15,17 @@
 */
 package org.drools.compiler;
 
+import org.drools.builder.KnowledgeBuilderResult;
+
 
 /**
  *
  */
 public class DroolsErrorWrapper extends DroolsError {
     
-    DroolsProblem backingProblem;
+    KnowledgeBuilderResult backingProblem;
     
-    public DroolsErrorWrapper (DroolsProblem problem) {
+    public DroolsErrorWrapper (KnowledgeBuilderResult problem) {
         this.backingProblem = problem;
     }
     
@@ -33,8 +35,8 @@ public class DroolsErrorWrapper extends DroolsError {
     }
 
     @Override
-    public int[] getErrorLines() {
-        return backingProblem.getErrorLines();
+    public int[] getLines() {
+        return backingProblem.getLines();
     }
 
 }

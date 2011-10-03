@@ -797,7 +797,7 @@ public class ExecutionFlowControlTest {
             KnowledgeBuilderErrors errors = kBuilder.getErrors();
             for (KnowledgeBuilderError kbe : errors) {
                 System.err.println(kbe.getMessage());
-                for (int errLine : kbe.getErrorLines()) {
+                for (int errLine : kbe.getLines()) {
                     System.err.println(errLine);
                 }
             }

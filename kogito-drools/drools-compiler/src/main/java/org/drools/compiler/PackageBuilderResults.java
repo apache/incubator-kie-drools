@@ -6,26 +6,24 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderErrors;
-import org.drools.builder.KnowledgeBuilderProblem;
-import org.drools.builder.KnowledgeBuilderProblems;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.builder.KnowledgeBuilderResults;
 
-public class PackageBuilderProblems extends ArrayList<KnowledgeBuilderProblem>
+public class PackageBuilderResults extends ArrayList<KnowledgeBuilderResult>
     implements
-    KnowledgeBuilderProblems,
+    KnowledgeBuilderResults,
     Externalizable {
-    private DroolsProblem[] errors;
+    private BaseKnowledgeBuilderResultImpl[] errors;
 
-    public PackageBuilderProblems() {
+    public PackageBuilderResults() {
         super();
     }
 
-    public PackageBuilderProblems(DroolsProblem[] errors) {
+    public PackageBuilderResults(BaseKnowledgeBuilderResultImpl[] errors) {
         super( errors.length );
         this.errors = errors;
 
-        for ( DroolsProblem error : errors ) {
+        for ( BaseKnowledgeBuilderResultImpl error : errors ) {
             add( error );
         }
     }
@@ -43,9 +41,9 @@ public class PackageBuilderProblems extends ArrayList<KnowledgeBuilderProblem>
         if ( !this.errors.getClass().getComponentType().equals( SerializableDroolsError.class ) ) {
             SerializableDroolsError[] temp = new SerializableDroolsError[this.errors.length];
             int i = 0;
-            for ( DroolsProblem error : this.errors ) {
+            for ( BaseKnowledgeBuilderResultImpl error : this.errors ) {
                 temp[i] = new SerializableDroolsError( error.getMessage(),
-                                                       error.getErrorLines(),
+                                                       error.getLines(),
                                                        error.getClass().getName() );
             }
             out.writeObject( temp );
@@ -54,7 +52,7 @@ public class PackageBuilderProblems extends ArrayList<KnowledgeBuilderProblem>
         }
     }
 
-    public DroolsProblem[] getErrors() {
+    public BaseKnowledgeBuilderResultImpl[] getErrors() {
         return errors;
     }
 
