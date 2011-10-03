@@ -42,7 +42,7 @@ public class FunctionError extends DroolsError {
         return this.object;
     }
     
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return errorLines;
     }
 

@@ -107,8 +107,8 @@ public class PackageBuilderTest extends DroolsTestCase {
     @After
     public void tearDown() {
         System.getProperties().remove( "drools.warning.filters" );
-        System.getProperties().remove( "drools.problem.severity." + DuplicateFunctionProblem.KEY);
-        System.getProperties().remove( "drools.problem.severity." + DuplicateRuleProblem.KEY);
+        System.getProperties().remove( "drools.kbuilder.severity." + DuplicateFunction.KEY);
+        System.getProperties().remove( "drools.kbuilder.severity." + DuplicateRule.KEY);
     }
 
     @Test
@@ -746,7 +746,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     @Test
     public void testWarnings() {
-        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateRule.KEY, "WARNING");
         
         final PackageBuilder builder = new PackageBuilder();
         
@@ -764,7 +764,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     @Test
     public void testWarningsReportAsErrors() {
-        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "ERROR");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateRule.KEY, "ERROR");
         PackageBuilderConfiguration cfg = new PackageBuilderConfiguration();
         final PackageBuilder builder = new PackageBuilder(cfg);
         
@@ -783,7 +783,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     @Test
     public void testResetWarnings() {
         
-        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateRule.KEY, "WARNING");
         
         final PackageBuilder builder = new PackageBuilder();
         
@@ -806,8 +806,8 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     @Test
     public void testResetProblems() throws DroolsParserException, IOException {
-        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
-        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY, "ERROR");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateRule.KEY, "WARNING");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateFunction.KEY, "ERROR");
         
         final PackageBuilder builder = new PackageBuilder();
         
@@ -831,8 +831,8 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     @Test
     public void testResetWarningsButNotErrors() throws DroolsParserException, IOException {
-        System.setProperty( "drools.problem.severity." + DuplicateRuleProblem.KEY, "WARNING");
-        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY, "ERROR");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateRule.KEY, "WARNING");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateFunction.KEY, "ERROR");
         
         final PackageBuilder builder = new PackageBuilder();
         
@@ -856,7 +856,7 @@ public class PackageBuilderTest extends DroolsTestCase {
     
     @Test
     public void testWarnOnFunctionReplacement() throws DroolsParserException, IOException {
-        System.setProperty( "drools.problem.severity." + DuplicateFunctionProblem.KEY, "WARNING");
+        System.setProperty( "drools.kbuilder.severity." + DuplicateFunction.KEY, "WARNING");
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return true;\n" + "}\n" ) );
         builder.addPackageFromDrl( new StringReader( "package org.drools\n" + "function boolean testIt() {\n" + "  return false;\n" + "}\n" ) );

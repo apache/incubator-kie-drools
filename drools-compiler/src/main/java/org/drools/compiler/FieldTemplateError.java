@@ -50,7 +50,7 @@ public class FieldTemplateError extends DroolsError {
         return this.object;
     }
     
-    public int[] getErrorLines() {
+    public int[] getLines() {
         return this.line;
     }
 

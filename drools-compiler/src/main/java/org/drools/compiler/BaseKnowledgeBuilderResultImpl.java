@@ -15,20 +15,19 @@
  */
 package org.drools.compiler;
 
-import org.drools.builder.KnowledgeBuilderError;
-import org.drools.builder.KnowledgeBuilderProblem;
-import org.drools.builder.ProblemSeverity;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.builder.ResultSeverity;
 
 /**
- * 
+ * A base abstract class for all Knowledge Builder results
  *
  */
-public abstract class DroolsProblem implements KnowledgeBuilderProblem {
+public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderResult {
     
-    public abstract ProblemSeverity getProblemSeverity();
+    public abstract ResultSeverity getSeverity();
 
     public boolean isError() {
-        return getProblemSeverity().equals(ProblemSeverity.ERROR);
+        return getSeverity().equals(ResultSeverity.ERROR);
     }
 
     /**
@@ -41,10 +40,10 @@ public abstract class DroolsProblem implements KnowledgeBuilderProblem {
      * Returns the lines of the error in the source file
      * @return
      */
-    public abstract int[] getErrorLines();
+    public abstract int[] getLines();
 
     public String toString() {
-        return getClass().getName() + ": " + getMessage();
+        return getClass().getSimpleName() + ": " + getMessage();
     }
 
 }
