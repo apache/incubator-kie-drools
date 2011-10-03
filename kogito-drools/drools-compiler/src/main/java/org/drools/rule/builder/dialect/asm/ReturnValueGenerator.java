@@ -41,7 +41,7 @@ public class ReturnValueGenerator {
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
         ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(FieldValue.class, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new InvokerGenerator.EvaluateMethod() {
             public void body(MethodVisitor mv) {
-                offset = 9;
+                objAstorePos = 9;
 
                 int[] previousDeclarationsParamsPos = new int[previousDeclarations.length];
 
@@ -49,11 +49,12 @@ public class ReturnValueGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 7); // LeftTuple
 
+                LeftTuple currentLeftTuple = leftTuple;                 
                 for (InvokerGenerator.DeclarationMatcher matcher : declarationMatchers) {
                     int i = matcher.getOriginalIndex();
-                    previousDeclarationsParamsPos[i] = offset;
+                    previousDeclarationsParamsPos[i] = objAstorePos;
 
-                    traverseTuplesUntilDeclaration(i, 3, 7, 8);
+                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 3, 7, 8);                    
 
                     mv.visitVarInsn(ALOAD, 3);
                     push(i);

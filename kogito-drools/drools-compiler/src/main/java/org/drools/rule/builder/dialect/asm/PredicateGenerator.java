@@ -39,7 +39,7 @@ public class PredicateGenerator extends InvokerGenerator {
             }
         }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
             public void body(MethodVisitor mv) {
-                offset = 9;
+                objAstorePos = 9;
 
                 int[] previousDeclarationsParamsPos = new int[previousDeclarations.length];
 
@@ -47,11 +47,12 @@ public class PredicateGenerator extends InvokerGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 7); // LeftTuple
 
+                LeftTuple currentLeftTuple = leftTuple;                
                 for (DeclarationMatcher matcher : declarationMatchers) {
                     int i = matcher.getOriginalIndex();
-                    previousDeclarationsParamsPos[i] = offset;
+                    previousDeclarationsParamsPos[i] = objAstorePos;
 
-                    traverseTuplesUntilDeclaration(i, 3, 7, 8);
+                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 3, 7, 8);
 
                     mv.visitVarInsn(ALOAD, 3);
                     push(i);

@@ -37,7 +37,7 @@ public class ASMPredicateBuilder extends AbstractASMPredicateBuilder {
                 final String[] globals = (String[])vars.get("globals");
                 final String[] globalTypes = (String[])vars.get("globalTypes");
 
-                offset = 7;
+                objAstorePos = 7;
                 int[] previousDeclarationsParamsPos = parseDeclarations(previousDeclarations, previousDeclarationTypes, 3, 2, 5, true);
                 int[] localDeclarationsParamsPos = parseDeclarations(localDeclarations, localDeclarationTypes, 4, 2, 5, false);
 

@@ -15,14 +15,14 @@ public class ConsequenceGenerator extends InvokerGenerator {
 
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
         final String[] declarationTypes = stub.getDeclarationTypes();
-        final Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations();
+        final RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
+        final Declaration[] declarations = rtn.getDeclarations();
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
         final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations, tuple);
 
-        final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory)
-                .setInterfaces(Consequence.class, CompiledInvoker.class);
+        final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory).setInterfaces(Consequence.class, CompiledInvoker.class);
 
         generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
@@ -46,15 +46,23 @@ public class ConsequenceGenerator extends InvokerGenerator {
                 invokeVirtual(RuleTerminalNode.class, "getDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
-                offset = 6;
+                
+                LeftTuple currentLeftTuple = tuple;
+                objAstorePos = 6; // astore start position for objects to store in loop
                 int[] paramsPos = new int[declarations.length];
+                // declarationMatchers is already sorted by offset with tip declarations now first
                 for (DeclarationMatcher matcher : declarationMatchers) {
-                    int i = matcher.getOriginalIndex();
-                    int handlePos = offset;
-                    int objPos = ++offset;
+                    int i = matcher.getOriginalIndex(); // original index refers to the array position with RuleTerminalNode.getDeclarations()
+                    int handlePos = objAstorePos;
+                    int objPos = ++objAstorePos;
                     paramsPos[i] = handlePos;
 
-                    traverseTuplesUntilDeclaration(i, 4, 3, 5);
+                    if ( rtn.getRule().getTransformedLhs().length > 1 ) {
+                        // We do not generate an invoker per 'or' branch, so use runtime traversal for that
+                        traverseTuplesUntilDeclarationWithOr(i, 4, 3, 5);                        
+                    } else {
+                        currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 4, 3, 5);                        
+                    }
 
                     // handle = tuple.getHandle()
                     mv.visitVarInsn(ALOAD, 3);
@@ -62,6 +70,8 @@ public class ConsequenceGenerator extends InvokerGenerator {
                     mv.visitVarInsn(ASTORE, handlePos);
 
                     if (stub.getNotPatterns()[i]) {
+                        // notPattern indexes field declarations
+                        
                         // declarations[i].getValue((InternalWorkingMemory)workingMemory, fact[i].getObject());
                         mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
                         push(i); // i
@@ -73,6 +83,7 @@ public class ConsequenceGenerator extends InvokerGenerator {
 
                         storeObjectFromDeclaration(declarations[i], declarationTypes[i]);
 
+                        // The facthandle should be set to that of the field, if it's an object, otherwise this will return null
                         // fact[i] = (InternalFactHandle)workingMemory.getFactHandle(obj);
                         mv.visitVarInsn(ALOAD, 2);
                         loadAsObject(objPos);
@@ -83,7 +94,7 @@ public class ConsequenceGenerator extends InvokerGenerator {
                         mv.visitVarInsn(ALOAD, handlePos); // handle[i]
                         invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                         mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                        offset += store(objPos, declarationTypes[i]); // obj[i]
+                        objAstorePos += store(objPos, declarationTypes[i]); // obj[i]
                     }
                 }
 
