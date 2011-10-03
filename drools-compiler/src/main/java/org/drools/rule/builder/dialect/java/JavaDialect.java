@@ -89,21 +89,21 @@ public class JavaDialect
     private static final EnabledBuilder              ENABLED_BUILDER               = new MVELEnabledBuilder();
     private static final JavaAccumulateBuilder       ACCUMULATE_BUILDER            = new JavaAccumulateBuilder();
 
-//    private static final RuleConditionBuilder        EVAL_BUILDER                  = new JavaEvalBuilder();
+    private static final RuleConditionBuilder        EVAL_BUILDER                  = new JavaEvalBuilder();
 //    private static final RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalBuilder();
-    private static final RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalStubBuilder();
+//    private static final RuleConditionBuilder        EVAL_BUILDER                  = new ASMEvalStubBuilder();
 
-//    private static final PredicateBuilder            PREDICATE_BUILDER             = new JavaPredicateBuilder();
+    private static final PredicateBuilder            PREDICATE_BUILDER             = new JavaPredicateBuilder();
 //    private static final PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateBuilder();
-    private static final PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateStubBuilder();
+//    private static final PredicateBuilder            PREDICATE_BUILDER             = new ASMPredicateStubBuilder();
 
-//    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
+    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new JavaReturnValueBuilder();
 //    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueBuilder();
-    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueStubBuilder();
+//    private static final ReturnValueBuilder          RETURN_VALUE_BUILDER          = new ASMReturnValueStubBuilder();
 
-//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
+    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new JavaConsequenceBuilder();
 //    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceBuilder();
-    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
+//    private static final ConsequenceBuilder          CONSEQUENCE_BUILDER           = new ASMConsequenceStubBuilder();
 
     private static final JavaRuleClassBuilder        RULE_CLASS_BUILDER            = new JavaRuleClassBuilder();
     private static final MVELFromBuilder             FROM_BUILDER                  = new MVELFromBuilder();
