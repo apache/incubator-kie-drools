@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.common.InternalFactHandle;
 import org.drools.reteoo.LeftTuple;
 import org.drools.rule.Declaration;
 import org.drools.spi.Evaluator;
@@ -127,8 +128,11 @@ public abstract class AbstractHashTable
             while ( entry != null ) {
                 next = entry.getNext();
 
-                final int index = indexOf( entry.hashCode(),
-                                           newTable.length );
+                // we must use getResizeHashcode as some sub classes cache the hashcode and some don't
+                // otherwise we end up rehashing a cached hashcode that has already been rehashed.
+                final int index = indexOf(  getResizeHashcode( entry ),
+                                            newTable.length );
+                
                 entry.setNext( newTable[index] );
                 newTable[index] = entry;
 
@@ -139,6 +143,8 @@ public abstract class AbstractHashTable
         this.table = newTable;
         this.threshold = (int) (newCapacity * this.loadFactor);
     }
+    
+    public abstract int getResizeHashcode(Entry entry);
 
     public Entry[] toArray() {
         Entry[] result = new Entry[this.size];
@@ -231,20 +237,16 @@ public abstract class AbstractHashTable
     public boolean isEmpty() {
         return this.size == 0;
     }
-
-    //    protected int indexOf(int hashCode,
-    //                          int dataSize) {
-    //        int index = hashCode % dataSize;
-    //        if ( index < 0 ) {
-    //            index = index * -1;
-    //        }
-    //        return index;
-    //    }
+    
+    public static int rehash(int hash) {
+        hash ^= (hash >>> 20) ^ (hash >>> 12);
+        return hash ^ (hash >>> 7) ^ (hash >>> 4);
+    }     
 
     protected static int indexOf(final int hashCode,
                           final int dataSize) {
         return hashCode & (dataSize - 1);
-    }
+    }      
 
     public abstract Entry getBucket(Object object);
 
@@ -253,29 +255,11 @@ public abstract class AbstractHashTable
         Externalizable {
         public int hashCodeOf(Object object);
 
-        public int rehash(int hashCode);
-
         public boolean equal(Object object1,
                              Object object2);
     }
 
-    public abstract static class AbstractObjectComparator implements ObjectComparator {
-        public int hashCodeOf(final Object key) {
-            // TODO: This method is invoked with an Entry when the HashTable get resized
-            // During the resize the hashCode should NOT be rehashed again, since it get already rehashed once in the put
-            // The drawback of this implementation is that if a class implementing Entry is used as key, it gets NEVER rehashed
-            // To overcome this issue, if necessary, consider to use a different method to calculate hashing during resize
-            if (key instanceof Entry) return key.hashCode();
-            return rehash( key.hashCode() );
-        }
-
-        public int rehash(int h) {
-            h += ~(h << 9);
-            h ^= (h >>> 14);
-            h += (h << 4);
-            h ^= (h >>> 10);
-            return h;
-        }
+    public abstract static class AbstractObjectComparator implements ObjectComparator { 
     }
 
     /**
@@ -369,6 +353,10 @@ public abstract class AbstractHashTable
         private InstanceEquals() {
 
         }
+        
+        public int hashCodeOf(final Object obj) {
+            return rehash( System.identityHashCode( obj ) );
+        }        
 
         public boolean equal(final Object object1,
                              final Object object2) {
@@ -397,6 +385,10 @@ public abstract class AbstractHashTable
         public EqualityEquals() {
 
         }
+        
+        public int hashCodeOf(final Object key) {
+            return rehash( key.hashCode() );
+        }        
 
         public boolean equal(final Object object1,
                              final Object object2) {
@@ -569,15 +561,6 @@ public abstract class AbstractHashTable
                                             this.declaration.getExtractor(),
                                             object2 );
         }
-
-        public int rehash(int h) {
-            h += ~(h << 9);
-            h ^= (h >>> 14);
-            h += (h << 4);
-            h ^= (h >>> 10);
-            return h;
-        }
-
     }
 
     public static class DoubleCompositeIndex
@@ -695,14 +678,6 @@ public abstract class AbstractHashTable
                                                                                                 object1,
                                                                                                 this.index1.extractor,
                                                                                                 object2 );
-        }
-
-        public int rehash(int h) {
-            h += ~(h << 9);
-            h ^= (h >>> 14);
-            h += (h << 4);
-            h ^= (h >>> 10);
-            return h;
         }
     }
 
@@ -845,14 +820,6 @@ public abstract class AbstractHashTable
                                                                                                                                              object1,
                                                                                                                                              this.index2.extractor,
                                                                                                                                              object2 );
-        }
-
-        public int rehash(int h) {
-            h += ~(h << 9);
-            h ^= (h >>> 14);
-            h += (h << 4);
-            h ^= (h >>> 10);
-            return h;
         }
 
     }

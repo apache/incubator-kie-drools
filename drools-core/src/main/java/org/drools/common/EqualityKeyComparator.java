@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
 public class EqualityKeyComparator
@@ -42,6 +43,10 @@ public class EqualityKeyComparator
 
     public void writeExternal(ObjectOutput out) throws IOException {
     }
+    
+    public int hashCodeOf(final Object key) {
+        return AbstractHashTable.rehash( key.hashCode() );
+    }    
 
     /**
      * Equality key  reverses the compare, so  that  the  key  controls the  comparison

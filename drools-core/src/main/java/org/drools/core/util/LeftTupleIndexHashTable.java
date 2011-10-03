@@ -220,6 +220,12 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
         return this.table[index];
     }
+    
+    @Override
+    public int getResizeHashcode(Entry entry) {
+        // Entry is always LeftTupleList which caches the hashcode, so just return it
+        return  entry.hashCode();
+    }    
 
     public static class FieldIndexHashTableFullIterator
         implements

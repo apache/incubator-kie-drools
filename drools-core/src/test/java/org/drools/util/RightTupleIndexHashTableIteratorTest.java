@@ -149,19 +149,19 @@ public class RightTupleIndexHashTableIteratorTest {
         assertEquals( 3, entries.length );
         
         entries = (Object[]) list.get( 1 );
-        assertEquals( 67, entries[0]);
-        assertEquals( 3, entries.length );
+        assertEquals( 102, entries[0]);
+        assertEquals( 2, entries.length );
         
         entries = (Object[]) list.get( 2 );
-        assertEquals( 84, entries[0]);
+        assertEquals( 103, entries[0]);
         assertEquals( 2, entries.length );
         
         entries = (Object[]) list.get( 3 );
-        assertEquals( 114, entries[0]);
-        assertEquals( 2, entries.length );
+        assertEquals( 115, entries[0]);
+        assertEquals( 3, entries.length );
         
         entries = (Object[]) list.get( 4 );
-        assertEquals( 118, entries[0]);
+        assertEquals( 117, entries[0]);
         assertEquals( 3, entries.length );
         
         

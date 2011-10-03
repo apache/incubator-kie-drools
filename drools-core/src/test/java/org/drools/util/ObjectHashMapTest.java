@@ -16,16 +16,30 @@
 
 package org.drools.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.drools.Cheese;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.common.EqualityAssertMapComparator;
+import org.drools.conf.AssertBehaviorOption;
+import org.drools.core.util.AbstractHashTable.EqualityEquals;
 import org.drools.core.util.Entry;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.TripleImpl;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.TripleStoreTest.Individual;
+import org.drools.reteoo.ReteooRuleBase;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.rule.FactHandle;
 
 public class ObjectHashMapTest {
     @Test
@@ -120,6 +134,35 @@ public class ObjectHashMapTest {
         assertEquals( 0,
                       size );
     }
+    
+    @Test
+    public void testEqualityWithResize() {        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( AssertBehaviorOption.EQUALITY );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        int length = 1 * 1000 * 1000 ;
+        
+        List<FactHandle> handles = new ArrayList<FactHandle>(1000);
+        for ( int i = 0; i < length; i++) { 
+            String s = getPropertyName(i);
+            FactHandle handle = ksession.insert( s );
+            handles.add( handle );
+        }
+        
+        for ( int i = 0; i < length; i++) { 
+            String s = getPropertyName(i);
+            FactHandle handle = handles.get( i );
+            assertEquals( s, ksession.getObject( handle ) );
+        }
+    }
+    
+    public String getPropertyName(int i) {
+        char c1 = (char) (65+(i/3));
+        char c2 = (char) (97+(i/3));        
+        return c1 + "bl" + i + "" + c2 + "blah";
+    }    
 
     @Test
     public void testEmptyIterator() {
