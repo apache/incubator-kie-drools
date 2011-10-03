@@ -1,6 +1,6 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,13 +42,19 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class PersistentStatefulSessionTest extends JbpmTestCase {
 
-    PoolingDataSource ds1;
+    private PoolingDataSource ds1;
+    private EntityManagerFactory emf;
+    private Environment env;
 
     @Override
     protected void setUp() throws Exception {
         ds1 = setupPoolingDataSource();
         
         ds1.init();
+        
+        env = KnowledgeBaseFactory.newEnvironment();
+        emf = Persistence.createEntityManagerFactory( JBPM_PERSISTENCE_UNIT_NAME );
+        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
     }
 
     @Override
@@ -79,10 +85,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
@@ -127,10 +129,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
@@ -139,12 +137,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         ut.begin();
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         ut.commit();
-
-        //      EntityManager em = emf.createEntityManager();
-        //      SessionInfo sInfo = em.find( SessionInfo.class, 1 );
-        //      assertNotNull( sInfo );
-        //      //System.out.println( "session creation : " + sInfo.getVersion() );
-        //      em.close();
 
         List<?> list = new ArrayList<Object>();
 
@@ -156,7 +148,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         ksession.insert( 1 );
         ksession.insert( 2 );
         ut.commit();
-//
+
         // insert and rollback
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
@@ -171,7 +163,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         assertEquals( 2,
                       list.size() );
 
-//        // insert and commit
+        // insert and commit
         ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
         ut.begin();
         ksession.insert( 3 );
@@ -212,14 +204,10 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        int origNumObjects = ksession.getObjects().size();
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
@@ -265,7 +253,7 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
-        assertEquals( 1,
+        assertEquals( origNumObjects + 1,
                       ksession.getObjects().size() );
         for ( Object o : ksession.getObjects() ) {
             System.out.println( o );
@@ -280,11 +268,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
                       ResourceType.DRF );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
 
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
@@ -350,11 +333,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
@@ -371,9 +349,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );        
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
@@ -405,9 +380,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );        
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
@@ -436,11 +408,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
                       ResourceType.DRF );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
 
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
@@ -484,11 +451,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
                       ResourceType.DRF );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
 
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
@@ -573,11 +535,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         int id = ksession.getId();
         
@@ -623,10 +580,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
 
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
 
@@ -692,10 +645,6 @@ public class PersistentStatefulSessionTest extends JbpmTestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  TransactionManagerServices.getTransactionManager() );
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );

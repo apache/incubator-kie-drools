@@ -1,6 +1,6 @@
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,7 +70,7 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         ds1 = setupPoolingDataSource();
         
         ds1.init();
-        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
+        emf = Persistence.createEntityManagerFactory( JBPM_PERSISTENCE_UNIT_NAME );
     }
 
     protected void tearDown() {
@@ -490,35 +490,43 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         process.setId( "org.drools.test.TestProcess" );
         process.setName( "TestProcess" );
         process.setPackageName( "org.drools.test" );
+        
         StartNode start = new StartNode();
         start.setId( 1 );
         start.setName( "Start" );
         process.addNode( start );
+        
         ActionNode actionNode = new ActionNode();
         actionNode.setId( 2 );
         actionNode.setName( "Action" );
+        
         DroolsConsequenceAction action = new DroolsConsequenceAction();
         action.setDialect( "java" );
         action.setConsequence( "System.out.println(\"Executed action\");" );
         actionNode.setAction( action );
         process.addNode( actionNode );
+        
         new ConnectionImpl( start,
                             Node.CONNECTION_DEFAULT_TYPE,
                             actionNode,
                             Node.CONNECTION_DEFAULT_TYPE );
+        
         SubProcessNode subProcessNode = new SubProcessNode();
         subProcessNode.setId( 3 );
         subProcessNode.setName( "SubProcess" );
         subProcessNode.setProcessId( "org.drools.test.SubProcess" );
         process.addNode( subProcessNode );
+        
         new ConnectionImpl( actionNode,
                             Node.CONNECTION_DEFAULT_TYPE,
                             subProcessNode,
                             Node.CONNECTION_DEFAULT_TYPE );
+        
         EndNode end = new EndNode();
         end.setId( 4 );
         end.setName( "End" );
         process.addNode( end );
+        
         new ConnectionImpl( subProcessNode,
                             Node.CONNECTION_DEFAULT_TYPE,
                             end,
@@ -533,37 +541,46 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         process.setId( "org.drools.test.SubProcess" );
         process.setName( "SubProcess" );
         process.setPackageName( "org.drools.test" );
+        
         start = new StartNode();
         start.setId( 1 );
         start.setName( "Start" );
         process.addNode( start );
+        
         actionNode = new ActionNode();
         actionNode.setId( 2 );
         actionNode.setName( "Action" );
+        
         action = new DroolsConsequenceAction();
         action.setDialect( "java" );
         action.setConsequence( "System.out.println(\"Executed action\");" );
         actionNode.setAction( action );
         process.addNode( actionNode );
+        
         new ConnectionImpl( start,
                             Node.CONNECTION_DEFAULT_TYPE,
                             actionNode,
                             Node.CONNECTION_DEFAULT_TYPE );
+        
         WorkItemNode workItemNode = new WorkItemNode();
         workItemNode.setId( 3 );
         workItemNode.setName( "WorkItem1" );
+        
         Work work = new WorkImpl();
         work.setName( "MyWork" );
         workItemNode.setWork( work );
         process.addNode( workItemNode );
+        
         new ConnectionImpl( actionNode,
                             Node.CONNECTION_DEFAULT_TYPE,
                             workItemNode,
                             Node.CONNECTION_DEFAULT_TYPE );
+        
         end = new EndNode();
         end.setId( 6 );
         end.setName( "End" );
         process.addNode( end );
+        
         new ConnectionImpl( workItemNode,
                             Node.CONNECTION_DEFAULT_TYPE,
                             end,
