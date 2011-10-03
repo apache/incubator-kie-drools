@@ -241,13 +241,13 @@ public class InvokerGenerator {
     }
 
     public static abstract class EvaluateMethod extends ClassGenerator.MethodBody {
-        protected int offset;
+        protected int objAstorePos;
 
         protected int[] parseDeclarations(Declaration[] declarations, String[] declarationTypes, int declarReg, int tupleReg, int wmReg, boolean readLocalsFromTuple) {
             int[] declarationsParamsPos = new int[declarations.length];
             // DeclarationTypes[i] value[i] = (DeclarationTypes[i])localDeclarations[i].getValue((InternalWorkingMemory)workingMemory, object);
             for (int i = 0; i < declarations.length; i++) {
-                declarationsParamsPos[i] = offset;
+                declarationsParamsPos[i] = objAstorePos;
                 mv.visitVarInsn(ALOAD, declarReg); // declarations
                 push(i);
                 mv.visitInsn(AALOAD);  // declarations[i]
@@ -270,7 +270,7 @@ public class InvokerGenerator {
                 String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
                 mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
                 if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                offset += store(offset, declarationTypes[i]); // obj[i]
+                objAstorePos += store(objAstorePos, declarationTypes[i]); // obj[i]
             }
             return declarationsParamsPos;
         }
@@ -284,8 +284,30 @@ public class InvokerGenerator {
                 methodDescr.append(typeDescr(globalTypes[i]));
             }
         }
+        
+        protected LeftTuple traverseTuplesUntilDeclaration(LeftTuple currentLeftTuple,
+                                                           int declarIndex, 
+                                                           int declarOffset,
+                                                           int declarReg, 
+                                                           int tupleReg, int declarOffsetReg) {           
+            mv.visitVarInsn(ALOAD, declarReg); // declarations
+            push(declarIndex);            
+            mv.visitInsn(AALOAD); // declarations[i] (i == declarIndex)
+            invokeVirtual(Declaration.class, "getPattern", Pattern.class);
+            invokeVirtual(Pattern.class, "getOffset", Integer.TYPE); // declarations[i].getPattern().getOffset()
+            mv.visitVarInsn(ISTORE, declarOffsetReg); // declarations[i].getPattern().getOffset()
 
-        protected void traverseTuplesUntilDeclaration(int declarIndex, int declarReg, int tupleReg, int declarOffsetReg) {
+            while( currentLeftTuple.getIndex() > declarOffset ) {
+                mv.visitVarInsn(ALOAD, tupleReg);
+                invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
+                mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()   
+                currentLeftTuple = currentLeftTuple.getParent();
+            }
+            
+            return currentLeftTuple;
+        }   
+        
+        protected void traverseTuplesUntilDeclarationWithOr(int declarIndex, int declarReg, int tupleReg, int declarOffsetReg) {
             mv.visitVarInsn(ALOAD, declarReg);
             push(declarIndex);
             mv.visitInsn(AALOAD); // declarations[i]
@@ -306,7 +328,7 @@ public class InvokerGenerator {
             mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
             mv.visitJumpInsn(GOTO, whileStart);
             mv.visitLabel(whileExit);
-        }
+        }         
 
         protected void storeObjectFromDeclaration(Declaration declaration, String declarationType) {
             String readMethod = declaration.getNativeReadMethod().getName();
@@ -314,7 +336,7 @@ public class InvokerGenerator {
             String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
             mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
             if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationType));
-            offset += store(offset, declarationType); // obj[i]
+            objAstorePos += store(objAstorePos, declarationType); // obj[i]
         }
     }
 }

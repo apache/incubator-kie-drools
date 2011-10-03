@@ -43,7 +43,7 @@ public class EvalGenerator extends InvokerGenerator {
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
         ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new InvokerGenerator.EvaluateMethod() {
             public void body(MethodVisitor mv) {
-                offset = 7;
+                objAstorePos = 7;
 
                 int[] declarationsParamsPos = new int[declarations.length];
 
@@ -51,11 +51,12 @@ public class EvalGenerator extends InvokerGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 5); // LeftTuple
 
+                LeftTuple currentLeftTuple = leftTuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
                     int i = matcher.getOriginalIndex();
-                    declarationsParamsPos[i] = offset;
+                    declarationsParamsPos[i] = objAstorePos;
 
-                    traverseTuplesUntilDeclaration(i, 2, 5, 6);
+                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, i, matcher.getRootDistance(), 2, 5, 6);                    
 
                     mv.visitVarInsn(ALOAD, 2);
                     push(i);
