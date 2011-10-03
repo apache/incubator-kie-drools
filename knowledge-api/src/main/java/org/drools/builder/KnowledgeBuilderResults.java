@@ -17,10 +17,11 @@ package org.drools.builder;
 
 import java.util.Collection;
 
-
 /**
- *
+ * A typed collection for knowledge builder results.
  */
-public interface KnowledgeBuilderProblems extends Collection<KnowledgeBuilderProblem> {
+public interface KnowledgeBuilderResults
+    extends
+    Collection<KnowledgeBuilderResult> {
 
 }

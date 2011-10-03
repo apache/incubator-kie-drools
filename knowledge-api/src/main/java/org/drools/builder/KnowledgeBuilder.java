@@ -180,19 +180,19 @@ public interface KnowledgeBuilder
     KnowledgeBuilderErrors getErrors();
     
     /**
-     * Return problems of the types supplied as parameters that occured during the build process.
+     * Return the knowledge builder results for the listed severities.
      * 
-     * @param problemTypes
+     * @param severities
      * @return
      */
-    KnowledgeBuilderProblems getProblems(ProblemSeverity...problemTypes );
+    KnowledgeBuilderResults getResults(ResultSeverity...severities );
     
         
     /**
-     * Checks if the builder encountered any problems of the type supplied.
-     * @param problemTypes
+     * Checks if the builder generated any results of the listed severities
+     * @param severities
      * @return
      */
-    boolean hasProblems(ProblemSeverity...problemTypes); 
+    boolean hasResults(ResultSeverity...severities ); 
 
 }

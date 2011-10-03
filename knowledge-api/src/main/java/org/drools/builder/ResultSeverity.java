@@ -17,27 +17,12 @@ package org.drools.builder;
 
 
 /**
+ * An enum of the available problem types
  *
  */
-public interface KnowledgeBuilderProblem {
-    
-    /**
-     * Returns the problem severity
-     * @return
-     */
-    ProblemSeverity getProblemSeverity();
-    
-    /**
-     * Returns the error message
-     */
-    String getMessage();
-
-    /**
-     * Returns the lines of the error in the source file
-     * @return
-     */
-    int[] getErrorLines();
-    
-    
+public enum ResultSeverity {
+    ERROR,
+    WARNING,
+    INFO
 
 }
