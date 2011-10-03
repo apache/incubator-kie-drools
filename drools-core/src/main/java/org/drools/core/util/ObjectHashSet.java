@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
+
 public class ObjectHashSet extends AbstractHashTable {
 
     private static final long serialVersionUID = 510l;
@@ -68,7 +70,7 @@ public class ObjectHashSet extends AbstractHashTable {
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
             while ( current != null ) {
-                if ( hashCode == current.hashCode && this.comparator.equal( value,
+                if ( hashCode == current.cachedHashCode && this.comparator.equal( value,
                                                                             current.value ) ) {
                     final Object oldValue = current.value;
                     current.value = value;
@@ -97,7 +99,7 @@ public class ObjectHashSet extends AbstractHashTable {
 
         ObjectEntry current = (ObjectEntry) this.table[index];
         while ( current != null ) {
-            if ( hashCode == current.hashCode && this.comparator.equal( value,
+            if ( hashCode == current.cachedHashCode && this.comparator.equal( value,
                                                                         current.value ) ) {
                 return true;
             }
@@ -115,7 +117,7 @@ public class ObjectHashSet extends AbstractHashTable {
         ObjectEntry current = previous;
         while ( current != null ) {
             final ObjectEntry next = (ObjectEntry) current.getNext();
-            if ( hashCode == current.hashCode && this.comparator.equal( value,
+            if ( hashCode == current.cachedHashCode && this.comparator.equal( value,
                                                                         current.value ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
@@ -148,6 +150,13 @@ public class ObjectHashSet extends AbstractHashTable {
         }
         return objects;
     }
+    
+
+    @Override
+    public int getResizeHashcode(Entry entry) {
+        // ObjectEntry always caches after rehash, so use the cached value
+        return ((ObjectEntry)entry).cachedHashCode;
+    }        
 
     public static class ObjectEntry
         implements
@@ -158,7 +167,7 @@ public class ObjectHashSet extends AbstractHashTable {
 
         private Object            value;
 
-        private int               hashCode;
+        private int               cachedHashCode;
 
         private Entry             next;
 
@@ -169,18 +178,18 @@ public class ObjectHashSet extends AbstractHashTable {
         public ObjectEntry(final Object value,
                            final int hashCode) {
             this.value = value;
-            this.hashCode = hashCode;
+            this.cachedHashCode = hashCode;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             value   = in.readObject();
-            hashCode    = in.readInt();
+            cachedHashCode    = in.readInt();
             next    = (Entry)in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(value);
-            out.writeInt(hashCode);
+            out.writeInt(cachedHashCode);
             out.writeObject(next);
         }
         public Object getValue() {
@@ -196,7 +205,7 @@ public class ObjectHashSet extends AbstractHashTable {
         }
 
         public int hashCode() {
-            return this.hashCode;
+            return this.cachedHashCode;
         }
 
         public boolean equals(final Object object) {

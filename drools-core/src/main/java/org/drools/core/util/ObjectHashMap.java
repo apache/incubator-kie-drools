@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import org.drools.FactHandle;
+import org.drools.common.InternalFactHandle;
+
 public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
     private static final long serialVersionUID = 510l;
@@ -70,7 +73,7 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         if ( checkExists ) {
             ObjectEntry current = (ObjectEntry) this.table[index];
             while ( current != null ) {
-                if ( hashCode == current.hashCode && this.comparator.equal( key,
+                if ( hashCode == current.cachedHashCode && this.comparator.equal( key,
                                                                             current.key ) ) {
                     final Object oldValue = current.value;
                     current.value = value;
@@ -100,7 +103,7 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
         ObjectEntry current = (ObjectEntry) this.table[index];
         while ( current != null ) {
-            if ( hashCode == current.hashCode && this.comparator.equal( key,
+            if ( hashCode == current.cachedHashCode && this.comparator.equal( key,
                                                                         current.key ) ) {
                 return current.value;
             }
@@ -118,7 +121,7 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         ObjectEntry current = previous;
         while ( current != null ) {
             final ObjectEntry next = (ObjectEntry) current.getNext();
-            if ( hashCode == current.hashCode && this.comparator.equal( key,
+            if ( hashCode == current.cachedHashCode && this.comparator.equal( key,
                                                                         current.key ) ) {
                 if ( previous == current ) {
                     this.table[index] = next;
@@ -143,6 +146,12 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         return this.table[index];
     }
 
+    @Override
+    public int getResizeHashcode(Entry entry) {
+        // ObjectEntry always caches after rehash, so use the cached value
+        return ((ObjectEntry)entry).cachedHashCode;
+    }    
+    
     public static class ObjectEntry
         implements
         Entry,
@@ -154,7 +163,7 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
         private Object            value;
 
-        private int               hashCode;
+        private int               cachedHashCode;
 
         private Entry             next;
 
@@ -164,23 +173,23 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
 
         public ObjectEntry(final Object key,
                            final Object value,
-                           final int hashCode) {
+                           final int cachedHashCode) {
             this.key = key;
             this.value = value;
-            this.hashCode = hashCode;
+            this.cachedHashCode = cachedHashCode;
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             key = in.readObject();
             value   = in.readObject();
-            hashCode    = in.readInt();
+            cachedHashCode    = in.readInt();
             next    = (Entry)in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject(key);
             out.writeObject(value);
-            out.writeInt(hashCode);
+            out.writeInt(cachedHashCode);
             out.writeObject(next);
         }
 
@@ -201,7 +210,7 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         }
 
         public int hashCode() {
-            return this.hashCode;
+            return key.hashCode();
         }
 
         public boolean equals(final Object object) {
@@ -215,4 +224,5 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
             return this.key.equals( other.key ) && this.value.equals( other.value );
         }
     }
+
 }
