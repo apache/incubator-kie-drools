@@ -19,7 +19,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
-public class AsmGeneratorrTest {
+public class AsmGeneratorTest {
      
     @Test
     public void testPatterDeclarations() {
