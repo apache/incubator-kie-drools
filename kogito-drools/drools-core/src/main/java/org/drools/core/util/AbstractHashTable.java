@@ -127,8 +127,7 @@ public abstract class AbstractHashTable
             Entry next = null;
             while ( entry != null ) {
                 next = entry.getNext();
-                
-                
+                                
                 // we must use getResizeHashcode as some sub classes cache the hashcode and some don't
                 // otherwise we end up rehashing a cached hashcode that has already been rehashed.
                 final int index = indexOf(  getResizeHashcode( entry ),
