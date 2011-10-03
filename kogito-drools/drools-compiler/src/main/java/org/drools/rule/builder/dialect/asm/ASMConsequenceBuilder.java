@@ -33,8 +33,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
                 invokeInterface(KnowledgeHelper.class, "getTuple", Tuple.class);
-                invokeInterface(Tuple.class, "toFactHandles", InternalFactHandle[].class);
-                mv.visitVarInsn(ASTORE, 3); // InternalFactHandle[]
+                mv.visitVarInsn(ASTORE, 3);
 
                 // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getActivation().getTuple().getLeftTupleSink()).getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
@@ -45,8 +44,11 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 invokeVirtual(RuleTerminalNode.class, "getDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
-                Boolean[] notPatterns = (Boolean[])consequenceContext.get("notPatterns");
-                String[] declarationTypes = data.getDeclarationTypes();
+                final String[] declarationTypes = data.getDeclarationTypes();
+                final String[] globals = data.getGlobals();
+                final String[] globalTypes = data.getGlobalTypes();
+                final Boolean[] notPatterns = (Boolean[])consequenceContext.get("notPatterns");
+
                 int[] paramsPos = new int[declarations.length];
                 int offset = 5;
                 for (int i = 0; i < declarations.length; i++) {
@@ -54,44 +56,36 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     int objPos = ++offset;
                     paramsPos[i] = factPos;
 
-                    // InternalFactHandle fact[i] = handles[declaration[i].getPattern().getOffset()];
-                    mv.visitVarInsn(ALOAD, 3); // InternalFactHandle[]
+                    // InternalFactHandle fact[i] = tuple.get(declarations[i]);
+                    mv.visitVarInsn(ALOAD, 3); // org.drools.spi.Tuple
                     mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
-                    invokeVirtual(Declaration.class, "getPattern", Pattern.class);
-                    invokeVirtual(Pattern.class, "getOffset", Integer.TYPE);
-                    mv.visitInsn(AALOAD); // handles[declaration[i].getPattern().getOffset()]
+                    invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
                     mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
-                    if (notPatterns[i]) {
-                        // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
-                        mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
-                        push(i); // i
-                        mv.visitInsn(AALOAD); // declarations[i]
-                        mv.visitVarInsn(ALOAD, 2); // WorkingMemory
-                        cast(InternalWorkingMemory.class);
-                        mv.visitVarInsn(ALOAD, factPos); // fact[i]
-                        invokeInterface(InternalFactHandle.class, "getObject", Object.class);
-                        String readMethod = declarations[i].getNativeReadMethod().getName();
-                        boolean isObject = readMethod.equals("getValue");
-                        String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
-                        mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
-                        if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                        offset += store(objPos, declarationTypes[i]); // obj[i]
+                    // declarations[i].getValue((org.drools.common.InternalWorkingMemory)workingMemory, fact[i].getObject() );
+                    mv.visitVarInsn(ALOAD, 4); // org.drools.rule.Declaration[]
+                    push(i); // i
+                    mv.visitInsn(AALOAD); // declarations[i]
+                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
+                    cast(InternalWorkingMemory.class);
+                    mv.visitVarInsn(ALOAD, factPos); // fact[i]
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
+                    String readMethod = declarations[i].getNativeReadMethod().getName();
+                    boolean isObject = readMethod.equals("getValue");
+                    String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationTypes[i]);
+                    mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
+                    if (isObject) mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
+                    offset += store(objPos, declarationTypes[i]); // obj[i]
 
-                        // fact[i] = (org.drools.common.InternalFactHandle) knowledgeHelper.getWorkingMemory().getFactHandle(obj);
+                    if (notPatterns[i]) {
                         mv.visitVarInsn(ALOAD, 1);
                         invokeInterface(KnowledgeHelper.class, "getWorkingMemory", WorkingMemory.class);
                         loadAsObject(objPos);
                         invokeInterface(WorkingMemory.class, "getFactHandle", FactHandle.class, Object.class);
                         cast(InternalFactHandle.class);
                         mv.visitVarInsn(ASTORE, factPos);
-                    } else {
-                        mv.visitVarInsn(ALOAD, factPos); // fact[i]
-                        invokeInterface(InternalFactHandle.class, "getObject", Object.class);
-                        mv.visitTypeInsn(CHECKCAST, internalName(declarationTypes[i]));
-                        offset += store(objPos, declarationTypes[i]); // obj[i]
                     }
                 }
 
@@ -105,7 +99,13 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );
-                parseGlobals(data.getGlobals(), data.getGlobalTypes(), 2, consequenceMethodDescr);
+                for (int i = 0; i < globals.length; i++) {
+                    mv.visitVarInsn(ALOAD, 2); // WorkingMemory
+                    push(globals[i]);
+                    invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
+                    mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
+                    consequenceMethodDescr.append(typeDescr(globalTypes[i]));
+                }
 
                 consequenceMethodDescr.append(")V");
                 mv.visitMethodInsn(INVOKESTATIC, data.getInternalRuleClassName(), data.getMethodName(), consequenceMethodDescr.toString());
