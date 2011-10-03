@@ -52,14 +52,18 @@ public class EqualityAssertMapComparator
      */
     public boolean equal(final Object o1,
                          Object o2) {
+        if ( o1 == o2 ) {
+            return true;
+            
+        }
+        // o1 is a FactHandle, so just check their id's are the same
         if ( o1 instanceof FactHandle ) {
-            return o1 == o2;
+            return ((InternalFactHandle)o1).getId() == ((InternalFactHandle)o2).getId() ;
         }
 
+        // o1 is an object, so unwrap o2 for comparison
         final InternalFactHandle handle = ((InternalFactHandle) o2);
-
         o2 = handle.getObject();
-
         return o1 == o2 || o1.equals( o2 );
     }
 
