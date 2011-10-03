@@ -28,6 +28,7 @@ import org.drools.Cheese;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.common.DefaultFactHandle;
 import org.drools.common.EqualityAssertMapComparator;
 import org.drools.conf.AssertBehaviorOption;
 import org.drools.core.util.AbstractHashTable.EqualityEquals;
@@ -142,21 +143,84 @@ public class ObjectHashMapTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         
-        int length = 1 * 1000 * 1000 ;
+        int length = 1 * 300 * 1000 ;
         
         List<FactHandle> handles = new ArrayList<FactHandle>(1000);
+        List<String> objects = new ArrayList<String>(1000);
         for ( int i = 0; i < length; i++) { 
             String s = getPropertyName(i);
             FactHandle handle = ksession.insert( s );
+            objects.add( s );
             handles.add( handle );
         }
         
         for ( int i = 0; i < length; i++) { 
-            String s = getPropertyName(i);
+            String s = objects.get(i);
             FactHandle handle = handles.get( i );
+            assertEquals( s, ksession.getObject( handle ) );            
+            assertSame( handle, ksession.getFactHandle( s ) );
+            
+            // now check with disconnected facthandle
+            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
             assertEquals( s, ksession.getObject( handle ) );
         }
+        
+        for ( int i = 0; i < length; i++) { 
+            FactHandle handle = handles.get( i );         
+            
+            // now retract with disconnected facthandle
+            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            ksession.retract( handle );
+            assertEquals( length - i -1, ksession.getObjects().size() );
+            assertEquals( length - i -1, ksession.getFactHandles().size() );            
+        }        
+        
+        assertEquals( 0, ksession.getObjects().size() );
+        assertEquals( 0, ksession.getFactHandles().size() );        
     }
+    
+    @Test
+    public void testIdentityWithResize() {        
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( AssertBehaviorOption.IDENTITY );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        int length = 1 * 300 * 1000 ;
+        
+        List<FactHandle> handles = new ArrayList<FactHandle>(1000);
+        List<String> objects = new ArrayList<String>(1000);
+        for ( int i = 0; i < length; i++) { 
+            String s = getPropertyName(i);
+            FactHandle handle = ksession.insert( s );
+            objects.add( s );
+            handles.add( handle );
+        }
+        
+        for ( int i = 0; i < length; i++) { 
+            String s = objects.get(i);
+            FactHandle handle = handles.get( i );
+            assertEquals( s, ksession.getObject( handle ) );            
+            assertSame( handle, ksession.getFactHandle( s ) );
+            
+            // now check with disconnected facthandle
+            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            assertEquals( s, ksession.getObject( handle ) );            
+        }
+        
+        for ( int i = 0; i < length; i++) { 
+            FactHandle handle = handles.get( i );         
+            
+            // now retract with disconnected facthandle
+            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            ksession.retract( handle );
+            assertEquals( length - i -1, ksession.getObjects().size() );
+            assertEquals( length - i -1, ksession.getFactHandles().size() );            
+        }        
+        
+        assertEquals( 0, ksession.getObjects().size() );
+        assertEquals( 0, ksession.getFactHandles().size() );         
+    }    
     
     public String getPropertyName(int i) {
         char c1 = (char) (65+(i/3));
