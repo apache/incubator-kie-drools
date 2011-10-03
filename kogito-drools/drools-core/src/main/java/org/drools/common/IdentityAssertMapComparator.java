@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
@@ -40,11 +41,11 @@ public class IdentityAssertMapComparator
     }
 
     public int hashCodeOf(final Object obj) {
-        if (obj instanceof Entry)
-            return obj.hashCode();
-        if (obj instanceof InternalFactHandle)
-            return rehash(((InternalFactHandle)obj).getIdentityHashCode());
-        return rehash( System.identityHashCode( obj ) );
+        if (obj instanceof InternalFactHandle) {
+            return AbstractHashTable.rehash(((InternalFactHandle)obj).getIdentityHashCode());
+        } else {
+            return AbstractHashTable.rehash( System.identityHashCode( obj ) );
+        }
     }
 
     /**

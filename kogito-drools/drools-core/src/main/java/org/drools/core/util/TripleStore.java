@@ -218,6 +218,11 @@ public class TripleStore extends AbstractHashTable {
         return false;
     }
 
+    @Override
+    public int getResizeHashcode(Entry entry) {
+        // TripleStore never caches the hashcode, so it must be recomputed, which is also rehashed.
+        return this.comparator.hashCodeOf( entry );
+    }     
 
     @Override
     public Entry getBucket(Object object) {

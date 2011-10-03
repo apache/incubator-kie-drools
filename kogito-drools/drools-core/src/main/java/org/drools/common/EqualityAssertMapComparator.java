@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.FactHandle;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.AbstractHashTable.AbstractObjectComparator;
 
 public class EqualityAssertMapComparator
@@ -40,9 +41,9 @@ public class EqualityAssertMapComparator
 
     public int hashCodeOf(final Object obj) {
         if ( obj instanceof FactHandle ) {
-            return rehash( ((InternalFactHandle) obj).getObjectHashCode() );
+            return AbstractHashTable.rehash( ((InternalFactHandle) obj).getObjectHashCode() );
         }
-        return rehash( obj.hashCode() );
+        return AbstractHashTable.rehash( obj.hashCode() );
     }
 
     /**

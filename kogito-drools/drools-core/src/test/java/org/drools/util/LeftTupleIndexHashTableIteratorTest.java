@@ -186,6 +186,8 @@ public class LeftTupleIndexHashTableIteratorTest {
         assertEquals( 5,
                       list.size() );
 
+        // This tests the hashcode index allocation. If the rehash function (or any other way hashcodes are computed) changes, these numbers will change.
+        
         Object[] entries = (Object[]) list.get( 0 );
         assertEquals( 0,
                       entries[0] );
@@ -193,25 +195,25 @@ public class LeftTupleIndexHashTableIteratorTest {
                       entries.length );
 
         entries = (Object[]) list.get( 1 );
-        assertEquals( 67,
+        assertEquals( 102,
                       entries[0] );
-        assertEquals( 3,
+        assertEquals( 2,
                       entries.length );
 
         entries = (Object[]) list.get( 2 );
-        assertEquals( 84,
+        assertEquals( 103,
                       entries[0] );
         assertEquals( 2,
                       entries.length );
 
         entries = (Object[]) list.get( 3 );
-        assertEquals( 114,
+        assertEquals( 115,
                       entries[0] );
-        assertEquals( 2,
+        assertEquals( 3,
                       entries.length );
 
         entries = (Object[]) list.get( 4 );
-        assertEquals( 118,
+        assertEquals( 117,
                       entries[0] );
         assertEquals( 3,
                       entries.length );

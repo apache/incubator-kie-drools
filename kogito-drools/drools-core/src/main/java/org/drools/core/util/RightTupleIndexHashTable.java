@@ -145,6 +145,13 @@ public class RightTupleIndexHashTable extends AbstractHashTable
         return this.tupleValueFullIterator;
     }
     
+    @Override
+    public int getResizeHashcode(Entry entry) {
+        // Entry is always LeftTupleList which caches the hashcode, so just return it
+        return  entry.hashCode();
+    }    
+    
+    
     public FastIterator fastIterator() {
         return LinkedList.fastIterator;
     }
