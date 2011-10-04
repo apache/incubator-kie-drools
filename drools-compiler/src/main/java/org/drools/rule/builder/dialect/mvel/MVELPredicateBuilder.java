@@ -33,6 +33,8 @@ import org.drools.rule.builder.PredicateBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.KnowledgeHelper;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 public class MVELPredicateBuilder
     implements
     PredicateBuilder {
@@ -75,6 +77,7 @@ public class MVELPredicateBuilder
 
             expr.compile( data );
         } catch ( final Exception e ) {
+            copyErrorLocation(e, predicateDescr);
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           predicateDescr,
                                                           e,

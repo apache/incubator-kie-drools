@@ -13,6 +13,7 @@ import org.drools.commons.jci.readers.*;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.core.util.ClassUtils;
+import org.drools.lang.descr.BaseDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.dialect.java.*;
@@ -36,6 +37,7 @@ import org.drools.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.rule.builder.dialect.mvel.MVELConsequenceBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.spi.KnowledgeHelper;
+import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
@@ -665,6 +667,14 @@ public final class DialectUtil {
         Matcher m = LINE_BREAK_FINDER.matcher(chunk);
         while (m.find()) {
             consequence.append("\n");
+        }
+    }
+
+    public static void copyErrorLocation(Exception e, BaseDescr descr) {
+        if (e instanceof CompileException) {
+            CompileException compileException = (CompileException)e;
+            compileException.setLineNumber(descr.getLine());
+            compileException.setColumn(descr.getColumn());
         }
     }
 }

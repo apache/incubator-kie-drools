@@ -92,4 +92,11 @@ public class ConstraintConnectiveDescr extends BaseDescr {
         return "["+this.connective+" "+descrs+" ]";
     }
 
+    @Override
+    public void copyLocation(BaseDescr d) {
+        super.copyLocation(d);
+        if (descrs.size() == 1 && descrs.get(0) instanceof BindingDescr) {
+            descrs.get(0).copyLocation(d);
+        }
+    }
 }

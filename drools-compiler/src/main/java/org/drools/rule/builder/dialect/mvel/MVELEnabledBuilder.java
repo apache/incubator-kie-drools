@@ -20,6 +20,8 @@ import org.drools.rule.builder.EnabledBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.KnowledgeHelper;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 public class MVELEnabledBuilder
     implements
     EnabledBuilder {
@@ -76,6 +78,7 @@ public class MVELEnabledBuilder
 
             expr.compile( data );
         } catch ( final Exception e ) {
+            copyErrorLocation(e, context.getRuleDescr());
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,
