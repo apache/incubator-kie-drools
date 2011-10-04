@@ -1,5 +1,7 @@
 package org.drools.timer.integrationtests;
 
+import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,7 +26,10 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.map.impl.JpaBasedPersistenceTest;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -32,13 +37,18 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TimerAndCalendarTest {
+    private static Logger logger = LoggerFactory.getLogger(TimerAndCalendarTest.class);
+    
     private EntityManagerFactory emf;
 
     @Test
@@ -257,6 +267,11 @@ public class TimerAndCalendarTest {
         }
     }
 
+    @AfterClass
+    public static void compareMarshallingData() { 
+        MarshallingTestUtil.compareMarshallingDataFromTest(JpaBasedPersistenceTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
+    }
+    
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
@@ -300,7 +315,7 @@ public class TimerAndCalendarTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors != null && errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( "Error: " + error.getMessage() );
+                logger.error( "Error: " + error.getMessage() );
             }
             Assert.fail( "KnowledgeBase did not build" );
         }

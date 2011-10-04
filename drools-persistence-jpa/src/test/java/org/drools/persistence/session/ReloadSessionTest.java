@@ -18,10 +18,12 @@ package org.drools.persistence.session;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -33,6 +35,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.util.EntityManagerFactoryProxyFactory;
 import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.jpa.JPAKnowledgeService;
@@ -41,6 +44,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.testframework.TestingEventListener;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,7 +70,7 @@ public class ReloadSessionTest {
 
     @Before
     public void setup() {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, true);
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, false);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
@@ -78,7 +82,7 @@ public class ReloadSessionTest {
 
     @AfterClass
     public static void compareMarshalledData() { 
-//       PersistenceUtil.compareMarshallingDataFromTest(ReloadSessionTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
+       MarshallingTestUtil.compareMarshallingDataFromTest(ReloadSessionTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
     }
     
     private KnowledgeBase initializeKnowledgeBase(String rule) { 

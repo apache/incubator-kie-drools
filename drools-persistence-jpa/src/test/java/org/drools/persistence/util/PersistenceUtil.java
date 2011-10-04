@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
@@ -32,8 +31,7 @@ import javax.persistence.Persistence;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import org.drools.marshalling.util.MarshalledData;
-import org.drools.marshalling.util.MarshallingEntityManagerFactory;
+import org.drools.marshalling.util.EntityManagerFactoryProxyFactory;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
@@ -162,36 +160,6 @@ public class PersistenceUtil {
             
         }
         
-    }
-    
-    public static void compareMarshallingDataFromTest(Class testClass, String persistenceUnitName) { 
-        // Retrieve the test data
-        List<MarshalledData> testDataList = null;
-        HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, false);
-        try { 
-            EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
-            testDataList  = retrieveMarshallingData(testEMF);
-        }
-        finally { 
-           tearDown(testContext); 
-        }
-        assertNotNull("Not marshalled data found for " + testClass.getSimpleName(), 
-                testDataList != null && ! testDataList.isEmpty() );
-       
-        // Retrieve the base data
-        HashMap<String, Object> baseContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, true);
-        List<MarshalledData> baseDataList =  null;
-        try { 
-            EntityManagerFactory baseEMF = (EntityManagerFactory) baseContext.get(ENTITY_MANAGER_FACTORY);
-            baseDataList = retrieveMarshallingData(baseEMF);
-        }
-        finally {
-            tearDown(baseContext);
-        }
-        assertTrue("Not base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
-        
-        // Compare!
-        compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
     }
     
     /**

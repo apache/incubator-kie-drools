@@ -83,8 +83,6 @@ public class SessionInfo {
     @PreUpdate 
     public void update() {
         byte [] newRulesByteArray = this.helper.getSnapshot();
-        System.out.println("old: " + Arrays.hashCode(this.rulesByteArray));
-        System.out.println("new: " + Arrays.hashCode(newRulesByteArray));
         this.rulesByteArray  = newRulesByteArray;
     }
 

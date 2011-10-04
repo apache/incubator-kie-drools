@@ -23,12 +23,17 @@ import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.FireAllRulesInterceptor;
 import org.drools.command.impl.LoggingInterceptor;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.map.impl.JpaBasedPersistenceTest;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +54,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
         
         env = KnowledgeBaseFactory.newEnvironment();
         env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
+        env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
         env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
     }
 
@@ -60,6 +64,11 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
         emf.close();
     }
 
+    @AfterClass
+    public static void compareMarshallingData() { 
+        MarshallingTestUtil.compareMarshallingDataFromTest(JpaBasedPersistenceTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
+    }
+    
     public void testFactHandleSerialization() {
         String str = "";
         str += "package org.drools.test\n";

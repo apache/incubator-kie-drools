@@ -19,11 +19,15 @@ import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.io.impl.ClassPathResource;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.map.impl.JpaBasedPersistenceTest;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.InternalAgenda;
+import org.junit.AfterClass;
 
 import bitronix.tm.TransactionManagerServices;
 
@@ -42,6 +46,11 @@ public class RuleFlowGroupRollbackTest extends TestCase {
 		ds1.close();
 	}
 	
+    @AfterClass
+    public static void compareMarshallingData() { 
+        MarshallingTestUtil.compareMarshallingDataFromTest(JpaBasedPersistenceTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
+    }
+    
 	public void testRuleFlowGroupRollback() throws Exception {
 		
 		CommandBasedStatefulKnowledgeSession ksession = createSession();

@@ -1,7 +1,10 @@
 package org.drools.marshalling.util;
 
+import static org.drools.marshalling.util.CompareViaReflectionUtil.compareInstances;
+import static org.junit.Assert.*;
 import static java.lang.System.out;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -10,6 +13,8 @@ import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.AbstractQueue;
 import java.util.AbstractSet;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,61 +37,14 @@ import org.drools.time.impl.TrackableTimeJobFactoryManager;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CompareViaReflectionUtil {
 
-    @Test
-    @Ignore
-    public void scratch() throws Exception { 
-        out.println( "Class: " + GroupElement.AND.getClass() );
-        out.println( "Dec Class: " + GroupElement.AND.getDeclaringClass() );
-        out.println( "Enc Class: " + GroupElement.AND.getClass().getEnclosingClass() );
-        out.println( "Package: " + GroupElement.AND.getClass().getPackage() );
+    private static Logger logger = LoggerFactory.getLogger(CompareViaReflectionUtil.class);
+    
 
-        Object obj = GroupElement.AND;
-        Class superClass = obj.getClass().getSuperclass();
-        while( superClass != null ) { 
-            out.println( "Super: " + superClass );
-            superClass = superClass.getSuperclass(); 
-        }
-
-        out.println( "== :" + (GroupElement.AND == GroupElement.EXISTS) );
-        out.println( "equals :" + (GroupElement.AND.equals(GroupElement.EXISTS)) );
-        out.println( "== :" + (GroupElement.AND.equals(GroupElement.AND)) );
-        out.println( "equals :" + (GroupElement.AND.equals(GroupElement.AND)) );
-        out.println( "== :" + (GroupElement.EXISTS.equals(GroupElement.EXISTS)) );
-        out.println( "equals :" + (GroupElement.EXISTS.equals(GroupElement.EXISTS)) );
-    }
-
-    @Test
-    public void testThisClass() throws Exception { 
-
-        StatefulKnowledgeSession ksessionA = null;
-        {
-            KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            config.setOption( EventProcessingOption.STREAM );
-            KnowledgeBase knowledgeBaseA = KnowledgeBaseFactory.newKnowledgeBase( config );
-            KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-            ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
-            ksessionA = knowledgeBaseA.newStatefulKnowledgeSession(ksconf, null);
-        }
-
-        StatefulKnowledgeSession ksessionB = null;
-        {
-            KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(); 
-            config.setOption( EventProcessingOption.STREAM );
-            KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( config );
-            KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
-            ((SessionConfiguration) ksconf).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager( ) );
-            ksessionB = knowledgeBase.newStatefulKnowledgeSession(ksconf, null);
-        }
-
-
-        Assert.assertTrue(CompareViaReflectionUtil.class.getSimpleName() + " is broken!", 
-                compareInstances(null, ksessionA, ksessionB) );
-    }
 
     public static HashSet<Object> seenObjects = new HashSet<Object>();
     private static Class<?> OBJECT_ARRAY_CLASS = (new Object[0]).getClass();
@@ -114,7 +72,64 @@ public class CompareViaReflectionUtil {
         // droolsCollectionClasses.add(
     }
 
-    public static boolean compareInstances(DebugContext context, Object objA, Object objB  ) { 
+    /**
+     * This method compares two objects recursively. 
+     * @see #compareInstances(DebugContext, Object, Object)
+     * @param objA The object to be compared to objB.
+     * @param objB The object to be compared to objA. 
+     * @return Whether or not the two objects are equal.
+     */
+    public static boolean compareInstances(Object objA, Object objB  ) { 
+       return compareInstances(null, objA, objB); 
+    }
+    
+    /**
+     * A Java object basically consists (or can consist) of 3 things: <ol>
+     * <li>Methods, if present</li>
+     * <li>Fields (attributes) which contain other Java objects</li>
+     * <li>Fields which contain primitives or primitive based objects (int, Integer, String, etc.)</li>
+     * <li>Fields which contain arrays, Java collection objects (byte [], Set, HashMap, LinkedBlockingQueue, etc..)</li>
+     * </ol>
+     * This means, that when we compare two instantiations of the same class, we can do it as follows:<ul>
+     * <li>Methods:
+     *     <ul><li>We don't have to compare methods, since those don't have any "state".</li></ul>
+     *  </li><li>Objects:
+     *     <ul><li>Comparing fields containing other Java objects (that are don't belong to a java.* package) is simply a recursive operation.</li></ul>
+     * </li><li>Primitive based:
+     *     <ul><li>Comparing primitive or primitive based objects can be done using <pre>objA.equals(objB)</pre></li></ul>
+     * </li><li>Arrays:
+     *     <ul><li>We iterate through the array and compare elements to each other recursively.</li></ul>
+     * </li><li>Collections:
+     *      <ul>
+     *      <li>Fields containing collection objects end up having one of two methods:<ul>
+     *          <li>toArray(), which returns an Object&lt;?&gt; []</li>
+     *          <li>entrySet(), which returns a Set&lt;Map.Entry&lt;K, V&gt;&gt; object</li>
+     *          </ul></li>
+     *      </ul>
+     * </ul>
+     * And that is exactly what we do in this method! We recursively step through the object tree which 
+     * has as it's root node, the class defined by the initial objects given to this method.<br/>
+     * <br/>
+     * <b>Note</b>: This method as a few weaknesses:<ul>
+     * <li>If the object tree contains objects that extend collection objects (HashMap, List, etc.), this method might not compare them 
+     * correctly or efficiently. The logic to do this fairly trivial but just hasn't been added yet.</li>
+     * <li>If the object tree contains objects that are "home made" collection objects, this method might
+     * also not compare these correctly or efficiently. The logic to do this is non-trivial and to some degree 
+     * dependent on how the objects are implemented and what type of access is given to the data in the object.</li>
+     * </ul>
+     * One last thing to remember here is the following issue:<ul>
+     * <li>Due to how some objects are created, it's possible that the object tree of objA and object tree of objB
+     * contain the <i>same</i> object instantiation. This will mostly be the result of a static object being used
+     * during the the initialization of the objects. But this is nonetheless wierd, because I don't expect this.  
+     * </li><li>When this happens, we say that objA and objB are the same</li>
+     * </ul>
+     * </p>
+     * @param context This contains logging information (recursive level, position in object tree of objA/objB)
+     * @param objA The first instantiation to be compared.
+     * @param objB The first instantiation to be compared.
+     * @return Whether or not objA and objB are equal, given the criteria above. 
+     */
+    private static boolean compareInstances(DebugContext context, Object objA, Object objB  ) { 
         if( context == null ) { 
             context = new DebugContext(0, "", true);
         }
@@ -148,6 +163,9 @@ public class CompareViaReflectionUtil {
                 // OCRAM: Al die stomme drools impl's ook hier behandelen.. 
                 same = comparePrimitiveBasedOrCollectionInstances(context, objA, objB);
             }
+            else if( objA.getClass().isArray() ) { 
+                same = compareArrays(objA, objB);
+            }
             else {
                 // Check if it's an enum
                 Class<?> superClass = objClass.getSuperclass();
@@ -176,11 +194,106 @@ public class CompareViaReflectionUtil {
         }
 
         if( context.print ) { 
-            out.println( context.name );
+            logger.trace( context.name );
         }
         return same;
     }
 
+    public static boolean compareArrays(Object objA, Object objB) { 
+        
+        // Determine array type class
+        HashMap<Class<?>, Integer> arrClassMap = new HashMap<Class<?>, Integer>();
+        arrClassMap.put((new byte[0]).getClass(), BYTE);
+        arrClassMap.put((new short[0]).getClass(), SHORT);
+        arrClassMap.put((new int[0]).getClass(), INT);
+        arrClassMap.put((new long[0]).getClass(), LONG);
+        arrClassMap.put((new float[0]).getClass(), FLOAT);
+        arrClassMap.put((new double[0]).getClass(), DOUBLE);
+        arrClassMap.put((new boolean[0]).getClass(), BOOLEAN);
+        arrClassMap.put((new char[0]).getClass(), CHAR);
+        arrClassMap.put((new Object[0]).getClass(), OBJECT);
+
+        Object classTypeValue = arrClassMap.get(objA.getClass());
+        int classType = -1;
+        if( classTypeValue != null) { 
+            classType = (Integer) classTypeValue;
+        }
+        else if( objA.getClass().isArray() ) { 
+            classType = OBJECT;
+        }
+
+        // Check Sameness
+        boolean same = false;
+        switch(classType) { 
+        case BYTE:
+            same = Arrays.equals((byte []) objB,(byte [])objA);
+            break;
+        case SHORT:
+            same = Arrays.equals((short []) objB,(short [])objA);
+            break;
+        case INT:
+            same = Arrays.equals((int []) objB,(int [])objA);
+            break;
+        case LONG:
+            same = Arrays.equals((long []) objB,(long [])objA);
+            break;
+        case FLOAT:
+            same = Arrays.equals((float []) objB,(float [])objA);
+            break;
+        case DOUBLE:
+            same = Arrays.equals((double []) objB,(double [])objA);
+            break;
+        case BOOLEAN:
+            same = Arrays.equals((boolean []) objB,(boolean [])objA);
+            break;
+        case CHAR:
+            same = Arrays.equals((char []) objB,(char [])objA);
+            break;
+        case OBJECT:
+            int lengthA = Array.getLength(objA);
+            int lengthB = Array.getLength(objB);
+            if( lengthA != lengthB ) { 
+                same = false;
+            }
+            else if( lengthA == 0 ) { 
+                same = true;
+            }
+            else { 
+                same = true;
+                for( int i = 0; same && i < lengthA; ++i ) { 
+                    same = compareInstances(Array.get(objA, i), Array.get(objB, i));
+                }
+            }
+            break;
+        default: 
+            fail( "Unable to determine class of array [" +  classType + "]");
+        }
+
+        return same;
+    }
+
+    private final static int BYTE    = 0;
+    private final static int SHORT   = 1;
+    private final static int INT     = 2;
+    private final static int LONG    = 3;
+    private final static int FLOAT   = 4;
+    private final static int DOUBLE  = 5;
+    private final static int BOOLEAN = 6;
+    private final static int CHAR    = 7;
+    private final static int OBJECT    = 8;
+    
+    /**
+     * This method should be called when we've been able to ascertain (all) of the following:<ul>
+     * <li>Neither of the objects are null</li>
+     * <li>Both of the objects belong to the same class</li>
+     * </ul>
+     * In this method, we go through <i>all</i> fields of the object and compare them (recursively).
+     * <br/>
+     * @param context This contains logging information (recursive level, position in object tree of objA/objB)
+     * @param objA The first instantiation to be compared.
+     * @param objB The first instantiation to be compared.
+     * @return Whether or not objA and objB are equal.
+     */
     private static boolean compareInstancesOfSameClass(DebugContext context, Object objA, Object objB) { 
         boolean same = false;
         try { 
@@ -189,7 +302,8 @@ public class CompareViaReflectionUtil {
                 same = true;
             }
             else { 
-                for( int i = 0; i < fields.length; ++i ) { 
+                same = true;
+                for( int i = 0; same && i < fields.length; ++i ) { 
                     DebugContext subContext = context.clone();
                     subContext.level = context.level + 1;
                     subContext.name = context.name + ": " + fields[i].getName() + " > ";
@@ -209,6 +323,16 @@ public class CompareViaReflectionUtil {
         return same;
     }
 
+    /**
+     * Compare two objects which are all of the following: <ul>
+     * <li>A primitive or primitive based object</li>
+     * <li>A collection object</li>
+     * </ul>
+     * @param context This contains logging information (recursive level, position in object tree of objA/objB)
+     * @param objA The first instantiation to be compared.
+     * @param objB The first instantiation to be compared.
+     * @return Whether or not objA and objB are equal.
+     */
     private static boolean comparePrimitiveBasedOrCollectionInstances(DebugContext context, Object objA, Object objB) { 
         boolean same = false;
 
@@ -244,12 +368,14 @@ public class CompareViaReflectionUtil {
                     && objMethods[m].getReturnType().equals(OBJECT_ARRAY_CLASS) ) {
                 methods[TO_ARRAY] = objMethods[m];
                 methods[TO_ARRAY].setAccessible(true);
+                break;
             }
             else if(objMethods[m].getName().equals("entrySet") 
                     && objMethods[m].getParameterTypes().length == 0 
                     && objMethods[m].getReturnType().equals(Set.class) ) {
                 methods[ENTRY_SET] = objMethods[m];
                 methods[ENTRY_SET].setAccessible(true);
+                break;
             }
         }
         return methods;
@@ -287,31 +413,27 @@ public class CompareViaReflectionUtil {
             }
 
             // Check content
-            for( int a = 0; a < arrayA.length; ++a ) { 
+            for( int a = 0; same && a < arrayA.length; ++a ) { 
                 Object subObjA = arrayA[a];
-                boolean elementIsSame = false;
 
                 if( ! isSet ) { 
                     // order matters, compare element a from both arrays
                     Object subObjB = arrayB[a];
-                    elementIsSame = compareInstances(context, subObjA, subObjB);
+                    same = compareInstances(context, subObjA, subObjB);
                 }
                 else { 
                     // order doesn't matter, check if a matching element exists in arrayB
-                    for( int b = 0; b < arrayB.length; ++b ) { 
+                    boolean elementIsSame = false;
+                    for( int b = 0; ! elementIsSame && b < arrayB.length; ++b ) { 
                         Object subObjB = arrayB[b];
-                        if( elementIsSame = compareInstances(context, subObjA, subObjB) ) { 
-                            break;
-                        }
+                        elementIsSame = compareInstances(context, subObjA, subObjB);
+                    }
+                    if( elementIsSame == false ) { 
+                       same = false; 
                     }
                 } 
-                if( ! elementIsSame ) { 
-                    // a matching element was not found in arrayB
-                    same = false;
-                    break;
-                }
             }
-
+                
         }
 
         return same;
@@ -354,7 +476,7 @@ public class CompareViaReflectionUtil {
                     entryContext.name = name + "<key> ";
                     entryContext.print = false;
                     if( compareInstances(entryContext, keyA, keyB) ) { 
-                        out.println( entryContext.name );
+                        logger.trace( entryContext.name );
                         entryContext.name = name + "<entry> ";
                         entryContext.print = true;
                         elementIsSame = compareInstances(entryContext, entryA.getValue(), entryB.getValue());
