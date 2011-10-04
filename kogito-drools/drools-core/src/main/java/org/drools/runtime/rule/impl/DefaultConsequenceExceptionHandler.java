@@ -36,7 +36,7 @@ public class DefaultConsequenceExceptionHandler implements ConsequenceExceptionH
     public void handleException(Activation activation,
                                 WorkingMemory workingMemory,
                                 Exception exception) {
-        throw new org.drools.runtime.rule.ConsequenceException( exception, activation.getRule() );
+        throw new org.drools.runtime.rule.ConsequenceException(exception, workingMemory, activation );
     }
 
 }
