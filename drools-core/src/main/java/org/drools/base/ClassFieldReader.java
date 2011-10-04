@@ -16,7 +16,6 @@
 
 package org.drools.base;
 
-import java.beans.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -52,7 +51,7 @@ public class ClassFieldReader
     public ClassFieldReader(final String className,
                             final String fieldName) {
         this.className = className;
-        this.fieldName = Introspector.decapitalize(fieldName);
+        this.fieldName = fieldName;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

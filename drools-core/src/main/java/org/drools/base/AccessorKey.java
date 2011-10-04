@@ -16,7 +16,6 @@
 
 package org.drools.base;
 
-import java.beans.*;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -42,7 +41,7 @@ public class AccessorKey
                        AccessorType type) {
         super();
         this.className = className;
-        this.fieldName = Introspector.decapitalize(fieldName);
+        this.fieldName = fieldName;
 
         final int PRIME = 31;
         int result = 1;
