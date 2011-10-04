@@ -49,6 +49,8 @@ import org.drools.spi.Accumulator;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.KnowledgeHelper;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 /**
  * A builder for the java dialect accumulate version
  */
@@ -137,6 +139,7 @@ public class MVELAccumulateBuilder
 
             return accumulate;
         } catch ( Exception e ) {
+            copyErrorLocation(e, descr);
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           e,

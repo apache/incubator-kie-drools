@@ -20,6 +20,8 @@ import org.drools.spi.KnowledgeHelper;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 public class MVELConsequenceBuilder
     implements
     ConsequenceBuilder {
@@ -163,6 +165,7 @@ public class MVELConsequenceBuilder
             
             expr.compile( data );
         } catch ( final Exception e ) {
+            copyErrorLocation(e, context.getRuleDescr());
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,

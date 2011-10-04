@@ -40,6 +40,8 @@ import org.drools.rule.builder.FromBuilder;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.KnowledgeHelper;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 /**
  * A builder for "from" conditional element
  */
@@ -107,6 +109,7 @@ public class MVELFromBuilder
             
             dataProvider.compile( data );
         } catch ( final Exception e ) {
+            copyErrorLocation(e, fromDescr);
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           fromDescr,
                                                           null,

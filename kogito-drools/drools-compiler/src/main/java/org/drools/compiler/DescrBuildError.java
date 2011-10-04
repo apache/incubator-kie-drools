@@ -84,7 +84,7 @@ public class DescrBuildError extends DroolsError {
 
     public String toString() {
         final StringBuilder buf = new StringBuilder();
-        buf.append( this.message.replaceAll( "\\[Line: \\d+, Column: \\d+\\]", "[Line: "+this.getLine()+", Column: "+this.getColumn()+"]" ) );
+        buf.append( this.message );
         buf.append( " : " );
         buf.append( this.parentDescr );
         buf.append( "\n" );

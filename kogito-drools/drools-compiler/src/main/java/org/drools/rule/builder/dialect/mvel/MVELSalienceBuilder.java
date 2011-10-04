@@ -15,6 +15,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.SalienceBuilder;
 import org.drools.spi.KnowledgeHelper;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 public class MVELSalienceBuilder
     implements
     SalienceBuilder {
@@ -64,6 +66,7 @@ public class MVELSalienceBuilder
             
             expr.compile( data );
         } catch ( final Exception e ) {
+            copyErrorLocation(e, context.getRuleDescr());
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           context.getRuleDescr(),
                                                           null,

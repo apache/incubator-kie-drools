@@ -40,6 +40,8 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.util.PropertyTools;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 /**
  * Expression analyzer.
  */
@@ -110,6 +112,7 @@ public class MVELExprAnalyzer {
                                            parserContext1 );
             } catch ( Exception e ) {
                 BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
+                copyErrorLocation(e, context.getParentDescr());
                 context.getErrors().add( new DescrBuildError( base,
                                                               context.getParentDescr(),
                                                               null,
@@ -209,6 +212,7 @@ public class MVELExprAnalyzer {
                 // is this an error, or can we fall back to non-typesafe mode?
                 if ( typesafe ) {
                     BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
+                    copyErrorLocation(e, context.getParentDescr());
                     context.getErrors().add( new DescrBuildError( base,
                                                                   context.getParentDescr(),
                                                                   null,

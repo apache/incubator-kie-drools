@@ -84,6 +84,7 @@ import org.mvel2.ParserContext;
 import org.mvel2.compiler.AbstractParser;
 import org.mvel2.compiler.ExpressionCompiler;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 import static org.drools.rule.builder.dialect.DialectUtil.getUniqueLegalName;
 
 public class MVELDialect
@@ -463,6 +464,7 @@ public class MVELDialect
                                                  "drools",
                                                  KnowledgeHelper.class );
         } catch ( final Exception e ) {
+            copyErrorLocation(e, descr);
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           descr,
                                                           null,
