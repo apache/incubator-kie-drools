@@ -49,7 +49,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 
     @Override
     protected void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, true);
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
         
         env = KnowledgeBaseFactory.newEnvironment();

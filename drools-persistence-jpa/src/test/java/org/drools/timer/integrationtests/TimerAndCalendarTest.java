@@ -253,7 +253,7 @@ public class TimerAndCalendarTest {
 
     @Before
     public void setUp() throws Exception {
-        testContext = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME, true);
+        testContext = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) testContext.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
     }
 

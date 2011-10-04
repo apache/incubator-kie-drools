@@ -1,6 +1,23 @@
+/*
+ * Copyright 2011 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.marshalling.util;
 
+import static org.junit.Assert.*;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
+import static org.drools.marshalling.util.MarshallingDBUtil.*;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,8 +62,22 @@ public class MarshalledData {
     private static HashMap<String, AtomicInteger> testMethodSnapshotNumMap = new HashMap<String, AtomicInteger>();
     
     public MarshalledData(Object marshalledClassInstance) { 
-        
         this.testMethodName = getTestMethodName();
+        initializeObject(marshalledClassInstance);
+    }
+    
+    public MarshalledData(String testMethodName, Object marshalledClassInstance) { 
+        if( testMethodName != null ) { 
+            this.testMethodName = getTestMethodName();
+        }
+        else { 
+            this.testMethodName = testMethodName;
+        }
+        
+        initializeObject(marshalledClassInstance);
+    }
+    
+    private void initializeObject(Object marshalledClassInstance) { 
         // OCRAM: do snapshot numbers need to be specific to marshalled class type? 
         if( testMethodSnapshotNumMap.get(this.testMethodName) == null ) { 
             testMethodSnapshotNumMap.put(this.testMethodName, new AtomicInteger(-1));
@@ -56,29 +87,24 @@ public class MarshalledData {
         String className = marshalledClassInstance.getClass().getName();
         this.marshalledObjectClassName = className;
         
-        // OCRAM: use this.. (Workitem/ProcessInstance)
         if( className.equals(SessionInfo.class.getName()) ) { 
             SessionInfo sessionInfo = (SessionInfo) marshalledClassInstance;
             this.rulesByteArray = sessionInfo.getData();
-            
             this.marshalledObjectId = sessionInfo.getId().longValue();
         }
         else if( className.equals(WorkItemInfo.class.getName()) ) { 
            WorkItemInfo workItemInfo = (WorkItemInfo) marshalledClassInstance;
            this.rulesByteArray = workItemInfo.getWorkItemByteArray();
-     
            this.marshalledObjectId = workItemInfo.getId();
         }
-        else if( className.equals("org.jbpm.persistence.processinstance.ProcessInstanceInfo") ) { 
-            Class processInstanceInfoClass = null;
+        else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(className) ) { 
+            Class<?> processInstanceInfoClass = null;
             try {
-                processInstanceInfoClass = Class.forName(className);
-                Method getByteArrayMethod = processInstanceInfoClass.getMethod("getProcessInstanceByteArray", null);
-                Object byteArrayObject = getByteArrayMethod.invoke(marshalledClassInstance, null);
-                this.rulesByteArray = (byte []) byteArrayObject;
+                this.rulesByteArray = getProcessInstanceInfoByteArray(marshalledClassInstance);
                 
-                Method getIdMethod = processInstanceInfoClass.getMethod("getId", null);
-                Object idObject = getIdMethod.invoke(marshalledClassInstance, null);
+                processInstanceInfoClass = Class.forName(className);
+                Method getIdMethod = processInstanceInfoClass.getMethod("getId", (Class []) null);
+                Object idObject = getIdMethod.invoke(marshalledClassInstance, (Object []) null);
                 this.marshalledObjectId = (Long) idObject;
             } catch (Exception e) {
                 Assert.fail("Unable to retrieve marshalled data or id for " + className + " object: [" 
@@ -104,7 +130,7 @@ public class MarshalledData {
     }
     
     public String toString() { 
-        StringBuffer string = new StringBuffer();
+        StringBuilder string = new StringBuilder();
         string.append( (id != null ? id : "") + ":");
         if( rulesByteArray != null ) { 
             string.append(byteArrayHashCode(rulesByteArray));

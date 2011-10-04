@@ -32,6 +32,7 @@ import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 import org.drools.marshalling.util.EntityManagerFactoryProxyFactory;
+import org.drools.marshalling.util.MarshallingDBUtil;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
@@ -45,6 +46,9 @@ public class PersistenceUtil {
 
     private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
+    private static boolean TEST_MARSHALLING = true;
+    
+    // Persistence and data source constants
     public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
     public static final String JBPM_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
         
@@ -90,11 +94,17 @@ public class PersistenceUtil {
         if( testMarshalling ) {
             Class<?> testClass = null;
             StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-            try {
-                testClass = Class.forName(ste[2].getClassName());
-            } catch (ClassNotFoundException e) {
-                fail("Unable to resolve test class: " + e.getMessage());
-            }
+                // Sorry, I've always wanted to use a do/while loop.. :) 
+                int i = 1;
+                do { 
+                    try {
+                        testClass = Class.forName(ste[i++].getClassName());
+                    } catch (ClassNotFoundException e) {
+                        // do nothing.. 
+                    }
+                } while ( PersistenceUtil.class.equals(testClass) && i < ste.length );
+                assertNotNull("Unable to resolve test class!", testClass);
+                
             jdbcUrl = initializeTestDb(dsProps, testClass);
         }
         else { 
