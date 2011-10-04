@@ -563,6 +563,25 @@ public class MiscTest {
     }
 
     @Test
+    public void testVariableDeclaration() throws Exception {
+        String str = "rule KickOff\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "int i;\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+    }
+
+    @Test
     public void testMissingImport() throws Exception {
         String str = "";
         str += "package org.drools \n";
