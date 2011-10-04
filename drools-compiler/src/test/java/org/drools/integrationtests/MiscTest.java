@@ -32,6 +32,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -9206,6 +9207,21 @@ public class MiscTest {
         int rules = ksession.fireAllRules();
         assertEquals( 1,
                           rules );
+    }
+
+    @Test
+    public void testAddMissingResourceToPackageBuilder() throws Exception {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        try {
+            kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL);
+            fail("adding a missing resource should fail");
+        } catch (RuntimeException e) { }
+
+        try {
+            kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF);
+            fail("adding a missing resource should fail");
+        } catch (RuntimeException e) { }
     }
 
     @Test
