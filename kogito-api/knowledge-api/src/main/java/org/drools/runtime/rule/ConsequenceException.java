@@ -16,19 +16,59 @@
 
 package org.drools.runtime.rule;
 
+import java.io.PrintStream;
+import java.util.Collection;
+
 import org.drools.definition.rule.Rule;
 
 public class ConsequenceException extends RuntimeException {
-    private Rule rule;
+    private WorkingMemory workingMemory;
+    private Activation    activation;    
 
-    public ConsequenceException(final Throwable rootCause,
-                                final Rule rule) {
-        super( "rule: " + rule.getName() + "\n", rootCause );
-        this.rule = rule;
+    public ConsequenceException( final Throwable rootCause,
+                                 final WorkingMemory workingMemory,
+                                 final Activation activation ){
+        super( rootCause );
+        this.workingMemory = workingMemory;
+        this.activation = activation;
     }
 
-    public Rule getRule() {
-        return this.rule;
+    @Override
+    public String getMessage() {
+        StringBuilder sb = new StringBuilder( "Exception executing consequence for " );
+        Rule rule = null;
+        
+        if( activation != null && ( rule = activation.getRule() ) != null ){
+            String packageName = rule.getPackageName();
+            String ruleName = rule.getName();
+            sb.append( "rule \"" ).append( ruleName ).append( "\" in " ).append( packageName );
+        } else {
+            sb.append( "rule, name unknown" );
+        }
+        sb.append( ": " ).append( super.getMessage() );
+        return sb.toString();
+    }
+    
+    public Activation getActivation() {
+        return this.activation;
+    }
+    
+    public void printFacts(){
+        printFacts( System.err );
     }
 
+    public void  printFacts( PrintStream pStream ){
+        Collection< ? extends FactHandle> handles = activation.getFactHandles();
+        for( FactHandle handle: handles ) {
+            Object object = workingMemory.getObject( handle );
+            if( object != null ){
+                pStream.println( "   Fact " + object.getClass().getSimpleName() +
+                                 ": " + object.toString() );
+            }
+        }
+    }    
+
+    public String toString() {
+        return getMessage();
+    }    
 }
