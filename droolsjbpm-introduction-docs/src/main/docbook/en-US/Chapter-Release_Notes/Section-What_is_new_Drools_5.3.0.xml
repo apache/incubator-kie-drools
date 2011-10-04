@@ -1,0 +1,694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>What is New and Noteworthy in Drools 5.3.0</title>
+
+  <section>
+    <title>Drools Expert</title>
+
+    <section>
+      <title>Core and Compiler compatility will no longer be maintained</title>
+      <para>This is the last release where compatibility in core/compilier and other submodules will be maintained, as we refactor for cleanliness in the following releases. All developers should be using the knowledge-api.</para>
+    </section>
+
+    <section>
+      <title>Queries and Backward Chaining</title>
+
+      <para>Queries and Backward Chaining have had extensive bug fixing as it had many cases that didn't work,
+      especially with "open" queries. Anyone using backward chaining queries in 5.2 should stop straight away and start
+      using this.</para>
+    </section>
+
+    <section>
+      <title>Declarative Agenda</title>
+
+      <para>5.3 Introduces the declarative agenda, where rules can be used to control which rules can fire and when.
+      While this will add a lot more overhead than the simple use of salience, the advantage is it is declarative and
+      thus more readable and maintainable and should allow more use cases to be achieved in a simpler fashion.</para>
+
+      <para>This feature is off by default and must be explicitly enabled, that is because it is considered highly
+      experimental for the moment and will be subject to change.</para>
+
+      <example>
+        <title>Enabling the Declarative Agenda</title>
+
+        <programlisting>KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+kconf.setOption( DeclarativeAgendaOption.ENABLED );
+KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(  kconf );</programlisting>
+      </example>
+
+      <para>The basic idea is:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>All matched rule's Activations are inserted into WorkingMemory as facts. So you can now match against an
+          Activation. The rule's metadata and declarations are available as fields on the Activation object.</para>
+        </listitem>
+
+        <listitem>
+          <para>You can use the kcontext.blockActivation( Activation match ) for the current rule to block the selected
+          activation. Only when that rule becomes false will the activation be eligible for firing. If it is already
+          eligible for firing and is later blocked, it will be removed from the agenda until it is unblocked.</para>
+        </listitem>
+
+        <listitem>
+          <para>An activation may have multiple blockers and a count is kept. All blockers must became false for the
+          counter to reach zero to enable the Activation to be eligible for firing.</para>
+        </listitem>
+
+        <listitem>
+          <para>kcontext.unblockAllActivations( $a ) is an over-ride rule that will remove all blockers
+          regardless</para>
+        </listitem>
+
+        <listitem>
+          <para>An activation may also be cancelled, so it never fires with cancelActivation</para>
+        </listitem>
+
+        <listitem>
+          <para>An unblocked Activation is added to the Agenda and obeys normal salience, agenda groups, ruleflow groups
+          etc.</para>
+        </listitem>
+
+        <listitem>
+          <para>@activationListener('direct') allows a rule to fire as soon as it's matched, this is to be used for
+          rules that block/unblock activations, it is not desirable for these rules to have side effects that impact
+          else where. The name may change later, this is actually part of the pluggable terminal node handlers I made,
+          which is an "internal" feature for the moment.</para>
+        </listitem>
+      </itemizedlist>
+
+      <example>
+        <title>New RuleContext methods</title>
+
+        <programlisting>void blockActivation(Activation match);
+void unblockAllActivations(Activation match);
+void cancelActivation(Activation match);</programlisting>
+      </example>
+
+      <para>Here is a basic example that will block all activations from rules that have metadata @department('sales').
+      They will stay blocked until the blockerAllSalesRules rule becomes false, i.e. "go2" is retracted.</para>
+
+      <example>
+        <title>Block rules based on rule metadata</title>
+
+        <programlisting>rule rule1 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule rule2 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule blockerAllSalesRules @activationListener('direct') when 
+     $s : String( this == 'go2' ) 
+     $i : Activation( department == 'sales' ) 
+then 
+    list.add( $i.rule.name + ':' + $s  ); 
+    kcontext.blockActivation( $i ); 
+end</programlisting>
+      </example>
+
+      <para>This example shows how you can use active property to count the number of active or inactive (already fired)
+      activations.</para>
+
+      <example>
+        <title>Count the number of active/inactive Activations</title>
+
+        <programlisting>rule rule1 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule rule2 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule rule3 @department('sales') when 
+     $s : String( this == 'go1' ) 
+then 
+    list.add( kcontext.rule.name + ':' + $s ); 
+end 
+rule countActivateInActive @activationListener('direct') when 
+     $s : String( this == 'go2' ) 
+     $active : Number( this == 1 ) from accumulate( $a : Activation( department == 'sales', active == true ), count( $a ) )
+     $inActive : Number( this == 2 ) from  accumulate( $a : Activation( department == 'sales', active == false ), count( $a ) )
+then 
+    kcontext.halt( ); 
+end </programlisting>
+      </example>
+    </section>
+    
+    <section>
+      <title>Faster compilation</title>
+      <para>Thanks to many improvements and optimizations made on both MVEL
+      library and Drools internals, the DRL compilation is now at least 3
+      times faster for both MVEL and Java dialects.</para>
+    </section>
+
+    <section>
+      <title>Entry-point declarations</title>
+
+      <para>Entry points can now be explicitly declared. Syntax is:</para>
+
+      <para><programlisting>entryPointDeclaration := DECLARE ENTRY-POINT stringId annotation* END</programlisting>Example
+      use:<example>
+          <programlisting>declare entry-point X
+    @doc( "This entry point is receives events from the message queue X" )
+end
+</programlisting>
+        </example></para>
+    </section>
+<section>
+            <title>Traits (experimental)</title>
+            <para>A Drools Trait is a bean interface which can be attached - and removed - to and from an individual object at runtime.
+            While an object wears a trait, a reference of the trait type is returned, so methods defined in the trait interface can
+            be called normally. A trait, then, adds a type and some fields to an object. If a bean has a field of the given name and
+            type, that field will be used to support the interface. ''Virtual'' fields, instead, will be stored as entries in a map,
+            or as triples in an in-memory store.</para>
+            <para>Traits are <literal>declared</literal> with the attribute <literal>@format(trait)</literal>. Unlike normal beans,
+            declared traits will generate interfaces instead of classes: the declared fields will be mapped to getters/setters.
+            Notice that multiple traits can be worn at the same time.</para>
+            <section>
+                <title><literal>IsA operator</literal></title>
+                <para>The operator isA can be used in patterns to check whether an object is wearing a trait or not</para>
+                <para>E.g. <literal>Worker( this isA Student )</literal></para>
+            </section>
+            <section>
+                <title>Special Classes</title>
+                <itemizedlist>
+                    <listitem>
+                        <para><literal>Thing</literal> : Interface, automatically extended by all traits </para>
+                    </listitem>
+                    <listitem>
+                        <para><literal>Entity</literal> : Class without concrete fields, optimized for virtual fields </para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+            <section>
+                <title>Usage</title>
+                <para>To add/remove a trait to an object, in the RHS:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para><literal>TraitClass traited = don( $object, TraitClass )</literal></para>
+                    </listitem>
+                    <listitem>
+                        <para><literal>Thing stripped = shed( $traitedObject, TraitClass )</literal></para>
+                    </listitem>
+                </itemizedlist>
+            </section>
+        </section>
+  </section>
+
+  <section>
+    <title>Guvnor</title>
+
+    <section>
+      <title>Declarative type extension</title>
+
+      <para>Following the enhancement to Drools Expert type declaration in Guvnor now support 'extends' to inherit from
+      super-classes. Sub-classes can extend either other types declared in the same package or imported Java classes. In
+      order to extend a type declared in Java by a declared subtype, repeat the supertype in a declare statement without
+      any fields.</para>
+
+      <figure>
+        <title>Extending a class</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/declarative-model-extends1.png" format="PNG"
+                       scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Declarative model showing extensions</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/declarative-model-extends2.png" format="PNG"
+                       scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Improved Knowledge Bases view</title>
+
+      <para>Thanks to the help of a community member the tree-view shown in the Knowledge Bases view has been
+      improved.</para>
+
+      <para>We also took the opportunity to make a few improvements of our own.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The view no longer repeats intermediate level sub-package names that are empty (community led
+          effort).</para>
+        </listitem>
+
+        <listitem>
+          <para>The package view can be viewed hierarchically, as has been the default up to 5.2.0.Final.</para>
+        </listitem>
+
+        <listitem>
+          <para>The package view can now also be viewed "flat" with no nesting</para>
+        </listitem>
+
+        <listitem>
+          <para>The tree's nodes can be fully expanded or collapsed.</para>
+        </listitem>
+      </itemizedlist>
+
+      <figure>
+        <title>Hierarchical view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/improved-knowledgebases-view1.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Flat view</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/improved-knowledgebases-view2.png"
+                       format="PNG"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Asset Viewer</title>
+
+      <para>Guvnor continues to grow and improve with every passing release. One of the requirements we have is to move
+      Guvnor away from a pure "Rules" or "Knowledge" repository management and authoring environment to a more generic
+      one, in which consumers of different technologies can tailor their experience to their domain's
+      requirements.</para>
+
+      <para>One of the more noticeable changes we are making to support this has been to de-couple asset types and
+      groups from the code. What was once previously static code is now defined by compile-time configuration. Due to
+      limitations in GWT (no client-side reflection), the technology with which Guvnor is implemented, we are
+      unfortunately not able to offer runtime configuration at this moment.</para>
+
+      <para>The asset groups are configurable within source file; src/main/resources/drools-asseteditors.xml. This file
+      is used at GWT compile time to wire-up asset types with their respective editor, group and group icon. An example
+      extract from the foregoing file looks like this:-</para>
+
+      <programlisting>&lt;asseteditor&gt;
+    &lt;class&gt;org.drools.guvnor.client.modeldriven.ui.RuleModeller&lt;/class&gt;
+    &lt;format&gt;brl&lt;/format&gt;
+    &lt;icon&gt;images.ruleAsset()&lt;/icon&gt; &lt;title&gt;constants.BusinessRuleAssets()&lt;/title&gt;
+&lt;/asseteditor&gt;</programlisting>
+
+      <para>To emphasis the separation, asset groups have become their own "editor" appearing as a tab in Guvnor's main,
+      central panel.</para>
+
+      <figure>
+        <title>Asset Viewer</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Release_Notes/asset-viewer.png" format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The format of the new screen is being tried for 5.3.0.Beta1. There has been some discussion whether a single
+      table containing all assets would be better - with collapsible rows to group different types of asset. The
+      immediate problem with this approach is however that finding different asset types on a "paged table" becomes more
+      cumbersome for the user; as they'd have to sort by type and page through.</para>
+
+      <para>We therefore ask for community feedback.</para>
+    </section>
+
+    <section>
+      <title>Guvnor enumeration improvements</title>
+
+      <para>Previously Guvnor enumerations that had a "display value" and a "DRL value" (i.e. the value substituted for
+      the display value when DRL was generated) could be defined with "&lt;DRL value&gt;=&lt;Display value&gt;". Various
+      community users have been using Guvnor enumerations to support complex rule definitions in both DSL and the guided
+      Decision Table editor.</para>
+
+      <programlisting>'Fact.operator' : ['equals=\\=\\=', 'not equals=!\\=']</programlisting>
+    </section>
+
+    <section>
+      <title>Guvnor Guided Decision Table</title>
+
+      <para>A couple of minor enhancements have been made to Guvnor's guided decision table editor:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Removal of sorting</para>
+
+          <para>You are now able to restore the original sort order of a column by clicking on the sort icon through:
+          ascending, descending and none.</para>
+        </listitem>
+
+        <listitem>
+          <para>Formulae and Predicates support value lists</para>
+
+          <para>Up until now only literal value columns could take advantage of value lists; either "Guvnor enums" or
+          the Decision Table's "Optional value list". This been rectified with this release bringing the advantage of
+          predefined choices for these types of fields to the business user.</para>
+
+          <figure>
+            <title>Defining a predicate with a value list</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-predicate-value-list1.png"
+                           format="PNG" scalefit="0"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <figure>
+            <title>Using the predicate column</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-Release_Notes/dtable-predicate-value-list2.png"
+                           format="PNG" scalefit="0"></imagedata>
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </listitem>
+      </itemizedlist>
+    </section>
+    
+    <section>
+      <title>Solid URLs and working browser history</title>
+
+      <para>Guvnor URLs point to what ever is currently open in the active
+      tab. Because of this you can bookmark the URL or email it to your
+      colleague. Forward and next page directs you to the previously opened
+      tab or to the next tab.</para>
+    </section>
+
+    <section>
+      <title>Guvnor Guided Decision Table - Wizard</title>
+
+      <para>A wizard has been created to assist with the construction of a new
+      table.</para>
+
+      <para>The wizard takes the user through the definition process, from
+      adding patterns to creating constraints and generating an expanded
+      form.</para>
+
+      <figure>
+        <title>Invoke the ewizard</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard-invoke.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Summary page</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard1.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Add facts</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard2.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Add constraints to facts</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard3.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Add actions to set fields on bound facts</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard4.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Add actions to insert new facts</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard5.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Choose how rows are created - all columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard6a.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Choose how rows are created - select the columns you want to
+        expand upon</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard6b.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>An extract of the resulting decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/wizard7.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Asset Viewer</title>
+
+      <para>The Asset Viewer now only shows sections that contain
+      Assets.</para>
+
+      <figure>
+        <title>A package with assets</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/asset-viewer2.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>An empty package</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/asset-viewer3.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Works on JBoss AS 7</title>
+
+      <para>The Guvnor distribution now includes a war that runs on JBoss AS
+      7.0.1 (not on JBoss AS 7.0.0).</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Drools Planner</title>
+
+    <section>
+      <title>Construction heuristics</title>
+
+      <para>As an alternative to writing a long, complex <literal>StartingSolutionInitializer</literal>, you can now
+      simply configure a powerful construction heuristic:</para>
+
+      <programlisting>&lt;solver&gt;
+  ...
+  &lt;constructionheuristic&gt;
+    &lt;constructionheuristicType&gt;FIRST_FIT&lt;/constructionheuristicType&gt;
+  &lt;/constructionheuristic&gt;
+  &lt;localSearch&gt;
+    ...
+  &lt;/localSearch&gt;
+&lt;/solver&gt;</programlisting>
+
+      <para>Planner already supports:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>First Fit</para>
+        </listitem>
+
+        <listitem>
+          <para>First Fit Decreasing (this is how most of the examples implemented their
+          <literal>StartingSolutionInitializer</literal>)</para>
+        </listitem>
+
+        <listitem>
+          <para>Best Fit</para>
+        </listitem>
+
+        <listitem>
+          <para>Best Fit Decreasing</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Future versions will support more construction heuristics.</para>
+    </section>
+
+    <section>
+      <title>Phasing</title>
+
+      <para>Planner can now run several solver phases sequentially: each phase is a different optimization algorithm.
+      For example: run First Fit Decreasing, then Simulated Annealing, then Tabu Search: </para>
+
+      <programlisting>&lt;solver&gt;
+  ...
+  &lt;constructionheuristic&gt;
+    ... &lt;!-- First Fit Decreasing --&gt;
+  &lt;/constructionheuristic&gt;
+  &lt;localSearch&gt;
+    ... &lt;!-- Simulated Annealing --&gt;
+  &lt;/localSearch&gt;
+  &lt;localSearch&gt;
+    ... &lt;!-- Tabu Search --&gt;
+  &lt;/localSearch&gt;
+&lt;/solver&gt;</programlisting>
+    </section>
+
+    <section>
+      <title>Real-time planning</title>
+
+      <para>Planner now supports real-time planning. Real-time planning means that the planning problem can change up to
+      a few milliseconds before a solution needs to be executed.</para>
+
+      <para>If one of the planning facts change while a planning problem is being solved, Planner can now process such a
+      planning fact change and incrementally continue from the best solution found before that planning fact change. In
+      practice, this means it can find a good solution for a big planning problem only a few milliseconds after a
+      planning fact changes.</para>
+
+      <para>Planner's documentation now covers several common techniques such as backup planning, continuous planning
+      and real-time planning.</para>
+    </section>
+    <section>
+      <title>Documentation expanded</title>
+
+      <para>The documentation now includes:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>detailed documentation on planning entity and planning
+          variable</para>
+        </listitem>
+
+        <listitem>
+          <para>an optimization algorithms overview</para>
+        </listitem>
+
+        <listitem>
+          <para>guidelines on what's the easiest path to get started</para>
+        </listitem>
+
+        <listitem>
+          <para>Info on common pitfalls and solutions</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>The <literal>NQueens</literal> examples has been refactored to
+      feel more like a real-world example.</para>
+    </section>
+
+    <section>
+      <title>Logging revised</title>
+
+      <para>INFO and DEBUG logging is far less verbose. Use TRACE logging to
+      see everything. The log is also now easier to read.</para>
+    </section>
+  </section>
+  <section>
+    <title>Drools Integration</title>
+      <section>
+        <title>Event Listeners</title>
+        <para>Drools supports adding 3 types of listeners to KnowledgeSessions -
+          <emphasis>AgendaListener</emphasis>,
+          <emphasis>WorkingMemoryListener</emphasis>,
+          <emphasis>ProcessEventListener</emphasis></para>
+
+        <para>The drools-spring module allows you to configure these listeners
+        to KnowledgeSessions using XML tags. These tags have identical names as
+        the actual listener interfaces i.e.,
+        &lt;drools:agendaEventListener....&gt;,
+        &lt;drools:workingMemoryEventListener....&gt; and
+        &lt;drools:processEventListener....&gt;.</para>
+
+        <para>drools-spring provides features to define the listeners as
+        standalone (individual) listeners and also to define them as a
+        group.</para>
+    </section>
+  </section>
+</section>
