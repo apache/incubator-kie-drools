@@ -102,12 +102,15 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
+import org.mvel2.CompileException;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
+
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 /**
  * A builder for patterns
@@ -336,7 +339,7 @@ public class PatternBuilder
                                                               patternDescr,
                                                               null,
                                                               "A Sliding Window behavior can only be assigned to patterns declared with @role( event ). The pattern '" + pattern.getObjectType() + "' in the rule '" + context.getRule().getName()
-                                                                      + "' is not declared as an Event." ) );
+                                                                     + "' is not declared as an Event." ) );
             }
         }
 
@@ -420,19 +423,19 @@ public class PatternBuilder
 
             ClassDefinition clsDef = tDecl.getTypeClassDef();
             if ( clsDef == null ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              descr,
-                                                              null,
-                                                              "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" ) );
+                context.getErrors().add( new DescrBuildError(context.getParentDescr(),
+                                         descr,
+                                         null,
+                                         "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n") );
                 return;
             }
 
             FieldDefinition field = clsDef.getField( descr.getPosition() );
             if ( field == null ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              descr,
-                                                              null,
-                                                              "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" ) );
+                context.getErrors().add( new DescrBuildError(context.getParentDescr(),
+                                         descr,
+                                         null,
+                                         "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n") );
                 return;
             }
 
@@ -505,8 +508,8 @@ public class PatternBuilder
 
             boolean simple = false;
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-            String expr = new MVELDumper().dump( d,
-                                                 mvelCtx );
+            String expr = new MVELDumper().dump(d,
+                    mvelCtx);
             Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
 
             // create bindings
@@ -1416,10 +1419,11 @@ public class PatternBuilder
                                                                                       fieldName,
                                                                                       context.isTypesafe() );
                 MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-                ((MVELCompileable) reader).compile( data );
-                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile(data);
+                data.addCompileable((MVELCompileable) reader);
             } catch ( final Exception e ) {
                 if ( reportError ) {
+                    copyErrorLocation(e, descr);
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
                                                                   e,
@@ -1435,6 +1439,7 @@ public class PatternBuilder
                                                                                   target );
             } catch ( final Exception e ) {
                 if ( reportError ) {
+                    copyErrorLocation(e, descr);
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
                                                                   e,

@@ -36,6 +36,8 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.spi.KnowledgeHelper;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 public class MVELEvalBuilder
     implements
     RuleConditionBuilder {
@@ -105,6 +107,7 @@ public class MVELEvalBuilder
             expr.compile( data );
             return eval;
         } catch ( final Exception e ) {
+            copyErrorLocation(e, evalDescr);
             context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                           evalDescr,
                                                           e,
