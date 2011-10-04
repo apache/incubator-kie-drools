@@ -181,6 +181,8 @@ public class PackageBuilder {
 
     private ProcessBuilder                           processBuilder;
 
+    private IllegalArgumentException                 processBuilderCreationFailure;
+
     private PMMLCompiler                             pmmlCompiler;
 
     private Map<String, TypeDeclaration>             builtinTypes;
@@ -343,6 +345,7 @@ public class PackageBuilder {
         try {
             return ProcessBuilderFactory.newProcessBuilder( this );
         } catch ( IllegalArgumentException e ) {
+            processBuilderCreationFailure = e;
             return null;
         }
     }
@@ -551,6 +554,10 @@ public class PackageBuilder {
     }
 
     public void addProcessFromXml( Resource resource ) {
+        if (processBuilder == null) {
+            throw new RuntimeException("Unable to instantiate a process builder", processBuilderCreationFailure);
+        }
+
         this.resource = resource;
 
         try {
