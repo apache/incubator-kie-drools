@@ -110,19 +110,8 @@ public class ClassFieldAccessorFactory {
                     inspectors.put( clazz,
                                     inspector );
                 }
-                Class< ? > fieldType = (Class< ? >) inspector.getFieldTypes().get( fieldName );
-                Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
-                Integer index = (Integer) inspector.getFieldNames().get( fieldName );
-                if ( fieldType == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
-                    // it might be that odd case of javabeans naming conventions that does not use lower case first letters if the second is uppercase
-                    String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
-                    fieldType = (Class< ? >) inspector.getFieldTypes().get( altFieldName );
-                    if( fieldType != null ) {
-                        // it seems it is the corner case indeed.
-                        getterMethod = (Method) inspector.getGetterMethods().get( altFieldName );
-                        index = (Integer) inspector.getFieldNames().get( altFieldName );
-                    }
-                }
+                final Class< ? > fieldType = (Class< ? >) inspector.getFieldTypes().get( fieldName );
+                final Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
                 if ( fieldType != null && getterMethod != null ) {
                     final String className = ClassFieldAccessorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( System.identityHashCode( clazz ) ) + "$" + getterMethod.getName();
 
@@ -139,6 +128,7 @@ public class ClassFieldAccessorFactory {
                                                                                   bytes,
                                                                                   PROTECTION_DOMAIN );
                     // instantiating target class
+                    final Integer index = (Integer) inspector.getFieldNames().get( fieldName );
                     final ValueType valueType = ValueType.determineValueType( fieldType );
                     final Object[] params = {index, fieldType, valueType};
                     return (BaseClassFieldReader) newClass.getConstructors()[0].newInstance( params );
@@ -167,14 +157,7 @@ public class ClassFieldAccessorFactory {
                 inspectors.put( clazz,
                                 inspector );
             }
-            Method setterMethod = (Method) inspector.getSetterMethods().get( fieldName );
-            Integer index = (Integer) inspector.getFieldNames().get( fieldName );
-            if ( setterMethod == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
-                // it might be that odd case of javabeans naming conventions that does not use lower case first letters if the second is uppercase
-                String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
-                setterMethod = (Method) inspector.getSetterMethods().get( altFieldName );
-                index = (Integer) inspector.getFieldNames().get( altFieldName );
-            }
+            final Method setterMethod = (Method) inspector.getSetterMethods().get( fieldName );
             if ( setterMethod != null ) {
                 final Class< ? > fieldType = setterMethod.getParameterTypes()[0];
                 final String className = ClassFieldAccessorFactory.BASE_PACKAGE + "/" + Type.getInternalName( clazz ) + Math.abs( System.identityHashCode( clazz ) ) + "$" + setterMethod.getName();
@@ -192,6 +175,7 @@ public class ClassFieldAccessorFactory {
                                                                               bytes,
                                                                               PROTECTION_DOMAIN );
                 // instantiating target class
+                final Integer index = (Integer) inspector.getFieldNames().get( fieldName );
                 final ValueType valueType = ValueType.determineValueType( fieldType );
                 final Object[] params = {index, fieldType, valueType};
                 return (BaseClassFieldWriter) newClass.getConstructors()[0].newInstance( params );
