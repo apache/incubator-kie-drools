@@ -151,7 +151,7 @@ public class PackageBuilder {
 
     private Map<String, PackageRegistry>             pkgRegistryMap;
 
-    private List<BaseKnowledgeBuilderResultImpl>     results;
+    private List<KnowledgeBuilderResult>             results;
 
     private final PackageBuilderConfiguration        configuration;
 
@@ -255,7 +255,7 @@ public class PackageBuilder {
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
-        this.results = new ArrayList<BaseKnowledgeBuilderResultImpl>();
+        this.results = new ArrayList<KnowledgeBuilderResult>();
 
         PackageRegistry pkgRegistry = new PackageRegistry( this,
                                                            pkg );
@@ -298,7 +298,7 @@ public class PackageBuilder {
         this.defaultDialect = this.configuration.getDefaultDialect();
 
         this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
-        this.results = new ArrayList<BaseKnowledgeBuilderResultImpl>();
+        this.results = new ArrayList<KnowledgeBuilderResult>();
 
         this.ruleBase = (ReteooRuleBase) ruleBase;
 
@@ -2414,7 +2414,7 @@ public class PackageBuilder {
     private List<KnowledgeBuilderResult> getResultList( ResultSeverity... severities ) {
         List<ResultSeverity> typesToFetch = Arrays.asList( severities );
         ArrayList<KnowledgeBuilderResult> problems = new ArrayList<KnowledgeBuilderResult>();
-        for ( BaseKnowledgeBuilderResultImpl problem : results ) {
+        for ( KnowledgeBuilderResult problem : results ) {
             if ( typesToFetch.contains( problem.getSeverity() ) ) {
                 problems.add( problem );
             }
@@ -2479,8 +2479,8 @@ public class PackageBuilder {
     }
 
     private void resetProblemType( ResultSeverity problemType ) {
-        List<BaseKnowledgeBuilderResultImpl> toBeDeleted = new ArrayList<BaseKnowledgeBuilderResultImpl>();
-        for ( BaseKnowledgeBuilderResultImpl problem : results ) {
+        List<KnowledgeBuilderResult> toBeDeleted = new ArrayList<KnowledgeBuilderResult>();
+        for ( KnowledgeBuilderResult problem : results ) {
             if ( problemType != null && problemType.equals( problem.getSeverity() ) ) {
                 toBeDeleted.add( problem );
             }

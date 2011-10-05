@@ -78,4 +78,14 @@ public class Function implements  KnowledgeDefinition, Dialectable, Externalizab
         out.writeObject(dialect);
         out.writeObject(resource);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "[Function " + name + "]";
+    }
+    
+    
 }

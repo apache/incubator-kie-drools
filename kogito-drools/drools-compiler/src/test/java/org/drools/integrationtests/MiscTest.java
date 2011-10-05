@@ -2768,33 +2768,6 @@ public class MiscTest {
     }
 
     @Test
-    public void testFunction() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionInConsequence.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        StatefulSession session = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        session.setGlobal( "list",
-                           list );
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-        session.insert( stilton );
-
-        session = SerializationHelper.getSerialisedStatefulSession( session,
-                                                                    ruleBase );
-        session.fireAllRules();
-
-        assertEquals( new Integer( 5 ),
-                      ((List) session.getGlobal( "list" )).get( 0 ) );
-    }
-
-    @Test
     public void testAssertRetract() throws Exception {
         // postponed while I sort out KnowledgeHelperFixer
         final PackageBuilder builder = new PackageBuilder();
@@ -2933,30 +2906,6 @@ public class MiscTest {
 
         public void writeExternal( ObjectOutput out ) throws IOException {
             out.writeBoolean( called );
-        }
-    }
-
-    @Test
-    public void testFunctionException() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionException.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final Cheese brie = new Cheese( "brie",
-                                        12 );
-        workingMemory.insert( brie );
-
-        try {
-            workingMemory.fireAllRules();
-            fail( "Should throw an Exception from the Function" );
-        } catch ( final Exception e ) {
-            assertEquals( "this should throw an exception",
-                          e.getCause().getMessage() );
         }
     }
 
@@ -3556,31 +3505,6 @@ public class MiscTest {
         ksession.insert( tgt );
 
         ksession.fireAllRules();
-    }
-
-    @Test
-    public void testFunctionWithPrimitives() throws Exception {
-        final PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_FunctionWithPrimitives.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "list",
-                                 list );
-
-        final Cheese stilton = new Cheese( "stilton",
-                                           5 );
-        workingMemory.insert( stilton );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( new Integer( 10 ),
-                      list.get( 0 ) );
     }
 
     @Test
@@ -5303,61 +5227,6 @@ public class MiscTest {
         assertEquals( "2",
                       results.get( 1 ) );
 
-    }
-
-    @Test
-    public void testFunctionCallingFunctionWithEclipse() throws Exception {
-        PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
-        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.ECLIPSE );
-
-        final PackageBuilder builder = new PackageBuilder( packageBuilderConfig );
-
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "results",
-                                 list );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-        assertEquals( 12,
-                      ((Integer) list.get( 0 )).intValue() );
-    }
-
-    @Test
-    public void testFunctionCallingFunctionWithJanino() throws Exception {
-        PackageBuilderConfiguration packageBuilderConfig = new PackageBuilderConfiguration();
-        ((JavaDialectConfiguration) packageBuilderConfig.getDialectConfiguration( "java" )).setCompiler( JavaDialectConfiguration.JANINO );
-
-        final PackageBuilder builder = new PackageBuilder( packageBuilderConfig );
-        builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_functionCallingFunction.drl" ) ) );
-        final Package pkg = builder.getPackage();
-
-        RuleBase ruleBase = getRuleBase();
-        ruleBase.addPackage( pkg );
-        ruleBase = SerializationHelper.serializeObject( ruleBase );
-        final WorkingMemory workingMemory = ruleBase.newStatefulSession();
-
-        final List list = new ArrayList();
-        workingMemory.setGlobal( "results",
-                                 list );
-
-        workingMemory.fireAllRules();
-
-        assertEquals( 1,
-                      list.size() );
-
-        assertEquals( 12,
-                      ((Integer) list.get( 0 )).intValue() );
     }
 
     @Test

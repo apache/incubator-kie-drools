@@ -44,7 +44,7 @@ public class JavaFunctionBuilder
                         final Map lineMappings,
                         final List errors) {
 
-        final Map vars = new HashMap();
+        final Map<String,Object> vars = new HashMap<String, Object>();
 
         vars.put( "package",
                   pkg.getName() );
@@ -84,15 +84,16 @@ public class JavaFunctionBuilder
         final Map params = new HashMap();
         final List names = functionDescr.getParameterNames();
         final List types = functionDescr.getParameterTypes();
-        try {
-            for ( int i = 0, size = names.size(); i < size; i++ ) {
+        for ( int i = 0, size = names.size(); i < size; i++ ) {
+            try {
                 params.put( names.get( i ),
                             typeResolver.resolveType( (String) types.get( i ) ) );
+            } catch ( final ClassNotFoundException e ) {
+                errors.add( new FunctionError( functionDescr,
+                                               e,
+                                               "Unable to resolve type "+types.get( i )+" while building function." ) );
+                break;
             }
-        } catch ( final ClassNotFoundException e ) {
-            errors.add( new FunctionError( functionDescr,
-                                           e,
-                                           "unable to resolve type while building function" ) );
         }
 
         vars.put( "text",

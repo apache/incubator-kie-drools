@@ -142,4 +142,12 @@ public class FunctionDescr extends BaseDescr
         this.offset = offset;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "[FunctionDescr " + returnType + " " + name + "(" + parameterTypes + ") ]";
+    }
+
 }
