@@ -44,6 +44,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -182,6 +183,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mvel2.MVEL;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -1318,30 +1320,36 @@ public class MiscTest {
     @Test
     public void testUppercaseField2() throws Exception {
         String rule = "package org.drools\n" +
-        		"declare SomeFact\n" +
-        		"    Field : String\n" +
-        		"    aField : String\n" +
-        		"end\n" +
-        		"rule X\n" +
-        		"when\n" +
-        		"    SomeFact( Field == \"foo\", aField == \"bar\" )\n" +
-        		"then\n" +
-        		"end\n";
+                      "declare SomeFact\n" +
+                      "    Field : String\n" +
+                      "    aField : String\n" +
+                      "end\n" +
+                      "rule X\n" +
+                      "when\n" +
+                      "    SomeFact( Field == \"foo\", aField == \"bar\" )\n" +
+                      "then\n" +
+                      "end\n";
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factType = kbase.getFactType("org.drools", "SomeFact");
+        FactType factType = kbase.getFactType( "org.drools",
+                                               "SomeFact" );
         Object fact = factType.newInstance();
-        factType.set(fact, "Field", "foo");
-        factType.set(fact, "aField", "bar");
+        factType.set( fact,
+                      "Field",
+                      "foo" );
+        factType.set( fact,
+                      "aField",
+                      "bar" );
 
-        ksession.insert(fact);
+        ksession.insert( fact );
         int rules = ksession.fireAllRules();
 
-        assertEquals(1, rules);
+        assertEquals( 1,
+                      rules );
         ksession.dispose();
     }
-    
+
     @Test
     public void testNullHandling() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -9214,14 +9222,18 @@ public class MiscTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
         try {
-            kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRL);
-            fail("adding a missing resource should fail");
-        } catch (RuntimeException e) { }
+            kbuilder.add( ResourceFactory.newClassPathResource( "some.rf" ),
+                          ResourceType.DRL );
+            fail( "adding a missing resource should fail" );
+        } catch ( RuntimeException e ) {
+        }
 
         try {
-            kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF);
-            fail("adding a missing resource should fail");
-        } catch (RuntimeException e) { }
+            kbuilder.add( ResourceFactory.newClassPathResource( "some.rf" ),
+                          ResourceType.DRF );
+            fail( "adding a missing resource should fail" );
+        } catch ( RuntimeException e ) {
+        }
     }
 
     @Test
@@ -9284,6 +9296,72 @@ public class MiscTest {
                       ResourceType.DRL );
 
         assertFalse( kbuilder.hasErrors() );
+    }
+
+    @Test
+    public void testJBRULES3111() {
+        String str = "package org.drools\n" +
+                     "declare Bool123\n" +
+                     "    bool1 : boolean\n" +
+                     "    bool2 : boolean\n" +
+                     "    bool3 : boolean\n" +
+                     "end\n" +
+                     "declare Thing\n" +
+                     "    name : String\n" +
+                     "    bool123 : Bool123\n" +
+                     "end\n" +
+                     "rule kickOff\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( new Thing( \"one\", new Bool123( true, false, false ) ) );\n" +
+                     "    insert( new Thing( \"two\", new Bool123( false, false, false ) ) );\n" +
+                     "    insert( new Thing( \"three\", new Bool123( false, false, false ) ) );\n" +
+                     "end\n" +
+                     "rule r1\n" +
+                     "when\n" +
+                     "    $t: Thing( bool123.bool1 == true )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule r2\n" +
+                     "when\n" +
+                     "    $t: Thing( bool123.bool2 == true )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule r3\n" +
+                     "when\n" +
+                     "    $t: Thing( bool123.bool3 == true )\n" +
+                     "then\n" +
+                     "end";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 2,
+                      rulesFired );
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 2 ) ).afterActivationFired( captor.capture() );
+        List<org.drools.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+
+        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+                           is( "kickOff" ) );
+        Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
+        System.out.println(value);
+        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+                           is( "r1" ) );
+
+        //Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
+        String name = (String) MVEL.eval( "$t.name",
+                                          Collections.singletonMap( "$t",
+                                                                    value ) );
+
+        Assert.assertThat( name,
+                           is( "one" ) );
+
     }
 
     @Test
