@@ -2406,14 +2406,14 @@ public class CepEspTest {
                 times( 4 ) ).afterActivationFired( captor.capture() );
         List<AfterActivationFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( "R1",
-                           is( aafe.get( 0 ).getActivation().getRule().getName() ) );
-        Assert.assertThat( "R1",
-                           is( aafe.get( 1 ).getActivation().getRule().getName() ) );
-        Assert.assertThat( "R1",
-                           is( aafe.get( 2 ).getActivation().getRule().getName() ) );
-        Assert.assertThat( "R3",
-                           is( aafe.get( 3 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
+                           is( "R3" ) );
     }
 
     @Test
@@ -2482,13 +2482,13 @@ public class CepEspTest {
                 times( 4 ) ).afterActivationFired( captor.capture() );
         List<AfterActivationFiredEvent> aafe = captor.getAllValues();
 
-        Assert.assertThat( "R1",
-                           is( aafe.get( 0 ).getActivation().getRule().getName() ) );
-        Assert.assertThat( "R1",
-                           is( aafe.get( 1 ).getActivation().getRule().getName() ) );
-        Assert.assertThat( "R1",
-                           is( aafe.get( 2 ).getActivation().getRule().getName() ) );
-        Assert.assertThat( "R3",
-                           is( aafe.get( 3 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
+                           is( "R3" ) );
     }
 }
