@@ -81,6 +81,7 @@ import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -170,11 +171,11 @@ public class CepEspTest {
         String rule = "";
         rule += "package " + Message.class.getPackage().getName() + "\n" +
                 "declare " + Message.class.getCanonicalName() + "\n" +
-        		 "   @role( event ) \n" +
-        		 "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
-        		 "   @duration( getProperties().get( 'duration' )+1 ) \n" +
-        		"end\n";
-        
+                 "   @role( event ) \n" +
+                 "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
+                 "   @duration( getProperties().get( 'duration' )+1 ) \n" +
+                "end\n";
+
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
                       ResourceType.DRL );
@@ -187,20 +188,24 @@ public class CepEspTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-        
+
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         Message msg = new Message();
         Properties props = new Properties();
-        props.put( "timestamp", new Integer( 99 ) );
-        props.put( "duration", new Integer( 52 ) );
+        props.put( "timestamp",
+                   new Integer( 99 ) );
+        props.put( "duration",
+                   new Integer( 52 ) );
         msg.setProperties( props );
-        
-        EventFactHandle efh = ( EventFactHandle ) ksession.insert( msg );
-        assertEquals( 98, efh.getStartTimestamp() );
-        assertEquals( 53, efh.getDuration() );
 
-    }    
-    
+        EventFactHandle efh = (EventFactHandle) ksession.insert( msg );
+        assertEquals( 98,
+                      efh.getStartTimestamp() );
+        assertEquals( 53,
+                      efh.getDuration() );
+
+    }
+
     @Test
     public void testEventAssertion() throws Exception {
         // read in the source
@@ -1814,7 +1819,7 @@ public class CepEspTest {
         implements
         Serializable {
     }
-    
+
     public static class Message {
         private Properties properties;
 
@@ -1822,7 +1827,7 @@ public class CepEspTest {
             return properties;
         }
 
-        public void setProperties(Properties properties) {
+        public void setProperties( Properties properties ) {
             this.properties = properties;
         }
     }
@@ -2203,76 +2208,90 @@ public class CepEspTest {
         Activation act = values.get( 0 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "launch" ) );
-        
+
         // second rule
         act = values.get( 1 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
-        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
-        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 2 ) );
-        
+        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                    is( 2 ) );
+
         // third rule
         act = values.get( 2 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
-        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
-        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 2 ) );
-        
+        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                    is( 2 ) );
+
         // fourth rule
         act = values.get( 3 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
-        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
-        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
-        
+        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                    is( 1 ) );
+
         // fifth rule
         act = values.get( 4 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
-        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 3 ) );
-        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
-        
+        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                    is( 3 ) );
+        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                    is( 1 ) );
+
         // sixth rule
         act = values.get( 5 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "ba" ) );
-        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 2 ) );
-        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
-        
+        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                    is( 2 ) );
+        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                    is( 1 ) );
+
         // seventh rule
         act = values.get( 6 ).getActivation();
         assertThat( act.getRule().getName(),
                     is( "ab" ) );
-        assertThat( ((Number)act.getDeclarationValue( "$a" )).intValue(), is( 2 ) );
-        assertThat( ((Number)act.getDeclarationValue( "$b" )).intValue(), is( 1 ) );
-        
+        assertThat( ((Number) act.getDeclarationValue( "$a" )).intValue(),
+                    is( 2 ) );
+        assertThat( ((Number) act.getDeclarationValue( "$b" )).intValue(),
+                    is( 1 ) );
 
     }
 
     @Test
     public void testCloudModeExpiration() throws IOException,
-                                            ClassNotFoundException, InstantiationException, IllegalAccessException, InterruptedException {
-        String str = "package org.drools.cloud\n" + 
-        		"import org.drools.*\n" + 
-        		"declare Event\n" + 
-        		"        @role ( event )\n" + 
-        		"        name : String\n" + 
-        		"        value : Object\n" + 
-        		"end\n" + 
-        		"declare AnotherEvent\n" + 
-        		"        @role ( event )\n" + 
-        		"        message : String\n" + 
-        		"        type : String\n" + 
-        		"end\n" + 
-        		"declare StockTick\n" + 
-        		"        @role ( event )\n" + 
-        		"end\n" + 
-        		"rule \"two events\"\n" + 
-        		"    when\n" + 
-        		"        Event( value != null ) from entry-point X\n" + 
-        		"        StockTick( company != null ) from entry-point X\n" + 
-        		"    then\n" + 
-        		"end";
+                                            ClassNotFoundException,
+                                         InstantiationException,
+                                         IllegalAccessException,
+                                         InterruptedException {
+        String str = "package org.drools.cloud\n" +
+                     "import org.drools.*\n" +
+                     "declare Event\n" +
+                     "        @role ( event )\n" +
+                     "        name : String\n" +
+                     "        value : Object\n" +
+                     "end\n" +
+                     "declare AnotherEvent\n" +
+                     "        @role ( event )\n" +
+                     "        message : String\n" +
+                     "        type : String\n" +
+                     "end\n" +
+                     "declare StockTick\n" +
+                     "        @role ( event )\n" +
+                     "end\n" +
+                     "rule \"two events\"\n" +
+                     "    when\n" +
+                     "        Event( value != null ) from entry-point X\n" +
+                     "        StockTick( company != null ) from entry-point X\n" +
+                     "    then\n" +
+                     "end";
 
         KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         config.setOption( EventProcessingOption.CLOUD );
@@ -2280,25 +2299,196 @@ public class CepEspTest {
                                                  config );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+        WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
 
-        ep.insert(new StockTick(1, "RHT", 10, 1000 ));
+        ep.insert( new StockTick( 1,
+                                  "RHT",
+                                  10,
+                                  1000 ) );
         int rulesFired = ksession.fireAllRules();
-        assertEquals( 0, rulesFired );
+        assertEquals( 0,
+                      rulesFired );
 
-        org.drools.definition.type.FactType event = kbase.getFactType("org.drools.cloud", "Event");
+        org.drools.definition.type.FactType event = kbase.getFactType( "org.drools.cloud",
+                                                                       "Event" );
         Object e1 = event.newInstance();
-        event.set(e1, "name", "someKey");
-        event.set(e1, "value", "someValue");
+        event.set( e1,
+                   "name",
+                   "someKey" );
+        event.set( e1,
+                   "value",
+                   "someValue" );
 
-        ep.insert(e1);
+        ep.insert( e1 );
         rulesFired = ksession.fireAllRules();
-        assertEquals( 1, rulesFired );
-        
+        assertEquals( 1,
+                      rulesFired );
+
         // let some time be spent
-        Thread.currentThread().sleep( 1000 ); 
-        
+        Thread.currentThread().sleep( 1000 );
+
         // check both events are still in memory as we are running in CLOUD mode
-        assertEquals( 2, ep.getFactCount() ); 
+        assertEquals( 2,
+                      ep.getFactCount() );
+    }
+
+    @Test
+    public void testSalienceWithEventsPseudoClock() throws IOException,
+                                                   ClassNotFoundException {
+        String str = "package org.drools\n" +
+                     "declare StockTick\n" +
+                     "        @role ( event )\n" +
+                     "end\n" +
+                     "rule R1 salience 1000\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT' )\n" +
+                     "        $s2 : StockTick( company == 'ACME', this after[0s,1m] $s1 )\n" +
+                     "    then\n" +
+                     "end\n" +
+                     "rule R2 salience 1000\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT' )\n" +
+                     "        not StockTick( company == 'ACME', this after[0s,1m] $s1 )\n" +
+                     "    then\n" +
+                     "end\n" +
+                     "rule R3 salience 100\n" +
+                     "    when\n" +
+                     "        $s2 : StockTick( company == 'ACME' )\n" +
+                     "    then\n" +
+                     "end\n";
+
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
+                                                 config );
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
+                                                                               null );
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+        clock.advanceTime( 1000000,
+                           TimeUnit.MILLISECONDS );
+
+        ksession.insert( new StockTick( 1,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS );
+        ksession.insert( new StockTick( 2,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS );
+        ksession.insert( new StockTick( 3,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS );
+        ksession.insert( new StockTick( 4,
+                                        "ACME",
+                                        10,
+                                        1000 ) );
+        clock.advanceTime( 5,
+                           TimeUnit.SECONDS );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 4,
+                      rulesFired );
+
+        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 4 ) ).afterActivationFired( captor.capture() );
+        List<AfterActivationFiredEvent> aafe = captor.getAllValues();
+
+        Assert.assertThat( "R1",
+                           is( aafe.get( 0 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( "R1",
+                           is( aafe.get( 1 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( "R1",
+                           is( aafe.get( 2 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( "R3",
+                           is( aafe.get( 3 ).getActivation().getRule().getName() ) );
+    }
+
+    @Test
+    public void testSalienceWithEventsRealtimeClock() throws IOException,
+                                                     ClassNotFoundException, InterruptedException {
+        String str = "package org.drools\n" +
+                     "declare StockTick\n" +
+                     "        @role ( event )\n" +
+                     "end\n" +
+                     "rule R1 salience 1000\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT' )\n" +
+                     "        $s2 : StockTick( company == 'ACME', this after[0s,1m] $s1 )\n" +
+                     "    then\n" +
+                     "end\n" +
+                     "rule R2 salience 1000\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT' )\n" +
+                     "        not StockTick( company == 'ACME', this after[0s,1m] $s1 )\n" +
+                     "    then\n" +
+                     "end\n" +
+                     "rule R3 salience 100\n" +
+                     "    when\n" +
+                     "        $s2 : StockTick( company == 'ACME' )\n" +
+                     "    then\n" +
+                     "end\n";
+
+        KnowledgeBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        config.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBase( new StringReader( str ),
+                                                 config );
+        KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( ksconf,
+                                                                               null );
+
+        AgendaEventListener ael = mock( AgendaEventListener.class );
+        ksession.addEventListener( ael );
+
+        ksession.insert( new StockTick( 1,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        ksession.insert( new StockTick( 2,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        ksession.insert( new StockTick( 3,
+                                        "RHT",
+                                        10,
+                                        1000 ) );
+        // sleep for 2 secs
+        Thread.currentThread().sleep( 2000 );
+        ksession.insert( new StockTick( 4,
+                                        "ACME",
+                                        10,
+                                        1000 ) );
+        // sleep for 1 sec
+        Thread.currentThread().sleep( 1000 );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 4,
+                      rulesFired );
+
+        ArgumentCaptor<AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 4 ) ).afterActivationFired( captor.capture() );
+        List<AfterActivationFiredEvent> aafe = captor.getAllValues();
+
+        Assert.assertThat( "R1",
+                           is( aafe.get( 0 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( "R1",
+                           is( aafe.get( 1 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( "R1",
+                           is( aafe.get( 2 ).getActivation().getRule().getName() ) );
+        Assert.assertThat( "R3",
+                           is( aafe.get( 3 ).getActivation().getRule().getName() ) );
     }
 }
