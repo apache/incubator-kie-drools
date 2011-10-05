@@ -78,6 +78,71 @@
   </section>
   
   <section>
+    <title>Designer UI Explained</title>
+    
+    <para>The Designer UI is composed of four sections as shown in the image below:</para>
+    
+    <figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Designer/designer-ui.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+  
+   <para>
+   	<itemizedlist>
+      <listitem>(1) Shape Repository Panel - the expandable section on the left shows the jBPM BPMN2 (default) shape repository.
+       It includes all shapes of the jBPM BPMN2 stencil set which can be used to assemble your processes. If you expand each section sub-group
+       you can see the BPMN2 elements that can be placed onto the Designer Canvas (2) by dragging and dropping the shape onto it.</listitem>
+      <listitem>(2) Canvas - this is your process drawing board. After dropping different shapes onto the canvas, you can move them around, connect them, etc. Clicking on a shape
+      on the canvas allows you to set its properties in the expandable Properties Window (3)</listitem>
+      <listitem>(3) Properties Panel - this expandable section on the right allows you to set both process and shape properties. It is divided in two sections, namely "Often used", and "More Properties" section which 
+      is expandable. When clicking on a shape in the Canvas, this panel is reloaded to show properties specific to the shape type. If you click on the canvas itself (not on a shape) the section shows your general 
+      process properties.</listitem>
+      <listitem>(4) Toolbar - the toolbar contains operations which can be performed on shapes present on the Canvas. Individual operations are disabled or enabled depending on what is selected. For example, if no shapes are selected,
+      the Cut/Paste/Delete operations are disabled, and become enabled once you select a shape. Hovering over the icons in the Toolbar displays the description text of the operation.</listitem>
+    </itemizedlist>
+   </para>
+   
+   <para>
+   Connecting shapes together in the canvas is realized with the Shape-Menu. The Shape-Menu is displayed by clicking on a shape:
+   </para>
+   <figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Designer/shape-menu.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+  <para>
+  The Shape-Menu is composed of two sections:
+  	<itemizedlist>
+	<listitem>(1) Connection section: allows you to easily connect your shape with a new one. The shapes displayed in this section are based on connection rules of the BPMN2 specification.</listitem>
+  	<listitem>(2) Morphing section: allows you to easily morphe a base shape into any other that extend this base shape.</listitem>
+  	</itemizedlist>
+  </para>
+  <para>Following sequence of picture shows how easy it is to quickly create and connect multiple shapes in the canvas:</para>
+  <figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Designer/example-creation.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+  <para>
+  You can also name your shapes by double-clicking on the shape in the canvas. This sets the name attribute of the particular shape:
+  </para>
+  <figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Designer/naming-shapes.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+  </section>  
+  
+  <section>
     <title>Support for Domain-specific service nodes</title>
 
     <para>Designer has full support for jBPM domain-specific service nodes. To include your service nodes in the Designer jBPM BPMN2 stencil set,
