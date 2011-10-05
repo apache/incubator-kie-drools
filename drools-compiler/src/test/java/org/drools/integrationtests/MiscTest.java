@@ -32,7 +32,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInput;
@@ -9349,12 +9348,10 @@ public class MiscTest {
 
         Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
                            is( "kickOff" ) );
-        Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
-        System.out.println(value);
         Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
                            is( "r1" ) );
 
-        //Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
+        Object value = aafe.get( 1 ).getActivation().getDeclarationValue( "$t" );
         String name = (String) MVEL.eval( "$t.name",
                                           Collections.singletonMap( "$t",
                                                                     value ) );
