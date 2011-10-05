@@ -22,7 +22,6 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -45,7 +44,6 @@ import org.drools.audit.WorkingMemoryFileLogger;
 import org.drools.base.ClassObjectType;
 import org.drools.base.evaluators.TimeIntervalParser;
 import org.drools.builder.KnowledgeBuilder;
-import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.EventFactHandle;
@@ -67,7 +65,6 @@ import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.FactType;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
@@ -77,12 +74,10 @@ import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
-import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -2491,4 +2486,6 @@ public class CepEspTest {
         Assert.assertThat( aafe.get( 3 ).getActivation().getRule().getName(),
                            is( "R3" ) );
     }
+    
+    
 }
