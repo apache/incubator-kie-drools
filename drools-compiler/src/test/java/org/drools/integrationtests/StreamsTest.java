@@ -18,7 +18,10 @@
 package org.drools.integrationtests;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -28,12 +31,17 @@ import static org.mockito.Mockito.verify;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mvel2.MVEL;
+
 import static org.junit.Assert.*;
 
 import org.drools.ClockType;
@@ -66,17 +74,17 @@ import org.drools.time.impl.PseudoClockScheduler;
  */
 public class StreamsTest {
 
-    private KnowledgeBase loadKnowledgeBase(final String fileName) throws IOException,
-                                                                  DroolsParserException,
-                                                                  Exception {
+    private KnowledgeBase loadKnowledgeBase( final String fileName ) throws IOException,
+                                                                    DroolsParserException,
+                                                                    Exception {
         return loadKnowledgeBase( fileName,
                                   KnowledgeBaseFactory.newKnowledgeBaseConfiguration() );
     }
 
-    private KnowledgeBase loadKnowledgeBase(final String fileName,
-                                            KnowledgeBaseConfiguration kconf) throws IOException,
-                                                                             DroolsParserException,
-                                                                             Exception {
+    private KnowledgeBase loadKnowledgeBase( final String fileName,
+                                             KnowledgeBaseConfiguration kconf ) throws IOException,
+                                                                               DroolsParserException,
+                                                                               Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource( fileName,
                                                             getClass() ),
@@ -90,6 +98,22 @@ public class StreamsTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         return SerializationHelper.serializeObject( kbase );
+    }
+
+    private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        for ( String drlContentString : drlContentStrings ) {
+            kbuilder.add( ResourceFactory.newByteArrayResource( drlContentString.getBytes() ),
+                          ResourceType.DRL );
+        }
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        return kbase;
     }
 
     @Test
@@ -109,21 +133,21 @@ public class StreamsTest {
                            results );
 
         StockTickInterface tick1 = new StockTick( 1,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick2 = new StockTick( 2,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick3 = new StockTick( 3,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick4 = new StockTick( 4,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
 
         InternalFactHandle handle1 = (InternalFactHandle) session.insert( tick1 );
         InternalFactHandle handle2 = (InternalFactHandle) session.insert( tick2 );
@@ -146,21 +170,21 @@ public class StreamsTest {
                       results.size() );
 
         StockTickInterface tick5 = new StockTick( 5,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick6 = new StockTick( 6,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick7 = new StockTick( 7,
-                                         "ACME",
-                                         15,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  15,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick8 = new StockTick( 8,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
 
         WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "StockStream" );
 
@@ -199,21 +223,21 @@ public class StreamsTest {
                            results );
 
         StockTickInterface tick5 = new StockTick( 5,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick6 = new StockTick( 6,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick7 = new StockTick( 7,
-                                         "ACME",
-                                         30,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  30,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick8 = new StockTick( 8,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
 
         WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "stream1" );
 
@@ -252,21 +276,21 @@ public class StreamsTest {
                            results );
 
         StockTickInterface tick5 = new StockTick( 5,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick6 = new StockTick( 6,
-                                         "ACME",
-                                         10,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  10,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick7 = new StockTick( 7,
-                                         "ACME",
-                                         30,
-                                         System.currentTimeMillis() );
+                                                  "ACME",
+                                                  30,
+                                                  System.currentTimeMillis() );
         StockTickInterface tick8 = new StockTick( 8,
-                                         "DROO",
-                                         50,
-                                         System.currentTimeMillis() );
+                                                  "DROO",
+                                                  50,
+                                                  System.currentTimeMillis() );
 
         WorkingMemoryEntryPoint entry = session.getWorkingMemoryEntryPoint( "stream1" );
 
@@ -302,6 +326,65 @@ public class StreamsTest {
         assertEquals( 0,
                       session.getObjects().size() );
 
+    }
+
+    @Test
+    public void testModifyOnEntryPointFacts() throws Exception {
+        String str = "package org.drools\n" +
+                     "declare StockTick\n" +
+                     "        @role ( event )\n" +
+                     "end\n" +
+                     "rule R1 salience 100\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT', price == 10 ) from entry-point ep1\n" +
+                     "    then\n" +
+                     "        StockTick s = $s1;\n" +
+                     "        modify( s ) { setPrice( 50 ) };\n" +
+                     "end\n" +
+                     "rule R2 salience 90\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT', price == 10 ) from entry-point ep2\n" +
+                     "    then\n" +
+                     "        StockTick s = $s1;\n" +
+                     "        modify( s ) { setPrice( 50 ) };\n" +
+                     "end\n" +
+                     "rule R3 salience 80\n" +
+                     "    when\n" +
+                     "        $s1 : StockTick( company == 'RHT', price == 10 ) from entry-point ep3\n" +
+                     "    then\n" +
+                     "        StockTick s = $s1;\n" +
+                     "        modify( s ) { setPrice( 50 ) };\n" +
+                     "end\n";
+
+        // read in the source
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
+        ksession.addEventListener( ael );
+        
+        WorkingMemoryEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint( "ep1" );
+        WorkingMemoryEntryPoint ep2 = ksession.getWorkingMemoryEntryPoint( "ep2" );
+        WorkingMemoryEntryPoint ep3 = ksession.getWorkingMemoryEntryPoint( "ep3" );
+
+        ep1.insert( new StockTick( 1, "RHT", 10, 1000 ) );
+        ep2.insert( new StockTick( 1, "RHT", 10, 1000 ) );
+        ep3.insert( new StockTick( 1, "RHT", 10, 1000 ) );
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 3,
+                      rulesFired );
+
+        ArgumentCaptor<org.drools.event.rule.AfterActivationFiredEvent> captor = ArgumentCaptor.forClass( org.drools.event.rule.AfterActivationFiredEvent.class );
+        verify( ael,
+                times( 3 ) ).afterActivationFired( captor.capture() );
+        List<org.drools.event.rule.AfterActivationFiredEvent> aafe = captor.getAllValues();
+
+        Assert.assertThat( aafe.get( 0 ).getActivation().getRule().getName(),
+                           is( "R1" ) );
+        Assert.assertThat( aafe.get( 1 ).getActivation().getRule().getName(),
+                           is( "R2" ) );
+        Assert.assertThat( aafe.get( 2 ).getActivation().getRule().getName(),
+                           is( "R3" ) );
     }
 
     @Test
@@ -342,13 +425,13 @@ public class StreamsTest {
         PseudoClockScheduler clock = ksession.getSessionClock();
 
         final StockTickInterface st1 = new StockTick( 1,
-                                             "RHT",
-                                             100,
-                                             1000 );
+                                                      "RHT",
+                                                      100,
+                                                      1000 );
         final StockTickInterface st2 = new StockTick( 2,
-                                             "RHT",
-                                             100,
-                                             1000 );
+                                                      "RHT",
+                                                      100,
+                                                      1000 );
 
         ksession.insert( st1 );
         ksession.insert( st2 );
@@ -391,13 +474,13 @@ public class StreamsTest {
         PseudoClockScheduler clock = ksession.getSessionClock();
 
         final StockTickInterface st1 = new StockTick( 1,
-                                             "RHT",
-                                             100,
-                                             1000 );
+                                                      "RHT",
+                                                      100,
+                                                      1000 );
         final StockTickInterface st2 = new StockTick( 2,
-                                             "RHT",
-                                             100,
-                                             1000 );
+                                                      "RHT",
+                                                      100,
+                                                      1000 );
 
         ksession.insert( st1 );
         ksession.insert( st2 );
