@@ -15,15 +15,15 @@
  */
 package org.drools.marshalling.util;
 
-import static java.lang.System.*;
-import static org.junit.Assert.*;
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static java.lang.System.out;
+import static org.drools.marshalling.util.CompareViaReflectionUtil.*;
 import static org.drools.marshalling.util.MarshallingDBUtil.*;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
-import static org.drools.marshalling.util.CompareViaReflectionUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
+import java.io.File;
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,29 +34,7 @@ import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.conf.EventProcessingOption;
-import org.drools.event.knowledgebase.AfterFunctionRemovedEvent;
-import org.drools.event.knowledgebase.AfterKnowledgeBaseLockedEvent;
-import org.drools.event.knowledgebase.AfterKnowledgeBaseUnlockedEvent;
-import org.drools.event.knowledgebase.AfterKnowledgePackageAddedEvent;
-import org.drools.event.knowledgebase.AfterKnowledgePackageRemovedEvent;
-import org.drools.event.knowledgebase.AfterProcessAddedEvent;
-import org.drools.event.knowledgebase.AfterProcessRemovedEvent;
-import org.drools.event.knowledgebase.AfterRuleAddedEvent;
-import org.drools.event.knowledgebase.AfterRuleRemovedEvent;
-import org.drools.event.knowledgebase.BeforeFunctionRemovedEvent;
-import org.drools.event.knowledgebase.BeforeKnowledgeBaseLockedEvent;
-import org.drools.event.knowledgebase.BeforeKnowledgeBaseUnlockedEvent;
-import org.drools.event.knowledgebase.BeforeKnowledgePackageAddedEvent;
-import org.drools.event.knowledgebase.BeforeKnowledgePackageRemovedEvent;
-import org.drools.event.knowledgebase.BeforeProcessAddedEvent;
-import org.drools.event.knowledgebase.BeforeProcessRemovedEvent;
-import org.drools.event.knowledgebase.BeforeRuleAddedEvent;
-import org.drools.event.knowledgebase.BeforeRuleRemovedEvent;
-import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
 import org.drools.impl.EnvironmentFactory;
-import org.drools.impl.KnowledgeBaseImpl.KnowledgeBaseEventListenerWrapper;
-import org.drools.marshalling.util.CompareViaReflectionUtil;
-import org.drools.marshalling.util.MarshalledData;
 import org.drools.runtime.Environment;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -65,10 +43,31 @@ import org.drools.time.impl.TrackableTimeJobFactoryManager;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.internal.configuration.GlobalConfiguration;
 
 public class MakeSureUtilsWorkTest {
 
+    @Test
+    @Ignore
+    public void listBaseFiles() { 
+        String path = generatePathToTestDb(this.getClass());
+        path = path.replace(File.separatorChar + "testData", "");
+        File marshallingDir = new File(path);
+        String [] dbFiles = marshallingDir.list();
+        assertTrue("No files found in marshalling directory!", dbFiles != null && dbFiles.length > 0 );
+        for(int i = 0; i < dbFiles.length; ++i ) { 
+            if( dbFiles[i].startsWith("baseData") ) { 
+                String ver = dbFiles[i];
+                ver = ver.replace(".h2.db", "");
+                ver = ver.replace("baseData", "");
+                ver = ver.replace("-", "");
+                if( ver.length() == 0 ) { 
+                    ver = "current";
+                }
+                out.println(ver + ": " + dbFiles[i]);
+            }
+        }
+    }
+    
     @Test
     @Ignore
     public void testUnmarshallingSpecificMarshalledData() { 

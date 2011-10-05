@@ -15,8 +15,7 @@
  */
 package org.drools.persistence.util;
 
-import static org.drools.marshalling.util.MarshallingDBUtil.*;
-import static org.drools.marshalling.util.MarshallingTestUtil.*;
+import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
@@ -32,7 +31,6 @@ import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 import org.drools.marshalling.util.EntityManagerFactoryProxyFactory;
-import org.drools.marshalling.util.MarshallingDBUtil;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;

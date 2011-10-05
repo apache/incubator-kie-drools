@@ -71,7 +71,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @AfterClass
     public static void compareMarshallingData() { 
-        MarshallingTestUtil.compareMarshallingDataFromTest(JpaBasedPersistenceTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
+        MarshallingTestUtil.compareMarshallingDataFromTest(MapPersistenceTest.class, DROOLS_PERSISTENCE_UNIT_NAME);
     }
     
     @Override

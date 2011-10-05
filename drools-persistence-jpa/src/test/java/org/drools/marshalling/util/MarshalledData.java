@@ -15,17 +15,12 @@
  */
 package org.drools.marshalling.util;
 
-import static org.junit.Assert.*;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
-import static org.drools.marshalling.util.MarshallingDBUtil.*;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.InvocationTargetException;
+
 import java.lang.reflect.Method;
-import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,10 +28,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 
 import junit.framework.Assert;
-
 
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;

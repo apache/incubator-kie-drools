@@ -72,7 +72,11 @@ public class JtaTransactionManagerTest {
 
     @Before
     public void setup() {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, false);
+        // This test does only plays with tx's, it doesn't actually persist 
+        //  any interersting (wrt marshalling) SessionInfo objects
+        boolean testMarshalling = false;
+        
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, testMarshalling);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 

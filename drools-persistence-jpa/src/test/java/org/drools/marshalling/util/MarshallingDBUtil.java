@@ -16,15 +16,17 @@ package org.drools.marshalling.util;
  * limitations under the License.
  */
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -38,8 +40,8 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class MarshallingDBUtil {
 
-    private static String MARSHALLING_TEST_DB = "marshalling/testData";
-    private static final String MARSHALLING_BASE_DB = "marshalling/baseData";
+    protected static String MARSHALLING_TEST_DB = "marshalling/testData";
+    protected static final String MARSHALLING_BASE_DB = "marshalling/baseData-current";
 
     protected static boolean clearMarshallingTestDb = true;
     
@@ -65,7 +67,7 @@ public class MarshallingDBUtil {
             MarshallingTestUtil.DO_NOT_COMPARE_MAKING_BASE_DB = true;
         }
         
-        String dbPath = generateJDBCUrl(testClass);
+        String dbPath = generatePathToTestDb(testClass);
         
         if( clearMarshallingTestDb ) {
             clearMarshallingTestDb = false;
@@ -84,7 +86,7 @@ public class MarshallingDBUtil {
      * @param testClass The class of the test doing this, in order to access the classLoader/resources.
      * @return A String containg the absolute URL/path of the test DB.
      */
-    private static String generateJDBCUrl(Class<?> testClass) { 
+    protected static String generatePathToTestDb(Class<?> testClass) { 
         URL classUrl = testClass.getResource(testClass.getSimpleName() + ".class");
         String projectPath = classUrl.getPath().replaceFirst("target.*", "");
         String resourcesPath = projectPath + "src/test/resources/";
@@ -164,6 +166,40 @@ public class MarshallingDBUtil {
         return tableName;
     }
 
+    public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, boolean useBaseDb) { 
+        return initializeMarshalledDataEMF(persistenceUnitName, testClass, useBaseDb, null );
+    }
+    
+    protected static String [] getListOfBaseDbVers(Class<?> testClass) { 
+        String [] versions;
+        ArrayList<String> versionList = new ArrayList<String>();
+        
+        String path = generatePathToTestDb(testClass);
+        path = path.replace(File.separatorChar + "testData", "");
+        File marshallingDir = new File(path);
+        
+        FilenameFilter baseDatafilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return name.startsWith("baseData");
+            }
+        };
+        String [] dbFiles = marshallingDir.list(baseDatafilter);
+        
+        assertTrue("No files found in marshalling directory!", dbFiles != null && dbFiles.length > 0 );
+        for(int i = 0; i < dbFiles.length; ++i ) { 
+            String ver = dbFiles[i];
+            ver = ver.replace(".h2.db", "");
+            ver = ver.replace("baseData", "");
+            ver = ver.replace("-", "");
+            versionList.add(ver);
+        } 
+        versions = new String [versionList.size()];
+        for( int v = 0; v < versions.length; ++v ) { 
+           versions[v] = versionList.get(v); 
+        }
+        return versions;
+    }
+
     /**
      * This method initializes an EntityManagerFactory with a connection to the base (marshalled) data DB. 
      * This database stores the marshalled data that we expect (for a given drools/jbpm version).
@@ -171,7 +207,8 @@ public class MarshallingDBUtil {
      * @param testClass The class of the (local) unit test running.
      * @return A HashMap<String, Object> containg the datasource and entity manager factory.
      */
-    public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, boolean useBaseDb) { 
+    public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, 
+            boolean useBaseDb, String baseDbVer ) { 
         HashMap<String, Object> testContext = new HashMap<String, Object>();
         
         Properties dsProps = PersistenceUtil.getDatasourceProperties();
@@ -180,9 +217,12 @@ public class MarshallingDBUtil {
             return null;
         }
     
-        String dbPath = generateJDBCUrl(testClass);
+        String dbPath = generatePathToTestDb(testClass);
         if( useBaseDb ) { 
             dbPath = dbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
+            if( baseDbVer != null && baseDbVer.length() > 0) { 
+                dbPath.replace("current", baseDbVer);
+            }
         }
         
         String jdbcURLBase = dsProps.getProperty("url");

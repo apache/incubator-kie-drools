@@ -16,7 +16,7 @@
 package org.drools.marshalling.util;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.drools.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.marshalling.util.MarshallingDBUtil.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
@@ -175,15 +175,41 @@ public class MarshallingTestUtil {
         return steClass; 
     }
 
-    public static void compareMarshallingDataFromTest(Class testClass, String persistenceUnitName) { 
+    public static void compareMarshallingDataFromTest(String persistenceUnitName) { 
+        Class<?> testClass = null;
+        try {
+            testClass = Class.forName(Thread.currentThread().getStackTrace()[2].getClassName());
+        }
+        catch(Exception e){ 
+            fail("Unable to retrieve class of test running: [" + e.getClass().getSimpleName() + "] " + e.getMessage() );
+        }
+        compareMarshallingDataFromTest(testClass, persistenceUnitName);
+    }
+    
+    public static void compareMarshallingDataFromTest(Class<?> testClass, String persistenceUnitName) { 
         if( DO_NOT_COMPARE_MAKING_BASE_DB ) { 
+            HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, false);
+            List<MarshalledData> baseDataList = null;
+            try { 
+                EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
+                baseDataList  = retrieveMarshallingData(testEMF);
+            }
+            finally { 
+                tearDown(testContext); 
+            }
+            
+            assertNotNull("Could not rerieve list of MarshalledData from base db.", baseDataList);
+            assertTrue("List of MarshalledData from base db is empty.", ! baseDataList.isEmpty() );
+            logger.info( "MarshalledData objects saved in base db:" );
+            for( MarshalledData marshalledData : baseDataList ) { 
+               logger.info( "- " + marshalledData); 
+            }
             return;
         }
         
         // Retrieve the test data
         List<MarshalledData> testDataList = null;
         HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, false);
-        logger.trace("Retrieving test data");
         try { 
             EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
             testDataList  = retrieveMarshallingData(testEMF);
@@ -194,23 +220,28 @@ public class MarshallingTestUtil {
         assertNotNull("Not marshalled data found for " + testClass.getSimpleName(), 
                 testDataList != null && ! testDataList.isEmpty() );
     
-        // Retrieve the base data
-        HashMap<String, Object> baseContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, true);
-        List<MarshalledData> baseDataList =  null;
-        logger.trace("Retrieving BASE data");
-        try { 
-            EntityManagerFactory baseEMF = (EntityManagerFactory) baseContext.get(ENTITY_MANAGER_FACTORY);
-            baseDataList = retrieveMarshallingData(baseEMF);
+        String [] baseDbVersions = getListOfBaseDbVers(testClass);
+
+        for( int v = 0; v < baseDbVersions.length; ++v ) { 
+            logger.info("Loading marshalled data from base DB version: [" + baseDbVersions[v] + "]");
+            // Retrieve the base data
+            HashMap<String, Object> baseContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, true, baseDbVersions[v]);
+            List<MarshalledData> baseDataList =  null;
+            try { 
+                EntityManagerFactory baseEMF = (EntityManagerFactory) baseContext.get(ENTITY_MANAGER_FACTORY);
+                baseDataList = retrieveMarshallingData(baseEMF);
+            }
+            finally {
+                tearDown(baseContext);
+            }
+            assertTrue("Not base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
+
+            // OCRAM: compareMarshallingDataFromTest early exit: remove when done
+//            if( true ) { return; }
+            
+            // Compare!
+            compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
         }
-        finally {
-            tearDown(baseContext);
-        }
-        assertTrue("Not base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
-        
-        // OCRAM: compareMarshallingDataFromTest early exit: remove when done
-        if( true ) { return; }
-        // Compare!
-        compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
     }
 
     protected static ArrayList<MarshalledData> retrieveMarshallingData(EntityManagerFactory emf) { 
@@ -228,7 +259,6 @@ public class MarshallingTestUtil {
                fail("MarshalledData object does not contain the proper identification information.");
             }
             marshalledDataList.add(marshalledData);
-            // DBG delete when ready MarshallingTestUtil.retrieveMarshallingData() out.println
             logger.trace("> " + marshalledData);
         }
         
@@ -237,22 +267,49 @@ public class MarshallingTestUtil {
         return marshalledDataList;
     }
 
+    /**
+     * 
+     *   x eerst, selecteer een test method
+     *   x pak alle snapshots from test voor die test method
+     *   x pak alle snapshots from base voor die test method
+     *   x bevestig dat je hetzelfde aantal heb
+     *       x zo niet.. waarschuw, of faal!
+     *   een voor een 
+     *   - pak de snapshot van _test
+     *     + gebruik inputMarshaller om iets te maken
+     *     + bewaar de staat (xml/dump tree-achtig??)
+     *     + reflection, anders worden toekomstige veranderingen niet gezien
+     *   - pak de snapshot van base
+     *     + gebruik inputMarshaller om iets te maken
+     *     + bewaar de staat (xml/dump tree-achtig??)
+     *     + reflection, anders worden toekomstige veranderingen niet gezien
+     *   ! verglijk de twee bewaarde staten!! 
+     */
     private static void compareTestAndBaseMarshallingData(Class<?> testClass, List<MarshalledData> testData, 
             List<MarshalledData> baseData ) { 
-    
-        sanityCheckMarshalledData(testClass, testData, baseData);
-        
+   
+        // Extract the marshalled data info for all methods from THIS test (testClass)
+        HashMap<String, List<MarshalledData>> testSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, testData);
+        HashMap<String, List<MarshalledData>> baseSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, baseData);
+       
+        // Check that the tests for which the marshalled data has been retrieved
+        //  haven't changed (diff numbers of 
+        sanityCheckMarshalledData(testClass, testSnapshotsPerTestMap, baseSnapshotsPerTestMap);
+       
         HashMap<String, MarshalledData> testMarshalledDataSnapshotMap = new HashMap<String, MarshalledData>();
         HashMap<String, MarshalledData> baseMarshalledDataSnapshotMap = new HashMap<String, MarshalledData>();
     
-        for( MarshalledData testMarshalledData : testData ) { 
-           testMarshalledDataSnapshotMap.put(testMarshalledData.getTestMethodAndSnapshotNum(), testMarshalledData);
-        }
-        for( MarshalledData baseMarshalledData : baseData ) { 
-            //OCRAM: limit to this test class
-           baseMarshalledDataSnapshotMap.put(baseMarshalledData.getTestMethodAndSnapshotNum(), baseMarshalledData);
-        }
-        
+        for( String testMethod : testSnapshotsPerTestMap.keySet() ) { 
+            for( MarshalledData testMarshalledData : testSnapshotsPerTestMap.get(testMethod) ) { 
+                testMarshalledDataSnapshotMap.put(testMarshalledData.getTestMethodAndSnapshotNum(), testMarshalledData);
+            }
+         }
+        for( String testMethod : baseSnapshotsPerTestMap.keySet() ) { 
+            for( MarshalledData baseMarshalledData : baseSnapshotsPerTestMap.get(testMethod) ) { 
+                baseMarshalledDataSnapshotMap.put(baseMarshalledData.getTestMethodAndSnapshotNum(), baseMarshalledData);
+            }
+         }
+         
         for( String testMethodVer : testMarshalledDataSnapshotMap.keySet() ) { 
             logger.info("Comparing marshalled info for " + testMethodVer);
             StatefulKnowledgeSession baseKSession = null;
@@ -262,6 +319,7 @@ public class MarshallingTestUtil {
                 baseKSession = unmarshallSession(baseMarshalledData.rulesByteArray);
             }
             catch( Exception e) {
+                e.printStackTrace();
                 fail("Unable to unmarshall base data [" + testMethodVer +  "]: " + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
             }
            
@@ -282,32 +340,16 @@ public class MarshallingTestUtil {
                     CompareViaReflectionUtil.compareInstances(baseKSession, testKSession) );
         }
         
-        // x eerst, selecteer een test method
-        // x pak alle snapshots from test voor die test method
-        // x pak alle snapshots from base voor die test method
-        // x bevestig dat je hetzelfde aantal heb
-            // x zo niet.. waarschuw, of faal!
-        // een voor een 
-        // - pak de snapshot van _test
-        //   + gebruik inputMarshaller om iets te maken
-        //   + bewaar de staat (xml/dump tree-achtig??)
-        //   + reflection, anders worden toekomstige veranderingen niet gezien
-        // - pak de snapshot van base
-        //   + gebruik inputMarshaller om iets te maken
-        //   + bewaar de staat (xml/dump tree-achtig??)
-        //   + reflection, anders worden toekomstige veranderingen niet gezien
-        // ! verglijk de twee bewaarde staten!! 
         
     }
 
-    private static void sanityCheckMarshalledData(Class<?> testClass, List<MarshalledData> testData, 
-            List<MarshalledData> baseData) { 
-        HashMap<String, List<MarshalledData>> testSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, testData);
-        HashMap<String, List<MarshalledData>> baseSnapshotsPerTestMap = extractSnapshotsPerTestMethodMap(testClass, baseData);
-    
+    private static void sanityCheckMarshalledData(Class<?> testClass, HashMap<String, List<MarshalledData>> testSnapshotsPerTestMap,
+        HashMap<String, List<MarshalledData>> baseSnapshotsPerTestMap ) {     
+            
+        // OCRAM: Should these be the same? If so, check!
         Set<String> baseTestMethods = baseSnapshotsPerTestMap.keySet(); 
-        List<String> testTestMethods = new ArrayList<String>();
-        testTestMethods.addAll(testSnapshotsPerTestMap.keySet());
+        Set<String> testTestMethods = testSnapshotsPerTestMap.keySet();
+
         for( String baseTestMethod : baseTestMethods ) { 
             if( testSnapshotsPerTestMap.get(baseTestMethod) == null ) { 
                 logger.error("Marshalled data snapshots for test " + baseTestMethod 
@@ -328,12 +370,19 @@ public class MarshallingTestUtil {
         }
     }
 
+    /**
+     * This class extracts the following data structure: 
+     * - For every test method in the given test class: 
+     *   - make a list of the MarshalledData snapshots saved in that test method (testMethodMarshalledDataList). 
+     * @param testClass The testClass that we're comparing marshalled data for. 
+     * @param marshalledDataList A list of MarshalledData objects retrieved (from the test or a base (version) database).
+     * @return A HashMap<String (testMethod), List<MarshalledData>> (testMethodMarshalledDataList)> object, described above. 
+     */
     private static HashMap<String, List<MarshalledData>> extractSnapshotsPerTestMethodMap(Class<?> testClass, List<MarshalledData> marshalledDataList) { 
         String testClassName = testClass.getName();
         HashMap<String, List<MarshalledData>> snapshotsPerTestMethod = new HashMap<String, List<MarshalledData>>();
         for( MarshalledData marshalledData : marshalledDataList ) {
-            if( ! marshalledData.testMethodName.contains(testClassName) ) { 
-                marshalledData.testMethodName.length();
+            if( ! marshalledData.testMethodName.startsWith(testClassName) ) { 
                 continue;
             }
             List<MarshalledData> testMethodMarshalledDataList = snapshotsPerTestMethod.get(marshalledData.testMethodName);

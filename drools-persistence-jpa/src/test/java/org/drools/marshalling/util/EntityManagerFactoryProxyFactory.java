@@ -16,13 +16,11 @@
 package org.drools.marshalling.util;
 
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
-import static org.drools.marshalling.util.MarshallingTestUtil.PROCESS_INSTANCE_INFO_CLASS_NAME;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.security.acl.Owner;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -168,7 +166,8 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
             return result;
         }
         else { 
-            String className = this.emf != null ? emf.getClass().getSimpleName() : em.getClass().getSimpleName();
+            // DBG: EntityManagerFactoryProxyFactory
+            // String className = this.emf != null ? emf.getClass().getSimpleName() : em.getClass().getSimpleName();
             // logger.trace( "><: " + className + "." + methodName );
             if( this.emf != null ) { 
                 result = invoke(method, emf, args);

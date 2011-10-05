@@ -39,8 +39,6 @@ import org.slf4j.LoggerFactory;
 public class CompareViaReflectionUtil {
 
     private static Logger logger = LoggerFactory.getLogger(CompareViaReflectionUtil.class);
-    
-
 
     public static HashSet<Object> seenObjects = new HashSet<Object>();
     private static Class<?> OBJECT_ARRAY_CLASS = (new Object[0]).getClass();
