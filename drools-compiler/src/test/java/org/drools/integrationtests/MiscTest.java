@@ -2874,7 +2874,7 @@ public class MiscTest {
             fail( "Should throw an Exception from the Consequence" );
         } catch ( final org.drools.runtime.rule.ConsequenceException e ) {
             assertEquals( "Throw Consequence Exception",
-                          e.getRule().getName() );
+                          e.getActivation().getRule().getName() );
             assertEquals( "this should throw an exception",
                           e.getCause().getMessage() );
         }
