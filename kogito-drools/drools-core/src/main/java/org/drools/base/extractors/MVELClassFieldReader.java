@@ -92,54 +92,6 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
         setValueType( ValueType.determineValueType( returnType ) );
     }
 
-//    public MVELClassFieldReader(Class cls,
-//                                String fieldName,
-//                                CacheEntry cache) {
-//        super( -1, // index
-//               null, //Object.class, // fieldType
-//               null ); //ValueType.determineValueType( Object.class ) ); // value type
-//        ParserContext context = new ParserContext();
-//        context.addInput( "this", cls );
-//        context.setStrongTyping( true );
-//        
-////        if  ( !fieldName.startsWith( "this." ) ) {
-////            fieldName = "this." + fieldName;
-////        }
-//        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
-//        this.mvelExpression = (ExecutableStatement)MVEL.compileExpression( fieldName, context);
-//        
-//        Class returnType = this.mvelExpression.getKnownEgressType();
-//        setFieldType( returnType );
-//        setValueType( ValueType.determineValueType( returnType ) );
-//        
-//
-////        Set inputs = compiler.getParserContextState().getInputs().keySet();
-////        for ( Iterator it = inputs.iterator(); it.hasNext(); ) {
-////            String basefield = (String) it.next();
-////            if ( "this".equals( basefield ) ) {
-////                continue;
-////            }
-////            InternalReadAccessor extr = cache.getReadAccessor( new AccessorKey( cls.getName(),
-////                                                                                basefield,
-////                                                                                AccessorKey.AccessorType.FieldAccessor ),
-////                                                               cls );
-////            this.extractors.put( basefield,
-////                                 extr );
-////        }
-//    }
-
-    //    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-    //        super.readExternal(in);
-    //        mvelExpression  = (CompiledExpression)in.readObject();
-    //        extractors  = (Map)in.readObject();
-    //    }
-    //
-    //    public void writeExternal(ObjectOutput out) throws IOException {
-    //        super.writeExternal(out);
-    //        out.writeObject(mvelExpression);
-    //        out.writeObject(extractors);
-    //    }
-
     /* (non-Javadoc)
      * @see org.drools.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
@@ -179,6 +131,14 @@ public class MVELClassFieldReader extends BaseObjectClassFieldReader implements 
         } else if ( !expr.equals( other.expr ) ) return false;
         if ( typesafe != other.typesafe ) return false;
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "[MVELClassFieldReader className=" + className + ", expr=" + expr + ", typesafe=" + typesafe + "]";
     }
 
 }

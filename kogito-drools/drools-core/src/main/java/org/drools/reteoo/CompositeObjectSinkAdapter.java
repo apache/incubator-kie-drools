@@ -18,6 +18,7 @@ package org.drools.reteoo;
 
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.Operator;
+import org.drools.base.extractors.MVELClassFieldReader;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
@@ -113,7 +114,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final LiteralConstraint literalConstraint = (LiteralConstraint) fieldConstraint;
                 final Evaluator evaluator = literalConstraint.getEvaluator();
 
-                if ( evaluator.getOperator() == Operator.EQUAL && literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE ) {
+                if ( evaluator.getOperator() == Operator.EQUAL && 
+                        literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                        // our current implementation does not support hashing of deeply nested properties
+                        !( literalConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
                     final InternalReadAccessor readAccessor = literalConstraint.getFieldExtractor();
                     final int index = readAccessor.getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
@@ -158,7 +162,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final Evaluator evaluator = literalConstraint.getEvaluator();
                 final FieldValue value = literalConstraint.getField();
 
-                if ( evaluator.getOperator() == Operator.EQUAL && literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE ) {
+                if ( evaluator.getOperator() == Operator.EQUAL && 
+                        literalConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                        // our current implementation does not support hashing of deeply nested properties
+                        !( literalConstraint.getFieldExtractor() instanceof MVELClassFieldReader )) {
                     final InternalReadAccessor fieldAccessor = literalConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
