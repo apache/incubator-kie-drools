@@ -68,10 +68,25 @@ public class FunctionError extends DroolsError {
                detail.append( cp[i].getMessage() );
                detail.append( "\n" );
             }
+        } else if( object instanceof Exception) {
+            Exception ex = (Exception) object;
+            this.errorLines = new int[1];
+            this.errorLines[0] = functionDescr.getLine();
+            detail.append( " (line:" );
+            detail.append( this.errorLines[0] );
+            detail.append( "): " );
+            detail.append( message );
+            detail.append( " " );
+            detail.append( ex.getClass().getName() );
+            if( ex.getMessage() != null ) {
+                detail.append( ": " );
+                detail.append( ex.getMessage() );
+            }
         } else {
-            this.errorLines = new int[0];
+            this.errorLines = new int[1];
+            this.errorLines[0] = functionDescr.getLine();
         }
-        return "[ "+functionDescr.getName()+" : "+message + "\n"+detail.toString()+" ]";
+        return "[ function "+functionDescr.getName() + detail.toString()+" ]";
     }
 
 }
