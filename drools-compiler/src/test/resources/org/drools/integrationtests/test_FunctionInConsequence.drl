@@ -15,6 +15,4 @@ rule "global rule test"
         Cheese( )
     then
         addFive( list );
-        // Calling methods does not mess with function calls
-        // System.out.println(list);
 end    

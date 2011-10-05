@@ -26,19 +26,17 @@ import java.util.Set;
 import org.drools.RuntimeDroolsException;
 import org.drools.util.CompositeClassLoader;
 
-import com.sun.xml.bind.v2.runtime.Name;
-
 public class ClassTypeResolver
     implements
     TypeResolver {
-    private String           defaultPackagName;
-    private Set<String>      imports          = Collections.emptySet();
+    private String                           defaultPackagName;
+    private Set<String>                      imports          = Collections.emptySet();
 
-    private ClassLoader      classLoader;
+    private ClassLoader                      classLoader;
 
-    private Map              cachedImports    = new HashMap();
+    private Map<String, Class< ? >>          cachedImports    = new HashMap<String, Class< ? >>();
 
-    private static final Map internalNamesMap = new HashMap();
+    private static final Map<String, String> internalNamesMap = new HashMap<String, String>();
     static {
         internalNamesMap.put( "int",
                               "I" );
@@ -72,11 +70,12 @@ public class ClassTypeResolver
     public ClassTypeResolver(Set<String> imports,
                              CompositeClassLoader rootClassLoader,
                              String name) {
-        this( imports, rootClassLoader );
+        this( imports,
+              rootClassLoader );
         this.defaultPackagName = name;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader( ClassLoader classLoader ) {
         this.classLoader = classLoader;
     }
 
@@ -100,15 +99,15 @@ public class ClassTypeResolver
     /* (non-Javadoc)
      * @see org.drools.semantics.java.TypeResolver#addImport(java.lang.String)
      */
-    public void addImport(final String importEntry) {
+    public void addImport( final String importEntry ) {
         if ( this.imports == Collections.EMPTY_SET ) {
             this.imports = new HashSet<String>();
         }
         this.imports.add( importEntry );
     }
 
-    public Class lookupFromCache(final String className) {
-        return (Class) this.cachedImports.get( className );
+    public Class<?> lookupFromCache( final String className ) {
+        return this.cachedImports.get( className );
     }
 
     /*
@@ -120,18 +119,16 @@ public class ClassTypeResolver
     /* (non-Javadoc)
      * @see org.drools.semantics.java.TypeResolver#resolveType(java.lang.String)
      */
-    public Class resolveType(String className) throws ClassNotFoundException {
-        Class clazz = null;
+    public Class< ? > resolveType( String className ) throws ClassNotFoundException {
+        Class< ? > clazz = null;
         boolean isArray = false;
+        boolean isPrimitive = false;
         final StringBuilder arrayClassName = new StringBuilder();
 
-        //is the class a primitive type ?
-        if ( internalNamesMap.containsKey( className ) ) {
-            clazz = Class.forName( "[" + internalNamesMap.get( className ),
-                                   true,
-                                   this.classLoader ).getComponentType();
-            // Could also be a primitive array
-        } else if ( className.indexOf( '[' ) > 0 ) {
+        clazz = lookupFromCache( className );
+
+        if ( clazz == null && className.indexOf( '[' ) > 0 ) {
+            // is an array?
             isArray = true;
             int bracketIndex = className.indexOf( '[' );
             final String componentName = className.substring( 0,
@@ -144,9 +141,12 @@ public class ClassTypeResolver
             className = componentName;
         }
 
-        if ( clazz == null ) {
-            // Now try the package object type cache
-            clazz = lookupFromCache( className );
+        //is the class a primitive type ?
+        if ( clazz == null && internalNamesMap.containsKey( className ) ) {
+            clazz = Class.forName( "[" + internalNamesMap.get( className ),
+                                   true,
+                                   this.classLoader ).getComponentType();
+            isPrimitive = true;
         }
 
         // try loading className
@@ -157,7 +157,7 @@ public class ClassTypeResolver
                 clazz = null;
             }
         }
-        
+
         // try as a nested class
         if ( clazz == null ) {
             clazz = importClass( className,
@@ -166,9 +166,9 @@ public class ClassTypeResolver
 
         // Now try the className with each of the given imports
         if ( clazz == null ) {
-            final Set<Class> validClazzCandidates = new HashSet<Class> ();
+            final Set<Class<?>> validClazzCandidates = new HashSet<Class<?>>();
 
-            final Iterator it = this.imports.iterator();
+            final Iterator<String> it = this.imports.iterator();
             while ( it.hasNext() ) {
                 clazz = importClass( (String) it.next(),
                                      className );
@@ -177,10 +177,9 @@ public class ClassTypeResolver
                 }
             }
 
-
             if ( validClazzCandidates.size() > 1 ) {
-                for ( Iterator<Class> validIt = validClazzCandidates.iterator(); validIt.hasNext(); ) {
-                    Class cls = validIt.next();
+                for ( Iterator<Class<?>> validIt = validClazzCandidates.iterator(); validIt.hasNext(); ) {
+                    Class<?> cls = validIt.next();
                     if ( this.defaultPackagName.equals( cls.getPackage().getName() ) ) {
                         validIt.remove();
                     }
@@ -191,16 +190,16 @@ public class ClassTypeResolver
             // the ambiguity
             if ( validClazzCandidates.size() > 1 ) {
                 final StringBuilder sb = new StringBuilder();
-                final Iterator clazzCandIter = validClazzCandidates.iterator();
+                final Iterator<Class<?>> clazzCandIter = validClazzCandidates.iterator();
                 while ( clazzCandIter.hasNext() ) {
                     if ( 0 != sb.length() ) {
                         sb.append( ", " );
                     }
-                    sb.append( ((Class) clazzCandIter.next()).getName() );
+                    sb.append( clazzCandIter.next().getName() );
                 }
                 throw new Error( "Unable to find ambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
             } else if ( validClazzCandidates.size() == 1 ) {
-                clazz = (Class) validClazzCandidates.toArray()[0];
+                clazz = (Class<?>) validClazzCandidates.toArray()[0];
             } else {
                 clazz = null;
             }
@@ -214,7 +213,7 @@ public class ClassTypeResolver
 
         // If array component class was found, try to resolve the array class of it
         if ( isArray ) {
-            if ( clazz == null && internalNamesMap.containsKey( className ) ) {
+            if ( isPrimitive ) {
                 arrayClassName.append( internalNamesMap.get( className ) );
             } else {
                 if ( clazz != null ) {
@@ -225,7 +224,9 @@ public class ClassTypeResolver
                 }
             }
             try {
-                clazz = Class.forName( arrayClassName.toString() );
+                clazz = Class.forName( arrayClassName.toString(),
+                                       true,
+                                       this.classLoader );
             } catch ( final ClassNotFoundException e ) {
                 clazz = null;
             }
@@ -236,22 +237,23 @@ public class ClassTypeResolver
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
         }
 
-        this.cachedImports.put( clazz.getSimpleName(), clazz );
-        
+        this.cachedImports.put( clazz.getSimpleName(),
+                                clazz );
+
         return clazz;
     }
-    
-    private Class importClass(final String importText,
-                              final String className) {
+
+    private Class<?> importClass( final String importText,
+                               final String className ) {
         String qualifiedClass = null;
-        Class clazz = null;
-        
+        Class<?> clazz = null;
+
         if ( importText.endsWith( "*" ) ) {
             qualifiedClass = importText.substring( 0,
                                                    importText.indexOf( '*' ) ) + className;
         } else if ( importText.endsWith( "." + className ) ) {
             qualifiedClass = importText;
-        } else if ( ( className.indexOf( '.' ) > 0 ) && (importText.endsWith( className.split( "\\." )[0] )) ) {
+        } else if ( (className.indexOf( '.' ) > 0) && (importText.endsWith( className.split( "\\." )[0] )) ) {
             qualifiedClass = importText + className.substring( className.indexOf( '.' ) );
         } else if ( importText.equals( className ) ) {
             qualifiedClass = importText;
@@ -281,7 +283,7 @@ public class ClassTypeResolver
 
         if ( clazz != null ) {
             if ( this.cachedImports == Collections.EMPTY_MAP ) {
-                this.cachedImports = new HashMap();
+                this.cachedImports = new HashMap<String, Class<?>>();
             }
 
             this.cachedImports.put( clazz.getSimpleName(),
@@ -291,9 +293,9 @@ public class ClassTypeResolver
         return clazz;
     }
 
-    private Class defaultClass(final String className) {
+    private Class<?> defaultClass( final String className ) {
         final String qualifiedClass = "java.lang." + className;
-        Class clazz = null;
+        Class<?> clazz = null;
         try {
             clazz = this.classLoader.loadClass( qualifiedClass );
         } catch ( final ClassNotFoundException e ) {
@@ -301,7 +303,7 @@ public class ClassTypeResolver
         }
         if ( clazz != null ) {
             if ( this.cachedImports == Collections.EMPTY_MAP ) {
-                this.cachedImports = new HashMap();
+                this.cachedImports = new HashMap<String, Class<?>>();
             }
             this.cachedImports.put( className,
                                     clazz );
@@ -317,16 +319,16 @@ public class ClassTypeResolver
      * (non-Javadoc)
      * @see org.drools.base.TypeResolver#getFullTypeName(java.lang.String)
      */
-    public String getFullTypeName(String shortName) throws ClassNotFoundException {
+    public String getFullTypeName( String shortName ) throws ClassNotFoundException {
 
-        Class clz = resolveType( shortName );
+        Class<?> clz = resolveType( shortName );
         if ( clz == null ) throw new IllegalArgumentException( "Unable to resolve the full type name for " + shortName );
         return clz.getName();
 
     }
-    
+
     public void clearImports() {
-        if( this.imports != Collections.EMPTY_SET) {
+        if ( this.imports != Collections.EMPTY_SET ) {
             this.imports.clear();
             this.cachedImports.clear();
         }
