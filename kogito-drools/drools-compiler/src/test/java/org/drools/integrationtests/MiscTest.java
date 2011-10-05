@@ -9271,6 +9271,22 @@ public class MiscTest {
     }
 
     @Test
+    public void testJBRULES3030() {
+        String str = "package org.drools\n" +
+                     "rule X\n" +
+                     "when\n" +
+                     "    $gp : GrandParent()" +
+                     "    $ch : ChildHolder( child == $gp )\n" +
+                     "then\n" +
+                     "end\n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        assertFalse( kbuilder.hasErrors() );
+    }
+
+    @Test
     public void testModifyJava() {
         String str = "package org.drools\n" +
                      "import java.util.List\n" +
