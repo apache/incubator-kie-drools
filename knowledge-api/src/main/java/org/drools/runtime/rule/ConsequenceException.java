@@ -52,6 +52,10 @@ public class ConsequenceException extends RuntimeException {
     public Activation getActivation() {
         return this.activation;
     }
+
+    public Rule getRule() {
+        return this.activation.getRule();
+    }
     
     public void printFacts(){
         printFacts( System.err );
