@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.instance.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -308,15 +309,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			if (node instanceof EventNode) {
 				if ("external".equals(((EventNode) node).getScope())) {
 					addEventListener(((EventNode) node).getType(),
-							new EventListener() {
-								public String[] getEventTypes() {
-									return null;
-								}
-
-								public void signalEvent(String type,
-										Object event) {
-								}
-							}, true);
+						new ExternalEventListener(), true);
 				}
 			}
 		}
@@ -432,4 +425,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
 	}
 
+	private class ExternalEventListener implements EventListener, Serializable {
+		private static final long serialVersionUID = 5L;
+		public String[] getEventTypes() {
+			return null;
+		}
+		public void signalEvent(String type,
+				Object event) {
+		}		
+	}
 }
