@@ -30,10 +30,10 @@ import org.drools.planner.core.move.Move;
 
 public class GenericChangeValueMove implements Move, TabuPropertyEnabled {
 
-    private Object planningEntity;
-    private FactHandle planningEntityFactHandle;
-    private PlanningVariableDescriptor planningVariableDescriptor;
-    private Object toPlanningValue;
+    private final Object planningEntity;
+    private final FactHandle planningEntityFactHandle;
+    private final PlanningVariableDescriptor planningVariableDescriptor;
+    private final Object toPlanningValue;
 
     public GenericChangeValueMove(Object planningEntity, FactHandle planningEntityFactHandle,
             PlanningVariableDescriptor planningVariableDescriptor, Object toPlanningValue) {
