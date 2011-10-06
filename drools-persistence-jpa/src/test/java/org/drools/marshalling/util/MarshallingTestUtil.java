@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -188,7 +189,7 @@ public class MarshallingTestUtil {
     
     public static void compareMarshallingDataFromTest(Class<?> testClass, String persistenceUnitName) { 
         if( DO_NOT_COMPARE_MAKING_BASE_DB ) { 
-            HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, false);
+            HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, true);
             List<MarshalledData> baseDataList = null;
             try { 
                 EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
@@ -200,6 +201,17 @@ public class MarshallingTestUtil {
             
             assertNotNull("Could not rerieve list of MarshalledData from base db.", baseDataList);
             assertTrue("List of MarshalledData from base db is empty.", ! baseDataList.isEmpty() );
+            
+            for( MarshalledData marshalledData : baseDataList ) { 
+                try { 
+                    logger.info( "Unmarshalling snapshot: " + marshalledData.getTestMethodAndSnapshotNum() );
+                    unmarshallSession(marshalledData.rulesByteArray);
+                } catch( Exception e ) { 
+                    e.printStackTrace();
+                    fail( "Exception thrown while unmarshalling [" + marshalledData.getTestMethodAndSnapshotNum() + "] data stored in base database" );
+                }
+                
+            }
             logger.info( "MarshalledData objects saved in base db:" );
             for( MarshalledData marshalledData : baseDataList ) { 
                logger.info( "- " + marshalledData); 
@@ -236,9 +248,6 @@ public class MarshallingTestUtil {
             }
             assertTrue("Not base marshalled data found", baseDataList != null && ! baseDataList.isEmpty() );
 
-            // OCRAM: compareMarshallingDataFromTest early exit: remove when done
-//            if( true ) { return; }
-            
             // Compare!
             compareTestAndBaseMarshallingData(testClass, testDataList, baseDataList);
         }
@@ -343,33 +352,68 @@ public class MarshallingTestUtil {
         
     }
 
+    /**
+     * We check three things: <ol>
+     * <li>Do the snapshots for a test method from this (test) class exist 
+     *     in the data saved from this test run?</li>
+     * <li>Are there the same number of snapshots for this test method in the data from this test run 
+     *     AND the data from the base being used? </li>
+     * <li>Do the snapshots for a test method from this (test) class exist
+     *     in the data from the base data being used?</li>
+     * </ul>
+     * <p/>
+     * When these checks fail, it will mean the following:<ol>
+     * <li>The test method existed when the base was made (in the past), but not in the current version of the code.</li>
+     * <li>The test method exists now and existed when the base was made -- but the test has changed in between 
+     *     such that there are more snapshots being made during the test.
+     *     <ul><li>If the test has changed, we can't trust the information anymore (or can't know that), 
+     *             so we don't do that.</li></ul>
+     *     </li> 
+     * <li>The test method did not exist when this base was made (in the past). If we're using the "current" version
+     *     of the base info, this means that we probably should recreate the base.</li>
+     * </ol>
+     * @param testClass The class of the test for which marshalled data is being compared.
+     * @param testSnapshotsPerTestMap The list of MarshalledData snapshots per test (method) from this test run.
+     * @param baseSnapshotsPerTestMap The list of MarshalledData snapshots per test (method) from the base db being used.
+     */
     private static void sanityCheckMarshalledData(Class<?> testClass, HashMap<String, List<MarshalledData>> testSnapshotsPerTestMap,
         HashMap<String, List<MarshalledData>> baseSnapshotsPerTestMap ) {     
             
-        // OCRAM: Should these be the same? If so, check!
-        Set<String> baseTestMethods = baseSnapshotsPerTestMap.keySet(); 
-        Set<String> testTestMethods = testSnapshotsPerTestMap.keySet();
+        Set<String> testTestMethods = new HashSet<String>(testSnapshotsPerTestMap.keySet());
 
-        for( String baseTestMethod : baseTestMethods ) { 
-            if( testSnapshotsPerTestMap.get(baseTestMethod) == null ) { 
+        for( String baseTestMethod : baseSnapshotsPerTestMap.keySet() ) { 
+            // 1. In this base db, but NOT in this test run!!
+            if( ! testTestMethods.contains(baseTestMethod) ) { 
                 logger.error("Marshalled data snapshots for test " + baseTestMethod 
                         + " exist in the base db, but not in the test db generated by this test run!");
+                baseSnapshotsPerTestMap.keySet().remove(baseTestMethod);
             }
             else { 
+                // This is just to make sure we can do the next check.
+                // If this fails, something really crazy is going on in the code.. (retrieved from the database.. but didn't ??)
                Assert.assertNotNull("Empty list of marshalled data snapshots in base for " + baseTestMethod, 
                        baseSnapshotsPerTestMap.get(baseTestMethod));
-               Assert.assertEquals("Unequal number of marshalled data snapshots for test " + baseTestMethod 
-                       + ": unable to compare marshalled data compatibility for this test.", 
-                       baseSnapshotsPerTestMap.get(baseTestMethod).size(), testSnapshotsPerTestMap.get(baseTestMethod).size());
+               
+               // 2. This means that the test has changed somehow (between when the base db was made and this test run).
+               if( baseSnapshotsPerTestMap.get(baseTestMethod).size() != testSnapshotsPerTestMap.get(baseTestMethod).size() ) { 
+                   logger.error("Test has changed: unequal number of marshalled data snapshots for test " + baseTestMethod );
+                   if( testSnapshotsPerTestMap.remove(baseTestMethod) != null ) { 
+                       logger.warn( "Removing data and NOT comparing data for test " + baseTestMethod );
+                       baseSnapshotsPerTestMap.remove(baseTestMethod);
+                   }
+               }
+              
                testTestMethods.remove(baseTestMethod);
             }
         }
-        
+       
+        // 3. In this test run, but NOT in the base db!!
         for( String testMethod : testTestMethods ) { 
-            logger.error("Marshalled data snapshots for test " + testMethod + " have not been added to the base db yet.");
+            logger.info("Marshalled data snapshots for test " + testMethod + " do not exist in this base db." );
+            testSnapshotsPerTestMap.keySet().remove(testMethod);
         }
     }
-
+    
     /**
      * This class extracts the following data structure: 
      * - For every test method in the given test class: 

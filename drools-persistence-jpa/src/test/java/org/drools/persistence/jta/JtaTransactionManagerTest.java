@@ -152,6 +152,7 @@ public class JtaTransactionManagerTest {
         
         boolean rollBackExceptionthrown = false;
         try { 
+            logger.info("The following " + IllegalStateException.class.getSimpleName() + " SHOULD be thrown.");
             tx.commit();
         }
         catch( Exception e ) { 

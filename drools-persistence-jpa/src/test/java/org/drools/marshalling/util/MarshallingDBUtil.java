@@ -19,7 +19,13 @@ import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -217,16 +223,19 @@ public class MarshallingDBUtil {
             return null;
         }
     
-        String dbPath = generatePathToTestDb(testClass);
+        String tempDbPath = generatePathToTestDb(testClass);
         if( useBaseDb ) { 
-            dbPath = dbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
+            tempDbPath = tempDbPath.replace(MARSHALLING_TEST_DB, MARSHALLING_BASE_DB);
+            String thisDbPath = tempDbPath;
             if( baseDbVer != null && baseDbVer.length() > 0) { 
-                dbPath.replace("current", baseDbVer);
+                thisDbPath = thisDbPath.replace("current", baseDbVer);
             }
+            tempDbPath = tempDbPath.replace("-current", "");
+            copyH2DbFile(thisDbPath, tempDbPath );
         }
         
         String jdbcURLBase = dsProps.getProperty("url");
-        String jdbcUrl =  jdbcURLBase + dbPath;
+        String jdbcUrl =  jdbcURLBase + tempDbPath;
     
         // Setup the datasource
         PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
@@ -243,4 +252,26 @@ public class MarshallingDBUtil {
         return testContext;
     }
     
+    
+    private static void copyH2DbFile(String source, String dest) {
+        source += ".h2.db";
+        dest += ".h2.db";
+        try {
+            File sourceFile = new File(source);
+            File destFile = new File(dest);
+            InputStream in = new FileInputStream(sourceFile);
+        
+            OutputStream out = new FileOutputStream(destFile);
+
+            byte[] buf = new byte[1024];
+            for( int len = in.read(buf); len  > 0; len = in.read(buf) ){
+                out.write(buf, 0, len);
+            }
+            in.close();
+            out.close();
+        }
+        catch( Exception e ){
+            fail("Unable to copy " + source + " to " + dest + ": " + e.getMessage() );
+        }
+    } 
 }

@@ -45,13 +45,13 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
     private EntityManagerFactory emf;
     // OCRAM: processInstance.. and WorkItem.. 
     private EntityManager em;
-    private HashMap<SessionInfo, byte []> managedSessionInfoDataMap;
-    private HashMap<WorkItemInfo, byte []> managedWorkItemInfoDataMap;
-    private HashMap<Object, byte []> managedProcessInstanceInfoDataMap;
+    private static HashMap<SessionInfo, byte []> managedSessionInfoDataMap;
+    private static HashMap<WorkItemInfo, byte []> managedWorkItemInfoDataMap;
+    private static HashMap<Object, byte []> managedProcessInstanceInfoDataMap;
     
-    private HashMap<String, byte[]> lastSessionMarshalledDataForTestMethodMap;
-    private HashMap<String, byte[]> lastWorkItemMarshalledDataForTestMethodMap;
-    private HashMap<String, byte[]> lastProcessInstanceMarshalledDataForTestMethodMap;
+    private static HashMap<String, byte[]> lastSessionMarshalledDataForTestMethodMap;
+    private static HashMap<String, byte[]> lastWorkItemMarshalledDataForTestMethodMap;
+    private static HashMap<String, byte[]> lastProcessInstanceMarshalledDataForTestMethodMap;
         
     /**
      * This method creates a proxy for either a {@link EntityManagerFactory} or a {@link EntityManager} instance. 
@@ -111,7 +111,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         }
     }
 
-    private void lazyInitializeStateMaps(Object [] args) { 
+    private synchronized void lazyInitializeStateMaps(Object [] args) { 
         if( args == null || args.length == 0 ) { 
             return;
         }

@@ -47,32 +47,35 @@ import org.junit.Test;
 public class MakeSureUtilsWorkTest {
 
     @Test
-    @Ignore
-    public void listBaseFiles() { 
-        String path = generatePathToTestDb(this.getClass());
-        path = path.replace(File.separatorChar + "testData", "");
-        File marshallingDir = new File(path);
-        String [] dbFiles = marshallingDir.list();
-        assertTrue("No files found in marshalling directory!", dbFiles != null && dbFiles.length > 0 );
-        for(int i = 0; i < dbFiles.length; ++i ) { 
-            if( dbFiles[i].startsWith("baseData") ) { 
-                String ver = dbFiles[i];
-                ver = ver.replace(".h2.db", "");
-                ver = ver.replace("baseData", "");
-                ver = ver.replace("-", "");
-                if( ver.length() == 0 ) { 
-                    ver = "current";
-                }
-                out.println(ver + ": " + dbFiles[i]);
-            }
+    public void testUnmarshallingMarshalledData() { 
+        HashMap<String, Object> testContext = null;
+        List<MarshalledData> marshalledDataList = null;
+        try { 
+            testContext = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
+            EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
+            marshalledDataList = retrieveMarshallingData(emf);
         }
+        finally { 
+            tearDown(testContext);
+        }
+
+        for( MarshalledData marshalledData : marshalledDataList ) { 
+            try { 
+                unmarshallSession(marshalledData.rulesByteArray); 
+                out.println("- " + marshalledData.getTestMethodAndSnapshotNum() );
+            }
+            catch( Exception e ) { 
+                out.println("X:" + marshalledData.getTestMethodAndSnapshotNum() );
+            }
+        } 
     }
     
     @Test
     @Ignore
     public void testUnmarshallingSpecificMarshalledData() { 
         String testMethodAndSnapNum 
-            = "org.drools.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
+            = "org.drools.persistence.session.RuleFlowGroupRollbackTest.testRuleFlowGroupRollback:1";
+//            = "org.drools.timer.integrationtests.TimerAndCalendarTest.testTimerRuleAfterIntReloadSession:1";
         HashMap<String, Object> testContext
             = initializeMarshalledDataEMF(DROOLS_PERSISTENCE_UNIT_NAME, this.getClass(), true);
         EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
@@ -83,7 +86,7 @@ public class MakeSureUtilsWorkTest {
                marshalledData = marshalledDataElement;
            }
         }
-   
+    
         try { 
             StatefulKnowledgeSession ksession = unmarshallSession(marshalledData.rulesByteArray); 
             assertNotNull(ksession);
