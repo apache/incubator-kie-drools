@@ -1,5 +1,6 @@
 package org.jbpm;
-import static org.jbpm.persistence.util.PersistenceUtil.*;
+
+import static org.drools.persistence.util.PersistenceUtil.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	    	ds1 = setupPoolingDataSource();
 	        ds1.init();
 	        
-	        emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
+	        emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
     	}
     }
 
@@ -180,7 +181,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			Environment env = null;
 			if (noCache) {
 				env = KnowledgeBaseFactory.newEnvironment();
-				emf = Persistence.createEntityManagerFactory( PERSISTENCE_UNIT_NAME );
+				emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
 			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 			    env.set(EnvironmentName.TRANSACTION_MANAGER,
 			        TransactionManagerServices.getTransactionManager());				
