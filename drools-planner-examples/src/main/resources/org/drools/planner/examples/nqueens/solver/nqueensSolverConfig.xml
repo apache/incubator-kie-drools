@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <environmentMode>DEBUG</environmentMode>
-
   <solutionClass>org.drools.planner.examples.nqueens.domain.NQueens</solutionClass>
   <planningEntityClass>org.drools.planner.examples.nqueens.domain.Queen</planningEntityClass>
+
   <scoreDrl>/org/drools/planner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
   <scoreDefinition>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>

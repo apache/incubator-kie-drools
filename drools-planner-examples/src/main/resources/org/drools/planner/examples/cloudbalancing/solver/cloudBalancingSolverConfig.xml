@@ -3,10 +3,12 @@
   <environmentMode>DEBUG</environmentMode>
   <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
   <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudAssignment</planningEntityClass>
+
   <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
+  
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
     <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
@@ -17,10 +19,10 @@
     </termination>
     <selector>
       <selector>
-        <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
       </selector>
       <selector>
-        <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
       </selector>
     </selector>
     <acceptor>

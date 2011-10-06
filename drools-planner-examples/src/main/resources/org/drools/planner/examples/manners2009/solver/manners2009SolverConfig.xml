@@ -3,10 +3,12 @@
   <!--<environmentMode>DEBUG</environmentMode>-->
   <solutionClass>org.drools.planner.examples.manners2009.domain.Manners2009</solutionClass>
   <planningEntityClass>org.drools.planner.examples.manners2009.domain.SeatDesignation</planningEntityClass>
+
   <scoreDrl>/org/drools/planner/examples/manners2009/solver/manners2009ScoreRules.drl</scoreDrl>
   <scoreDefinition>
     <scoreDefinitionType>SIMPLE</scoreDefinitionType>
   </scoreDefinition>
+
   <termination>
     <!--<terminationCompositionStyle>OR</terminationCompositionStyle>-->
     <!--<maximumMinutesSpend>1</maximumMinutesSpend>-->

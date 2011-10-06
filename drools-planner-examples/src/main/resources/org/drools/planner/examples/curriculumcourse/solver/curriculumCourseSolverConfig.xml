@@ -3,10 +3,12 @@
   <!--<environmentMode>DEBUG</environmentMode>-->
   <solutionClass>org.drools.planner.examples.curriculumcourse.domain.CurriculumCourseSchedule</solutionClass>
   <planningEntityClass>org.drools.planner.examples.curriculumcourse.domain.Lecture</planningEntityClass>
+
   <scoreDrl>/org/drools/planner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
   <scoreDefinition>
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
+
   <termination>
     <!--
       Official benchmark maximumSecondsSpend allowed on:
@@ -17,7 +19,6 @@
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
     <!--<maximumStepCount>100</maximumStepCount>-->
   </termination>
-
   <constructionHeuristic>
     <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
     <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
