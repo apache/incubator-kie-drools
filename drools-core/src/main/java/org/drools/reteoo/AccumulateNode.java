@@ -648,6 +648,7 @@ public class AccumulateNode extends BetaNode {
                                                                 workingMemory );
         // this is a quick hack for the 5.2 release
         Object result = this.accumulate.isMultiFunction() ? resultArray : resultArray[0];
+        if (result == null) return;
 
         if ( accctx.result == null ) {
             final InternalFactHandle handle = workingMemory.getFactHandleFactory().newFactHandle( result,

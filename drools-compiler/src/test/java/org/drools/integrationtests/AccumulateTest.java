@@ -814,18 +814,8 @@ public class AccumulateTest {
         wm.setGlobal( "results",
                       results );
 
-        try {
-            wm.insert( new Cheese( "stilton",
-                                   10 ) );
-
-            fail( "Should have raised an exception because accumulate is returning null" );
-        } catch ( RuntimeDroolsException rde ) {
-            // success, working fine
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            fail( "Should have raised a DroolsRuntimeException instead of " + e );
-        }
-
+        wm.insert( new Cheese( "stilton",
+                               10 ) );
     }
 
     @Test
@@ -1925,4 +1915,20 @@ public class AccumulateTest {
 
     }
 
+    @Test
+    public void testAccumulateWithNull() {
+        String drl = "rule foo\n" +
+                "when\n" +
+                "Object() from accumulate( Object(),\n" +
+                "init( Object res = null; )\n" +
+                "action( res = null; )\n" +
+                "result( res ) )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+        ksession.dispose();
+    }
 }
