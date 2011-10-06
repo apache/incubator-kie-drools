@@ -15,7 +15,7 @@
 
     <solver>
       <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-      <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudAssignment</planningEntityClass>
+      <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment</planningEntityClass>
       <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
@@ -84,7 +84,7 @@
             <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessAssignmentSwitchMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>
@@ -113,7 +113,7 @@
             <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
           </selector>
           <selector>
-            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudAssignmentSwitchMoveFactory</moveFactoryClass>
+            <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudProcessAssignmentSwitchMoveFactory</moveFactoryClass>
           </selector>
         </selector>
         <acceptor>

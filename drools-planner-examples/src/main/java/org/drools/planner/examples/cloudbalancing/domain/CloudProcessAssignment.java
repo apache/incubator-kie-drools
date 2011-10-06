@@ -17,19 +17,18 @@
 package org.drools.planner.examples.cloudbalancing.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
-import org.drools.planner.examples.cloudbalancing.domain.solver.CloudAssignmentDifficultyComparator;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudProcessAssignmentDifficultyComparator;
 import org.drools.planner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
-@XStreamAlias("CloudAssignment")
-public class CloudAssignment extends AbstractPersistable {
+@PlanningEntity(difficultyComparatorClass = CloudProcessAssignmentDifficultyComparator.class)
+@XStreamAlias("CloudProcessAssignment")
+public class CloudProcessAssignment extends AbstractPersistable {
 
     private CloudProcess cloudProcess;
 
@@ -70,8 +69,8 @@ public class CloudAssignment extends AbstractPersistable {
         return cloudProcess.getMinimalNetworkBandwidth();
     }
 
-    public CloudAssignment clone() {
-        CloudAssignment clone = new CloudAssignment();
+    public CloudProcessAssignment clone() {
+        CloudProcessAssignment clone = new CloudProcessAssignment();
         clone.id = id;
         clone.cloudProcess = cloudProcess;
         clone.cloudComputer = cloudComputer;
@@ -86,8 +85,8 @@ public class CloudAssignment extends AbstractPersistable {
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CloudAssignment) {
-            CloudAssignment other = (CloudAssignment) o;
+        } else if (o instanceof CloudProcessAssignment) {
+            CloudProcessAssignment other = (CloudProcessAssignment) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(cloudProcess, other.cloudProcess)

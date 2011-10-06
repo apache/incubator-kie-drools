@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
@@ -143,11 +143,11 @@ public class CloudBalancingGenerator extends LoggingMain {
         cloudBalance.setId(0L);
         createCloudComputerList(cloudBalance,cloudComputerListSize);
         createCloudProcessList(cloudBalance, cloudProcessListSize);
-        createCloudAssignmentList(cloudBalance);
+        createCloudProcessAssignmentList(cloudBalance);
         logger.info("CloudBalance {} with {} computers and {} processes.",
                 cloudBalance.getCloudComputerList().size(), cloudBalance.getCloudProcessList().size());
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getCloudComputerList().size()).pow(
-                cloudBalance.getCloudAssignmentList().size());
+                cloudBalance.getCloudProcessAssignmentList().size());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
                 flooredPossibleSolutionSize, possibleSolutionSize);
@@ -226,19 +226,19 @@ public class CloudBalancingGenerator extends LoggingMain {
         return value;
     }
 
-    private void createCloudAssignmentList(CloudBalance cloudBalance) {
+    private void createCloudProcessAssignmentList(CloudBalance cloudBalance) {
         List<CloudProcess> cloudProcessList = cloudBalance.getCloudProcessList();
-        List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>(cloudProcessList.size());
+        List<CloudProcessAssignment> cloudProcessAssignmentList = new ArrayList<CloudProcessAssignment>(cloudProcessList.size());
         long id = 0L;
         for (CloudProcess cloudProcess : cloudProcessList) {
-            CloudAssignment cloudAssignment = new CloudAssignment();
-            cloudAssignment.setId(id);
-            cloudAssignment.setCloudProcess(cloudProcess);
+            CloudProcessAssignment cloudProcessAssignment = new CloudProcessAssignment();
+            cloudProcessAssignment.setId(id);
+            cloudProcessAssignment.setCloudProcess(cloudProcess);
             // Notice that we leave the PlanningVariable properties on null
-            cloudAssignmentList.add(cloudAssignment);
+            cloudProcessAssignmentList.add(cloudProcessAssignment);
             id++;
         }
-        cloudBalance.setCloudAssignmentList(cloudAssignmentList);
+        cloudBalance.setCloudProcessAssignmentList(cloudProcessAssignmentList);
     }
 
 }

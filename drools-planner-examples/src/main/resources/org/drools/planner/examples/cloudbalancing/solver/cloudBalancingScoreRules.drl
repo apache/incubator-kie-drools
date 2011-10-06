@@ -21,10 +21,10 @@ import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalcul
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -36,7 +36,7 @@ rule "minimalCpuPowerTotal"
     when
         $cloudComputer : CloudComputer($cpuPower : cpuPower)
         $minimalCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
-            CloudAssignment(
+            CloudProcessAssignment(
                 cloudComputer == $cloudComputer,
                 $minimalCpuPower : minimalCpuPower),
             sum($minimalCpuPower)
@@ -51,7 +51,7 @@ rule "minimalMemoryTotal"
     when
         $cloudComputer : CloudComputer($memory : memory)
         $minimalMemoryTotal : Number(intValue > $memory) from accumulate(
-            CloudAssignment(
+            CloudProcessAssignment(
                 cloudComputer == $cloudComputer,
                 $minimalMemory : minimalMemory),
             sum($minimalMemory)
@@ -66,7 +66,7 @@ rule "minimalNetworkBandwidthTotal"
     when
         $cloudComputer : CloudComputer($networkBandwidth : networkBandwidth)
         $minimalNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
-            CloudAssignment(
+            CloudProcessAssignment(
                 cloudComputer == $cloudComputer,
                 $minimalNetworkBandwidth : minimalNetworkBandwidth),
             sum($minimalNetworkBandwidth)
@@ -84,7 +84,7 @@ end
 rule "cloudComputerCost"
     when
         $cloudComputer : CloudComputer($cost : cost)
-        exists CloudAssignment(cloudComputer == $cloudComputer)
+        exists CloudProcessAssignment(cloudComputer == $cloudComputer)
     then
         insertLogical(new IntConstraintOccurrence("cloudComputerCost", ConstraintType.NEGATIVE_SOFT,
                 $cost,

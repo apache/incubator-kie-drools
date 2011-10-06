@@ -25,33 +25,33 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.localsearch.decider.acceptor.tabu.TabuPropertyEnabled;
 import org.drools.planner.core.move.Move;
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
 public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
 
-    private CloudAssignment cloudAssignment;
+    private CloudProcessAssignment cloudProcessAssignment;
     private CloudComputer toCloudComputer;
 
-    public CloudComputerChangeMove(CloudAssignment cloudAssignment, CloudComputer toCloudComputer) {
-        this.cloudAssignment = cloudAssignment;
+    public CloudComputerChangeMove(CloudProcessAssignment cloudProcessAssignment, CloudComputer toCloudComputer) {
+        this.cloudProcessAssignment = cloudProcessAssignment;
         this.toCloudComputer = toCloudComputer;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(cloudAssignment.getCloudComputer(), toCloudComputer);
+        return !ObjectUtils.equals(cloudProcessAssignment.getCloudComputer(), toCloudComputer);
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new CloudComputerChangeMove(cloudAssignment, cloudAssignment.getCloudComputer());
+        return new CloudComputerChangeMove(cloudProcessAssignment, cloudProcessAssignment.getCloudComputer());
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, cloudAssignment, toCloudComputer);
+        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, cloudProcessAssignment, toCloudComputer);
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Collections.singletonList(cloudAssignment);
+        return Collections.singletonList(cloudProcessAssignment);
     }
 
     public boolean equals(Object o) {
@@ -60,7 +60,7 @@ public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
         } else if (o instanceof CloudComputerChangeMove) {
             CloudComputerChangeMove other = (CloudComputerChangeMove) o;
             return new EqualsBuilder()
-                    .append(cloudAssignment, other.cloudAssignment)
+                    .append(cloudProcessAssignment, other.cloudProcessAssignment)
                     .append(toCloudComputer, other.toCloudComputer)
                     .isEquals();
         } else {
@@ -70,13 +70,13 @@ public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(cloudAssignment)
+                .append(cloudProcessAssignment)
                 .append(toCloudComputer)
                 .toHashCode();
     }
 
     public String toString() {
-        return cloudAssignment + " => " + toCloudComputer;
+        return cloudProcessAssignment + " => " + toCloudComputer;
     }
 
 }

@@ -39,7 +39,7 @@ import org.drools.WorkingMemory;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.core.solver.ProblemFactChange;
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
@@ -58,7 +58,7 @@ public class CloudBalancingPanel extends SolutionPanel {
 
     private CloudComputerPanel unassignedPanel;
     private Map<CloudComputer, CloudComputerPanel> cloudComputerToPanelMap;
-    private Map<CloudAssignment, CloudComputerPanel> cloudAssignmentToPanelMap;
+    private Map<CloudProcessAssignment, CloudComputerPanel> cloudProcessAssignmentToPanelMap;
 
     public CloudBalancingPanel() {
         GroupLayout layout = new GroupLayout(this);
@@ -95,7 +95,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         computersPanel.add(unassignedPanel);
         cloudComputerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
         cloudComputerToPanelMap.put(null, unassignedPanel);
-        cloudAssignmentToPanelMap = new LinkedHashMap<CloudAssignment, CloudComputerPanel>();
+        cloudProcessAssignmentToPanelMap = new LinkedHashMap<CloudProcessAssignment, CloudComputerPanel>();
         return computersPanel;
     }
 
@@ -111,8 +111,8 @@ public class CloudBalancingPanel extends SolutionPanel {
         }
         cloudComputerToPanelMap.clear();
         cloudComputerToPanelMap.put(null, unassignedPanel);
-        cloudAssignmentToPanelMap.clear();
-        unassignedPanel.clearCloudAssignments();
+        cloudProcessAssignmentToPanelMap.clear();
+        unassignedPanel.clearCloudProcessAssignments();
         updatePanel(solution);
     }
 
@@ -130,27 +130,27 @@ public class CloudBalancingPanel extends SolutionPanel {
                 cloudComputerToPanelMap.put(cloudComputer, cloudComputerPanel);
             }
         }
-        Set<CloudAssignment> deadCloudAssignmentSet = new LinkedHashSet<CloudAssignment>(
-                cloudAssignmentToPanelMap.keySet());
-        for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
-            deadCloudAssignmentSet.remove(cloudAssignment);
-            CloudComputerPanel cloudComputerPanel = cloudAssignmentToPanelMap.get(cloudAssignment);
-            CloudComputer cloudComputer = cloudAssignment.getCloudComputer();
+        Set<CloudProcessAssignment> deadCloudProcessAssignmentSet = new LinkedHashSet<CloudProcessAssignment>(
+                cloudProcessAssignmentToPanelMap.keySet());
+        for (CloudProcessAssignment cloudProcessAssignment : cloudBalance.getCloudProcessAssignmentList()) {
+            deadCloudProcessAssignmentSet.remove(cloudProcessAssignment);
+            CloudComputerPanel cloudComputerPanel = cloudProcessAssignmentToPanelMap.get(cloudProcessAssignment);
+            CloudComputer cloudComputer = cloudProcessAssignment.getCloudComputer();
             if (cloudComputerPanel != null
                     && !ObjectUtils.equals(cloudComputerPanel.getCloudComputer(), cloudComputer)) {
-                cloudAssignmentToPanelMap.remove(cloudAssignment);
-                cloudComputerPanel.removeCloudAssignment(cloudAssignment);
+                cloudProcessAssignmentToPanelMap.remove(cloudProcessAssignment);
+                cloudComputerPanel.removeCloudProcessAssignment(cloudProcessAssignment);
                 cloudComputerPanel = null;
             }
             if (cloudComputerPanel == null) {
                 cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
-                cloudComputerPanel.addCloudAssignment(cloudAssignment);
-                cloudAssignmentToPanelMap.put(cloudAssignment, cloudComputerPanel);
+                cloudComputerPanel.addCloudProcessAssignment(cloudProcessAssignment);
+                cloudProcessAssignmentToPanelMap.put(cloudProcessAssignment, cloudComputerPanel);
             }
         }
-        for (CloudAssignment deadCloudAssignment : deadCloudAssignmentSet) {
-            CloudComputerPanel deadCloudComputerPanel = cloudAssignmentToPanelMap.remove(deadCloudAssignment);
-            deadCloudComputerPanel.removeCloudAssignment(deadCloudAssignment);
+        for (CloudProcessAssignment deadCloudProcessAssignment : deadCloudProcessAssignmentSet) {
+            CloudComputerPanel deadCloudComputerPanel = cloudProcessAssignmentToPanelMap.remove(deadCloudProcessAssignment);
+            deadCloudComputerPanel.removeCloudProcessAssignment(deadCloudProcessAssignment);
         }
         for (CloudComputer deadCloudComputer : deadCloudComputerSet) {
             CloudComputerPanel deadCloudComputerPanel = cloudComputerToPanelMap.remove(deadCloudComputer);
@@ -165,11 +165,11 @@ public class CloudBalancingPanel extends SolutionPanel {
                 CloudBalance cloudBalance = (CloudBalance) solutionDirector.getWorkingSolution();
                 WorkingMemory workingMemory = solutionDirector.getWorkingMemory();
                 // First remove the planning fact from all planning entities that use it
-                for (CloudAssignment cloudAssignment : cloudBalance.getCloudAssignmentList()) {
-                    if (ObjectUtils.equals(cloudAssignment.getCloudComputer(), cloudComputer)) {
-                        FactHandle cloudAssignmentHandle = workingMemory.getFactHandle(cloudAssignment);
-                        cloudAssignment.setCloudComputer(null);
-                        workingMemory.retract(cloudAssignmentHandle);
+                for (CloudProcessAssignment cloudProcessAssignment : cloudBalance.getCloudProcessAssignmentList()) {
+                    if (ObjectUtils.equals(cloudProcessAssignment.getCloudComputer(), cloudComputer)) {
+                        FactHandle cloudProcessAssignmentHandle = workingMemory.getFactHandle(cloudProcessAssignment);
+                        cloudProcessAssignment.setCloudComputer(null);
+                        workingMemory.retract(cloudProcessAssignmentHandle);
                     }
                 }
                 // Next remove it the planning fact itself
@@ -187,24 +187,24 @@ public class CloudBalancingPanel extends SolutionPanel {
         updatePanel(solutionBusiness.getSolution());
     }
 
-    private class CloudAssignmentAction extends AbstractAction {
+    private class CloudProcessAssignmentAction extends AbstractAction {
 
-        private CloudAssignment cloudAssignment;
+        private CloudProcessAssignment cloudProcessAssignment;
 
-        public CloudAssignmentAction(CloudAssignment cloudAssignment) {
+        public CloudProcessAssignmentAction(CloudProcessAssignment cloudProcessAssignment) {
             super("=>");
-            this.cloudAssignment = cloudAssignment;
+            this.cloudProcessAssignment = cloudProcessAssignment;
         }
 
         public void actionPerformed(ActionEvent e) {
             List<CloudComputer> cloudComputerList = getCloudBalance().getCloudComputerList();
             JComboBox cloudComputerListField = new JComboBox(cloudComputerList.toArray());
-            cloudComputerListField.setSelectedItem(cloudAssignment.getCloudComputer());
+            cloudComputerListField.setSelectedItem(cloudProcessAssignment.getCloudComputer());
             int result = JOptionPane.showConfirmDialog(CloudBalancingPanel.this.getRootPane(), cloudComputerListField,
                     "Select cloud computer", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toCloudComputer = (CloudComputer) cloudComputerListField.getSelectedItem();
-                solutionBusiness.doMove(new CloudComputerChangeMove(cloudAssignment, toCloudComputer));
+                solutionBusiness.doMove(new CloudComputerChangeMove(cloudProcessAssignment, toCloudComputer));
                 solverAndPersistenceFrame.resetScreen();
             }
         }

@@ -34,7 +34,7 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
     private List<CloudComputer> cloudComputerList;
     private List<CloudProcess> cloudProcessList;
 
-    private List<CloudAssignment> cloudAssignmentList;
+    private List<CloudProcessAssignment> cloudProcessAssignmentList;
 
     private HardAndSoftScore score;
 
@@ -55,12 +55,12 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
     }
 
     @PlanningEntityCollectionProperty
-    public List<CloudAssignment> getCloudAssignmentList() {
-        return cloudAssignmentList;
+    public List<CloudProcessAssignment> getCloudProcessAssignmentList() {
+        return cloudProcessAssignmentList;
     }
 
-    public void setCloudAssignmentList(List<CloudAssignment> cloudAssignmentList) {
-        this.cloudAssignmentList = cloudAssignmentList;
+    public void setCloudProcessAssignmentList(List<CloudProcessAssignment> cloudProcessAssignmentList) {
+        this.cloudProcessAssignmentList = cloudProcessAssignmentList;
     }
 
     public HardAndSoftScore getScore() {
@@ -75,25 +75,25 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(cloudComputerList);
         facts.addAll(cloudProcessList);
-        // Do not add the planning entity's (cloudAssignmentList) because that will be done automatically
+        // Do not add the planning entity's (cloudProcessAssignmentList) because that will be done automatically
         return facts;
     }
 
     /**
-     * Clone will only deep copy the {@link #cloudAssignmentList}.
+     * Clone will only deep copy the {@link #cloudProcessAssignmentList}.
      */
     public CloudBalance cloneSolution() {
         CloudBalance clone = new CloudBalance();
         clone.id = id;
         clone.cloudComputerList = cloudComputerList;
         clone.cloudProcessList = cloudProcessList;
-        List<CloudAssignment> clonedCloudAssignmentList = new ArrayList<CloudAssignment>(
-                cloudAssignmentList.size());
-        for (CloudAssignment cloudAssignment : cloudAssignmentList) {
-            CloudAssignment clonedCloudAssignment = cloudAssignment.clone();
-            clonedCloudAssignmentList.add(clonedCloudAssignment);
+        List<CloudProcessAssignment> clonedCloudProcessAssignmentList = new ArrayList<CloudProcessAssignment>(
+                cloudProcessAssignmentList.size());
+        for (CloudProcessAssignment cloudProcessAssignment : cloudProcessAssignmentList) {
+            CloudProcessAssignment clonedCloudProcessAssignment = cloudProcessAssignment.clone();
+            clonedCloudProcessAssignmentList.add(clonedCloudProcessAssignment);
         }
-        clone.cloudAssignmentList = clonedCloudAssignmentList;
+        clone.cloudProcessAssignmentList = clonedCloudProcessAssignmentList;
         clone.score = score;
         return clone;
     }
@@ -106,14 +106,14 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
             return false;
         } else {
             CloudBalance other = (CloudBalance) o;
-            if (cloudAssignmentList.size() != other.cloudAssignmentList.size()) {
+            if (cloudProcessAssignmentList.size() != other.cloudProcessAssignmentList.size()) {
                 return false;
             }
-            for (Iterator<CloudAssignment> it = cloudAssignmentList.iterator(), otherIt = other.cloudAssignmentList.iterator(); it.hasNext();) {
-                CloudAssignment cloudAssignment = it.next();
-                CloudAssignment otherCloudAssignment = otherIt.next();
+            for (Iterator<CloudProcessAssignment> it = cloudProcessAssignmentList.iterator(), otherIt = other.cloudProcessAssignmentList.iterator(); it.hasNext();) {
+                CloudProcessAssignment cloudProcessAssignment = it.next();
+                CloudProcessAssignment otherCloudProcessAssignment = otherIt.next();
                 // Notice: we don't use equals()
-                if (!cloudAssignment.solutionEquals(otherCloudAssignment)) {
+                if (!cloudProcessAssignment.solutionEquals(otherCloudProcessAssignment)) {
                     return false;
                 }
             }
@@ -123,9 +123,9 @@ public class CloudBalance extends AbstractPersistable implements Solution<HardAn
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (CloudAssignment cloudAssignment : cloudAssignmentList) {
+        for (CloudProcessAssignment cloudProcessAssignment : cloudProcessAssignmentList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(cloudAssignment.solutionHashCode());
+            hashCodeBuilder.append(cloudProcessAssignment.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }

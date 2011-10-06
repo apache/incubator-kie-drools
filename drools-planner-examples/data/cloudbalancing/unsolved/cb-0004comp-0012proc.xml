@@ -104,54 +104,54 @@
       <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
     </CloudProcess>
   </cloudProcessList>
-  <cloudAssignmentList id="20">
-    <CloudAssignment id="21">
+  <cloudProcessAssignmentList id="20">
+    <CloudProcessAssignment id="21">
       <id>0</id>
       <cloudProcess reference="8"/>
-    </CloudAssignment>
-    <CloudAssignment id="22">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="22">
       <id>1</id>
       <cloudProcess reference="9"/>
-    </CloudAssignment>
-    <CloudAssignment id="23">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="23">
       <id>2</id>
       <cloudProcess reference="10"/>
-    </CloudAssignment>
-    <CloudAssignment id="24">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="24">
       <id>3</id>
       <cloudProcess reference="11"/>
-    </CloudAssignment>
-    <CloudAssignment id="25">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="25">
       <id>4</id>
       <cloudProcess reference="12"/>
-    </CloudAssignment>
-    <CloudAssignment id="26">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="26">
       <id>5</id>
       <cloudProcess reference="13"/>
-    </CloudAssignment>
-    <CloudAssignment id="27">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="27">
       <id>6</id>
       <cloudProcess reference="14"/>
-    </CloudAssignment>
-    <CloudAssignment id="28">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="28">
       <id>7</id>
       <cloudProcess reference="15"/>
-    </CloudAssignment>
-    <CloudAssignment id="29">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="29">
       <id>8</id>
       <cloudProcess reference="16"/>
-    </CloudAssignment>
-    <CloudAssignment id="30">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="30">
       <id>9</id>
       <cloudProcess reference="17"/>
-    </CloudAssignment>
-    <CloudAssignment id="31">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="31">
       <id>10</id>
       <cloudProcess reference="18"/>
-    </CloudAssignment>
-    <CloudAssignment id="32">
+    </CloudProcessAssignment>
+    <CloudProcessAssignment id="32">
       <id>11</id>
       <cloudProcess reference="19"/>
-    </CloudAssignment>
-  </cloudAssignmentList>
+    </CloudProcessAssignment>
+  </cloudProcessAssignmentList>
 </CloudBalance>

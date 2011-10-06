@@ -34,14 +34,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
 public class CloudComputerPanel extends JPanel {
 
     private final CloudBalancingPanel cloudBalancingPanel;
     private CloudComputer cloudComputer;
-    private List<CloudAssignment> cloudAssignmentList = new ArrayList<CloudAssignment>();
+    private List<CloudProcessAssignment> cloudProcessAssignmentList = new ArrayList<CloudProcessAssignment>();
 
     private JLabel computerLabel;
     private JButton deleteButton;
@@ -140,26 +140,26 @@ public class CloudComputerPanel extends JPanel {
         add(networkBandwidthBar);
         detailsButton = new JButton(new AbstractAction("Details") {
             public void actionPerformed(ActionEvent e) {
-                CloudAssignmentListDialog cloudAssignmentListDialog = new CloudAssignmentListDialog();
-                cloudAssignmentListDialog.setLocationRelativeTo(getRootPane());
-                cloudAssignmentListDialog.setVisible(true);
+                CloudProcessAssignmentListDialog cloudProcessAssignmentListDialog = new CloudProcessAssignmentListDialog();
+                cloudProcessAssignmentListDialog.setLocationRelativeTo(getRootPane());
+                cloudProcessAssignmentListDialog.setVisible(true);
             }
         });
         detailsButton.setEnabled(false);
         add(detailsButton);
     }
-    public void addCloudAssignment(CloudAssignment cloudAssignment) {
-        cloudAssignmentList.add(cloudAssignment);
+    public void addCloudProcessAssignment(CloudProcessAssignment cloudProcessAssignment) {
+        cloudProcessAssignmentList.add(cloudProcessAssignment);
         update();
     }
 
-    public void removeCloudAssignment(CloudAssignment cloudAssignment) {
-        cloudAssignmentList.remove(cloudAssignment);
+    public void removeCloudProcessAssignment(CloudProcessAssignment cloudProcessAssignment) {
+        cloudProcessAssignmentList.remove(cloudProcessAssignment);
         update();
     }
 
-    public void clearCloudAssignments() {
-        cloudAssignmentList.clear();
+    public void clearCloudProcessAssignments() {
+        cloudProcessAssignmentList.clear();
         update();
     }
 
@@ -171,16 +171,16 @@ public class CloudComputerPanel extends JPanel {
         int usedNetworkBandwidth = 0;
         networkBandwidthBar.clearProcessValues();
         int colorIndex = 0;
-        for (CloudAssignment cloudAssignment : cloudAssignmentList) {
-            usedCpuPower += cloudAssignment.getMinimalCpuPower();
-            cpuPowerBar.addProcessValue(cloudAssignment.getMinimalCpuPower());
-            usedMemory += cloudAssignment.getMinimalMemory();
-            memoryBar.addProcessValue(cloudAssignment.getMinimalMemory());
-            usedNetworkBandwidth += cloudAssignment.getMinimalNetworkBandwidth();
-            networkBandwidthBar.addProcessValue(cloudAssignment.getMinimalNetworkBandwidth());
+        for (CloudProcessAssignment cloudProcessAssignment : cloudProcessAssignmentList) {
+            usedCpuPower += cloudProcessAssignment.getMinimalCpuPower();
+            cpuPowerBar.addProcessValue(cloudProcessAssignment.getMinimalCpuPower());
+            usedMemory += cloudProcessAssignment.getMinimalMemory();
+            memoryBar.addProcessValue(cloudProcessAssignment.getMinimalMemory());
+            usedNetworkBandwidth += cloudProcessAssignment.getMinimalNetworkBandwidth();
+            networkBandwidthBar.addProcessValue(cloudProcessAssignment.getMinimalNetworkBandwidth());
             colorIndex = (colorIndex + 1) % CloudBalancingPanel.PROCESS_COLORS.length;
         }
-        boolean used = cloudAssignmentList.size() > 0;
+        boolean used = cloudProcessAssignmentList.size() > 0;
         updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
         updateBars(used);
     }
@@ -201,7 +201,7 @@ public class CloudComputerPanel extends JPanel {
     }
 
     private void updateBars(boolean used) {
-        numberOfProcessesLabel.setText("    " + cloudAssignmentList.size() + " processes");
+        numberOfProcessesLabel.setText("    " + cloudProcessAssignmentList.size() + " processes");
         numberOfProcessesLabel.setEnabled(used);
         cpuPowerBar.setEnabled(used);
         cpuPowerBar.repaint();
@@ -267,9 +267,9 @@ public class CloudComputerPanel extends JPanel {
 
     }
 
-    private class CloudAssignmentListDialog extends JDialog {
+    private class CloudProcessAssignmentListDialog extends JDialog {
 
-        public CloudAssignmentListDialog() {
+        public CloudProcessAssignmentListDialog() {
             setModal(true);
             setTitle(getComputerLabel());
             JPanel contentPanel = new JPanel();
@@ -307,18 +307,18 @@ public class CloudComputerPanel extends JPanel {
         private JPanel createAssignmentsPanel() {
             JPanel assignmentsPanel = new JPanel(new GridLayout(0, 5));
             int colorIndex = 0;
-            for (CloudAssignment cloudAssignment : cloudAssignmentList) {
-                JLabel cloudAssignmentLabel = new JLabel(cloudAssignment.getLabel());
-                cloudAssignmentLabel.setForeground(CloudBalancingPanel.PROCESS_COLORS[colorIndex]);
-                assignmentsPanel.add(cloudAssignmentLabel);
+            for (CloudProcessAssignment cloudProcessAssignment : cloudProcessAssignmentList) {
+                JLabel cloudProcessAssignmentLabel = new JLabel(cloudProcessAssignment.getLabel());
+                cloudProcessAssignmentLabel.setForeground(CloudBalancingPanel.PROCESS_COLORS[colorIndex]);
+                assignmentsPanel.add(cloudProcessAssignmentLabel);
 
-                JTextField cpuPowerField = new JTextField(cloudAssignment.getMinimalCpuPower() + " GHz");
+                JTextField cpuPowerField = new JTextField(cloudProcessAssignment.getMinimalCpuPower() + " GHz");
                 cpuPowerField.setEditable(false);
                 assignmentsPanel.add(cpuPowerField);
-                JTextField memoryField = new JTextField(cloudAssignment.getMinimalMemory() + " GB");
+                JTextField memoryField = new JTextField(cloudProcessAssignment.getMinimalMemory() + " GB");
                 memoryField.setEditable(false);
                 assignmentsPanel.add(memoryField);
-                JTextField networkBandwidthField = new JTextField(cloudAssignment.getMinimalNetworkBandwidth() + " GB");
+                JTextField networkBandwidthField = new JTextField(cloudProcessAssignment.getMinimalNetworkBandwidth() + " GB");
                 networkBandwidthField.setEditable(false);
                 assignmentsPanel.add(networkBandwidthField);
                 assignmentsPanel.add(new JLabel(""));
