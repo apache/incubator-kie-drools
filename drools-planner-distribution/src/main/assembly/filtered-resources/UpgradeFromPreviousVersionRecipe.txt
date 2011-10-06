@@ -1178,3 +1178,6 @@ After in log4j*.xml:
   <category name="org.drools.planner">
     <priority value="debug" />
   </category>
+
+From 5.3.0.Final to 5.4.0.Beta1
+-------------------------------
