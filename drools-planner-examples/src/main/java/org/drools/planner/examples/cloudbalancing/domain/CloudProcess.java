@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CloudProcess")
-public class CloudProcess extends AbstractPersistable implements Comparable<CloudProcess> {
+public class CloudProcess extends AbstractPersistable {
 
     private int minimalCpuPower; // in gigahertz
     private int minimalMemory; // in gigabyte RAM
@@ -57,14 +57,6 @@ public class CloudProcess extends AbstractPersistable implements Comparable<Clou
 
     public String getLabel() {
         return "Process " + id;
-    }
-
-    public int compareTo(CloudProcess other) {
-        return new CompareToBuilder()
-                .append(minimalCpuPower, other.minimalCpuPower)
-                .append(minimalMemory, other.minimalMemory)
-                .append(minimalNetworkBandwidth, other.minimalNetworkBandwidth)
-                .toComparison();
     }
 
 }

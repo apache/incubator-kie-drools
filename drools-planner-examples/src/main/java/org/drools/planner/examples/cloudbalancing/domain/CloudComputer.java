@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CloudComputer")
-public class CloudComputer extends AbstractPersistable implements Comparable<CloudComputer> {
+public class CloudComputer extends AbstractPersistable {
 
     private int cpuPower; // in gigahertz
     private int memory; // in gigabyte RAM
@@ -66,14 +66,6 @@ public class CloudComputer extends AbstractPersistable implements Comparable<Clo
 
     public String getLabel() {
         return "Computer " + id;
-    }
-
-    public int compareTo(CloudComputer other) {
-        return new CompareToBuilder()
-                .append(cpuPower, other.cpuPower)
-                .append(memory, other.memory)
-                .append(networkBandwidth, other.networkBandwidth)
-                .toComparison();
     }
 
 }

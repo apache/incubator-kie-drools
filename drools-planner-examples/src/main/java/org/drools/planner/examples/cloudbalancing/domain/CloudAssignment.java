@@ -29,7 +29,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity(difficultyComparatorClass = CloudAssignmentDifficultyComparator.class)
 @XStreamAlias("CloudAssignment")
-public class CloudAssignment extends AbstractPersistable implements Comparable<CloudAssignment> {
+public class CloudAssignment extends AbstractPersistable {
 
     private CloudProcess cloudProcess;
 
@@ -68,13 +68,6 @@ public class CloudAssignment extends AbstractPersistable implements Comparable<C
 
     public int getMinimalNetworkBandwidth() {
         return cloudProcess.getMinimalNetworkBandwidth();
-    }
-
-    public int compareTo(CloudAssignment other) {
-        return new CompareToBuilder()
-                .append(cloudProcess, other.cloudProcess)
-                .append(cloudComputer, other.cloudComputer)
-                .toComparison();
     }
 
     public CloudAssignment clone() {
