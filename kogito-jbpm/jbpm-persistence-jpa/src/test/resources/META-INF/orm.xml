@@ -8,9 +8,9 @@
 select 
     processInstanceInfo.processInstanceId
 from 
-    ProcessInstanceInfo processInstanceInfo
+    ProcessInstanceInfo processInstanceInfo join processInstanceInfo.eventTypes eventTypes
 where
-    :type in elements(processInstanceInfo.eventTypes)
+    eventTypes = :type
           </query>
       </named-query>
 </entity-mappings>
