@@ -29,12 +29,12 @@
     <title>Getting started</title>
     
     <para>If you like to take a quick tutorial that will guide you through most of the components
-    using a simple example, take a look at the Installer chapter.  This will learn you how to download
+    using a simple example, take a look at the Installer chapter.  This will teach you how to download
     and use the installer to create a demo setup, including most of the components.  It uses a simple
     example to guide you through the most important features.  Screencasts are available to help you
     out as well.</para>
     
-    <para>If you like to get read more information first, the following chapters first focus on the core
+    <para>If you like to read more information first, the following chapters first focus on the core
     engine (API, BPMN 2.0, etc.).  Further chapters will then describe the other components and other
     more complex topics like domain-specific processes, flexible processes, etc.  After reading the core
     chapters, you should be able to jump to other chapters that you might find interesting.</para>
