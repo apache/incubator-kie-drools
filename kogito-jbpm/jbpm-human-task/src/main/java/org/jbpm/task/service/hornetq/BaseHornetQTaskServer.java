@@ -30,13 +30,14 @@ import org.hornetq.api.core.client.ClientMessage;
 import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.api.core.client.ClientSessionFactory;
 import org.hornetq.api.core.client.HornetQClient;
+import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.core.config.Configuration;
 import org.hornetq.core.config.impl.ConfigurationImpl;
+import org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory;
+import org.hornetq.core.remoting.impl.netty.NettyConnectorFactory;
+import org.hornetq.core.remoting.impl.netty.TransportConstants;
 import org.hornetq.core.server.HornetQServer;
 import org.hornetq.core.server.HornetQServers;
-import org.hornetq.integration.transports.netty.NettyAcceptorFactory;
-import org.hornetq.integration.transports.netty.NettyConnectorFactory;
-import org.hornetq.integration.transports.netty.TransportConstants;
 import org.jbpm.task.service.TaskServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +48,7 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TaskServer.class);
 
+	private ServerLocator serverLocator;
 	private HornetQServer server;
 	private HornetQTaskServerHandler handler;
 	private Configuration configuration;
@@ -140,7 +142,8 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 		}
 
 		TransportConfiguration transportConfiguration = new TransportConfiguration(NettyConnectorFactory.class.getCanonicalName(), connectionParams);
-		ClientSessionFactory factory = HornetQClient.createClientSessionFactory(transportConfiguration);
+		serverLocator = HornetQClient.createServerLocatorWithoutHA(transportConfiguration);
+		ClientSessionFactory factory = serverLocator.createSessionFactory(transportConfiguration);
 		session = factory.createSession();
 		try {
 			session.createQueue(SERVER_TASK_COMMANDS_QUEUE, SERVER_TASK_COMMANDS_QUEUE, true);
@@ -165,6 +168,7 @@ public abstract class BaseHornetQTaskServer extends TaskServer {
 			embeddedServerRunning = false;
 			closeAll();
 			server.stop();
+			serverLocator.close();
 		}
 	}
 	
