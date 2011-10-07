@@ -24,6 +24,7 @@ import java.util.Map;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.DroolsError;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.lang.descr.BaseDescr;
@@ -45,7 +46,7 @@ public class PackageBuildContext {
     private BaseDescr                   parentDescr;
 
     // errors found when building the current context
-    private List                        errors;
+    private List<DroolsError>           errors;
 
     // list of generated methods
     private List                        methods;
@@ -91,7 +92,7 @@ public class PackageBuildContext {
         this.invokers = new HashMap();
         this.invokerLookups = new HashMap();
         this.descrLookups = new HashMap();
-        this.errors = new ArrayList();
+        this.errors = new ArrayList<DroolsError>();
 
         this.dialectRegistry = dialectRegistry;
 
@@ -140,7 +141,7 @@ public class PackageBuildContext {
      * Returns the list of errors found while building the current context
      * @return
      */
-    public List getErrors() {
+    public List<DroolsError> getErrors() {
         return this.errors;
     }
 
