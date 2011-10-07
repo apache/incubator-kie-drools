@@ -84,7 +84,7 @@
       </figure>
     
     <para>This figure gives an overview of the different components of the jBPM project.  jBPM can
-    integrate with a lot of other services as (and we've shown a few using grey bloxes on the figure)
+    integrate with a lot of other services as (and we've shown a few using grey boxes on the figure)
     but here we focus on the components that are part of the jBPM project itself.
       <itemizedlist>
         <listitem>The process engine is the core of the project and is required if you want to
@@ -164,7 +164,7 @@
     <section>
       <title>Eclipse Editor</title>
       
-    <para>The Eclipse editor is an plugin to the Eclipse IDE and allows you to integrate your 
+    <para>The Eclipse editor is a plugin to the Eclipse IDE and allows you to integrate your 
     business processes in your development environment.  It is targeted towards developers and
     has some wizards to get started, a graphical editor for creating your business processes
     (using drag and drop) and a lot of advanced testing and debugging capabilities.</para>
