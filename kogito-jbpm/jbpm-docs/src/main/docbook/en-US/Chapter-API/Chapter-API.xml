@@ -74,7 +74,7 @@
 
     <para>The jBPM API allows you to first create a knowledge base.  This
     knowledge base should include all your process definitions that might need to
-    be executed by that session.  To create a knowlegde base, use a knowledge builder
+    be executed by that session.  To create a knowledge base, use a knowledge builder
     to load processes from various resources (for example from the classpath or from
     file system), and then create a new knowledge base from that builder. The following
     code snippet shows how to create a knowledge base consisting of only one process 
