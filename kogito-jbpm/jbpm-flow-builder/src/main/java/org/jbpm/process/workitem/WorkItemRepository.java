@@ -1,5 +1,6 @@
 package org.jbpm.process.workitem;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,18 +68,27 @@ public class WorkItemRepository {
 	}
 
 	private static String[] getDirectories(String path) {
-		String content = ConfFileUtils.URLContentsToString(
-			ConfFileUtils.getURL(path + "/index.conf", null, null));
+		String content = null;
+		try {
+			content = ConfFileUtils.URLContentsToString(
+				new URL(path + "/index.conf"));
+		} catch (Exception e) {
+			// Do nothing
+		}
 		if (content == null) {
 			return new String[0];
 		}
-		return content.split(System.getProperty("line.separator"));
+		return content.split("\n");
 	}
 
 	private static List<Map<String, Object>> getWorkDefinitionsMap(String parentPath, String file) {
 		String path = parentPath + "/" + file + "/" + file + ".wid";
-		String content = ConfFileUtils.URLContentsToString(
-			ConfFileUtils.getURL(path, null, null));
+		String content = null;
+		try {
+			content = ConfFileUtils.URLContentsToString(new URL(path));
+		} catch (Exception e) {
+			// Do nothing
+		}
 		if (content == null) {
 			return new ArrayList<Map<String, Object>>();
 		}
