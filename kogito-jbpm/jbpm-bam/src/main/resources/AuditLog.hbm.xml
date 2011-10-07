@@ -22,6 +22,7 @@
         <property name="type"/>
         <property name="nodeInstanceId"/>
         <property name="nodeId"/>
+        <property name="nodeName"/>
         <property name="processInstanceId"/>
         <property name="processId"/>
         <property name="date" type="timestamp" column="LOG_DATE"/>
