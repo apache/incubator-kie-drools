@@ -267,8 +267,7 @@ public class TimerAndCalendarTest {
                       ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors() );
-            assertTrue( kbuilder.hasErrors() );
+            fail( kbuilder.getErrors().toString() );
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -309,6 +308,47 @@ public class TimerAndCalendarTest {
         assertEquals( 3, list.size() );
     }
     
+    @Test
+    public void testUnknownProtocol() throws Exception {
+        wrongTimerExpression("xyz:30");
+    }
+
+    @Test
+    public void testMissingColon() throws Exception {
+        wrongTimerExpression("int 30");
+    }
+
+    @Test
+    public void testMalformedExpression() throws Exception {
+        wrongTimerExpression("30s s30");
+    }
+
+    @Test
+    public void testMalformedIntExpression() throws Exception {
+        wrongTimerExpression("int 30s");
+    }
+
+    @Test
+    public void testMalformedCronExpression() throws Exception {
+        wrongTimerExpression("cron: 0/30 * * * * *");
+    }
+
+    private void wrongTimerExpression(String timer) {
+        String str = "";
+        str += "package org.simple \n";
+        str += "rule xxx \n";
+        str += "  timer (" + timer + ") ";
+        str += "when \n";
+        str += "then \n";
+        str += "end  \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        assertTrue( kbuilder.hasErrors() );
+    }
+
     @Test
     public void testCronTimer() throws Exception {
         String str = "";

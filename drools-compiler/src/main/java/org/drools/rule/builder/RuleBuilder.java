@@ -236,13 +236,17 @@ public class RuleBuilder {
             } else if ( val instanceof String ) {
                 calNames = new String[] { (String) val };
             } else {
-                context.getErrors().add( "Calendars attribute did not return a String or String[] '" + val + "'"  );
+                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                      "Calendars attribute did not return a String or String[] '" + val + "'" );
+                context.getErrors().add( err  );
             }
             if ( calNames != null ) {
                 rule.setCalendars( calNames );
             }
         } catch ( Exception e ) {
-            context.getErrors().add( "Unable to build Calendars attribute '" + val + "'"  + e.getMessage() );
+            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                  "Unable to build Calendars attribute '" + val + "'"  + e.getMessage() );
+            context.getErrors().add( err );
         }
     }
     
@@ -254,6 +258,12 @@ public class RuleBuilder {
         int colonPos = timerString.indexOf( ":" );
         String protocol = null;
         if ( colonPos == -1 ) {
+            if (timerString.startsWith("int") || timerString.startsWith("cron")) {
+                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                      "Incorrect timer definition '" + timerString + "' - missing colon?" );
+                context.getErrors().add( err );
+                return;
+            }
             // no protocol so assume interval semantics
             protocol = "int";
         } else {
@@ -328,22 +338,35 @@ public class RuleBuilder {
             String[] times = body.trim().split( "\\s" );
             long delay = 0;
             long period = 0;
-            if ( times.length == 1 ) {
-                // only defines a delay
-                delay = TimeUtils.parseTimeString( times[0] );
-            } else if ( times.length == 2 ) {
-                // defines a delay and a period for intervals
-                delay = TimeUtils.parseTimeString( times[0] );
-                period = TimeUtils.parseTimeString( times[1] );
-            } else {
+
+            if ( times.length > 2 ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Incorrect number of arguments for interval timer '" + timerString + "'" );
                 context.getErrors().add( err );
                 return;
             }
+
+            try {
+                if ( times.length == 1 ) {
+                    // only defines a delay
+                    delay = TimeUtils.parseTimeString( times[0] );
+                } else {
+                    // defines a delay and a period for intervals
+                    delay = TimeUtils.parseTimeString( times[0] );
+                    period = TimeUtils.parseTimeString( times[1] );
+                }
+            } catch (RuntimeException e) {
+                DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                      "Incorrect timer definition '" + timerString + "' " + e.getMessage() );
+                context.getErrors().add( err );
+                return;
+            }
+
             timer = new IntervalTimer(startDate, endDate, repeatLimit, delay, period);
         } else {
-            context.getErrors().add( "Protocol for timer does not exist '" + timerString +"'");
+            DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                  "Protocol for timer does not exist '" + timerString +"'" );
+            context.getErrors().add( err );
             return;
         }
         rule.setTimer( timer );
