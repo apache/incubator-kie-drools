@@ -98,16 +98,13 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>propertyTabu11</name>
+    <name>simulatedAnnealing</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
         <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
       </constructionHeuristic>
       <localSearch>
-        <termination>
-          <maximumUnimprovedStepCount>50</maximumUnimprovedStepCount>
-        </termination>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.examples.cloudbalancing.solver.move.factory.CloudComputerChangeMoveFactory</moveFactoryClass>
@@ -117,11 +114,11 @@
           </selector>
         </selector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>11</propertyTabuSize>
+          <simulatedAnnealingStartingTemperature>0hard/400soft</simulatedAnnealingStartingTemperature>
+          <propertyTabuSize>5</propertyTabuSize>
         </acceptor>
         <forager>
-          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
         </forager>
       </localSearch>
     </solver>
