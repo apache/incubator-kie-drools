@@ -88,7 +88,7 @@
           &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
-          &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
+          &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
@@ -104,7 +104,7 @@
           &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
-          &lt;completeMoveTabuSize&gt;5&lt;/completeMoveTabuSize&gt;
+          &lt;moveTabuSize&gt;5&lt;/moveTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
@@ -120,7 +120,7 @@
           &lt;moveFactoryClass&gt;org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory&lt;/moveFactoryClass&gt;
         &lt;/selector&gt;
         &lt;acceptor&gt;
-          &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
+          &lt;propertyTabuSize&gt;5&lt;/propertyTabuSize&gt;
         &lt;/acceptor&gt;
         &lt;forager&gt;
           &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;

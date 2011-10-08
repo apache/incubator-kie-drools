@@ -23,8 +23,8 @@
           <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
+          <solutionTabuSize>1500</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

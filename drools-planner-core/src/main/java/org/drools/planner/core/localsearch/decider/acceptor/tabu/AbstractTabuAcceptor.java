@@ -35,7 +35,7 @@ import org.drools.planner.core.localsearch.decider.acceptor.Acceptor;
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
-    protected int completeTabuSize = -1;
+    protected int tabuSize = -1;
     protected int partialTabuSize = 0;
     protected boolean aspirationEnabled = true;
 
@@ -44,12 +44,12 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected Map<Object, Integer> tabuToStepIndexMap;
     protected List<Object> tabuSequenceList;
 
-    public int getCompleteTabuSize() {
-        return completeTabuSize;
+    public int getTabuSize() {
+        return tabuSize;
     }
 
-    public void setCompleteTabuSize(int completeTabuSize) {
-        this.completeTabuSize = completeTabuSize;
+    public void setTabuSize(int tabuSize) {
+        this.tabuSize = tabuSize;
     }
 
     public void setPartialTabuSize(int partialTabuSize) {
@@ -71,21 +71,21 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope localSearchSolverPhaseScope) {
         validateConfiguration();
-        tabuToStepIndexMap = new HashMap<Object, Integer>(completeTabuSize + partialTabuSize);
+        tabuToStepIndexMap = new HashMap<Object, Integer>(tabuSize + partialTabuSize);
         tabuSequenceList = new LinkedList<Object>();
     }
 
     private void validateConfiguration() {
-        if (completeTabuSize < 0) {
-            throw new IllegalArgumentException("The completeTabuSize (" + completeTabuSize
+        if (tabuSize < 0) {
+            throw new IllegalArgumentException("The tabuSize (" + tabuSize
                     + ") cannot be negative.");
         }
         if (partialTabuSize < 0) {
             throw new IllegalArgumentException("The partialTabuSize (" + partialTabuSize
                     + ") cannot be negative.");
         }
-        if (completeTabuSize + partialTabuSize == 0) {
-            throw new IllegalArgumentException("The sum of completeTabuSize and partialTabuSize should be at least 1.");
+        if (tabuSize + partialTabuSize == 0) {
+            throw new IllegalArgumentException("The sum of tabuSize and partialTabuSize should be at least 1.");
         }
     }
 
@@ -125,11 +125,11 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             }
         }
         int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex - 1;
-        if (tabuStepCount < completeTabuSize) {
-            logger.trace("        Proposed move ({}) is complete tabu.", moveScope.getMove());
+        if (tabuStepCount < tabuSize) {
+            logger.trace("        Proposed move ({}) is tabu.", moveScope.getMove());
             return 0.0;
         }
-        double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - completeTabuSize);
+        double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - tabuSize);
         logger.trace("        Proposed move ({}) is partially tabu with accept chance ({}).",
                 moveScope.getMove(), acceptChance);
         return acceptChance;
@@ -150,7 +150,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 tabuToStepIndexMap.remove(tabu);
                 tabuSequenceList.remove(tabu);
             }
-            int maximumTabuListSize = completeTabuSize + partialTabuSize; // is at least 1
+            int maximumTabuListSize = tabuSize + partialTabuSize; // is at least 1
             while (tabuSequenceList.size() >= maximumTabuListSize) { // TODO FIXME JBRULES-3007
                 Iterator<Object> it = tabuSequenceList.iterator();
                 Object removeTabu = it.next();

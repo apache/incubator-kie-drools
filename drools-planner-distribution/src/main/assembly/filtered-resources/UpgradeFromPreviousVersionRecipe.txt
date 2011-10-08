@@ -1179,5 +1179,40 @@ After in log4j*.xml:
     <priority value="debug" />
   </category>
 
+
 From 5.3.0.Final to 5.4.0.Beta1
 -------------------------------
+
+[MAJOR] Local search configuration: the complete*TabuSize configuration properties have been renamed to *TabuSize.
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <completeSolutionTabuSize>...</completeSolutionTabuSize>
+    </acceptor>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <solutionTabuSize>...</solutionTabuSize>
+    </acceptor>
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <completeMoveTabuSize>...</completeMoveTabuSize>
+    </acceptor>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <moveTabuSize>...</moveTabuSize>
+    </acceptor>
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <completeUndoMoveTabuSize>...</completeUndoMoveTabuSize>
+    </acceptor>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <undoMoveTabuSize>...</undoMoveTabuSize>
+    </acceptor>
+Before in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <completePropertyTabuSize>...</completePropertyTabuSize>
+    </acceptor>
+After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
+    <acceptor>
+      <propertyTabuSize>...</propertyTabuSize>
+    </acceptor>

@@ -55,8 +55,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>10</completePropertyTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>10</propertyTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -84,8 +84,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -114,8 +114,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>10</completePropertyTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>10</propertyTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -144,8 +144,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

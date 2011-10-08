@@ -41,13 +41,13 @@ public class AcceptorConfig {
     @XStreamImplicit(itemFieldName = "acceptorType")
     private List<AcceptorType> acceptorTypeList = null;
 
-    protected Integer completeMoveTabuSize = null;
+    protected Integer moveTabuSize = null;
     protected Integer partialMoveTabuSize = null;
-    protected Integer completeUndoMoveTabuSize = null;
+    protected Integer undoMoveTabuSize = null;
     protected Integer partialUndoMoveTabuSize = null;
-    protected Integer completePropertyTabuSize = null;
+    protected Integer propertyTabuSize = null;
     protected Integer partialPropertyTabuSize = null;
-    protected Integer completeSolutionTabuSize = null;
+    protected Integer solutionTabuSize = null;
     protected Integer partialSolutionTabuSize = null;
 
     protected String simulatedAnnealingStartingTemperature = null;
@@ -79,12 +79,12 @@ public class AcceptorConfig {
         this.acceptorTypeList = acceptorTypeList;
     }
 
-    public Integer getCompleteMoveTabuSize() {
-        return completeMoveTabuSize;
+    public Integer getMoveTabuSize() {
+        return moveTabuSize;
     }
 
-    public void setCompleteMoveTabuSize(Integer completeMoveTabuSize) {
-        this.completeMoveTabuSize = completeMoveTabuSize;
+    public void setMoveTabuSize(Integer moveTabuSize) {
+        this.moveTabuSize = moveTabuSize;
     }
 
     public Integer getPartialMoveTabuSize() {
@@ -95,12 +95,12 @@ public class AcceptorConfig {
         this.partialMoveTabuSize = partialMoveTabuSize;
     }
 
-    public Integer getCompleteUndoMoveTabuSize() {
-        return completeUndoMoveTabuSize;
+    public Integer getUndoMoveTabuSize() {
+        return undoMoveTabuSize;
     }
 
-    public void setCompleteUndoMoveTabuSize(Integer completeUndoMoveTabuSize) {
-        this.completeUndoMoveTabuSize = completeUndoMoveTabuSize;
+    public void setUndoMoveTabuSize(Integer undoMoveTabuSize) {
+        this.undoMoveTabuSize = undoMoveTabuSize;
     }
 
     public Integer getPartialUndoMoveTabuSize() {
@@ -111,12 +111,12 @@ public class AcceptorConfig {
         this.partialUndoMoveTabuSize = partialUndoMoveTabuSize;
     }
 
-    public Integer getCompletePropertyTabuSize() {
-        return completePropertyTabuSize;
+    public Integer getPropertyTabuSize() {
+        return propertyTabuSize;
     }
 
-    public void setCompletePropertyTabuSize(Integer completePropertyTabuSize) {
-        this.completePropertyTabuSize = completePropertyTabuSize;
+    public void setPropertyTabuSize(Integer propertyTabuSize) {
+        this.propertyTabuSize = propertyTabuSize;
     }
 
     public Integer getPartialPropertyTabuSize() {
@@ -127,12 +127,12 @@ public class AcceptorConfig {
         this.partialPropertyTabuSize = partialPropertyTabuSize;
     }
 
-    public Integer getCompleteSolutionTabuSize() {
-        return completeSolutionTabuSize;
+    public Integer getSolutionTabuSize() {
+        return solutionTabuSize;
     }
 
-    public void setCompleteSolutionTabuSize(Integer completeSolutionTabuSize) {
-        this.completeSolutionTabuSize = completeSolutionTabuSize;
+    public void setSolutionTabuSize(Integer solutionTabuSize) {
+        this.solutionTabuSize = solutionTabuSize;
     }
 
     public Integer getPartialSolutionTabuSize() {
@@ -189,11 +189,11 @@ public class AcceptorConfig {
         }
 
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.MOVE_TABU))
-                || completeMoveTabuSize != null || partialMoveTabuSize != null) {
+                || moveTabuSize != null || partialMoveTabuSize != null) {
             MoveTabuAcceptor moveTabuAcceptor = new MoveTabuAcceptor();
             moveTabuAcceptor.setUseUndoMoveAsTabuMove(false);
-            if (completeMoveTabuSize != null) {
-                moveTabuAcceptor.setCompleteTabuSize(completeMoveTabuSize);
+            if (moveTabuSize != null) {
+                moveTabuAcceptor.setTabuSize(moveTabuSize);
             }
             if (partialMoveTabuSize != null) {
                 moveTabuAcceptor.setPartialTabuSize(partialMoveTabuSize);
@@ -204,11 +204,11 @@ public class AcceptorConfig {
             acceptorList.add(moveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.UNDO_MOVE_TABU))
-                || completeUndoMoveTabuSize != null || partialUndoMoveTabuSize != null) {
+                || undoMoveTabuSize != null || partialUndoMoveTabuSize != null) {
             MoveTabuAcceptor undoMoveTabuAcceptor = new MoveTabuAcceptor();
             undoMoveTabuAcceptor.setUseUndoMoveAsTabuMove(true);
-            if (completeUndoMoveTabuSize != null) {
-                undoMoveTabuAcceptor.setCompleteTabuSize(completeUndoMoveTabuSize);
+            if (undoMoveTabuSize != null) {
+                undoMoveTabuAcceptor.setTabuSize(undoMoveTabuSize);
             }
             if (partialUndoMoveTabuSize != null) {
                 undoMoveTabuAcceptor.setPartialTabuSize(partialUndoMoveTabuSize);
@@ -219,10 +219,10 @@ public class AcceptorConfig {
             acceptorList.add(undoMoveTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PROPERTY_TABU))
-                || completePropertyTabuSize != null || partialPropertyTabuSize != null) {
+                || propertyTabuSize != null || partialPropertyTabuSize != null) {
             PropertyTabuAcceptor propertyTabuAcceptor = new PropertyTabuAcceptor();
-            if (completePropertyTabuSize != null) {
-                propertyTabuAcceptor.setCompleteTabuSize(completePropertyTabuSize);
+            if (propertyTabuSize != null) {
+                propertyTabuAcceptor.setTabuSize(propertyTabuSize);
             }
             if (partialPropertyTabuSize != null) {
                 propertyTabuAcceptor.setPartialTabuSize(partialPropertyTabuSize);
@@ -233,10 +233,10 @@ public class AcceptorConfig {
             acceptorList.add(propertyTabuAcceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
-                || completeSolutionTabuSize != null || partialSolutionTabuSize != null) {
+                || solutionTabuSize != null || partialSolutionTabuSize != null) {
             SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
-            if (completeSolutionTabuSize != null) {
-                solutionTabuAcceptor.setCompleteTabuSize(completeSolutionTabuSize);
+            if (solutionTabuSize != null) {
+                solutionTabuAcceptor.setTabuSize(solutionTabuSize);
             }
             if (partialSolutionTabuSize != null) {
                 solutionTabuAcceptor.setPartialTabuSize(partialSolutionTabuSize);
@@ -272,7 +272,7 @@ public class AcceptorConfig {
             return compositeAcceptor;
         } else {
             SolutionTabuAcceptor solutionTabuAcceptor = new SolutionTabuAcceptor();
-            solutionTabuAcceptor.setCompleteTabuSize(1500); // TODO number pulled out of thin air
+            solutionTabuAcceptor.setTabuSize(1500); // TODO number pulled out of thin air
             if (environmentMode == EnvironmentMode.TRACE) {
                 solutionTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
             }
@@ -300,26 +300,26 @@ public class AcceptorConfig {
                 }
             }
         }
-        if (completeMoveTabuSize == null) {
-            completeMoveTabuSize = inheritedConfig.getCompleteMoveTabuSize();
+        if (moveTabuSize == null) {
+            moveTabuSize = inheritedConfig.getMoveTabuSize();
         }
         if (partialMoveTabuSize == null) {
             partialMoveTabuSize = inheritedConfig.getPartialMoveTabuSize();
         }
-        if (completeUndoMoveTabuSize == null) {
-            completeUndoMoveTabuSize = inheritedConfig.getCompleteUndoMoveTabuSize();
+        if (undoMoveTabuSize == null) {
+            undoMoveTabuSize = inheritedConfig.getUndoMoveTabuSize();
         }
         if (partialUndoMoveTabuSize == null) {
             partialUndoMoveTabuSize = inheritedConfig.getPartialUndoMoveTabuSize();
         }
-        if (completePropertyTabuSize == null) {
-            completePropertyTabuSize = inheritedConfig.getCompletePropertyTabuSize();
+        if (propertyTabuSize == null) {
+            propertyTabuSize = inheritedConfig.getPropertyTabuSize();
         }
         if (partialPropertyTabuSize == null) {
             partialPropertyTabuSize = inheritedConfig.getPartialPropertyTabuSize();
         }
-        if (completeSolutionTabuSize == null) {
-            completeSolutionTabuSize = inheritedConfig.getCompleteSolutionTabuSize();
+        if (solutionTabuSize == null) {
+            solutionTabuSize = inheritedConfig.getSolutionTabuSize();
         }
         if (partialSolutionTabuSize == null) {
             partialSolutionTabuSize = inheritedConfig.getPartialSolutionTabuSize();

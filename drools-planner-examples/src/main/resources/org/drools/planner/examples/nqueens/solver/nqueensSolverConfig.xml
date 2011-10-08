@@ -21,7 +21,7 @@
       <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
-      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <solutionTabuSize>1000</solutionTabuSize>
     </acceptor>
     <forager>
       <!-- Real world problems require to use of <minimalAcceptedSelection> -->

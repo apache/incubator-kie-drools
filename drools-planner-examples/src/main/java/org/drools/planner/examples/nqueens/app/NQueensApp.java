@@ -18,7 +18,6 @@ package org.drools.planner.examples.nqueens.app;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -84,7 +83,7 @@ public class NQueensApp extends CommonApp {
         solverPhaseConfigList.add(constructionHeuristicSolverPhaseConfig);
         LocalSearchSolverPhaseConfig localSearchSolverPhaseConfig = new LocalSearchSolverPhaseConfig();
         localSearchSolverPhaseConfig.getSelectorConfig().setMoveFactoryClass(RowChangeMoveFactory.class);
-        localSearchSolverPhaseConfig.getAcceptorConfig().setCompleteSolutionTabuSize(1000);
+        localSearchSolverPhaseConfig.getAcceptorConfig().setSolutionTabuSize(1000);
         solverPhaseConfigList.add(localSearchSolverPhaseConfig);
         solverConfig.setSolverPhaseConfigList(solverPhaseConfigList);
         return solverConfig.buildSolver();

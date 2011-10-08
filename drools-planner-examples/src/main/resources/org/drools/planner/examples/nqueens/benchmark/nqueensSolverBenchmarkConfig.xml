@@ -70,7 +70,7 @@
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -90,7 +90,7 @@
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeMoveTabuSize>5</completeMoveTabuSize>
+          <moveTabuSize>5</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -110,7 +110,7 @@
           <moveFactoryClass>org.drools.planner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completePropertyTabuSize>5</completePropertyTabuSize>
+          <propertyTabuSize>5</propertyTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

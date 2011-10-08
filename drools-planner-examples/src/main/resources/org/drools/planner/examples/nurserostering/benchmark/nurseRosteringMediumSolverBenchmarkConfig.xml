@@ -99,8 +99,8 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-          <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
+          <!--<solutionTabuSize>1000</solutionTabuSize>-->
+          <!--<moveTabuSize>7</moveTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
@@ -124,8 +124,8 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-          <!--<completePropertyTabuSize>11</completePropertyTabuSize>-->
+          <!--<solutionTabuSize>1000</solutionTabuSize>-->
+          <!--<propertyTabuSize>11</propertyTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<minimalAcceptedSelection>800</minimalAcceptedSelection>-->
@@ -150,7 +150,7 @@
         <!--</selector>-->
         <!--<acceptor>-->
           <!--<simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>-->
-          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+          <!--<propertyTabuSize>5</propertyTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--&lt;!&ndash;<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>&ndash;&gt;-->

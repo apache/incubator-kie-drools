@@ -22,7 +22,7 @@
       <moveFactoryClass>org.drools.planner.examples.manners2009.solver.move.factory.SeatDesignationSwitchMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
-      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
+      <solutionTabuSize>1000</solutionTabuSize>
     </acceptor>
     <forager>
       <pickEarlyType>NEVER</pickEarlyType>

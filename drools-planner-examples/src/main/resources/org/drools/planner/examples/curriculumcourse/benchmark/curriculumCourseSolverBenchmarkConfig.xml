@@ -130,8 +130,8 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-          <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+          <!--<propertyTabuSize>10</propertyTabuSize>-->
+          <!--<solutionTabuSize>1500</solutionTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<minimalAcceptedSelection>900</minimalAcceptedSelection>&lt;!&ndash; TODO tweak me &ndash;&gt;-->
@@ -210,8 +210,8 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
-          <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
+          <!--<propertyTabuSize>10</propertyTabuSize>-->
+          <!--<solutionTabuSize>1500</solutionTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<minimalAcceptedSelection>900</minimalAcceptedSelection>&lt;!&ndash; TODO tweak me &ndash;&gt;-->

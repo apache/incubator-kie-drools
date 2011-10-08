@@ -31,8 +31,8 @@
           <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
+          <solutionTabuSize>1500</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -49,7 +49,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8000soft</simulatedAnnealingStartingTemperature>
-          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+          <!--<propertyTabuSize>5</propertyTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -67,7 +67,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/10000soft</simulatedAnnealingStartingTemperature>
-          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+          <!--<propertyTabuSize>5</propertyTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -85,7 +85,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-          <!--<completePropertyTabuSize>5</completePropertyTabuSize>-->
+          <!--<propertyTabuSize>5</propertyTabuSize>-->
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->
@@ -111,8 +111,8 @@
           <!--<moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completeSolutionTabuSize>1500</completeSolutionTabuSize>-->
-          <!--<completeMoveTabuSize>7</completeMoveTabuSize>-->
+          <!--<solutionTabuSize>1500</solutionTabuSize>-->
+          <!--<moveTabuSize>7</moveTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<pickEarlyType>NEVER</pickEarlyType>-->

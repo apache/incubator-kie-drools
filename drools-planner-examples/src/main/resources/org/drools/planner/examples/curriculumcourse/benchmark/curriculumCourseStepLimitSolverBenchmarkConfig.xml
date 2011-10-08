@@ -33,9 +33,9 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-          <!--<completeSolutionTabuSize>500</completeSolutionTabuSize>-->
-          <!--<completePropertyTabuSize>10</completePropertyTabuSize>-->
+          <solutionTabuSize>1500</solutionTabuSize>
+          <!--<solutionTabuSize>500</solutionTabuSize>-->
+          <!--<propertyTabuSize>10</propertyTabuSize>-->
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

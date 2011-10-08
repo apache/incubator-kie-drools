@@ -93,8 +93,8 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-          <!--<completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>-->
+          <!--<solutionTabuSize>1000</solutionTabuSize>-->
+          <!--<undoMoveTabuSize>3</undoMoveTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<pickEarlyType>NEVER</pickEarlyType>-->

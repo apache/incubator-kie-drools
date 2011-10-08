@@ -480,12 +480,10 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <itemizedlist>
           <listitem>
             <para><emphasis>Solution tabu</emphasis> makes recently visited solutions tabu. It does not accept a move
-            that leads to one of those solutions. If you can spare the memory, don't be cheap on the tabu size. We
-            recommend this type of tabu because it tends to give the best results and requires little or no
-            tweaking.</para>
+            that leads to one of those solutions. If you can spare the memory, don't be cheap on the tabu size.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
+        &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
 
@@ -494,7 +492,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             those steps.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
+        &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
 
@@ -502,7 +500,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;completeUndoMoveTabuSize&gt;7&lt;/completeUndoMoveTabuSize&gt;
+        &lt;undoMoveTabuSize&gt;7&lt;/undoMoveTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
           </listitem>
 
@@ -511,7 +509,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             queen tabu, so that a recently moved queen can't be moved.</para>
 
             <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
+        &lt;propertyTabuSize&gt;5&lt;/propertyTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
             <para>To use property tabu, your moves must implement the <literal>TabuPropertyEnabled</literal> interface,
@@ -547,8 +545,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         <para>You can even combine tabu types:</para>
 
         <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;completeSolutionTabuSize&gt;1000&lt;/completeSolutionTabuSize&gt;
-        &lt;completeMoveTabuSize&gt;7&lt;/completeMoveTabuSize&gt;
+        &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
+        &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
     &lt;/acceptor&gt;</programlisting>
 
         <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
@@ -589,7 +587,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <programlisting language="xml">    &lt;acceptor&gt;
       &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
-      &lt;completePropertyTabuSize&gt;5&lt;/completePropertyTabuSize&gt;
+      &lt;propertyTabuSize&gt;5&lt;/propertyTabuSize&gt;
     &lt;/acceptor&gt;
     &lt;forager&gt;
         &lt;minimalAcceptedSelection&gt;4&lt;/minimalAcceptedSelection&gt;

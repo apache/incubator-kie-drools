@@ -35,8 +35,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

@@ -22,8 +22,8 @@
           <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1500</completeSolutionTabuSize>
-          <completeMoveTabuSize>7</completeMoveTabuSize>
+          <solutionTabuSize>1500</solutionTabuSize>
+          <moveTabuSize>7</moveTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -67,8 +67,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>10</completePropertyTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>10</propertyTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>
@@ -101,8 +101,8 @@
           <!--</selector>-->
         <!--</selector>-->
         <!--<acceptor>-->
-          <!--<completeSolutionTabuSize>1000</completeSolutionTabuSize>-->
-          <!--<completeUndoMoveTabuSize>3</completeUndoMoveTabuSize>-->
+          <!--<solutionTabuSize>1000</solutionTabuSize>-->
+          <!--<undoMoveTabuSize>3</undoMoveTabuSize>-->
         <!--</acceptor>-->
         <!--<forager>-->
           <!--<pickEarlyType>NEVER</pickEarlyType>-->
@@ -140,8 +140,8 @@
           </selector>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-          <completePropertyTabuSize>11</completePropertyTabuSize>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>11</propertyTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>800</minimalAcceptedSelection>
@@ -179,7 +179,7 @@
         </selector>
         <acceptor>
           <simulatedAnnealingStartingTemperature>0hard/8soft</simulatedAnnealingStartingTemperature>
-          <completePropertyTabuSize>5</completePropertyTabuSize>
+          <propertyTabuSize>5</propertyTabuSize>
         </acceptor>
         <forager>
           <!--<pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>-->

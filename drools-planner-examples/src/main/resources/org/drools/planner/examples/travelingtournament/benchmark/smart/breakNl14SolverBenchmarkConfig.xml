@@ -15,7 +15,7 @@
           <moveFactoryClass>org.drools.planner.examples.travelingtournament.solver.smart.move.factory.SmartTravelingTournamentMoveFactory</moveFactoryClass>
         </selector>
         <acceptor>
-          <completeSolutionTabuSize>3000</completeSolutionTabuSize>
+          <solutionTabuSize>3000</solutionTabuSize>
         </acceptor>
         <forager>
           <pickEarlyType>NEVER</pickEarlyType>

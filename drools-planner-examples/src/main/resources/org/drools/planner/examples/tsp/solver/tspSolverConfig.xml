@@ -20,8 +20,8 @@
       <moveFactoryClass>org.drools.planner.examples.tsp.solver.move.factory.SubTourChangeMoveFactory</moveFactoryClass>
     </selector>
     <acceptor>
-      <completeSolutionTabuSize>1000</completeSolutionTabuSize>
-      <completePropertyTabuSize>7</completePropertyTabuSize>
+      <solutionTabuSize>1000</solutionTabuSize>
+      <propertyTabuSize>7</propertyTabuSize>
     </acceptor>
     <forager>
       <pickEarlyType>NEVER</pickEarlyType>
