@@ -23,11 +23,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.nurserostering.domain.ShiftAssignment;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 
-public class ShiftAssignmentDifficultyComparator implements Comparator<Object>, Serializable {
-
-    public int compare(Object a, Object b) {
-        return compare((ShiftAssignment) a, (ShiftAssignment) b);
-    }
+public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>, Serializable {
 
     public int compare(ShiftAssignment a, ShiftAssignment b) {
         Shift aShift = a.getShift();

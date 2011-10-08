@@ -335,11 +335,7 @@ public class CloudProcessAssignment {
     // ...
 }</programlisting>
 
-        <programlisting>public class CloudProcessAssignmentDifficultyComparator implements Comparator&lt;Object&gt; {
-
-    public int compare(Object a, Object b) {
-        return compare((CloudProcessAssignment) a, (CloudProcessAssignment) b);
-    }
+        <programlisting>public class CloudProcessAssignmentDifficultyComparator implements Comparator&lt;CloudProcessAssignment&gt; {
 
     public int compare(CloudProcessAssignment a, CloudProcessAssignment b) {
         return new CompareToBuilder()
@@ -349,6 +345,13 @@ public class CloudProcessAssignment {
     }
 
 }</programlisting>
+
+        <note>
+          <para>If you have multiple planning entity classes, the <literal>difficultyComparatorClass</literal> needs to
+          implement a <literal>Comparator</literal> of a common superclass (for example
+          <literal>Comparator&lt;Object&gt;</literal>) and be able to handle comparing instances of those different
+          classes.</para>
+        </note>
 
         <para>Alternatively, you can also set a <literal>difficultyWeightFactoryClass</literal> to the
         <literal>@PlanningEntity</literal> annotation, so you have access to the rest of the problem facts from the
@@ -557,11 +560,7 @@ public class Queen {
         // ...
     }</programlisting>
 
-        <programlisting>public class CloudComputerStrengthComparator implements Comparator&lt;Object&gt; {
-
-    public int compare(Object a, Object b) {
-        return compare((CloudComputer) a, (CloudComputer) b);
-    }
+        <programlisting>public class CloudComputerStrengthComparator implements Comparator&lt;CloudComputer&gt; {
 
     public int compare(CloudComputer a, CloudComputer b) {
         return new CompareToBuilder()
@@ -572,6 +571,13 @@ public class Queen {
     }
 
 }</programlisting>
+
+        <note>
+          <para>If you have multiple planning value classes in the <emphasis>same</emphasis> value range, the
+          <literal>strengthComparatorClass</literal> needs to implement a <literal>Comparator</literal> of a common
+          superclass (for example <literal>Comparator&lt;Object&gt;</literal>) and be able to handle comparing instances
+          of those different classes.</para>
+        </note>
 
         <para>Alternatively, you can also set a <literal>strengthWeightFactoryClass</literal> to the
         <literal>@PlanningVariable</literal> annotation, so you have access to the rest of the problem facts from the

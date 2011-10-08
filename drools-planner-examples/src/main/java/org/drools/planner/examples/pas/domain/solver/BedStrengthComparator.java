@@ -23,11 +23,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.pas.domain.Bed;
 import org.drools.planner.examples.pas.domain.Room;
 
-public class BedStrengthComparator implements Comparator<Object>, Serializable {
-
-    public int compare(Object a, Object b) {
-        return compare((Bed) a, (Bed) b);
-    }
+public class BedStrengthComparator implements Comparator<Bed>, Serializable {
 
     public int compare(Bed a, Bed b) {
         Room aRoom = a.getRoom();

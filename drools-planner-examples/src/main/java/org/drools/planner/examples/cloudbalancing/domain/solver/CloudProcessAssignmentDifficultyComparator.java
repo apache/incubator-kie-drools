@@ -22,11 +22,7 @@ import java.util.Comparator;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 
-public class CloudProcessAssignmentDifficultyComparator implements Comparator<Object>, Serializable {
-
-    public int compare(Object a, Object b) {
-        return compare((CloudProcessAssignment) a, (CloudProcessAssignment) b);
-    }
+public class CloudProcessAssignmentDifficultyComparator implements Comparator<CloudProcessAssignment>, Serializable {
 
     public int compare(CloudProcessAssignment a, CloudProcessAssignment b) {
         return new CompareToBuilder()

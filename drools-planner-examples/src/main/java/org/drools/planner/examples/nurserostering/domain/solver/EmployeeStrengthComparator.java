@@ -22,11 +22,7 @@ import java.util.Comparator;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.nurserostering.domain.Employee;
 
-public class EmployeeStrengthComparator implements Comparator<Object>, Serializable {
-
-    public int compare(Object a, Object b) {
-        return compare((Employee) a, (Employee) b);
-    }
+public class EmployeeStrengthComparator implements Comparator<Employee>, Serializable {
 
     public int compare(Employee a, Employee b) {
         // TODO refactor to DifficultyWeightFactory and use getContract().getContractLineList()

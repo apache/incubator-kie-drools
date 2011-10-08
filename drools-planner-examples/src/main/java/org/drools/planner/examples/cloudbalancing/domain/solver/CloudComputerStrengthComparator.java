@@ -22,11 +22,7 @@ import java.util.Comparator;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
-public class CloudComputerStrengthComparator implements Comparator<Object>, Serializable {
-
-    public int compare(Object a, Object b) {
-        return compare((CloudComputer) a, (CloudComputer) b);
-    }
+public class CloudComputerStrengthComparator implements Comparator<CloudComputer>, Serializable {
 
     public int compare(CloudComputer a, CloudComputer b) {
         return new CompareToBuilder()
