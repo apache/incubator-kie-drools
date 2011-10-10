@@ -15,6 +15,7 @@ package org.drools.marshalling.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import static org.drools.runtime.EnvironmentName.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
@@ -40,7 +41,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Table;
 
+import org.drools.impl.EnvironmentFactory;
 import org.drools.persistence.util.PersistenceUtil;
+import org.drools.runtime.Environment;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -215,7 +218,7 @@ public class MarshallingDBUtil {
      */
     public static HashMap<String, Object> initializeMarshalledDataEMF(String persistenceUnitName, Class<?> testClass, 
             boolean useBaseDb, String baseDbVer ) { 
-        HashMap<String, Object> testContext = new HashMap<String, Object>();
+        HashMap<String, Object> context = new HashMap<String, Object>();
         
         Properties dsProps = PersistenceUtil.getDatasourceProperties();
         String driverClass = dsProps.getProperty("driverClassName");
@@ -241,15 +244,15 @@ public class MarshallingDBUtil {
         PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
         ds1.getDriverProperties().setProperty("url", jdbcUrl);
         ds1.init();
-        testContext.put(DATASOURCE, ds1);
+        context.put(DATASOURCE, ds1);
     
         // Setup persistence
         Properties overrideProperties = new Properties();
         overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
-        testContext.put(ENTITY_MANAGER_FACTORY, emf);
+        context.put(ENTITY_MANAGER_FACTORY, emf);
         
-        return testContext;
+        return context;
     }
     
     

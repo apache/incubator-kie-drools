@@ -15,6 +15,7 @@
  */
 package org.drools.marshalling.util;
 
+import static org.junit.Assert.*;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
 
 import java.lang.reflect.InvocationHandler;
@@ -23,6 +24,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -30,6 +32,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.info.WorkItemInfo;
+import org.drools.runtime.process.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,32 +41,32 @@ import org.slf4j.LoggerFactory;
  * 
  *
  */
-public class EntityManagerFactoryProxyFactory implements InvocationHandler {
+public class EntityManagerFactoryProxy implements InvocationHandler {
 
-    private static Logger logger = LoggerFactory.getLogger(EntityManagerFactoryProxyFactory.class);
+    private static Logger logger = LoggerFactory.getLogger(EntityManagerFactoryProxy.class);
     
     private EntityManagerFactory emf;
-    // OCRAM: processInstance.. and WorkItem.. 
     private EntityManager em;
-    private static HashMap<SessionInfo, byte []> managedSessionInfoDataMap;
-    private static HashMap<WorkItemInfo, byte []> managedWorkItemInfoDataMap;
-    private static HashMap<Object, byte []> managedProcessInstanceInfoDataMap;
     
-    private static HashMap<String, byte[]> lastSessionMarshalledDataForTestMethodMap;
-    private static HashMap<String, byte[]> lastWorkItemMarshalledDataForTestMethodMap;
-    private static HashMap<String, byte[]> lastProcessInstanceMarshalledDataForTestMethodMap;
+    protected static ThreadLocal<HashMap<SessionInfo, byte []>> managedSessionInfoDataMap;
+    protected static ThreadLocal<HashMap<WorkItemInfo, byte []>> managedWorkItemInfoDataMap;
+    protected static ThreadLocal<HashMap<Object, byte []>> managedProcessInstanceInfoDataMap;
+    
+    protected static ThreadLocal<HashMap<Integer, byte[]>> sessionMarshalledDataMap;
+    protected static ThreadLocal<HashMap<Long, byte[]>> workItemMarshalledDataMap;
+    protected static ThreadLocal<HashMap<Long, byte[]>> processInstanceInfoMarshalledDataMap;
         
     /**
      * This method creates a proxy for either a {@link EntityManagerFactory} or a {@link EntityManager} instance. 
      * @param obj The original instance for which a proxy will be made.
      * @return Object a proxy instance of the given object.
      */
-    public static Object createProxy( Object obj ) {
+    public static Object newInstance( Object obj ) {
         if( obj instanceof EntityManagerFactory  || obj instanceof EntityManager ) { 
             return Proxy.newProxyInstance(
                     obj.getClass().getClassLoader(), 
                     getAllInterfaces(obj),
-                    new EntityManagerFactoryProxyFactory(obj));
+                    new EntityManagerFactoryProxy(obj));
         }
         else { 
             throw new UnsupportedOperationException("This proxy is only for " 
@@ -72,12 +75,12 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
     }
   
     /**
-     * This method is used in the {@link #createProxy(Object)} method to retrieve all applicable interfaces
+     * This method is used in the {@link #newInstance(Object)} method to retrieve all applicable interfaces
      *   that the proxy object must conform to. 
      * @param obj The object that will be proxied. 
      * @return Class<?> [] an array of all applicable interfaces.
      */
-    private static Class<?> [] getAllInterfaces( Object obj ) { 
+    protected static Class<?> [] getAllInterfaces( Object obj ) { 
         Class<?> [] interfaces = new Class [0];
         Class<?> superClass = obj.getClass();
         while( superClass != null ) { 
@@ -98,7 +101,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
      * It saves the @{link {@link EntityManager} or {@link EntityManagerFactory} for use later. 
      * @param obj The object being proxied.
      */
-    private EntityManagerFactoryProxyFactory(Object obj ) { 
+    private EntityManagerFactoryProxy(Object obj ) { 
         if( obj instanceof EntityManagerFactory ) { 
             this.emf = (EntityManagerFactory) obj;
         }
@@ -117,16 +120,34 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         }
         
         if( args[0] instanceof SessionInfo ) { 
-            managedSessionInfoDataMap = new HashMap<SessionInfo, byte[]>();
-            lastSessionMarshalledDataForTestMethodMap = new HashMap<String, byte[]>();
+            if( managedSessionInfoDataMap == null ) { 
+                managedSessionInfoDataMap = new ThreadLocal<HashMap<SessionInfo, byte[]>>();
+                sessionMarshalledDataMap = new ThreadLocal<HashMap<Integer, byte[]>>();
+            }
+            if( managedSessionInfoDataMap.get() == null ) {
+                managedSessionInfoDataMap.set(new HashMap<SessionInfo, byte[]>());
+                sessionMarshalledDataMap.set(new HashMap<Integer, byte[]>());
+            }
         }
         else if( args[0] instanceof WorkItemInfo ) { 
-            managedWorkItemInfoDataMap = new HashMap<WorkItemInfo, byte[]>();
-            lastWorkItemMarshalledDataForTestMethodMap = new HashMap<String, byte[]>();
+           if( managedWorkItemInfoDataMap == null ) {  
+               managedWorkItemInfoDataMap = new ThreadLocal<HashMap<WorkItemInfo, byte[]>>();
+               workItemMarshalledDataMap = new ThreadLocal<HashMap<Long, byte[]>>();
+           }
+           if( managedWorkItemInfoDataMap.get() == null ) { 
+               managedWorkItemInfoDataMap.set(new HashMap<WorkItemInfo, byte[]>());
+               workItemMarshalledDataMap.set(new HashMap<Long, byte[]>());
+           }
         }
         else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(args[0].getClass().getName()) ) { 
-            managedProcessInstanceInfoDataMap = new HashMap<Object, byte[]>();
-            lastProcessInstanceMarshalledDataForTestMethodMap = new HashMap<String, byte[]>();
+            if( managedProcessInstanceInfoDataMap == null ) { 
+                managedProcessInstanceInfoDataMap = new ThreadLocal<HashMap<Object, byte[]>>();
+                processInstanceInfoMarshalledDataMap = new ThreadLocal<HashMap<Long, byte[]>>();
+            }
+            if( managedProcessInstanceInfoDataMap.get() == null ) { 
+                managedProcessInstanceInfoDataMap.set(new HashMap<Object, byte[]>());
+                processInstanceInfoMarshalledDataMap.set(new HashMap<Long, byte[]>());
+            }
         }
     }
     
@@ -137,6 +158,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         Object result = null;
         String methodName = method.getName();
       
+        logger.info(methodName);
         lazyInitializeStateMaps(args);
         if( "createEntityManager".equals(methodName) ) { 
             return createEntityManager(methodName, args);
@@ -158,22 +180,29 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
             return result;
         }
         else if( "joinTransaction".equals(methodName) && args == null) { 
-            String testMethodName = MarshallingTestUtil.getTestMethodName();
             em.joinTransaction();
+            String testMethodName = MarshallingTestUtil.getTestMethodName();
             if( testMethodName != null ) { 
-                joinTransaction(testMethodName); 
+                updateManagedObjects(testMethodName, em); 
             }
             return result;
         }
+        else if( "find".equals(methodName) && args.length == 2) {
+            result = em.find((Class<?>) args[0], args[1]);
+            find(result);
+        }
         else { 
-            // DBG: EntityManagerFactoryProxyFactory
-            // String className = this.emf != null ? emf.getClass().getSimpleName() : em.getClass().getSimpleName();
-            // logger.trace( "><: " + className + "." + methodName );
-            if( this.emf != null ) { 
+            Class<?> methodClass = method.getDeclaringClass();
+            if( methodClass.equals(EntityManagerFactory.class) ) { 
                 result = invoke(method, emf, args);
             }
-            else if( this.em != null ) { 
+            else if( methodClass.equals(EntityManager.class) ) { 
                 result = invoke(method, em, args);
+            }
+            else { 
+                RuntimeException re = new RuntimeException("Unexpected class " + methodClass + " for method " + methodName );
+                re.fillInStackTrace();
+                throw re;
             }
         }
         
@@ -185,7 +214,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         try { 
             result = method.invoke(object, args);
         } catch( InvocationTargetException ite ) { 
-           
+           logger.warn(method.getName() + " threw " + ite.getClass().getSimpleName() + ": " + ite.getMessage());
         }
         return result;
     }
@@ -212,7 +241,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
             message = message.substring(0, message.lastIndexOf(",")) + ") not supported!";
             throw new UnsupportedOperationException(message);
         }
-        return createProxy(realEm);
+        return newInstance(realEm);
     }
 
     /**
@@ -225,7 +254,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         if( args[0] instanceof SessionInfo ) { 
             SessionInfo sessionInfo = (SessionInfo) args[0];
             byte [] byteArray = sessionInfo.getData();
-            managedSessionInfoDataMap.put(sessionInfo, byteArray != null ? byteArray.clone() : null );
+            managedSessionInfoDataMap.get().put(sessionInfo, byteArray != null ? byteArray.clone() : null );
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(sessionInfo);
                 em.persist(marshalledData);
@@ -235,7 +264,7 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         else if( args[0] instanceof WorkItemInfo ) { 
             WorkItemInfo workItemInfo = (WorkItemInfo) args[0];
             byte [] byteArray = workItemInfo.getWorkItemByteArray();
-            managedWorkItemInfoDataMap.put(workItemInfo, byteArray != null ? byteArray.clone() : null );
+            managedWorkItemInfoDataMap.get().put(workItemInfo, byteArray != null ? byteArray.clone() : null );
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(workItemInfo);
                 em.persist(marshalledData);
@@ -244,7 +273,9 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
         }
         else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(args[0].getClass().getName()) ) { 
             byte [] byteArray = MarshallingTestUtil.getProcessInstanceInfoByteArray(args[0]);
-            managedProcessInstanceInfoDataMap.put(args[0], byteArray != null ? byteArray.clone() : null);
+            managedProcessInstanceInfoDataMap.get().put(args[0], byteArray != null ? byteArray.clone() : null);
+            Long id = MarshallingTestUtil.getProcessInstanceInfoId(args[0]);
+            processInstanceInfoMarshalledDataMap.get().put(id, byteArray);
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(args[0]);
                 em.persist(marshalledData);
@@ -252,103 +283,162 @@ public class EntityManagerFactoryProxyFactory implements InvocationHandler {
             }
         }
     }
+    
+
 
     private void merge(String testMethodName, Object updatedObject) {
         if( updatedObject instanceof SessionInfo ) { 
-            updateSessionInfoMarshalledData((SessionInfo) updatedObject, testMethodName);
+            HashMap<SessionInfo, byte[]> updatedObjectsMap = new HashMap<SessionInfo, byte[]>();
+            updateSessionInfoMarshalledData((SessionInfo) updatedObject, testMethodName, em, updatedObjectsMap);
+            if( ! updatedObjectsMap.isEmpty() ) { 
+                managedSessionInfoDataMap.get().put((SessionInfo) updatedObject, updatedObjectsMap.get(updatedObject));
+            }
         }
         if( updatedObject instanceof WorkItemInfo ) { 
-            updateWorkItemInfoMarshalledData((WorkItemInfo) updatedObject, testMethodName);
+            HashMap<WorkItemInfo, byte[]> updatedObjectsMap = new HashMap<WorkItemInfo, byte[]>();
+            updateWorkItemInfoMarshalledData((WorkItemInfo) updatedObject, testMethodName, em, updatedObjectsMap);
+            if( ! updatedObjectsMap.isEmpty() ) { 
+                managedWorkItemInfoDataMap.get().put((WorkItemInfo) updatedObject, updatedObjectsMap.get(updatedObject));
+            }
         }
         if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(updatedObject.getClass().getName()) ) { 
-            updateSessionInfoMarshalledData((SessionInfo) updatedObject, testMethodName);
+            HashMap<Object, byte[]> updatedObjectsMap = new HashMap<Object, byte[]>();
+            updateProcessInstanceInfoMarshalledData(updatedObject, testMethodName, em, updatedObjectsMap);
+            if( ! updatedObjectsMap.isEmpty() ) { 
+                managedProcessInstanceInfoDataMap.get().put(updatedObject, updatedObjectsMap.get(updatedObject));
+            }
         }
     }
 
-    private void joinTransaction(String testMethodName) {
-        // Note: this method could be logically more efficient -- which would, IMHO, also make _less_ readable.
-    
+    private void find(Object result) { 
+        if( result == null ) { 
+            return;
+        }
+        
+        if( result instanceof SessionInfo ) { 
+            byte [] data = managedSessionInfoDataMap.get().get(result);
+            if( data == null ) { 
+                byte [] byteArray = ((SessionInfo) result).getData();
+                managedSessionInfoDataMap.get().put((SessionInfo) result, byteArray);
+            }
+        }
+        else if( result instanceof WorkItemInfo ) { 
+            byte [] data = managedWorkItemInfoDataMap.get().get(result);
+            if( data == null ) { 
+                byte [] byteArray = ((WorkItemInfo) result).getWorkItemByteArray();
+                managedWorkItemInfoDataMap.get().put((WorkItemInfo) result, byteArray);
+            }
+        }
+        else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(result.getClass().getName())) { 
+            byte [] data = managedProcessInstanceInfoDataMap.get().get(result);
+            if( data == null ) { 
+                byte [] byteArray = MarshallingTestUtil.getProcessInstanceInfoByteArray(result);
+                managedProcessInstanceInfoDataMap.get().put(result, byteArray);
+            }
+        }
+    }
+
+    protected static void updateManagedObjects(String testMethodName, EntityManager em) {
         // Update the marshalled data belonging to managed SessionInfo objects
-        if( managedSessionInfoDataMap != null ) { 
-            for( SessionInfo sessionInfo : managedSessionInfoDataMap.keySet()) { 
-                updateSessionInfoMarshalledData(sessionInfo, testMethodName);
+        if( managedSessionInfoDataMap != null ) {  
+            HashMap<SessionInfo, byte []> updatedObjectsMap = new HashMap<SessionInfo, byte[]>();
+            for( SessionInfo sessionInfo : managedSessionInfoDataMap.get().keySet()) { 
+                updateSessionInfoMarshalledData(sessionInfo, testMethodName, em, updatedObjectsMap);
+            }
+            for( SessionInfo sessionInfo : updatedObjectsMap.keySet() ) { 
+                managedSessionInfoDataMap.get().put(sessionInfo, updatedObjectsMap.get(sessionInfo)); 
             }
         }
         // Update the marshalled data belonging to managed WorkItemInfo objects
         if( managedWorkItemInfoDataMap != null ) { 
-        for( WorkItemInfo workItemInfo : managedWorkItemInfoDataMap.keySet() ) { 
-            updateWorkItemInfoMarshalledData(workItemInfo, testMethodName);
+            HashMap<WorkItemInfo, byte []> updatedObjectsMap = new HashMap<WorkItemInfo, byte[]>();
+            for( WorkItemInfo workItemInfo : managedWorkItemInfoDataMap.get().keySet() ) { 
+                updateWorkItemInfoMarshalledData(workItemInfo, testMethodName, em, updatedObjectsMap);
+            }
+            for( WorkItemInfo workItemInfo : updatedObjectsMap.keySet() ) { 
+                managedWorkItemInfoDataMap.get().put(workItemInfo, updatedObjectsMap.get(workItemInfo)); 
+            }
         }
-    
-        }
-        // Update the marshalled data belonging to managed WorkItemInfo objects
+        // Update the marshalled data belonging to managed ProcessInstanceInfo objects
         if( managedProcessInstanceInfoDataMap != null ) { 
-            for( Object processInstanceInfoObject : managedProcessInstanceInfoDataMap.keySet() ) { 
-                updateProcessInstanceInfoMarshalledData(processInstanceInfoObject, testMethodName);
+            HashMap<Object, byte []> updatedObjectsMap = new HashMap<Object, byte[]>();
+            for( Object processInstanceInfo : managedProcessInstanceInfoDataMap.get().keySet() ) { 
+                updateProcessInstanceInfoMarshalledData(processInstanceInfo, testMethodName, em, updatedObjectsMap);
+            }
+            for( Object processInstanceInfoObject : updatedObjectsMap.keySet() ) { 
+                managedProcessInstanceInfoDataMap.get().put(processInstanceInfoObject, 
+                        updatedObjectsMap.get(processInstanceInfoObject)); 
             }
         }
     }
 
-    private void updateSessionInfoMarshalledData(SessionInfo sessionInfo, String testMethodName) { 
-        byte [] origMarshalledBytes = managedSessionInfoDataMap.get(sessionInfo); 
+    private static void updateSessionInfoMarshalledData(SessionInfo sessionInfo, String testMethodName, 
+            EntityManager em, HashMap<SessionInfo, byte []> updateManagedSessionInfoMap) { 
+        byte [] origMarshalledBytes = managedSessionInfoDataMap.get().get(sessionInfo); 
 
         if( Arrays.equals(origMarshalledBytes, sessionInfo.getData()) ) {
             // If the marshalled data in this object has NOT been changed, skip this object.
             return; 
         }
+        updateManagedSessionInfoMap.put(sessionInfo, sessionInfo.getData());
 
         // Retrieve the most recent marshalled data for this object that was saved in this test method
-        byte [] lastMarshalledData = lastSessionMarshalledDataForTestMethodMap.get(testMethodName);
+        byte [] thisMarshalledData = sessionMarshalledDataMap.get().get(testMethodName);
         // ? If there has been no data persisted for this object for this test method (yet), 
         // ? Or if the most recently persisted data is NOT the same as what's now been persisted, 
         // ->  then it's "new" marshalled data, so save it in a MarshalledData object.
-        if( lastMarshalledData == null || ! Arrays.equals(lastMarshalledData, sessionInfo.getData()) ) {
+        if( thisMarshalledData == null || ! Arrays.equals(thisMarshalledData, sessionInfo.getData()) ) {
             MarshalledData marshalledData = new MarshalledData(sessionInfo);
             em.persist(marshalledData);
-            lastSessionMarshalledDataForTestMethodMap.put(marshalledData.testMethodName, marshalledData.rulesByteArray);
+            sessionMarshalledDataMap.get().put(sessionInfo.getId(), marshalledData.rulesByteArray);
             logger.info("-!-: " + marshalledData);
         }
     }
 
-    private void updateWorkItemInfoMarshalledData(WorkItemInfo workItemInfo, String testMethodName) { 
-        byte [] origMarshalledBytes = managedWorkItemInfoDataMap.get(workItemInfo); 
+    private static void updateWorkItemInfoMarshalledData(WorkItemInfo workItemInfo, String testMethodName, 
+            EntityManager em, HashMap<WorkItemInfo, byte []> updateManagedWorkItemInfoMap) { 
+        byte [] origMarshalledBytes = managedWorkItemInfoDataMap.get().get(workItemInfo); 
 
         if( Arrays.equals(origMarshalledBytes, workItemInfo.getWorkItemByteArray()) ) { 
             // If the marshalled data in this object has NOT been changed, skip this object.
             return; 
         }
-
+        updateManagedWorkItemInfoMap.put(workItemInfo, workItemInfo.getWorkItemByteArray());
+        
         // Retrieve the most recent marshalled data for this object that was saved in this test method
-        byte [] lastMarshalledData = lastWorkItemMarshalledDataForTestMethodMap.get(testMethodName);
+        byte [] thisMarshalledData = workItemMarshalledDataMap.get().get(testMethodName);
         // ? If there has been no data persisted for this object for this test method (yet), 
         // ? Or if the most recently persisted data is NOT the same as what's now been persisted, 
         // ->  then it's "new" marshalled data, so save it in a MarshalledData object.
-        if( lastMarshalledData == null || ! Arrays.equals(lastMarshalledData, workItemInfo.getWorkItemByteArray()) ) {
+        if( thisMarshalledData == null || ! Arrays.equals(thisMarshalledData, workItemInfo.getWorkItemByteArray()) ) {
             MarshalledData marshalledData = new MarshalledData(workItemInfo);
             em.persist(marshalledData);
-            lastWorkItemMarshalledDataForTestMethodMap.put(marshalledData.testMethodName, marshalledData.rulesByteArray);
+            workItemMarshalledDataMap.get().put(workItemInfo.getId(), marshalledData.rulesByteArray);
             logger.info("-!-: " + marshalledData);
         }
     }
    
-    private void updateProcessInstanceInfoMarshalledData(Object processInstanceInfoObject, String testMethodName) { 
-        byte [] origMarshalledBytes = managedProcessInstanceInfoDataMap.get(processInstanceInfoObject);
-
-        byte [] currMarshalledBytes = getProcessInstanceInfoByteArray(processInstanceInfoObject);
+    private static void updateProcessInstanceInfoMarshalledData(Object processInstanceInfo, String testMethodName, 
+            EntityManager em, HashMap<Object, byte []> updateManagedProcessInfoMap) { 
+        byte [] origMarshalledBytes = managedProcessInstanceInfoDataMap.get().get(processInstanceInfo);
+        byte [] currMarshalledBytes = getProcessInstanceInfoByteArray(processInstanceInfo);
         if( Arrays.equals(origMarshalledBytes, currMarshalledBytes) ) { 
             // If the marshalled data in this object has NOT been changed, skip this object.
             return; 
         }
 
+        updateManagedProcessInfoMap.put(processInstanceInfo, currMarshalledBytes);
+        
         // Retrieve the most recent marshalled data for this object that was saved in this test method
-        byte [] lastMarshalledData = lastProcessInstanceMarshalledDataForTestMethodMap.get(testMethodName);
+        Long id = MarshallingTestUtil.getProcessInstanceInfoId(processInstanceInfo);
+        byte [] thisMarshalledData = processInstanceInfoMarshalledDataMap.get().get(id);
         // ? If there has been no data persisted for this object for this test method (yet), 
         // ? Or if the most recently persisted data is NOT the same as what's now been persisted, 
         // ->  then it's "new" marshalled data, so save it in a MarshalledData object.
-        if( lastMarshalledData == null || ! Arrays.equals(lastMarshalledData, currMarshalledBytes) ) { 
-            MarshalledData marshalledData = new MarshalledData(processInstanceInfoObject);
+        if( thisMarshalledData == null || ! Arrays.equals(thisMarshalledData, currMarshalledBytes) ) { 
+            MarshalledData marshalledData = new MarshalledData(processInstanceInfo);
             em.persist(marshalledData);
-            lastProcessInstanceMarshalledDataForTestMethodMap.put(marshalledData.testMethodName, marshalledData.rulesByteArray);
+            processInstanceInfoMarshalledDataMap.get().put(id, marshalledData.rulesByteArray);
             logger.info("-!-: " + marshalledData);
         }
     }

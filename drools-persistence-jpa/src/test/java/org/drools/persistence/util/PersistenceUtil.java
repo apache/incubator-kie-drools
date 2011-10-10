@@ -15,6 +15,7 @@
  */
 package org.drools.persistence.util;
 
+import static org.drools.runtime.EnvironmentName.*;
 import static org.drools.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.*;
 
@@ -25,18 +26,27 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Properties;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import org.drools.marshalling.util.EntityManagerFactoryProxyFactory;
+import org.drools.base.MapGlobalResolver;
+import org.drools.impl.EnvironmentFactory;
+import org.drools.marshalling.util.EntityManagerFactoryProxy;
+import org.drools.marshalling.util.UserTransactionProxy;
+import org.drools.persistence.jta.JtaTransactionManager;
+import org.drools.runtime.Environment;
+import org.drools.runtime.EnvironmentName;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -56,8 +66,7 @@ public class PersistenceUtil {
     private static Properties defaultProperties = null;
    
     // Setup and marshalling setup constants
-    public static String DATASOURCE = "org.drools.persistence.datasource";
-    public static String ENTITY_MANAGER_FACTORY = "org.drools.persistence.entityManagerFactory";
+    public static String DATASOURCE = "org.droolsjbpm.persistence.datasource";
 
     /**
      * @see #setupWithPoolingDataSource(String, boolean)
@@ -196,9 +205,9 @@ public class PersistenceUtil {
             for (String propertyName : new String[] { "url", "driverClassName" }) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
-        }
-        else { 
+        } else {
             pds.setClassName(dsProps.getProperty("className"));
+
             if (driverClass.startsWith("oracle")) {
                 pds.getDriverProperties().put("driverType", "thin");
                 pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
@@ -268,7 +277,6 @@ public class PersistenceUtil {
         String propertiesNotFoundMessage = "Unable to load datasource properties [" + DATASOURCE_PROPERTIES + "]";
         boolean propertiesNotFound = false;
 
-        // OCRAM: PersistenceUtil.getDatasourceProperties: check that this works when PU is in a jar.. 
         InputStream propsInputStream = PersistenceUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
         assertNotNull(propertiesNotFoundMessage, propsInputStream);
         Properties props = new Properties();
@@ -376,7 +384,7 @@ public class PersistenceUtil {
         return fieldValue;
     }
 
-    private Environment createEnvironment(HashMap<String, Object> context) { 
+    public static Environment createEnvironment(HashMap<String, Object> context) { 
         Environment env = EnvironmentFactory.newEnvironment();
         
         UserTransaction ut = (UserTransaction) context.get(TRANSACTION);

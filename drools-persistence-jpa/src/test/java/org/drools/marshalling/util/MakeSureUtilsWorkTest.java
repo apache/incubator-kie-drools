@@ -15,6 +15,7 @@
  */
 package org.drools.marshalling.util;
 
+import static org.drools.runtime.EnvironmentName.*;
 import static java.lang.System.out;
 import static org.drools.marshalling.util.CompareViaReflectionUtil.*;
 import static org.drools.marshalling.util.MarshallingDBUtil.*;

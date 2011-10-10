@@ -15,22 +15,19 @@
  */
 package org.drools.timer.integrationtests;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -44,8 +41,6 @@ import org.drools.io.ResourceFactory;
 import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
@@ -58,12 +53,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 public class TimerAndCalendarTest {
     private static Logger logger = LoggerFactory.getLogger(TimerAndCalendarTest.class);
     
-    private EntityManagerFactory emf;
+    private HashMap<String, Object> context;
 
     @Test
     public void testTimerRuleAfterIntReloadSession() throws Exception {
@@ -267,18 +260,12 @@ public class TimerAndCalendarTest {
 
     @Before
     public void setUp() throws Exception {
-        testContext = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME);
-        emf = (EntityManagerFactory) testContext.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
+        context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME);
     }
 
     @After
     public void tearDown() throws Exception {
-        try {
-            emf.close();
-            ds1.close();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
+        PersistenceUtil.tearDown(context);
     }
 
     @AfterClass
@@ -291,7 +278,7 @@ public class TimerAndCalendarTest {
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase,
                                                                                              conf,
-                                                                                             createEnvironment() );
+                                                                                             createEnvironment(context) );
         return ksession;
     }
 
@@ -306,19 +293,8 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession newksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId,
                                                                                                  kbase,
                                                                                                  conf,
-                                                                                                 createEnvironment() );
+                                                                                                 createEnvironment(context) );
         return newksession;
-    }
-
-    private Environment createEnvironment() {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        // env.set(EnvironmentName.TRANSACTION_MANAGER,
-        // TransactionManagerServices.getTransactionManager());
-        env.set( EnvironmentName.GLOBALS,
-                 new MapGlobalResolver() );
-        return env;
     }
 
     private Collection<KnowledgePackage> buildKnowledgePackage(Resource resource,

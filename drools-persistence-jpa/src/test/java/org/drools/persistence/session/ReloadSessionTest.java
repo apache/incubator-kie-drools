@@ -15,11 +15,13 @@
  */
 package org.drools.persistence.session;
 
+import static org.drools.runtime.EnvironmentName.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.persistence.EntityManagerFactory;
@@ -51,7 +53,7 @@ import bitronix.tm.TransactionManagerServices;
 public class ReloadSessionTest {
 
     // Datasource (setup & clean up)
-    private PoolingDataSource ds1;
+    private HashMap<String, Object> context;
     private EntityManagerFactory emf;
 
     private static String simpleRule = "package org.drools.test\n"
@@ -72,8 +74,7 @@ public class ReloadSessionTest {
 
     @After
     public void cleanUp() {
-        emf.close();
-        ds1.close();
+        PersistenceUtil.tearDown(context);
     }
 
     @AfterClass
@@ -96,21 +97,11 @@ public class ReloadSessionTest {
         return kbase;
     }
     
-    private Environment initializeEnvironment(EntityManagerFactory emf) {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
-        env.set(EnvironmentName.TRANSACTION_MANAGER,
-                TransactionManagerServices.getTransactionManager());
-        
-        return env;
-    }
-
     @Test 
     public void reloadKnowledgeSessionTest() { 
         
         // Initialize drools environment stuff
-        Environment env = initializeEnvironment(emf);
+        Environment env = createEnvironment(context);
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         assertTrue("There should be NO facts present in a new (empty) knowledge session.", commandKSession.getFactHandles().isEmpty());
@@ -138,7 +129,8 @@ public class ReloadSessionTest {
      
         // Reload session from the database
         emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
-        env = initializeEnvironment(emf);
+        context.put(ENTITY_MANAGER_FACTORY, emf);
+        env = createEnvironment(context);
        
         // Re-initialize the knowledge session:
         StatefulKnowledgeSession newCommandKSession 

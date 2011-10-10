@@ -19,9 +19,8 @@ import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -37,7 +36,6 @@ import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.InternalAgenda;
 import org.junit.After;
@@ -45,16 +43,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
-import bitronix.tm.TransactionManagerServices;
-
 public class RuleFlowGroupRollbackTest {
-	
-	PoolingDataSource ds1;
+    
+    private HashMap<String, Object> context;
 
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
-        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 	
 	@After
@@ -104,13 +99,8 @@ public class RuleFlowGroupRollbackTest {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
-
+        Environment env = createEnvironment(context);
         return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        
 	}
 	
 	@SuppressWarnings("serial")
