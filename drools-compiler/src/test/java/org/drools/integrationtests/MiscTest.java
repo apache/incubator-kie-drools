@@ -5015,7 +5015,6 @@ public class MiscTest {
                       list.get( 0 ) );
     }
 
-    // this is an MVEL regression that we need fixed in mvel-2.0.11
     @Test
     public void testMapAccessWithVariable() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
@@ -5047,6 +5046,26 @@ public class MiscTest {
         assertEquals( 1,
                       list.size() );
         assertTrue( list.contains( map ) );
+    }
+
+    // Drools does not support variables inside bindings yet... but we should...
+    @Test
+    public void testMapAccessWithVariable2() {
+        String str = "package org.drools;\n" + 
+        		"import java.util.Map;\n" + 
+        		"rule \"map access with variable\"\n" + 
+        		"    when\n" + 
+        		"        $key : String( )\n" + 
+                "        $p1 : Person( name == 'Bob', namedAddresses[$key] != null, $na : namedAddresses[$key] )\n" + 
+                "        $p2 : Person( name == 'Mark', namedAddresses[$key] == $na )\n" + 
+        		"    then\n" + 
+        		"end\n";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+        
+        Assert.assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
