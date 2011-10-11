@@ -16,12 +16,29 @@
 
 package org.jbpm.process.workitem.email;
 
+import java.lang.reflect.Field;
+
 public class Connection {
-	
+
+    public Connection() { }
+    
+    public Connection(String host, String port, String userName, String password) { 
+       this.host = host; 
+       this.port = port; 
+       this.userName = userName; 
+       this.password =  password; 
+    }
+    
+    public Connection(String host, String port) { 
+       this.host = host; 
+       this.port = port; 
+    }
+    
     private String host;
     private String port;
     private String userName;
     private String password;
+    private Boolean startTls;
 
     public int hashCode() {
         final int prime = 31;
@@ -37,19 +54,25 @@ public class Connection {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        final Connection other = (Connection) obj;
-        if ( host == null ) {
-            if ( other.host != null ) return false;
-        } else if ( !host.equals( other.host ) ) return false;
-        if ( password == null ) {
-            if ( other.password != null ) return false;
-        } else if ( !password.equals( other.password ) ) return false;
-        if ( port == null ) {
-            if ( other.port != null ) return false;
-        } else if ( !port.equals( other.port ) ) return false;
-        if ( userName == null ) {
-            if ( other.userName != null ) return false;
-        } else if ( !userName.equals( other.userName ) ) return false;
+
+        Field [] fields = Connection.class.getDeclaredFields();
+        for( int i = 0; i < fields.length; ++i ) { 
+            try {
+                Object thisVal = fields[i].get(this);
+                Object thatVal = fields[i].get(obj);
+                if( thisVal != null && thatVal != null ) {
+                    if( ! thisVal.equals(thatVal) ) { 
+                        return false;
+                    }
+                }
+                else if( thisVal != thatVal ) { 
+                    return false; 
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -83,6 +106,14 @@ public class Connection {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getStartTls() {
+        return startTls;
+    }
+
+    public void setStartTls(boolean startTls) {
+        this.startTls = startTls;
     }
 
 }
