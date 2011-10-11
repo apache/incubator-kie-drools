@@ -55,4 +55,14 @@ public class PredicateDescr extends RestrictionDescr {
         return this.declarations;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "predicate '" + content + "'";
+    }
+    
+    
+
 }
