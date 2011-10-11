@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.RecognitionException;
+import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.EvaluatorWrapper;
@@ -339,7 +340,7 @@ public class PatternBuilder
                                                               patternDescr,
                                                               null,
                                                               "A Sliding Window behavior can only be assigned to patterns declared with @role( event ). The pattern '" + pattern.getObjectType() + "' in the rule '" + context.getRule().getName()
-                                                                     + "' is not declared as an Event." ) );
+                                                                      + "' is not declared as an Event." ) );
             }
         }
 
@@ -423,19 +424,19 @@ public class PatternBuilder
 
             ClassDefinition clsDef = tDecl.getTypeClassDef();
             if ( clsDef == null ) {
-                context.getErrors().add( new DescrBuildError(context.getParentDescr(),
-                                         descr,
-                                         null,
-                                         "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n") );
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" ) );
                 return;
             }
 
             FieldDefinition field = clsDef.getField( descr.getPosition() );
             if ( field == null ) {
-                context.getErrors().add( new DescrBuildError(context.getParentDescr(),
-                                         descr,
-                                         null,
-                                         "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n") );
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              descr,
+                                                              null,
+                                                              "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n" ) );
                 return;
             }
 
@@ -508,8 +509,8 @@ public class PatternBuilder
 
             boolean simple = false;
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-            String expr = new MVELDumper().dump(d,
-                    mvelCtx);
+            String expr = new MVELDumper().dump( d,
+                                                 mvelCtx );
             Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
 
             // create bindings
@@ -615,7 +616,7 @@ public class PatternBuilder
                                          value2Expr );
         }
 
-        if( ! succeeded ) {
+        if ( !succeeded ) {
             // fallback to a regular predicate
             createAndBuildPredicate( context,
                                      pattern,
@@ -642,7 +643,7 @@ public class PatternBuilder
                 value1 = parts[1];
             }
         }
-        
+
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      relDescr,
                                                                      pattern.getObjectType(),
@@ -666,10 +667,10 @@ public class PatternBuilder
                                                                                 relDescr.getParameters(),
                                                                                 value2,
                                                                                 LiteralRestrictionDescr.TYPE_STRING ) ); // default type
-//            if ( restriction == null ) {
-//                // otherwise we just get wierd errors after this point on literals
-//                return false;
-//            }
+            //            if ( restriction == null ) {
+            //                // otherwise we just get wierd errors after this point on literals
+            //                return false;
+            //            }
         } else {
             // is it an enum?
             int dotPos = value2.lastIndexOf( '.' );
@@ -755,11 +756,11 @@ public class PatternBuilder
 
                         } else {
                             // we will later fallback to regular predicates, so don't raise error
-                            
-//                            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                                          relDescr,
-//                                                                          "",
-//                                                                          "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
+
+                            //                            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                            //                                                                          relDescr,
+                            //                                                                          "",
+                            //                                                                          "Not possible to directly access the property '" + parts[1] + "' of declaration '" + parts[0] + "' since it is not a pattern" ) );
                             return false;
                         }
                     }
@@ -905,8 +906,8 @@ public class PatternBuilder
             for ( String v : pctx.getInputs().keySet() ) {
                 // in the following if, we need to check that the expr actually contains a reference
                 // to an "empty" property, or the if will evaluate to true even if it doesn't 
-                if ( "this".equals( v ) || ( PropertyTools.getFieldOrAccessor( thisClass,
-                                                                               v ) != null && expr.matches( "(^|.*\\W)empty($|\\W.*)" ) ) ) {
+                if ( "this".equals( v ) || (PropertyTools.getFieldOrAccessor( thisClass,
+                                                                               v ) != null && expr.matches( "(^|.*\\W)empty($|\\W.*)" )) ) {
                     descrBranch.getFieldAccessors().add( v );
                 } else if ( "empty".equals( v ) ) {
                     // do nothing
@@ -1013,7 +1014,8 @@ public class PatternBuilder
                             final Map<String, OperatorDescr> aliases ) {
 
         Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr,
-                                                                   context );
+                                                                   context,
+                                                                   true );
         Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
         Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
 
@@ -1078,9 +1080,6 @@ public class PatternBuilder
             return;
         }
 
-        // this will return an array with 2 lists
-        // where first list is from rule local variables
-        // second list is from global variables
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
         final List tupleDeclarations = new ArrayList();
@@ -1138,15 +1137,18 @@ public class PatternBuilder
 
     }
 
-    private Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,
-                                                        final RuleBuildContext context ) {
+    private static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,
+                                                               final RuleBuildContext context,
+                                                               final boolean reportError ) {
         Map<String, Class< ? >> declarations = new HashMap<String, Class< ? >>();
         for ( Map.Entry<String, Declaration> entry : context.getDeclarationResolver().getDeclarations( context.getRule() ).entrySet() ) {
             if ( entry.getValue().getExtractor() == null ) {
-                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                              baseDescr,
-                                                              null,
-                                                              "Field Reader does not exist for declaration '" + entry.getKey() + "' in'" + baseDescr + "' in the rule '" + context.getRule().getName() + "'" ) );
+                if ( reportError ) {
+                    context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                  baseDescr,
+                                                                  null,
+                                                                  "Field Reader does not exist for declaration '" + entry.getKey() + "' in '" + baseDescr + "' in the rule '" + context.getRule().getName() + "'" ) );
+                }
                 continue;
             }
             declarations.put( entry.getKey(),
@@ -1264,10 +1266,10 @@ public class PatternBuilder
                                                 context.getPackageBuilder().getDateFormats() );
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
-//            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-//                                                          literalRestrictionDescr,
-//                                                          e,
-//                                                          "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
+            //            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+            //                                                          literalRestrictionDescr,
+            //                                                          e,
+            //                                                          "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
         }
 
         if ( field == null ) {
@@ -1304,7 +1306,8 @@ public class PatternBuilder
                                                      final ReturnValueRestrictionDescr returnValueRestrictionDescr,
                                                      final Map<String, OperatorDescr> aliases ) {
         Map<String, Class< ? >> declarations = getDeclarationsMap( returnValueRestrictionDescr,
-                                                                   context );
+                                                                   context,
+                                                                   true );
         Class< ? > thisClass = null;
         if ( pattern.getObjectType() instanceof ClassObjectType ) {
             thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
@@ -1414,16 +1417,75 @@ public class PatternBuilder
         } else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) {
             // we need MVEL extractor for expressions
             try {
+                Map<String, Class< ? >> declarations = getDeclarationsMap( descr,
+                                                                           context,
+                                                                           false );
+                Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
+
+                final AnalysisResult analysis = context.getDialect().analyzeExpression( context,
+                                                                                        descr,
+                                                                                        fieldName,
+                                                                                        new BoundIdentifiers( declarations,
+                                                                                                              globals,
+                                                                                                              null,
+                                                                                                              ((ClassObjectType) objectType).getClassType() ) );
+
+                if ( analysis == null ) {
+                    // something bad happened
+                    if ( reportError ) {
+                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                      descr,
+                                                                      null,
+                                                                      "Unable to analyze expression '" + fieldName + "'" ) );
+                    }
+                    return null;
+                }
+
+                final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
+
+                if ( !usedIdentifiers.getDeclrClasses().isEmpty() ) {
+                    if ( reportError ) {
+                        context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                                      descr,
+                                                                      null,
+                                                                      "Variables can not be used inside bindings. Variable " + usedIdentifiers.getDeclrClasses().keySet() + " is being used in binding '" + fieldName + "'" ) );
+                    }
+                    return null;
+                }
+
+                //                final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
+                //                final List<Declaration> factDeclarations = new ArrayList<Declaration>();
+                //                for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
+                //                    final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(),
+                //                                                                                              id );
+                //                    if ( decl.getPattern() == pattern ) {
+                //                        factDeclarations.add( decl );
+                //                    } else {
+                //                        tupleDeclarations.add( decl );
+                //                    }
+                //                }
+                //
+                //                final Declaration[] previousDeclarations = (Declaration[]) tupleDeclarations.toArray( new Declaration[tupleDeclarations.size()] );
+                //                final Declaration[] localDeclarations = (Declaration[]) factDeclarations.toArray( new Declaration[factDeclarations.size()] );
+                //                final String[] requiredGlobals = usedIdentifiers.getGlobals().keySet().toArray( new String[usedIdentifiers.getGlobals().size()] );
+                //                final String[] requiredOperators = usedIdentifiers.getOperators().keySet().toArray( new String[usedIdentifiers.getOperators().size()] );
+                //
+                //                Arrays.sort( previousDeclarations,
+                //                             SortDeclarations.instance );
+                //                Arrays.sort( localDeclarations,
+                //                             SortDeclarations.instance );
+
                 reader = context.getPkg().getClassFieldAccessorStore().getMVELReader( context.getPkg().getName(),
                                                                                       ((ClassObjectType) objectType).getClassName(),
                                                                                       fieldName,
                                                                                       context.isTypesafe() );
                 MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-                ((MVELCompileable) reader).compile(data);
-                data.addCompileable((MVELCompileable) reader);
+                ((MVELCompileable) reader).compile( data );
+                data.addCompileable( (MVELCompileable) reader );
             } catch ( final Exception e ) {
                 if ( reportError ) {
-                    copyErrorLocation(e, descr);
+                    copyErrorLocation( e,
+                                       descr );
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
                                                                   e,
@@ -1439,7 +1501,8 @@ public class PatternBuilder
                                                                                   target );
             } catch ( final Exception e ) {
                 if ( reportError ) {
-                    copyErrorLocation(e, descr);
+                    copyErrorLocation( e,
+                                       descr );
                     context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                                   descr,
                                                                   e,
