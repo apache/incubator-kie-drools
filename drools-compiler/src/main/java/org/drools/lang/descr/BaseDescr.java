@@ -128,4 +128,8 @@ public class BaseDescr
         this.setStartCharacter( d.getStartCharacter() );
         this.setEndCharacter( d.getEndCharacter() );
     }
+
+    public String positionAsString() {
+        return "[Line: " + getLine() + ", Column: " + getColumn() + "]";
+    }
 }
