@@ -47,6 +47,17 @@ public class MVELPredicateBuilder
                        final PredicateDescr predicateDescr,
                        final AnalysisResult analysis ) {
         boolean typesafe = context.isTypesafe();
+
+        if (typesafe && analysis instanceof MVELAnalysisResult) {
+            Class<?> returnClass = ((MVELAnalysisResult)analysis).getReturnType();
+            if (returnClass != Boolean.class && returnClass != Boolean.TYPE) {
+                context.getErrors().add( new DescrBuildError( context.getParentDescr(),
+                                                              predicateDescr,
+                                                              null,
+                                                              "Predicate '" + predicateDescr.getContent() + "' must be a Boolean expression\n" + predicateDescr.positionAsString() ) );
+            }
+        }
+
         MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
 
         try {

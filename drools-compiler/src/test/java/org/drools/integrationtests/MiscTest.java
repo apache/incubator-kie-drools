@@ -9250,6 +9250,24 @@ public class MiscTest {
     }
 
     @Test
+    public void testNonBooleanConstraint() {
+        String str = "package org.drools\n" +
+                     "import java.util.List\n" +
+                     "rule \"test\"\n" +
+                     "when\n" +
+                     "    $p1: Person( name + name )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        assertTrue(kbuilder.hasErrors());
+        System.out.println(kbuilder.getErrors().toString());
+    }
+
+    @Test
     public void testModifyJava() {
         String str = "package org.drools\n" +
                      "import java.util.List\n" +
