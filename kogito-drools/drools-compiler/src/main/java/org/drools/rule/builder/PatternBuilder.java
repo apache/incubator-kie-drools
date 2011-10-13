@@ -16,6 +16,8 @@
 
 package org.drools.rule.builder;
 
+import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -29,7 +31,6 @@ import java.util.regex.Matcher;
 
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.RecognitionException;
-import org.drools.RuntimeDroolsException;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.EvaluatorWrapper;
@@ -103,15 +104,12 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
-import org.mvel2.CompileException;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
-
-import static org.drools.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 /**
  * A builder for patterns
