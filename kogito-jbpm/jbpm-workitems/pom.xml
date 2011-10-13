@@ -42,8 +42,8 @@
     </dependency>
     <dependency>
       <groupId>org.subethamail</groupId>
-      <artifactId>subethasmtp-wiser</artifactId>
-      <version>1.2</version>
+      <artifactId>subethasmtp</artifactId>
+      <version>3.1.6</version>
       <scope>test</scope>
     </dependency>
     <!-- Commons -->

@@ -22,26 +22,57 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
 public class SendHtml {
-
+    
     public static void sendHtml(Email email) {
+        sendHtml(email, email.getConnection());
+    } 
+    
+    public static void sendHtml(Email email, Connection connection) {
+        int port = Integer.parseInt(connection.getPort());
+        String mailhost = connection.getHost();
+        String username = connection.getUserName();
+        String password = connection.getPassword();
+       
+        Session session = getSession(connection);
+        boolean debug = false;
+        session.setDebug( debug );
+        
+        try {
+            Message msg = fillMessage(email, session);
+            
+            // send the thing off
+            Transport t = (Transport)session.getTransport("smtp");
+            try {
+                t.connect(mailhost, port, username, password);
+                t.sendMessage(msg, msg.getAllRecipients());
+            } catch (Exception e) {
+                throw new RuntimeException( "Connection failure", e );
+            } finally {
+                t.close();
+            }
+
+        } catch ( Exception e ) {
+            throw new RuntimeException( "Unable to send email", e );
+        }
+    }
+
+    private static Message fillMessage(Email email, Session session) { 
         org.jbpm.process.workitem.email.Message message = email.getMessage();
-        Connection connection = email.getConnection();
 
         String subject = message.getSubject();
         String from = message.getFrom();
         String replyTo = message.getReplyTo();
-        String mailhost = connection.getHost();
-        String username = connection.getUserName();
-        String password = connection.getPassword();
+
         String mailer = "sendhtml";
         
         if ( from == null ) {
@@ -51,21 +82,11 @@ public class SendHtml {
         if ( replyTo == null ) {
             replyTo = from;
         }
-        boolean debug = false;
+
+        // Construct and fill the Message
+        Message msg =  null;
         try {
-                        
-            // Get a Session object
-            Properties props = new Properties();
-            if ( mailhost != null && mailhost.trim().length() > 0 ) props.setProperty( "mail.smtp.host", mailhost );
-            if ( connection.getPort() != null && connection.getPort().trim().length() > 0 ) {
-                props.setProperty( "mail.smtp.port", connection.getPort() );                
-            }               
-            Session session = Session.getInstance( props, null );
-            session.setDebug( debug );
-            
-            // construct the message
-            Message msg = new MimeMessage( session );
-            
+            msg = new MimeMessage( session );
             msg.setFrom( new InternetAddress( from ) );
             msg.setReplyTo( new InternetAddress[] {  new InternetAddress( replyTo ) }  );
             
@@ -87,23 +108,13 @@ public class SendHtml {
             collect( message.getBody(), msg );
             msg.setHeader( "X-Mailer", mailer );
             msg.setSentDate( new Date() );
-            
-            // send the thing off
-    	    Transport t = (Transport)session.getTransport("smtp");
-    	    try {
-    		    t.connect(mailhost, username, password);
-    			t.sendMessage(msg, msg.getAllRecipients());
-    	    } catch (Exception e) {
-    	    	throw new RuntimeException( "Connection failure", e );
-     	    } finally {
-    	    	t.close();
-    	    }
-
         } catch ( Exception e ) {
             throw new RuntimeException( "Unable to send email", e );
         }
+        
+        return msg;
     }
-
+    
     public static void collect(String body, Message msg) throws MessagingException, IOException {
 //        String subject = msg.getSubject();
         StringBuffer sb = new StringBuffer();
@@ -119,5 +130,49 @@ public class SendHtml {
 //        sb.append( "</BODY>\n" );
 //        sb.append( "</HTML>\n" );
         msg.setDataHandler( new DataHandler( new ByteArrayDataSource( sb.toString(), "text/html" ) ) );
+    }
+    
+    
+    private static Session getSession(Connection connection) {
+        String username = connection.getUserName();
+        String password = connection.getPassword();
+
+        Properties properties = new Properties();
+        properties.setProperty("mail.smtp.host", connection.getHost());
+        properties.setProperty("mail.smtp.port", connection.getPort());
+
+        Session session = null;
+        if( username != null ) { 
+            properties.setProperty("mail.smtp.submitter", username);
+            if( password != null) {
+                Authenticator authenticator = new Authenticator(username, password);
+                properties.setProperty("mail.smtp.auth", "true");
+                session = Session.getInstance(properties, authenticator);
+            }
+            else { 
+                session = Session.getInstance(properties);
+            }
+        }
+        else { 
+            session = Session.getInstance(properties);
+        }
+        
+        if( connection.getStartTls() != null && connection.getStartTls() ) { 
+            properties.put("mail.smtp.starttls.enable","true");
+        }
+       
+        return session;
+    }
+
+    private static class Authenticator extends javax.mail.Authenticator {
+        private PasswordAuthentication authentication;
+
+        public Authenticator(String username, String password) {
+            authentication = new PasswordAuthentication(username, password);
+        }
+
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return authentication;
+        }
     }
 }

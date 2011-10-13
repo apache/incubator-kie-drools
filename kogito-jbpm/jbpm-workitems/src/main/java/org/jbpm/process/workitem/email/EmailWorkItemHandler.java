@@ -63,23 +63,34 @@ public class EmailWorkItemHandler implements WorkItemHandler {
 			throw new IllegalArgumentException(
 				"Connection not initialized for Email");
 		}
-		Email email = new Email();
-		Message message = new Message();
-		message.setFrom((String) workItem.getParameter("From"));
-		message.setReplyTo( (String) workItem.getParameter("Reply-To"));
-		Recipients recipients = new Recipients();
-		String to = (String) workItem.getParameter("To");
-		if ( to == null || to.trim().length() == 0 ) {
-		    throw new RuntimeException( "Email must have one or more to adresses" );
-		}
-		for (String s: to.split(";")) {
-			if (s != null && !"".equals(s)) {
-				Recipient recipient = new Recipient();
-				recipient.setEmail(s);
+	
+		Email email = createEmail(workItem, connection);
+		SendHtml.sendHtml(email);
+		manager.completeWorkItem(workItem.getId(), null);
+	}
+
+	protected static Email createEmail(WorkItem workItem, Connection connection) { 
+	    Email email = new Email();
+        Message message = new Message();
+        message.setFrom((String) workItem.getParameter("From"));
+        message.setReplyTo( (String) workItem.getParameter("Reply-To"));
+        
+        // Set recipients
+        Recipients recipients = new Recipients();
+        String to = (String) workItem.getParameter("To");
+        if ( to == null || to.trim().length() == 0 ) {
+            throw new RuntimeException( "Email must have one or more to adresses" );
+        }
+        for (String s: to.split(";")) {
+            if (s != null && !"".equals(s)) {
+                Recipient recipient = new Recipient();
+                recipient.setEmail(s);
                 recipient.setType( "To" );
-				recipients.addRecipient(recipient);
-			}
-		}
+                recipients.addRecipient(recipient);
+            }
+        }
+        
+        // Set cc
         String cc = (String) workItem.getParameter("Cc");
         if ( cc != null && cc.trim().length() > 0 ) {
             for (String s: cc.split(";")) {
@@ -89,8 +100,10 @@ public class EmailWorkItemHandler implements WorkItemHandler {
                     recipient.setType( "Cc" );
                     recipients.addRecipient(recipient);
                 }
-            }		
+            }       
         }
+        
+        // Set bcc
         String bcc = (String) workItem.getParameter("Bcc");
         if ( bcc != null && bcc.trim().length() > 0 ) {
             for (String s: bcc.split(";")) {
@@ -100,17 +113,21 @@ public class EmailWorkItemHandler implements WorkItemHandler {
                     recipient.setType( "Bcc" );
                     recipients.addRecipient(recipient);
                 }
-            }		
+            }       
         }
-		message.setRecipients(recipients);
-		message.setSubject((String) workItem.getParameter("Subject"));
-		message.setBody((String) workItem.getParameter("Body"));
-		email.setMessage(message);
-		email.setConnection(connection);
-		SendHtml.sendHtml(email);
-		manager.completeWorkItem(workItem.getId(), null);
+        
+        // Fill message
+        message.setRecipients(recipients);
+        message.setSubject((String) workItem.getParameter("Subject"));
+        message.setBody((String) workItem.getParameter("Body"));
+        
+        // setup email
+        email.setMessage(message);
+        email.setConnection(connection);
+        
+        return email;
 	}
-
+	
 	public void abortWorkItem(WorkItem arg0, WorkItemManager arg1) {
 		// Do nothing, email cannot be aborted
 	}
