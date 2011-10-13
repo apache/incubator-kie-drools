@@ -18,10 +18,12 @@ package org.drools.factmodel.traits;
 
 import junit.framework.Assert;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.conf.AssertBehaviorOption;
 import org.drools.definition.type.FactType;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
@@ -976,7 +978,7 @@ public class TraitTest {
             System.err.println( "\t\t" + o);
         }
         System.err.println(" --------------  ---------------- ");
-        System.err.println( info );
+        System.err.println(info);
         System.err.println(" --------------  ---------------- ");
 
         assertTrue( info.contains("OK") );
@@ -984,6 +986,33 @@ public class TraitTest {
         assertEquals( 2, info.size() );
 
 
+
+    }
+
+    @Test
+    public void testTraitWithEquality() {
+        String source = "org/drools/factmodel/traits/testTraitWithEquality.drl";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        Resource res = ResourceFactory.newClassPathResource(source);
+        assertNotNull(res);
+        kbuilder.add(res, ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kbConf.setOption(AssertBehaviorOption.EQUALITY );
+        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        List info = new ArrayList();
+        ks.setGlobal( "list", info );
+
+        ks.fireAllRules();
+
+        Assert.assertTrue(info.contains("DON"));
+        Assert.assertTrue( info.contains( "EQUAL" ) );
 
     }
 
