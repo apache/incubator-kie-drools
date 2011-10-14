@@ -239,7 +239,7 @@
         is constrains a teacher's spare time.</para>
 
         <para>Alternatively, you can sometimes also introduce <link linkend="cachedProblemFact"><emphasis>a cached
-        problem fact</emphasis></link> to enrich the domain model during planning without actually changing it.</para>
+        problem fact</emphasis></link> to enrich the domain model for planning only.</para>
       </note>
     </section>
 
