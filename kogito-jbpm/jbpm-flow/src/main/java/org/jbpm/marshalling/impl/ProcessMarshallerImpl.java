@@ -73,7 +73,8 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
 //            writeTimer( context,
 //                        timer );
 //        }
-//        stream.writeShort( PersisterEnums.END );
+        
+        outCtx.writeShort( PersisterEnums.END );
     }
 
     public static void writeTimer(MarshallerWriteContext context,
