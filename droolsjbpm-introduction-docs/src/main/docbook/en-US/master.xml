@@ -33,8 +33,9 @@
   </preface>
 
   <xi:include href="Chapter-Welcome/Chapter-Welcome.xml" />
-  <xi:include href="Chapter-Release_Notes/Chapter-ReleaseNotes.xml" />
   <xi:include href="Chapter-Install/Chapter-Install.xml" />
+  <xi:include href="Chapter-Release_Notes/Chapter-ReleaseNotes.xml" />
+  <xi:include href="Chapter-Compatibility/Chapter-Compatibility.xml" />
 
   <index/>
 
