@@ -288,11 +288,16 @@ public class InputMarshaller {
                    // It will read in old JBPM binaries, but always write to the new binary format.
                    processMarshaller.readProcessTimers( context );
                } else {
-                   // no legacy jBPM timers, so handle locally
-                   while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
-                       InputMarshaller.readTimer( context ); 
-                   }             
+                   short type = context.stream.readShort();
+                   if( PersisterEnums.END != type ) { 
+                       throw new IllegalStateException("No process marshaller, unable to unmarshall type: " + type);
+                   }
                }
+                   
+               // no legacy jBPM timers, so handle locally
+               while ((token = context.readShort()) == PersisterEnums.DEFAULT_TIMER) {
+                   InputMarshaller.readTimer( context ); 
+               }             
                
                if( multithread ) {
                    session.startPartitionManagers();
