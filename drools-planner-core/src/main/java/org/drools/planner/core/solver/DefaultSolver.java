@@ -93,6 +93,7 @@ public class DefaultSolver implements Solver {
     }
 
     public void setPlanningProblem(Solution planningProblem) {
+        // TODO Should this be a clone or not? Currently not, but that changes what the user gave us.
         solverScope.getSolutionDirector().setWorkingSolution(planningProblem);
     }
 

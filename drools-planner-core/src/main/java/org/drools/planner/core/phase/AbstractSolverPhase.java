@@ -82,7 +82,8 @@ public abstract class AbstractSolverPhase implements SolverPhase, SolverPhaseLif
         // TODO WORKAROUND because the best solution might not be initialized yet (and than it's currently null)
         Solution bestSolution = solverScope.getBestSolution();
         if (bestSolution != null) {
-            solverScope.getSolutionDirector().setWorkingSolution(bestSolution);
+            // Clone of bestSolution because next phase will change the working solution but might not improve best
+            solverScope.getSolutionDirector().setWorkingSolution(bestSolution.cloneSolution());
         }
         termination.phaseEnded(solverPhaseScope);
         solverPhaseLifecycleSupport.firePhaseEnded(solverPhaseScope);
