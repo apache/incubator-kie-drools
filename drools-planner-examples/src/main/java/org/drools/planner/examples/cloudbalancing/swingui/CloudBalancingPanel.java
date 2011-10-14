@@ -156,6 +156,9 @@ public class CloudBalancingPanel extends SolutionPanel {
             CloudComputerPanel deadCloudComputerPanel = cloudComputerToPanelMap.remove(deadCloudComputer);
             computersPanel.remove(deadCloudComputerPanel);
         }
+        for (CloudComputerPanel cloudComputerPanel : cloudComputerToPanelMap.values()) {
+            cloudComputerPanel.update();
+        }
     }
 
     public void deleteComputer(final CloudComputer cloudComputer) {

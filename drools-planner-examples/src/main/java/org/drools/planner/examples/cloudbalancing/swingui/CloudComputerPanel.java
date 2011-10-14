@@ -150,17 +150,14 @@ public class CloudComputerPanel extends JPanel {
     }
     public void addCloudProcessAssignment(CloudProcessAssignment cloudProcessAssignment) {
         cloudProcessAssignmentList.add(cloudProcessAssignment);
-        update();
     }
 
     public void removeCloudProcessAssignment(CloudProcessAssignment cloudProcessAssignment) {
         cloudProcessAssignmentList.remove(cloudProcessAssignment);
-        update();
     }
 
     public void clearCloudProcessAssignments() {
         cloudProcessAssignmentList.clear();
-        update();
     }
 
     public void update() {
