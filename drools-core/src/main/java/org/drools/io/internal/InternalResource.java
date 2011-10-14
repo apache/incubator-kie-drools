@@ -19,6 +19,7 @@ package org.drools.io.internal;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
@@ -66,4 +67,10 @@ public interface InternalResource extends Resource {
     void setDescription(String description); 
 
     void setName(String name);
+
+    List<String> getCategories();
+
+    void setCategories( String categories );
+
+    void addCategory( String category );
 }
