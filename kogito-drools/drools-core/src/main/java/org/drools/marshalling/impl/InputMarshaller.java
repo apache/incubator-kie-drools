@@ -178,6 +178,8 @@ public class InputMarshaller {
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( context.readInt(),
                                                                                  context.readLong() );
 
+        long propagationCounter = context.readLong();
+        
         InternalFactHandle initialFactHandle = new DefaultFactHandle( context.readInt(), //id
                                                                       InitialFactImpl.getInstance(),
                                                                       context.readLong(),
@@ -186,7 +188,6 @@ public class InputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        long propagationCounter = context.readLong();
 
         DefaultAgenda agenda = new DefaultAgenda( context.ruleBase,
                                                   false );
@@ -262,12 +263,24 @@ public class InputMarshaller {
 
                readTruthMaintenanceSystem( context );
 
-               if ( context.marshalProcessInstances && processMarshaller != null) {
+               if ( processMarshaller != null) {
                    processMarshaller.readProcessInstances( context );
                }
+               else { 
+                   short type = context.stream.readShort(); 
+                   if( PersisterEnums.END != type ) { 
+                       throw new IllegalStateException("No process marshaller, unable to unmarshall type: " + type);
+                   }
+               }
 
-               if ( context.marshalWorkItems  && processMarshaller != null) {
+               if ( processMarshaller != null) {
                    processMarshaller.readWorkItems( context );
+               }
+               else { 
+                   short type = context.stream.readShort();
+                   if( PersisterEnums.END != type ) { 
+                       throw new IllegalStateException("No process marshaller, unable to unmarshall type: " + type);
+                   }
                }
 
                if (processMarshaller != null) {
