@@ -17,6 +17,9 @@
 package org.drools.io.impl;
 
 import java.io.Externalizable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResourceConfiguration;
@@ -30,6 +33,8 @@ public abstract class BaseResource
 
     private String name;
     private String description;
+
+    private List<String> categories;
     
     public ResourceConfiguration getConfiguration() {
         return configuration;
@@ -61,6 +66,28 @@ public abstract class BaseResource
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getCategories() {
+        if ( categories == null ) {
+            categories = new ArrayList<String>();
+        }
+        return categories;
+    }
+
+    public void setCategories( String categories ) {
+        List list = getCategories();
+        list.clear();
+        if ( categories != null ) {
+            StringTokenizer tok = new StringTokenizer( categories, "," );
+            while ( tok.hasMoreTokens() ) {
+                list.add( tok.nextToken() );
+            }
+        }
+    }
+
+    public void addCategory( String tag ) {
+        getCategories().add( tag );
     }
 
 }
