@@ -66,6 +66,7 @@ public class ResourceHandler extends BaseAbstractHandler
         
         String name = attrs.getValue( "name" );
         String description = attrs.getValue( "description" );
+        String categories = attrs.getValue( "categories" );
 
         
         emptyAttributeCheck( localName,
@@ -92,6 +93,7 @@ public class ResourceHandler extends BaseAbstractHandler
         
         resource.setName(name);
         resource.setDescription(description);
+        resource.setCategories(categories);
         
         return resource;
     }
