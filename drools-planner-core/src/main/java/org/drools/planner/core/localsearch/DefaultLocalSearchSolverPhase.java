@@ -57,9 +57,9 @@ public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implement
             decider.decideNextStep(localSearchStepScope);
             Move nextStep = localSearchStepScope.getStep();
             if (nextStep == null) {
-                // TODO JBRULES-2213 do not terminate, but warn and try again
-                logger.warn("No move accepted for step index ({}) out of {} accepted moves. Terminating by exception.",
-                        localSearchStepScope.getStepIndex(), decider.getForager().getAcceptedMovesSize());
+                logger.warn("    Cancelled step index ({}), time spend ({}): there is no doable move. Terminating phase early.",
+                        localSearchStepScope.getStepIndex(),
+                        localSearchSolverPhaseScope.calculateSolverTimeMillisSpend());
                 break;
             }
             stepDecided(localSearchStepScope);
