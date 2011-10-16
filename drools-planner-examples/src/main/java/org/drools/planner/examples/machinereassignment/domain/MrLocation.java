@@ -19,25 +19,8 @@ package org.drools.planner.examples.machinereassignment.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("MrMachine")
-public class MrMachine extends AbstractPersistable {
+@XStreamAlias("MrLocation")
+public class MrLocation extends AbstractPersistable {
 
-    private MrNeighborhood neighborhood;
-    private MrLocation location;
 
-    public MrNeighborhood getNeighborhood() {
-        return neighborhood;
-    }
-
-    public void setNeighborhood(MrNeighborhood neighborhood) {
-        this.neighborhood = neighborhood;
-    }
-
-    public MrLocation getLocation() {
-        return location;
-    }
-
-    public void setLocation(MrLocation location) {
-        this.location = location;
-    }
 }

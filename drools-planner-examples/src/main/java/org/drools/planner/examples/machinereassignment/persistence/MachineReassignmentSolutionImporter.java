@@ -19,15 +19,19 @@ package org.drools.planner.examples.machinereassignment.persistence;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
 import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
+import org.drools.planner.examples.machinereassignment.domain.MrLocation;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
+import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
@@ -97,6 +101,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
 
         private void readMachineList() throws IOException {
             int machineListSize = readIntegerValue();
+            List<MrNeighborhood> neighborhoodList = new ArrayList<MrNeighborhood>(machineListSize);
+            Map<String, MrNeighborhood> idToNeighborhoodMap = new HashMap<String, MrNeighborhood>(machineListSize);
+            List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
+            Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
             long machineId = 0L;
             for (int i = 0; i < machineListSize; i++) {
@@ -105,10 +113,28 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 MrMachine machine = new MrMachine();
                 machine.setId(machineId);
                 machineId++;
+                long neighborhoodId = Long.parseLong(lineTokens[0]);
+                MrNeighborhood neighborhood = idToNeighborhoodMap.get(neighborhoodId);
+                if (neighborhood == null) {
+                    neighborhood = new MrNeighborhood();
+                    neighborhood.setId(neighborhoodId);
+                }
+                machine.setNeighborhood(neighborhood);
+                long locationId = Long.parseLong(lineTokens[0]);
+                MrLocation location = idToLocationMap.get(locationId);
+                if (location == null) {
+                    location = new MrLocation();
+                    location.setId(locationId);
+                }
+                machine.setLocation(location);
+
+
 //                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
 //                machine.setWeight(Integer.parseInt(lineTokens[1]));
                 machineList.add(machine);
             }
+            machineReassignment.setNeighborhoodList(neighborhoodList);
+            machineReassignment.setLocationList(locationList);
             machineReassignment.setMachineList(machineList);
         }
 
