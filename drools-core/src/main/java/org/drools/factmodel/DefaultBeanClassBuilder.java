@@ -465,7 +465,6 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
             boolean hasObjects = false;
             for (FieldDefinition field : classDef.getFieldsDefinitions()) {
 
-                if (! field.isInherited()) {
                     Object val = BuildUtils.getDefaultValue(field);
 
                     if (val != null) {
@@ -492,14 +491,21 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder {
                         }
 
 
-
-                        mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                BuildUtils.getInternalType( classDef.getClassName() ),
-                                field.getName(),
-                                BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        if (! field.isInherited()) {
+                            mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                    BuildUtils.getInternalType( classDef.getClassName() ),
+                                    field.getName(),
+                                    BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        } else {
+                            mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL,
+                                    BuildUtils.getInternalType(classDef.getClassName()),
+                                    field.getWriteMethod(),
+                                    Type.getMethodDescriptor(Type.VOID_TYPE,
+                                            new Type[]{Type.getType(BuildUtils.getTypeDescriptor(field.getTypeName()))}
+                                    ));
+                        }
 
                     }
-                }
             }
 
 
