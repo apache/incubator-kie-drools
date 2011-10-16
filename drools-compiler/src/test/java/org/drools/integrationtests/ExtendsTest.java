@@ -188,11 +188,8 @@ public class ExtendsTest extends TestCase {
 
     }
 
-
-
-
-
-     public void testExtendsAcrossFiles() throws Exception {
+    @Test
+    public void testExtendsAcrossFiles() throws Exception {
         StatefulKnowledgeSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
 
         FactType person = ksession.getKnowledgeBase().getFactType("org.drools.compiler.test","Person");
@@ -216,11 +213,8 @@ public class ExtendsTest extends TestCase {
         ksession.fireAllRules();
     }
 
-
-
-
-
-     public void testFieldInit() throws Exception {
+    @Test
+    public void testFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler", "MyBean3");
 
@@ -241,14 +235,9 @@ public class ExtendsTest extends TestCase {
         assertEquals(true,test.get(x,"fieldbln"));
         assertEquals('x',test.get(x,"fieldchr"));
         assertEquals(9999L,test.get(x,"fieldlng"));
-
-
-        System.out.println(x);
-
     }
 
-
-
+    @Test
     public void testBoxedFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxBean");
@@ -272,6 +261,52 @@ public class ExtendsTest extends TestCase {
     }
 
 
+
+    public void testExpressionFieldInit() throws Exception {
+        StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
+        FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
+
+        Object x = test.newInstance();
+        assertNotNull(x);
+
+        assertEquals("foobar",test.get(x,"f0"));
+        assertEquals(-32,test.get(x,"fieldint"));
+        assertEquals(4.0,test.get(x,"fielddbl"));
+        assertEquals(0.5f,test.get(x,"fieldflt"));
+        short sht = 6;
+        assertEquals(sht,test.get(x,"fieldsht"));
+        byte byt = 2;
+        assertEquals(byt,test.get(x,"fieldbyt"));
+        assertEquals(true,test.get(x,"fieldbln"));
+        assertEquals('x',test.get(x,"fieldchr"));
+        assertEquals(9999L,test.get(x,"fieldlng"));
+
+        System.out.println(x);
+
+
+
+        FactType test2 = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MySimpleExpressionBean");
+
+        x = test2.newInstance();
+        assertNotNull(x);
+
+        assertEquals("foobar",test2.get(x,"f0"));
+        assertEquals(-32,test2.get(x,"fieldint"));
+        assertEquals(4.0,test2.get(x,"fielddbl"));
+        assertEquals(0.5f,test2.get(x,"fieldflt"));
+        sht = 6;
+        assertEquals(sht,test2.get(x,"fieldsht"));
+        byt = 2;
+        assertEquals(byt,test2.get(x,"fieldbyt"));
+        assertEquals(true,test2.get(x,"fieldbln"));
+        assertEquals('x',test2.get(x,"fieldchr"));
+        assertEquals(9999L,test2.get(x,"fieldlng"));
+
+        System.out.println(x);
+
+    }
+
+
     public void testHierarchy() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtHierarchy.drl");
         ksession.setGlobal("list",new LinkedList());
@@ -286,7 +321,7 @@ public class ExtendsTest extends TestCase {
 
 
     @Test
-    public void tesExtendOverride() {
+    public void testExtendOverride() {
 
         String drl = "package test.beans;\n" +
                 "\n" +
@@ -331,14 +366,37 @@ public class ExtendsTest extends TestCase {
         ksession.setGlobal("ans",out);
 
         ksession.fireAllRules();
+        Object x = out.get(0);
 
         FactType type = kbase.getFactType("test.beans","Bean2");
-        assertEquals(4, type.get(out.get(0),"fld"));
-        assertEquals("xxx", type.get(out.get(0),"myField"));
-        assertEquals(0.0, type.get(out.get(0),"moref"));
+        assertEquals(4, type.get( x, "fld") );
+        assertEquals("xxx", type.get( x, "myField") );
+        assertEquals(0.0, type.get( x, "moref") );
+
+
+        assertTrue( x instanceof ArrayList );
+    }
 
 
 
+
+    @Test
+    public void testRedefineDefaults() throws Exception {
+        //Test Base Fact Type
+        StatefulKnowledgeSession ksession = genSession("test_Extends.drl");
+
+        FactType person = ksession.getKnowledgeBase().getFactType("defaultpkg","Person");
+        FactType student = ksession.getKnowledgeBase().getFactType("defaultpkg","Student");
+
+        Object p = person.newInstance();
+        Object s = student.newInstance();
+        assertNotNull(p);
+        assertNotNull(s);
+
+        assertEquals( 99, person.get(p,"age") );
+        assertEquals( 18, person.get(s,"age") );
+
+        ksession.dispose();
     }
 
 }

@@ -10,6 +10,7 @@ end
 
 declare Student extends Person
     school : String @key   @position(3)
+    age    : int    = 18
 end
 
 

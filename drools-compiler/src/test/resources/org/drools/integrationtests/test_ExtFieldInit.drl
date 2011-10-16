@@ -9,7 +9,7 @@ declare MyBean
 end
 
 declare MyBean2 extends MyBean
-    fieldflt  : float = 1.2
+    fieldflt  : float = 1.2f
     fieldsht  : short = 2 @key
     field2 : int
     fieldbyt  : byte = 1
@@ -29,7 +29,7 @@ declare MyBoxBean
     fieldint : Integer = 12
 
     fielddbl  : Double = 3.23
-    fieldflt  : Float = 1.2
+    fieldflt  : Float = 1.2f
     fieldsht : Short = 2
     fieldbyt : Byte = 1
     fieldbln : Boolean = true
@@ -39,6 +39,37 @@ declare MyBoxBean
 
 end
 
+
+
+
+declare MyBoxExpressionBean
+    f0 : String = "foo" + "bar"
+    fieldint : Integer = 12-44
+
+    fielddbl  : Double = Math.sqrt(16.0)
+    fieldflt  : Float = 1.0f/2
+    fieldsht : Short = (short) (2*3)
+    fieldbyt : Byte = (byte) (1+1)
+    fieldbln : Boolean = true || false
+    fieldchr : Character = x
+    fieldlng : Long = 9999
+
+end
+
+
+declare MySimpleExpressionBean
+    f0 : String = "foo" + "bar"
+    fieldint : int = 12-44
+
+    fielddbl  : double = Math.sqrt(16.0)
+    fieldflt  : float = 1.0f/2
+    fieldsht : short = (short) (2*3)
+    fieldbyt : byte = (byte) (1+1)
+    fieldbln : boolean = true || false
+    fieldchr : char = x
+    fieldlng : long = 9999
+
+end
 
 
 rule "mock"

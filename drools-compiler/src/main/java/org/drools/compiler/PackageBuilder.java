@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1652,14 +1653,15 @@ public class PackageBuilder {
         // look for the class externally
         if (!isSuperClassDeclared || isSuperClassTagged) {
             try {
-                ClassFieldInspector inspector = new ClassFieldInspector( registry.getTypeResolver().resolveType( fullSuper ) );
+                Class superKlass = registry.getTypeResolver().resolveType( fullSuper );
+                ClassFieldInspector inspector = new ClassFieldInspector( superKlass );
                 for ( String name : inspector.getGetterMethods().keySet() ) {
                     // classFieldAccessor requires both getter and setter
                     if ( inspector.getSetterMethods().containsKey( name ) ) {
                         if ( !inspector.isNonGetter( name ) && !"class".equals( name ) ) {
                             TypeFieldDescr inheritedFlDescr = new TypeFieldDescr( name,
                                                                                   new PatternDescr( inspector.getFieldTypes().get( name ).getName() ) );
-                            inheritedFlDescr.setInherited( true );
+                            inheritedFlDescr.setInherited( ! Modifier.isAbstract( inspector.getGetterMethods( ).get( name ).getModifiers() ) );
                             inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
 
                             if (!fieldMap.containsKey( inheritedFlDescr.getFieldName() ))
@@ -1708,6 +1710,17 @@ public class PackageBuilder {
                     String initVal = fieldMap.get( fieldName ).getInitExpr();
                     if (typeDescr.getFields().get( fieldName ).getInitExpr() == null) {
                         typeDescr.getFields().get( fieldName ).setInitExpr( initVal );
+                    }
+                    typeDescr.getFields().get( fieldName ).setInherited(  fieldMap.get( fieldName ).isInherited() );
+
+                    for ( String key : fieldMap.get( fieldName ).getAnnotationNames() ) {
+                        if ( typeDescr.getFields().get( fieldName ).getAnnotation( key ) == null ) {
+                            typeDescr.getFields().get( fieldName ).addAnnotation( fieldMap.get( fieldName ).getAnnotation( key ) );
+                        }
+                    }
+
+                    if (  typeDescr.getFields().get( fieldName ).getIndex() < 0 ) {
+                        typeDescr.getFields().get( fieldName ).setIndex( fieldMap.get( fieldName ).getIndex() );
                     }
                 }
             }
@@ -2684,7 +2697,7 @@ public class PackageBuilder {
     }
 
     /**
-     * @param problemTypes
+     * @param severities
      * @return
      */
     private List<KnowledgeBuilderResult> getResultList( ResultSeverity... severities ) {
