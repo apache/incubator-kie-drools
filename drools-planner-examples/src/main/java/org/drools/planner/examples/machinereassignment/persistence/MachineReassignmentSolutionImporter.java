@@ -28,6 +28,7 @@ import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
 import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
+import org.drools.planner.examples.machinereassignment.domain.MrCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.drools.planner.examples.machinereassignment.domain.MrLocation;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
@@ -106,6 +107,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
             Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
+            List<MrResource> resourceList = machineReassignment.getResourceList();
+            int resourceListSize = resourceList.size();
+            List<MrCapacity> capacityList = new ArrayList<MrCapacity>(
+                    machineListSize * resourceListSize * 2);
             long machineId = 0L;
             for (int i = 0; i < machineListSize; i++) {
                 String line = readStringValue();
@@ -127,15 +132,19 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     location.setId(locationId);
                 }
                 machine.setLocation(location);
-
-
-//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
-//                machine.setWeight(Integer.parseInt(lineTokens[1]));
+                for (int j = 0; j < resourceListSize; j++) {
+                    MrCapacity capacity = new MrCapacity();
+                    capacity.setMachine(machine);
+                    capacity.setResource(resourceList.get(j));
+                    capacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
+                    capacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + (j * 2)]));
+                }
                 machineList.add(machine);
             }
             machineReassignment.setNeighborhoodList(neighborhoodList);
             machineReassignment.setLocationList(locationList);
             machineReassignment.setMachineList(machineList);
+            machineReassignment.setCapacityList(capacityList);
         }
 
         private void readServiceList() throws IOException {
