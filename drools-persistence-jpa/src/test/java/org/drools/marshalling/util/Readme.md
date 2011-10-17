@@ -6,15 +6,15 @@ This readme describes how the marshalling test framework.
 
 The idea is that we take the tests that we already have, for testing rules and processes and all of that, and use their outputs to test the marshalling and unmarshalling mechanisms that Drools and jBPM persistence relies on.
 
-. Status of marshalling
-. What is the marshalling test framework
-. Using the framework
-.. Changes that invalidate the framework's information
-. What actually happens and how it works
-.. Saving snapshots
-.. the "base" database
-.. Comparing to previous marshalled data
-.. Conclusions about marshalling in Drools/jBPM
+ .    Status of marshalling
+ .    What is the marshalling test framework
+ .    Using the framework
+ ..    Changes that invalidate the framework's information
+ .    What actually happens and how it works
+ ..    Saving snapshots
+ ..    the "base" database
+ ..    Comparing to previous marshalled data
+ . Conclusions about marshalling in Drools/jBPM
 
 
 Status of marshalling test framework use
