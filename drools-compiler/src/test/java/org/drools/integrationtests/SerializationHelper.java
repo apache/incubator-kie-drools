@@ -20,6 +20,7 @@ import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.spi.GlobalResolver;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object
@@ -60,6 +61,16 @@ public class SerializationHelper {
     public static StatefulSession getSerialisedStatefulSession(StatefulSession session,
                                                                RuleBase ruleBase,
                                                                boolean dispose) throws Exception {
+        GlobalResolver globalResolver = session.getGlobalResolver();
+        byte [] serializedSession = serializeStatefulSession(session);
+        if( dispose ) { 
+            session.dispose();
+        }
+        return deserializeStatefulSession(serializedSession, globalResolver, ruleBase);
+    }
+    
+    public static byte [] serializeStatefulSession(StatefulSession session) 
+        throws Exception { 
         // Serialize to a byte array
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         
@@ -71,25 +82,21 @@ public class SerializationHelper {
         out.close();
         bos.close();
         
-//        System.out.println( "bos:\n" + bos.toByteArray() );
-//        if ( true ) {
-//            byte[] b1 = bos.toByteArray();
-//            for ( int i = 0, length = b1.length; i < length; i++ ) {
-//                System.out.print( b1[i] );           
-//            }            
-//            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
-//        }
-
         // Get the bytes of the serialized object
-        final byte[] b1 = bos.toByteArray();
+        final byte[] serializedObjectByteArray = bos.toByteArray();
+        return serializedObjectByteArray;
+    }
+    
+    public static StatefulSession deserializeStatefulSession(byte [] b1, GlobalResolver globalResolver, RuleBase ruleBase) 
+        throws Exception { 
 
         ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulSession session2 = ruleBase.newStatefulSession( bais );
+        StatefulSession session = ruleBase.newStatefulSession( bais );
         bais.close();
 
-        bos = new ByteArrayOutputStream();
-        out = new ObjectOutputStream( bos );
-        out.writeObject( session2 );
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream( bos );
+        out.writeObject( session );
         out.close();
         bos.close();
 
@@ -101,13 +108,9 @@ public class SerializationHelper {
             throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
         }
 
-        session2.setGlobalResolver( session.getGlobalResolver() );
+        session.setGlobalResolver( globalResolver );
 
-        if ( dispose ) {
-            session.dispose();
-        }
-
-        return session2;
+        return session;
     }
 
    
@@ -115,6 +118,7 @@ public class SerializationHelper {
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose) throws Exception {
 
+        // OCRAM: test this!
         DefaultMarshaller marshaller = ( DefaultMarshaller ) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
                                                                                               (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
 
