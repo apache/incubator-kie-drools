@@ -48,7 +48,12 @@ public class SendHtmlTest {
         uniqueTestNum = random.nextInt(Integer.MAX_VALUE);
         
         emailHost = "localhost";
-        emailPort = "2525";
+        int emailPortInt;
+        do { 
+            emailPortInt = random.nextInt((2*Short.MAX_VALUE-1));
+        } while( emailPortInt < 4096 );
+        
+        emailPort = Integer.toString(emailPortInt);
        
         wiser = new Wiser(Integer.parseInt(emailPort));
         wiser.start();
