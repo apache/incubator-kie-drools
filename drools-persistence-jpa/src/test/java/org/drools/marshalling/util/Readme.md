@@ -9,11 +9,11 @@ The idea is that we take the tests that we already have, for testing rules and p
  1.    Status of marshalling
  2.    What is the marshalling test framework
  3.    Using the framework  
- 3a.    Changes that invalidate the framework's information  
+ a.    Changes that invalidate the framework's information  
  4.    What actually happens and how it works  
- 4a.    Saving snapshots  
- 4b.    the "base" database  
- 4c.    Comparing to previous marshalled data  
+ a.    Saving snapshots  
+ b.    the "base" database  
+ c.    Comparing to previous marshalled data  
  5.    Conclusions about marshalling in Drools/jBPM  
 
 
@@ -71,63 +71,63 @@ For example, look at the following test:
 
 The things we'll change in order to make the test work with the framework are the following: 
 
-    $ public class TimerAndCalendarTest {
-    $     private PoolingDataSource    ds1;
-    $     private EntityManagerFactory emf;
+    public class TimerAndCalendarTest {
+        private PoolingDataSource    ds1;
+        private EntityManagerFactory emf;
 
 and also [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L245) 
 
-    $     @Before
-    $     public void setUp() throws Exception {
-    $         ds1 = new PoolingDataSource();
-    $         ds1.setUniqueName( "jdbc/testDS1" );
-    $         ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-    $         ds1.setMaxPoolSize( 3 );
-    $         ds1.setAllowLocalTransactions( true );
-    $         ds1.getDriverProperties().put( "user",
-    $                                        "sa" );
-    $         ds1.getDriverProperties().put( "password",
-    $                                        "sasa" );
-    $         ds1.getDriverProperties().put( "URL",
-    $                                        "jdbc:h2:mem:mydb" );
-    $         ds1.init();
-    $         emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
-    $     }
-    $ 
-    $     @After
-    $     public void tearDown() throws Exception {
-    $         try {
-    $             emf.close();
-    $             ds1.close();
-    $         } catch ( Exception e ) {
-    $             e.printStackTrace();
-    $         }
-    $     }
-    $ 
-    $ 
-    $ 
-    $     private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
-    $         final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-    $         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-    $         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase,
-    $                                                                                              conf,
-    $                                                                                              createEnvironment() );
-    $
-    $         return ksession;
-    $     }
-    $ 
+        @Before
+        public void setUp() throws Exception {
+            ds1 = new PoolingDataSource();
+            ds1.setUniqueName( "jdbc/testDS1" );
+            ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
+            ds1.setMaxPoolSize( 3 );
+            ds1.setAllowLocalTransactions( true );
+            ds1.getDriverProperties().put( "user",
+                                           "sa" );
+            ds1.getDriverProperties().put( "password",
+                                           "sasa" );
+            ds1.getDriverProperties().put( "URL",
+                                           "jdbc:h2:mem:mydb" );
+            ds1.init();
+            emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        }
+    
+        @After
+        public void tearDown() throws Exception {
+            try {
+                emf.close();
+                ds1.close();
+            } catch ( Exception e ) {
+                e.printStackTrace();
+            }
+        }
+    
+    
+    
+        private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
+            final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+            conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+            StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase,
+                                                                                                 conf,
+                                                                                                 createEnvironment() );
+    
+            return ksession;
+        }
+    
 
 and lastly, the following method will be removed.
 
-    $    private Environment createEnvironment() {
-    $        Environment env = KnowledgeBaseFactory.newEnvironment();
-    $        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-    $                 emf );
-    $        // env.set(EnvironmentName.TRANSACTION_MANAGER,
-    $        // TransactionManagerServices.getTransactionManager());
-    $        env.set( EnvironmentName.GLOBALS,
-    $                 new MapGlobalResolver() );
-    $        return env;
-    $    }
+       private Environment createEnvironment() {
+           Environment env = KnowledgeBaseFactory.newEnvironment();
+           env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
+                    emf );
+           // env.set(EnvironmentName.TRANSACTION_MANAGER,
+           // TransactionManagerServices.getTransactionManager());
+           env.set( EnvironmentName.GLOBALS,
+                    new MapGlobalResolver() );
+           return env;
+       }
 
 
