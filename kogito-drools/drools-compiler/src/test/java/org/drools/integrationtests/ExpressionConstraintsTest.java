@@ -95,6 +95,84 @@ public class ExpressionConstraintsTest {
         Assert.assertEquals( 1, rules );
     }
 
+    @Test
+    public void testExpressionConstraints3() {
+        String drl = "package org.drools\n" +
+                     "import org.drools.Mailbox.FolderType\n" + 
+                     "rule R1\n" + 
+                     "    dialect \"mvel\"\n" + 
+                     "    when\n" + 
+                     "        $m : Mailbox( \n" + 
+                     "                $type1 : FolderType.INBOX,\n" + 
+                     "                $type2 : org.drools.Mailbox$FolderType.INBOX,\n" + 
+                     "                $work1 : getFolder(null),\n" + 
+                     "                $work2 : getFolder(org.drools.Mailbox$FolderType.INBOX),\n" + 
+                     "                $work3 : getFolder(FolderType.INBOX),\n" + 
+                     "                getFolder($type1) != null,\n" + 
+                     "                getFolder($type1).size() > 0,\n" + 
+                     "                ! getFolder($type1).isEmpty(),\n" + 
+                     "                $work6 : folders,\n" + 
+                     "                $work7 : folders.size,\n" + 
+                     "                //folders.containsKey(FolderType.INBOX),\n" + 
+                     "                folders.containsKey(org.drools.Mailbox$FolderType.INBOX),\n" + 
+                     "                folders.containsKey($type2),\n" + 
+                     "                !folders.isEmpty,\n" + 
+                     "                getFolder(FolderType.INBOX) != null,\n" + 
+                     "                //$v1 : folders[FolderType.INBOX], \n" + 
+                     "                //$v2 : folders[com.sample.Mailbox.FolderType.INBOX],\n" + 
+                     "                //$v3 : folders[com.sample.Mailbox$FolderType.INBOX],\n" + 
+                     "                //folders[$type1]!=null,\n" + 
+                     "                //folders.get(FolderType.INBOX)!=null, // sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl cannot be cast to java.lang.Class\n" + 
+                     "                //folders.isEmpty(),  // SAME ERROR\n" + 
+                     "                0 < 1\n" + 
+                     "        )\n" + 
+                     "    then\n" + 
+                     "end";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Mailbox mbox = new Mailbox(Mailbox.TEST_EMAIL);
+        Message message = new Message();
+        message.setMessage("Welcome");
+        message.setStatus(Message.HELLO);
+        mbox.getFolder(FolderType.INBOX).add(message);
+
+        ksession.insert(mbox);
+        ksession.insert(message);
+        int rules = ksession.fireAllRules();
+        
+        Assert.assertEquals( 1, rules );
+    }
+
+    @Test
+    public void testExpressionConstraints4() {
+        String drl = "package org.drools\n" + 
+                     "rule R1\n" + 
+                     "        dialect \"mvel\"\n" + 
+                     "    when\n" + 
+                     "        Mailbox( owneremail == 'bob@mail' || owneremail == 'john@mail' )\n" + 
+                     "    then\n" +
+                     "end\n" + 
+                     "rule R2\n" + 
+                     "        dialect \"mvel\"\n" + 
+                     "    when\n" + 
+                     "        Mailbox( ( owneremail == 'bob@mail' ) || ( owneremail == 'john@mail' ) )\n" + 
+                     "    then\n" + 
+                     "end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Mailbox("foo@mail"));
+        int rules = ksession.fireAllRules();
+        Assert.assertEquals( 0, rules );
+
+        ksession.insert(new Mailbox("john@mail"));
+        rules = ksession.fireAllRules();
+        Assert.assertEquals( 2, rules );
+    }
+
+    
+    
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         for ( String drlContentString : drlContentStrings ) {
