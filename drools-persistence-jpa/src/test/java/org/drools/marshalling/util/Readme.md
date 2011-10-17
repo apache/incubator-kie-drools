@@ -52,7 +52,7 @@ The easiest way (that I could think of) to implement this -- without affecting t
 
 In order to use this framework, you need to do the 4 things described below. If you're not familiar with the inner workings of Drools/jBPM persistence, this might not make a lot of sense. Please make sure to see examples of actual code used, posted after the descriptions. 
 
-1.   In order to use the marshalling test framework, it's necessary to convert your test to use JUnit 4 annotations (instead of extending the TestCase class).   
+1.   In order to use the marshalling test framework, it's necessary to convert your test to use JUnit 4 annotations, instead of extending the TestCase class.   
      *    This is primarily because we need to be able to run a method after all methods in the test have run, which is (AFAIK), only posisble using the @AfterClass annotation. If you're using TestNG or (whatever), the same applies -- make sure that you have a method that has an @AfterClass or equivalent method.    
 2.   Modify the setup and tearDown (@After and @Before) methods in your jUnit test so that methods from the marshalling test framework are called. 
 3.   In the test itself, you need to make sure that you use the objects created by the marshalling test framework in the actual test methods.    
@@ -65,9 +65,9 @@ For example, look at the following test:
 
 The things we'll change in order to make the test work with the framework are the following: 
 
-    public class TimerAndCalendarTest {
-        private PoolingDataSource    ds1;
-        private EntityManagerFactory emf;
+        public class TimerAndCalendarTest {
+            private PoolingDataSource    ds1;
+            private EntityManagerFactory emf;
 
 and also [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L245) 
 
@@ -110,7 +110,7 @@ and also [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c6
         }
     
 
-and lastly, the following method will be removed.
+and lastly, the following method ( [here](https://github.com/droolsjbpm/drools/blob/b869611e377e9fc5e036c64c296eeaba75a5cd0e/drools-persistence-jpa/src/test/java/org/drools/timer/integrationtests/TimerAndCalendarTest.java#L296) ) will be removed.  
 
        private Environment createEnvironment() {
            Environment env = KnowledgeBaseFactory.newEnvironment();
