@@ -13,7 +13,7 @@
     <title>Guvnor</title>
 
     <section>
-      <title>Limited Entry guided decision tables</title>
+      <title>Guided Decision Table - Limited Entry</title>
 
       <para>The Guided Decision Table editor and wizard now support the
       creation of "Limited Entry" tables.</para>
@@ -86,6 +86,62 @@
             <imagedata align="center"
                        fileref="images/Chapter-Release_Notes/limited-entry-6.png"
                        format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Improved formatting</title>
+
+      <para>With the introduction of support for Limited Entry, the decision
+      table format was improved to better differentiate between Condition and
+      Action columns. Furthermore the table header was improved to show more
+      information for Action columns.</para>
+
+      <figure>
+        <title>Improved formatting and header</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-column-formatting.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Rearranging columns</title>
+
+      <para>The ability to rearrange whole patterns as well as individual
+      conditions in the constraints section of the table has been added. This
+      allows the table author to arrange constraints to maximise performance
+      of the resulting rules, by placing generalised constraints before more
+      specific. Action columns can also be re-arranged. Both patterns and
+      columns are re-arranged by dragging and dropping.</para>
+
+      <figure>
+        <title>Re-arranging Condition patterns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-rearranging-patterns.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Re-arranging columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-rearranging-columns.png"
+                       format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
