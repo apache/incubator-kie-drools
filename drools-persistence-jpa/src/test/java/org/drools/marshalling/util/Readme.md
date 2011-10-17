@@ -6,18 +6,18 @@ This readme describes how the marshalling test framework.
 
 The idea is that we take the tests that we already have, for testing rules and processes and all of that, and use their outputs to test the marshalling and unmarshalling mechanisms that Drools and jBPM persistence relies on.
 
-0. Status of marshalling
-1. What is the marshalling test framework
-2. Using the framework
-   a. Changes that invalidate the framework's information
-3. What actually happens and how it works
-  a. Saving snapshots
-  b. the "base" database
-  c. Comparing to previous marshalled data
-4. Conclusions about marshalling in Drools/jBPM
+. Status of marshalling
+. What is the marshalling test framework
+. Using the framework
+.. Changes that invalidate the framework's information
+. What actually happens and how it works
+.. Saving snapshots
+.. the "base" database
+.. Comparing to previous marshalled data
+.. Conclusions about marshalling in Drools/jBPM
 
 
-0. Status of marshalling test framework use
+Status of marshalling test framework use
 -------------------------------------------
 
 At present, this framework is not yet being used because of 
@@ -26,7 +26,7 @@ At present, this framework is not yet being used because of
 Once this bug is resolved (and it's confirmed that marshalled SessionInfo objects
 can be unmarshalled in all cases), then this framework will be turned on. 
 
-1. What is the marshalling test framework?
+What is the marshalling test framework?
 ------------------------------------------
 
 The basic idea for this test framework can best be summarized by the following
@@ -51,7 +51,7 @@ quote ("we" is Drools/jBPM):
 The easiest way (that I could think of) to implement this -- without affecting the actual implementation code -- turned out to be based on creating proxy classes for the EntityManager(Factory) and UserTransaction. In short, every time that marshalled data is persisted, we save a copy of the marshalled data to later comparison. 
 
 
-2. Using the marshalling test framework
+Using the marshalling test framework
 -----------------------------------------
 
 In order to use this framework, you need to do the 4 things described below. If you're not familiar with the inner workings of Drools/jBPM persistence, this might not make a lot of sense. Please make sure to see examples of actual code used, posted after the descriptions. 
