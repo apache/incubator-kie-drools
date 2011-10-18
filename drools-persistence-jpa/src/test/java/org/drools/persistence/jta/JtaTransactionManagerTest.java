@@ -17,6 +17,7 @@ package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
 import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.drools.KnowledgeBase;
@@ -42,63 +42,58 @@ import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.codemodel.JPackage;
-
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.internal.BitronixRollbackException;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class JtaTransactionManagerTest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     // Datasource (setup & clean up)
-    private PoolingDataSource ds1;
+    private HashMap<String, Object> context;
     private EntityManagerFactory emf;
 
-    private static String simpleRule = "package org.drools.test\n"
-            + "global java.util.List list\n" 
-            + "rule rule1\n" 
-            + "when\n"
-            + "  Integer(intValue > 0)\n" 
-            + "then\n" 
-            + "  list.add( 1 );\n"
-            + "end\n" 
-            + "\n";
+    private static String simpleRule = "package org.drools.test\n" + "global java.util.List list\n" + "rule rule1\n" + "when\n"
+            + "  Integer(intValue > 0)\n" + "then\n" + "  list.add( 1 );\n" + "end\n" + "\n";
 
     @Before
     public void setup() {
-        // Initialize datasource and global settings
-        ds1 = setupPoolingDataSource();
-        ds1.init();
+        // This test does only plays with tx's, it doesn't actually persist
+        // any interersting (wrt marshalling) SessionInfo objects
+        boolean testMarshalling = false;
 
-        emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, testMarshalling);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
+    }
+
+    @After
+    public void tearDown() {
+        PersistenceUtil.tearDown(context);
     }
 
     private Environment initializeEnvironment(EntityManagerFactory emf) {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = EnvironmentFactory.newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
-        env.set(EnvironmentName.TRANSACTION_MANAGER,
-                TransactionManagerServices.getTransactionManager());
-        
+        env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+
         return env;
     }
-   
-    private KnowledgeBase initializeKnowledgeBase(String rule) { 
+
+    private KnowledgeBase initializeKnowledgeBase(String rule) {
         // Initialize knowledge base/session/etc..
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
 
         if (kbuilder.hasErrors()) {
             fail(kbuilder.getErrors().toString());
@@ -106,47 +101,39 @@ public class JtaTransactionManagerTest {
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-       
+
         return kbase;
     }
-   
+
     public static final String DEFAULT_USER_TRANSACTION_NAME = "java:comp/UserTransaction";
 
     protected UserTransaction findUserTransaction() {
         try {
             InitialContext context = new InitialContext();
-            return (UserTransaction) context.lookup( DEFAULT_USER_TRANSACTION_NAME );
-        } catch ( NamingException ex ) {
-            logger.debug( "No UserTransaction found at JNDI location [{}]",
-                          DEFAULT_USER_TRANSACTION_NAME,
-                          ex );
+            return (UserTransaction) context.lookup(DEFAULT_USER_TRANSACTION_NAME);
+        } catch (NamingException ex) {
+            logger.debug("No UserTransaction found at JNDI location [{}]", DEFAULT_USER_TRANSACTION_NAME, ex);
             return null;
         }
     }
-    
-    @After
-    public void cleanUp() {
-        emf.close();
-        ds1.close();
-    }
 
-    private String getTestName() { 
-        String testName = null;
-        StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-        String methodName =  ste[2].getMethodName();
+    private String getTestName() {
+        StackTraceElement[] ste = Thread.currentThread().getStackTrace();
+        String methodName = ste[2].getMethodName();
         return methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
     }
+
     @Test
-    public void showingTransactionTestObjectsNeedTransactions()  throws Exception {
+    public void showingTransactionTestObjectsNeedTransactions() throws Exception {
         String testName = getTestName();
-        
+
         // Create linked transactionTestObjects but only persist the main one.
         TransactionTestObject badMainObject = new TransactionTestObject();
         badMainObject.setName("bad" + testName);
         TransactionTestObject subObject = new TransactionTestObject();
         subObject.setName("sub" + testName);
         badMainObject.setSubObject(subObject);
-       
+
         // Initialized persistence/tx's and persist to db
         EntityManager em = emf.createEntityManager();
         em.setFlushMode(FlushModeType.COMMIT);
@@ -154,140 +141,135 @@ public class JtaTransactionManagerTest {
         tx.begin();
         em.joinTransaction();
         em.persist(badMainObject);
-        
+
         boolean rollBackExceptionthrown = false;
-        try { 
+        try {
+            logger.info("The following " + IllegalStateException.class.getSimpleName() + " SHOULD be thrown.");
             tx.commit();
-        }
-        catch( Exception e ) { 
-            if( e instanceof BitronixRollbackException ) { 
+        } catch (Exception e) {
+            if (e instanceof BitronixRollbackException) {
                 rollBackExceptionthrown = true;
             }
-        }           
-        assertTrue( "A rollback exception should have been thrown because of foreign key violations.", rollBackExceptionthrown );
-       
+        }
+        assertTrue("A rollback exception should have been thrown because of foreign key violations.", rollBackExceptionthrown);
+
         TransactionTestObject mainObject = new TransactionTestObject();
         mainObject.setName("main" + testName);
         mainObject.setSubObject(subObject);
-        
-        // Now persist both.. 
+
+        // Now persist both..
         tx.begin();
         em.joinTransaction();
         em.persist(mainObject);
         em.persist(subObject);
-        
-        try { 
+
+        try {
             tx.commit();
-        }
-        catch( Exception e ) { 
+        } catch (Exception e) {
             e.printStackTrace();
-            fail( "No exception should have been thrown: " + e.getMessage() );
-        }           
+            fail("No exception should have been thrown: " + e.getMessage());
+        }
     }
 
     @Test
     public void basicTransactionManagerTest() {
         String testName = getTestName();
-        
+
         // Setup the JtaTransactionmanager
         Environment env = initializeEnvironment(emf);
-        Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
-        TransactionManager txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-                env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-                tm ); 
-           
-        // Create linked transactionTestObjects 
+        Object tm = env.get(EnvironmentName.TRANSACTION_MANAGER);
+        TransactionManager txm = new JtaTransactionManager(env.get(EnvironmentName.TRANSACTION),
+                env.get(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY), tm);
+
+        // Create linked transactionTestObjects
         TransactionTestObject mainObject = new TransactionTestObject();
         mainObject.setName("main" + testName);
         TransactionTestObject subObject = new TransactionTestObject();
         subObject.setName("sub" + testName);
         mainObject.setSubObject(subObject);
-      
+
         // Commit the mainObject after "commiting" the subObject
         EntityManager em = emf.createEntityManager();
-        try { 
+        try {
             // Begin the real trasnaction
             boolean txOwner = txm.begin();
-      
-            // Do the "sub" transaction 
-            // - the txm doesn't really commit, 
-            //   because we keep track of who's the tx owner.
+
+            // Do the "sub" transaction
+            // - the txm doesn't really commit,
+            // because we keep track of who's the tx owner.
             boolean notTxOwner = txm.begin();
             em.persist(mainObject);
             txm.commit(notTxOwner);
-       
+
             // Finish the transaction off
             em.persist(subObject);
             txm.commit(txOwner);
-        }
-        catch( Throwable t ) { 
-            fail( "No exception should have been thrown: " + t.getMessage() );
+        } catch (Throwable t) {
+            fail("No exception should have been thrown: " + t.getMessage());
         }
     }
-   
+
     @Test
     public void basicTransactionRollbackTest() {
         Environment env = initializeEnvironment(emf);
-        Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
-        TransactionManager txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-                env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-                tm ); 
-           
-        // Create linked transactionTestObjects 
+        Object tm = env.get(EnvironmentName.TRANSACTION_MANAGER);
+        TransactionManager txm = new JtaTransactionManager(env.get(EnvironmentName.TRANSACTION),
+                env.get(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY), tm);
+
+        // Create linked transactionTestObjects
         TransactionTestObject mainObject = new TransactionTestObject();
         mainObject.setName("main");
         TransactionTestObject subObject = new TransactionTestObject();
         subObject.setName("sub");
         mainObject.setSubObject(subObject);
-       
+
         EntityManager em = emf.createEntityManager();
-        try { 
+        try {
             boolean txOwner = txm.begin();
-            
+
             boolean notTxOwner = txm.begin();
             em.persist(mainObject);
             txm.rollback(notTxOwner);
-        
+
             em.persist(subObject);
             txm.rollback(txOwner);
-        }
-        catch( Exception e ) { 
+        } catch (Exception e) {
             fail("There should not be an exception thrown here: " + e.getMessage());
         }
-        
+
     }
 
     public static String COMMAND_ENTITY_MANAGER = "drools.persistence.test.command.EntityManager";
     public static String COMMAND_ENTITY_MANAGER_FACTORY = "drools.persistence.test.EntityManagerFactory";
-    
+
     @Test
-    public void testSingleSessionCommandServiceAndJtaTransactionManagerTogether() { 
-            
+    public void testSingleSessionCommandServiceAndJtaTransactionManagerTogether() {
+
         // Initialize drools environment stuff
         Environment env = initializeEnvironment(emf);
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
-        StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) commandKSession).getCommandService();
+        StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
+        SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) commandKSession)
+                .getCommandService();
         JpaPersistenceContextManager jpm = (JpaPersistenceContextManager) getValueOfField("jpm", commandService);
 
         jpm.getApplicationScopedPersistenceContext();
         EntityManager em = (EntityManager) getValueOfField("appScopedEntityManager", jpm);
-        
+
         TransactionTestObject mainObject = new TransactionTestObject();
         mainObject.setName("mainCommand");
         TransactionTestObject subObject = new TransactionTestObject();
         subObject.setName("subCommand");
         mainObject.setSubObject(subObject);
-       
+
         HashMap<String, Object> emEnv = new HashMap<String, Object>();
         emEnv.put(COMMAND_ENTITY_MANAGER_FACTORY, emf);
         emEnv.put(COMMAND_ENTITY_MANAGER, em);
-        
+
         TransactionTestCommand txTestCmd = new TransactionTestCommand(mainObject, subObject, emEnv);
-       
-        
+
         commandKSession.execute(txTestCmd);
-        
+
     }
 
 }

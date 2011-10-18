@@ -416,5 +416,7 @@ public class LinkedList
             }
         }
     }
+    
+    //OCRAM: drools.LinkedList add toArray method
 
 }

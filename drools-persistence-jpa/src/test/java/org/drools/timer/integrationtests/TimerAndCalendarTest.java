@@ -1,19 +1,33 @@
+/*
+ * Copyright 2011 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.timer.integrationtests;
+
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderError;
 import org.drools.builder.KnowledgeBuilderErrors;
@@ -24,23 +38,25 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimerAndCalendarTest {
-    private PoolingDataSource    ds1;
-    private EntityManagerFactory emf;
+    private static Logger logger = LoggerFactory.getLogger(TimerAndCalendarTest.class);
+    
+    private HashMap<String, Object> context;
 
     @Test
     public void testTimerRuleAfterIntReloadSession() throws Exception {
@@ -244,37 +260,25 @@ public class TimerAndCalendarTest {
 
     @Before
     public void setUp() throws Exception {
-        ds1 = new PoolingDataSource();
-        ds1.setUniqueName( "jdbc/testDS1" );
-        ds1.setClassName( "org.h2.jdbcx.JdbcDataSource" );
-        ds1.setMaxPoolSize( 3 );
-        ds1.setAllowLocalTransactions( true );
-        ds1.getDriverProperties().put( "user",
-                                       "sa" );
-        ds1.getDriverProperties().put( "password",
-                                       "sasa" );
-        ds1.getDriverProperties().put( "URL",
-                                       "jdbc:h2:mem:mydb" );
-        ds1.init();
-        emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
+        context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME);
     }
 
     @After
     public void tearDown() throws Exception {
-        try {
-            emf.close();
-            ds1.close();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
+        PersistenceUtil.tearDown(context);
     }
 
+    @AfterClass
+    public static void compareMarshallingData() { 
+        MarshallingTestUtil.compareMarshallingDataFromTest(DROOLS_PERSISTENCE_UNIT_NAME);
+    }
+    
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase,
                                                                                              conf,
-                                                                                             createEnvironment() );
+                                                                                             createEnvironment(context) );
         return ksession;
     }
 
@@ -289,19 +293,8 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession newksession = JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId,
                                                                                                  kbase,
                                                                                                  conf,
-                                                                                                 createEnvironment() );
+                                                                                                 createEnvironment(context) );
         return newksession;
-    }
-
-    private Environment createEnvironment() {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        // env.set(EnvironmentName.TRANSACTION_MANAGER,
-        // TransactionManagerServices.getTransactionManager());
-        env.set( EnvironmentName.GLOBALS,
-                 new MapGlobalResolver() );
-        return env;
     }
 
     private Collection<KnowledgePackage> buildKnowledgePackage(Resource resource,
@@ -312,7 +305,7 @@ public class TimerAndCalendarTest {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
         if ( errors != null && errors.size() > 0 ) {
             for ( KnowledgeBuilderError error : errors ) {
-                System.err.println( "Error: " + error.getMessage() );
+                logger.error( "Error: " + error.getMessage() );
             }
             Assert.fail( "KnowledgeBase did not build" );
         }
