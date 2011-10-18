@@ -1,5 +1,6 @@
 package org.drools.persistence.info;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -81,7 +82,8 @@ public class SessionInfo {
     @PrePersist 
     @PreUpdate 
     public void update() {
-        this.rulesByteArray  = this.helper.getSnapshot();
+        byte [] newRulesByteArray = this.helper.getSnapshot();
+        this.rulesByteArray  = newRulesByteArray;
     }
 
     public void setId(Integer ksessionId) {

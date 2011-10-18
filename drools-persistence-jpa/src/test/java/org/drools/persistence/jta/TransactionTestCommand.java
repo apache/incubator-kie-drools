@@ -27,6 +27,7 @@ import org.drools.base.MapGlobalResolver;
 import org.drools.command.Context;
 import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
+import org.drools.impl.EnvironmentFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
@@ -108,7 +109,7 @@ public class TransactionTestCommand implements GenericCommand<Void> {
     }
  
     private Environment initializeEnvironment() {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = EnvironmentFactory.newEnvironment();
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
         env.set(EnvironmentName.TRANSACTION_MANAGER,

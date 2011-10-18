@@ -108,7 +108,7 @@ public class DefaultMarshaller
                                                                   ClassNotFoundException {    
         MarshallerReaderContext context = new MarshallerReaderContext( stream,
                                                                        (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase,
-                                                                       RuleBaseNodes.getNodeMap( (InternalRuleBase) ((KnowledgeBaseImpl) kbase).ruleBase ),
+                                                                       RuleBaseNodes.getNodeMap( (InternalRuleBase) ((InternalKnowledgeBase) kbase).getRuleBase() ),
                                                                        this.strategyStore,
                                                                        this.marshallingConfig.isMarshallProcessInstances(),
                                                                        marshallingConfig.isMarshallWorkItems() , 
