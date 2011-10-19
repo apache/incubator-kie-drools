@@ -65,7 +65,7 @@
       <artifactId>dom4j</artifactId>
     </dependency>		
     <dependency>
-      <groupId>javassist</groupId>
+      <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
     </dependency>
     <dependency>
