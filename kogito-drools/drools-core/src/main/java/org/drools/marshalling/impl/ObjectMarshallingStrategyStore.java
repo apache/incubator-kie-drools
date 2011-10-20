@@ -16,6 +16,7 @@
 
 package org.drools.marshalling.impl;
 
+import org.drools.core.util.StringUtils;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 
 public class ObjectMarshallingStrategyStore {
@@ -24,12 +25,13 @@ public class ObjectMarshallingStrategyStore {
     public ObjectMarshallingStrategyStore(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
     }
-    
+   
+    // Old marshalling algorithm methods
     public ObjectMarshallingStrategy getStrategy(int index) {
         return this.strategiesList[ index ];
     }
-    
-    public int getStrategy(Object object) {
+
+    public int getStrategyIndex(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
             if ( strategiesList[i].accept( object ) ) {
                 return i;
@@ -37,5 +39,28 @@ public class ObjectMarshallingStrategyStore {
         }
         throw new RuntimeException( "Unable to find PlaceholderResolverStrategy for class : " + object.getClass() + " object : " + object );
     }
-
+    
+    // New marshalling algorithm methods
+    public ObjectMarshallingStrategy getStrategyObject(String strategyClassName) {
+        if( StringUtils.isEmpty(strategyClassName) ) { 
+            return null;
+        }
+        ObjectMarshallingStrategy objectMarshallingStrategy = null; 
+        for( int i = 0; i < this.strategiesList.length; ++i ) { 
+           if( strategiesList[i].getClass().getName().equals(strategyClassName) ) {
+               return strategiesList[i];
+           }
+        }
+        return objectMarshallingStrategy;
+    }
+    
+    public ObjectMarshallingStrategy getStrategy(Object object) {
+        for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
+            if ( strategiesList[i].accept( object ) ) {
+                return strategiesList[i];
+            }
+        }
+        throw new RuntimeException( "Unable to find PlaceholderResolverStrategy for class : " + object.getClass() + " object : " + object );
+    }
+    
 }

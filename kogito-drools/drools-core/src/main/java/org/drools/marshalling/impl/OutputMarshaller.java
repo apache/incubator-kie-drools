@@ -393,17 +393,19 @@ public class OutputMarshaller {
 
         Object object = handle.getObject();
 
+        // Old versions wrote -1 and tested >= 0 to see if there was a strategy available
+        // Now, we write -2 to indicate that we write the strategy class name to the stream
+        stream.writeInt(-2);
         if ( object != null ) {
-            int index = objectMarshallingStrategyStore.getStrategy( object );
+            ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( object );
 
-            ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
-
-            stream.writeInt( index );
+            String strategyClassName = strategy.getClass().getName();
+            stream.writeUTF(strategyClassName);
 
             strategy.write( stream,
                             object );
         } else {
-            stream.writeInt( -1 );
+            stream.writeUTF("");
         }
 
         if ( handle.getEntryPoint() instanceof InternalWorkingMemoryEntryPoint ) {
@@ -1083,9 +1085,11 @@ public class OutputMarshaller {
             Object object = parameters.get( key );
             if ( object != null ) {
                 stream.writeUTF( key );
-                int index = context.objectMarshallingStrategyStore.getStrategy( object );
-                stream.writeInt( index );
-                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy( index );
+                
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy( object );
+                String strategyClassName = strategy.getClass().getName();
+                stream.writeInt(-2); // backwards compatibility
+                stream.writeUTF(strategyClassName);
                 if ( strategy.accept( object ) ) {
                     strategy.write( stream,
                                     object );
