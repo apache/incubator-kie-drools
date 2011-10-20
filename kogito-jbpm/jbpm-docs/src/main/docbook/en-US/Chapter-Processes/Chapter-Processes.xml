@@ -471,7 +471,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             <para><emphasis>Timer delay</emphasis>: The delay that the node should 
             wait before triggering the first time. The expression should be of the form
             <code>[#d][#h][#m][#s][#[ms]]</code>.  This means that you can specify the amount of days,
-            hours, minutes, seconds and multiseconds (which is the default if you don't
+            hours, minutes, seconds and milliseconds (which is the default if you don't
             specify anything).  For example, the expression "1h" will wait one hour
             before triggering the timer.  The expression could also use #{expr} to
             dynamically derive the delay based on some process variable.  Expr in this
@@ -483,7 +483,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             between two subsequent triggers.  If the period is 0, the timer should
             only be triggered once.   The expression should be of the form
             <code>[#d][#h][#m][#s][#[ms]]</code>.  This means that you can specify the amount of days,
-            hours, minutes, seconds and multiseconds (which is the default if you don't
+            hours, minutes, seconds and milliseconds (which is the default if you don't
             specify anything).  For example, the expression "1h" will wait one hour
             before triggering the timer again.  The expression could also use #{expr} to
             dynamically derive the period based on some process variable.  Expr in this
@@ -1410,7 +1410,7 @@ System.out.println( person.name );
     
     <para>The (period and delay) expression should be of the form
     [#d][#h][#m][#s][#[ms]].  This means that you can specify the amount of days,
-    hours, minutes, seconds and multiseconds (which is the default if you don't
+    hours, minutes, seconds and milliseconds (which is the default if you don't
     specify anything).  For example, the expression "1h" will wait one hour
     before triggering the timer (again).</para>
 
