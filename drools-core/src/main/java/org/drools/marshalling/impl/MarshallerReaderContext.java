@@ -20,33 +20,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.common.BaseNode;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.common.Scheduler.ActivationTimerJobContext;
-import org.drools.common.Scheduler.ActivationTimerOutputMarshaller;
+import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.reteoo.LeftTuple;
-import org.drools.reteoo.RightTuple;
-import org.drools.reteoo.ObjectTypeNode.ExpireJob;
-import org.drools.reteoo.ObjectTypeNode.ExpireJobContext;
 import org.drools.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
+import org.drools.reteoo.RightTuple;
 import org.drools.rule.EntryPoint;
-import org.drools.rule.SlidingTimeWindow;
+import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.spi.PropagationContext;
-
-import org.drools.common.Scheduler.ActivationTimerInputMarshaller;
-import org.drools.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 
 public class MarshallerReaderContext extends ObjectInputStream {
     public final MarshallerReaderContext            stream;
