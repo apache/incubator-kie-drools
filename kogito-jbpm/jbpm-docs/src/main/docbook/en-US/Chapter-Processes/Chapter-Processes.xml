@@ -415,7 +415,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
           </listitem>
           <listitem>
             <para><emphasis>FaultName</emphasis>: The name of the fault.  This
-            name is used to search for appriopriate exception handlers that is
+            name is used to search for appropriate exception handlers that is
             capable of handling this kind of fault.</para>
           </listitem>
           <listitem>
