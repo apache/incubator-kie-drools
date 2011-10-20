@@ -222,9 +222,18 @@ public final class ClassUtils {
      */
     public static boolean isMatched(Map<String, Object> patterns,
                                     String className) {
-        String qualifiedNamespace = className.substring( 0,
-                                                         className.lastIndexOf( '.' ) ).trim();
-        String name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
+        // Array [] object class names are "[x", where x is the first letter of the array type
+        // -> NO '.' in class name, thus!
+        // see http://download.oracle.com/javase/6/docs/api/java/lang/Class.html#getName%28%29
+        String qualifiedNamespace = className;
+        String name = className;
+        if( className.indexOf('.') > 0 ) { 
+            qualifiedNamespace = className.substring( 0, className.lastIndexOf( '.' ) ).trim();
+            name = className.substring( className.lastIndexOf( '.' ) + 1 ).trim();
+        }
+        else if( className.indexOf('[') == 0 ) { 
+           qualifiedNamespace = className.substring(0, className.lastIndexOf('[') );
+        }
         Object object = patterns.get( qualifiedNamespace );
         if ( object == null ) {
             return true;
