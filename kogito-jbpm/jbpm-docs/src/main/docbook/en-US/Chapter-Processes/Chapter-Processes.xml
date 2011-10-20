@@ -239,7 +239,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
     indicate events that might occur during the execution of the process).</listitem>
     <listitem><emphasis>Activities</emphasis>: These define the different actions that need to be
     performed during the execution of the process.  Different types of tasks exist, depending on 
-    the type of activity you are trying to model (e.g. human task, service task, etc.) and actvities
+    the type of activity you are trying to model (e.g. human task, service task, etc.) and activities
     could also be nested (using different types of sub-processes).</listitem>
     <listitem><emphasis>Gateways</emphasis>: Can be used to define multiple paths in the process.
     Depending on the type of gateway, these might indicate parallel execution, choice, etc.</listitem>
