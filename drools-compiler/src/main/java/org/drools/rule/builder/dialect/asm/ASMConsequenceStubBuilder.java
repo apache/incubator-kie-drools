@@ -1,15 +1,22 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.*;
-import org.drools.rule.builder.*;
-import org.drools.spi.*;
-import org.mvel2.asm.*;
+import org.drools.WorkingMemory;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
+import org.drools.spi.KnowledgeHelper;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
 
-import java.util.*;
+import java.util.Map;
 
-import static org.mvel2.asm.Opcodes.*;
-
-import static org.drools.rule.builder.dialect.asm.InvokerGenerator.*;
+import static org.drools.rule.builder.dialect.asm.InvokerGenerator.createInvokerStubGenerator;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.IFNONNULL;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMConsequenceStubBuilder extends AbstractASMConsequenceBuilder {
 

@@ -1,14 +1,24 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.*;
-import org.drools.rule.*;
-import org.drools.rule.builder.*;
-import org.drools.spi.*;
-import org.mvel2.asm.*;
+import org.drools.WorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.EvalExpression;
+import org.drools.spi.Tuple;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
 
-import java.util.*;
+import java.util.Map;
 
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.IFNONNULL;
+import static org.mvel2.asm.Opcodes.IRETURN;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
 
@@ -44,8 +54,7 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
                 mv.visitVarInsn(ALOAD, 3);
-                mv.visitVarInsn(ALOAD, 4);
-                invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class);
+                invokeStatic(EvalGenerator.class, "generate", null, EvalStub.class, Tuple.class, Declaration[].class, WorkingMemory.class);
                 mv.visitLabel(l1);
                 mv.visitVarInsn(ALOAD, 0);
                 getField("eval", EvalExpression.class);

@@ -1,6 +1,6 @@
 package org.drools.rule.builder.dialect.asm;
 
-import java.util.*;
+import java.util.Map;
 
 public class InvokerContext implements InvokerDataProvider {
 

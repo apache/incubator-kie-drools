@@ -1,13 +1,18 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.rule.*;
-import org.drools.rule.builder.*;
-import org.drools.rule.builder.dialect.java.*;
+import org.drools.rule.Declaration;
+import org.drools.rule.builder.ConsequenceBuilder;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.dialect.java.JavaAnalysisResult;
+import org.drools.rule.builder.dialect.java.KnowledgeHelperFixer;
 
-import java.util.*;
+import java.util.Map;
 
 import static org.drools.rule.builder.dialect.DialectUtil.fixBlockDescr;
-import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.createConsequenceContext;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.createJavaAnalysisResult;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.generateMethodTemplate;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.registerInvokerBytecode;
 
 public abstract class AbstractASMConsequenceBuilder implements ConsequenceBuilder {
     public void build(RuleBuildContext context, String consequenceName) {

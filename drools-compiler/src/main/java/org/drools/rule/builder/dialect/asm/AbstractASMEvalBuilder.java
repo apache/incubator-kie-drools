@@ -1,14 +1,23 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.compiler.*;
-import org.drools.lang.descr.*;
-import org.drools.reteoo.*;
-import org.drools.rule.*;
-import org.drools.rule.builder.*;
+import org.drools.compiler.AnalysisResult;
+import org.drools.compiler.BoundIdentifiers;
+import org.drools.lang.descr.BaseDescr;
+import org.drools.lang.descr.EvalDescr;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.rule.Declaration;
+import org.drools.rule.EvalCondition;
+import org.drools.rule.Pattern;
+import org.drools.rule.RuleConditionElement;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.rule.builder.RuleConditionBuilder;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 
-import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.generateMethodTemplate;
+import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.registerInvokerBytecode;
 
 public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
     public RuleConditionElement build(RuleBuildContext context, BaseDescr descr) {

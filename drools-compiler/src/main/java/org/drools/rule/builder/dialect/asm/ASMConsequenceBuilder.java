@@ -1,17 +1,34 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.*;
-import org.drools.common.*;
-import org.drools.reteoo.*;
-import org.drools.rule.*;
-import org.drools.rule.builder.*;
-import org.drools.spi.*;
-import org.mvel2.asm.*;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.rule.Declaration;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.Activation;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
+import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.Tuple;
+import org.mvel2.asm.MethodVisitor;
 
-import java.util.*;
+import java.util.Map;
 
-import static org.mvel2.asm.Opcodes.*;
-import static org.drools.rule.builder.dialect.asm.InvokerGenerator.*;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.EvaluateMethod;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
+import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
 
@@ -20,7 +37,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
         final String name = (String)consequenceContext.get("consequenceName");
         final Declaration[] declarations = (Declaration[])consequenceContext.get("declarations");
 
-        final ClassGenerator generator = createInvokerClassGenerator(data, ruleContext)
+        final ClassGenerator generator = InvokerGenerator.createInvokerClassGenerator(data, ruleContext)
                 .setInterfaces(Consequence.class, CompiledInvoker.class);
 
         generator.addMethod(ACC_PUBLIC, "getName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
@@ -28,7 +45,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 push(name);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);

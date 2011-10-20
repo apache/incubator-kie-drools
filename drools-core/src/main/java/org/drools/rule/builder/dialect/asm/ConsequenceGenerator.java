@@ -1,17 +1,36 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.*;
-import org.drools.common.*;
-import org.drools.reteoo.*;
-import org.drools.rule.*;
-import org.drools.spi.*;
-import org.mvel2.asm.*;
+import org.drools.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
+import org.drools.FactHandle;
+import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.reteoo.LeftTuple;
+import org.drools.reteoo.LeftTupleSink;
+import org.drools.reteoo.RuleTerminalNode;
+import org.drools.rule.Declaration;
+import org.drools.spi.Activation;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.Consequence;
+import org.drools.spi.KnowledgeHelper;
+import org.drools.spi.Tuple;
+import org.mvel2.asm.MethodVisitor;
 
-import java.util.*;
+import java.util.List;
 
-import static org.mvel2.asm.Opcodes.*;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
 
-public class ConsequenceGenerator extends InvokerGenerator {
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.RETURN;
+
+public class ConsequenceGenerator {
 
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
         final String[] declarationTypes = stub.getDeclarationTypes();
@@ -29,7 +48,7 @@ public class ConsequenceGenerator extends InvokerGenerator {
                 push(stub.getGeneratedInvokerClassName());
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 // Tuple tuple = knowledgeHelper.getTuple();
                 mv.visitVarInsn(ALOAD, 1);
@@ -104,7 +123,7 @@ public class ConsequenceGenerator extends InvokerGenerator {
                 for (int i = 0; i < declarations.length; i++) {
                     load(paramsPos[i] + 1); // obj[i]
                     mv.visitVarInsn(ALOAD, paramsPos[i]); // handle[i]
-                    consequenceMethodDescr.append(typeDescr(declarationTypes[i]) + "Lorg/drools/FactHandle;");
+                    consequenceMethodDescr.append(typeDescr(declarationTypes[i])).append("Lorg/drools/FactHandle;");
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

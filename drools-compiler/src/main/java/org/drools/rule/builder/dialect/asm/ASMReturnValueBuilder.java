@@ -1,25 +1,29 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.*;
-import org.drools.compiler.*;
-import org.drools.lang.descr.*;
-import org.drools.rule.*;
-import org.drools.rule.builder.*;
-import org.drools.spi.*;
-import org.mvel2.asm.*;
+import org.drools.WorkingMemory;
+import org.drools.rule.Declaration;
+import org.drools.rule.builder.RuleBuildContext;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.FieldValue;
+import org.drools.spi.ReturnValueExpression;
+import org.drools.spi.Tuple;
+import org.mvel2.asm.MethodVisitor;
 
-import java.util.*;
+import java.util.Map;
 
-import static org.drools.rule.builder.dialect.asm.InvokerGenerator.*;
-import static org.drools.rule.builder.dialect.java.JavaRuleBuilderHelper.*;
-import static org.mvel2.asm.Opcodes.*;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.EvaluateMethod;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
 
 public class ASMReturnValueBuilder extends AbstractASMReturnValueBuilder {
 
     protected byte[] createReturnValueBytecode(final RuleBuildContext ruleContext, final Map vars, final boolean readLocalsFromTuple) {
         final InvokerDataProvider data = new InvokerContext(vars);
 
-        final ClassGenerator generator = createInvokerClassGenerator(data, ruleContext)
+        final ClassGenerator generator = InvokerGenerator.createInvokerClassGenerator(data, ruleContext)
                 .setInterfaces(ReturnValueExpression.class, CompiledInvoker.class);
 
         generator.addMethod(ACC_PUBLIC, "createContext", generator.methodDescr(Object.class), new ClassGenerator.MethodBody() {
