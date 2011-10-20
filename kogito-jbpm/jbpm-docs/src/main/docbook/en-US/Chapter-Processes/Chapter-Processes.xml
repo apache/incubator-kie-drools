@@ -1372,7 +1372,7 @@ System.out.println( person.name );
       <itemizedlist>
         <listitem><para>Internal event: Any action inside a process (e.g., the action of an
         action node, or an on-entry or on-exit action of some node) can signal the
-        occurence of an internal event to the surrounding process instance, using code
+        occurrence of an internal event to the surrounding process instance, using code
         like the following:</para>
         <programlisting language="java">kcontext.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
         <listitem><para>External event: A process instance can be notified of an event
