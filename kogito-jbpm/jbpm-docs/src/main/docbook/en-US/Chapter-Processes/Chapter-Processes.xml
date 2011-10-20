@@ -1496,7 +1496,7 @@ System.out.println( person.name );
     However, it is also possible that a more sofisticated mapping is necessary.  For example,
     when an existing wait state is removed, or split into multiple wait states, an existing 
     process instance that is waiting in that state cannot simply be updated.  Or when a new
-    process variable is introduced, that variable might need to be initiazed correctly so it
+    process variable is introduced, that variable might need to be initiated correctly so it
     can be used in the remainder of the (updated) process.</para>
 
     <para>The WorkflowProcessInstanceUpgrader can be used to upgrade a workflow process
