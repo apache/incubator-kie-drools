@@ -1484,7 +1484,7 @@ System.out.println( person.name );
     <para>A process instance only contains the runtime state and is linked to a particular
     process (indirectly, using id references) that represents the process logic that needs
     to be followed when executing this process instance (this clear separation of definition
-    and runtime state allows reuse of the definition accross all process instances based
+    and runtime state allows reuse of the definition across all process instances based
     on this process and minimizes runtime state).  As a result, updating a running process
     instance to a newer version so it used the new process logic instead of the old one is
     simply a matter of changing the referenced process id from the old to the new id.</para>
