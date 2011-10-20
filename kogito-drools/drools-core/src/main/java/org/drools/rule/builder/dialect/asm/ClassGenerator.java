@@ -1,12 +1,40 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.base.*;
-import org.mvel2.asm.*;
+import org.drools.base.TypeResolver;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Type;
 
-import java.io.*;
-import java.util.*;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.mvel2.asm.Opcodes.*;
+import static org.mvel2.asm.Opcodes.AASTORE;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACC_STATIC;
+import static org.mvel2.asm.Opcodes.ACC_SUPER;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ANEWARRAY;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.CHECKCAST;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.GETFIELD;
+import static org.mvel2.asm.Opcodes.GETSTATIC;
+import static org.mvel2.asm.Opcodes.ILOAD;
+import static org.mvel2.asm.Opcodes.INSTANCEOF;
+import static org.mvel2.asm.Opcodes.INVOKEINTERFACE;
+import static org.mvel2.asm.Opcodes.INVOKESPECIAL;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
+import static org.mvel2.asm.Opcodes.ISTORE;
+import static org.mvel2.asm.Opcodes.NEW;
+import static org.mvel2.asm.Opcodes.PUTFIELD;
+import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.V1_5;
 
 public class ClassGenerator {
 

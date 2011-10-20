@@ -1,24 +1,35 @@
 package org.drools.rule.builder.dialect.asm;
 
-import org.drools.*;
-import org.drools.common.*;
-import org.drools.reteoo.*;
-import org.drools.rule.*;
-import org.drools.spi.*;
-import org.mvel2.asm.*;
+import org.drools.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
+import org.drools.WorkingMemory;
+import org.drools.common.InternalFactHandle;
+import org.drools.reteoo.LeftTuple;
+import org.drools.rule.Declaration;
+import org.drools.spi.CompiledInvoker;
+import org.drools.spi.PredicateExpression;
+import org.drools.spi.Tuple;
+import org.mvel2.asm.MethodVisitor;
 
-import java.util.*;
+import java.util.List;
 
-import static org.mvel2.asm.Opcodes.*;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
+import static org.drools.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
 
-public class PredicateGenerator extends InvokerGenerator {
+import static org.mvel2.asm.Opcodes.AALOAD;
+import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
+import static org.mvel2.asm.Opcodes.ACONST_NULL;
+import static org.mvel2.asm.Opcodes.ALOAD;
+import static org.mvel2.asm.Opcodes.ARETURN;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.INVOKESTATIC;
+import static org.mvel2.asm.Opcodes.IRETURN;
+
+public class PredicateGenerator {
     public static void generate(final PredicateStub stub,
-                                final Object object,
                                 final Tuple tuple,
                                 final Declaration[] previousDeclarations,
                                 final Declaration[] localDeclarations,
-                                final WorkingMemory workingMemory,
-                                final Object context) {
+                                final WorkingMemory workingMemory) {
 
         final LeftTuple leftTuple = (LeftTuple)tuple;
         final String[] previousDeclarationTypes = stub.getDeclarationTypes();
@@ -37,7 +48,7 @@ public class PredicateGenerator extends InvokerGenerator {
                 mv.visitInsn(ACONST_NULL);
                 mv.visitInsn(ARETURN);
             }
-        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new EvaluateMethod() {
+        }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Object.class, Tuple.class, Declaration[].class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new GeneratorHelper.EvaluateMethod() {
             public void body(MethodVisitor mv) {
                 objAstorePos = 9;
 
