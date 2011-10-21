@@ -239,7 +239,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
     indicate events that might occur during the execution of the process).</listitem>
     <listitem><emphasis>Activities</emphasis>: These define the different actions that need to be
     performed during the execution of the process.  Different types of tasks exist, depending on 
-    the type of activity you are trying to model (e.g. human task, service task, etc.) and actvities
+    the type of activity you are trying to model (e.g. human task, service task, etc.) and activities
     could also be nested (using different types of sub-processes).</listitem>
     <listitem><emphasis>Gateways</emphasis>: Can be used to define multiple paths in the process.
     Depending on the type of gateway, these might indicate parallel execution, choice, etc.</listitem>
@@ -415,7 +415,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
           </listitem>
           <listitem>
             <para><emphasis>FaultName</emphasis>: The name of the fault.  This
-            name is used to search for appriopriate exception handlers that is
+            name is used to search for appropriate exception handlers that is
             capable of handling this kind of fault.</para>
           </listitem>
           <listitem>
@@ -471,7 +471,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             <para><emphasis>Timer delay</emphasis>: The delay that the node should 
             wait before triggering the first time. The expression should be of the form
             <code>[#d][#h][#m][#s][#[ms]]</code>.  This means that you can specify the amount of days,
-            hours, minutes, seconds and multiseconds (which is the default if you don't
+            hours, minutes, seconds and milliseconds (which is the default if you don't
             specify anything).  For example, the expression "1h" will wait one hour
             before triggering the timer.  The expression could also use #{expr} to
             dynamically derive the delay based on some process variable.  Expr in this
@@ -483,7 +483,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             between two subsequent triggers.  If the period is 0, the timer should
             only be triggered once.   The expression should be of the form
             <code>[#d][#h][#m][#s][#[ms]]</code>.  This means that you can specify the amount of days,
-            hours, minutes, seconds and multiseconds (which is the default if you don't
+            hours, minutes, seconds and milliseconds (which is the default if you don't
             specify anything).  For example, the expression "1h" will wait one hour
             before triggering the timer again.  The expression could also use #{expr} to
             dynamically derive the period based on some process variable.  Expr in this
@@ -1372,7 +1372,7 @@ System.out.println( person.name );
       <itemizedlist>
         <listitem><para>Internal event: Any action inside a process (e.g., the action of an
         action node, or an on-entry or on-exit action of some node) can signal the
-        occurence of an internal event to the surrounding process instance, using code
+        occurrence of an internal event to the surrounding process instance, using code
         like the following:</para>
         <programlisting language="java">kcontext.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
         <listitem><para>External event: A process instance can be notified of an event
@@ -1410,7 +1410,7 @@ System.out.println( person.name );
     
     <para>The (period and delay) expression should be of the form
     [#d][#h][#m][#s][#[ms]].  This means that you can specify the amount of days,
-    hours, minutes, seconds and multiseconds (which is the default if you don't
+    hours, minutes, seconds and milliseconds (which is the default if you don't
     specify anything).  For example, the expression "1h" will wait one hour
     before triggering the timer (again).</para>
 
@@ -1484,7 +1484,7 @@ System.out.println( person.name );
     <para>A process instance only contains the runtime state and is linked to a particular
     process (indirectly, using id references) that represents the process logic that needs
     to be followed when executing this process instance (this clear separation of definition
-    and runtime state allows reuse of the definition accross all process instances based
+    and runtime state allows reuse of the definition across all process instances based
     on this process and minimizes runtime state).  As a result, updating a running process
     instance to a newer version so it used the new process logic instead of the old one is
     simply a matter of changing the referenced process id from the old to the new id.</para>
@@ -1496,7 +1496,7 @@ System.out.println( person.name );
     However, it is also possible that a more sofisticated mapping is necessary.  For example,
     when an existing wait state is removed, or split into multiple wait states, an existing 
     process instance that is waiting in that state cannot simply be updated.  Or when a new
-    process variable is introduced, that variable might need to be initiazed correctly so it
+    process variable is introduced, that variable might need to be initiated correctly so it
     can be used in the remainder of the (updated) process.</para>
 
     <para>The WorkflowProcessInstanceUpgrader can be used to upgrade a workflow process
