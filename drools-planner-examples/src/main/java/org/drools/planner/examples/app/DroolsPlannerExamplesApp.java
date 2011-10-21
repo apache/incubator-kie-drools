@@ -58,6 +58,11 @@ public class DroolsPlannerExamplesApp extends JFrame {
                 new NQueensApp().init(false);
             }
         }));
+        contentPane.add(new JButton(new AbstractAction("Cloud balancing") {
+            public void actionPerformed(ActionEvent e) {
+                new CloudBalancingApp().init(false);
+            }
+        }));
         contentPane.add(new JButton(new AbstractAction("Miss Manners 2009") {
             public void actionPerformed(ActionEvent e) {
                 new Manners2009App().init(false);
@@ -80,11 +85,6 @@ public class DroolsPlannerExamplesApp extends JFrame {
 //                new TrainDesignApp().init(false);
 //            }
 //        }));
-        contentPane.add(new JButton(new AbstractAction("Cloud balancing") {
-            public void actionPerformed(ActionEvent e) {
-                new CloudBalancingApp().init(false);
-            }
-        }));
         contentPane.add(new JButton(new AbstractAction("Curriculum course timetabling (ITC2007 track3)") {
             public void actionPerformed(ActionEvent e) {
                 new CurriculumCourseApp().init(false);

@@ -341,6 +341,41 @@
   </section>
 
   <section>
+    <title>Cloud balancing</title>
+
+    <section>
+      <title>Problem statement</title>
+
+      <para>There are a number of computers available. Assign a list of processes on those computers.</para>
+
+      <para>Hard constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Every computer should be able to handle the sum of each of the minimal hardware requirements (CPR, RAM,
+          network bandwith) of all its processes.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Soft constraints:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Each computer that has one or more processes assigned, has a fixed cost. Minimize the total cost.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>This is a form of bin packing.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceUseCase.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+  </section>
+
+  <section>
     <title>The Manners 2009 example</title>
 
     <section>
@@ -610,41 +645,6 @@ $ mvn exec:exec -Dexec.mainClass="org.drools.planner.examples.travelingtournamen
           </tbody>
         </tgroup>
       </table>
-    </section>
-  </section>
-
-  <section>
-    <title>Cloud balancing</title>
-
-    <section>
-      <title>Problem statement</title>
-
-      <para>There are a number of computers available. Assign a list of processes on those computers.</para>
-
-      <para>Hard constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Every computer should be able to handle the sum of each of the minimal hardware requirements (CPR, RAM,
-          network bandwith) of all its processes.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>Soft constraints:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Each computer that has one or more processes assigned, has a fixed cost. Minimize the total cost.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>This is a form of bin packing.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceUseCase.png"></imagedata>
-        </imageobject>
-      </mediaobject>
     </section>
   </section>
 
