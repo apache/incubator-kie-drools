@@ -16,8 +16,8 @@
 
 package org.drools.planner.examples.cloudbalancing.solver.move;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -28,40 +28,43 @@ import org.drools.planner.core.move.Move;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 
-public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
+public class CloudProcessSwitchMove implements Move, TabuPropertyEnabled {
 
-    private CloudProcess cloudProcess;
-    private CloudComputer toCloudComputer;
+    private CloudProcess leftCloudProcess;
+    private CloudProcess rightCloudProcess;
 
-    public CloudComputerChangeMove(CloudProcess cloudProcess, CloudComputer toCloudComputer) {
-        this.cloudProcess = cloudProcess;
-        this.toCloudComputer = toCloudComputer;
+    public CloudProcessSwitchMove(CloudProcess leftCloudProcess, CloudProcess rightCloudProcess) {
+        this.leftCloudProcess = leftCloudProcess;
+        this.rightCloudProcess = rightCloudProcess;
     }
 
     public boolean isMoveDoable(WorkingMemory workingMemory) {
-        return !ObjectUtils.equals(cloudProcess.getCloudComputer(), toCloudComputer);
+        return !ObjectUtils.equals(leftCloudProcess.getCloudComputer(), rightCloudProcess.getCloudComputer());
     }
 
     public Move createUndoMove(WorkingMemory workingMemory) {
-        return new CloudComputerChangeMove(cloudProcess, cloudProcess.getCloudComputer());
+        return new CloudProcessSwitchMove(rightCloudProcess, leftCloudProcess);
     }
 
     public void doMove(WorkingMemory workingMemory) {
-        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, cloudProcess, toCloudComputer);
+        CloudComputer oldLeftCloudComputer = leftCloudProcess.getCloudComputer();
+        CloudComputer oldRightCloudComputer = rightCloudProcess.getCloudComputer();
+        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, leftCloudProcess, oldRightCloudComputer);
+        CloudBalancingMoveHelper.moveCloudComputer(workingMemory, rightCloudProcess, oldLeftCloudComputer);
     }
 
     public Collection<? extends Object> getTabuProperties() {
-        return Collections.singletonList(cloudProcess);
+        return Arrays.<CloudProcess>asList(leftCloudProcess, rightCloudProcess);
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CloudComputerChangeMove) {
-            CloudComputerChangeMove other = (CloudComputerChangeMove) o;
+        } else if (o instanceof CloudProcessSwitchMove) {
+            CloudProcessSwitchMove other = (CloudProcessSwitchMove) o;
             return new EqualsBuilder()
-                    .append(cloudProcess, other.cloudProcess)
-                    .append(toCloudComputer, other.toCloudComputer)
+                    .append(leftCloudProcess, other.leftCloudProcess)
+                    .append(rightCloudProcess, other.rightCloudProcess)
                     .isEquals();
         } else {
             return false;
@@ -70,13 +73,13 @@ public class CloudComputerChangeMove implements Move, TabuPropertyEnabled {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(cloudProcess)
-                .append(toCloudComputer)
+                .append(leftCloudProcess)
+                .append(rightCloudProcess)
                 .toHashCode();
     }
 
     public String toString() {
-        return cloudProcess + " => " + toCloudComputer;
+        return leftCloudProcess + " <=> " + rightCloudProcess;
     }
 
 }

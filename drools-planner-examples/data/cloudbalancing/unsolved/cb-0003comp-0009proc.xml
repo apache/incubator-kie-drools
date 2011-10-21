@@ -79,42 +79,4 @@
       <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
   </cloudProcessList>
-  <cloudProcessAssignmentList id="16">
-    <CloudProcessAssignment id="17">
-      <id>0</id>
-      <cloudProcess reference="7"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="18">
-      <id>1</id>
-      <cloudProcess reference="8"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="19">
-      <id>2</id>
-      <cloudProcess reference="9"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="20">
-      <id>3</id>
-      <cloudProcess reference="10"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="21">
-      <id>4</id>
-      <cloudProcess reference="11"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="22">
-      <id>5</id>
-      <cloudProcess reference="12"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="23">
-      <id>6</id>
-      <cloudProcess reference="13"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="24">
-      <id>7</id>
-      <cloudProcess reference="14"/>
-    </CloudProcessAssignment>
-    <CloudProcessAssignment id="25">
-      <id>8</id>
-      <cloudProcess reference="15"/>
-    </CloudProcessAssignment>
-  </cloudProcessAssignmentList>
 </CloudBalance>

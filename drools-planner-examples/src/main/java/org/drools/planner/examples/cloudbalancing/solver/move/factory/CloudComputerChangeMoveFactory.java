@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
@@ -33,9 +33,9 @@ public class CloudComputerChangeMoveFactory extends CachedMoveFactory {
         CloudBalance cloudBalance = (CloudBalance) solution;
         List<Move> moveList = new ArrayList<Move>();
         List<CloudComputer> cloudComputerList = cloudBalance.getCloudComputerList();
-        for (CloudProcessAssignment cloudProcessAssignment : cloudBalance.getCloudProcessAssignmentList()) {
+        for (CloudProcess cloudProcess : cloudBalance.getCloudProcessList()) {
             for (CloudComputer cloudComputer : cloudComputerList) {
-                moveList.add(new CloudComputerChangeMove(cloudProcessAssignment, cloudComputer));
+                moveList.add(new CloudComputerChangeMove(cloudProcess, cloudComputer));
             }
         }
         return moveList;

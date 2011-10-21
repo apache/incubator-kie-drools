@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
@@ -143,11 +142,10 @@ public class CloudBalancingGenerator extends LoggingMain {
         cloudBalance.setId(0L);
         createCloudComputerList(cloudBalance,cloudComputerListSize);
         createCloudProcessList(cloudBalance, cloudProcessListSize);
-        createCloudProcessAssignmentList(cloudBalance);
         logger.info("CloudBalance {} with {} computers and {} processes.",
                 cloudBalance.getCloudComputerList().size(), cloudBalance.getCloudProcessList().size());
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getCloudComputerList().size()).pow(
-                cloudBalance.getCloudProcessAssignmentList().size());
+                cloudBalance.getCloudProcessList().size());
         String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("CloudBalance with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
                 flooredPossibleSolutionSize, possibleSolutionSize);
@@ -207,6 +205,7 @@ public class CloudBalancingGenerator extends LoggingMain {
             logger.debug("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
                     + " requiredNetworkBandwidth({}).",
                     new Object[]{requiredCpuPower, requiredMemory, requiredNetworkBandwidth});
+            // Notice that we leave the PlanningVariable properties on null
             cloudProcessList.add(cloudProcess);
         }
         cloudBalance.setCloudProcessList(cloudProcessList);
@@ -224,21 +223,6 @@ public class CloudBalancingGenerator extends LoggingMain {
             throw new IllegalArgumentException("Invalid generated value (" + value + ")");
         }
         return value;
-    }
-
-    private void createCloudProcessAssignmentList(CloudBalance cloudBalance) {
-        List<CloudProcess> cloudProcessList = cloudBalance.getCloudProcessList();
-        List<CloudProcessAssignment> cloudProcessAssignmentList = new ArrayList<CloudProcessAssignment>(cloudProcessList.size());
-        long id = 0L;
-        for (CloudProcess cloudProcess : cloudProcessList) {
-            CloudProcessAssignment cloudProcessAssignment = new CloudProcessAssignment();
-            cloudProcessAssignment.setId(id);
-            cloudProcessAssignment.setCloudProcess(cloudProcess);
-            // Notice that we leave the PlanningVariable properties on null
-            cloudProcessAssignmentList.add(cloudProcessAssignment);
-            id++;
-        }
-        cloudBalance.setCloudProcessAssignmentList(cloudProcessAssignmentList);
     }
 
 }

@@ -2,7 +2,7 @@
 <solver>
   <environmentMode>DEBUG</environmentMode>
   <solutionClass>org.drools.planner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-  <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment</planningEntityClass>
+  <planningEntityClass>org.drools.planner.examples.cloudbalancing.domain.CloudProcess</planningEntityClass>
 
   <scoreDrl>/org/drools/planner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl</scoreDrl>
   <scoreDefinition>

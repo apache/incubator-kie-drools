@@ -20,14 +20,14 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudProcessAssignmentDifficultyComparator implements Comparator<CloudProcessAssignment>, Serializable {
+public class CloudProcessDifficultyComparator implements Comparator<CloudProcess>, Serializable {
 
-    public int compare(CloudProcessAssignment a, CloudProcessAssignment b) {
+    public int compare(CloudProcess a, CloudProcess b) {
         return new CompareToBuilder()
-                .append(a.getCloudProcess().getRequiredMultiplicand(), b.getCloudProcess().getRequiredMultiplicand())
-                .append(a.getCloudProcess().getId(), b.getCloudProcess().getId())
+                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
+                .append(a.getId(), b.getId())
                 .toComparison();
     }
 

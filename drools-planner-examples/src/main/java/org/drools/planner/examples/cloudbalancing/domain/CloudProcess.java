@@ -17,14 +17,25 @@
 package org.drools.planner.examples.cloudbalancing.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.drools.planner.api.domain.entity.PlanningEntity;
+import org.drools.planner.api.domain.variable.PlanningVariable;
+import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
+import org.drools.planner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
+@PlanningEntity(difficultyComparatorClass = CloudProcessDifficultyComparator.class)
 @XStreamAlias("CloudProcess")
 public class CloudProcess extends AbstractPersistable {
 
     private int requiredCpuPower; // in gigahertz
     private int requiredMemory; // in gigabyte RAM
     private int requiredNetworkBandwidth; // in gigabyte per hour
+
+    // Planning variables: changes during planning, between score calculations.
+    private CloudComputer cloudComputer;
 
     public int getRequiredCpuPower() {
         return requiredCpuPower;
@@ -50,12 +61,68 @@ public class CloudProcess extends AbstractPersistable {
         this.requiredNetworkBandwidth = requiredNetworkBandwidth;
     }
 
+    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
+    @ValueRangeFromSolutionProperty(propertyName = "cloudComputerList")
+    public CloudComputer getCloudComputer() {
+        return cloudComputer;
+    }
+
+    public void setCloudComputer(CloudComputer cloudComputer) {
+        this.cloudComputer = cloudComputer;
+    }
+
     public int getRequiredMultiplicand() {
         return requiredCpuPower * requiredMemory * requiredNetworkBandwidth;
     }
 
     public String getLabel() {
         return "Process " + id;
+    }
+
+    public CloudProcess clone() {
+        CloudProcess clone = new CloudProcess();
+        clone.id = id;
+        clone.requiredCpuPower = requiredCpuPower;
+        clone.requiredMemory = requiredMemory;
+        clone.requiredNetworkBandwidth = requiredNetworkBandwidth;
+        clone.cloudComputer = cloudComputer;
+        return clone;
+    }
+
+    /**
+     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
+     * requires them (for performance in their original state).
+     * @see #solutionHashCode()
+     */
+    public boolean solutionEquals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof CloudProcess) {
+            CloudProcess other = (CloudProcess) o;
+            return new EqualsBuilder()
+                    .append(id, other.id)
+                    .append(cloudComputer, other.cloudComputer)
+                    .isEquals();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * The normal methods {@link #equals(Object)} and {@link #hashCode()} cannot be used because the rule engine already
+     * requires them (for performance in their original state).
+     * @see #solutionEquals(Object)
+     */
+    public int solutionHashCode() {
+        return new HashCodeBuilder()
+                .append(id)
+                .append(cloudComputer)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getLabel() + "->" + cloudComputer;
     }
 
 }

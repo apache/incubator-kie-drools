@@ -24,7 +24,6 @@ import org.drools.planner.core.score.constraint.ConstraintType;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -36,7 +35,7 @@ rule "requiredCpuPowerTotal"
     when
         $cloudComputer : CloudComputer($cpuPower : cpuPower)
         $requiredCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
-            CloudProcessAssignment(
+            CloudProcess(
                 cloudComputer == $cloudComputer,
                 $requiredCpuPower : requiredCpuPower),
             sum($requiredCpuPower)
@@ -51,7 +50,7 @@ rule "requiredMemoryTotal"
     when
         $cloudComputer : CloudComputer($memory : memory)
         $requiredMemoryTotal : Number(intValue > $memory) from accumulate(
-            CloudProcessAssignment(
+            CloudProcess(
                 cloudComputer == $cloudComputer,
                 $requiredMemory : requiredMemory),
             sum($requiredMemory)
@@ -66,7 +65,7 @@ rule "requiredNetworkBandwidthTotal"
     when
         $cloudComputer : CloudComputer($networkBandwidth : networkBandwidth)
         $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
-            CloudProcessAssignment(
+            CloudProcess(
                 cloudComputer == $cloudComputer,
                 $requiredNetworkBandwidth : requiredNetworkBandwidth),
             sum($requiredNetworkBandwidth)
@@ -84,7 +83,7 @@ end
 rule "cloudComputerCost"
     when
         $cloudComputer : CloudComputer($cost : cost)
-        exists CloudProcessAssignment(cloudComputer == $cloudComputer)
+        exists CloudProcess(cloudComputer == $cloudComputer)
     then
         insertLogical(new IntConstraintOccurrence("cloudComputerCost", ConstraintType.NEGATIVE_SOFT,
                 $cost,

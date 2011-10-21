@@ -23,21 +23,21 @@ import java.util.ListIterator;
 import org.drools.planner.core.move.Move;
 import org.drools.planner.core.move.factory.CachedMoveFactory;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
-import org.drools.planner.examples.cloudbalancing.solver.move.CloudProcessAssignmentSwitchMove;
+import org.drools.planner.examples.cloudbalancing.solver.move.CloudProcessSwitchMove;
 
-public class CloudProcessAssignmentSwitchMoveFactory extends CachedMoveFactory {
+public class CloudProcessSwitchMoveFactory extends CachedMoveFactory {
 
     public List<Move> createCachedMoveList(Solution solution) {
         CloudBalance cloudBalance = (CloudBalance) solution;
-        List<CloudProcessAssignment> cloudProcessAssignmentList = cloudBalance.getCloudProcessAssignmentList();
+        List<CloudProcess> cloudProcessList = cloudBalance.getCloudProcessList();
         List<Move> moveList = new ArrayList<Move>();
-        for (ListIterator<CloudProcessAssignment> leftIt = cloudProcessAssignmentList.listIterator(); leftIt.hasNext();) {
-            CloudProcessAssignment leftCloudProcessAssignment = leftIt.next();
-            for (ListIterator<CloudProcessAssignment> rightIt = cloudProcessAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
-                CloudProcessAssignment rightCloudProcessAssignment = rightIt.next();
-                moveList.add(new CloudProcessAssignmentSwitchMove(leftCloudProcessAssignment, rightCloudProcessAssignment));
+        for (ListIterator<CloudProcess> leftIt = cloudProcessList.listIterator(); leftIt.hasNext();) {
+            CloudProcess leftCloudProcess = leftIt.next();
+            for (ListIterator<CloudProcess> rightIt = cloudProcessList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {
+                CloudProcess rightCloudProcess = rightIt.next();
+                moveList.add(new CloudProcessSwitchMove(leftCloudProcess, rightCloudProcess));
             }
         }
         return moveList;

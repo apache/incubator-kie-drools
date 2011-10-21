@@ -17,17 +17,18 @@
 package org.drools.planner.examples.cloudbalancing.solver.move;
 
 import org.drools.WorkingMemory;
-import org.drools.planner.examples.cloudbalancing.domain.CloudProcessAssignment;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
+import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.FactHandle;
 
 public class CloudBalancingMoveHelper {
 
-    public static void moveCloudComputer(WorkingMemory workingMemory, CloudProcessAssignment cloudProcessAssignment,
+    public static void moveCloudComputer(WorkingMemory workingMemory, CloudProcess cloudProcess,
             CloudComputer toCloudComputer) {
-        FactHandle factHandle = workingMemory.getFactHandle(cloudProcessAssignment);
-        cloudProcessAssignment.setCloudComputer(toCloudComputer);
-        workingMemory.update(factHandle, cloudProcessAssignment);
+        FactHandle factHandle = workingMemory.getFactHandle(cloudProcess);
+        cloudProcess.setCloudComputer(toCloudComputer);
+        workingMemory.update(factHandle, cloudProcess);
     }
 
     private CloudBalancingMoveHelper() {
