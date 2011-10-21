@@ -203,7 +203,7 @@
     </section>
 
     <section>
-      <title>Domain class diagram</title>
+      <title>Domain model</title>
 
       <para>Use a good domain model: it will be easier to understand and solve your planning problem with Drools
       Planner. This is the domain model for the n queens example:</para>
@@ -370,6 +370,16 @@
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceUseCase.png"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>Domain model</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Use_cases_and_examples/cloudBalanceClassDiagram.png"></imagedata>
         </imageobject>
       </mediaobject>
     </section>
