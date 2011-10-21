@@ -122,7 +122,7 @@ end</programlisting>
     detected, an additional validation could be added to the process, enforcing
     some sort of flow control to reduce the frequency of incoming requests.
     There is also the possibility of deploying additional logging rules as the
-    consequence of detecting problems. As soon as the situtation reverts back to
+    consequence of detecting problems. As soon as the situation reverts back to
     normal, such rules would be removed again.</para>
 
   </section>
