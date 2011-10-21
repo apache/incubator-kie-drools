@@ -146,5 +146,43 @@
         </mediaobject>
       </figure>
     </section>
+
+    <section>
+      <title>Guided Decision Table - Actions to retract Facts</title>
+
+      <para>This release brings the ability to define Action columns to
+      retract Facts.</para>
+
+      <para>If you are authoring an Extended Entry decision table the column
+      definition contains basic information and the fact being retracted is
+      held in the table itself.</para>
+
+      <figure>
+        <title>Defining an Extended Entry retraction</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-retract-extended-entry.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>If however you are authoring a Limited Entry decision table the
+      Fact being retracted is defined in the column definition.</para>
+
+      <figure>
+        <title>Defining a Limited Entry retraction</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-retract-limited-entry.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
   </section>
 </section>
