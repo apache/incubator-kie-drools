@@ -24,7 +24,7 @@
   <section>
     <title>Reporting</title>
 
-    <para>By adding a history logger to the process engine, all relevent events
+    <para>By adding a history logger to the process engine, all relevant events
     are stored in the database.  This history log can be used to monitor and
     analyze the execution of your processes.  We are using the Eclipse BIRT
     (Business Intelligence Reporting Tool) to create reports that show the key
