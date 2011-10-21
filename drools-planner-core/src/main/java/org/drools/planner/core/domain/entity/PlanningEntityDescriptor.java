@@ -116,7 +116,7 @@ public class PlanningEntityDescriptor {
         boolean noPlanningVariableAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : planningEntityBeanInfo.getPropertyDescriptors()) {
             Method propertyGetter = propertyDescriptor.getReadMethod();
-            if (propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
+            if (propertyGetter != null && propertyGetter.isAnnotationPresent(PlanningVariable.class)) {
                 noPlanningVariableAnnotation = false;
                 if (propertyDescriptor.getWriteMethod() == null) {
                     throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
