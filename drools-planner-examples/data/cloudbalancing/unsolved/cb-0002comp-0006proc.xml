@@ -19,39 +19,39 @@
   <cloudProcessList id="5">
     <CloudProcess id="6">
       <id>0</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="7">
       <id>1</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>6</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>6</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="8">
       <id>2</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="9">
       <id>3</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>11</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>11</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="10">
       <id>4</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="11">
       <id>5</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
   </cloudProcessList>
   <cloudProcessAssignmentList id="12">

@@ -32,48 +32,48 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################
 
-rule "minimalCpuPowerTotal"
+rule "requiredCpuPowerTotal"
     when
         $cloudComputer : CloudComputer($cpuPower : cpuPower)
-        $minimalCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
+        $requiredCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
             CloudProcessAssignment(
                 cloudComputer == $cloudComputer,
-                $minimalCpuPower : minimalCpuPower),
-            sum($minimalCpuPower)
+                $requiredCpuPower : requiredCpuPower),
+            sum($requiredCpuPower)
         )
     then
-        insertLogical(new IntConstraintOccurrence("minimalCpuPowerTotal", ConstraintType.NEGATIVE_HARD,
-                $minimalCpuPowerTotal.intValue() - $cpuPower,
+        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.NEGATIVE_HARD,
+                $requiredCpuPowerTotal.intValue() - $cpuPower,
                 $cloudComputer));
 end
 
-rule "minimalMemoryTotal"
+rule "requiredMemoryTotal"
     when
         $cloudComputer : CloudComputer($memory : memory)
-        $minimalMemoryTotal : Number(intValue > $memory) from accumulate(
+        $requiredMemoryTotal : Number(intValue > $memory) from accumulate(
             CloudProcessAssignment(
                 cloudComputer == $cloudComputer,
-                $minimalMemory : minimalMemory),
-            sum($minimalMemory)
+                $requiredMemory : requiredMemory),
+            sum($requiredMemory)
         )
     then
-        insertLogical(new IntConstraintOccurrence("minimalMemoryTotal", ConstraintType.NEGATIVE_HARD,
-                $minimalMemoryTotal.intValue() - $memory,
+        insertLogical(new IntConstraintOccurrence("requiredMemoryTotal", ConstraintType.NEGATIVE_HARD,
+                $requiredMemoryTotal.intValue() - $memory,
                 $cloudComputer));
 end
 
-rule "minimalNetworkBandwidthTotal"
+rule "requiredNetworkBandwidthTotal"
     when
         $cloudComputer : CloudComputer($networkBandwidth : networkBandwidth)
-        $minimalNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
+        $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
             CloudProcessAssignment(
                 cloudComputer == $cloudComputer,
-                $minimalNetworkBandwidth : minimalNetworkBandwidth),
-            sum($minimalNetworkBandwidth)
+                $requiredNetworkBandwidth : requiredNetworkBandwidth),
+            sum($requiredNetworkBandwidth)
         )
     then
-        insertLogical(new IntConstraintOccurrence("minimalNetworkBandwidthTotal", ConstraintType.NEGATIVE_HARD,
-                $minimalNetworkBandwidthTotal.intValue() - $networkBandwidth,
+        insertLogical(new IntConstraintOccurrence("requiredNetworkBandwidthTotal", ConstraintType.NEGATIVE_HARD,
+                $requiredNetworkBandwidthTotal.intValue() - $networkBandwidth,
                 $cloudComputer));
 end
 

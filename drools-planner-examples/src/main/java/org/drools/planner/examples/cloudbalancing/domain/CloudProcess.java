@@ -17,42 +17,41 @@
 package org.drools.planner.examples.cloudbalancing.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CloudProcess")
 public class CloudProcess extends AbstractPersistable {
 
-    private int minimalCpuPower; // in gigahertz
-    private int minimalMemory; // in gigabyte RAM
-    private int minimalNetworkBandwidth; // in gigabyte per hour
+    private int requiredCpuPower; // in gigahertz
+    private int requiredMemory; // in gigabyte RAM
+    private int requiredNetworkBandwidth; // in gigabyte per hour
 
-    public int getMinimalCpuPower() {
-        return minimalCpuPower;
+    public int getRequiredCpuPower() {
+        return requiredCpuPower;
     }
 
-    public void setMinimalCpuPower(int minimalCpuPower) {
-        this.minimalCpuPower = minimalCpuPower;
+    public void setRequiredCpuPower(int requiredCpuPower) {
+        this.requiredCpuPower = requiredCpuPower;
     }
 
-    public int getMinimalMemory() {
-        return minimalMemory;
+    public int getRequiredMemory() {
+        return requiredMemory;
     }
 
-    public void setMinimalMemory(int minimalMemory) {
-        this.minimalMemory = minimalMemory;
+    public void setRequiredMemory(int requiredMemory) {
+        this.requiredMemory = requiredMemory;
     }
 
-    public int getMinimalNetworkBandwidth() {
-        return minimalNetworkBandwidth;
+    public int getRequiredNetworkBandwidth() {
+        return requiredNetworkBandwidth;
     }
 
-    public void setMinimalNetworkBandwidth(int minimalNetworkBandwidth) {
-        this.minimalNetworkBandwidth = minimalNetworkBandwidth;
+    public void setRequiredNetworkBandwidth(int requiredNetworkBandwidth) {
+        this.requiredNetworkBandwidth = requiredNetworkBandwidth;
     }
 
-    public int getMinimalMultiplicand() {
-        return minimalCpuPower * minimalMemory * minimalNetworkBandwidth;
+    public int getRequiredMultiplicand() {
+        return requiredCpuPower * requiredMemory * requiredNetworkBandwidth;
     }
 
     public String getLabel() {

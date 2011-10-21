@@ -84,9 +84,9 @@ public class CloudBalancingGenerator extends LoggingMain {
             new Price(20, "20 gigabyte", 1000),
     };
 
-    private static final int MAXIMUM_MINIMAL_CPU_POWER = 12; // in gigahertz
-    private static final int MAXIMUM_MINIMAL_MEMORY = 32; // in gigabyte RAM
-    private static final int MAXIMUM_MINIMAL_NETWORK_BANDWIDTH = 12; // in gigabyte per hour
+    private static final int MAXIMUM_REQUIRED_CPU_POWER = 12; // in gigahertz
+    private static final int MAXIMUM_REQUIRED_MEMORY = 32; // in gigabyte RAM
+    private static final int MAXIMUM_REQUIRED_NETWORK_BANDWIDTH = 12; // in gigabyte per hour
 
     private static final File outputDir = new File("data/cloudbalancing/unsolved/");
 
@@ -198,15 +198,15 @@ public class CloudBalancingGenerator extends LoggingMain {
         for (int i = 0; i < cloudProcessListSize; i++) {
             CloudProcess cloudProcess = new CloudProcess();
             cloudProcess.setId((long) i);
-            int minimalCpuPower = generateRandom(MAXIMUM_MINIMAL_CPU_POWER);
-            cloudProcess.setMinimalCpuPower(minimalCpuPower);
-            int minimalMemory = generateRandom(MAXIMUM_MINIMAL_MEMORY);
-            cloudProcess.setMinimalMemory(minimalMemory);
-            int minimalNetworkBandwidth = generateRandom(MAXIMUM_MINIMAL_NETWORK_BANDWIDTH);
-            cloudProcess.setMinimalNetworkBandwidth(minimalNetworkBandwidth);
-            logger.debug("Created CloudProcess with minimalCpuPower ({}), minimalMemory({}),"
-                    + " minimalNetworkBandwidth({}).",
-                    new Object[]{minimalCpuPower, minimalMemory, minimalNetworkBandwidth});
+            int requiredCpuPower = generateRandom(MAXIMUM_REQUIRED_CPU_POWER);
+            cloudProcess.setRequiredCpuPower(requiredCpuPower);
+            int requiredMemory = generateRandom(MAXIMUM_REQUIRED_MEMORY);
+            cloudProcess.setRequiredMemory(requiredMemory);
+            int requiredNetworkBandwidth = generateRandom(MAXIMUM_REQUIRED_NETWORK_BANDWIDTH);
+            cloudProcess.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
+            logger.debug("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
+                    + " requiredNetworkBandwidth({}).",
+                    new Object[]{requiredCpuPower, requiredMemory, requiredNetworkBandwidth});
             cloudProcessList.add(cloudProcess);
         }
         cloudBalance.setCloudProcessList(cloudProcessList);

@@ -26,7 +26,7 @@ public class CloudProcessAssignmentDifficultyComparator implements Comparator<Cl
 
     public int compare(CloudProcessAssignment a, CloudProcessAssignment b) {
         return new CompareToBuilder()
-                .append(a.getCloudProcess().getMinimalMultiplicand(), b.getCloudProcess().getMinimalMultiplicand())
+                .append(a.getCloudProcess().getRequiredMultiplicand(), b.getCloudProcess().getRequiredMultiplicand())
                 .append(a.getCloudProcess().getId(), b.getCloudProcess().getId())
                 .toComparison();
     }

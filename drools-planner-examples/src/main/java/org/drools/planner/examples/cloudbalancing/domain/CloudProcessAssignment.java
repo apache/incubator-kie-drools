@@ -57,16 +57,16 @@ public class CloudProcessAssignment extends AbstractPersistable {
         return cloudProcess.getLabel();
     }
 
-    public int getMinimalCpuPower() {
-        return cloudProcess.getMinimalCpuPower();
+    public int getRequiredCpuPower() {
+        return cloudProcess.getRequiredCpuPower();
     }
 
-    public int getMinimalMemory() {
-        return cloudProcess.getMinimalMemory();
+    public int getRequiredMemory() {
+        return cloudProcess.getRequiredMemory();
     }
 
-    public int getMinimalNetworkBandwidth() {
-        return cloudProcess.getMinimalNetworkBandwidth();
+    public int getRequiredNetworkBandwidth() {
+        return cloudProcess.getRequiredNetworkBandwidth();
     }
 
     public CloudProcessAssignment clone() {

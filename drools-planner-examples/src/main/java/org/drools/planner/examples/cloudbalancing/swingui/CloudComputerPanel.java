@@ -169,12 +169,12 @@ public class CloudComputerPanel extends JPanel {
         networkBandwidthBar.clearProcessValues();
         int colorIndex = 0;
         for (CloudProcessAssignment cloudProcessAssignment : cloudProcessAssignmentList) {
-            usedCpuPower += cloudProcessAssignment.getMinimalCpuPower();
-            cpuPowerBar.addProcessValue(cloudProcessAssignment.getMinimalCpuPower());
-            usedMemory += cloudProcessAssignment.getMinimalMemory();
-            memoryBar.addProcessValue(cloudProcessAssignment.getMinimalMemory());
-            usedNetworkBandwidth += cloudProcessAssignment.getMinimalNetworkBandwidth();
-            networkBandwidthBar.addProcessValue(cloudProcessAssignment.getMinimalNetworkBandwidth());
+            usedCpuPower += cloudProcessAssignment.getRequiredCpuPower();
+            cpuPowerBar.addProcessValue(cloudProcessAssignment.getRequiredCpuPower());
+            usedMemory += cloudProcessAssignment.getRequiredMemory();
+            memoryBar.addProcessValue(cloudProcessAssignment.getRequiredMemory());
+            usedNetworkBandwidth += cloudProcessAssignment.getRequiredNetworkBandwidth();
+            networkBandwidthBar.addProcessValue(cloudProcessAssignment.getRequiredNetworkBandwidth());
             colorIndex = (colorIndex + 1) % CloudBalancingPanel.PROCESS_COLORS.length;
         }
         boolean used = cloudProcessAssignmentList.size() > 0;
@@ -309,13 +309,13 @@ public class CloudComputerPanel extends JPanel {
                 cloudProcessAssignmentLabel.setForeground(CloudBalancingPanel.PROCESS_COLORS[colorIndex]);
                 assignmentsPanel.add(cloudProcessAssignmentLabel);
 
-                JTextField cpuPowerField = new JTextField(cloudProcessAssignment.getMinimalCpuPower() + " GHz");
+                JTextField cpuPowerField = new JTextField(cloudProcessAssignment.getRequiredCpuPower() + " GHz");
                 cpuPowerField.setEditable(false);
                 assignmentsPanel.add(cpuPowerField);
-                JTextField memoryField = new JTextField(cloudProcessAssignment.getMinimalMemory() + " GB");
+                JTextField memoryField = new JTextField(cloudProcessAssignment.getRequiredMemory() + " GB");
                 memoryField.setEditable(false);
                 assignmentsPanel.add(memoryField);
-                JTextField networkBandwidthField = new JTextField(cloudProcessAssignment.getMinimalNetworkBandwidth() + " GB");
+                JTextField networkBandwidthField = new JTextField(cloudProcessAssignment.getRequiredNetworkBandwidth() + " GB");
                 networkBandwidthField.setEditable(false);
                 assignmentsPanel.add(networkBandwidthField);
                 assignmentsPanel.add(new JLabel(""));

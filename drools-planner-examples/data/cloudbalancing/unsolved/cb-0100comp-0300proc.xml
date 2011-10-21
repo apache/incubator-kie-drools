@@ -705,1803 +705,1803 @@
   <cloudProcessList id="103">
     <CloudProcess id="104">
       <id>0</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="105">
       <id>1</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="106">
       <id>2</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="107">
       <id>3</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="108">
       <id>4</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="109">
       <id>5</id>
-      <minimalCpuPower>8</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>8</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="110">
       <id>6</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="111">
       <id>7</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="112">
       <id>8</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="113">
       <id>9</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="114">
       <id>10</id>
-      <minimalCpuPower>9</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>9</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="115">
       <id>11</id>
-      <minimalCpuPower>10</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>10</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="116">
       <id>12</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="117">
       <id>13</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="118">
       <id>14</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="119">
       <id>15</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="120">
       <id>16</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>23</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>23</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="121">
       <id>17</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="122">
       <id>18</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="123">
       <id>19</id>
-      <minimalCpuPower>10</minimalCpuPower>
-      <minimalMemory>14</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>10</requiredCpuPower>
+      <requiredMemory>14</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="124">
       <id>20</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="125">
       <id>21</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="126">
       <id>22</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="127">
       <id>23</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="128">
       <id>24</id>
-      <minimalCpuPower>12</minimalCpuPower>
-      <minimalMemory>18</minimalMemory>
-      <minimalNetworkBandwidth>9</minimalNetworkBandwidth>
+      <requiredCpuPower>12</requiredCpuPower>
+      <requiredMemory>18</requiredMemory>
+      <requiredNetworkBandwidth>9</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="129">
       <id>25</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>22</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>22</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="130">
       <id>26</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>11</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>11</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="131">
       <id>27</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="132">
       <id>28</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>13</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>13</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="133">
       <id>29</id>
-      <minimalCpuPower>5</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>5</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="134">
       <id>30</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="135">
       <id>31</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>5</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>5</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="136">
       <id>32</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="137">
       <id>33</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>22</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>22</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="138">
       <id>34</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>24</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>24</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="139">
       <id>35</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="140">
       <id>36</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="141">
       <id>37</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="142">
       <id>38</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="143">
       <id>39</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="144">
       <id>40</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="145">
       <id>41</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>12</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>12</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="146">
       <id>42</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="147">
       <id>43</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="148">
       <id>44</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="149">
       <id>45</id>
-      <minimalCpuPower>5</minimalCpuPower>
-      <minimalMemory>10</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>5</requiredCpuPower>
+      <requiredMemory>10</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="150">
       <id>46</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="151">
       <id>47</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="152">
       <id>48</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>25</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>25</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="153">
       <id>49</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="154">
       <id>50</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>30</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>30</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="155">
       <id>51</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="156">
       <id>52</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>28</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>28</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="157">
       <id>53</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="158">
       <id>54</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>5</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>5</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="159">
       <id>55</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>6</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>6</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="160">
       <id>56</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>10</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>10</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="161">
       <id>57</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="162">
       <id>58</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="163">
       <id>59</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>11</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>11</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="164">
       <id>60</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>16</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>16</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="165">
       <id>61</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="166">
       <id>62</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>11</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>11</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="167">
       <id>63</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>18</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>18</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="168">
       <id>64</id>
-      <minimalCpuPower>11</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>11</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="169">
       <id>65</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>19</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>19</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="170">
       <id>66</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="171">
       <id>67</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="172">
       <id>68</id>
-      <minimalCpuPower>10</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>10</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="173">
       <id>69</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="174">
       <id>70</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="175">
       <id>71</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="176">
       <id>72</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="177">
       <id>73</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="178">
       <id>74</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>32</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>32</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="179">
       <id>75</id>
-      <minimalCpuPower>8</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>8</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="180">
       <id>76</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="181">
       <id>77</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>8</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>8</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="182">
       <id>78</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="183">
       <id>79</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="184">
       <id>80</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="185">
       <id>81</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>10</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>10</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="186">
       <id>82</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>24</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>24</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="187">
       <id>83</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>18</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>18</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="188">
       <id>84</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>16</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>16</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="189">
       <id>85</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>19</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>19</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="190">
       <id>86</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="191">
       <id>87</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="192">
       <id>88</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="193">
       <id>89</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>14</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>14</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="194">
       <id>90</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="195">
       <id>91</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>6</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>6</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="196">
       <id>92</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="197">
       <id>93</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="198">
       <id>94</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="199">
       <id>95</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="200">
       <id>96</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>12</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>12</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="201">
       <id>97</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="202">
       <id>98</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>5</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>5</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="203">
       <id>99</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="204">
       <id>100</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="205">
       <id>101</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="206">
       <id>102</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="207">
       <id>103</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="208">
       <id>104</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="209">
       <id>105</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="210">
       <id>106</id>
-      <minimalCpuPower>10</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>10</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="211">
       <id>107</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="212">
       <id>108</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>25</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>25</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="213">
       <id>109</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="214">
       <id>110</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="215">
       <id>111</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="216">
       <id>112</id>
-      <minimalCpuPower>9</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>9</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="217">
       <id>113</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="218">
       <id>114</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>7</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>7</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="219">
       <id>115</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="220">
       <id>116</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>7</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>7</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="221">
       <id>117</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="222">
       <id>118</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="223">
       <id>119</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>8</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>8</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="224">
       <id>120</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="225">
       <id>121</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="226">
       <id>122</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="227">
       <id>123</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="228">
       <id>124</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="229">
       <id>125</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>8</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>8</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="230">
       <id>126</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>12</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>12</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="231">
       <id>127</id>
-      <minimalCpuPower>8</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>8</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="232">
       <id>128</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="233">
       <id>129</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="234">
       <id>130</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="235">
       <id>131</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="236">
       <id>132</id>
-      <minimalCpuPower>9</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>9</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="237">
       <id>133</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="238">
       <id>134</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="239">
       <id>135</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>9</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>9</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="240">
       <id>136</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="241">
       <id>137</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="242">
       <id>138</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>8</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>8</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="243">
       <id>139</id>
-      <minimalCpuPower>12</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>12</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="244">
       <id>140</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="245">
       <id>141</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="246">
       <id>142</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>10</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>10</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="247">
       <id>143</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="248">
       <id>144</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="249">
       <id>145</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="250">
       <id>146</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>27</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>27</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="251">
       <id>147</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>9</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>9</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="252">
       <id>148</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>9</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>9</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="253">
       <id>149</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="254">
       <id>150</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="255">
       <id>151</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="256">
       <id>152</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>10</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>10</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="257">
       <id>153</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="258">
       <id>154</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="259">
       <id>155</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="260">
       <id>156</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="261">
       <id>157</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>24</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>24</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="262">
       <id>158</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="263">
       <id>159</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="264">
       <id>160</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>13</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>13</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="265">
       <id>161</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="266">
       <id>162</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>12</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>12</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="267">
       <id>163</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="268">
       <id>164</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>21</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>21</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="269">
       <id>165</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="270">
       <id>166</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>10</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>10</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="271">
       <id>167</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="272">
       <id>168</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>7</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>7</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="273">
       <id>169</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="274">
       <id>170</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>31</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>31</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="275">
       <id>171</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="276">
       <id>172</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="277">
       <id>173</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="278">
       <id>174</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="279">
       <id>175</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>9</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>9</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="280">
       <id>176</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>18</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>18</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="281">
       <id>177</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>8</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>8</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="282">
       <id>178</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="283">
       <id>179</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="284">
       <id>180</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="285">
       <id>181</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="286">
       <id>182</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="287">
       <id>183</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="288">
       <id>184</id>
-      <minimalCpuPower>9</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>9</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="289">
       <id>185</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>10</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>10</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="290">
       <id>186</id>
-      <minimalCpuPower>8</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>8</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="291">
       <id>187</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="292">
       <id>188</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="293">
       <id>189</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>10</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>10</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="294">
       <id>190</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="295">
       <id>191</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="296">
       <id>192</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="297">
       <id>193</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="298">
       <id>194</id>
-      <minimalCpuPower>5</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>5</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="299">
       <id>195</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="300">
       <id>196</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="301">
       <id>197</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="302">
       <id>198</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="303">
       <id>199</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="304">
       <id>200</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="305">
       <id>201</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="306">
       <id>202</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>15</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>15</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="307">
       <id>203</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>21</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>21</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="308">
       <id>204</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>21</minimalMemory>
-      <minimalNetworkBandwidth>10</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>21</requiredMemory>
+      <requiredNetworkBandwidth>10</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="309">
       <id>205</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="310">
       <id>206</id>
-      <minimalCpuPower>9</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>10</minimalNetworkBandwidth>
+      <requiredCpuPower>9</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>10</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="311">
       <id>207</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="312">
       <id>208</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="313">
       <id>209</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="314">
       <id>210</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="315">
       <id>211</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>6</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>6</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="316">
       <id>212</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="317">
       <id>213</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>7</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>7</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="318">
       <id>214</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="319">
       <id>215</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="320">
       <id>216</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>30</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>30</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="321">
       <id>217</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="322">
       <id>218</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>25</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>25</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="323">
       <id>219</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>12</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>12</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="324">
       <id>220</id>
-      <minimalCpuPower>8</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>8</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="325">
       <id>221</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="326">
       <id>222</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="327">
       <id>223</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>8</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>8</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="328">
       <id>224</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="329">
       <id>225</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>31</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>31</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="330">
       <id>226</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="331">
       <id>227</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="332">
       <id>228</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="333">
       <id>229</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="334">
       <id>230</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>6</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>6</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="335">
       <id>231</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="336">
       <id>232</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="337">
       <id>233</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>21</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>21</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="338">
       <id>234</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="339">
       <id>235</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="340">
       <id>236</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>7</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>7</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="341">
       <id>237</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>8</minimalMemory>
-      <minimalNetworkBandwidth>7</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>8</requiredMemory>
+      <requiredNetworkBandwidth>7</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="342">
       <id>238</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>9</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>9</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="343">
       <id>239</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="344">
       <id>240</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>13</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>13</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="345">
       <id>241</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="346">
       <id>242</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="347">
       <id>243</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>7</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>7</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="348">
       <id>244</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>16</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>16</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="349">
       <id>245</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="350">
       <id>246</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="351">
       <id>247</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="352">
       <id>248</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="353">
       <id>249</id>
-      <minimalCpuPower>9</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>9</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="354">
       <id>250</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="355">
       <id>251</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="356">
       <id>252</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="357">
       <id>253</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="358">
       <id>254</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>9</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>9</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="359">
       <id>255</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="360">
       <id>256</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="361">
       <id>257</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>19</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>19</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="362">
       <id>258</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="363">
       <id>259</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="364">
       <id>260</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="365">
       <id>261</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="366">
       <id>262</id>
-      <minimalCpuPower>4</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>4</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="367">
       <id>263</id>
-      <minimalCpuPower>6</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>6</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="368">
       <id>264</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>20</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>20</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="369">
       <id>265</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="370">
       <id>266</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="371">
       <id>267</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="372">
       <id>268</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>5</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>5</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="373">
       <id>269</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>21</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>21</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="374">
       <id>270</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="375">
       <id>271</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="376">
       <id>272</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="377">
       <id>273</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="378">
       <id>274</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>12</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>12</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="379">
       <id>275</id>
-      <minimalCpuPower>7</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>7</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="380">
       <id>276</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="381">
       <id>277</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="382">
       <id>278</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="383">
       <id>279</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="384">
       <id>280</id>
-      <minimalCpuPower>5</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>5</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="385">
       <id>281</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>12</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>12</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="386">
       <id>282</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="387">
       <id>283</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>8</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>8</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="388">
       <id>284</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>10</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>10</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="389">
       <id>285</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="390">
       <id>286</id>
-      <minimalCpuPower>3</minimalCpuPower>
-      <minimalMemory>5</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>3</requiredCpuPower>
+      <requiredMemory>5</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="391">
       <id>287</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="392">
       <id>288</id>
-      <minimalCpuPower>2</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>6</minimalNetworkBandwidth>
+      <requiredCpuPower>2</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>6</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="393">
       <id>289</id>
-      <minimalCpuPower>5</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>5</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="394">
       <id>290</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>3</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>3</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="395">
       <id>291</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="396">
       <id>292</id>
-      <minimalCpuPower>5</minimalCpuPower>
-      <minimalMemory>4</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>5</requiredCpuPower>
+      <requiredMemory>4</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="397">
       <id>293</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="398">
       <id>294</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="399">
       <id>295</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>5</minimalMemory>
-      <minimalNetworkBandwidth>4</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>5</requiredMemory>
+      <requiredNetworkBandwidth>4</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="400">
       <id>296</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>2</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>2</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="401">
       <id>297</id>
-      <minimalCpuPower>10</minimalCpuPower>
-      <minimalMemory>3</minimalMemory>
-      <minimalNetworkBandwidth>2</minimalNetworkBandwidth>
+      <requiredCpuPower>10</requiredCpuPower>
+      <requiredMemory>3</requiredMemory>
+      <requiredNetworkBandwidth>2</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="402">
       <id>298</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>1</minimalMemory>
-      <minimalNetworkBandwidth>12</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>1</requiredMemory>
+      <requiredNetworkBandwidth>12</requiredNetworkBandwidth>
     </CloudProcess>
     <CloudProcess id="403">
       <id>299</id>
-      <minimalCpuPower>1</minimalCpuPower>
-      <minimalMemory>31</minimalMemory>
-      <minimalNetworkBandwidth>1</minimalNetworkBandwidth>
+      <requiredCpuPower>1</requiredCpuPower>
+      <requiredMemory>31</requiredMemory>
+      <requiredNetworkBandwidth>1</requiredNetworkBandwidth>
     </CloudProcess>
   </cloudProcessList>
   <cloudProcessAssignmentList id="404">
