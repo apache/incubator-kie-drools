@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <environmentMode>DEBUG</environmentMode>
+  <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+  <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+
+  <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+  <scoreDefinition>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+  </scoreDefinition>
+  
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+    <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+  </constructionHeuristic>
+  <localSearch>
+    <termination>
+      <maximumSecondsSpend>120</maximumSecondsSpend>
+    </termination>
+    <selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+      </selector>
+    </selector>
+    <acceptor>
+      <solutionTabuSize>1000</solutionTabuSize>
+      <propertyTabuSize>7</propertyTabuSize>
+    </acceptor>
+    <forager>
+      <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+    </forager>
+  </localSearch>
+</solver>

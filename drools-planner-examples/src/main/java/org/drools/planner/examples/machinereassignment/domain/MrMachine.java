@@ -40,4 +40,9 @@ public class MrMachine extends AbstractPersistable {
     public void setLocation(MrLocation location) {
         this.location = location;
     }
+
+    public String getLabel() {
+        return "Machine " + getId();
+    }
+
 }

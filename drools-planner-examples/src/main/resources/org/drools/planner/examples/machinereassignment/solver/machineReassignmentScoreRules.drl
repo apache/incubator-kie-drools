@@ -1,0 +1,130 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.planner.examples.cloudbalancing.solver;
+    dialect "java"
+
+import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.ConstraintType;
+
+import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
+import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
+import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
+import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
+import org.drools.planner.examples.machinereassignment.domain.MrLocation;
+import org.drools.planner.examples.machinereassignment.domain.MrMachine;
+import org.drools.planner.examples.machinereassignment.domain.MrMachineMoveCost;
+import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
+import org.drools.planner.examples.machinereassignment.domain.MrProcess;
+import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.drools.planner.examples.machinereassignment.domain.MrProcessRequirement;
+import org.drools.planner.examples.machinereassignment.domain.MrResource;
+import org.drools.planner.examples.machinereassignment.domain.MrService;
+import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
+
+global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+//rule "requiredCpuPowerTotal"
+//    when
+//        $cloudComputer : CloudComputer($cpuPower : cpuPower)
+//        $requiredCpuPowerTotal : Number(intValue > $cpuPower) from accumulate(
+//            CloudProcess(
+//                cloudComputer == $cloudComputer,
+//                $requiredCpuPower : requiredCpuPower),
+//            sum($requiredCpuPower)
+//        )
+//    then
+//        insertLogical(new IntConstraintOccurrence("requiredCpuPowerTotal", ConstraintType.NEGATIVE_HARD,
+//                $requiredCpuPowerTotal.intValue() - $cpuPower,
+//                $cloudComputer));
+//end
+//
+//rule "requiredMemoryTotal"
+//    when
+//        $cloudComputer : CloudComputer($memory : memory)
+//        $requiredMemoryTotal : Number(intValue > $memory) from accumulate(
+//            CloudProcess(
+//                cloudComputer == $cloudComputer,
+//                $requiredMemory : requiredMemory),
+//            sum($requiredMemory)
+//        )
+//    then
+//        insertLogical(new IntConstraintOccurrence("requiredMemoryTotal", ConstraintType.NEGATIVE_HARD,
+//                $requiredMemoryTotal.intValue() - $memory,
+//                $cloudComputer));
+//end
+//
+//rule "requiredNetworkBandwidthTotal"
+//    when
+//        $cloudComputer : CloudComputer($networkBandwidth : networkBandwidth)
+//        $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
+//            CloudProcess(
+//                cloudComputer == $cloudComputer,
+//                $requiredNetworkBandwidth : requiredNetworkBandwidth),
+//            sum($requiredNetworkBandwidth)
+//        )
+//    then
+//        insertLogical(new IntConstraintOccurrence("requiredNetworkBandwidthTotal", ConstraintType.NEGATIVE_HARD,
+//                $requiredNetworkBandwidthTotal.intValue() - $networkBandwidth,
+//                $cloudComputer));
+//end
+//
+//// ############################################################################
+//// Soft constraints
+//// ############################################################################
+//
+//rule "cloudComputerCost"
+//    when
+//        $cloudComputer : CloudComputer($cost : cost)
+//        exists CloudProcess(cloudComputer == $cloudComputer)
+//    then
+//        insertLogical(new IntConstraintOccurrence("cloudComputerCost", ConstraintType.NEGATIVE_SOFT,
+//                $cost,
+//                $cloudComputer));
+//end
+
+// ############################################################################
+// Calculate score
+// ############################################################################
+
+// Accumulate hard constraints
+rule "hardConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $hardTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+end
+
+// Accumulate soft constraints
+rule "softConstraintsBroken"
+        salience -1 // Do the other rules first (optional, for performance)
+    when
+        $softTotal : Number() from accumulate(
+            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        )
+    then
+        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+end

@@ -107,4 +107,8 @@ public class MrProcessAssignment extends AbstractPersistable {
         return process + " @ " + machine;
     }
 
+    public String getLabel() {
+        return "Process " + getId();
+    }
+    
 }
