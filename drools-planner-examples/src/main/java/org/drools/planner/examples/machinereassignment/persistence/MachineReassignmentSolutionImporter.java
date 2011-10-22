@@ -108,9 +108,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
             Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
+            long machineId = 0L;
             int resourceListSize = resourceList.size();
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
-            long machineId = 0L;
+            long machineCapacityId = 0L;
             for (int i = 0; i < machineListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line);
@@ -132,11 +133,13 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 machine.setLocation(location);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrMachineCapacity machineCapacity = new MrMachineCapacity();
+                    machineCapacity.setId(machineCapacityId);
                     machineCapacity.setMachine(machine);
                     machineCapacity.setResource(resourceList.get(j));
                     machineCapacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
                     machineCapacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + resourceListSize + j]));
                     machineCapacityList.add(machineCapacity);
+                    machineCapacityId++;
                 }
                 machineList.add(machine);
                 machineId++;
@@ -150,7 +153,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
         private void readServiceList() throws IOException {
             int serviceListSize = readIntegerValue();
             serviceList = new ArrayList<MrService>(serviceListSize);
-            List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceListSize * 5);
             long serviceId = 0L;
             // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < serviceListSize; i++) {
@@ -159,6 +161,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 serviceList.add(service);
                 serviceId++;
             }
+            List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceListSize * 5);
+            long serviceDependencyId = 0L;
             for (int i = 0; i < serviceListSize; i++) {
                 MrService service = serviceList.get(i);
                 String line = readStringValue();
@@ -167,6 +171,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 int serviceDependencyListSize = Integer.parseInt(lineTokens[1]);
                 for (int j = 0; j < serviceDependencyListSize; j++) {
                     MrServiceDependency serviceDependency = new MrServiceDependency();
+                    serviceDependency.setId(serviceDependencyId);
                     serviceDependency.setFromService(service);
                     int toServiceIndex = Integer.parseInt(lineTokens[0]);
                     if (toServiceIndex >= serviceList.size()) {
@@ -176,6 +181,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     MrService toService = serviceList.get(toServiceIndex);
                     serviceDependency.setToService(toService);
                     serviceDependencyList.add(serviceDependency);
+                    serviceDependencyId++;
                 }
             }
             machineReassignment.setServiceList(serviceList);
@@ -188,6 +194,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             long processId = 0L;
             int resourceListSize = resourceList.size();
             List<MrProcessRequirement> processRequirementList = new ArrayList<MrProcessRequirement>(processListSize * resourceListSize);
+            long processRequirementId = 0L;
             for (int i = 0; i < processListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line);
@@ -202,10 +209,12 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 process.setService(service);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrProcessRequirement processRequirement = new MrProcessRequirement();
+                    processRequirement.setId(processRequirementId);
                     processRequirement.setProcess(process);
                     processRequirement.setResource(resourceList.get(j));
                     processRequirement.setUsage(Integer.parseInt(lineTokens[1 + j]));
                     processRequirementList.add(processRequirement);
+                    processRequirementId++;
                 }
                 processList.add(process);
                 processId++;
