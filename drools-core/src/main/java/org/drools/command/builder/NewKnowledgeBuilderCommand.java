@@ -16,6 +16,7 @@
 
 package org.drools.command.builder;
 
+import org.drools.KnowledgeBase;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -27,17 +28,31 @@ public class NewKnowledgeBuilderCommand
     GenericCommand<KnowledgeBuilder> {
 
     private KnowledgeBuilderConfiguration kbuilderConf;
+    
+    private KnowledgeBase attachedKnowledgeBase;
 
     public NewKnowledgeBuilderCommand(KnowledgeBuilderConfiguration kbuilderConf) {
         this.kbuilderConf = kbuilderConf;
     }
+    
+
+    public KnowledgeBase getAttachedKnowledgeBase() {
+        return attachedKnowledgeBase;
+    }
+
+    public void setAttachedKnowledgeBase(KnowledgeBase attachedKnowledgeBase) {
+        this.attachedKnowledgeBase = attachedKnowledgeBase;
+    }
+
+
 
     public KnowledgeBuilder execute(Context context) {
         KnowledgeBuilder kbuilder = null;
         if ( this.kbuilderConf == null ) {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase );
         } else {
-            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.kbuilderConf );
+            kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( this.attachedKnowledgeBase,
+                                                                    this.kbuilderConf );
         }
         
         return kbuilder;
