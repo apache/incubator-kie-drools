@@ -114,7 +114,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             long machineCapacityId = 0L;
             for (int i = 0; i < machineListSize; i++) {
                 String line = readStringValue();
-                String[] lineTokens = splitBySpace(line);
+                String[] lineTokens = splitBySpace(line, 2 + (resourceListSize * 2) + machineListSize);
                 MrMachine machine = new MrMachine();
                 machine.setId(machineId);
                 long neighborhoodId = Long.parseLong(lineTokens[0]);
@@ -141,6 +141,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacityList.add(machineCapacity);
                     machineCapacityId++;
                 }
+                // TODO moving costs
+
                 machineList.add(machine);
                 machineId++;
             }
@@ -173,7 +175,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     MrServiceDependency serviceDependency = new MrServiceDependency();
                     serviceDependency.setId(serviceDependencyId);
                     serviceDependency.setFromService(service);
-                    int toServiceIndex = Integer.parseInt(lineTokens[0]);
+                    int toServiceIndex = Integer.parseInt(lineTokens[2 + j]);
                     if (toServiceIndex >= serviceList.size()) {
                         throw new IllegalArgumentException("Service with id (" + serviceId
                                 + ") has a non existing toServiceIndex (" + toServiceIndex + ").");
@@ -182,6 +184,11 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     serviceDependency.setToService(toService);
                     serviceDependencyList.add(serviceDependency);
                     serviceDependencyId++;
+                }
+                int numberOfTokens = 2 + serviceDependencyListSize;
+                if (lineTokens.length != numberOfTokens) {
+                    throw new IllegalArgumentException("Read line (" + line + ") has " + lineTokens.length
+                            + " tokens but is expected to contain " + numberOfTokens + " tokens separated by space.");
                 }
             }
             machineReassignment.setServiceList(serviceList);
@@ -196,7 +203,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             long processRequirementId = 0L;
             for (int i = 0; i < processListSize; i++) {
                 String line = readStringValue();
-                String[] lineTokens = splitBySpace(line);
+                String[] lineTokens = splitBySpace(line, 2 + resourceListSize);
                 MrProcess process = new MrProcess();
                 process.setId(processId);
                 int serviceIndex = Integer.parseInt(lineTokens[0]);
@@ -215,6 +222,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     processRequirementList.add(processRequirement);
                     processRequirementId++;
                 }
+                // TODO move cost
+                
                 processList.add(process);
                 processId++;
             }
@@ -228,7 +237,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             long balancePenaltyId = 0L;
             for (int i = 0; i < balancePenaltyListSize; i++) {
                 String line = readStringValue();
-                String[] lineTokens = splitBySpace(line);
+                String[] lineTokens = splitBySpace(line, 3);
                 MrBalancePenalty balancePenalty = new MrBalancePenalty();
                 balancePenalty.setId(balancePenaltyId);
                 int originResourceIndex = Integer.parseInt(lineTokens[0]);
