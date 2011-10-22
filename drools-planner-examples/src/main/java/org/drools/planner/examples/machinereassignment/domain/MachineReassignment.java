@@ -45,7 +45,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     private List<MrProcessRequirement> processRequirementList;
     private List<MrBalancePenalty> balancePenaltyList;
 
-    private List<BedDesignation> bedDesignationList;
+    private List<MrProcessAssignment> processAssignmentList;
 
     private HardAndSoftScore score;
 
@@ -146,12 +146,12 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     }
 
     @PlanningEntityCollectionProperty
-    public List<BedDesignation> getBedDesignationList() {
-        return bedDesignationList;
+    public List<MrProcessAssignment> getProcessAssignmentList() {
+        return processAssignmentList;
     }
 
-    public void setBedDesignationList(List<BedDesignation> bedDesignationList) {
-        this.bedDesignationList = bedDesignationList;
+    public void setProcessAssignmentList(List<MrProcessAssignment> processAssignmentList) {
+        this.processAssignmentList = processAssignmentList;
     }
 
     public HardAndSoftScore getScore() {
@@ -181,7 +181,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     }
 
     /**
-     * Clone will only deep copy the {@link #bedDesignationList}.
+     * Clone will only deep copy the {@link #processAssignmentList}.
      */
     public MachineReassignment cloneSolution() {
         MachineReassignment clone = new MachineReassignment();
@@ -198,12 +198,13 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         clone.processList = processList;
         clone.processRequirementList = processRequirementList;
         clone.balancePenaltyList = balancePenaltyList;
-        List<BedDesignation> clonedBedDesignationList = new ArrayList<BedDesignation>(bedDesignationList.size());
-        for (BedDesignation bedDesignation : bedDesignationList) {
-            BedDesignation clonedBedDesignation = bedDesignation.clone();
-            clonedBedDesignationList.add(clonedBedDesignation);
+        List<MrProcessAssignment> clonedProcessAssignmentList
+                = new ArrayList<MrProcessAssignment>(processAssignmentList.size());
+        for (MrProcessAssignment processAssignment : processAssignmentList) {
+            MrProcessAssignment clonedProcessAssignment = processAssignment.clone();
+            clonedProcessAssignmentList.add(clonedProcessAssignment);
         }
-        clone.bedDesignationList = clonedBedDesignationList;
+        clone.processAssignmentList = clonedProcessAssignmentList;
         clone.score = score;
         return clone;
     }
@@ -216,14 +217,15 @@ public class MachineReassignment extends AbstractPersistable implements Solution
             return false;
         } else {
             MachineReassignment other = (MachineReassignment) o;
-            if (bedDesignationList.size() != other.bedDesignationList.size()) {
+            if (processAssignmentList.size() != other.processAssignmentList.size()) {
                 return false;
             }
-            for (Iterator<BedDesignation> it = bedDesignationList.iterator(), otherIt = other.bedDesignationList.iterator(); it.hasNext();) {
-                BedDesignation bedDesignation = it.next();
-                BedDesignation otherBedDesignation = otherIt.next();
+            for (Iterator<MrProcessAssignment> it = processAssignmentList.iterator(),
+                    otherIt = other.processAssignmentList.iterator(); it.hasNext();) {
+                MrProcessAssignment processAssignment = it.next();
+                MrProcessAssignment otherProcessAssignment = otherIt.next();
                 // Notice: we don't use equals()
-                if (!bedDesignation.solutionEquals(otherBedDesignation)) {
+                if (!processAssignment.solutionEquals(otherProcessAssignment)) {
                     return false;
                 }
             }
@@ -233,9 +235,9 @@ public class MachineReassignment extends AbstractPersistable implements Solution
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (BedDesignation bedDesignation : bedDesignationList) {
+        for (MrProcessAssignment processAssignment : processAssignmentList) {
             // Notice: we don't use hashCode()
-            hashCodeBuilder.append(bedDesignation.solutionHashCode());
+            hashCodeBuilder.append(processAssignment.solutionHashCode());
         }
         return hashCodeBuilder.toHashCode();
     }

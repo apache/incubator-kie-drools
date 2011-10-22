@@ -49,6 +49,7 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
             SAXBuilder builder = new SAXBuilder(false);
             Document document = builder.build(in);
             XmlInputBuilder txtInputBuilder = createXmlInputBuilder();
+            txtInputBuilder.setInputFile(inputFile);
             txtInputBuilder.setDocument(document);
             try {
                 return txtInputBuilder.readSolution();
@@ -68,7 +69,12 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
 
     public abstract class XmlInputBuilder {
 
+        protected File inputFile;
         protected Document document;
+
+        public void setInputFile(File inputFile) {
+            this.inputFile = inputFile;
+        }
 
         public void setDocument(Document document) {
             this.document = document;

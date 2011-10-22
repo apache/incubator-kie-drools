@@ -43,6 +43,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         try {
             bufferedReader = new BufferedReader(new FileReader(inputFile));
             TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
+            txtInputBuilder.setInputFile(inputFile);
             txtInputBuilder.setBufferedReader(bufferedReader);
             try {
                 return txtInputBuilder.readSolution();
@@ -60,7 +61,12 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
 
     public abstract class TxtInputBuilder {
 
+        protected File inputFile;
         protected BufferedReader bufferedReader;
+
+        public void setInputFile(File inputFile) {
+            this.inputFile = inputFile;
+        }
 
         public void setBufferedReader(BufferedReader bufferedReader) {
             this.bufferedReader = bufferedReader;

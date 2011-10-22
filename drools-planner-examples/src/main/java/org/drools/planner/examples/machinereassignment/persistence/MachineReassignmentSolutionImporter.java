@@ -16,7 +16,9 @@
 
 package org.drools.planner.examples.machinereassignment.persistence;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
@@ -35,6 +38,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrMachineMoveCost;
 import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;
+import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
@@ -66,6 +70,9 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
         private int resourceListSize;
         private List<MrResource> resourceList;
         private List<MrService> serviceList;
+        private List<MrMachine> machineList;
+        private int processListSize;
+        private List<MrProcess> processList;
 
         public Solution readSolution() throws IOException {
             machineReassignment = new MachineReassignment();
@@ -76,7 +83,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             readProcessList();
             readBalancePenaltyList();
             readGlobalPenaltyInfo();
-//            createBedDesignationList();
+            readProcessAssignmentList();
             logger.info("MachineReassignment with {} resources, {} neighborhoods, {} locations, {} machines," +
                     " {} services, {} processes and {} balancePenalties.",
                     new Object[]{machineReassignment.getResourceList().size(),
@@ -117,7 +124,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             Map<Long, MrNeighborhood> idToNeighborhoodMap = new HashMap<Long, MrNeighborhood>(machineListSize);
             List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
             Map<Long, MrLocation> idToLocationMap = new HashMap<Long, MrLocation>(machineListSize);
-            List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
+            machineList = new ArrayList<MrMachine>(machineListSize);
             long machineId = 0L;
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
             long machineCapacityId = 0L;
@@ -224,8 +231,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
         }
 
         private void readProcessList() throws IOException {
-            int processListSize = readIntegerValue();
-            List<MrProcess> processList = new ArrayList<MrProcess>(processListSize);
+            processListSize = readIntegerValue();
+            processList = new ArrayList<MrProcess>(processListSize);
             long processId = 0L;
             List<MrProcessRequirement> processRequirementList = new ArrayList<MrProcessRequirement>(processListSize * resourceListSize);
             long processRequirementId = 0L;
@@ -299,20 +306,55 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             machineReassignment.setGlobalPenaltyInfo(globalPenaltyInfo);
         }
 
-//        private void createBedDesignationList() {
-//            List<AdmissionPart> admissionPartList = machineReassignment.getAdmissionPartList();
-//            List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(admissionPartList.size());
-//            long id = 0L;
-//            for (AdmissionPart admissionPart : admissionPartList) {
-//                BedDesignation bedDesignation = new BedDesignation();
-//                bedDesignation.setId(id);
-//                id++;
-//                bedDesignation.setAdmissionPart(admissionPart);
-//                // Notice that we leave the PlanningVariable properties on null
-//                bedDesignationList.add(bedDesignation);
-//            }
-//            machineReassignment.setBedDesignationList(bedDesignationList);
-//        }
+        private void readProcessAssignmentList() {
+            String line = readOriginalProcessAssignmentLine();
+            String[] lineTokens = splitBySpace(line, processListSize);
+            List<MrProcessAssignment> processAssignmentList = new ArrayList<MrProcessAssignment>(processListSize);
+            long processAssignmentId = 0L;
+            for (int i = 0; i < processListSize; i++) {
+                MrProcessAssignment processAssignment = new MrProcessAssignment();
+                processAssignment.setId(processAssignmentId);
+                processAssignment.setProcess(processList.get(i));
+                int machineIndex = Integer.parseInt(lineTokens[i]);
+                if (machineIndex >= machineList.size()) {
+                    throw new IllegalArgumentException("ProcessAssignment with id (" + processAssignmentId
+                            + ") has a non existing machineIndex (" + machineIndex + ").");
+                }
+                processAssignment.setOriginalMachine(machineList.get(machineIndex));
+                // Notice that we leave the PlanningVariable properties on null
+                processAssignmentList.add(processAssignment);
+                processAssignmentId++;
+            }
+            machineReassignment.setProcessAssignmentList(processAssignmentList);
+        }
+
+        private String readOriginalProcessAssignmentLine() {
+            String inputFileName = inputFile.getName();
+            String inputFilePrefix = "model_";
+            if (!inputFileName.startsWith(inputFilePrefix)) {
+                throw new IllegalArgumentException("The inputFile (" + inputFile
+                        + ") is expected to start with \"" + inputFilePrefix + "\".");
+            }
+            File assignmentInputFile = new File(inputFile.getParent(),
+                    inputFileName.replaceFirst(inputFilePrefix, "assignment_"));
+            BufferedReader assignmentBufferedReader = null;
+            try {
+                assignmentBufferedReader = new BufferedReader(new FileReader(assignmentInputFile));
+                try {
+                    return assignmentBufferedReader.readLine();
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("Exception in assignmentInputFile ("
+                            + assignmentInputFile + ")", e);
+                } catch (IllegalStateException e) {
+                    throw new IllegalStateException("Exception in assignmentInputFile ("
+                            + assignmentInputFile + ")", e);
+                }
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Could not read the file (" + assignmentInputFile.getName() + ").", e);
+            } finally {
+                IOUtils.closeQuietly(assignmentBufferedReader);
+            }
+        }
 
     }
 
