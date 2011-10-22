@@ -23,22 +23,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.commons.jci.readers.MemoryResourceReader;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
 import org.drools.planner.examples.machinereassignment.domain.MrBalancePenalty;
-import org.drools.planner.examples.machinereassignment.domain.MrCapacity;
+import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.drools.planner.examples.machinereassignment.domain.MrLocation;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;
-import org.drools.planner.examples.machinereassignment.domain.MrRequirement;
+import org.drools.planner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
 import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
-import org.drools.planner.examples.pas.domain.Specialism;
 
 public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImporter {
 
@@ -111,7 +109,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
             int resourceListSize = resourceList.size();
-            List<MrCapacity> capacityList = new ArrayList<MrCapacity>(machineListSize * resourceListSize);
+            List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
             long machineId = 0L;
             for (int i = 0; i < machineListSize; i++) {
                 String line = readStringValue();
@@ -133,12 +131,12 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 }
                 machine.setLocation(location);
                 for (int j = 0; j < resourceListSize; j++) {
-                    MrCapacity capacity = new MrCapacity();
-                    capacity.setMachine(machine);
-                    capacity.setResource(resourceList.get(j));
-                    capacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
-                    capacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + resourceListSize + j]));
-                    capacityList.add(capacity);
+                    MrMachineCapacity machineCapacity = new MrMachineCapacity();
+                    machineCapacity.setMachine(machine);
+                    machineCapacity.setResource(resourceList.get(j));
+                    machineCapacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
+                    machineCapacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + resourceListSize + j]));
+                    machineCapacityList.add(machineCapacity);
                 }
                 machineList.add(machine);
                 machineId++;
@@ -146,7 +144,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             machineReassignment.setNeighborhoodList(neighborhoodList);
             machineReassignment.setLocationList(locationList);
             machineReassignment.setMachineList(machineList);
-            machineReassignment.setCapacityList(capacityList);
+            machineReassignment.setMachineCapacityList(machineCapacityList);
         }
 
         private void readServiceList() throws IOException {
@@ -185,7 +183,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             List<MrProcess> processList = new ArrayList<MrProcess>(processListSize);
             long processId = 0L;
             int resourceListSize = resourceList.size();
-            List<MrRequirement> requirementList = new ArrayList<MrRequirement>(processListSize * resourceListSize);
+            List<MrProcessRequirement> processRequirementList = new ArrayList<MrProcessRequirement>(processListSize * resourceListSize);
             for (int i = 0; i < processListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line);
@@ -199,17 +197,17 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 MrService service = serviceList.get(serviceIndex);
                 process.setService(service);
                 for (int j = 0; j < resourceListSize; j++) {
-                    MrRequirement requirement = new MrRequirement();
-                    requirement.setProcess(process);
-                    requirement.setResource(resourceList.get(j));
-                    requirement.setUsage(Integer.parseInt(lineTokens[1 + j]));
-                    requirementList.add(requirement);
+                    MrProcessRequirement processRequirement = new MrProcessRequirement();
+                    processRequirement.setProcess(process);
+                    processRequirement.setResource(resourceList.get(j));
+                    processRequirement.setUsage(Integer.parseInt(lineTokens[1 + j]));
+                    processRequirementList.add(processRequirement);
                 }
                 processList.add(process);
                 processId++;
             }
             machineReassignment.setProcessList(processList);
-            machineReassignment.setRequirementList(requirementList);
+            machineReassignment.setProcessRequirementList(processRequirementList);
         }
 
         private void readBalancePenaltyList() throws IOException {

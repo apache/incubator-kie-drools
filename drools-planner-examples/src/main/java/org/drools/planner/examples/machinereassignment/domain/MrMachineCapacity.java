@@ -19,20 +19,21 @@ package org.drools.planner.examples.machinereassignment.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("MrRequirement")
-public class MrRequirement extends AbstractPersistable {
+@XStreamAlias("MrMachineCapacity")
+public class MrMachineCapacity extends AbstractPersistable {
 
-    private MrProcess process;
+    private MrMachine machine;
     private MrResource resource;
 
-    private int usage;
+    private int maximumCapacity;
+    private int safetyCapacity;
 
-    public MrProcess getProcess() {
-        return process;
+    public MrMachine getMachine() {
+        return machine;
     }
 
-    public void setProcess(MrProcess process) {
-        this.process = process;
+    public void setMachine(MrMachine machine) {
+        this.machine = machine;
     }
 
     public MrResource getResource() {
@@ -43,12 +44,20 @@ public class MrRequirement extends AbstractPersistable {
         this.resource = resource;
     }
 
-    public int getUsage() {
-        return usage;
+    public int getMaximumCapacity() {
+        return maximumCapacity;
     }
 
-    public void setUsage(int usage) {
-        this.usage = usage;
+    public void setMaximumCapacity(int maximumCapacity) {
+        this.maximumCapacity = maximumCapacity;
+    }
+
+    public int getSafetyCapacity() {
+        return safetyCapacity;
+    }
+
+    public void setSafetyCapacity(int safetyCapacity) {
+        this.safetyCapacity = safetyCapacity;
     }
 
 }
