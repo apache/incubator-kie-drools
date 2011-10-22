@@ -536,7 +536,7 @@ public class Queen {
 
           <para>Leaves the value range undefined. Some optimization algorithms do not support this value
           range.<programlisting>    @PlanningVariable
-    @ValueRangeUndefinied
+    @ValueRangeUndefined
     public Row getRow() {
         return row;
     }</programlisting></para>
