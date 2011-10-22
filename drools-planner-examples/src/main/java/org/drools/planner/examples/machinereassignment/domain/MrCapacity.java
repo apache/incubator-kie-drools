@@ -59,4 +59,5 @@ public class MrCapacity extends AbstractPersistable {
     public void setSafetyCapacity(int safetyCapacity) {
         this.safetyCapacity = safetyCapacity;
     }
+
 }

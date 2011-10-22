@@ -19,17 +19,36 @@ package org.drools.planner.examples.machinereassignment.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("MrProcess")
-public class MrProcess extends AbstractPersistable {
+@XStreamAlias("MrRequirement")
+public class MrRequirement extends AbstractPersistable {
 
-    private MrService service;
+    private MrProcess process;
+    private MrResource resource;
 
-    public MrService getService() {
-        return service;
+    private int usage;
+
+    public MrProcess getProcess() {
+        return process;
     }
 
-    public void setService(MrService service) {
-        this.service = service;
+    public void setProcess(MrProcess process) {
+        this.process = process;
+    }
+
+    public MrResource getResource() {
+        return resource;
+    }
+
+    public void setResource(MrResource resource) {
+        this.resource = resource;
+    }
+
+    public int getUsage() {
+        return usage;
+    }
+
+    public void setUsage(int usage) {
+        this.usage = usage;
     }
 
 }
