@@ -18,6 +18,7 @@ package org.drools.planner.examples.machinereassignment.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,13 +77,20 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             readBalancePenaltyList();
             readGlobalPenaltyInfo();
 //            createBedDesignationList();
-            logger.info("MachineReassignment with {} resources.",
-                    new Object[]{machineReassignment.getResourceList().size()});
-//            BigInteger possibleSolutionSize = BigInteger.valueOf(machineReassignment.getBedList().size()).pow(
-//                    machineReassignment.getAdmissionPartList().size());
-//            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
-//            logger.info("MachineReassignment with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
-//                    flooredPossibleSolutionSize, possibleSolutionSize);
+            logger.info("MachineReassignment with {} resources, {} neighborhoods, {} locations, {} machines," +
+                    " {} services, {} processes and {} balancePenalties.",
+                    new Object[]{machineReassignment.getResourceList().size(),
+                            machineReassignment.getNeighborhoodList().size(),
+                            machineReassignment.getLocationList().size(),
+                            machineReassignment.getMachineList().size(),
+                            machineReassignment.getServiceList().size(),
+                            machineReassignment.getProcessList().size(),
+                            machineReassignment.getBalancePenaltyList().size()});
+            BigInteger possibleSolutionSize = BigInteger.valueOf(machineReassignment.getMachineList().size()).pow(
+                    machineReassignment.getProcessList().size());
+            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
+            logger.info("MachineReassignment with flooredPossibleSolutionSize ({}) and possibleSolutionSize({}).",
+                    flooredPossibleSolutionSize, possibleSolutionSize);
             return machineReassignment;
         }
 
@@ -106,9 +114,9 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
         private void readMachineList() throws IOException {
             int machineListSize = readIntegerValue();
             List<MrNeighborhood> neighborhoodList = new ArrayList<MrNeighborhood>(machineListSize);
-            Map<String, MrNeighborhood> idToNeighborhoodMap = new HashMap<String, MrNeighborhood>(machineListSize);
+            Map<Long, MrNeighborhood> idToNeighborhoodMap = new HashMap<Long, MrNeighborhood>(machineListSize);
             List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
-            Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
+            Map<Long, MrLocation> idToLocationMap = new HashMap<Long, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
             long machineId = 0L;
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
@@ -132,6 +140,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 if (neighborhood == null) {
                     neighborhood = new MrNeighborhood();
                     neighborhood.setId(neighborhoodId);
+                    neighborhoodList.add(neighborhood);
+                    idToNeighborhoodMap.put(neighborhoodId, neighborhood);
                 }
                 machine.setNeighborhood(neighborhood);
                 long locationId = Long.parseLong(lineTokens[1]);
@@ -139,6 +149,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 if (location == null) {
                     location = new MrLocation();
                     location.setId(locationId);
+                    locationList.add(location);
+                    idToLocationMap.put(locationId, location);
                 }
                 machine.setLocation(location);
                 for (int j = 0; j < resourceListSize; j++) {
