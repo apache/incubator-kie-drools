@@ -22,6 +22,41 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("MrBalancePenalty")
 public class MrBalancePenalty extends AbstractPersistable {
 
-    
+    private MrResource originResource;
+    private MrResource targetResource;
+    private int multiplicand;
+    private int weight;
+
+    public MrResource getOriginResource() {
+        return originResource;
+    }
+
+    public void setOriginResource(MrResource originResource) {
+        this.originResource = originResource;
+    }
+
+    public MrResource getTargetResource() {
+        return targetResource;
+    }
+
+    public void setTargetResource(MrResource targetResource) {
+        this.targetResource = targetResource;
+    }
+
+    public int getMultiplicand() {
+        return multiplicand;
+    }
+
+    public void setMultiplicand(int multiplicand) {
+        this.multiplicand = multiplicand;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
 
 }

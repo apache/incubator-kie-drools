@@ -61,6 +61,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
 
         private MachineReassignment machineReassignment;
 
+        private int resourceListSize;
         private List<MrResource> resourceList;
         private List<MrService> serviceList;
 
@@ -85,7 +86,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
         }
 
         private void readResourceList() throws IOException {
-            int resourceListSize = readIntegerValue();
+            resourceListSize = readIntegerValue();
             resourceList = new ArrayList<MrResource>(resourceListSize);
             long resourceId = 0L;
             for (int i = 0; i < resourceListSize; i++) {
@@ -109,7 +110,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
             long machineId = 0L;
-            int resourceListSize = resourceList.size();
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
             long machineCapacityId = 0L;
             for (int i = 0; i < machineListSize; i++) {
@@ -192,7 +192,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             int processListSize = readIntegerValue();
             List<MrProcess> processList = new ArrayList<MrProcess>(processListSize);
             long processId = 0L;
-            int resourceListSize = resourceList.size();
             List<MrProcessRequirement> processRequirementList = new ArrayList<MrProcessRequirement>(processListSize * resourceListSize);
             long processRequirementId = 0L;
             for (int i = 0; i < processListSize; i++) {
@@ -232,9 +231,21 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 String[] lineTokens = splitBySpace(line);
                 MrBalancePenalty balancePenalty = new MrBalancePenalty();
                 balancePenalty.setId(balancePenaltyId);
-//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
-//                machine.setWeight(Integer.parseInt(lineTokens[1]));
-                int weight = readIntegerValue(); // TODO
+                int originResourceIndex = Integer.parseInt(lineTokens[0]);
+                if (originResourceIndex >= resourceListSize) {
+                    throw new IllegalArgumentException("BalancePenalty with id (" + balancePenaltyId
+                            + ") has a non existing originResourceIndex (" + originResourceIndex + ").");
+                }
+                balancePenalty.setOriginResource(resourceList.get(originResourceIndex));
+                int targetResourceIndex = Integer.parseInt(lineTokens[1]);
+                if (targetResourceIndex >= resourceListSize) {
+                    throw new IllegalArgumentException("BalancePenalty with id (" + balancePenaltyId
+                            + ") has a non existing targetResourceIndex (" + targetResourceIndex + ").");
+                }
+                balancePenalty.setTargetResource(resourceList.get(targetResourceIndex));
+                balancePenalty.setMultiplicand(Integer.parseInt(lineTokens[2]));
+                // Read a new line (weird in the input definition)
+                balancePenalty.setWeight(readIntegerValue());
                 balancePenaltyList.add(balancePenalty);
                 balancePenaltyId++;
             }
