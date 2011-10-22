@@ -222,8 +222,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     processRequirementList.add(processRequirement);
                     processRequirementId++;
                 }
-                // TODO move cost
-                
+                process.setMoveCost(Integer.parseInt(lineTokens[1 + resourceListSize]));
                 processList.add(process);
                 processId++;
             }

@@ -23,6 +23,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 public class MrProcess extends AbstractPersistable {
 
     private MrService service;
+    private int moveCost;
 
     public MrService getService() {
         return service;
@@ -30,6 +31,14 @@ public class MrProcess extends AbstractPersistable {
 
     public void setService(MrService service) {
         this.service = service;
+    }
+
+    public int getMoveCost() {
+        return moveCost;
+    }
+
+    public void setMoveCost(int moveCost) {
+        this.moveCost = moveCost;
     }
 
 }
