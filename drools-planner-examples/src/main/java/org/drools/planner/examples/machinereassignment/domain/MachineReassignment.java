@@ -38,6 +38,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     private List<MrLocation> locationList;
     private List<MrMachine> machineList;
     private List<MrMachineCapacity> machineCapacityList;
+    private List<MrMachineMoveCost> machineMoveCostList;
     private List<MrService> serviceList;
     private List<MrServiceDependency> serviceDependencyList;
     private List<MrProcess> processList;
@@ -94,6 +95,14 @@ public class MachineReassignment extends AbstractPersistable implements Solution
 
     public void setMachineCapacityList(List<MrMachineCapacity> machineCapacityList) {
         this.machineCapacityList = machineCapacityList;
+    }
+
+    public List<MrMachineMoveCost> getMachineMoveCostList() {
+        return machineMoveCostList;
+    }
+
+    public void setMachineMoveCostList(List<MrMachineMoveCost> machineMoveCostList) {
+        this.machineMoveCostList = machineMoveCostList;
     }
 
     public List<MrService> getServiceList() {
@@ -161,6 +170,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         facts.addAll(locationList);
         facts.addAll(machineList);
         facts.addAll(machineCapacityList);
+        facts.addAll(machineMoveCostList);
         facts.addAll(serviceList);
         facts.addAll(serviceDependencyList);
         facts.addAll(processList);
@@ -182,6 +192,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         clone.locationList = locationList;
         clone.machineList = machineList;
         clone.machineCapacityList = machineCapacityList;
+        clone.machineMoveCostList = machineMoveCostList;
         clone.serviceList = serviceList;
         clone.serviceDependencyList = serviceDependencyList;
         clone.processList = processList;

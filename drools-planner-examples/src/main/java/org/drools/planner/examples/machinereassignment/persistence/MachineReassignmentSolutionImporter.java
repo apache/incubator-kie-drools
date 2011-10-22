@@ -31,6 +31,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
 import org.drools.planner.examples.machinereassignment.domain.MrLocation;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
+import org.drools.planner.examples.machinereassignment.domain.MrMachineMoveCost;
 import org.drools.planner.examples.machinereassignment.domain.MrNeighborhood;
 import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessRequirement;
@@ -112,11 +113,20 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             long machineId = 0L;
             List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
             long machineCapacityId = 0L;
+            List<MrMachineMoveCost> machineMoveCostList = new ArrayList<MrMachineMoveCost>(machineListSize * machineListSize);
+            long machineMoveCostId = 0L;
+            // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < machineListSize; i++) {
-                String line = readStringValue();
-                String[] lineTokens = splitBySpace(line, 2 + (resourceListSize * 2) + machineListSize);
                 MrMachine machine = new MrMachine();
                 machine.setId(machineId);
+                machineList.add(machine);
+                machineId++;
+            }
+            for (int i = 0; i < machineListSize; i++) {
+                MrMachine machine = machineList.get(i);
+                String line = readStringValue();
+                int moveCostOffset = 2 + (resourceListSize * 2);
+                String[] lineTokens = splitBySpace(line, moveCostOffset + machineListSize);
                 long neighborhoodId = Long.parseLong(lineTokens[0]);
                 MrNeighborhood neighborhood = idToNeighborhoodMap.get(neighborhoodId);
                 if (neighborhood == null) {
@@ -141,15 +151,21 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacityList.add(machineCapacity);
                     machineCapacityId++;
                 }
-                // TODO moving costs
-
-                machineList.add(machine);
-                machineId++;
+                for (int j = 0; j < machineListSize; j++) {
+                    MrMachineMoveCost machineMoveCost = new MrMachineMoveCost();
+                    machineMoveCost.setId(machineMoveCostId);
+                    machineMoveCost.setFromMachine(machine);
+                    machineMoveCost.setToMachine(machineList.get(j));
+                    machineMoveCost.setMoveCost(Integer.parseInt(lineTokens[moveCostOffset + j]));
+                    machineMoveCostList.add(machineMoveCost);
+                    machineMoveCostId++;
+                }
             }
             machineReassignment.setNeighborhoodList(neighborhoodList);
             machineReassignment.setLocationList(locationList);
             machineReassignment.setMachineList(machineList);
             machineReassignment.setMachineCapacityList(machineCapacityList);
+            machineReassignment.setMachineMoveCostList(machineMoveCostList);
         }
 
         private void readServiceList() throws IOException {
