@@ -37,6 +37,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrProcess;
 import org.drools.planner.examples.machinereassignment.domain.MrRequirement;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
+import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
 import org.drools.planner.examples.pas.domain.Specialism;
 
 public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImporter {
@@ -62,7 +63,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
 
         private MachineReassignment machineReassignment;
 
-        private Map<Long, MrService> idToServiceMap = null;
+        private List<MrResource> resourceList;
+        private List<MrService> serviceList;
 
         public Solution readSolution() throws IOException {
             machineReassignment = new MachineReassignment();
@@ -86,7 +88,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
 
         private void readResourceList() throws IOException {
             int resourceListSize = readIntegerValue();
-            List<MrResource> resourceList = new ArrayList<MrResource>(resourceListSize);
+            resourceList = new ArrayList<MrResource>(resourceListSize);
             long resourceId = 0L;
             for (int i = 0; i < resourceListSize; i++) {
                 String line = readStringValue();
@@ -108,7 +110,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
             Map<String, MrLocation> idToLocationMap = new HashMap<String, MrLocation>(machineListSize);
             List<MrMachine> machineList = new ArrayList<MrMachine>(machineListSize);
-            List<MrResource> resourceList = machineReassignment.getResourceList();
             int resourceListSize = resourceList.size();
             List<MrCapacity> capacityList = new ArrayList<MrCapacity>(machineListSize * resourceListSize);
             long machineId = 0L;
@@ -150,28 +151,39 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
 
         private void readServiceList() throws IOException {
             int serviceListSize = readIntegerValue();
-            List<MrService> serviceList = new ArrayList<MrService>(serviceListSize);
-            idToServiceMap = new HashMap<Long, MrService>(serviceListSize);
+            serviceList = new ArrayList<MrService>(serviceListSize);
+            List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceListSize * 5);
             long serviceId = 0L;
             for (int i = 0; i < serviceListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line);
                 MrService service = new MrService();
                 service.setId(serviceId);
-//                machine.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
-//                machine.setWeight(Integer.parseInt(lineTokens[1]));
+                service.setLocationSpread(Integer.parseInt(lineTokens[0]));
+                int serviceDependencyListSize = Integer.parseInt(lineTokens[1]);
+                for (int j = 0; j < serviceDependencyListSize; j++) {
+                    MrServiceDependency serviceDependency = new MrServiceDependency();
+                    serviceDependency.setFromService(service);
+                    int toServiceIndex = Integer.parseInt(lineTokens[0]);
+                    if (toServiceIndex >= serviceList.size()) {
+                        throw new IllegalArgumentException("Service with id (" + serviceId
+                                + ") has a non existing toServiceIndex (" + toServiceIndex + ").");
+                    }
+                    MrService toService = serviceList.get(toServiceIndex);
+                    serviceDependency.setToService(toService);
+                    serviceDependencyList.add(serviceDependency);
+                }
                 serviceList.add(service);
-                idToServiceMap.put(serviceId, service);
                 serviceId++;
             }
             machineReassignment.setServiceList(serviceList);
+            machineReassignment.setServiceDependencyList(serviceDependencyList);
         }
 
         private void readProcessList() throws IOException {
             int processListSize = readIntegerValue();
             List<MrProcess> processList = new ArrayList<MrProcess>(processListSize);
             long processId = 0L;
-            List<MrResource> resourceList = machineReassignment.getResourceList();
             int resourceListSize = resourceList.size();
             List<MrRequirement> requirementList = new ArrayList<MrRequirement>(processListSize * resourceListSize);
             for (int i = 0; i < processListSize; i++) {
@@ -179,12 +191,12 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 String[] lineTokens = splitBySpace(line);
                 MrProcess process = new MrProcess();
                 process.setId(processId);
-                long serviceId = Long.parseLong(lineTokens[0]);
-                MrService service = idToServiceMap.get(serviceId);
-                if (service == null) {
+                int serviceIndex = Integer.parseInt(lineTokens[0]);
+                if (serviceIndex >= serviceList.size()) {
                     throw new IllegalArgumentException("Process with id (" + processId
-                            + ") has a non existing serviceId (" + serviceId + ").");
+                            + ") has a non existing serviceIndex (" + serviceIndex + ").");
                 }
+                MrService service = serviceList.get(serviceIndex);
                 process.setService(service);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrRequirement requirement = new MrRequirement();

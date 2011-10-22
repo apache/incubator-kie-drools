@@ -19,17 +19,26 @@ package org.drools.planner.examples.machinereassignment.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-@XStreamAlias("MrService")
-public class MrService extends AbstractPersistable {
+@XStreamAlias("MrServiceDependency")
+public class MrServiceDependency extends AbstractPersistable {
 
-    private int locationSpread;
+    private MrService fromService;
+    private MrService toService;
 
-    public int getLocationSpread() {
-        return locationSpread;
+    public MrService getFromService() {
+        return fromService;
     }
 
-    public void setLocationSpread(int locationSpread) {
-        this.locationSpread = locationSpread;
+    public void setFromService(MrService fromService) {
+        this.fromService = fromService;
+    }
+
+    public MrService getToService() {
+        return toService;
+    }
+
+    public void setToService(MrService toService) {
+        this.toService = toService;
     }
 
 }
