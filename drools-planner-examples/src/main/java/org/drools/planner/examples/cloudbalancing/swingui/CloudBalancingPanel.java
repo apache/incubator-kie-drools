@@ -45,9 +45,6 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.drools.planner.examples.common.swingui.SolutionPanel;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class CloudBalancingPanel extends SolutionPanel {
 
     public static final Color[] PROCESS_COLORS = {
@@ -121,7 +118,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         CloudBalance cloudBalance = (CloudBalance) solution;
         Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<CloudComputer>(cloudComputerToPanelMap.keySet());
         deadCloudComputerSet.remove(null);
-        for (CloudComputer cloudComputer : ((CloudBalance) solution).getCloudComputerList()) {
+        for (CloudComputer cloudComputer : cloudBalance.getCloudComputerList()) {
             deadCloudComputerSet.remove(cloudComputer);
             CloudComputerPanel cloudComputerPanel = cloudComputerToPanelMap.get(cloudComputer);
             if (cloudComputerPanel == null) {
