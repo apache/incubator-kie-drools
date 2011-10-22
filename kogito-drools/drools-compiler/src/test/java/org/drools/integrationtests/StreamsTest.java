@@ -51,6 +51,7 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.StockTick;
 import org.drools.StockTickInterface;
+import org.drools.base.ClassObjectType;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -61,12 +62,16 @@ import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
+import org.drools.reteoo.ObjectTypeNode;
+import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.EntryPoint;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
+import org.drools.spi.ObjectType;
 import org.drools.time.impl.PseudoClockScheduler;
 
 /**
@@ -362,14 +367,23 @@ public class StreamsTest {
 
         org.drools.event.rule.AgendaEventListener ael = mock( org.drools.event.rule.AgendaEventListener.class );
         ksession.addEventListener( ael );
-        
+
         WorkingMemoryEntryPoint ep1 = ksession.getWorkingMemoryEntryPoint( "ep1" );
         WorkingMemoryEntryPoint ep2 = ksession.getWorkingMemoryEntryPoint( "ep2" );
         WorkingMemoryEntryPoint ep3 = ksession.getWorkingMemoryEntryPoint( "ep3" );
 
-        ep1.insert( new StockTick( 1, "RHT", 10, 1000 ) );
-        ep2.insert( new StockTick( 1, "RHT", 10, 1000 ) );
-        ep3.insert( new StockTick( 1, "RHT", 10, 1000 ) );
+        ep1.insert( new StockTick( 1,
+                                   "RHT",
+                                   10,
+                                   1000 ) );
+        ep2.insert( new StockTick( 1,
+                                   "RHT",
+                                   10,
+                                   1000 ) );
+        ep3.insert( new StockTick( 1,
+                                   "RHT",
+                                   10,
+                                   1000 ) );
         int rulesFired = ksession.fireAllRules();
         assertEquals( 3,
                       rulesFired );
@@ -507,4 +521,48 @@ public class StreamsTest {
         assertThat( ksession.getObjects().size(),
                     equalTo( 0 ) );
     }
+
+    @Test
+    public void testEventExpirationValue() throws Exception {
+        String drl1 = "package org.drools.pkg1\n" +
+                      "import org.drools.StockTick\n" +
+                      "declare StockTick\n" +
+                      "    @role(event)\n" +
+                      "end\n" +
+                      "rule X\n" +
+                      "when\n" +
+                      "    StockTick()\n" +
+                      "then\n" +
+                      "end\n";
+        String drl2 = "package org.drools.pkg2\n" +
+                      "import org.drools.StockTick\n" +
+                      "declare StockTick\n" +
+                      "    @role(event)\n" +
+                      "end\n" +
+                      "rule X\n" +
+                      "when\n" +
+                      "    StockTick()\n" +
+                      "then\n" +
+                      "end\n";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl1.getBytes() ),
+                      ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl2.getBytes() ),
+                      ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(),
+                     kbuilder.hasErrors() );
+        KnowledgeBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        List<ObjectTypeNode> otns = ((ReteooRuleBase)((KnowledgeBaseImpl)kbase).getRuleBase()).getRete().getObjectTypeNodes();
+        ObjectType stot = new ClassObjectType( StockTick.class );
+        for( ObjectTypeNode otn : otns ) {
+            if( otn.getObjectType().isAssignableFrom( stot ) ) {
+                assertEquals( -1, otn.getExpirationOffset() );
+            }
+        }
+    }
+
 }
