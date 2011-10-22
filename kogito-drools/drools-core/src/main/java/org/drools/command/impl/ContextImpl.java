@@ -32,7 +32,7 @@ public class ContextImpl
     
     private Map<String, Object> context = new HashMap<String, Object>();
 
-    private Context             delegate;
+    private Context             parent;
        
     private int depth;
     
@@ -45,12 +45,12 @@ public class ContextImpl
     public ContextImpl(String name, ContextManager manager, Context delegate) {
         this.name = name;
         this.manager = manager;
-        setDelegate( delegate );
+        setParent( delegate );
         this.depth = ((ContextImpl)delegate).getDepth() + 1;
     }
 
-    public void setDelegate(Context delegate) {
-        this.delegate = delegate;
+    public void setParent(Context delegate) {
+        this.parent = delegate;
     }
     
 
@@ -64,8 +64,8 @@ public class ContextImpl
 
     public Object get(String identifier) {
         Object object = context.get( identifier );
-        if ( object == null && delegate != null ) {
-            object = this.delegate.get( identifier );
+        if ( object == null && parent != null ) {
+            object = this.parent.get( identifier );
         }
         return object;
     }
