@@ -152,11 +152,17 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             serviceList = new ArrayList<MrService>(serviceListSize);
             List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceListSize * 5);
             long serviceId = 0L;
+            // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < serviceListSize; i++) {
-                String line = readStringValue();
-                String[] lineTokens = splitBySpace(line);
                 MrService service = new MrService();
                 service.setId(serviceId);
+                serviceList.add(service);
+                serviceId++;
+            }
+            for (int i = 0; i < serviceListSize; i++) {
+                MrService service = serviceList.get(i);
+                String line = readStringValue();
+                String[] lineTokens = splitBySpace(line);
                 service.setLocationSpread(Integer.parseInt(lineTokens[0]));
                 int serviceDependencyListSize = Integer.parseInt(lineTokens[1]);
                 for (int j = 0; j < serviceDependencyListSize; j++) {
@@ -171,8 +177,6 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     serviceDependency.setToService(toService);
                     serviceDependencyList.add(serviceDependency);
                 }
-                serviceList.add(service);
-                serviceId++;
             }
             machineReassignment.setServiceList(serviceList);
             machineReassignment.setServiceDependencyList(serviceDependencyList);
