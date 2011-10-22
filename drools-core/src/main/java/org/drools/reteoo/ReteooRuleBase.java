@@ -470,11 +470,14 @@ public class ReteooRuleBase extends AbstractRuleBase {
                                          TypeDeclaration typeDeclaration ) {
         // update OTNs
         if( this.getConfiguration().getEventProcessingMode().equals( EventProcessingOption.STREAM ) ) {
+            // if the expiration for the type was set, then add 1, otherwise return -1
+            long exp = typeDeclaration.getExpirationOffset() > -1 ? typeDeclaration.getExpirationOffset() + 1 : -1;
+            
             // if we are running in STREAM mode, update expiration offset
             for( EntryPointNode ep : this.rete.getEntryPointNodes().values() ) {
                 for( ObjectTypeNode node : ep.getObjectTypeNodes().values() ) {
                     if( node.isAssignableFrom( typeDeclaration.getObjectType() ) ) {
-                        node.setExpirationOffset( Math.max( node.getExpirationOffset(), typeDeclaration.getExpirationOffset()+1 ) );
+                        node.setExpirationOffset( Math.max( node.getExpirationOffset(), exp ) );
                     }
                 }
             }
