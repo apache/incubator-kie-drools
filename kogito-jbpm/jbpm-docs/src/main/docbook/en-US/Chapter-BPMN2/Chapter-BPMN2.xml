@@ -22,7 +22,7 @@ business people who will manage and monitor those processes."</programlisting>
 
   <para>jBPM5 allows you to execute processes defined using the BPMN 2.0 XML format.  That means that you can use all the different jBPM5 tooling to model, execute,
   manage and monitor your business processes using the BPMN 2.0 format for specifying your executable business processes.  Actually, the full BPMN 2.0 specification
-  also includes details on how to represent things like choreographies and and collaboration.  The jBPM project however focuses on that part of the specification that can be used to specify executable processes.</para>
+  also includes details on how to represent things like choreographies and collaboration.  The jBPM project however focuses on that part of the specification that can be used to specify executable processes.</para>
 
   <para>Executable processes in BPMN consist of a different types of nodes being connected to each other using sequence flows.
   The BPMN 2.0 specification defines three main types of nodes:</para>
