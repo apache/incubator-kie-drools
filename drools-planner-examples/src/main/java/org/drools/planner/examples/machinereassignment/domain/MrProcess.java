@@ -16,6 +16,8 @@
 
 package org.drools.planner.examples.machinereassignment.domain;
 
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
@@ -24,6 +26,8 @@ public class MrProcess extends AbstractPersistable {
 
     private MrService service;
     private int moveCost;
+
+    private Map<MrResource, MrProcessRequirement> processRequirementMap;
 
     public MrService getService() {
         return service;
@@ -39,6 +43,18 @@ public class MrProcess extends AbstractPersistable {
 
     public void setMoveCost(int moveCost) {
         this.moveCost = moveCost;
+    }
+
+    public Map<MrResource, MrProcessRequirement> getProcessRequirementMap() {
+        return processRequirementMap;
+    }
+
+    public void setProcessRequirementMap(Map<MrResource, MrProcessRequirement> processRequirementMap) {
+        this.processRequirementMap = processRequirementMap;
+    }
+
+    public MrProcessRequirement getProcessRequirement(MrResource resource) {
+        return processRequirementMap.get(resource);
     }
 
 }

@@ -22,7 +22,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
@@ -34,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
+import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
@@ -46,7 +49,7 @@ public class MrMachinePanel extends JPanel {
 
     private JLabel machineLabel;
     private JButton deleteButton;
-    private List<JTextField> resourceFieldList;
+    private Map<MrResource, JTextField> resourceFieldMap;
     private JLabel numberOfProcessesLabel;
     private JButton detailsButton;
 
@@ -75,6 +78,7 @@ public class MrMachinePanel extends JPanel {
     private void addTotals() {
         JPanel labelAndDeletePanel = new JPanel(new BorderLayout());
         machineLabel = new JLabel(getMachineLabel());
+        machineLabel.setPreferredSize(new Dimension(100, 20));
         machineLabel.setEnabled(false);
         labelAndDeletePanel.add(machineLabel, BorderLayout.CENTER);
         if (machine != null) {
@@ -87,10 +91,10 @@ public class MrMachinePanel extends JPanel {
         }
         add(labelAndDeletePanel, BorderLayout.WEST);
         JPanel resourceListPanel = new JPanel(new GridLayout(1, resourceList.size()));
-        resourceFieldList = new ArrayList<JTextField>(resourceList.size());
+        resourceFieldMap = new HashMap<MrResource, JTextField>(resourceList.size());
         for (MrResource resource : resourceList) {
             JTextField resourceField  = new JTextField("0 / " + "TODO"); // TODO
-            resourceFieldList.add(resourceField);
+            resourceFieldMap.put(resource, resourceField);
             resourceField.setEditable(false);
             resourceField.setEnabled(false);
             resourceListPanel.add(resourceField);
@@ -124,40 +128,27 @@ public class MrMachinePanel extends JPanel {
     }
 
     public void update() {
-//        int usedCpuPower = 0;
-//        cpuPowerBar.clearProcessValues();
-//        int usedMemory = 0;
-//        memoryBar.clearProcessValues();
-//        int usedNetworkBandwidth = 0;
-//        networkBandwidthBar.clearProcessValues();
-//        int colorIndex = 0;
-//        for (MrProcessAssignment processAssignment : processAssignmentList) {
-//            usedCpuPower += processAssignment.getRequiredCpuPower();
-//            cpuPowerBar.addProcessValue(processAssignment.getRequiredCpuPower());
-//            usedMemory += processAssignment.getRequiredMemory();
-//            memoryBar.addProcessValue(processAssignment.getRequiredMemory());
-//            usedNetworkBandwidth += processAssignment.getRequiredNetworkBandwidth();
-//            networkBandwidthBar.addProcessValue(processAssignment.getRequiredNetworkBandwidth());
-//            colorIndex = (colorIndex + 1) % CloudBalancingPanel.PROCESS_COLORS.length;
-//        }
-//        boolean used = processAssignmentList.size() > 0;
-//        updateTotals(usedCpuPower, usedMemory, usedNetworkBandwidth, used);
+        updateTotals();
     }
 
-//    private void updateTotals(int usedCpuPower, int usedMemory, int usedNetworkBandwidth, boolean used) {
-//        machineLabel.setEnabled(used);
-//        cpuPowerField.setText(usedCpuPower + " GHz / " + getComputerCpuPower() + " GHz");
-//        cpuPowerField.setForeground(usedCpuPower > getComputerCpuPower() ? Color.RED : Color.BLACK);
-//        cpuPowerField.setEnabled(used);
-//        memoryField.setText(usedMemory + " GB / " + getComputerMemory() + " GB");
-//        memoryField.setForeground(usedMemory > getComputerMemory() ? Color.RED : Color.BLACK);
-//        memoryField.setEnabled(used);
-//        networkBandwidthField.setText(usedNetworkBandwidth + " GB / " + getComputerNetworkBandwidth() + " GB");
-//        networkBandwidthField.setForeground(usedNetworkBandwidth > getComputerNetworkBandwidth()
-//                ? Color.RED : Color.BLACK);
-//        networkBandwidthField.setEnabled(used);
-//        costField.setEnabled(used);
-//    }
+    private void updateTotals() {
+        boolean used = processAssignmentList.size() > 0;
+        machineLabel.setEnabled(used);
+        for (MrResource resource : resourceList) {
+            JTextField resourceField = resourceFieldMap.get(resource);
+            MrMachineCapacity machineCapacity = machine.getMachineCapacity(resource);
+            int maximumCapacity = machineCapacity.getMaximumCapacity();
+            int safetyCapacity = machineCapacity.getSafetyCapacity();
+            int usedTotal = 0;
+            for (MrProcessAssignment processAssignment : processAssignmentList) {
+                usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
+            }
+            resourceField.setText(usedTotal + " / " + maximumCapacity);
+            resourceField.setForeground(usedTotal > maximumCapacity? Color.RED :
+                    (usedTotal > safetyCapacity ? Color.YELLOW : Color.BLACK));
+            resourceField.setEnabled(used);
+        }
+    }
 
     private class MrProcessAssignmentListDialog extends JDialog {
 

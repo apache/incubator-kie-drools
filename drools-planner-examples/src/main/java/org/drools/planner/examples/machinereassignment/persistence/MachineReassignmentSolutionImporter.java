@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -160,6 +161,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     idToLocationMap.put(locationId, location);
                 }
                 machine.setLocation(location);
+                Map<MrResource, MrMachineCapacity> machineCapacityMap
+                        = new LinkedHashMap<MrResource, MrMachineCapacity>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrMachineCapacity machineCapacity = new MrMachineCapacity();
                     machineCapacity.setId(machineCapacityId);
@@ -168,8 +171,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacity.setMaximumCapacity(Integer.parseInt(lineTokens[2 + j]));
                     machineCapacity.setSafetyCapacity(Integer.parseInt(lineTokens[2 + resourceListSize + j]));
                     machineCapacityList.add(machineCapacity);
+                    machineCapacityMap.put(resourceList.get(j), machineCapacity);
                     machineCapacityId++;
                 }
+                machine.setMachineCapacityMap(machineCapacityMap);
                 for (int j = 0; j < machineListSize; j++) {
                     MrMachineMoveCost machineMoveCost = new MrMachineMoveCost();
                     machineMoveCost.setId(machineMoveCostId);
@@ -248,6 +253,8 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 }
                 MrService service = serviceList.get(serviceIndex);
                 process.setService(service);
+                Map<MrResource, MrProcessRequirement> processRequirementMap
+                        = new LinkedHashMap<MrResource, MrProcessRequirement>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrProcessRequirement processRequirement = new MrProcessRequirement();
                     processRequirement.setId(processRequirementId);
@@ -255,8 +262,10 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     processRequirement.setResource(resourceList.get(j));
                     processRequirement.setUsage(Integer.parseInt(lineTokens[1 + j]));
                     processRequirementList.add(processRequirement);
+                    processRequirementMap.put(resourceList.get(j), processRequirement);
                     processRequirementId++;
                 }
+                process.setProcessRequirementMap(processRequirementMap);
                 process.setMoveCost(Integer.parseInt(lineTokens[1 + resourceListSize]));
                 processList.add(process);
                 processId++;
