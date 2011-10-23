@@ -166,7 +166,7 @@ different service nodes that have been defined for the project appear.</para>
 <para>Using drag and drop, a notification node can be created inside your process.  The
 properties can be filled in using the properties view.</para>
 
-<para>Apart from the properties defined by for this work item, all work items also have
+<para>Apart from the properties defined by this work item, all work items also have
 these three properties:</para>
 <orderedlist>
   <listitem>
