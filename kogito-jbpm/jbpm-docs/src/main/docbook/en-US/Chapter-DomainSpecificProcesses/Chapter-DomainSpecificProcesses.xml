@@ -16,7 +16,7 @@ don't need to be a jBPM expert to define your own domain-specific nodes, this sh
 integration code that a normal developer with some experience in jBPM can do himself.</para>
 
 <para>Most process languages offer some generic action (node) construct that allows plugging in
-custum user actions.  However, these actions are usually low-level, where the user is required
+custom user actions.  However, these actions are usually low-level, where the user is required
 to write custom code to implement the work that should be incorporated in the process.  The code
 is also closely linked to a specific target environment, making it difficult to reuse the process
 in different contexts.</para>
