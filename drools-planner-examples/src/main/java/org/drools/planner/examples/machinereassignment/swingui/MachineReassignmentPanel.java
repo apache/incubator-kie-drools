@@ -74,24 +74,9 @@ public class MachineReassignmentPanel extends SolutionPanel {
                         GroupLayout.PREFERRED_SIZE));
     }
 
-    private JPanel createHeaderPanel() {
-        JPanel headerPanel = new JPanel(new GridLayout(0, 5));
-        JLabel emptyLabel = new JLabel("");
-        headerPanel.add(emptyLabel);
-        JLabel cpuPowerLabel = new JLabel("CPU power");
-        headerPanel.add(cpuPowerLabel);
-        JLabel memoryLabel = new JLabel("Memory");
-        headerPanel.add(memoryLabel);
-        JLabel networkBandwidthLabel = new JLabel("Network bandwidth");
-        headerPanel.add(networkBandwidthLabel);
-        JLabel costLabel = new JLabel("Cost");
-        headerPanel.add(costLabel);
-        return headerPanel;
-    }
-
     private void createMachineListPanel() {
         machineListPanel = new JPanel(new GridLayout(0, 1));
-        unassignedPanel = new MrMachinePanel(this, Collections.<MrResource>emptyList(), null); // TODO
+        unassignedPanel = new MrMachinePanel(this, Collections.<MrResource>emptyList(), null);
         machineListPanel.add(unassignedPanel);
         machineToPanelMap = new LinkedHashMap<MrMachine, MrMachinePanel>();
         machineToPanelMap.put(null, unassignedPanel);
@@ -118,9 +103,10 @@ public class MachineReassignmentPanel extends SolutionPanel {
     @Override
     public void updatePanel(Solution solution) {
         MachineReassignment machineReassignment = (MachineReassignment) solution;
+        List<MrResource> resourceList = machineReassignment.getResourceList();
+        unassignedPanel.setResourceList(resourceList);
         Set<MrMachine> deadMachineSet = new LinkedHashSet<MrMachine>(machineToPanelMap.keySet());
         deadMachineSet.remove(null);
-        List<MrResource> resourceList = machineReassignment.getResourceList();
         for (MrMachine machine : machineReassignment.getMachineList()) {
             deadMachineSet.remove(machine);
             MrMachinePanel machinePanel = machineToPanelMap.get(machine);

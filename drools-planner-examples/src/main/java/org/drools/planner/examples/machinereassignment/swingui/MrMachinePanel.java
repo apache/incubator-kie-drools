@@ -23,6 +23,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
@@ -43,15 +44,17 @@ import org.drools.planner.examples.machinereassignment.domain.MrResource;
 public class MrMachinePanel extends JPanel {
 
     private final MachineReassignmentPanel machineReassignmentPanel;
-    private final List<MrResource> resourceList;
+    private List<MrResource> resourceList;
     private MrMachine machine;
     private List<MrProcessAssignment> processAssignmentList = new ArrayList<MrProcessAssignment>();
 
     private JLabel machineLabel;
     private JButton deleteButton;
+    private JPanel resourceListPanel = null;
     private Map<MrResource, JTextField> resourceFieldMap;
     private JLabel numberOfProcessesLabel;
     private JButton detailsButton;
+
 
     public MrMachinePanel(MachineReassignmentPanel machineReassignmentPanel, List<MrResource> resourceList,
             MrMachine machine) {
@@ -90,18 +93,11 @@ public class MrMachinePanel extends JPanel {
             labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
         }
         add(labelAndDeletePanel, BorderLayout.WEST);
-        JPanel resourceListPanel = new JPanel(new GridLayout(1, resourceList.size()));
-        resourceFieldMap = new HashMap<MrResource, JTextField>(resourceList.size());
-        for (MrResource resource : resourceList) {
-            JTextField resourceField  = new JTextField("0 / " + "TODO"); // TODO
-            resourceFieldMap.put(resource, resourceField);
-            resourceField.setEditable(false);
-            resourceField.setEnabled(false);
-            resourceListPanel.add(resourceField);
-        }
-        add(resourceListPanel, BorderLayout.CENTER);
+        setResourceList(resourceList);
         JPanel numberAndDetailsPanel = new JPanel(new BorderLayout());
-        numberOfProcessesLabel = new JLabel("    0 processes");
+        numberOfProcessesLabel = new JLabel("0 processes ");
+        numberOfProcessesLabel.setPreferredSize(new Dimension(100, 20));
+        numberOfProcessesLabel.setAlignmentX(RIGHT_ALIGNMENT);
         numberOfProcessesLabel.setEnabled(false);
         numberAndDetailsPanel.add(numberOfProcessesLabel, BorderLayout.WEST);
         detailsButton = new JButton(new AbstractAction("Details") {
@@ -115,6 +111,25 @@ public class MrMachinePanel extends JPanel {
         numberAndDetailsPanel.add(detailsButton, BorderLayout.CENTER);
         add(numberAndDetailsPanel, BorderLayout.EAST);
     }
+
+    public void setResourceList(List<MrResource> resourceList) {
+        this.resourceList = resourceList;
+        if (resourceListPanel != null) {
+            remove(resourceListPanel);
+        }
+        resourceListPanel = new JPanel(new GridLayout(1, resourceList.size()));
+        resourceFieldMap = new LinkedHashMap<MrResource, JTextField>(resourceList.size());
+        for (MrResource resource : resourceList) {
+            int maximumCapacity = machine == null ? 0 : machine.getMachineCapacity(resource).getMaximumCapacity();
+            JTextField resourceField  = new JTextField("0 / " + maximumCapacity);
+            resourceFieldMap.put(resource, resourceField);
+            resourceField.setEditable(false);
+            resourceField.setEnabled(false);
+            resourceListPanel.add(resourceField);
+        }
+        add(resourceListPanel, BorderLayout.CENTER);
+    }
+
     public void addMrProcessAssignment(MrProcessAssignment processAssignment) {
         processAssignmentList.add(processAssignment);
     }
@@ -136,9 +151,16 @@ public class MrMachinePanel extends JPanel {
         machineLabel.setEnabled(used);
         for (MrResource resource : resourceList) {
             JTextField resourceField = resourceFieldMap.get(resource);
-            MrMachineCapacity machineCapacity = machine.getMachineCapacity(resource);
-            int maximumCapacity = machineCapacity.getMaximumCapacity();
-            int safetyCapacity = machineCapacity.getSafetyCapacity();
+            int maximumCapacity;
+            int safetyCapacity;
+            if (machine != null) {
+                MrMachineCapacity machineCapacity = machine.getMachineCapacity(resource);
+                maximumCapacity = machineCapacity.getMaximumCapacity();
+                safetyCapacity = machineCapacity.getSafetyCapacity();
+            } else {
+                maximumCapacity = 0;
+                safetyCapacity = 0;
+            }
             int usedTotal = 0;
             for (MrProcessAssignment processAssignment : processAssignmentList) {
                 usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
@@ -148,6 +170,8 @@ public class MrMachinePanel extends JPanel {
                     (usedTotal > safetyCapacity ? Color.YELLOW : Color.BLACK));
             resourceField.setEnabled(used);
         }
+        numberOfProcessesLabel.setText(processAssignmentList.size() + " processes ");
+        numberOfProcessesLabel.setEnabled(used);
     }
 
     private class MrProcessAssignmentListDialog extends JDialog {
@@ -175,7 +199,8 @@ public class MrMachinePanel extends JPanel {
                 assignmentsPanel.add(processAssignmentLabel);
 
                 for (MrResource resource : resourceList) {
-                    JTextField resourceField = new JTextField("TODO"); // TODO
+                    int usage = processAssignment.getProcess().getProcessRequirement(resource).getUsage();
+                    JTextField resourceField = new JTextField(usage);
                     resourceField.setEditable(false);
                     assignmentsPanel.add(resourceField);
                 }
