@@ -268,7 +268,7 @@ public class NotificationWorkItemHandler implements WorkItemHandler {
 }
 </programlisting>
 
-<para>This WorkItemHandler sends a notification as an email and then immediate notifies
+<para>This WorkItemHandler sends a notification as an email and then immediately notifies
 the WorkItemManager that the work item has been completed.  Note that not all work items
 can be completed directly.  In cases where executing a work item takes some time, execution
 can continue asynchronously and the work item manager can be notified later.  In these
