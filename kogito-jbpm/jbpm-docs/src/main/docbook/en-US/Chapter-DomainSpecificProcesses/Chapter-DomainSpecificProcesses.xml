@@ -170,7 +170,7 @@ properties can be filled in using the properties view.</para>
 these three properties:</para>
 <orderedlist>
   <listitem>
-    <para>Parameter Mapping: Allows you map the value of a variable in the process to a
+    <para>Parameter Mapping: Allows you to map the value of a variable in the process to a
     parameter of the work item.  This allows you to customize the work item based on the
     current state of the actual process instance (for example, the priority of the
     notification could be dependent of some process-specific information).</para>
