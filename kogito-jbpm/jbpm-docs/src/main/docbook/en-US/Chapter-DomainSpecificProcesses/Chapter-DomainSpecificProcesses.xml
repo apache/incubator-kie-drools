@@ -16,7 +16,7 @@ don't need to be a jBPM expert to define your own domain-specific nodes, this sh
 integration code that a normal developer with some experience in jBPM can do himself.</para>
 
 <para>Most process languages offer some generic action (node) construct that allows plugging in
-custum user actions.  However, these actions are usually low-level, where the user is required
+custom user actions.  However, these actions are usually low-level, where the user is required
 to write custom code to implement the work that should be incorporated in the process.  The code
 is also closely linked to a specific target environment, making it difficult to reuse the process
 in different contexts.</para>
@@ -166,11 +166,11 @@ different service nodes that have been defined for the project appear.</para>
 <para>Using drag and drop, a notification node can be created inside your process.  The
 properties can be filled in using the properties view.</para>
 
-<para>Apart from the properties defined by for this work item, all work items also have
+<para>Apart from the properties defined by this work item, all work items also have
 these three properties:</para>
 <orderedlist>
   <listitem>
-    <para>Parameter Mapping: Allows you map the value of a variable in the process to a
+    <para>Parameter Mapping: Allows you to map the value of a variable in the process to a
     parameter of the work item.  This allows you to customize the work item based on the
     current state of the actual process instance (for example, the priority of the
     notification could be dependent of some process-specific information).</para>
@@ -268,7 +268,7 @@ public class NotificationWorkItemHandler implements WorkItemHandler {
 }
 </programlisting>
 
-<para>This WorkItemHandler sends a notification as an email and then immediate notifies
+<para>This WorkItemHandler sends a notification as an email and then immediately notifies
 the WorkItemManager that the work item has been completed.  Note that not all work items
 can be completed directly.  In cases where executing a work item takes some time, execution
 can continue asynchronously and the work item manager can be notified later.  In these
