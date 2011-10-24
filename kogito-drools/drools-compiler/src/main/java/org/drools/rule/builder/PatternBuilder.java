@@ -94,6 +94,8 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.rule.constraint.MvelLiteralConstraint;
+import org.drools.rule.constraint.SoundexLiteralContraint;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Constraint.ConstraintType;
@@ -117,6 +119,8 @@ import org.mvel2.util.PropertyTools;
 public class PatternBuilder
     implements
     RuleConditionBuilder {
+
+    private static final boolean USE_MVEL_EXPRESSION = false;
 
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(",
                                                                                                java.util.regex.Pattern.MULTILINE );
@@ -562,9 +566,9 @@ public class PatternBuilder
                                             final RelationalExprDescr relDescr,
                                             final String expr,
                                             final Map<String, OperatorDescr> aliases ) {
-        String value1 = null;
-        String value2 = null;
-        boolean usesThisRef = false;
+        String value1;
+        String value2;
+        boolean usesThisRef;
         if ( relDescr.getRight() instanceof AtomicExprDescr ) {
             AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
             value2 = rdescr.getExpression().trim();
@@ -595,32 +599,11 @@ public class PatternBuilder
                    (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
                    value2 );
 
-        boolean succeeded = false;
-        if ( (!usesThisRef) && value1Expr.isConstant() ) {
-            // then it is a constant expression or at least has a constant on the left side... build it as a predicate as well
-            createAndBuildPredicate( context,
-                                     pattern,
-                                     relDescr,
-                                     expr,
-                                     aliases );
-            return;
-        } else {
-            succeeded = buildConstraint( context,
-                                         pattern,
-                                         relDescr,
-                                         aliases,
-                                         value1,
-                                         value2,
-                                         value2Expr );
-        }
-
-        if ( !succeeded ) {
-            // fallback to a regular predicate
-            createAndBuildPredicate( context,
-                                     pattern,
-                                     relDescr,
-                                     expr,
-                                     aliases );
+        // build a predicate if it is a constant expression or at least has a constant on the left side
+        // or as a fallback when the building of a constraint fails
+        if ( (!usesThisRef && value1Expr.isConstant()) ||
+                !buildConstraint( context, pattern, relDescr, aliases, expr, value1, value2, value2Expr.isConstant() )) {
+            createAndBuildPredicate( context, pattern, relDescr, expr, aliases );
         }
     }
 
@@ -628,78 +611,51 @@ public class PatternBuilder
                                      final Pattern pattern,
                                      final RelationalExprDescr relDescr,
                                      final Map<String, OperatorDescr> aliases,
+                                     String expr,
                                      String value1,
                                      String value2,
-                                     ExprBindings value2Expr ) {
-        String[] parts = value1.split( "\\." );
-        if ( parts.length == 2 ) {
-            if ( "this".equals( parts[0].trim() ) ) {
-                // it's a redundant this so trim
-                value1 = parts[1];
-            } else if ( pattern.getDeclaration() != null && parts[0].trim().equals( pattern.getDeclaration().getIdentifier() ) ) {
-                // it's a redundant declaration so trim
-                value1 = parts[1];
+                                     boolean isConstant ) {
+        int dotPos = value1.indexOf('.');
+        if (dotPos > 0) {
+            String part0 = value1.substring(0, dotPos).trim();
+            if ("this".equals( part0.trim() ) ) {
+                value1 = value1.substring(dotPos + 1);
+            } else if ( pattern.getDeclaration() != null && part0.equals( pattern.getDeclaration().getIdentifier() ) ) {
+                value1 = value1.substring(dotPos + 1);
+                expr = expr.substring(dotPos + 1);
             }
         }
 
-        final InternalReadAccessor extractor = getFieldReadAccessor( context,
-                                                                     relDescr,
-                                                                     pattern.getObjectType(),
-                                                                     value1,
-                                                                     null,
-                                                                     false );
+        final InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), value1, null, false );
 
         if ( extractor == null ) {
             return false; // impossible to create extractor
         }
 
+        ValueType vtype = extractor.getValueType();
         String operator = relDescr.getOperator().trim();
+        LiteralRestrictionDescr restrictionDescr = buildLiteralRestrictionDescr(context, relDescr, extractor, value2, operator, isConstant);
+
+        if (restrictionDescr != null) {
+            FieldValue field = getFieldValue(context, vtype, restrictionDescr);
+            if (field != null) {
+                if (USE_MVEL_EXPRESSION) {
+                    pattern.addConstraint( buildMVELConstraint(context, vtype, field, expr, value1, operator, value2) );
+                    return true;
+                } else {
+                    LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
+                    if (restriction != null) {
+                        pattern.addConstraint( new LiteralConstraint( extractor, restriction ) );
+                        return true;
+                    }
+
+                }
+             }
+        }
 
         Restriction restriction = null;
-        // is it a constant? 
-        if ( value2Expr.isConstant() ) {
-            restriction = buildLiteralRestriction( context,
-                                                   extractor,
-                                                   new LiteralRestrictionDescr( operator,
-                                                                                relDescr.isNegated(),
-                                                                                relDescr.getParameters(),
-                                                                                value2,
-                                                                                LiteralRestrictionDescr.TYPE_STRING ) ); // default type
-            //            if ( restriction == null ) {
-            //                // otherwise we just get wierd errors after this point on literals
-            //                return false;
-            //            }
-        } else {
-            // is it an enum?
-            int dotPos = value2.lastIndexOf( '.' );
-            if ( dotPos >= 0 ) {
-                final String mainPart = value2.substring( 0,
-                                                              dotPos );
-                String lastPart = value2.substring( dotPos + 1 );
-                try {
-                    final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( mainPart );
-                    if ( lastPart.indexOf( '(' ) < 0 && lastPart.indexOf( '.' ) < 0 && lastPart.indexOf( '[' ) < 0 ) {
-                        restriction = buildLiteralRestriction( context,
-                                                               extractor,
-                                                               new LiteralRestrictionDescr( operator,
-                                                                                            relDescr.isNegated(),
-                                                                                            relDescr.getParameters(),
-                                                                                            value2,
-                                                                                            LiteralRestrictionDescr.TYPE_STRING ) ); // default type
-                    }
-                } catch ( ClassNotFoundException e ) {
-                    // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
-                }
-            }
-        }
-
-        if ( restriction != null ) {
-            pattern.addConstraint( new LiteralConstraint( extractor,
-                                                          (LiteralRestriction) restriction ) );
-            return true;
-        }
-
         Declaration declr = null;
+
         if ( value2.indexOf( '(' ) < 0 && value2.indexOf( '.' ) < 0 && value2.indexOf( '[' ) < 0 ) {
             declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                      value2 );
@@ -714,13 +670,16 @@ public class PatternBuilder
                     // maybe it was a class literal ?
                     try {
                         final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( value2 );
+                        restrictionDescr = new LiteralRestrictionDescr( operator,
+                                                                        relDescr.isNegated(),
+                                                                        relDescr.getParameters(),
+                                                                        cls.getName(),
+                                                                        LiteralRestrictionDescr.TYPE_STRING ); // default type
                         restriction = buildLiteralRestriction( context,
                                                                extractor,
-                                                               new LiteralRestrictionDescr( operator,
-                                                                                            relDescr.isNegated(),
-                                                                                            relDescr.getParameters(),
-                                                                                            cls.getName(),
-                                                                                            LiteralRestrictionDescr.TYPE_STRING ) ); // default type
+                                                               restrictionDescr,
+                                                               getFieldValue(context, vtype, restrictionDescr),
+                                                               vtype );
                     } catch ( ClassNotFoundException cnfe ) {
                         // we will later fallback to regular predicates, so don't raise error
                         //                            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
@@ -734,7 +693,7 @@ public class PatternBuilder
         }
 
         if ( declr == null ) {
-            parts = value2.split( "\\." );
+            String[] parts = value2.split( "\\." );
             if ( parts.length == 2 ) {
                 if ( "this".equals( parts[0].trim() ) ) {
                     declr = this.createDeclarationObject( context,
@@ -820,6 +779,65 @@ public class PatternBuilder
         pattern.addConstraint( new VariableConstraint( extractor,
                                                        restriction ) );
         return true;
+    }
+
+    private Constraint buildMVELConstraint(RuleBuildContext context,
+                                          ValueType vtype,
+                                          FieldValue field,
+                                          String expr,
+                                          String leftValue,
+                                          String operator,
+                                          String rightValue) {
+        Set<String> imports = context.getPkg().getImports().keySet();
+
+        if (operator.equals("soundslike")) {
+            return new SoundexLiteralContraint(imports, leftValue, operator, rightValue);
+        }
+
+        String mvelExpr = normalizeMVELExpression(vtype, field, expr, leftValue, operator, rightValue);
+        return new MvelLiteralConstraint(imports, vtype, mvelExpr, leftValue, operator, rightValue);
+    }
+
+    private String normalizeMVELExpression(ValueType vtype,
+                                           FieldValue field,
+                                           String expr,
+                                           String leftValue,
+                                           String operator,
+                                           String rightValue) {
+        if (vtype == ValueType.DATE_TYPE) {
+            Date date = (Date)field.getValue();
+            return leftValue + " " + operator + " new java.util.Date(" + date.getTime() + ")";
+        }
+        return expr;
+    }
+
+    private LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
+                                         RelationalExprDescr exprDescr,
+                                         InternalReadAccessor extractor,
+                                         String rightValue,
+                                         String operator,
+                                         boolean isRightLiteral) {
+        // is it a literal? Does not include enums
+        if ( isRightLiteral )
+            return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
+
+        // is it an enum?
+        int dotPos = rightValue.lastIndexOf( '.' );
+        if ( dotPos >= 0 ) {
+            final String mainPart = rightValue.substring( 0,
+                                                     dotPos );
+            String lastPart = rightValue.substring( dotPos + 1 );
+            try {
+                final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( mainPart );
+                if ( lastPart.indexOf( '(' ) < 0 && lastPart.indexOf( '.' ) < 0 && lastPart.indexOf( '[' ) < 0 ) {
+                    return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING );
+                }
+            } catch ( ClassNotFoundException e ) {
+                // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
+            }
+        }
+
+        return null;
     }
 
     private boolean processAtomicExpression( RuleBuildContext context,
@@ -1236,11 +1254,10 @@ public class PatternBuilder
         return declaration;
     }
 
-    private LiteralRestriction buildLiteralRestriction( final RuleBuildContext context,
-                                                        final InternalReadAccessor extractor,
-                                                        final LiteralRestrictionDescr literalRestrictionDescr ) {
+    private FieldValue getFieldValue(RuleBuildContext context,
+                                     ValueType vtype,
+                                     LiteralRestrictionDescr literalRestrictionDescr) {
         FieldValue field = null;
-        ValueType vtype = extractor.getValueType();
         try {
             String value = literalRestrictionDescr.getText().trim();
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
@@ -1264,16 +1281,15 @@ public class PatternBuilder
                                                 context.getPackageBuilder().getDateFormats() );
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
-            //            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-            //                                                          literalRestrictionDescr,
-            //                                                          e,
-            //                                                          "Unable to create a Field value of type  '" + extractor.getValueType() + "' and value '" + literalRestrictionDescr.getText() + "'" ) );
         }
+        return field;
+    }
 
-        if ( field == null ) {
-            return null;
-        }
-
+    private LiteralRestriction buildLiteralRestriction( final RuleBuildContext context,
+                                                        final InternalReadAccessor extractor,
+                                                        final LiteralRestrictionDescr literalRestrictionDescr,
+                                                        final FieldValue field,
+                                                        final ValueType vtype) {
         Target right = getRightTarget( extractor );
         Target left = Target.FACT;
         final Evaluator evaluator = getEvaluator( context,
