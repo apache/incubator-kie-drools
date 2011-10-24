@@ -1,5 +1,6 @@
 package org.drools.integrationtests;
 
+import static java.lang.System.out;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -71,15 +72,6 @@ public class SerializationHelper {
         out.close();
         bos.close();
         
-//        System.out.println( "bos:\n" + bos.toByteArray() );
-//        if ( true ) {
-//            byte[] b1 = bos.toByteArray();
-//            for ( int i = 0, length = b1.length; i < length; i++ ) {
-//                System.out.print( b1[i] );           
-//            }            
-//            throw new IllegalArgumentException( "byte streams for serialisation test are not equal" );
-//        }
-
         // Get the bytes of the serialized object
         final byte[] b1 = bos.toByteArray();
 
@@ -87,6 +79,7 @@ public class SerializationHelper {
         StatefulSession session2 = ruleBase.newStatefulSession( bais );
         bais.close();
 
+        // Reserialize and check that byte arrays are the same
         bos = new ByteArrayOutputStream();
         out = new ObjectOutputStream( bos );
         out.writeObject( session2 );
@@ -116,28 +109,40 @@ public class SerializationHelper {
                                                                                  boolean dispose) throws Exception {
 
         DefaultMarshaller marshaller = ( DefaultMarshaller ) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
-                                                                                              (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
-
+                (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
         long time = ksession.getSessionClock().getCurrentTime();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        marshaller.marshall( bos,
-                             ksession,
-                             time );
-        final byte[] b1 = bos.toByteArray();
-        bos.close();
-       
-        ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
-        StatefulKnowledgeSession ksession2 = marshaller.unmarshall( bais,
-                                                                    new SessionConfiguration(),
-                                                                     ksession.getEnvironment());
-        bais.close();
 
-        bos = new ByteArrayOutputStream();
-        marshaller.marshall( bos,
-                             ksession2,
-                             time );
-        final byte[] b2 = bos.toByteArray();
-        bos.close();
+        // Serialize object
+        final byte [] b1;
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            marshaller.marshall( bos,
+                                 ksession,
+                                 time );
+            b1 = bos.toByteArray();
+            bos.close();
+        }
+        
+        // Deserialize object
+        StatefulKnowledgeSession ksession2;
+        {
+            ByteArrayInputStream bais = new ByteArrayInputStream( b1 );
+            ksession2 = marshaller.unmarshall( bais,
+                    new SessionConfiguration(),
+                    ksession.getEnvironment());
+            bais.close();
+        }
+        
+        // Reserialize and check that byte arrays are the same
+        final byte[] b2;
+        {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            marshaller.marshall( bos,
+                                 ksession2,
+                                 time );
+            b2 = bos.toByteArray();
+            bos.close();
+        }
 
         // bytes should be the same.
         if ( !areByteArraysEqual( b1,
@@ -182,9 +187,8 @@ public class SerializationHelper {
 //            if ( i == 83 ) {
 //                System.out.print( "!" );    
 //            }   
-        
 //        }
-        System.out.println( "\n" );
+        
         for ( int i = 0, length = b1.length; i < length; i++ ) {
             if ( b1[i] != b2[i] ) {
                 System.out.println( "Difference at " + i + ": [" + b1[i] + "] != [" + b2[i] + "]" );
