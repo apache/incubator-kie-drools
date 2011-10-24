@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.base.ClassFieldAccessor;
+import org.drools.core.util.StringUtils;
 import org.drools.definition.type.FactField;
+import org.mvel2.MVEL;
 
 /**
  * Declares a field to be dynamically generated.
@@ -267,104 +269,142 @@ public class FieldDefinition
 
 
     public String getDefaultValueAsString() {
-        return initExpr == null ? null : initExpr.substring(1,initExpr.length()-1);
+        return (String) MVEL.eval( initExpr );
     }
-    public Boolean getDefaultValueAsBoolean() {
-        return "true".equals(initExpr);
+
+
+    public Boolean getDefaultValueAsBoolean( ) {
+        if ( StringUtils.isEmpty( initExpr ) ) {
+            return false;
+        } else {
+            if ( "true".equalsIgnoreCase( initExpr ) ) {
+                return true;
+            } else if ( "false".equalsIgnoreCase( initExpr ) ) {
+                return false;
+            } else {
+                return (Boolean) MVEL.eval( initExpr );
+            }
+        }
     }
-    public Byte getDefaultValueAsByte() {
+    public Byte getDefaultValueAsByte( ) {
         try {
             return initExpr == null ? 0 : Byte.parseByte(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0;
+            return StringUtils.isEmpty( initExpr ) ? 0 : (Byte) MVEL.eval( initExpr );
         }
     }
     public Character getDefaultValueAsChar() {
-        return initExpr == null ? '\u0000' : initExpr.charAt(0);
+        if ( StringUtils.isEmpty( initExpr ) ) {
+            return '\u0000';
+        } else {
+            if ( initExpr.length() == 1 ) {
+                return initExpr.charAt(0);
+            } else {
+                return (Character) MVEL.eval( initExpr );
+            }
+        }
     }
-    public Double getDefaultValueAsDouble() {
+    public Double getDefaultValueAsDouble( ) {
         try {
             return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0.0;
+            return StringUtils.isEmpty( initExpr ) ? 0.0 : (Double) MVEL.eval( initExpr );
         }
     }
-    public Float getDefaultValueAsFloat() {
+    public Float getDefaultValueAsFloat( ) {
         try {
             return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0.0f;
+            return StringUtils.isEmpty( initExpr ) ? 0.0f : (Float) MVEL.eval( initExpr );
         }
     }
-    public Integer getDefaultValueAsInt() {
+    public Integer getDefaultValueAsInt( ) {
         try {
             return initExpr == null ? 0 : Integer.parseInt(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0;
+            return StringUtils.isEmpty( initExpr ) ? 0 : (Integer) MVEL.eval( initExpr );
         }
     }
-    public Long getDefaultValueAsLong() {
+    public Long getDefaultValueAsLong( ) {
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0L;
+            return StringUtils.isEmpty( initExpr ) ? 0 : (Long) MVEL.eval( initExpr );
         }
     }
-    public Short getDefaultValueAsShort() {
+    public Short getDefaultValueAsShort( ) {
         try {
             return initExpr == null ? 0 : Short.parseShort(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0;
+            return StringUtils.isEmpty( initExpr ) ? 0 : (Short) MVEL.eval( initExpr );
         }
     }
 
 
     public boolean getDefaultValueAs_boolean() {
-        return "true".equals(initExpr);
+        if ( StringUtils.isEmpty( initExpr ) ) {
+            return false;
+        } else {
+            if ( "true".equalsIgnoreCase( initExpr ) ) {
+                return true;
+            } else if ( "false".equalsIgnoreCase( initExpr ) ) {
+                return false;
+            } else {
+                return (Boolean) MVEL.eval( initExpr );
+            }
+        }
     }
     public byte getDefaultValueAs_byte() {
         try {
             return initExpr == null ? 0 : Byte.parseByte(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0;
+             return StringUtils.isEmpty( initExpr ) ? 0 : (Byte) MVEL.eval( initExpr );
         }
     }
     public char getDefaultValueAs_char() {
-        return initExpr == null ? 0 : initExpr.charAt(0);
+        if ( StringUtils.isEmpty( initExpr ) ) {
+            return '\u0000';
+        } else {
+            if ( initExpr.length() == 1 ) {
+                return initExpr.charAt(0);
+            } else {
+                return (Character) MVEL.eval( initExpr );
+            }
+        }
     }
     public double getDefaultValueAs_double() {
         try {
             return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0.0;
+            return StringUtils.isEmpty( initExpr ) ? 0.0 : (Double) MVEL.eval( initExpr );
         }
     }
     public float getDefaultValueAs_float() {
         try {
             return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0.0f;
+            return StringUtils.isEmpty( initExpr ) ? 0.0f : (Float) MVEL.eval( initExpr );
         }
     }
     public int getDefaultValueAs_int() {
         try {
             return initExpr == null ? 0 : Integer.parseInt(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0;
+            return StringUtils.isEmpty( initExpr ) ? 0 : (Integer) MVEL.eval( initExpr );
         }
     }
     public long getDefaultValueAs_long() {
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0L;
+            return StringUtils.isEmpty( initExpr ) ? 0L : (Long) MVEL.eval( initExpr );
         }
     }
     public short getDefaultValueAs_short() {
         try {
             return initExpr == null ? 0 : Short.parseShort(initExpr);
         } catch (NumberFormatException nfe) {
-            return 0;
+            return StringUtils.isEmpty( initExpr ) ? 0 : (Short) MVEL.eval( initExpr );
         }
     }
 
