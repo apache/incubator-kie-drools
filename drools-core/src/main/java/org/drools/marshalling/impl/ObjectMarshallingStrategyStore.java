@@ -31,7 +31,7 @@ public class ObjectMarshallingStrategyStore {
         return this.strategiesList[ index ];
     }
 
-    public int getStrategyIndex(Object object) {
+    public int getStrategy(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
             if ( strategiesList[i].accept( object ) ) {
                 return i;
@@ -54,7 +54,7 @@ public class ObjectMarshallingStrategyStore {
         return objectMarshallingStrategy;
     }
     
-    public ObjectMarshallingStrategy getStrategy(Object object) {
+    public ObjectMarshallingStrategy getStrategyObject(Object object) {
         for ( int i = 0, length = this.strategiesList.length; i < length; i++ ) {
             if ( strategiesList[i].accept( object ) ) {
                 return strategiesList[i];

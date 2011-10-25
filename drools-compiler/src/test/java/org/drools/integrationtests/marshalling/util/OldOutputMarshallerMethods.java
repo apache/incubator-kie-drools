@@ -38,7 +38,7 @@ public class OldOutputMarshallerMethods {
             Object object = parameters.get( key );
             if ( object != null ) {
                 stream.writeUTF( key );
-                int index = context.objectMarshallingStrategyStore.getStrategyIndex( object );
+                int index = context.objectMarshallingStrategyStore.getStrategy( object );
                 stream.writeInt( index );
                 ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy( index );
                 if ( strategy.accept( object ) ) {
@@ -76,7 +76,7 @@ public class OldOutputMarshallerMethods {
         Object object = handle.getObject();
 
         if ( object != null ) {
-            int index = objectMarshallingStrategyStore.getStrategyIndex( object );
+            int index = objectMarshallingStrategyStore.getStrategy( object );
 
             ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( index );
 
