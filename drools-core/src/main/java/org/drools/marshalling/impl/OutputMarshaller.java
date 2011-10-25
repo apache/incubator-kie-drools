@@ -397,7 +397,7 @@ public class OutputMarshaller {
         // Now, we write -2 to indicate that we write the strategy class name to the stream
         stream.writeInt(-2);
         if ( object != null ) {
-            ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategy( object );
+            ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
 
             String strategyClassName = strategy.getClass().getName();
             stream.writeUTF(strategyClassName);
@@ -1086,7 +1086,7 @@ public class OutputMarshaller {
             if ( object != null ) {
                 stream.writeUTF( key );
                 
-                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy( object );
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject( object );
                 String strategyClassName = strategy.getClass().getName();
                 stream.writeInt(-2); // backwards compatibility
                 stream.writeUTF(strategyClassName);
