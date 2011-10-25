@@ -19,7 +19,6 @@ package org.drools.marshalling.impl;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,33 +28,11 @@ import java.util.concurrent.TimeUnit;
 import org.drools.RuntimeDroolsException;
 import org.drools.SessionConfiguration;
 import org.drools.base.DroolsQuery;
-import org.drools.common.AgendaItem;
-import org.drools.common.BaseNode;
-import org.drools.common.BinaryHeapQueueAgendaGroup;
-import org.drools.common.DefaultAgenda;
-import org.drools.common.DefaultFactHandle;
-import org.drools.common.EqualityKey;
-import org.drools.common.EventFactHandle;
-import org.drools.common.InternalAgenda;
-import org.drools.common.InternalAgendaGroup;
-import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalKnowledgeRuntime;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalRuleFlowGroup;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.common.InternalWorkingMemoryEntryPoint;
-import org.drools.common.NamedEntryPoint;
-import org.drools.common.NodeMemory;
-import org.drools.common.ObjectStore;
-import org.drools.common.PropagationContextImpl;
-import org.drools.common.QueryElementFactHandle;
-import org.drools.common.RuleFlowGroupImpl;
-import org.drools.common.ScheduledAgendaItem;
-import org.drools.common.TruthMaintenanceSystem;
-import org.drools.common.WorkingMemoryAction;
+import org.drools.common.*;
 import org.drools.concurrent.ExecutorService;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.StringUtils;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
@@ -94,7 +71,6 @@ import org.drools.spi.AgendaGroup;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleFlowGroup;
-import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.Trigger;
 import org.drools.time.impl.CronTrigger;
 import org.drools.time.impl.IntervalTrigger;
@@ -161,7 +137,7 @@ public class InputMarshaller {
                                                     int id,
                                                     ExecutorService executor) throws IOException,
                                                                              ClassNotFoundException {
-        return readSession( context, id, executor, EnvironmentFactory.newEnvironment(), new SessionConfiguration().getDefaultInstance() );
+        return readSession( context, id, executor, EnvironmentFactory.newEnvironment(), SessionConfiguration.getDefaultInstance() );
     }
     
     public static ReteooStatefulSession readSession(MarshallerReaderContext context,
@@ -385,7 +361,6 @@ public class InputMarshaller {
                                        ObjectStore objectStore) throws IOException,
                                                                        ClassNotFoundException {
         ObjectInputStream stream = context.stream;
-        InternalRuleBase ruleBase = context.ruleBase;
         InternalWorkingMemory wm = context.wm;
         
         int size = stream.readInt();
@@ -448,12 +423,26 @@ public class InputMarshaller {
         }
 
         int strategyIndex = context.stream.readInt();
-        Object object;
+        Object object = null;
+        ObjectMarshallingStrategy strategy = null;
+        // This is the old way of de/serializing strategy objects
         if ( strategyIndex >= 0 ) {
-            ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+            strategy = context.resolverStrategyFactory.getStrategy( strategyIndex );
+        }
+        // This is the new way 
+        else if( strategyIndex == -2 ) { 
+            String strategyClassName = context.stream.readUTF();
+            if ( ! StringUtils.isEmpty(strategyClassName) ) { 
+                strategy = context.resolverStrategyFactory.getStrategyObject(strategyClassName);
+                if( strategy == null ) { 
+                    throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
+                }
+            }
+        }
+        
+        // If either way retrieves a strategy, use it
+        if( strategy != null ) { 
             object = strategy.read( context.stream );
-        } else {
-            object = null;
         }
         
         WorkingMemoryEntryPoint entryPoint = null;
@@ -1081,12 +1070,27 @@ public class InputMarshaller {
         //WorkItem Paramaters
         int nbVariables = stream.readInt();
             if (nbVariables > 0) {
-                
+               
                 for (int i = 0; i < nbVariables; i++) {
                     String name = stream.readUTF();
                     try {
                         int index = stream.readInt();
-                        ObjectMarshallingStrategy strategy = context.resolverStrategyFactory.getStrategy(index);
+                        ObjectMarshallingStrategy strategy = null;
+                        // Old way of retrieving strategy objects
+                        if( index >= 0 ) { 
+                            strategy = context.resolverStrategyFactory.getStrategy(index);
+                            if( strategy == null ) { 
+                                throw new IllegalStateException( "No strategy of with index " + index + " available." );
+                            }
+                        }
+                        // New way 
+                        else if( index == -2 ) { 
+                            String strategyClassName = stream.readUTF();
+                            strategy = context.resolverStrategyFactory.getStrategyObject(strategyClassName);
+                            if( strategy == null ) { 
+                                throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
+                            }
+                        }
                         
                         Object value = strategy.read(stream);
                         workItem.setParameter(name, value);
@@ -1097,9 +1101,6 @@ public class InputMarshaller {
                 }
             }
         
-      
-        
-
         return workItem;
     }
 
