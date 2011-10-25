@@ -94,6 +94,33 @@ public class ExpressionConstraintsTest {
         
         Assert.assertEquals( 1, rules );
     }
+    
+    @Test
+    public void testExpressionConstraints4() {
+        String drl = "package org.drools\n" + 
+                     "rule R1\n" + 
+                     "        dialect \"mvel\"\n" + 
+                     "    when\n" + 
+                     "        Mailbox( owneremail == 'bob@mail' || owneremail == 'john@mail' )\n" + 
+                     "    then\n" +
+                     "end\n" + 
+                     "rule R2\n" + 
+                     "        dialect \"mvel\"\n" + 
+                     "    when\n" + 
+                     "        Mailbox( ( owneremail == 'bob@mail' ) || ( owneremail == 'john@mail' ) )\n" + 
+                     "    then\n" + 
+                     "end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Mailbox("foo@mail"));
+        int rules = ksession.fireAllRules();
+        Assert.assertEquals( 0, rules );
+
+        ksession.insert(new Mailbox("john@mail"));
+        rules = ksession.fireAllRules();
+        Assert.assertEquals( 2, rules );
+    }
 
     private KnowledgeBase loadKnowledgeBaseFromString( String... drlContentStrings ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
