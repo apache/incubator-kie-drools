@@ -31,6 +31,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.*;
@@ -807,7 +808,8 @@ public class TraitTest {
 
 
 
-    @Test
+    // At the moment this fauils randomly: remove the @Ignore when it will be fixed
+    @Test @Ignore
     public void testIsA() {
         String source = "org/drools/factmodel/traits/testTraitIsA.drl";
 
