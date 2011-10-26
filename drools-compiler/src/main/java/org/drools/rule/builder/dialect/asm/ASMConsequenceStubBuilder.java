@@ -1,5 +1,9 @@
 package org.drools.rule.builder.dialect.asm;
 
+import com.sun.org.apache.bcel.internal.generic.ASTORE;
+import com.sun.org.apache.bcel.internal.generic.DUP;
+import com.sun.org.apache.bcel.internal.generic.MONITORENTER;
+import com.sun.org.apache.bcel.internal.generic.MONITOREXIT;
 import org.drools.WorkingMemory;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.CompiledInvoker;
@@ -17,6 +21,12 @@ import static org.mvel2.asm.Opcodes.ALOAD;
 import static org.mvel2.asm.Opcodes.ARETURN;
 import static org.mvel2.asm.Opcodes.IFNONNULL;
 import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.DUP;
+import static org.mvel2.asm.Opcodes.ASTORE;
+import static org.mvel2.asm.Opcodes.MONITORENTER;
+import static org.mvel2.asm.Opcodes.MONITOREXIT;
+import static org.mvel2.asm.Opcodes.GOTO;
+import static org.mvel2.asm.Opcodes.ATHROW;
 
 public class ASMConsequenceStubBuilder extends AbstractASMConsequenceBuilder {
 
@@ -42,15 +52,43 @@ public class ASMConsequenceStubBuilder extends AbstractASMConsequenceBuilder {
             }
         }).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(null, KnowledgeHelper.class, WorkingMemory.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
+                Label syncStart = new Label();
+                Label syncEnd = new Label();
                 Label l1 = new Label();
+                Label l2 = new Label();
+                mv.visitTryCatchBlock(syncStart, l1, l2, null);
+                Label l3 = new Label();
+                mv.visitTryCatchBlock(l2, l3, l2, null);
+                mv.visitVarInsn(ALOAD, 0);
+                mv.visitInsn(DUP);
+                mv.visitVarInsn(ASTORE, 3);
+                // synchronized(this) {
+                mv.visitInsn(MONITORENTER);
+                mv.visitLabel(syncStart);
                 mv.visitVarInsn(ALOAD, 0);
                 getField("consequence", Consequence.class);
-                mv.visitJumpInsn(IFNONNULL, l1);
+                // if (consequence == null) ...
+                Label ifNotInitialized = new Label();
+                mv.visitJumpInsn(IFNONNULL, ifNotInitialized);
                 mv.visitVarInsn(ALOAD, 0);
                 mv.visitVarInsn(ALOAD, 1);
                 mv.visitVarInsn(ALOAD, 2);
+                // ... ConsequenceGenerator.generate(this, knowledgeHelper, workingMemory)
                 invokeStatic(ConsequenceGenerator.class, "generate", null, ConsequenceStub.class, KnowledgeHelper.class, WorkingMemory.class);
+                mv.visitLabel(ifNotInitialized);
+                mv.visitVarInsn(ALOAD, 3);
+                mv.visitInsn(MONITOREXIT);
                 mv.visitLabel(l1);
+                mv.visitJumpInsn(GOTO, syncEnd);
+                mv.visitLabel(l2);
+                mv.visitVarInsn(ASTORE, 4);
+                mv.visitVarInsn(ALOAD, 3);
+                mv.visitInsn(MONITOREXIT);
+                mv.visitLabel(l3);
+                mv.visitVarInsn(ALOAD, 4);
+                mv.visitInsn(ATHROW);
+                mv.visitLabel(syncEnd);
+                // } end of synchronized
                 mv.visitVarInsn(ALOAD, 0);
                 getField("consequence", Consequence.class);
                 mv.visitVarInsn(ALOAD, 1);
