@@ -35,6 +35,7 @@ import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.time.Job;
 import org.drools.time.JobContext;
 import org.drools.time.JobHandle;
+import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.Trigger;
 import org.drools.time.impl.IntervalTrigger;
@@ -228,7 +229,7 @@ public class TimerManager {
                 throw new IllegalArgumentException( "Could not find process instance for timer " );
             }
 
-            ctx.getTimer().setLastTriggered( new Date( ctx.getKnowledgeRuntime().getSessionClock().getCurrentTime() ) );
+            ctx.getTimer().setLastTriggered( new Date( ctx.getKnowledgeRuntime().<SessionClock>getSessionClock().getCurrentTime() ) );
 
             ((InternalProcessRuntime) kruntime.getProcessRuntime())
             	.getSignalManager().signalEvent( processInstanceId,
