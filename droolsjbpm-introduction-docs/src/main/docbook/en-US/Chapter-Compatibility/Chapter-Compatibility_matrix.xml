@@ -7,7 +7,7 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Drools compatibility</title>
+    <title>Drools compatibility matrix</title>
 
     <para>The following table shows the compatibility between different versions of Drools, jBPM and Guvnor
     </para>
@@ -36,11 +36,18 @@
                 <!--  Drools -->
                 <row>
                   <entry><emphasis role="strong">Drools</emphasis></entry>   
-                  <entry>5.3.0.CR1</entry>   
-                  <entry>-</entry>   
-                  <entry>5.1.1.Final</entry>   
-                  <entry>5.3.0.CR1</entry>   
-                </row> 
+                  <entry>5.3.0.Final</entry>
+                  <entry>-</entry>
+                  <entry>5.1.2.Final</entry>
+                  <entry>5.3.0.Final</entry>
+                </row>
+                <row>
+                  <entry></entry>
+                  <entry>5.3.0.CR1</entry>
+                  <entry>-</entry>
+                  <entry>5.1.1.Final</entry>
+                  <entry>5.3.0.CR1</entry>
+                </row>
                 <row>
                   <entry></entry>   
                   <entry>5.2.1.Final</entry>   
@@ -73,11 +80,18 @@
                 <!-- jBPM -->
                 <row>
                   <entry><emphasis role="strong">jBPM</emphasis></entry>   
-                  <entry>5.1.1.Final</entry>   
-                  <entry>5.2.1.Final</entry>   
-                  <entry>-</entry>   
-                  <entry>5.2.1.Final</entry>   
-                </row> 
+                  <entry>5.1.2.Final</entry>
+                  <entry>5.3.0.Final</entry>
+                  <entry>-</entry>
+                  <entry>5.3.0.Final</entry>
+                </row>
+                <row>
+                  <entry> </entry>
+                  <entry>5.1.1.Final</entry>
+                  <entry>5.2.1.Final</entry>
+                  <entry>-</entry>
+                  <entry>5.2.1.Final</entry>
+                </row>
                 <row>
                   <entry> </entry>   
                   <entry>5.1.0.Final</entry>   
