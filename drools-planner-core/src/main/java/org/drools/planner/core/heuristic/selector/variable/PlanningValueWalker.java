@@ -87,6 +87,10 @@ public class PlanningValueWalker implements SolverPhaseLifecycleListener {
     public void initWalk(Object planningEntity) {
         this.planningEntity = planningEntity;
         planningValueIterator = planningValueSelector.iterator(planningEntity);
+        if (!planningValueIterator.hasNext()) {
+            throw new IllegalStateException("The planningEntity (" + planningEntity + ") has a planning variable ("
+                    + planningVariableDescriptor.getVariablePropertyName() + ") which has no planning values.");
+        }
         Object value = planningValueIterator.next();
         planningVariableDescriptor.setValue(planningEntity, value);
         isFirstValue = true;
