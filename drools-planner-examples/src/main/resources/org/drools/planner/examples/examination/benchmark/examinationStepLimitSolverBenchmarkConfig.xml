@@ -14,9 +14,6 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <termination>
-        <maximumStepCount>70</maximumStepCount>
-      </termination>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
@@ -26,6 +23,9 @@
   <solverBenchmark>
     <solver>
       <localSearch>
+        <termination>
+          <maximumStepCount>70</maximumStepCount>
+        </termination>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.examples.examination.solver.move.factory.PeriodChangeMoveFactory</moveFactoryClass>

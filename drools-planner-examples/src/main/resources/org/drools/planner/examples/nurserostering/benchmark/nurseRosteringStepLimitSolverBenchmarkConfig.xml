@@ -14,9 +14,6 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
-      <termination>
-        <maximumStepCount>100</maximumStepCount>
-      </termination>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
@@ -26,6 +23,9 @@
   <solverBenchmark>
     <solver>
       <localSearch>
+        <termination>
+          <maximumStepCount>100</maximumStepCount>
+        </termination>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.examples.nurserostering.solver.move.factory.EmployeeChangeMoveFactory</moveFactoryClass>

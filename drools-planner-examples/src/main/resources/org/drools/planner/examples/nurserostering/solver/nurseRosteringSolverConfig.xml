@@ -16,7 +16,6 @@
     -->
     <maximumSecondsSpend>700</maximumSecondsSpend>
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
-    <!--<maximumStepCount>100</maximumStepCount>-->
   </termination>
   <constructionHeuristic>
     <constructionHeuristicType>BEST_FIT</constructionHeuristicType>
