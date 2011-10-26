@@ -626,4 +626,73 @@ public class ProcessMarshallingTest extends JbpmTestCase {
 		}
     }
     
+    public void testVariablePersistenceMarshallingStrategies() throws Exception {
+        String process = 
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<process xmlns=\"http://drools.org/drools-5.0/process\"\n" +
+            "    xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+            "    xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\"\n" +
+            "    type=\"RuleFlow\" name=\"ruleflow\" id=\"org.test.ruleflow\" package-name=\"org.test\" >\n" +
+            "  <header>\n" +
+            "    <variables>\n" +
+            "      <variable name=\"myVariable\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "        <value>OldValue</value>\n" +
+            "      </variable>\n" +
+            "      <variable name=\"myPerson\" >\n" +
+            "        <type name=\"org.drools.process.core.datatype.impl.type.ObjectDataType\" />\n" +
+            "      </variable>\n" +
+            "    </variables>\n" +
+            "  </header>\n" +
+            "  <nodes>\n" +
+            "    <start id=\"1\" name=\"Start\" />\n" +
+            "    <workItem id=\"2\" name=\"Email\" >\n" +
+            "      <work name=\"Report\" >\n" +
+            "        <parameter name=\"Subject\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>Mail</value>\n" +
+            "        </parameter>\n" +
+            "        <parameter name=\"Subject\" >\n" +
+            "          <type name=\"org.drools.process.core.datatype.impl.type.StringDataType\" />\n" +
+            "          <value>Mail</value>\n" +
+            "        </parameter>\n" +
+            "      </work>\n" +
+            "    </workItem>\n" +
+            "    <end id=\"3\" name=\"End\" />\n" +
+            "  </nodes>\n" +
+            "  <connections>\n" +
+            "    <connection from=\"1\" to=\"2\"/>\n" +
+            "    <connection from=\"2\" to=\"3\"/>\n" +
+            "  </connections>\n" +
+            "</process>";
+        final PackageBuilder builder = new PackageBuilder();
+        builder.addProcessFromXml( new StringReader( process ));
+        final Package pkg = builder.getPackage();
+
+        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        ruleBase.addPackage(pkg);
+
+        StatefulSession session = ruleBase.newStatefulSession();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        session.getWorkItemManager().registerWorkItemHandler("Report", handler);
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("myVariable", "ThisIsMyValue");
+        Person myPerson = new Person("Nikola Tesla", 156 );
+        variables.put("myPerson", myPerson);
+        session.startProcess("org.test.ruleflow", variables);
+
+        assertEquals(1, session.getProcessInstances().size());
+        assertTrue(handler.getWorkItem() != null);
+        
+        session = getSerialisedStatefulSession( session );
+        assertEquals(1, session.getProcessInstances().size());
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+            (( ProcessInstance )session.getProcessInstances().iterator().next()).getContextInstance(VariableScope.VARIABLE_SCOPE);
+        assertEquals("ThisIsMyValue", variableScopeInstance.getVariable("myVariable"));
+        assertEquals(myPerson, variableScopeInstance.getVariable("myPerson"));
+        
+        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
+        
+        assertEquals(0, session.getProcessInstances().size());
+    }
 }
