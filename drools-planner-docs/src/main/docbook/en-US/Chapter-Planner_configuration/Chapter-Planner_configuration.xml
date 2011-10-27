@@ -236,7 +236,7 @@
         when dealing with a messy legacy system, it can sometimes be worth it to convert the messy domain set into a
         planner specific POJO set first. For example: if your domain model has 2 <literal>Teacher</literal> instances
         for the same teacher that teaches at 2 different departments, it's hard to write a correct score constraint that
-        is constrains a teacher's spare time.</para>
+        constrains a teacher's spare time.</para>
 
         <para>Alternatively, you can sometimes also introduce <link linkend="cachedProblemFact"><emphasis>a cached
         problem fact</emphasis></link> to enrich the domain model for planning only.</para>
