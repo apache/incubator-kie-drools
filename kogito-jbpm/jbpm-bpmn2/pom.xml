@@ -138,7 +138,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.javassist</groupId>
+      <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>test</scope>
     </dependency>

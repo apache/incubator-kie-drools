@@ -43,7 +43,7 @@
       <artifactId>jbpm-gwt-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.javassist</groupId>
+      <groupId>javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>provided</scope>
     </dependency>
