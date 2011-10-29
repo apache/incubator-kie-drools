@@ -68,12 +68,21 @@ rule "serviceLocationSpread"
         )
     then
         insertLogical(new IntConstraintOccurrence("serviceLocationSpread", ConstraintType.NEGATIVE_HARD,
-                $locationSpread - $spreadTotal.intValue() ,
+                $locationSpread - $spreadTotal.intValue(),
                 $service));
 end
 
 // Dependency constraints
-// TODO
+rule "serviceDependency"
+    when
+        $serviceDependency : MrServiceDependency($fromService : fromService, $toService : toService)
+        $processAssignment : MrProcessAssignment(service == $fromService, $neighborhood : neighborhood)
+        not MrProcessAssignment(service == $toService, neighborhood == $neighborhood)
+    then
+        insertLogical(new IntConstraintOccurrence("serviceDependency", ConstraintType.NEGATIVE_HARD,
+                1,
+                $serviceDependency, $processAssignment));
+end
 
 // Transient usage constraints
 // TODO

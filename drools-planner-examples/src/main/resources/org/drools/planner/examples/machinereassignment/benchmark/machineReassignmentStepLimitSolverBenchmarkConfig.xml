@@ -5,7 +5,7 @@
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
 
   <inheritedSolverBenchmark>
-    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_1.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_4.xml</unsolvedSolutionFile>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
