@@ -21,30 +21,25 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
+import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
 public class MrMachineUsage implements Serializable {
 
-    private MrMachine machine;
-    private MrResource resource;
-    private int usageTotal;
+    private MrMachineCapacity machineCapacity;
+    private int usage;
 
-    public MrMachineUsage(MrMachine machine, MrResource resource, int usageTotal) {
-        this.machine = machine;
-        this.resource = resource;
-        this.usageTotal = usageTotal;
+    public MrMachineUsage(MrMachineCapacity machineCapacity, int usage) {
+        this.machineCapacity = machineCapacity;
+        this.usage = usage;
     }
 
-    public MrMachine getMachine() {
-        return machine;
+    public MrMachineCapacity getMachineCapacity() {
+        return machineCapacity;
     }
 
-    public MrResource getResource() {
-        return resource;
-    }
-
-    public int getUsageTotal() {
-        return usageTotal;
+    public int getUsage() {
+        return usage;
     }
 
     public boolean equals(Object o) {
@@ -53,9 +48,8 @@ public class MrMachineUsage implements Serializable {
         } else if (o instanceof MrMachineUsage) {
             MrMachineUsage other = (MrMachineUsage) o;
             return new EqualsBuilder()
-                    .append(machine, other.machine)
-                    .append(resource, other.resource)
-                    .append(usageTotal, other.usageTotal)
+                    .append(machineCapacity, other.machineCapacity)
+                    .append(usage, other.usage)
                     .isEquals();
         } else {
             return false;
@@ -64,15 +58,26 @@ public class MrMachineUsage implements Serializable {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(machine)
-                .append(resource)
-                .append(usageTotal)
+                .append(machineCapacity)
+                .append(usage)
                 .toHashCode();
+    }
+
+    public MrMachine getMachine() {
+        return machineCapacity.getMachine();
+    }
+
+    public MrResource getResource() {
+        return machineCapacity.getResource();
+    }
+
+    public int getMaximumAvailable() {
+        return machineCapacity.getMaximumCapacity() - usage;
     }
 
     @Override
     public String toString() {
-        return machine + " = " + usageTotal;
+        return getMachine() + "-" + getResource() + "=" + usage;
     }
 
 }

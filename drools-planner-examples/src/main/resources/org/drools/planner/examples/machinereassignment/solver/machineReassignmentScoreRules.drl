@@ -49,7 +49,7 @@ rule "machineUsage"
             sum($usage)
         )
     then
-        insertLogical(new MrMachineUsage($machine, $resource, $usageTotal.intValue()));
+        insertLogical(new MrMachineUsage($machineCapacity, $usageTotal.intValue()));
 end
 
 // ############################################################################
@@ -57,7 +57,14 @@ end
 // ############################################################################
 
 // Capacity constraints
-// TODO
+rule "maximumCapacity"
+    when
+        $machineUsage : MrMachineUsage(maximumAvailable < 0, $maximumAvailable : maximumAvailable)
+    then
+        insertLogical(new IntConstraintOccurrence("maximumCapacity", ConstraintType.NEGATIVE_HARD,
+                - $maximumAvailable,
+                $machineUsage));
+end
 
 // Conflict constraints
 rule "serviceConflict"
