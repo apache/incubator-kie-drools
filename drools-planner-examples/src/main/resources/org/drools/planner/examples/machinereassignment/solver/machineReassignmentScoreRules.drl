@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.examples.cloudbalancing.solver;
+package org.drools.planner.examples.machinereassignment.solver;
     dialect "java"
 
 import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
@@ -46,18 +46,31 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // TODO
 
 // Conflict constraints
-rule "serviceConflictConstraints"
+rule "serviceConflict"
     when
         $leftProcessAssignment : MrProcessAssignment($service : service, $machine : machine, $leftId : id)
         $rightProcessAssignment : MrProcessAssignment(service == $service, machine == $machine, id > $leftId)
     then
-        insertLogical(new IntConstraintOccurrence("serviceConflictConstraints", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new IntConstraintOccurrence("serviceConflict", ConstraintType.NEGATIVE_HARD,
                 1,
                 $leftProcessAssignment, $rightProcessAssignment));
 end
 
 // Spread constraints
-// TODO
+rule "serviceLocationSpread"
+    when
+        $service : MrService($locationSpread : locationSpread)
+        $spreadTotal : Number(intValue < $locationSpread) from accumulate(
+            MrProcessAssignment(
+                service == $service,
+                $location : location),
+            count($location)
+        )
+    then
+        insertLogical(new IntConstraintOccurrence("serviceLocationSpread", ConstraintType.NEGATIVE_HARD,
+                $locationSpread - $spreadTotal.intValue() ,
+                $service));
+end
 
 // Dependency constraints
 // TODO

@@ -52,9 +52,10 @@ public abstract class AbstractPersistable implements Serializable {
 //        }
 //    }
 
-//    public int compareTo(AbstractPersistable abstractPersistable) {
-//        return id.compareTo(abstractPersistable.id);
-//    }
+    // Used by the GUI to sort the ConstraintOccurrence list by causes
+    public int compareTo(AbstractPersistable abstractPersistable) {
+        return id.compareTo(abstractPersistable.id);
+    }
 
     public String toString() {
         return "[" + getClass().getName().replaceAll(".*\\.", "") + "-" + id + "]";

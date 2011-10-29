@@ -114,5 +114,9 @@ public class MrProcessAssignment extends AbstractPersistable {
     public MrService getService() {
         return process.getService();
     }
+
+    public MrLocation getLocation() {
+        return machine == null ? null : machine.getLocation();
+    }
     
 }
