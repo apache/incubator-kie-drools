@@ -26,6 +26,7 @@ import java.util.Collections;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
+import org.drools.StockTick;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -247,6 +248,43 @@ public class DescrBuilderTest {
 
     }
 
+    @Test
+    public void testRule() throws InstantiationException,
+                                       IllegalAccessException {
+        PackageDescr pkg = DescrFactory.newPackage()
+                .name( "org.drools" )
+                .newRule().name( "r1" )
+                    .lhs()
+                        .and()
+                            .or()
+                                .pattern( "StockTick" ).constraint( "price > 100" ).end()
+                                .pattern( "StockTick" ).constraint( "price < 10" ).end()
+                            .end()
+                            .pattern("StockTick").constraint( "company == \"RHT\"" ).end()
+                        .end()
+                    .end()
+                    .rhs( "    System.out.println(\"foo\");\n" )
+                .end()
+                .getDescr();
+
+        KnowledgePackage kpkg = compilePkgDescr( pkg );
+        assertEquals( "org.drools",
+                      kpkg.getName() );
+        
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
+        
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new StockTick(1, "RHT", 80, 1 ) );
+        int rules = ksession.fireAllRules();
+        assertEquals( 0, rules );
+
+        ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert( new StockTick(2, "RHT", 150, 1 ) );
+        rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+    
     private KnowledgePackage compilePkgDescr( PackageDescr pkg ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newDescrResource( pkg ),
