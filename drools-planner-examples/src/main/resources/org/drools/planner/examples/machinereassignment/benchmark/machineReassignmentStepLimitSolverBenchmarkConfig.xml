@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<solverBenchmarkSuite>
+  <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
+  <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+
+  <inheritedSolverBenchmark>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_1.xml</unsolvedSolutionFile>
+
+    <solver>
+      <!--<environmentMode>DEBUG</environmentMode>-->
+      <solutionClass>org.drools.planner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+      <planningEntityClass>org.drools.planner.examples.machinereassignment.domain.MrProcessAssignment</planningEntityClass>
+
+      <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
+      <scoreDefinition>
+        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+      </scoreDefinition>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+        <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+      </constructionHeuristic>
+      <localSearch>
+        <termination>
+          <maximumStepCount>100</maximumStepCount>
+        </termination>
+        <selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+      </selector>
+      <selector>
+        <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+      </selector>
+        </selector>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>7</propertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</solverBenchmarkSuite>
