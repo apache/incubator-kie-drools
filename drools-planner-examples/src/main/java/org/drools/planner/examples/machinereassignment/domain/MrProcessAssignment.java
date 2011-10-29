@@ -110,5 +110,9 @@ public class MrProcessAssignment extends AbstractPersistable {
     public String getLabel() {
         return "Process " + getId();
     }
+
+    public MrService getService() {
+        return process.getService();
+    }
     
 }

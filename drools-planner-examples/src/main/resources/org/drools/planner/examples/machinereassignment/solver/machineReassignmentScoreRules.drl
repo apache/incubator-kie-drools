@@ -42,6 +42,29 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 // Hard constraints
 // ############################################################################
 
+// Capacity constraints
+// TODO
+
+// Conflict constraints
+rule "serviceConflictConstraints"
+    when
+        $leftProcessAssignment : MrProcessAssignment($service : service, $machine : machine, $leftId : id)
+        $rightProcessAssignment : MrProcessAssignment(service == $service, machine == $machine, id > $leftId)
+    then
+        insertLogical(new IntConstraintOccurrence("serviceConflictConstraints", ConstraintType.NEGATIVE_HARD,
+                1,
+                $leftProcessAssignment, $rightProcessAssignment));
+end
+
+// Spread constraints
+// TODO
+
+// Dependency constraints
+// TODO
+
+// Transient usage constraints
+// TODO
+
 //rule "requiredCpuPowerTotal"
 //    when
 //        $cloudComputer : CloudComputer($cpuPower : cpuPower)
@@ -90,7 +113,22 @@ global HardAndSoftConstraintScoreCalculator scoreCalculator;
 //// ############################################################################
 //// Soft constraints
 //// ############################################################################
-//
+
+// Load cost
+// TODO
+
+// Balance cost
+// TODO
+
+// Process move cost
+// TODO
+
+// Service move cost
+// TODO
+
+// Machine move cost
+// TODO
+
 //rule "cloudComputerCost"
 //    when
 //        $cloudComputer : CloudComputer($cost : cost)
