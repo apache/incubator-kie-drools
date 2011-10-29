@@ -35,8 +35,22 @@ import org.drools.planner.examples.machinereassignment.domain.MrProcessRequireme
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
 import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
+
+rule "machineUsage"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+        $machineCapacity : MrMachineCapacity($machine : machine, $resource : resource)
+        $usageTotal : Number() from accumulate(
+                MrProcessRequirement(resource == $resource, $process : process, $usage : usage)
+                and MrProcessAssignment(machine == $machine, process == $process),
+            sum($usage)
+        )
+    then
+        insertLogical(new MrMachineUsage($machine, $resource, $usageTotal.intValue()));
+end
 
 // ############################################################################
 // Hard constraints
