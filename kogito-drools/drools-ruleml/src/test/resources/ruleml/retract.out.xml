@@ -1,0 +1,4 @@
+:-eval(remove($b).
+:-metadata(label($p))::Person(name->"Tisho",age->_),
+	metadata(label($b))::Buy(buyer->$p,seller->$s,item->"Object"),
+	Keep(keeper->$p,item->"Object").
