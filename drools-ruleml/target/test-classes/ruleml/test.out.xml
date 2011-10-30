@@ -1,0 +1,7 @@
+own(Person,Object):- 
+	buy(Person,Merchant,Object),
+	keep(Person,Object).
+buy(Person,Merchant,Object):- 
+	sell(Merchant,Person,Object).
+sell("John","Mary","XMLBible").
+keep("Mary","XMLBible").
