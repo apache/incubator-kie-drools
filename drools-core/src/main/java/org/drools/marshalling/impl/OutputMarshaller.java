@@ -166,7 +166,10 @@ public class OutputMarshaller {
         if ( processMarshaller != null ) {
             // this now just assigns the writer, it will not write out any timer information
             processMarshaller.writeProcessTimers( context );
-        }                
+        } 
+        else { 
+            context.stream.writeShort( PersisterEnums.END );
+        }
         
         // Only works for JpaJDKTimerService
         writeTimers( context.wm.getTimerService().getTimerJobInstances(), context );
