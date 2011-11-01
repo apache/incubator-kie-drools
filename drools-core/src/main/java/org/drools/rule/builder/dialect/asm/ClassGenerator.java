@@ -82,8 +82,12 @@ public class ClassGenerator {
         return bytecode;
     }
 
-    public Class<?> generateClass() {
-        if (clazz == null) clazz = classLoader.defineClass(className, generateBytecode());
+    private Class<?> generateClass() {
+        if (clazz == null) {
+            synchronized (classLoader) {
+                clazz = classLoader.defineClass(className, generateBytecode());
+            }
+        }
         return clazz;
     }
 

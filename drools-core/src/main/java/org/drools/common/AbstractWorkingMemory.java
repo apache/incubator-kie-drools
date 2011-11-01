@@ -270,6 +270,9 @@ public abstract class AbstractWorkingMemory
         this.handleFactory = handleFactory;
         this.environment = environment;
 
+        nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
+        actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
+
         Globals globals = (Globals) this.environment.get( EnvironmentName.GLOBALS );
         if ( globals != null ) {
             if ( !(globals instanceof GlobalResolver) ) {
@@ -990,7 +993,6 @@ public abstract class AbstractWorkingMemory
     }
 
     public Queue<WorkingMemoryAction> getActionQueue() {
-        if (actionQueue == null) actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
         return actionQueue;
     }
 
@@ -1014,7 +1016,6 @@ public abstract class AbstractWorkingMemory
      * @return The node's memory.
      */
     public Object getNodeMemory(final NodeMemory node) {
-        if (nodeMemories == null) nodeMemories = new ConcurrentNodeMemories( this.ruleBase );
         return nodeMemories.getNodeMemory( node );
     }
 

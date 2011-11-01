@@ -30,7 +30,7 @@ import static org.mvel2.asm.Opcodes.ATHROW;
 
 public class ASMConsequenceStubBuilder extends AbstractASMConsequenceBuilder {
 
-    protected byte[] createConsequenceBytecode(RuleBuildContext ruleContext, final Map<String, Object> consequenceContext) {
+    protected byte[] createConsequenceBytecode(final RuleBuildContext ruleContext, final Map<String, Object> consequenceContext) {
         final InvokerDataProvider data = new InvokerContext(consequenceContext);
         final ClassGenerator generator = createInvokerStubGenerator(data, ruleContext);
         createStubConsequence(generator, data, consequenceContext);

@@ -102,7 +102,7 @@ abstract public class AbstractRuleBase
     private transient ObjectHashSet                       statefulSessions;
 
     // lock for entire rulebase, used for dynamic updates
-    private final ReentrantReadWriteLock                  lock                         = new ReentrantReadWriteLock();
+    private final UpgradableReentrantReadWriteLock        lock                         = new UpgradableReentrantReadWriteLock();
 
     /**
      * This lock is used when adding to, or reading the <field>statefulSessions</field>
@@ -438,7 +438,7 @@ abstract public class AbstractRuleBase
             this.eventSupport.fireBeforeRuleBaseLocked();
         }
         // Always lock to increase the counter
-        this.lock.writeLock().lock();
+        this.lock.writeLock();
         if ( firstLock ) {
             this.additionsSinceLock = 0;
             this.removalsSinceLock = 0;
@@ -451,18 +451,18 @@ abstract public class AbstractRuleBase
         if ( lastUnlock ) {
             this.eventSupport.fireBeforeRuleBaseUnlocked();
         }
-        this.lock.writeLock().unlock();
+        this.lock.writeUnlock();
         if ( lastUnlock ) {
             this.eventSupport.fireAfterRuleBaseUnlocked();
         }
     }
 
     public void readLock() {
-        this.lock.readLock().lock();
+        this.lock.readLock();
     }
 
     public void readUnlock() {
-        this.lock.readLock().unlock();
+        this.lock.readUnlock();
     }
 
     /**

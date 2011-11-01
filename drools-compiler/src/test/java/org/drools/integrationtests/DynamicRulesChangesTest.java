@@ -1,10 +1,16 @@
 package org.drools.integrationtests;
 
+import org.drools.KnowledgeBaseFactory;
 import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.command.Command;
+import org.drools.command.CommandFactory;
 import org.drools.compiler.PackageBuilder;
+import org.drools.impl.InternalKnowledgeBase;
+import org.drools.runtime.ExecutionResults;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -12,10 +18,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
@@ -26,20 +30,30 @@ import static junit.framework.Assert.assertEquals;
 
 public class DynamicRulesChangesTest {
 
-    private static final int PARALLEL_THREADS = 3;
+    private static final int PARALLEL_THREADS = 1;
     private static final ExecutorService executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
 
-    private static final RuleBase ruleBase = RuleBaseFactory.newRuleBase(RuleBase.RETEOO, null);
+    private static InternalKnowledgeBase kbase;
+    private static RuleBase ruleBase;
 
-    @Test @Ignore
-    public void testConcurrentRuleAdditions() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+        ruleBase = kbase.getRuleBase();
         addRule("raiseAlarm");
+    }
 
-        Collection<Callable<List<String>>> solvers = new ArrayList<Callable<List<String>>>();
-        for (int i = 0; i < PARALLEL_THREADS; ++i) {
-            solvers.add(new RulesExecutor());
-        }
+    @Test(timeout=10000)
+    public void testConcurrentRuleAdditions() throws Exception {
+        parallelExecute(RulesExecutor.getSolvers());
+    }
 
+    @Test(timeout=10000)
+    public void testBatchRuleAdditions() throws Exception {
+        parallelExecute(BatchRulesExecutor.getSolvers());
+    }
+
+    private void parallelExecute(Collection<Callable<List<String>>> solvers) throws Exception {
         CompletionService<List<String>> ecs = new ExecutorCompletionService<List<String>>(executor);
         for (Callable<List<String>> s : solvers) {
             ecs.submit(s);
@@ -62,11 +76,13 @@ public class DynamicRulesChangesTest {
             ksession.insert(room1);
             FactHandle fireFact1 = ksession.insert(new Fire(room1));
             ksession.fireAllRules();
+            assertEquals(1, events.size());
 
             // phase 2
             Sprinkler sprinkler1 = new Sprinkler(room1);
             ksession.insert(sprinkler1);
             ksession.fireAllRules();
+            assertEquals(2, events.size());
 
             // phase 3
             ksession.retract(fireFact1);
@@ -75,25 +91,61 @@ public class DynamicRulesChangesTest {
             System.out.println(Thread.currentThread().getName() + " finished with: " + events);
             return events;
         }
+
+        public static Collection<Callable<List<String>>> getSolvers() {
+            Collection<Callable<List<String>>> solvers = new ArrayList<Callable<List<String>>>();
+            for (int i = 0; i < PARALLEL_THREADS; ++i) {
+                solvers.add(new RulesExecutor());
+            }
+            return solvers;
+        }
     }
 
-    // Util
+    public static class BatchRulesExecutor implements Callable<List<String>> {
 
-    private static final Set<String> addedRules = new HashSet<String>();
+        public List<String> call() throws Exception {
+            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            final List<String> events = new ArrayList<String>();
+            ksession.setGlobal("events", events);
 
-    public static void addRule(String ruleName) throws Exception {
-        // ensure the rule is added only once
-        synchronized (addedRules) {
-            if (addedRules.contains(ruleName)) return;
-            addedRules.add(ruleName);
-            compileAndAddRule(ruleName);
+            Room room1 = new Room("Room 1");
+            Fire fire1 = new Fire(room1);
+
+            // phase 1
+            List<Command> cmds = new ArrayList<Command>();
+            cmds.add(CommandFactory.newInsert(room1, "room1"));
+            cmds.add(CommandFactory.newInsert(fire1, "fire1"));
+            cmds.add(CommandFactory.newFireAllRules());
+            ksession.execute(CommandFactory.newBatchExecution(cmds));
+            assertEquals(1, events.size());
+
+            // phase 2
+            cmds = new ArrayList<Command>();
+            cmds.add(CommandFactory.newInsert(new Sprinkler(room1), "sprinkler1"));
+            cmds.add(CommandFactory.newFireAllRules());
+            ksession.execute(CommandFactory.newBatchExecution(cmds));
+            assertEquals(2, events.size());
+
+            // phase 3
+            cmds = new ArrayList<Command>();
+            cmds.add(CommandFactory.newRetract(ksession.getFactHandle(fire1)));
+            cmds.add(CommandFactory.newFireAllRules());
+            ksession.execute(CommandFactory.newBatchExecution(cmds));
+
+            System.out.println(Thread.currentThread().getName() + " finished with: " + events);
+            return events;
         }
 
-        // make the current thread yield so, possibly, another rule will be added by a different thread
-        Thread.yield();
+        public static Collection<Callable<List<String>>> getSolvers() {
+            Collection<Callable<List<String>>> solvers = new ArrayList<Callable<List<String>>>();
+            for (int i = 0; i < PARALLEL_THREADS; ++i) {
+                solvers.add(new BatchRulesExecutor());
+            }
+            return solvers;
+        }
     }
 
-    private static void compileAndAddRule(String ruleName) throws Exception {
+    public static void addRule(String ruleName) throws Exception {
         System.out.println(Thread.currentThread().getName() + " is adding rule: " + ruleName);
         String rule = rules.get(ruleName);
         PackageBuilder builder = new PackageBuilder();

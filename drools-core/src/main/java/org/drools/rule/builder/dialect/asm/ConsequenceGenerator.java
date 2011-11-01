@@ -32,7 +32,7 @@ import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ConsequenceGenerator {
 
-    public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+    public static void generate(final ConsequenceStub stub, final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) {
         final String[] declarationTypes = stub.getDeclarationTypes();
         final RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
