@@ -239,7 +239,7 @@ public class PatternBuilder
     public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
                                                       ObjectType objectType) {
         final InternalRuleBase ruleBase = context.getRuleBase();
-        ruleBase.readLock();
+        ruleBase.lock();
         try {
             InternalWorkingMemory[] wms = context.getWorkingMemories();
 
@@ -272,7 +272,7 @@ public class PatternBuilder
 
             return otn;
         } finally {
-            ruleBase.readUnlock();
+            ruleBase.unlock();
         }
     }
 

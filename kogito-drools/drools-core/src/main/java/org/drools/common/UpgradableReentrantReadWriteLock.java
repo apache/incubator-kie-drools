@@ -73,7 +73,7 @@ public class UpgradableReentrantReadWriteLock {
     private void notifyUpgradingThread() {
         if (shouldTryAtomicUpgrade && tryingLockUpgrade.get()) {
             synchronized (highPriorityMonitor) {
-                if (lock.getReadLockCount() < 2 && !lock.isWriteLocked() && lock.getQueueLength() == 0) {
+                if (lock.getReadLockCount() < 2 && !lock.isWriteLocked()) {
                     // all the read locks, except the one of the thread that is trying to upgrade its lock, have been released
                     highPriorityMonitor.notifyAll();
                 }
