@@ -57,36 +57,6 @@
     <module>drools-examples</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>4.0.0.CR2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate.common</groupId>
-        <artifactId>hibernate-commons-annotations</artifactId>
-        <version>4.0.0.CR2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>4.0.0.CR2</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>4.2.0.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.btm</groupId>
-        <artifactId>btm</artifactId>
-        <version>2.1.1</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>  
-  
   <profiles>
     <profile>
       <id>fullProfile</id>
