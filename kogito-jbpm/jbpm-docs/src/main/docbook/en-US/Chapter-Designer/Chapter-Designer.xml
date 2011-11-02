@@ -320,17 +320,16 @@ designer.profile=jbpm
       </imageobject>
     </mediaobject>
   </figure>
-  
-  <figure>
+
+  <para>The footer section also includes buttons to view the process sources in ERDF, JSON, SVG, and BPMN2 formats.</para>
+	<figure>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Designer/processpng.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-Designer/footer-buttons.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
-  
-  <para>The footer section also includes buttons to view the process sources in ERDF, JSON, SVG, and BPMN2 formats.</para>
-    
+	    
     </section>
 
   <section>
