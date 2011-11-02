@@ -86,9 +86,8 @@ public class UpgradableReentrantReadWriteLockTest {
     }
     
     @Test(timeout=10000)
-    @Ignore("Failing with atomic upgrade")
     public void testLock3() throws InterruptedException {
-        final int THREADS=10;
+        final int THREADS = 10;
         final UpgradableReentrantReadWriteLock lock = new UpgradableReentrantReadWriteLock(true);
         final CyclicBarrier sync = new CyclicBarrier( THREADS );
         final AtomicBoolean success = new AtomicBoolean( true );
@@ -101,11 +100,9 @@ public class UpgradableReentrantReadWriteLockTest {
                     lock.writeLock();
                     lock.writeUnlock();
                     lock.readUnlock();
-                    System.out.println(Thread.currentThread().getName()+" succeeded!");
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     success.set( false );
-                    System.out.println(Thread.currentThread().getName()+" failed!");
                 }
             }
         };
@@ -115,11 +112,9 @@ public class UpgradableReentrantReadWriteLockTest {
                     sync.await();
                     lock.writeLock();
                     lock.writeUnlock();
-                    System.out.println(Thread.currentThread().getName()+" succeeded!");
                 } catch ( Exception e ) {
                     e.printStackTrace();
                     success.set( false );
-                    System.out.println(Thread.currentThread().getName()+" failed!");
                 }
             }
         };
