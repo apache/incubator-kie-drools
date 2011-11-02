@@ -6,10 +6,7 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Designer</title>
 
-  <para>The designer is a web-based editor for viewing, creating and editing your business processes.
-  It is similar to the Eclipse-based designer and allows the creation of BPMN2 processes in a web
-  context. There is a palette on the left and a properties panel on the right (make sure to click the
-  arrows on the side of the canvas to make them visible if you cannot see them).</para>
+  <para>Web-based process editing is possible using the jBPM Designer. The designer is fully integrated into Drools Guvnor, the knowledge repository where you can store all your BPM assets such as of course your BPMN2 processes as well as rules, process images, workitem configurations, and process forms. The Designer can be used to create, view or update BPMN2 based processes which are executable in the jBPM runtime environment.</para>
   
   <figure>
     <mediaobject>
@@ -18,20 +15,12 @@
       </imageobject>
     </mediaobject>
   </figure>
-  
-  <figure>
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Designer/designer2.png" format="PNG" role="" />
-      </imageobject>
-    </mediaobject>
-  </figure>
 
   <para>Designer targets the following scenarios:</para>
 
   <itemizedlist>
-    <listitem>View existing BPMN2 processes: The designer allows you to open existing BPMN2 processes (for
-    example created using the BPMN2 Eclipse editor or any other tooling that exports BPMN 2.0 XML) in a web
+    <listitem>View and/or edit existing BPMN2 processes: The designer allows you to open existing BPMN2 processes (for
+    example created using the BPMN2 Eclipse editor or any other tooling that exports BPMN2 XML) in a web
     context.</listitem>
     <listitem>Create fully executable BPMN2 processes: A user can create a new BPMN2 process in the Designer and
     use the editing capabilities (drag and drop and filling in properties in the properties panel) to fill
@@ -41,22 +30,22 @@
     repository.</listitem>
   </itemizedlist>
   
-  <para>Designer supports full roundtripping of all BPMN2 elements supported by jBPM as well as all jBPM-specific BPMN2
+  <para>Designer supports all BPMN2 elements that are also supported by jBPM as well as all jBPM-specific BPMN2
   extension elements and attributes.</para>
     
   <section>
     <title>Installation</title>
     
     <para>If you are using the jBPM installer, this should automatically download and install the
-    latest version of the designer for you.  To manually install the designer, simply drop the designer
+    latest version of the designer for you. To manually install the designer, simply drop the designer
     war into your application server deploy folder. Currently out-of-the-box designer deployments exist for JBoss 
-    5.1.0 and JBoss 7. Note: If you want to deploy on other (versions of an) application server, you might
+    5.1.0 and JBoss AS7. Note: If you want to deploy on other (versions of an) application server, you might
     have to adjust the dependencies inside the war based on the default libraries provided by your
     application server. The latest version of the designer can be found 
     <ulink url="http://sourceforge.net/projects/jbpm/files/designer/">here</ulink>.</para>
     
-    <para>To open up the designer, open up Guvnor (e.g. <ulink url="http://localhost:8080/drools-guvnor">
-    http://localhost:8080/drools-guvnor</ulink>) and either open up an existing BPMN2 process or create
+    <para>To start working with the designer, open Guvnor (e.g. <ulink url="http://localhost:8080/drools-guvnor">
+    http://localhost:8080/drools-guvnor</ulink>) and either open an existing BPMN2 process or create
     a new one (under the "Knowledge Bases category on the left, select create new BPMN2 process").  This
     will open up the designer for the selected process in the center panel.  You can use the palette on the
     left to drag and drop node types and the properties tab on the right to fill in the details (if either
@@ -64,8 +53,8 @@
     
     <para>The designer may also be opened stand-alone by using the following link:
     <ulink url="http://localhost:8080/designer/editor?profile=jbpm&amp;uuid=123456">http://localhost:8080/designer/editor?profile=jbpm&amp;uuid=123456</ulink>
-    (where 123456 should be replaced by the id of the process in Guvnor). Note that running designer in this way allows you to only view existing processes,
-    and not save any edits nor create new ones. Information on how to integrate designer into your own applications can be found here: http://blog.athico.com/2011/04/using-oryx-designer-and-guvnor-in-your.html.</para>
+    (where 123456 should be replaced by the uuid of a process stored in Guvnor). Note that running designer in this way allows you to only view existing processes,
+    and not save any edits nor create new ones. Information on how to integrate designer into your own applications can be found <ulink url="http://blog.athico.com/2011/04/using-oryx-designer-and-guvnor-in-your.html">here</ulink>.</para>
     
   </section>
   
@@ -74,18 +63,18 @@
 
     <para>The designer source code is available for each release. You can find it <ulink url="http://sourceforge.net/projects/jbpm/files/designer/">here</ulink>.</para>
     
-    <para>You can also get to the sources and also contribute on <ulink url="https://github.com/tsurdilo/process-designer">github</ulink>.</para>
+    <para>You can also browse and clone the project on <ulink url="https://github.com/tsurdilo/process-designer">github</ulink>.</para>
   </section>
   
   <section>
     <title>Designer UI Explained</title>
     
-    <para>The Designer UI is composed of four sections as shown in the image below:</para>
+    <para>The Designer UI is composed of a number of sections as shown in the screenshot below:</para>
     
     <figure>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Designer/designer-ui.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-Designer/designer-ui-parts.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -102,6 +91,7 @@
       process properties.</listitem>
       <listitem>(4) Toolbar - the toolbar contains operations which can be performed on shapes present on the Canvas. Individual operations are disabled or enabled depending on what is selected. For example, if no shapes are selected,
       the Cut/Paste/Delete operations are disabled, and become enabled once you select a shape. Hovering over the icons in the Toolbar displays the description text of the operation.</listitem>
+      <listitem>(5) Footer - the footer contains operations that allow users to view the source of the process being editor in the Canvas section in various formats such as BPMN2, PNG, JSON, etc.</listitem>
     </itemizedlist>
    </para>
    
@@ -160,7 +150,7 @@
     
     
     <para>Once you have some service node configurations present, you can see them being included in Designer stencil 
-    set by re-opening or creating a new process. Your service nodes will be now available under the "Service Task" 
+    set by re-opening an existing or creating a new process. Your service nodes will be now available under the "Service Task" 
     section of the jBPM BPMN2 stencil set.
     </para>
     
@@ -267,11 +257,21 @@ designer.profile=jbpm
     <title>Generation of process and task forms</title>
 
     <para>Designer allows users to generate process and task ftl forms. These forms are fully usable in the jBPM console. To start
-    using this feature, locate the "Generate Task Form Templates" button in the designer toolbar. Designer will iterate
+    using this feature, locate the "Generate Task Form Templates" button in the designer toolbar:</para> 
+    
+    <figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Designer/button-create-task-forms.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+   </figure>
+    
+    <para>Designer will iterate
     through your process BPMN2 and create forms for your process, and each of the human tasks in your process. It uses
     the defined process variables and human task data input/output parameters and associations to create form fields. 
     The generated forms are stored in Guvnor, and user is presented with a page which shows each of the forms created
-    as well as a link to their sources in Guvnor.</para>
+    as well as a link to their sources in Guvnor:</para>
     
     <figure>
     <mediaobject>
@@ -309,7 +309,7 @@ designer.profile=jbpm
   <section>
     <title>View processes as PDF and PNG</title>
 
-    <para>Any process created in Designer can be easily viewed in PDF and PNG formats. In the Designer toolbar locate the "Convert to PDF" and "Convert to PNG" buttons.
+    <para>Any process created in Designer can be easily viewed in PDF and PNG formats. In the Designer footer section locate the "Convert to PDF" and "Convert to PNG" buttons.
     Both PDF and PNG formats are also stored in Guvnor, making it easily accessible. 
     </para>
     
@@ -328,6 +328,8 @@ designer.profile=jbpm
       </imageobject>
     </mediaobject>
   </figure>
+  
+  <para>The footer section also includes buttons to view the process sources in ERDF, JSON, SVG, and BPMN2 formats.</para>
     
     </section>
 
@@ -346,6 +348,15 @@ designer.profile=jbpm
       </imageobject>
     </mediaobject>
   </figure>
+  
+  <para>Same can be done by clicking on the BPMN2 button in the footer section of the designer:</para>
+  <figure>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Chapter-Designer/view-source-bpmn2.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
     
     </section>
     
@@ -356,6 +367,102 @@ designer.profile=jbpm
     asset repository for all of your process assets. For more information on this feature please view 
     <ulink url="http://vimeo.com/22033817">this video</ulink>.
     </para>
+    </section>
+    
+    <section>
+    	<title>Migrating existing jBPM 3.2 based processes to BPMN2</title>
+    	<para>To migrate your existing jBPM 3.2 based processes to BPMN2 locate the migration button in the toolbar section of the designer:</para>
+    	
+    	<figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/button-migrate-from-jpdl.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
+ 		 
+ 		 <para>The feature allows users to select the location of their processdefinition file, and the location of it's gpd.xml file. Designer then uses the <ulink url="https://github.com/droolsjbpm/jbpmmigration">jbpmmigration tool</ulink> to 
+ 		 convert the jBPM 3.2 based processes to BPMN2 and displays it onto the designer canvas:</para>
+ 		 
+ 		 <figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/jpdl-to-bpmn2-migrate.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
+ 		 <para>
+    		For more information on this feature please view 
+   			 <ulink url="http://vimeo.com/30857949">this</ulink> video.
+  		</para>
+    </section>
+    
+    
+    <section>
+    	<title>Visual Process Validation</title>
+    	<para>To run process validation against the process you are developing in the designer, locate the validation button in the designer toolbar section:</para>
+    	<figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/button-process-validation.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
+ 		 <para>In case of validation errors, designer presents a red "X" mark next to process nodes that contain them. Mouse-over this red "X" presents a tooltip with the descriptions of validation errors.
+ 		 Note that since the process node is not visually displayed, designer will merge all process-node-specific validation errors with those of the very first node of the BPMN2 process. Following
+ 		 is a screenshot of the visual process validation feature in use:</para>
+ 		 <figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/visual-validation.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
+ 		 <para>
+    		For more information on this feature please view 
+   			 <ulink url="http://vimeo.com/30857949">this</ulink> video.
+  		</para>
+    </section>
+    
+    <section>
+    	<title>Integration with the jBPM Service Repository</title>
+    	<para>Designer integrates with the <ulink url="http://kverlaen.blogspot.com/2011/10/introducing-service-repository.html">jBPM Service Repository and allows users to install and use assets from the repository.</ulink>.
+    	To connect to the Service Repository from designer, click on the service repository button in the designer toolbar:</para>
+    	<figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/button-query-service-repo.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
+ 		 <para>Designer will present you with all assets located in the jBPM service repository in table format. Colums of this table show information about the specific asset in the repo.
+ 		 To install the item to your local Guvnor package, simply double-click on the item row. You will have to save and re-open your process in order to be able to start using the installed items.</para>
+ 		 
+ 		 <figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/service-repository-integration.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
+ 		 <para>
+    		For more information on this feature please view 
+   			 <ulink url="http://vimeo.com/30857949">this</ulink> video.
+  		</para>
+    </section>
+    
+    <section>
+    	<title>Generating code to share the process image, PDF, and embedded process editor</title>
+    	<para>It is important to be able to share your process with users who do not have access to your running designer instance. For these cases
+    	designer allows code generation of "sharable" image, PDF and embedded editor code of your processes. To use this feature locate the following 
+    	dropdown in the designer toolbar section:</para>
+    	<figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/share-process-info.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+ 		 </figure>
     </section>
     
     <section>
