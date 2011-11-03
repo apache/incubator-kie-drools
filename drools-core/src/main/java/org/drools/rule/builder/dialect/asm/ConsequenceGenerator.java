@@ -32,14 +32,15 @@ import static org.mvel2.asm.Opcodes.RETURN;
 
 public class ConsequenceGenerator {
 
-    public static void generate(final ConsequenceStub stub, final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) {
-        final String[] declarationTypes = stub.getDeclarationTypes();
-        final RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
+    public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+        RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getActivation().getTuple().getLeftTupleSink();
         final Declaration[] declarations = rtn.getDeclarations();
+        final boolean isOrRule = rtn.getRule().getTransformedLhs().length > 1;
+        final String[] declarationTypes = stub.getDeclarationTypes();
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
-        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations, tuple);
+        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations);
 
         final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory).setInterfaces(Consequence.class, CompiledInvoker.class);
 
@@ -76,7 +77,7 @@ public class ConsequenceGenerator {
                     int objPos = ++objAstorePos;
                     paramsPos[i] = handlePos;
 
-                    if ( rtn.getRule().getTransformedLhs().length > 1 ) {
+                    if (isOrRule) {
                         // We do not generate an invoker per 'or' branch, so use runtime traversal for that
                         traverseTuplesUntilDeclarationWithOr(i, 4, 3, 5);                        
                     } else {
@@ -137,5 +138,4 @@ public class ConsequenceGenerator {
 
         stub.setConsequence(generator.<Consequence>newInstance());
     }
-
 }

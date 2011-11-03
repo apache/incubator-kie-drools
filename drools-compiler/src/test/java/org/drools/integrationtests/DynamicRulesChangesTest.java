@@ -35,11 +35,13 @@ public class DynamicRulesChangesTest {
 
     private static InternalKnowledgeBase kbase;
     private static RuleBase ruleBase;
+    private static PackageBuilder builder;
 
     @Before
     public void setUp() throws Exception {
         kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase = kbase.getRuleBase();
+        builder = new PackageBuilder();
         addRule("raiseAlarm");
     }
 
@@ -144,37 +146,42 @@ public class DynamicRulesChangesTest {
             return solvers;
         }
     }
-
+/*
     public static void addRule(String ruleName) throws Exception {
         System.out.println(Thread.currentThread().getName() + " is adding rule: " + ruleName);
         String rule = rules.get(ruleName);
-        PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(new StringReader(rule));
         ruleBase.addPackage(builder.getPackage());
+    }
+*/
+    public static void addRule(String ruleName) throws Exception {
+        System.out.println(Thread.currentThread().getName() + " is adding rule: " + ruleName);
+        String rule = rules.get(ruleName);
+        PackageBuilder builder1 = new PackageBuilder();
+        builder1.addPackageFromDrl(new StringReader(rule));
+        ruleBase.addPackage(builder1.getPackage());
     }
 
     // Rules
 
     private static Map<String, String> rules = new HashMap<String, String>() {{
         put("raiseAlarm",
-                "import org.drools.integrationtests.DynamicRulesChangesTest.*\n" +
                 "global java.util.List events\n" +
-                "rule \"Raise the alarm when we have one or more fires\"\n" +
+                "rule \"Raise the alarm when we have one or more fires\" lock-on-active\n" +
                 "when\n" +
-                "    exists Fire()\n" +
+                "    exists org.drools.integrationtests.DynamicRulesChangesTest.Fire()\n" +
                 "then\n" +
-                "    insert( new Alarm() );\n" +
+                "    insert( new org.drools.integrationtests.DynamicRulesChangesTest.Alarm() );\n" +
                 "    events.add( \"Raise the alarm\" );\n" +
                 "    org.drools.integrationtests.DynamicRulesChangesTest.addRule(\"onFire\");\n" +
                 "end");
 
        put("onFire",
-               "import org.drools.integrationtests.DynamicRulesChangesTest.*\n" +
                "global java.util.List events\n" +
-               "rule \"When there is a fire turn on the sprinkler\"\n" +
+               "rule \"When there is a fire turn on the sprinkler\" lock-on-active\n" +
                "when\n" +
-               "    $fire: Fire($room : room)\n" +
-               "    $sprinkler : Sprinkler( room == $room, on == false )\n" +
+               "    $fire: org.drools.integrationtests.DynamicRulesChangesTest.Fire($room : room)\n" +
+               "    $sprinkler : org.drools.integrationtests.DynamicRulesChangesTest.Sprinkler( room == $room, on == false )\n" +
                "then\n" +
                "    modify( $sprinkler ) { setOn( true ) };\n" +
                "    events.add( \"Turn on the sprinkler for room \" + $room.getName() );\n" +
@@ -182,13 +189,12 @@ public class DynamicRulesChangesTest {
                "end");
 
         put("fireGone",
-                "import org.drools.integrationtests.DynamicRulesChangesTest.*\n" +
                 "global java.util.List events\n" +
-                "rule \"When the fire is gone turn off the sprinkler\"\n" +
+                "rule \"When the fire is gone turn off the sprinkler\" lock-on-active\n" +
                 "when\n" +
-                "    $room : Room( )\n" +
-                "    $sprinkler : Sprinkler( room == $room, on == true )\n" +
-                "    not Fire( room == $room )\n" +
+                "    $room : org.drools.integrationtests.DynamicRulesChangesTest.Room( )\n" +
+                "    $sprinkler : org.drools.integrationtests.DynamicRulesChangesTest.Sprinkler( room == $room, on == true )\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Fire( room == $room )\n" +
                 "then\n" +
                 "    modify( $sprinkler ) { setOn( false ) };\n" +
                 "    events.add( \"Turn off the sprinkler for room \" + $room.getName() );\n" +
@@ -196,12 +202,11 @@ public class DynamicRulesChangesTest {
                 "end");
 
         put("cancelAlarm",
-                "import org.drools.integrationtests.DynamicRulesChangesTest.*\n" +
                 "global java.util.List events\n" +
                 "rule \"Cancel the alarm when all the fires have gone\"\n" +
                 "when\n" +
-                "    not Fire()\n" +
-                "    $alarm : Alarm()\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Fire()\n" +
+                "    $alarm : org.drools.integrationtests.DynamicRulesChangesTest.Alarm()\n" +
                 "then\n" +
                 "    retract( $alarm );\n" +
                 "    events.add( \"Cancel the alarm\" );\n" +
@@ -209,12 +214,11 @@ public class DynamicRulesChangesTest {
                 "end");
 
         put("status",
-                "import org.drools.integrationtests.DynamicRulesChangesTest.*\n" +
                 "global java.util.List events\n" +
                 "rule \"Status output when things are ok\"\n" +
                 "when\n" +
-                "    not Alarm()\n" +
-                "    not Sprinkler( on == true )\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Alarm()\n" +
+                "    not org.drools.integrationtests.DynamicRulesChangesTest.Sprinkler( on == true )\n" +
                 "then\n" +
                 "    events.add( \"Everything is ok\" );\n" +
                 "end");
