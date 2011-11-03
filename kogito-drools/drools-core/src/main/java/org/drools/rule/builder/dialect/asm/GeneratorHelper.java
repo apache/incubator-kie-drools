@@ -45,7 +45,7 @@ public final class GeneratorHelper {
 
     // DeclarationMatcher
 
-    static List<DeclarationMatcher> matchDeclarationsToTuple(String[] declarationTypes, Declaration[] declarations, LeftTuple tuple) {
+    static List<DeclarationMatcher> matchDeclarationsToTuple(String[] declarationTypes, Declaration[] declarations) {
         List<DeclarationMatcher> matchers = new ArrayList<DeclarationMatcher>();
         for (int i = 0; i < declarations.length; i++)
             matchers.add(new DeclarationMatcher(i, declarations[i].getPattern().getOffset()));

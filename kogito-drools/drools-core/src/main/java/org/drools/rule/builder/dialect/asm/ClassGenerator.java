@@ -84,9 +84,7 @@ public class ClassGenerator {
 
     private Class<?> generateClass() {
         if (clazz == null) {
-            synchronized (classLoader) {
-                clazz = classLoader.defineClass(className, generateBytecode());
-            }
+            clazz = classLoader.defineClass(className, generateBytecode());
         }
         return clazz;
     }
@@ -507,9 +505,14 @@ public class ClassGenerator {
 
             body.setClassGenerator(cg);
             body.setMethodVisitor(mv);
-            body.body(mv);
 
-            mv.visitMaxs(1, 1);
+            try {
+                body.body(mv);
+                mv.visitMaxs(1, 1);
+            } catch (Exception e) {
+                throw new RuntimeException("Error writing method " + name, e);
+            }
+
             mv.visitEnd();
         }
     }

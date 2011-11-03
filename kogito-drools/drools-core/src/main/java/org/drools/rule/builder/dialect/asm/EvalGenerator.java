@@ -37,7 +37,7 @@ public class EvalGenerator {
         final String[] globalTypes = stub.getGlobalTypes();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
-        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations, leftTuple);
+        final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarationTypes, declarations);
 
         final ClassGenerator generator = createInvokerClassGenerator(stub, workingMemory)
                 .setInterfaces(EvalExpression.class, CompiledInvoker.class);
