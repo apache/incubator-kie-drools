@@ -692,27 +692,27 @@ public abstract class AbstractWorkingMemory
                                         true ) ) {
             try {
                 startOperation();
+                ruleBase.readLock();
                 
-                synchronized ( this ) {
-                    // If we're already firing a rule, then it'll pick up
-                    // the firing for any other assertObject(..) that get
-                    // nested inside, avoiding concurrent-modification
-                    // exceptions, depending on code paths of the actions.
-                    if ( liaPropagations != null && isSequential() ) {
-                        for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
-                            ((LIANodePropagation) it.next()).doPropagation( this );
-                        }
+                // If we're already firing a rule, then it'll pick up
+                // the firing for any other assertObject(..) that get
+                // nested inside, avoiding concurrent-modification
+                // exceptions, depending on code paths of the actions.
+                if ( liaPropagations != null && isSequential() ) {
+                    for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
+                        ((LIANodePropagation) it.next()).doPropagation( this );
                     }
-
-                    // do we need to call this in advance?
-                    executeQueuedActions();
-
-                    int fireCount = 0;
-                    fireCount = this.agenda.fireAllRules( agendaFilter,
-                                                          fireLimit );
-                    return fireCount;
                 }
+
+                // do we need to call this in advance?
+                executeQueuedActions();
+
+                int fireCount = 0;
+                fireCount = this.agenda.fireAllRules( agendaFilter,
+                                                      fireLimit );
+                return fireCount;
             } finally {
+                ruleBase.readUnlock();
                 endOperation();
                 this.firing.set( false );
             }

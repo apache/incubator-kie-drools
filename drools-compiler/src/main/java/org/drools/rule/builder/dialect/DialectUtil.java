@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +63,8 @@ public final class DialectUtil {
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
         final String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
+        if (ext.equals("java")) return newName + "_" + generateUUID();
+
         final String fileName = packageName.replace('.', '/') + "/" + newName;
 
         if (src == null || !src.isAvailable(fileName + "." + ext)) return newName;
@@ -78,6 +81,13 @@ public final class DialectUtil {
         }
         // we have duplicate file names so append counter
         return newName + "_" + counter;
+    }
+
+    private static String generateUUID() {
+        char[] uuid = new char[32];
+        char[] chars = UUID.randomUUID().toString().toCharArray();
+        for (int i = 0, j = 0; i < 32; j++) if (chars[j] != '-') uuid[i++] = chars[j];
+        return new String(uuid);
     }
 
     public static String fixBlockDescr(final RuleBuildContext context,

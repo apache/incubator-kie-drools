@@ -30,18 +30,16 @@ import static junit.framework.Assert.assertEquals;
 
 public class DynamicRulesChangesTest {
 
-    private static final int PARALLEL_THREADS = 1;
+    private static final int PARALLEL_THREADS = 3;
     private static final ExecutorService executor = Executors.newFixedThreadPool(PARALLEL_THREADS);
 
     private static InternalKnowledgeBase kbase;
     private static RuleBase ruleBase;
-    private static PackageBuilder builder;
 
     @Before
     public void setUp() throws Exception {
         kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
         ruleBase = kbase.getRuleBase();
-        builder = new PackageBuilder();
         addRule("raiseAlarm");
     }
 
@@ -69,28 +67,33 @@ public class DynamicRulesChangesTest {
     public static class RulesExecutor implements Callable<List<String>> {
 
         public List<String> call() throws Exception {
-            StatefulSession ksession = ruleBase.newStatefulSession();
             final List<String> events = new ArrayList<String>();
-            ksession.setGlobal("events", events);
 
-            // phase 1
-            Room room1 = new Room("Room 1");
-            ksession.insert(room1);
-            FactHandle fireFact1 = ksession.insert(new Fire(room1));
-            ksession.fireAllRules();
-            assertEquals(1, events.size());
+            try {
+                StatefulSession ksession = ruleBase.newStatefulSession();
+                ksession.setGlobal("events", events);
 
-            // phase 2
-            Sprinkler sprinkler1 = new Sprinkler(room1);
-            ksession.insert(sprinkler1);
-            ksession.fireAllRules();
-            assertEquals(2, events.size());
+                // phase 1
+                Room room1 = new Room("Room 1");
+                ksession.insert(room1);
+                FactHandle fireFact1 = ksession.insert(new Fire(room1));
+                ksession.fireAllRules();
+                assertEquals(1, events.size());
 
-            // phase 3
-            ksession.retract(fireFact1);
-            ksession.fireAllRules();
+                // phase 2
+                Sprinkler sprinkler1 = new Sprinkler(room1);
+                ksession.insert(sprinkler1);
+                ksession.fireAllRules();
+                assertEquals(2, events.size());
 
-            System.out.println(Thread.currentThread().getName() + " finished with: " + events);
+                // phase 3
+                ksession.retract(fireFact1);
+                ksession.fireAllRules();
+            } catch (Exception e) {
+                System.err.println("Exception in thread " + Thread.currentThread().getName() + ": " + e.getLocalizedMessage());
+                throw e;
+            }
+
             return events;
         }
 
@@ -106,35 +109,40 @@ public class DynamicRulesChangesTest {
     public static class BatchRulesExecutor implements Callable<List<String>> {
 
         public List<String> call() throws Exception {
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
             final List<String> events = new ArrayList<String>();
-            ksession.setGlobal("events", events);
 
-            Room room1 = new Room("Room 1");
-            Fire fire1 = new Fire(room1);
+            try {
+                StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+                ksession.setGlobal("events", events);
 
-            // phase 1
-            List<Command> cmds = new ArrayList<Command>();
-            cmds.add(CommandFactory.newInsert(room1, "room1"));
-            cmds.add(CommandFactory.newInsert(fire1, "fire1"));
-            cmds.add(CommandFactory.newFireAllRules());
-            ksession.execute(CommandFactory.newBatchExecution(cmds));
-            assertEquals(1, events.size());
+                Room room1 = new Room("Room 1");
+                Fire fire1 = new Fire(room1);
 
-            // phase 2
-            cmds = new ArrayList<Command>();
-            cmds.add(CommandFactory.newInsert(new Sprinkler(room1), "sprinkler1"));
-            cmds.add(CommandFactory.newFireAllRules());
-            ksession.execute(CommandFactory.newBatchExecution(cmds));
-            assertEquals(2, events.size());
+                // phase 1
+                List<Command> cmds = new ArrayList<Command>();
+                cmds.add(CommandFactory.newInsert(room1, "room1"));
+                cmds.add(CommandFactory.newInsert(fire1, "fire1"));
+                cmds.add(CommandFactory.newFireAllRules());
+                ksession.execute(CommandFactory.newBatchExecution(cmds));
+                assertEquals(1, events.size());
 
-            // phase 3
-            cmds = new ArrayList<Command>();
-            cmds.add(CommandFactory.newRetract(ksession.getFactHandle(fire1)));
-            cmds.add(CommandFactory.newFireAllRules());
-            ksession.execute(CommandFactory.newBatchExecution(cmds));
+                // phase 2
+                cmds = new ArrayList<Command>();
+                cmds.add(CommandFactory.newInsert(new Sprinkler(room1), "sprinkler1"));
+                cmds.add(CommandFactory.newFireAllRules());
+                ksession.execute(CommandFactory.newBatchExecution(cmds));
+                assertEquals(2, events.size());
 
-            System.out.println(Thread.currentThread().getName() + " finished with: " + events);
+                // phase 3
+                cmds = new ArrayList<Command>();
+                cmds.add(CommandFactory.newRetract(ksession.getFactHandle(fire1)));
+                cmds.add(CommandFactory.newFireAllRules());
+                ksession.execute(CommandFactory.newBatchExecution(cmds));
+            } catch (Exception e) {
+                System.err.println("Exception in thread " + Thread.currentThread().getName() + ": " + e.getLocalizedMessage());
+                throw e;
+            }
+
             return events;
         }
 
@@ -146,20 +154,12 @@ public class DynamicRulesChangesTest {
             return solvers;
         }
     }
-/*
+
     public static void addRule(String ruleName) throws Exception {
-        System.out.println(Thread.currentThread().getName() + " is adding rule: " + ruleName);
         String rule = rules.get(ruleName);
+        PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl(new StringReader(rule));
         ruleBase.addPackage(builder.getPackage());
-    }
-*/
-    public static void addRule(String ruleName) throws Exception {
-        System.out.println(Thread.currentThread().getName() + " is adding rule: " + ruleName);
-        String rule = rules.get(ruleName);
-        PackageBuilder builder1 = new PackageBuilder();
-        builder1.addPackageFromDrl(new StringReader(rule));
-        ruleBase.addPackage(builder1.getPackage());
     }
 
     // Rules
