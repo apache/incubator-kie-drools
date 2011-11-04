@@ -539,6 +539,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         <para>A process instance can be signaled that a specific event occurred
         using</para>
         <programlisting language="java">ksession.signalEvent(eventType, data, processInstanceId)</programlisting>
+        <para>This will trigger all (active) signal event nodes in the given process
         instance that are waiting for that event type.  Data related to the event
         can be passed using the data parameter.  If the event node specifies a
         variable name, this data will be copied to that variable when the event
@@ -558,7 +559,6 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         
     </section>
     
-        <para>This will trigger all (active) signal event nodes in the given process
     </section>
     
     </section>
