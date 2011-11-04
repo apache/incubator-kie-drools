@@ -4,6 +4,7 @@ import org.drools.lang.api.DeclareDescrBuilder;
 import org.drools.lang.api.EntryPointDeclarationDescrBuilder;
 import org.drools.lang.api.PackageDescrBuilder;
 import org.drools.lang.api.TypeDeclarationDescrBuilder;
+import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.PackageDescr;
 
 public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuilder, PackageDescr>
@@ -24,6 +25,12 @@ public class DeclareDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
         TypeDeclarationDescrBuilder tddb = new TypeDeclarationDescrBuilderImpl( parent );
         descr.addTypeDeclaration( tddb.getDescr() );
         return tddb;
+    }
+
+    public WindowDeclarationDescrBuilder window() {
+        WindowDeclarationDescrBuilder wddb = new WindowDeclarationDescrBuilderImpl( parent );
+        descr.addWindowDeclaration( wddb.getDescr() );
+        return wddb;
     }
 
 

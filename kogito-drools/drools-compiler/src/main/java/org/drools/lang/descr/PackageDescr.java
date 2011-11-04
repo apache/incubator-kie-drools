@@ -44,6 +44,7 @@ public class PackageDescr extends BaseDescr
     private List<RuleDescr>                 rules                  = Collections.emptyList();
     private List<TypeDeclarationDescr>      typeDeclarations       = Collections.emptyList();
     private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
+    private Set<WindowDeclarationDescr>     windowDeclarations     = Collections.emptySet();
 
     public PackageDescr() {
         this( "", 
@@ -72,6 +73,9 @@ public class PackageDescr extends BaseDescr
         attributes = (List<AttributeDescr>) in.readObject();
         globals = (List<GlobalDescr>) in.readObject();
         functions = (List<FunctionDescr>) in.readObject();
+        typeDeclarations = (List<TypeDeclarationDescr>) in.readObject();
+        entryPointDeclarations = (Set<EntryPointDeclarationDescr>) in.readObject();
+        windowDeclarations = (Set<WindowDeclarationDescr>) in.readObject();
         rules = (List<RuleDescr>) in.readObject();
         entryPointDeclarations = (Set<EntryPointDeclarationDescr>) in.readObject();
         typeDeclarations = (List<TypeDeclarationDescr>) in.readObject();
@@ -86,6 +90,9 @@ public class PackageDescr extends BaseDescr
         out.writeObject( attributes );
         out.writeObject( globals );
         out.writeObject( functions );
+        out.writeObject( typeDeclarations );
+        out.writeObject( entryPointDeclarations );
+        out.writeObject( windowDeclarations );
         out.writeObject( rules );
         out.writeObject( entryPointDeclarations );
         out.writeObject( typeDeclarations );
@@ -211,5 +218,16 @@ public class PackageDescr extends BaseDescr
     
     public Set<EntryPointDeclarationDescr> getEntryPointDeclarations() {
         return this.entryPointDeclarations;
+    }
+
+    public Set<WindowDeclarationDescr> getWindowDeclarations() {
+        return this.windowDeclarations;
+    }
+    
+    public void addWindowDeclaration( WindowDeclarationDescr window ) {
+        if ( this.windowDeclarations == Collections.EMPTY_SET ) {
+            this.windowDeclarations = new HashSet<WindowDeclarationDescr>();
+        }
+        this.windowDeclarations.add( window );
     }
 }
