@@ -11,7 +11,7 @@
   more detail on how to define the processes themselves, check out the chapter on BPMN 2.0.
   </para>
 
-  <para>To interact with the process engine (to for example start a process), you need
+  <para>To interact with the process engine (for example, to start a process), you need
   to set up a session.  This session will be used to communicate with the process engine.
   A session needs to have a reference to a knowledge base, which contains a reference
   to all the relevant process definitions.  This knowledge base is used to look up 
@@ -35,7 +35,7 @@
   could then define one or more process definitions that define how the order should be
   processed.  When starting up your application, you first need to create a knowledge base
   that contains those process definitions.  You can then create a session based on this
-  knowledge base so that, whenever a new sales order then comes in, a new process instance
+  knowledge base so that, whenever a new sales order comes in, a new process instance
   is started for that sales order.  That process instance contains the state of the process
   for that specific sales request.</para>
   
@@ -45,13 +45,13 @@
   dynamically changed (so you can add or remove processes at runtime).</para>
   
   <para>Sessions can be created based on a knowledge base and are used to execute processes
-  and interact with the engine.  You can create as much independent session as you want and
+  and interact with the engine.  You can create as many independent session as you need and
   creating a session is considered relatively lightweight.  How many sessions you create is
   up to you.  In general, most simple cases start out with creating one session that is then
   called from various places in your application.  You could decide to create multiple sessions
-  if for example you want to have multiple independent processing units (for example, you want
-  all processes from one customer be completely independent of processes of another customer
-  so you could create an independent session for each customer), or if you need multiple
+  if for example you want to have multiple independent processing units (for example, if you want
+  all processes from one customer to be completely independent from processes for another customer,
+  you could create an independent session for each customer) or if you need multiple
   sessions for scalability reasons.  If you don't know what to do, simply start by having
   one knowledge base that contains all your process definitions and one create session that
   you then use to execute all your processes.</para>
@@ -63,7 +63,7 @@
   with and the actual implementation classes.  The public API exposes most of the features
   we believe "normal" users can safely use and should remain rather stable across releases.
   Expert users can still access internal classes but should be aware that they should know
-  what they are doing and that internal API might still change in the future.</para>
+  what they are doing and that the internal API might still change in the future.</para>
   
   <para>As explained above, the jBPM API should thus be used to (1) create a knowledge base
   that contains your process definitions, and to (2) create a session to start new process

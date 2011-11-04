@@ -39,7 +39,7 @@
       <para>The graphical BPMN2 editor is a editor that allows you to create a process
       by dragging and dropping different nodes on a canvas and editing the properties of these
       nodes.  The graphical BPMN2 editor is part of the jBPM / Drools Eclipse plugin.  Once
-      you have set up a jBPM project (see the installer for creating an working Eclipse
+      you have set up a jBPM project (see the installer for creating a working Eclipse
       environment where you can start), you can start adding processes.  When in a project,
       launch the "New" wizard (use Ctrl+N) or right-click the directory you would like to put
       your process in and select "New", then "File".  Give the file a name and the extension
@@ -355,7 +355,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
 
         <para>The end of the process.  A process
         should have one or more end events.  The End Event should have one incoming
-        connection and cannot have outgoing connections.  It contains the following
+        connection and cannot have any outgoing connections.  It contains the following
         properties:</para>
         <itemizedlist>
           <listitem> 
@@ -366,17 +366,17 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             <para><emphasis>Name</emphasis>: The display name of the node.</para>
           </listitem>
           <listitem>
-            <para><emphasis>Terminate</emphasis>: An End Event can be terminating for
-            the entire process or just for the path. When a process instance is
+            <para><emphasis>Terminate</emphasis>: An End Event can terminate
+            the entire process or just the path. When a process instance is
             terminated, it means its state is set to completed and all other nodes 
             that might still be active (on parallel paths) in this
             process instance are cancelled. Non-terminating end events are simply ends
             for this path (execution of this branch will end here), but other parallel
-            paths can still continue.  A process instances will automatically complete
+            paths can still continue.  A process instance will automatically complete
             if there are no more active paths inside that process instance (for example,
             if a process instance reaches a non-terminating end node but there are no
             more active branches inside the process instance, the process instance
-            will be completed anyway).  Terminating end event are
+            will be completed anyway).  Terminating end events are
             visualized using a full circle inside the event node, non-terminating event
             nodes are empty.  Note that, if you use a terminating event node inside a sub-process,
             you are terminating the top-level process instance, not just that sub-process.</para>
@@ -415,7 +415,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
           </listitem>
           <listitem>
             <para><emphasis>FaultName</emphasis>: The name of the fault.  This
-            name is used to search for appropriate exception handlers that is
+            name is used to search for appropriate exception handlers that are
             capable of handling this kind of fault.</para>
           </listitem>
           <listitem>
@@ -426,7 +426,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         </itemizedlist>
         
         <para>Error handlers can be specified using boundary events.  This is however
-        currently only possible by doing this in XML directly.  We will
+        currently only possible when working with XML directly.  We will
         be adding support for graphically specifying this in the new BPMN2 editor.</para>
     
     </section>
@@ -476,7 +476,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
             before triggering the timer.  The expression could also use #{expr} to
             dynamically derive the delay based on some process variable.  Expr in this
             case could be a process variable, or a more complex expression based on a
-            process variable (e.g. myVariable.getValue()).</para>.
+            process variable (e.g. myVariable.getValue()).</para>
           </listitem>
           <listitem>
             <para><emphasis>Timer period</emphasis>: The period
@@ -493,7 +493,7 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         </itemizedlist>
         
         <para>Timer events could also be specified as boundary events on sub-processes.
-        This is however currently only possible by doing this in XML directly.  We will
+        This is however currently only possible when working with XML directly.  We will
         be adding support for graphically specifying this in the new BPMN2 editor.</para>
         
     </section>
@@ -539,7 +539,6 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
         <para>A process instance can be signaled that a specific event occurred
         using</para>
         <programlisting language="java">ksession.signalEvent(eventType, data, processInstanceId)</programlisting>
-        <para>This will trigger all (active) signal event nodes in the given process
         instance that are waiting for that event type.  Data related to the event
         can be passed using the data parameter.  If the event node specifies a
         variable name, this data will be copied to that variable when the event
@@ -554,11 +553,12 @@ RuleFlowProcess process = factory.validate().getProcess();</programlisting>
   eventType, data, kcontext.getProcessInstance().getId());</programlisting>
 
         <para>A throwing signal events could also be used to model the signaling of an
-        event. This is however currently only possible by doing this in XML directly.  We will
+        event. This is however currently only possible when working with XML directly.  We will
         be adding support for graphically specifying this in the new BPMN2 editor.</para>
         
     </section>
     
+        <para>This will trigger all (active) signal event nodes in the given process
     </section>
     
     </section>
@@ -1427,7 +1427,7 @@ System.out.println( person.name );
         Timer node also cancels the associated timer, after which no more triggers
         will occur.</para></listitem>
         <listitem><para>Timers can be associated with a Sub-Process as a boundary event.
-        This is however currently only possible by doing this in XML directly.  We will
+        This is however currently only possible when working with XML directly.  We will
         be adding support for graphically specifying this in the new BPMN2 editor.</para></listitem>
       </itemizedlist>
 
