@@ -1,9 +1,0 @@
-rule "For CE test"
-when
-     for( $cheese : Cheese( $price : price, type == "stilton" );
-          $sum : sum( $price ),
-          $cnt : count(),
-          $lst : collectList( $cheese, "price" );
-          $lst.size > 1, $cnt < 5 )
-then
-end

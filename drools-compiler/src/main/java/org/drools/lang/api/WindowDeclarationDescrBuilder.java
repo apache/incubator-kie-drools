@@ -16,35 +16,23 @@
 
 package org.drools.lang.api;
 
-import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.WindowDeclarationDescr;
 
 /**
- *  A descriptor builder for declare statements
- *  
+ *  A descriptor builder for declared types
  */
-public interface DeclareDescrBuilder
+public interface WindowDeclarationDescrBuilder
     extends
-    DescrBuilder<PackageDescrBuilder, PackageDescr > {
+    AnnotatedDescrBuilder<WindowDeclarationDescrBuilder>,
+    DescrBuilder<PackageDescrBuilder, WindowDeclarationDescr> {
 
     /**
-     * Declares a new entry point
+     * Defines the window name
+     *  
+     * @param name the window name
      * 
-     * @return the descriptor builder for the entry point
+     * @return itself
      */
-    public EntryPointDeclarationDescrBuilder entryPoint();
-
-    /**
-     * Declares a new type
-     * 
-     * @return the descriptor builder for the type
-     */
-    public TypeDeclarationDescrBuilder type();
-    
-    /**
-     * Declares a new window
-     * 
-     * @return the descriptor builder for the window
-     */
-    public WindowDeclarationDescrBuilder window();
+    public WindowDeclarationDescrBuilder name( String name );
 
 }

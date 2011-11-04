@@ -60,6 +60,7 @@ import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.lang.descr.WindowDeclarationDescr;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -1393,16 +1394,16 @@ public class RuleParserTest extends TestCase {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "multiple_rules.drl" );
 
-        final List rules = pkg.getRules();
+        final List<RuleDescr> rules = pkg.getRules();
 
         assertEquals( 2,
                       rules.size() );
 
-        final RuleDescr rule0 = (RuleDescr) rules.get( 0 );
+        final RuleDescr rule0 = rules.get( 0 );
         assertEquals( "Like Stilton",
                       rule0.getName() );
 
-        final RuleDescr rule1 = (RuleDescr) rules.get( 1 );
+        final RuleDescr rule1 = rules.get( 1 );
         assertEquals( "Like Cheddar",
                       rule1.getName() );
 
@@ -2001,11 +2002,11 @@ public class RuleParserTest extends TestCase {
         assertEquals( 2,
                       pkg.getRules().size() );
 
-        final List functions = pkg.getFunctions();
+        final List<FunctionDescr> functions = pkg.getFunctions();
         assertEquals( 2,
                       functions.size() );
 
-        FunctionDescr func = (FunctionDescr) functions.get( 0 );
+        FunctionDescr func = functions.get( 0 );
         assertEquals( "functionA",
                       func.getName() );
         assertEquals( "String",
@@ -2032,7 +2033,7 @@ public class RuleParserTest extends TestCase {
         assertEqualsIgnoreWhitespace( "foo();",
                                       func.getBody() );
 
-        func = (FunctionDescr) functions.get( 1 );
+        func = functions.get( 1 );
         assertEquals( "functionB",
                       func.getName() );
         assertEqualsIgnoreWhitespace( "bar();",
@@ -2494,11 +2495,10 @@ public class RuleParserTest extends TestCase {
                                                                "test_EndPosition.drl" );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        // assertEquals( 6,
-        // col.getLine() );
-        //
-        // assertEquals( 8,
-        // col.getEndLine() );
+        assertEquals( 6,
+                      col.getLine() );
+        assertEquals( 8,
+                      col.getEndLine() );
     }
 
     @Test
@@ -2595,7 +2595,7 @@ public class RuleParserTest extends TestCase {
                                                   "rule X when Foo(eval( $var.equals(\"xyz\") )) then end" );
 
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        final List constraints = pattern.getConstraint().getDescrs();
+        final List<?> constraints = pattern.getConstraint().getDescrs();
         assertEquals( 1,
                       constraints.size() );
 
@@ -2674,39 +2674,12 @@ public class RuleParserTest extends TestCase {
         final PatternDescr pattern = forall.getBasePattern();
         assertEquals( "Person",
                       pattern.getObjectType() );
-        final List remaining = forall.getRemainingPatterns();
+        final List<BaseDescr> remaining = forall.getRemainingPatterns();
         assertEquals( 1,
                       remaining.size() );
         final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
         assertEquals( "Cheese",
                       cheese.getObjectType() );
-    }
-
-    @Test
-    public void testForCE() throws Exception {
-        final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
-                                                               "forCE.drl" );
-        //
-        //        final PackageDescr pkg = walker.getPackageDescr();
-        //        assertEquals( 1,
-        //                      pkg.getRules().size() );
-        //        final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
-        //        assertEquals( 1,
-        //                      rule.getLhs().getDescrs().size() );
-        //
-        //        final ForallDescr forall = (ForallDescr) rule.getLhs().getDescrs().get( 0 );
-        //
-        //        assertEquals( 2,
-        //                      forall.getDescrs().size() );
-        //        final PatternDescr pattern = forall.getBasePattern();
-        //        assertEquals( "Person",
-        //                      pattern.getObjectType() );
-        //        final List remaining = forall.getRemainingPatterns();
-        //        assertEquals( 1,
-        //                      remaining.size() );
-        //        final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
-        //        assertEquals( "Cheese",
-        //                      cheese.getObjectType() );
     }
 
     @Test
@@ -2729,7 +2702,7 @@ public class RuleParserTest extends TestCase {
                       pattern.getObjectType() );
         assertEquals( "$village",
                       ((FromDescr) pattern.getSource()).getDataSource().toString() );
-        final List remaining = forall.getRemainingPatterns();
+        final List<BaseDescr> remaining = forall.getRemainingPatterns();
         assertEquals( 1,
                       remaining.size() );
         final PatternDescr cheese = (PatternDescr) remaining.get( 0 );
@@ -4033,7 +4006,33 @@ public class RuleParserTest extends TestCase {
                       epd.getAnnotation( "source" ).getValue() );
         assertEquals( "true",
                       epd.getAnnotation( "foo" ).getValue() );
+    }
 
+    @Test
+    public void testWindowDeclaration() throws Exception {
+        final String text = "package org.drools\n" +
+                            "declare window Ticks\n" +
+                            "    @doc(\"last 10 stock ticks\")\n" +
+                            "    $s : StockTick( source == \"NYSE\" )\n" +
+                            "        over window:length( 10, $s.symbol )" +
+                            "        from entry-point stStream" +
+                            "end";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 text );
+
+        assertEquals( "org.drools",
+                      pkg.getName() );
+        assertEquals( 1,
+                      pkg.getWindowDeclarations().size() );
+
+        WindowDeclarationDescr wdd = pkg.getWindowDeclarations().iterator().next();
+
+        assertEquals( "Ticks",
+                      wdd.getName() );
+        assertEquals( 1,
+                      wdd.getAnnotations().size() );
+        assertEquals( "\"last 10 stock ticks\"",
+                      wdd.getAnnotation( "doc" ).getValue() );
     }
 
     private Object parse( final String parserRuleName,
