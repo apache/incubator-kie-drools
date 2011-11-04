@@ -113,7 +113,7 @@ public final class GeneratorHelper {
             }
         })
         .addMethod(ACC_PUBLIC, "getMethodBytecode", generator.methodDescr(List.class), new GetMethodBytecodeMethod(data))
-        .addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class), INVOKER_EQUALS_METHOD);
+        .addMethod(ACC_PUBLIC, "equals", generator.methodDescr(Boolean.TYPE, Object.class), new EqualsMethod());
 
         return generator;
     }
@@ -151,8 +151,6 @@ public final class GeneratorHelper {
             mv.visitInsn(ARETURN);
         }
     }
-
-    public static final ClassGenerator.MethodBody INVOKER_EQUALS_METHOD = new EqualsMethod();
 
     public static class EqualsMethod extends ClassGenerator.MethodBody {
 
