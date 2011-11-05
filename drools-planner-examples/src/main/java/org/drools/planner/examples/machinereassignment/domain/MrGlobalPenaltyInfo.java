@@ -22,31 +22,31 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("MrGlobalPenaltyInfo")
 public class MrGlobalPenaltyInfo extends AbstractPersistable {
 
-    private int processMoveCost;
-    private int serviceMoveCost;
-    private int machineMoveCost;
+    private int processMovePenaltyCost;
+    private int serviceMovePenaltyCost;
+    private int machineMovePenaltyCost;
 
-    public int getProcessMoveCost() {
-        return processMoveCost;
+    public int getProcessMovePenaltyCost() {
+        return processMovePenaltyCost;
     }
 
-    public void setProcessMoveCost(int processMoveCost) {
-        this.processMoveCost = processMoveCost;
+    public void setProcessMovePenaltyCost(int processMovePenaltyCost) {
+        this.processMovePenaltyCost = processMovePenaltyCost;
     }
 
-    public int getServiceMoveCost() {
-        return serviceMoveCost;
+    public int getServiceMovePenaltyCost() {
+        return serviceMovePenaltyCost;
     }
 
-    public void setServiceMoveCost(int serviceMoveCost) {
-        this.serviceMoveCost = serviceMoveCost;
+    public void setServiceMovePenaltyCost(int serviceMovePenaltyCost) {
+        this.serviceMovePenaltyCost = serviceMovePenaltyCost;
     }
 
-    public int getMachineMoveCost() {
-        return machineMoveCost;
+    public int getMachineMovePenaltyCost() {
+        return machineMovePenaltyCost;
     }
 
-    public void setMachineMoveCost(int machineMoveCost) {
-        this.machineMoveCost = machineMoveCost;
+    public void setMachineMovePenaltyCost(int machineMovePenaltyCost) {
+        this.machineMovePenaltyCost = machineMovePenaltyCost;
     }
 }

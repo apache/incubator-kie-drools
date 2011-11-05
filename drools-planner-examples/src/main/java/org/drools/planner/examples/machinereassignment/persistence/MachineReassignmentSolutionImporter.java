@@ -314,9 +314,9 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
             globalPenaltyInfo.setId(0L);
             String line = readStringValue();
             String[] lineTokens = splitBySpace(line, 3);
-            globalPenaltyInfo.setProcessMoveCost(Integer.parseInt(lineTokens[0]));
-            globalPenaltyInfo.setServiceMoveCost(Integer.parseInt(lineTokens[1]));
-            globalPenaltyInfo.setMachineMoveCost(Integer.parseInt(lineTokens[2]));
+            globalPenaltyInfo.setProcessMovePenaltyCost(Integer.parseInt(lineTokens[0]));
+            globalPenaltyInfo.setServiceMovePenaltyCost(Integer.parseInt(lineTokens[1]));
+            globalPenaltyInfo.setMachineMovePenaltyCost(Integer.parseInt(lineTokens[2]));
             machineReassignment.setGlobalPenaltyInfo(globalPenaltyInfo);
         }
 

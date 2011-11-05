@@ -167,10 +167,11 @@ end
 // Process move cost
 rule "processMoveCost"
     when
+        MrGlobalPenaltyInfo(processMovePenaltyCost > 0, $processMovePenaltyCost : processMovePenaltyCost)
         $processAssignment : MrProcessAssignment(moved == true, processMoveCost > 0, $processMoveCost : processMoveCost)
     then
         insertLogical(new IntConstraintOccurrence("processMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $processMoveCost,
+                $processMoveCost * $processMovePenaltyCost,
                 $processAssignment));
 end
 
@@ -189,23 +190,25 @@ end
 
 rule "serviceMoveCost"
     when
+        MrGlobalPenaltyInfo(serviceMovePenaltyCost > 0, $serviceMovePenaltyCost : serviceMovePenaltyCost)
         $serviceMovedProcessesCount : MrServiceMovedProcessesCount($service : service, $serviceId : serviceId,
                 $movedProcessesCount : movedProcessesCount)
         not MrServiceMovedProcessesCount(movedProcessesCount > $movedProcessesCount)
         not MrServiceMovedProcessesCount(movedProcessesCount == $movedProcessesCount, serviceId < $serviceId)
     then
         insertLogical(new IntConstraintOccurrence("serviceMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $movedProcessesCount,
+                $movedProcessesCount * $serviceMovePenaltyCost,
                 $service));
 end
 
 // Machine move cost
 rule "machineMoveCost"
     when
+        MrGlobalPenaltyInfo(machineMovePenaltyCost > 0, $machineMovePenaltyCost : machineMovePenaltyCost)
         $processAssignment : MrProcessAssignment(moved == true, machineMoveCost > 0, $machineMoveCost : machineMoveCost)
     then
         insertLogical(new IntConstraintOccurrence("machineMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $machineMoveCost,
+                $machineMoveCost * $machineMovePenaltyCost,
                 $processAssignment));
 end
 
