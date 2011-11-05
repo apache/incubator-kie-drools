@@ -187,7 +187,17 @@ rule "serviceMovedProcessesCount"
         insertLogical(new MrServiceMovedProcessesCount($service, $movedProcessesCount.intValue()));
 end
 
-// TODO
+rule "serviceMoveCost"
+    when
+        $serviceMovedProcessesCount : MrServiceMovedProcessesCount($service : service, $serviceId : serviceId,
+                $movedProcessesCount : movedProcessesCount)
+        not MrServiceMovedProcessesCount(movedProcessesCount > $movedProcessesCount)
+        not MrServiceMovedProcessesCount(movedProcessesCount == $movedProcessesCount, serviceId < $serviceId)
+    then
+        insertLogical(new IntConstraintOccurrence("serviceMoveCost", ConstraintType.NEGATIVE_SOFT,
+                $movedProcessesCount,
+                $service));
+end
 
 // Machine move cost
 rule "machineMoveCost"

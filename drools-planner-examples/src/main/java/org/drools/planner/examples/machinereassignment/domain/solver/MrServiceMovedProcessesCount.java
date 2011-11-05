@@ -64,6 +64,10 @@ public class MrServiceMovedProcessesCount implements Serializable {
                 .toHashCode();
     }
 
+    public Long getServiceId() {
+        return service.getId();
+    }
+
     @Override
     public String toString() {
         return service + "=" + movedProcessesCount;
