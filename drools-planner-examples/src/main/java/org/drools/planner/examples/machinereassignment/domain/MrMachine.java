@@ -28,6 +28,7 @@ public class MrMachine extends AbstractPersistable {
     private MrLocation location;
 
     private Map<MrResource, MrMachineCapacity> machineCapacityMap;
+    private Map<MrMachine, MrMachineMoveCost> machineMoveCostMap;
 
     public MrNeighborhood getNeighborhood() {
         return neighborhood;
@@ -57,8 +58,20 @@ public class MrMachine extends AbstractPersistable {
         return machineCapacityMap.get(resource);
     }
 
+    public Map<MrMachine, MrMachineMoveCost> getMachineMoveCostMap() {
+        return machineMoveCostMap;
+    }
+
+    public void setMachineMoveCostMap(Map<MrMachine, MrMachineMoveCost> machineMoveCostMap) {
+        this.machineMoveCostMap = machineMoveCostMap;
+    }
+
     public String getLabel() {
         return "Machine " + getId();
+    }
+
+    public int getMoveCostTo(MrMachine toMachine) {
+        return machineMoveCostMap.get(toMachine).getMoveCost();
     }
 
 }

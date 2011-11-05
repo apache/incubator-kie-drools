@@ -120,8 +120,12 @@ public class MrProcessAssignment extends AbstractPersistable {
         return ObjectUtils.equals(originalMachine, machine);
     }
 
-    public int getMoveCost() {
+    public int getProcessMoveCost() {
         return process.getMoveCost();
+    }
+
+    public int getMachineMoveCost() {
+        return machine == null ? 0 : originalMachine.getMoveCostTo(machine);
     }
 
     public MrNeighborhood getNeighborhood() {

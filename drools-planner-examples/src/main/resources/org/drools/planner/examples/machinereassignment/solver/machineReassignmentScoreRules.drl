@@ -166,10 +166,10 @@ end
 // Process move cost
 rule "processMoveCost"
     when
-        $processAssignment : MrProcessAssignment(moved == true, moveCost > 0, $moveCost : moveCost)
+        $processAssignment : MrProcessAssignment(moved == true, processMoveCost > 0, $processMoveCost : processMoveCost)
     then
         insertLogical(new IntConstraintOccurrence("processMoveCost", ConstraintType.NEGATIVE_SOFT,
-                $moveCost,
+                $processMoveCost,
                 $processAssignment));
 end
 
@@ -177,7 +177,14 @@ end
 // TODO
 
 // Machine move cost
-// TODO
+rule "machineMoveCost"
+    when
+        $processAssignment : MrProcessAssignment(moved == true, machineMoveCost > 0, $machineMoveCost : machineMoveCost)
+    then
+        insertLogical(new IntConstraintOccurrence("machineMoveCost", ConstraintType.NEGATIVE_SOFT,
+                $machineMoveCost,
+                $processAssignment));
+end
 
 //rule "cloudComputerCost"
 //    when

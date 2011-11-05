@@ -175,15 +175,20 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                     machineCapacityId++;
                 }
                 machine.setMachineCapacityMap(machineCapacityMap);
+                Map<MrMachine, MrMachineMoveCost> machineMoveCostMap
+                        = new LinkedHashMap<MrMachine, MrMachineMoveCost>(machineListSize);
                 for (int j = 0; j < machineListSize; j++) {
                     MrMachineMoveCost machineMoveCost = new MrMachineMoveCost();
                     machineMoveCost.setId(machineMoveCostId);
                     machineMoveCost.setFromMachine(machine);
-                    machineMoveCost.setToMachine(machineList.get(j));
+                    MrMachine toMachine = machineList.get(j);
+                    machineMoveCost.setToMachine(toMachine);
                     machineMoveCost.setMoveCost(Integer.parseInt(lineTokens[moveCostOffset + j]));
                     machineMoveCostList.add(machineMoveCost);
+                    machineMoveCostMap.put(toMachine, machineMoveCost);
                     machineMoveCostId++;
                 }
+                machine.setMachineMoveCostMap(machineMoveCostMap);
             }
             machineReassignment.setNeighborhoodList(neighborhoodList);
             machineReassignment.setLocationList(locationList);
