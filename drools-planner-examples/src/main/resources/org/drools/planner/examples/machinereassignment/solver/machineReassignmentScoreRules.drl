@@ -36,6 +36,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
 import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
 global HardAndSoftConstraintScoreCalculator scoreCalculator;
 
@@ -174,6 +175,18 @@ rule "processMoveCost"
 end
 
 // Service move cost
+rule "serviceMovedProcessesCount"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+        $service : MrService()
+        $movedProcessesCount : Number() from accumulate(
+                $processAssignment : MrProcessAssignment(service == $service, moved == true),
+            count($processAssignment)
+        )
+    then
+        insertLogical(new MrServiceMovedProcessesCount($service, $movedProcessesCount.intValue()));
+end
+
 // TODO
 
 // Machine move cost
@@ -185,16 +198,6 @@ rule "machineMoveCost"
                 $machineMoveCost,
                 $processAssignment));
 end
-
-//rule "cloudComputerCost"
-//    when
-//        $cloudComputer : CloudComputer($cost : cost)
-//        exists CloudProcess(cloudComputer == $cloudComputer)
-//    then
-//        insertLogical(new IntConstraintOccurrence("cloudComputerCost", ConstraintType.NEGATIVE_SOFT,
-//                $cost,
-//                $cloudComputer));
-//end
 
 // ############################################################################
 // Calculate score
