@@ -17,6 +17,7 @@
 package org.drools.planner.examples.machinereassignment.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
@@ -113,6 +114,14 @@ public class MrProcessAssignment extends AbstractPersistable {
 
     public MrService getService() {
         return process.getService();
+    }
+
+    public boolean isMoved() {
+        return ObjectUtils.equals(originalMachine, machine);
+    }
+
+    public int getMoveCost() {
+        return process.getMoveCost();
     }
 
     public MrNeighborhood getNeighborhood() {

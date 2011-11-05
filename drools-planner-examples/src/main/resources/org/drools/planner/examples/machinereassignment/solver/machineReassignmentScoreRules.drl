@@ -164,7 +164,14 @@ end
 // TODO
 
 // Process move cost
-// TODO
+rule "processMoveCost"
+    when
+        $processAssignment : MrProcessAssignment(moved == true, moveCost > 0, $moveCost : moveCost)
+    then
+        insertLogical(new IntConstraintOccurrence("processMoveCost", ConstraintType.NEGATIVE_SOFT,
+                $moveCost,
+                $processAssignment));
+end
 
 // Service move cost
 // TODO
