@@ -18,6 +18,7 @@ import org.drools.marshalling.impl.PersisterEnums;
 import org.drools.marshalling.impl.ProcessMarshaller;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.impl.WorkItemImpl;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
