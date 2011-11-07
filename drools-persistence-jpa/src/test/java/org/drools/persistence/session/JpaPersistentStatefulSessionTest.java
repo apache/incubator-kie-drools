@@ -1,21 +1,33 @@
+/*
+ * Copyright 2011 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.persistence.session;
 
+import static org.junit.Assert.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.InitialContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
-
-import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
@@ -26,44 +38,36 @@ import org.drools.command.impl.LoggingInterceptor;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
-public class JpaPersistentStatefulSessionTest extends TestCase {
+public class JpaPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
     
-    private PoolingDataSource ds1;
-    private EntityManagerFactory emf;
+    private HashMap<String, Object> context;
     private Environment env;
 
-    @Override
-    protected void setUp() throws Exception {
-        ds1 = setupPoolingDataSource();
-        ds1.init();
+    @Before
+    public void setUp() throws Exception {
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        env = createEnvironment(context);
+    }
         
-        env = KnowledgeBaseFactory.newEnvironment();
-        emf = Persistence.createEntityManagerFactory( DROOLS_PERSISTENCE_UNIT_NAME );
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
-
+    @After
+    public void tearDown() throws Exception {
+        PersistenceUtil.tearDown(context);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        ds1.close();
-        emf.close();
-    }
 
+    @Test
     public void testFactHandleSerialization() {
         String str = "";
         str += "package org.drools.test\n";
@@ -126,6 +130,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
         
     }
     
+    @Test
     public void testLocalTransactionPerStatement() {
         String str = "";
         str += "package org.drools.test\n";
@@ -166,6 +171,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
 
     }
 
+    @Test
     public void testUserTransactions() throws Exception {
         String str = "";
         str += "package org.drools.test\n";
@@ -254,6 +260,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
                       list.size() );
     }
 
+    @Test
     public void testInterceptor() {
         String str = "";
         str += "package org.drools.test\n";
@@ -292,6 +299,7 @@ public class JpaPersistentStatefulSessionTest extends TestCase {
         assertEquals( 3, list.size() );
     }
     
+    @Test
     public void testSetFocus() {
         String str = "";
         str += "package org.drools.test\n";

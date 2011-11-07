@@ -1,13 +1,26 @@
+/*
+ * Copyright 2011 Red Hat Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.drools.persistence.session;
 
+import static org.junit.Assert.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
@@ -20,29 +33,29 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.KnowledgeCommandContext;
 import org.drools.io.impl.ClassPathResource;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.impl.InternalAgenda;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+public class RuleFlowGroupRollbackTest {
+    
+    private HashMap<String, Object> context;
 
-public class RuleFlowGroupRollbackTest extends TestCase {
-	
-	PoolingDataSource ds1;
-
-    @Override
-    protected void setUp() throws Exception {
-        ds1 = setupPoolingDataSource();
-        ds1.init();
+    @Before
+    public void setUp() throws Exception {
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
     }
 	
-	@Override
-	protected void tearDown() {
-		ds1.close();
+	@After
+	public void tearDown() {
+		PersistenceUtil.tearDown(context);
 	}
-	
+
+    @Test	
 	public void testRuleFlowGroupRollback() throws Exception {
 		
 		CommandBasedStatefulKnowledgeSession ksession = createSession();
@@ -79,13 +92,8 @@ public class RuleFlowGroupRollbackTest extends TestCase {
 
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.drools.persistence.jpa" );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
-
+        Environment env = createEnvironment(context);
         return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        
 	}
 	
 	@SuppressWarnings("serial")
