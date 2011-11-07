@@ -184,5 +184,105 @@
         </mediaobject>
       </figure>
     </section>
+
+    <section>
+      <title>Guided Decision Table - Binding condition fields</title>
+
+      <para>You can now bind fields in Conditions to variables. These
+      variables can then be used in Predicate or Forumla conditions, and Work
+      Item actions.</para>
+
+      <figure>
+        <title>Binding a field</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-field-binding1.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>A Decision Table using bound fields</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-field-binding2.png"
+                       format="PNG" scalefit="1"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Guided Decision Table - Using jBPM Work Item actions</title>
+
+      <para>jBPM Work Items can now be used as Actions; and the corresponding
+      Work Item Handler invoked at runtime. Work Item Handlers should be added
+      to the runtime session as normal.</para>
+
+      <para>Work Item input parameters can either be defined as a literal
+      value in the column definition or as a Fact or Fact Field
+      binding.</para>
+
+      <para>New Actions have been created to perform the following
+      functions:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Execute a Work Item</para>
+        </listitem>
+
+        <listitem>
+          <para>Set the value of a field on an existing Fact to the value of a
+          Work Item output (result) parameter.</para>
+        </listitem>
+
+        <listitem>
+          <para>Set the value of a field on a new Fact to the value of a Work
+          Item output (result) parameter.</para>
+        </listitem>
+      </itemizedlist>
+
+      <figure>
+        <title>New Actions</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-workitems1.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Calling a Work Item</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-workitems2.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Setting a field from a Work Item output (result)
+        parameter</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Release_Notes/dtable-workitems3.png"
+                       format="PNG" scalefit="0"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
   </section>
 </section>
