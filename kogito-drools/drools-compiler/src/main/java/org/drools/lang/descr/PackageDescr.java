@@ -46,6 +46,8 @@ public class PackageDescr extends BaseDescr
     private Set<EntryPointDeclarationDescr> entryPointDeclarations = Collections.emptySet();
 
     public PackageDescr() {
+        this( "", 
+              "");
     }
 
     public PackageDescr(final String namespace) {
@@ -71,6 +73,8 @@ public class PackageDescr extends BaseDescr
         globals = (List<GlobalDescr>) in.readObject();
         functions = (List<FunctionDescr>) in.readObject();
         rules = (List<RuleDescr>) in.readObject();
+        entryPointDeclarations = (Set<EntryPointDeclarationDescr>) in.readObject();
+        typeDeclarations = (List<TypeDeclarationDescr>) in.readObject();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
@@ -83,6 +87,8 @@ public class PackageDescr extends BaseDescr
         out.writeObject( globals );
         out.writeObject( functions );
         out.writeObject( rules );
+        out.writeObject( entryPointDeclarations );
+        out.writeObject( typeDeclarations );
     }
 
     public String getNamespace() {
