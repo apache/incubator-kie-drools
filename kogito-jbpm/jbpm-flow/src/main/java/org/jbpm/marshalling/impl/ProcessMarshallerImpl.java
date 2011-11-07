@@ -138,12 +138,16 @@ public class ProcessMarshallerImpl implements ProcessMarshaller {
 	    }
     }
 
-    public void readProcessInstances(MarshallerReaderContext context) throws IOException {
+    public List<ProcessInstance> readProcessInstances(MarshallerReaderContext context) throws IOException {
         ObjectInputStream stream = context.stream;
+        List<ProcessInstance> processInstanceList = new ArrayList<ProcessInstance>();
         while ( stream.readShort() == PersisterEnums.PROCESS_INSTANCE ) {
         	String processType = stream.readUTF();
-        	ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType).readProcessInstance(context);
+        	ProcessInstance processInstance 
+        	    = ProcessMarshallerRegistry.INSTANCE.getMarshaller(processType).readProcessInstance(context);
+        	processInstanceList.add(processInstance);
         }
+        return processInstanceList;
     }
 
     public void readWorkItems(MarshallerReaderContext context) throws IOException {
