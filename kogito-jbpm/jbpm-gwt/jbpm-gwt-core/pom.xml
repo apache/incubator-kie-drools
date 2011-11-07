@@ -22,7 +22,7 @@
             </testResource>
         </testResources>
     </build>
-    
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jbpm</groupId>
@@ -95,28 +95,27 @@
 			<groupId>org.drools</groupId>
 			<artifactId>drools-persistence-jpa</artifactId>
 			<scope>test</scope>
-        </dependency>
-	    <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-persistence-jpa</artifactId>
-            <scope>test</scope>
-	    </dependency>
-	    <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-persistence-jpa</artifactId>
-            <type>test-jar</type>
-            <version>${project.version}</version>
-            <scope>test</scope>
-	    </dependency>
-        <dependency>
-    	   <groupId>org.jbpm</groupId>
-    	   <artifactId>jbpm-gwt-shared</artifactId>
-    	    <scope>compile</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
+    </dependency>
+	  <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+	  </dependency>
+	  <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-persistence-jpa</artifactId>
+      <scope>test</scope>
+	  </dependency>
+    <dependency>
+    	<groupId>org.jbpm</groupId>
+    	<artifactId>jbpm-gwt-shared</artifactId>
+    	<scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
 	</dependencies>
 
 </project>

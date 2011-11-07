@@ -22,7 +22,7 @@
         </testResource>
     </testResources>
   </build>
-  
+ 
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -34,10 +34,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-persistence-jpa</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
       <type>test-jar</type>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -6,10 +6,12 @@
         <jta-data-source>jdbc/testDS1</jta-data-source>        
         <class>org.drools.persistence.info.SessionInfo</class>
         <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
-        <class>org.jbpm.persistence.session.MyEntity</class>
-        <class>org.jbpm.persistence.session.MyEntityMethods</class>
-        <class>org.jbpm.persistence.session.MyEntityOnlyFields</class>
+        <class>org.jbpm.persistence.session.objects.MyEntity</class>
+        <class>org.jbpm.persistence.session.objects.MyEntityMethods</class>
+        <class>org.jbpm.persistence.session.objects.MyEntityOnlyFields</class>
+        <class>org.jbpm.persistence.session.objects.MyVariableExtendingSerializable</class>
         <class>org.drools.persistence.info.WorkItemInfo</class>
+        <class>org.drools.marshalling.util.MarshalledData</class>
         <properties>
             <property name="hibernate.max_fetch_depth" value="3"/>
 		    <property name="hibernate.hbm2ddl.auto" value="update" />

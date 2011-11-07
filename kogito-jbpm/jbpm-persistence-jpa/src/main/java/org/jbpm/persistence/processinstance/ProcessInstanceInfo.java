@@ -266,6 +266,10 @@ public class ProcessInstanceInfo{
     public Set<String> getEventTypes() {
         return eventTypes;
     }
+
+    public byte [] getProcessInstanceByteArray() { 
+        return processInstanceByteArray;
+    }
     
     public void clearProcessInstance(){
         processInstance = null;
