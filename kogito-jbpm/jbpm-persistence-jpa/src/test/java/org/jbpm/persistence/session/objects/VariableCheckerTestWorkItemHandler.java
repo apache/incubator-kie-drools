@@ -1,4 +1,4 @@
-package org.jbpm.persistence.session;
+package org.jbpm.persistence.session.objects;
 
 import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;

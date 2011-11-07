@@ -1,15 +1,15 @@
 package org.jbpm.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.apache.log4j.xml.DOMConfigurator;
@@ -24,22 +24,25 @@ import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.process.core.Work;
 import org.drools.process.core.impl.WorkImpl;
 import org.drools.rule.Package;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
-import org.jbpm.JbpmTestCase;
 import org.jbpm.compiler.ProcessBuilderImpl;
+import org.jbpm.persistence.JbpmTestCase;
+import org.jbpm.persistence.map.impl.JpaBasedPersistenceTest;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
 import org.jbpm.persistence.processinstance.JPASignalManagerFactory;
+import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -53,38 +56,39 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
-
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.Test;
 
 public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
-	private PoolingDataSource ds1;
-	private EntityManagerFactory emf;
+	private HashMap<String, Object> context;
+	private Environment env;
     
     static {
 		DOMConfigurator.configure(SingleSessionCommandServiceTest.class.getResource("/log4j.xml"));
     }
     
-    protected void setUp() {
-        ds1 = setupPoolingDataSource();
-        
-        ds1.init();
-        emf = Persistence.createEntityManagerFactory( JBPM_PERSISTENCE_UNIT_NAME );
+    @Before
+    public void setUp() {
+        String testMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
+        if( testMethodName.startsWith("testPersistenceTimer") ) { 
+            context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
+        }
+        else { 
+            context = PersistenceUtil.setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
+        }
+        env = PersistenceUtil.createEnvironment(context);
     }
 
-    protected void tearDown() {
-        emf.close();
-        ds1.close();
+    @After
+    public void tearDown() {
+        PersistenceUtil.tearDown(context);
     }
 
+    @Test
     public void testPersistenceWorkItems() throws Exception {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
         kbase.addKnowledgePackages( kpkgs );
@@ -193,14 +197,9 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         assertNull( processInstance );
         service.dispose();
     }
-
+    
+    @Test
     public void testPersistenceWorkItemsUserTransaction() throws Exception {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
         kbase.addKnowledgePackages( kpkgs );
@@ -327,7 +326,6 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         service.dispose();
     }
 
-    @SuppressWarnings("unused")
 	private Collection<KnowledgePackage> getProcessWorkItems() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
@@ -400,13 +398,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         return list;
     }
 
+    @Test
     public void testPersistenceSubProcess() {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
                                 SingleSessionCommandService.class.getName() );
@@ -484,7 +477,6 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         service.dispose();
     }
 
-    @SuppressWarnings("unused")
 	private Package getProcessSubProcess() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
@@ -591,13 +583,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         return packageBuilder.getPackage();
     }
 
+    @Test
     public void testPersistenceTimer() throws Exception {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
                                 SingleSessionCommandService.class.getName() );
@@ -649,7 +636,6 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         assertNull( processInstance );
     }
 
-    @SuppressWarnings("unused")
 	private List<KnowledgePackage> getProcessTimer() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );
@@ -700,13 +686,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         return list;
     }
 
+    @Test
     public void testPersistenceTimer2() throws Exception {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
                                 SingleSessionCommandService.class.getName() );
@@ -745,7 +726,6 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
         assertNull( processInstance );
     }
 
-    @SuppressWarnings("unused")
 	private List<KnowledgePackage> getProcessTimer2() {
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId( "org.drools.test.TestProcess" );

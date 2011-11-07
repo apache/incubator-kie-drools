@@ -1,6 +1,4 @@
-package org.jbpm;
-
-import junit.framework.TestCase;
+package org.jbpm.persistence;
 
 import org.drools.compiler.ProcessBuilderFactory;
 import org.drools.marshalling.impl.ProcessMarshallerFactory;
@@ -9,7 +7,7 @@ import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 
-public abstract class JbpmTestCase extends TestCase {
+public abstract class JbpmTestCase {
 	
 	static {
 		ProcessBuilderFactory.setProcessBuilderFactoryService(new ProcessBuilderFactoryServiceImpl());

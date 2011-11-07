@@ -6,8 +6,8 @@
 
   <header>
     <imports>
-      <import name="org.jbpm.persistence.session.MyEntity" />
-      <import name="org.jbpm.persistence.session.MyVariableSerializable" />
+      <import name="org.jbpm.persistence.session.objects.MyEntity" />
+      <import name="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       <import name="javax.persistence.EntityManager" />
       <import name="org.drools.runtime.EnvironmentName" />
     </imports>

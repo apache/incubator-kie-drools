@@ -29,10 +29,14 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 public class BPMN2XMLTest extends XMLTestCase {
 	
+    private Logger logger = LoggerFactory.getLogger(BPMN2XMLTest.class);
+   
 	private static final String[] processes = {
 		"BPMN2-SimpleXMLProcess.bpmn2",
 //		"BPMN2-MinimalProcess.xml",
@@ -56,9 +60,10 @@ public class BPMN2XMLTest extends XMLTestCase {
             assertEquals(1, processes.size());
             RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
 			String result = XmlBPMNProcessDumper.INSTANCE.dump(p, XmlBPMNProcessDumper.META_DATA_USING_DI);
-			System.out.println(original);
-			System.out.println("---------------------------------------------------------------");
-			System.out.println(result);
+			logger.debug(original);
+			logger.debug("---------------------------------------------------------------");
+			logger.debug(result);
+			// TODO: ? commented out: "Comparing original with result process"
 //			assertXMLEqual("Comparing original with result process", original, result);
 		}
 	}

@@ -13,6 +13,7 @@ import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 public abstract class MapPersistenceTest {
 
@@ -42,6 +43,7 @@ public abstract class MapPersistenceTest {
                                                                           workName ) );
 
         StatefulKnowledgeSession ksession = createSession(kbase);
+        int ksessionId = ksession.getId();
 
         DummyWorkItemHandler handler = new DummyWorkItemHandler();
         ksession.getWorkItemManager()
@@ -49,7 +51,9 @@ public abstract class MapPersistenceTest {
 
         long process1Id = ksession.startProcess(processId).getId();
 
-        ksession = disposeAndReloadSession(ksession, kbase);
+        LoggerFactory.getLogger(this.getClass()).info("DISPOSE..");
+        ksession = disposeAndReloadSession(ksession, ksessionId, kbase);
+        LoggerFactory.getLogger(this.getClass()).info("..AND RELOAD");
         ksession.getWorkItemManager().registerWorkItemHandler(workName, handler);
 
         long workItemId = handler.getLatestWorkItem().getId();
@@ -99,7 +103,9 @@ public abstract class MapPersistenceTest {
                                                                           workName ) );
 
         StatefulKnowledgeSession ksession1 = createSession(kbase);
+        int ksession1Id = ksession1.getId();
         StatefulKnowledgeSession ksession2 = createSession(kbase);
+        int ksession2Id = ksession2.getId();
 
         DummyWorkItemHandler handler1 = new DummyWorkItemHandler();
         ksession1.getWorkItemManager()
@@ -113,13 +119,13 @@ public abstract class MapPersistenceTest {
 
         long process1Id = ksession1.startProcess( processId ).getId();
         long workItem1Id = handler1.getLatestWorkItem().getId();
-        ksession1 = disposeAndReloadSession( ksession1,
+        ksession1 = disposeAndReloadSession( ksession1, ksession1Id,
                                              kbase);
         ksession1.getWorkItemManager().completeWorkItem( workItem1Id,
                                                          null );
         Assert.assertNull( ksession1.getProcessInstance( process1Id ) );
 
-        ksession2 = disposeAndReloadSession(ksession2, kbase);
+        ksession2 = disposeAndReloadSession(ksession2, ksession2Id, kbase);
         Assert.assertNotNull(ksession2);
 
         ksession2.getWorkItemManager()
@@ -270,6 +276,7 @@ public abstract class MapPersistenceTest {
     protected abstract StatefulKnowledgeSession createSession(KnowledgeBase kbase);
     
     protected abstract StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession crmPersistentSession,
+                                                                        int ksessionId,
                                                                         KnowledgeBase kbase);
 
     protected abstract int getProcessInstancesCount();

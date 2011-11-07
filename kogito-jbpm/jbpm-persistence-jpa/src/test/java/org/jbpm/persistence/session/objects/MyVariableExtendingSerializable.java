@@ -1,6 +1,8 @@
-package org.jbpm.persistence.session;
+package org.jbpm.persistence.session.objects;
 
 public class MyVariableExtendingSerializable extends MyVariableSerializable {
+
+    private static final long serialVersionUID = 1L;
 
     public MyVariableExtendingSerializable(String string) {
         super( string );

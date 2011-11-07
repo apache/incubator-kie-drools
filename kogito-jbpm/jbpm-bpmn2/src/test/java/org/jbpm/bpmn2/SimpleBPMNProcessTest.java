@@ -49,7 +49,6 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.jbpm.JbpmJUnitTestCase;
 import org.jbpm.bpmn2.core.Association;
 import org.jbpm.bpmn2.core.DataStore;
 import org.jbpm.bpmn2.core.Definitions;
@@ -64,12 +63,25 @@ import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 
+    private Logger logger = LoggerFactory.getLogger(SimpleBPMNProcessTest.class);
+    
+    protected void setUp() { 
+        String testName = getName();
+        if( testName.startsWith("testEventBasedSplit") || testName.startsWith("testTimerBoundaryEvent") 
+             || testName.startsWith("testIntermediateCatchEventTimer") || testName.startsWith("testTimerStart") ) { 
+            persistence = false;
+        }
+        super.setUp();
+    }
+    
 	public void testMinimalProcess() throws Exception {
 		KnowledgeBase kbase = createKnowledgeBase("BPMN2-MinimalProcess.bpmn2");
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
@@ -133,7 +145,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertNotNull(p);
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder(conf);
-		// System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
 				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
 		kbuilder.add(
@@ -141,7 +153,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 				ResourceType.DRL);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");
@@ -180,7 +192,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertNotNull(p);
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder(conf);
-		// System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
 				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
 		kbuilder.add(
@@ -188,7 +200,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 				ResourceType.DRL);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");
@@ -728,7 +740,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 				ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");
@@ -750,15 +762,15 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 		ksession.addEventListener(new DefaultProcessEventListener() {
 			public void afterProcessStarted(ProcessStartedEvent event) {
-				System.out.println(event);
+				logger.debug(event.toString());
 			}
 
 			public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-				System.out.println(event);
+				logger.debug(event.toString());
 			}
 
 			public void afterVariableChanged(ProcessVariableChangedEvent event) {
-				System.out.println(event);
+				logger.debug(event.toString());
 			}
 		});
 		ProcessInstance processInstance = ksession.startProcess("SubProcess");
@@ -874,7 +886,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
 		Thread.sleep(1000);
 		ksession = restoreSession(ksession, true);
-		System.out.println("Firing timer");
+		logger.debug("Firing timer");
 		ksession.fireAllRules();
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 	}
@@ -900,7 +912,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		assertNotNull(p);
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder(conf);
-		// System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
 				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
 		kbuilder.add(ResourceFactory
@@ -908,7 +920,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 				ResourceType.DRL);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");
@@ -928,7 +940,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
 				workItemHandler);
 		ksession.fireAllRules();
-		System.out.println("Signaling Hello2");
+		logger.debug("Signaling Hello2");
 		ksession.signalEvent("Hello2", null, processInstance.getId());
 		workItem = workItemHandler.getWorkItem();
 		assertNotNull(workItem);
@@ -958,7 +970,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		RuleFlowProcess p = (RuleFlowProcess) processes.get(0);
 		KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
 				.newKnowledgeBuilder(conf);
-		// System.out.println(XmlBPMNProcessDumper.INSTANCE.dump(p));
+		// logger.debug(XmlBPMNProcessDumper.INSTANCE.dump(p));
 		kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
 				XmlBPMNProcessDumper.INSTANCE.dump(p))), ResourceType.BPMN2);
 		kbuilder.add(ResourceFactory
@@ -966,7 +978,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 				ResourceType.DRL);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");
@@ -1003,7 +1015,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 		ksession = restoreSession(ksession, true);
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
 				new DoNothingWorkItemHandler());
-		System.out.println("Triggering node");
+		logger.debug("Triggering node");
 		ksession.signalEvent("Task1", null, processInstance.getId());
 		assertProcessInstanceActive(processInstance.getId(), ksession);
 		ksession.signalEvent("User1", null, processInstance.getId());
@@ -1725,7 +1737,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 						+ process));
 		for (Process p : processes) {
 			RuleFlowProcess ruleFlowProcess = (RuleFlowProcess) p;
-			System.out.println(XmlBPMNProcessDumper.INSTANCE
+			logger.debug(XmlBPMNProcessDumper.INSTANCE
 					.dump(ruleFlowProcess));
 			kbuilder.add(ResourceFactory.newReaderResource(new StringReader(
 					XmlBPMNProcessDumper.INSTANCE.dump(ruleFlowProcess))),
@@ -1737,7 +1749,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 								+ process))), ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");
@@ -1770,7 +1782,7 @@ public class SimpleBPMNProcessTest extends JbpmJUnitTestCase {
 								+ process))), ResourceType.BPMN2);
 		if (!kbuilder.getErrors().isEmpty()) {
 			for (KnowledgeBuilderError error : kbuilder.getErrors()) {
-				System.err.println(error);
+				logger.error(error.toString());
 			}
 			throw new IllegalArgumentException(
 					"Errors while parsing knowledge base");

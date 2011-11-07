@@ -1,12 +1,10 @@
 package org.jbpm.integration;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.SystemEventListenerFactory;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
-import org.jbpm.process.audit.HibernateUtil;
+import org.drools.persistence.util.PersistenceUtil;
 import org.jbpm.task.AccessType;
 import org.jbpm.task.AllowedToDelegate;
 import org.jbpm.task.Attachment;
@@ -45,32 +41,40 @@ import org.junit.BeforeClass;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExpressionCompiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
+/**
+ * This is a.. wacky test (suite). 
+ * 
+ * ! Adding a @AfterClass method will mess up the tests. 
+ */
 public abstract class JbpmTestCase {
 
-	private static  PoolingDataSource ds1;
+    private static Logger logger = LoggerFactory.getLogger(JbpmTestCase.class);
+    
+	private static HashMap<String, Object> context = null;
+	private static EntityManagerFactory emf;
+	
 	static MinaTaskServer minaServer;
 	static Thread minaServerThread;
     
     @BeforeClass
 	public static void setUp(){
+        if( context == null ) { 
+            context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME, false);
+        }
     	if (minaServerThread==null){
-    	    ds1 = setupPoolingDataSource();
-    	    ds1.init();
-    	    
     	    System.setProperty("jbpm.console.directory","./src/test/resources");
-    	    
     	    startHumanTaskServer();
 		}
 	
 	}
-    
-   
- 	@SuppressWarnings({ "unchecked", "rawtypes" })
+
 	protected static  void startHumanTaskServer(){
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.task");
+		emf = Persistence.createEntityManagerFactory("org.jbpm.task");
         TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
         TaskServiceSession taskSession = taskService.createSession();
     
@@ -101,9 +105,8 @@ public abstract class JbpmTestCase {
         minaServerThread.start();
         taskSession.dispose();
         
-        System.out.println("Task service started correctly !");
-        System.out.println("Task service running ...");
-		
+        logger.debug("Task service started correctly !");
+        logger.debug("Task service running ...");
 	}
  	
 	@SuppressWarnings("rawtypes")

@@ -1,4 +1,4 @@
-package org.jbpm.persistence.session;
+package org.jbpm.persistence.session.objects;
 
 import javax.persistence.Entity;
 

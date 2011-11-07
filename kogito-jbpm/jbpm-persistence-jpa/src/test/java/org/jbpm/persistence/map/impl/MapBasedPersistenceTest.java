@@ -19,7 +19,7 @@ import org.jbpm.persistence.ProcessStorageEnvironmentBuilder;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.junit.Before;
 
-public class MapBasedPersistenceTest extends MapPersistenceTest{
+public class MapBasedPersistenceTest extends MapPersistenceTest {
     
     private SimpleProcessStorage storage;
     
@@ -44,9 +44,8 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
     }
     
     @Override
-    protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession,
+    protected StatefulKnowledgeSession disposeAndReloadSession(StatefulKnowledgeSession ksession, int ksessionId,
                                                              KnowledgeBase kbase) {
-        int sessionId = ksession.getId();
         ksession.dispose();
         EnvironmentBuilder envBuilder = new ProcessStorageEnvironmentBuilder( storage );
         Environment env = KnowledgeBaseFactory.newEnvironment();
@@ -55,7 +54,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
         env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,
                  envBuilder.getPersistenceContextManager() );
         
-        return JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
+        return JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId, kbase, null, env );
     }
     
     @Override

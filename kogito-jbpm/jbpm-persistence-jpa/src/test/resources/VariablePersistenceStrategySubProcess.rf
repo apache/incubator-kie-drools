@@ -6,18 +6,18 @@
 
   <header>
     <imports>
-      <import name="org.jbpm.persistence.session.MyEntity" />
-      <import name="org.jbpm.persistence.session.MyVariableSerializable" />
+      <import name="org.jbpm.persistence.session.objects.MyEntity" />
+      <import name="org.jbpm.persistence.session.objects.MyVariableSerializable" />
     </imports>
     <variables>
       <variable name="x" >
         <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
       </variable>
       <variable name="y" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
       </variable>
       <variable name="z" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       </variable>
       <variable name="v" >
         <type name="org.drools.process.core.datatype.impl.type.StringDataType" />
@@ -32,10 +32,10 @@
     <composite id="4" name="CompositeNode" x="187" y="33" width="326" height="327" >
     <variables>
       <variable name="y" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyEntity" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyEntity" />
       </variable>
       <variable name="z" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.MyVariableSerializable" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.jbpm.persistence.session.objects.MyVariableSerializable" />
       </variable>
       <variable name="x" >
         <type name="org.drools.process.core.datatype.impl.type.StringDataType" />

@@ -10,7 +10,6 @@ import org.jboss.bpm.console.client.model.ProcessInstanceRef.RESULT;
 import org.jboss.bpm.console.client.model.ProcessInstanceRef.STATE;
 import org.jbpm.integration.JbpmTestCase;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
-import org.jbpm.process.audit.ProcessInstanceDbLog;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

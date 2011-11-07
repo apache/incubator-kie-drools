@@ -1,18 +1,15 @@
-package org.jbpm;
+package org.jbpm.bpmn2;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
-import java.sql.SQLException;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
@@ -22,8 +19,8 @@ import org.drools.builder.ResourceType;
 import org.drools.definition.process.Node;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.jpa.JPAKnowledgeService;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
-import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.NodeInstance;
@@ -33,23 +30,23 @@ import org.drools.runtime.process.WorkItem;
 import org.drools.runtime.process.WorkItemHandler;
 import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.process.WorkflowProcessInstance;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
+/**
+ * Base test case for the jbpm-bpmn2 module. 
+ *
+ * Please keep this test class in the org.jbpm.bpmn2 package or otherwise give it a unique name. 
+ *
+ */
 public abstract class JbpmJUnitTestCase extends TestCase {
 	
     protected final static String EOL = System.getProperty( "line.separator" );
     
-	private boolean persistence = false;
-	private PoolingDataSource ds1;
-	private EntityManagerFactory emf;
+	protected boolean persistence = true;
+	private HashMap<String, Object> context;
 
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 	public StatefulKnowledgeSession ksession;
@@ -70,21 +67,16 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	}
     
     protected void setUp() {
+        System.out.println( "RUNNING: " + getName() );
     	if (persistence) {
-	    	ds1 = setupPoolingDataSource();
-	        ds1.init();
-	        
-	        emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
+	    	context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
     	}
     }
 
     protected void tearDown() {
-    	if (emf != null) {
-    		emf.close();
-    	}
-    	if (ds1 != null) {
-            ds1.close();
-    	}
+        if(persistence) { 
+            PersistenceUtil.tearDown(context);
+        }
     }
     
 	protected KnowledgeBase createKnowledgeBase(String... process) {
@@ -152,10 +144,8 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
 		if (persistence) {
-		    Environment env = KnowledgeBaseFactory.newEnvironment();
-		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-		    env.set(EnvironmentName.TRANSACTION_MANAGER,
-		        TransactionManagerServices.getTransactionManager());
+		    Environment env = createEnvironment(context);
+		    
 		    StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 		    new JPAWorkingMemoryDbLogger(result);
 		    if (log == null) {
@@ -180,11 +170,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			KnowledgeBase kbase = ksession.getKnowledgeBase();
 			Environment env = null;
 			if (noCache) {
-				env = KnowledgeBaseFactory.newEnvironment();
-				emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
-			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-			    env.set(EnvironmentName.TRANSACTION_MANAGER,
-			        TransactionManagerServices.getTransactionManager());				
+				env = createEnvironment(context);
 			} else {
 				env = ksession.getEnvironment();
 			}
