@@ -11,7 +11,28 @@
 	<logger name="org.drools">
 		<level value="INFO"/>
 	</logger>
-	
+
+    <!--  marshalling utils -->
+	<logger name="org.drools.marshalling.util.CompareViaReflectionUtil">
+		<level value="INFO"/>
+	</logger>
+  
+	<logger name="org.drools.marshalling.util">
+		<level value="DEBUG"/>
+	</logger>
+
+    <!-- bitronix -->	
+    <logger name="bitronix.tm.twopc.Preparer">
+        <level value="ERROR"/>
+    </logger>
+    
+    <!--  hibernate  -->	
+    <logger name="org.hibernate">
+        <level value="WARN"/>
+    </logger>
+    <logger name="org.hibernate.cfg.search">
+        <level value="WARN"/>
+    </logger>
     <logger name="org.hibernate.cfg.annotations">
         <level value="WARN"/>
     </logger>

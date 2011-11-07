@@ -1,6 +1,9 @@
 package org.drools.marshalling.impl;
 
 import java.io.IOException;
+import java.util.List;
+
+import org.drools.runtime.process.ProcessInstance;
 
 public interface ProcessMarshaller {
 
@@ -10,7 +13,7 @@ public interface ProcessMarshaller {
 
     void writeWorkItems( MarshallerWriteContext context ) throws IOException;
 
-    void readProcessInstances( MarshallerReaderContext context ) throws IOException;
+    List<ProcessInstance> readProcessInstances( MarshallerReaderContext context ) throws IOException;
 
     void readProcessTimers( MarshallerReaderContext context ) throws IOException, ClassNotFoundException;
 

@@ -15,11 +15,13 @@
  */
 package org.drools.persistence.session;
 
+import static org.drools.runtime.EnvironmentName.*;
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.persistence.EntityManagerFactory;
@@ -27,17 +29,14 @@ import javax.persistence.Persistence;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.DefaultFactHandle;
-import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.PersistenceContextManager;
-import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JPAKnowledgeService;
-import org.drools.persistence.jpa.JpaPersistenceContextManager;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -46,13 +45,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 public class ReloadSessionTest {
 
     // Datasource (setup & clean up)
-    private PoolingDataSource ds1;
+    private HashMap<String, Object> context;
     private EntityManagerFactory emf;
 
     private static String simpleRule = "package org.drools.test\n"
@@ -67,17 +63,13 @@ public class ReloadSessionTest {
 
     @Before
     public void setup() {
-        // Initialize datasource and global settings
-        ds1 = setupPoolingDataSource();
-        ds1.init();
-        
-        emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
     @After
     public void cleanUp() {
-        emf.close();
-        ds1.close();
+        PersistenceUtil.tearDown(context);
     }
 
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
@@ -95,21 +87,11 @@ public class ReloadSessionTest {
         return kbase;
     }
     
-    private Environment initializeEnvironment(EntityManagerFactory emf) {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
-        env.set(EnvironmentName.TRANSACTION_MANAGER,
-                TransactionManagerServices.getTransactionManager());
-        
-        return env;
-    }
-
     @Test 
     public void reloadKnowledgeSessionTest() { 
         
         // Initialize drools environment stuff
-        Environment env = initializeEnvironment(emf);
+        Environment env = createEnvironment(context);
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         assertTrue("There should be NO facts present in a new (empty) knowledge session.", commandKSession.getFactHandles().isEmpty());
@@ -137,7 +119,8 @@ public class ReloadSessionTest {
      
         // Reload session from the database
         emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
-        env = initializeEnvironment(emf);
+        context.put(ENTITY_MANAGER_FACTORY, emf);
+        env = createEnvironment(context);
        
         // Re-initialize the knowledge session:
         StatefulKnowledgeSession newCommandKSession 

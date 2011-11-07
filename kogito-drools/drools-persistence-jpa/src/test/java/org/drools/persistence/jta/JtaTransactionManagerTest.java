@@ -17,6 +17,7 @@ package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
 import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.runtime.EnvironmentName.*;
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -26,44 +27,37 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sun.codemodel.JPackage;
-
-import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.internal.BitronixRollbackException;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class JtaTransactionManagerTest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     // Datasource (setup & clean up)
-    private PoolingDataSource ds1;
+    private HashMap<String, Object> context;
     private EntityManagerFactory emf;
 
     private static String simpleRule = "package org.drools.test\n"
@@ -78,23 +72,19 @@ public class JtaTransactionManagerTest {
 
     @Before
     public void setup() {
-        // Initialize datasource and global settings
-        ds1 = setupPoolingDataSource();
-        ds1.init();
+        // This test does only plays with tx's, it doesn't actually persist
+        // any interersting (wrt marshalling) SessionInfo objects
+        boolean testMarshalling = false;
 
-        emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, testMarshalling);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
 
-    private Environment initializeEnvironment(EntityManagerFactory emf) {
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        env.set(EnvironmentName.GLOBALS, new MapGlobalResolver());
-        env.set(EnvironmentName.TRANSACTION_MANAGER,
-                TransactionManagerServices.getTransactionManager());
-        
-        return env;
+    @After
+    public void tearDown() {
+        PersistenceUtil.tearDown(context);
     }
-   
+
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
         // Initialize knowledge base/session/etc..
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -123,15 +113,8 @@ public class JtaTransactionManagerTest {
             return null;
         }
     }
-    
-    @After
-    public void cleanUp() {
-        emf.close();
-        ds1.close();
-    }
 
     private String getTestName() { 
-        String testName = null;
         StackTraceElement [] ste = Thread.currentThread().getStackTrace();
         String methodName =  ste[2].getMethodName();
         return methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
@@ -157,6 +140,7 @@ public class JtaTransactionManagerTest {
         
         boolean rollBackExceptionthrown = false;
         try { 
+            logger.info("The following " + IllegalStateException.class.getSimpleName() + " SHOULD be thrown.");
             tx.commit();
         }
         catch( Exception e ) { 
@@ -190,7 +174,7 @@ public class JtaTransactionManagerTest {
         String testName = getTestName();
         
         // Setup the JtaTransactionmanager
-        Environment env = initializeEnvironment(emf);
+        Environment env = createEnvironment(context);
         Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
         TransactionManager txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                 env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
@@ -227,7 +211,7 @@ public class JtaTransactionManagerTest {
    
     @Test
     public void basicTransactionRollbackTest() {
-        Environment env = initializeEnvironment(emf);
+        Environment env = createEnvironment(context);
         Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
         TransactionManager txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                 env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
@@ -264,7 +248,7 @@ public class JtaTransactionManagerTest {
     public void testSingleSessionCommandServiceAndJtaTransactionManagerTogether() { 
             
         // Initialize drools environment stuff
-        Environment env = initializeEnvironment(emf);
+        Environment env = createEnvironment(context);
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) commandKSession).getCommandService();

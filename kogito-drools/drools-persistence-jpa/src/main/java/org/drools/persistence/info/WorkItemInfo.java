@@ -81,7 +81,11 @@ public class WorkItemInfo  {
     public long getState() {
         return state;
     }
-
+    
+    public byte [] getWorkItemByteArray() { 
+       return workItemByteArray;
+    }
+    
     public WorkItem getWorkItem(Environment env) {
         this.env = env;
         if ( workItem == null ) {

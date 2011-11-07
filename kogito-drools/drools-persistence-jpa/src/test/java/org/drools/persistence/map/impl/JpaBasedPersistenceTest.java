@@ -16,16 +16,17 @@
 package org.drools.persistence.map.impl;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+
+import java.util.HashMap;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 import org.drools.KnowledgeBase;
-import org.drools.KnowledgeBaseFactory;
-import org.drools.base.MapGlobalResolver;
 import org.drools.persistence.jpa.JPAKnowledgeService;
 import org.drools.persistence.jpa.marshaller.JPAPlaceholderResolverStrategy;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.drools.persistence.util.PersistenceUtil;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -34,27 +35,23 @@ import org.junit.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
     
-    private  PoolingDataSource ds1;
+    private HashMap<String, Object> context;
     private EntityManagerFactory emf;
     private JtaTransactionManager txm;
     private boolean useTransactions = false;
     
     @Before
     public void setUp() throws Exception {
-        ds1 = setupPoolingDataSource();
+        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
         
-        ds1.init();
-        emf = Persistence.createEntityManagerFactory( DROOLS_PERSISTENCE_UNIT_NAME );
         if( useTransactions() ) { 
             useTransactions = true;
-            Environment env = createEnvironment();
+            Environment env = createEnvironment(context);
             Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
             this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                 env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
@@ -64,13 +61,13 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @After
     public void tearDown() throws Exception {
-        emf.close();
-        ds1.close();
+        PersistenceUtil.tearDown(context);
     }
     
+
     @Override
     protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
-        return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment() );
+        return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment(context) );
     }
 
     @Override
@@ -78,7 +75,7 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
                                                                KnowledgeBase kbase) {
         int ksessionId = ksession.getId();
         ksession.dispose();
-        return JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId, kbase, null, createEnvironment() );
+        return JPAKnowledgeService.loadStatefulKnowledgeSession( ksessionId, kbase, null, createEnvironment(context) );
     }
 
     @Override
@@ -95,14 +92,4 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
         return savedSessionsCount;
     }
 
-    private Environment createEnvironment(){
-        Environment env = KnowledgeBaseFactory.newEnvironment();
-        env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
-                 emf );
-        env.set( EnvironmentName.TRANSACTION_MANAGER,
-                 TransactionManagerServices.getTransactionManager() );
-        env.set( EnvironmentName.GLOBALS, new MapGlobalResolver() );
-        
-        return env;
-    }
 }
