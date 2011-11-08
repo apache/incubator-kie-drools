@@ -261,7 +261,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
         else if( args[0] instanceof WorkItemInfo ) { 
             WorkItemInfo workItemInfo = (WorkItemInfo) args[0];
-            byte [] byteArray = workItemInfo.getWorkItemByteArray();
+            byte [] byteArray = getWorkItemByteArray(workItemInfo);
             managedWorkItemInfoDataMap.get().put(workItemInfo, byteArray != null ? byteArray.clone() : null );
             if( byteArray != null ) { 
                 marshalledData = new MarshalledData(workItemInfo);
@@ -282,8 +282,6 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
     }
     
-
-
     private void merge(String testMethodName, Object updatedObject) {
         if( updatedObject instanceof SessionInfo ) { 
             HashMap<SessionInfo, byte[]> updatedObjectsMap = new HashMap<SessionInfo, byte[]>();
@@ -323,7 +321,7 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         else if( result instanceof WorkItemInfo ) { 
             byte [] data = managedWorkItemInfoDataMap.get().get(result);
             if( data == null ) { 
-                byte [] byteArray = ((WorkItemInfo) result).getWorkItemByteArray();
+                byte [] byteArray = getWorkItemByteArray((WorkItemInfo) result);
                 managedWorkItemInfoDataMap.get().put((WorkItemInfo) result, byteArray);
             }
         }
@@ -397,18 +395,19 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
             EntityManager em, HashMap<WorkItemInfo, byte []> updateManagedWorkItemInfoMap) { 
         byte [] origMarshalledBytes = managedWorkItemInfoDataMap.get().get(workItemInfo); 
 
-        if( Arrays.equals(origMarshalledBytes, workItemInfo.getWorkItemByteArray()) ) { 
+        byte [] workItemByteArray = getWorkItemByteArray(workItemInfo);
+        if( Arrays.equals(origMarshalledBytes, workItemByteArray) ) { 
             // If the marshalled data in this object has NOT been changed, skip this object.
             return; 
         }
-        updateManagedWorkItemInfoMap.put(workItemInfo, workItemInfo.getWorkItemByteArray());
+        updateManagedWorkItemInfoMap.put(workItemInfo, workItemByteArray);
         
         // Retrieve the most recent marshalled data for this object that was saved in this test method
         byte [] thisMarshalledData = workItemMarshalledDataMap.get().get(testMethodName);
         // ? If there has been no data persisted for this object for this test method (yet), 
         // ? Or if the most recently persisted data is NOT the same as what's now been persisted, 
         // ->  then it's "new" marshalled data, so save it in a MarshalledData object.
-        if( thisMarshalledData == null || ! Arrays.equals(thisMarshalledData, workItemInfo.getWorkItemByteArray()) ) {
+        if( thisMarshalledData == null || ! Arrays.equals(thisMarshalledData, workItemByteArray) ) { 
             MarshalledData marshalledData = new MarshalledData(workItemInfo);
             em.persist(marshalledData);
             workItemMarshalledDataMap.get().put(workItemInfo.getId(), marshalledData.byteArray);

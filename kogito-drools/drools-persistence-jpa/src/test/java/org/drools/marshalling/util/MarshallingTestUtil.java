@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -547,4 +548,28 @@ public class MarshallingTestUtil {
         return id;
     }
     
+    public static byte [] getWorkItemByteArray(WorkItemInfo workItemInfo) { 
+        Method byteArrayMethod = null;
+        byte [] byteArray = null;
+        try {
+            byteArrayMethod = WorkItemInfo.class.getMethod("getWorkItemByteArray", (Class []) null);
+        } catch (Exception e) {
+            // do nothing..
+        } 
+        if( byteArrayMethod != null ) { 
+            byteArray = workItemInfo.getWorkItemByteArray();
+        }
+        else {
+            try { 
+                Field byteArrayField = WorkItemInfo.class.getDeclaredField("workItemByteArray");
+                byteArrayField.setAccessible(true);
+                byteArray = (byte []) byteArrayField.get(workItemInfo);
+            }
+            catch( Exception e ) { 
+                e.printStackTrace();
+                Assert.fail("Unable to retrieve byte array from WorkItemInfo object.");
+            }
+        }
+        return byteArray;
+    }
 }
