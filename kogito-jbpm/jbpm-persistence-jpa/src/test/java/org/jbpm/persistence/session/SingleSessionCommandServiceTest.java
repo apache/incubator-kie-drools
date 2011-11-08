@@ -24,7 +24,6 @@ import org.drools.command.runtime.process.StartProcessCommand;
 import org.drools.compiler.PackageBuilder;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
-import org.drools.marshalling.util.MarshallingTestUtil;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.JpaTimeJobFactoryManager;
@@ -39,7 +38,6 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkItem;
 import org.jbpm.compiler.ProcessBuilderImpl;
 import org.jbpm.persistence.JbpmTestCase;
-import org.jbpm.persistence.map.impl.JpaBasedPersistenceTest;
 import org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory;
 import org.jbpm.persistence.processinstance.JPASignalManagerFactory;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
@@ -57,8 +55,6 @@ import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.Test;
 
 public class SingleSessionCommandServiceTest extends JbpmTestCase {
@@ -70,7 +66,6 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 		DOMConfigurator.configure(SingleSessionCommandServiceTest.class.getResource("/log4j.xml"));
     }
     
-    @Before
     public void setUp() {
         String testMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
         if( testMethodName.startsWith("testPersistenceTimer") ) { 
@@ -89,6 +84,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
     @Test
     public void testPersistenceWorkItems() throws Exception {
+        setUp();
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
         kbase.addKnowledgePackages( kpkgs );
@@ -200,6 +197,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
     
     @Test
     public void testPersistenceWorkItemsUserTransaction() throws Exception {
+        setUp();
+        
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         Collection<KnowledgePackage> kpkgs = getProcessWorkItems();
         kbase.addKnowledgePackages( kpkgs );
@@ -400,6 +399,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
     @Test
     public void testPersistenceSubProcess() {
+        setUp();
+        
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
                                 SingleSessionCommandService.class.getName() );
@@ -585,6 +586,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
     @Test
     public void testPersistenceTimer() throws Exception {
+        setUp();
+        
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
                                 SingleSessionCommandService.class.getName() );
@@ -688,6 +691,8 @@ public class SingleSessionCommandServiceTest extends JbpmTestCase {
 
     @Test
     public void testPersistenceTimer2() throws Exception {
+        setUp();
+        
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
                                 SingleSessionCommandService.class.getName() );
