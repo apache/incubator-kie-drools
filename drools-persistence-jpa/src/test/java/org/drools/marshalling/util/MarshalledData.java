@@ -18,6 +18,7 @@ package org.drools.marshalling.util;
 import static org.drools.marshalling.util.MarshallingTestUtil.*;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -101,7 +102,7 @@ public class MarshalledData {
         }
         else if( className.equals(WorkItemInfo.class.getName()) ) { 
            WorkItemInfo workItemInfo = (WorkItemInfo) marshalledClassInstance;
-           this.byteArray = workItemInfo.getWorkItemByteArray();
+           this.byteArray = getWorkItemByteArray(workItemInfo);
            this.marshalledObjectId = workItemInfo.getId();
         }
         else if( PROCESS_INSTANCE_INFO_CLASS_NAME.equals(className) ) { 
