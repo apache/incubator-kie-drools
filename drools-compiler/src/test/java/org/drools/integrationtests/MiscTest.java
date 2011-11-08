@@ -169,6 +169,7 @@ import org.drools.rule.InvalidRulePackage;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.rule.constraint.BooleanConversionHandler;
 import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.Globals;
@@ -182,7 +183,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
+import org.mvel2.compiler.ExecutableStatement;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -6631,6 +6636,22 @@ public class MiscTest {
         assertEquals( "null object",
                       list.get( index++ ) );
 
+    }
+
+    @Test
+    public void testMvelCoercion() {
+        DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
+        DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
+
+        String str = "Object a = true; b = a == \"true\"; System.out.println(b);";
+//        String str = "Object a = true; b = a == \"X\"; System.out.println(b);";
+//        String str = "boolean a = true; b = a == \"X\"; System.out.println(b);";
+        ParserConfiguration pconf = new ParserConfiguration();
+        ParserContext pctx = new ParserContext(pconf);
+        pctx.setStrongTyping(true);
+        pctx.setStrictTypeEnforcement(true);
+        ExecutableStatement stmt = (ExecutableStatement) MVEL.compileExpression(str, pctx);
+        MVEL.executeExpression( stmt, new HashMap() );
     }
 
     @Test

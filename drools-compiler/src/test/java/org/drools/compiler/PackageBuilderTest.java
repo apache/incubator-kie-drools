@@ -585,8 +585,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 1,
                       or.getChildren() );
         final Pattern pattern = (Pattern) or.getChildren().get( 0 );
-
-        final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     @Test
@@ -606,8 +604,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 1,
                       and.getChildren() );
         final Pattern pattern = (Pattern) and.getChildren().get( 0 );
-
-        final LiteralConstraint literalConstraint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     @Test
@@ -636,8 +632,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 1,
                       not.getChildren() );
         final Pattern pattern = (Pattern) not.getChildren().get( 0 );
-
-        final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     @Test
@@ -666,8 +660,6 @@ public class PackageBuilderTest extends DroolsTestCase {
         assertLength( 1,
                       exists.getChildren() );
         final Pattern pattern = (Pattern) exists.getChildren().get( 0 );
-
-        final LiteralConstraint literalConstarint = (LiteralConstraint) pattern.getConstraints().get( 0 );
     }
 
     @Test

@@ -5,7 +5,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.ContextEntry;
 import org.mvel2.MVEL;
-import org.mvel2.ParserContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;
