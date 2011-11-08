@@ -82,7 +82,7 @@ public class PersistenceUtil {
      * @return HashMap<String Object> with persistence objects, such as the
      *         EntityManagerFactory and DataSource
      */
-    public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
+    public static HashMap<String, Object> setupWithPoolingDataSource(final String persistenceUnitName, final boolean testMarshalling) {
         HashMap<String, Object> context = new HashMap<String, Object>();
 
         // set the right jdbc url
@@ -90,16 +90,17 @@ public class PersistenceUtil {
         String jdbcUrl = dsProps.getProperty("url");
         String driverClass = dsProps.getProperty("driverClassName");
 
+        TEST_MARSHALLING = testMarshalling;
         // only save marshalling data if the dialect is H2..
         if( ! driverClass.startsWith("org.h2") ) { 
-           testMarshalling = false; 
+           TEST_MARSHALLING = false; 
         }
         Object testMarshallingProperty = dsProps.get("testMarshalling"); 
         if( ! "true".equals(testMarshallingProperty) ) { 
-            testMarshalling = false;
+            TEST_MARSHALLING = false;
         }
-        
-        if( testMarshalling ) {
+
+        if( TEST_MARSHALLING ) {
             System.setProperty("h2.lobInDatabase", "true");
             Class<?> testClass = null;
             StackTraceElement [] ste = Thread.currentThread().getStackTrace();
@@ -127,7 +128,7 @@ public class PersistenceUtil {
 
         // Setup persistence
         EntityManagerFactory emf;
-        if (testMarshalling) {
+        if (TEST_MARSHALLING) {
             Properties overrideProperties = new Properties();
             overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
             EntityManagerFactory realEmf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
