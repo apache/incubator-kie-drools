@@ -1,6 +1,5 @@
 package org.drools.rule.constraint;
 
-import org.drools.base.ValueType;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.Declaration;
 import org.drools.spi.AlphaNodeFieldConstraint;

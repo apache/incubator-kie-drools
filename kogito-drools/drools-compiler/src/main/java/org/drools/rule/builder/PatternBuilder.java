@@ -94,6 +94,7 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.rule.constraint.BooleanConversionHandler;
 import org.drools.rule.constraint.MvelLiteralConstraint;
 import org.drools.rule.constraint.SoundexLiteralContraint;
 import org.drools.spi.AcceptsReadAccessor;
@@ -106,6 +107,7 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
+import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -121,6 +123,13 @@ public class PatternBuilder
     RuleConditionBuilder {
 
     private static final boolean USE_MVEL_EXPRESSION = false;
+
+    static {
+        if (USE_MVEL_EXPRESSION) {
+            DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
+            DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
+        }
+    }
 
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(",
                                                                                                java.util.regex.Pattern.MULTILINE );
@@ -364,7 +373,7 @@ public class PatternBuilder
                                              final Pattern pattern ) {
 
         for ( BaseDescr b : patternDescr.getDescrs() ) {
-            String expression = null;
+            String expression;
             boolean isPositional = false;
             if ( b instanceof BindingDescr ) {
                 BindingDescr bind = (BindingDescr) b;
@@ -390,8 +399,7 @@ public class PatternBuilder
                 buildRuleBindings( context,
                                    patternDescr,
                                    pattern,
-                                   (BindingDescr) result.getDescrs().get( 0 ),
-                                   null ); // null containers get added to the pattern
+                                   (BindingDescr) result.getDescrs().get( 0 ) );
             } else if ( isPositional ) {
                 processPositional( context,
                                    patternDescr,
@@ -461,8 +469,7 @@ public class PatternBuilder
                 buildRuleBindings( context,
                                    patternDescr,
                                    pattern,
-                                   binder,
-                                   null );
+                                   binder );
             } else {
                 // create a constraint
                 build( context,
@@ -504,8 +511,7 @@ public class PatternBuilder
                 buildRuleBindings( context,
                                    patternDescr,
                                    pattern,
-                                   (BindingDescr) d,
-                                   null ); // null containers get added to the pattern
+                                   (BindingDescr) d );
                 continue;
             }
 
@@ -520,8 +526,7 @@ public class PatternBuilder
                 buildRuleBindings( context,
                                    patternDescr,
                                    pattern,
-                                   bind,
-                                   null ); // null containers get added to the pattern
+                                   bind );
             }
 
             // check if it is an atomic expression
@@ -542,7 +547,6 @@ public class PatternBuilder
                  !ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) &&
                     !ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
                 buildRelationalExpression( context,
-                                           patternDescr,
                                            pattern,
                                            relDescr,
                                            expr,
@@ -561,7 +565,6 @@ public class PatternBuilder
 
     @SuppressWarnings("unchecked")
     private void buildRelationalExpression( final RuleBuildContext context,
-                                            final PatternDescr patternDescr,
                                             final Pattern pattern,
                                             final RelationalExprDescr relDescr,
                                             final String expr,
@@ -602,7 +605,7 @@ public class PatternBuilder
         // build a predicate if it is a constant expression or at least has a constant on the left side
         // or as a fallback when the building of a constraint fails
         if ( (!usesThisRef && value1Expr.isConstant()) ||
-                !buildConstraint( context, pattern, relDescr, aliases, expr, value1, value2, value2Expr.isConstant() )) {
+                !buildConstraint( context, pattern, relDescr, expr, value1, value2, value2Expr.isConstant() )) {
             createAndBuildPredicate( context, pattern, relDescr, expr, aliases );
         }
     }
@@ -610,7 +613,6 @@ public class PatternBuilder
     private boolean buildConstraint( final RuleBuildContext context,
                                      final Pattern pattern,
                                      final RelationalExprDescr relDescr,
-                                     final Map<String, OperatorDescr> aliases,
                                      String expr,
                                      String value1,
                                      String value2,
@@ -634,7 +636,7 @@ public class PatternBuilder
 
         ValueType vtype = extractor.getValueType();
         String operator = relDescr.getOperator().trim();
-        LiteralRestrictionDescr restrictionDescr = buildLiteralRestrictionDescr(context, relDescr, extractor, value2, operator, isConstant);
+        LiteralRestrictionDescr restrictionDescr = buildLiteralRestrictionDescr(context, relDescr, value2, operator, isConstant);
 
         if (restrictionDescr != null) {
             FieldValue field = getFieldValue(context, vtype, restrictionDescr);
@@ -765,14 +767,13 @@ public class PatternBuilder
                                             new ReturnValueRestrictionDescr( operator,
                                                                              relDescr.isNegated(),
                                                                              relDescr.getParametersText(),
-                                                                             value2 ),
-                                            aliases );
+                                                                             value2 ) );
             // fall back to original dialect
             context.setDialect( dialect );
 
         }
 
-        if ( restriction == null || extractor == null ) {
+        if ( restriction == null ) {
             // something failed and an error should already have been reported
             return false;
         }
@@ -813,7 +814,6 @@ public class PatternBuilder
 
     private LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
                                          RelationalExprDescr exprDescr,
-                                         InternalReadAccessor extractor,
                                          String rightValue,
                                          String operator,
                                          boolean isRightLiteral) {
@@ -828,7 +828,7 @@ public class PatternBuilder
                                                      dotPos );
             String lastPart = rightValue.substring( dotPos + 1 );
             try {
-                final Class< ? > cls = context.getDialect().getTypeResolver().resolveType( mainPart );
+                context.getDialect().getTypeResolver().resolveType( mainPart );
                 if ( lastPart.indexOf( '(' ) < 0 && lastPart.indexOf( '.' ) < 0 && lastPart.indexOf( '[' ) < 0 ) {
                     return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING );
                 }
@@ -988,8 +988,7 @@ public class PatternBuilder
     private void buildRuleBindings( final RuleBuildContext context,
                                     final PatternDescr patternDescr,
                                     final Pattern pattern,
-                                    final BindingDescr fieldBindingDescr,
-                                    final AbstractCompositeConstraint container ) {
+                                    final BindingDescr fieldBindingDescr ) {
 
         if ( context.getDeclarationResolver().isDuplicated( context.getRule(),
                                                             fieldBindingDescr.getVariable() ) ) {
@@ -1135,8 +1134,7 @@ public class PatternBuilder
             pattern.addConstraint( predicateConstraint );
         } else {
             if ( predicateConstraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
-                this.setConstraintType( pattern,
-                                        (MutableTypeConstraint) predicateConstraint );
+                this.setConstraintType( pattern, predicateConstraint );
             }
             container.addConstraint( predicateConstraint );
         }
@@ -1310,15 +1308,13 @@ public class PatternBuilder
     }
 
     private Target getRightTarget( final InternalReadAccessor extractor ) {
-        Target right = (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-        return right;
+        return (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
     }
 
     private ReturnValueRestriction buildRestriction( final RuleBuildContext context,
                                                      final Pattern pattern,
                                                      final InternalReadAccessor extractor,
-                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr,
-                                                     final Map<String, OperatorDescr> aliases ) {
+                                                     final ReturnValueRestrictionDescr returnValueRestrictionDescr ) {
         Map<String, Class< ? >> declarations = getDeclarationsMap( returnValueRestrictionDescr,
                                                                    context,
                                                                    true );
@@ -1418,7 +1414,7 @@ public class PatternBuilder
                                                              final AcceptsReadAccessor target,
                                                              final boolean reportError ) {
         // reportError is needed as some times failure to build accessor is not a failure, just an indication that building is not possible so try something else.
-        InternalReadAccessor reader = null;
+        InternalReadAccessor reader;
 
         if ( ValueType.FACTTEMPLATE_TYPE.equals( objectType.getValueType() ) ) {
             //@todo use accessor cache            
@@ -1573,7 +1569,7 @@ public class PatternBuilder
         DrlExprParser parser = new DrlExprParser();
         ConstraintConnectiveDescr result = parser.parse( expression );
         result.copyLocation( original );
-        if ( result == null || parser.hasErrors() ) {
+        if ( parser.hasErrors() ) {
             for ( DroolsParserException error : parser.getErrors() ) {
                 context.getErrors().add( new DescrBuildError( context.getParentDescr(),
                                                               patternDescr,

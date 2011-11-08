@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +42,7 @@ public class Pattern
     Externalizable {
     private static final long        serialVersionUID = 510l;
     private ObjectType               objectType;
-    private List                     constraints      = Collections.EMPTY_LIST;
+    private List<Constraint>         constraints      = Collections.EMPTY_LIST;
     private Declaration              declaration;
     private Map<String, Declaration> declarations;
     private int                      index;
@@ -111,7 +110,7 @@ public class Pattern
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         objectType = (ObjectType) in.readObject();
-        constraints = (List) in.readObject();
+        constraints = (List<Constraint>) in.readObject();
         declaration = (Declaration) in.readObject();
         declarations = (Map) in.readObject();
         behaviors = (List<Behavior>) in.readObject();
@@ -140,16 +139,9 @@ public class Pattern
 
     public Declaration[] getRequiredDeclarations() {
         Set<Declaration> decl = new HashSet<Declaration>();
-        Set<String> locals = new HashSet<String>();
-        for( Object constr : this.constraints ) {
-            if( constr instanceof Constraint ) {
-                for( Declaration d : ((Constraint)constr).getRequiredDeclarations() ) {
-                    if( ! locals.contains( d.getIdentifier() ) ) {
-                        decl.add( d );
-                    }
-                }
-            } else {
-                locals.add( ((Declaration)constr).getIdentifier() );
+        for( Constraint constr : this.constraints ) {
+            for( Declaration d : constr.getRequiredDeclarations() ) {
+                decl.add( d );
             }
         }
         return decl.toArray( new Declaration[decl.size()] );
@@ -175,8 +167,7 @@ public class Pattern
             }
         }
 
-        for ( final Iterator it = this.constraints.iterator(); it.hasNext(); ) {
-            final Object constr = it.next();
+        for ( Constraint constr : this.constraints ) {
             Constraint constraint = (Constraint) ((Constraint) constr).clone();
 
             // we must update pattern references in cloned declarations
