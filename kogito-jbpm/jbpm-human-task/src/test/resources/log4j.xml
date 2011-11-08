@@ -8,13 +8,17 @@
 		</layout>
 	</appender>
 
-	<logger name="org.drools">
+	<logger name="org.jbpm">
 		<level value="INFO"/>
 	</logger>
 	
-	<!-- logger name="org.hibernate">
-		<level value="INFO"/>
-	</logger -->
+	<logger name="org.hibernate">
+		<level value="WARN"/>
+	</logger>
+  
+	<logger name="org.apache.mina.filter.logging">
+		<level value="WARN"/>
+	</logger>
   
 	<root>
 		<priority value="INFO"/>
