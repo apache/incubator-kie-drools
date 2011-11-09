@@ -24,7 +24,8 @@ import org.drools.lang.descr.WindowDeclarationDescr;
 public interface WindowDeclarationDescrBuilder
     extends
     AnnotatedDescrBuilder<WindowDeclarationDescrBuilder>,
-    DescrBuilder<PackageDescrBuilder, WindowDeclarationDescr> {
+    DescrBuilder<PackageDescrBuilder, WindowDeclarationDescr>,
+    PatternContainerDescrBuilder<WindowDeclarationDescrBuilder, WindowDeclarationDescr>{
 
     /**
      * Defines the window name

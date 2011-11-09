@@ -24,6 +24,7 @@ public class WindowDeclarationDescr extends AnnotatedBaseDescr {
 
     private static final long            serialVersionUID = 530l;
     private String                       name = null;
+    private PatternDescr                 pattern = null;
 
     public WindowDeclarationDescr() {
         super();
@@ -34,12 +35,14 @@ public class WindowDeclarationDescr extends AnnotatedBaseDescr {
                                               ClassNotFoundException {
         super.readExternal( in );
         this.name = (String) in.readObject();
+        this.pattern = (PatternDescr) in.readObject();
     }
     
     @Override
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeObject( name );
+        out.writeObject( pattern );
     }
 
     public void setName( String name ) {
@@ -48,6 +51,14 @@ public class WindowDeclarationDescr extends AnnotatedBaseDescr {
 
     public String getName() {
         return this.name;
+    }
+    
+    public void setPattern( PatternDescr pattern ) {
+        this.pattern = pattern;
+    }
+    
+    public PatternDescr getPattern() {
+        return this.pattern;
     }
 
     /**

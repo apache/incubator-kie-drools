@@ -2595,7 +2595,7 @@ public class RuleParserTest extends TestCase {
                                                   "rule X when Foo(eval( $var.equals(\"xyz\") )) then end" );
 
         final PatternDescr pattern = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        final List<?> constraints = pattern.getConstraint().getDescrs();
+        final List< ? > constraints = pattern.getConstraint().getDescrs();
         assertEquals( 1,
                       constraints.size() );
 
@@ -4014,8 +4014,8 @@ public class RuleParserTest extends TestCase {
                             "declare window Ticks\n" +
                             "    @doc(\"last 10 stock ticks\")\n" +
                             "    $s : StockTick( source == \"NYSE\" )\n" +
-                            "        over window:length( 10, $s.symbol )" +
-                            "        from entry-point stStream" +
+                            "        over window:length( 10, $s.symbol )\n" +
+                            "        from entry-point stStream\n" +
                             "end";
         PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
                                                  text );
@@ -4033,6 +4033,29 @@ public class RuleParserTest extends TestCase {
                       wdd.getAnnotations().size() );
         assertEquals( "\"last 10 stock ticks\"",
                       wdd.getAnnotation( "doc" ).getValue() );
+
+        PatternDescr pd = wdd.getPattern();
+        assertNotNull( pd );
+        assertEquals( "$s",
+                      pd.getIdentifier() );
+        assertEquals( "StockTick",
+                      pd.getObjectType() );
+        assertEquals( "stStream",
+                      pd.getSource().getText() );
+
+        assertEquals( 1,
+                      pd.getBehaviors().size() );
+        BehaviorDescr bd = pd.getBehaviors().get( 0 );
+        assertEquals( "window",
+                      bd.getType() );
+        assertEquals( "length",
+                      bd.getSubType() );
+        assertEquals( 2,
+                      bd.getParameters().size() );
+        assertEquals( "10",
+                      bd.getParameters().get( 0 ) );
+        assertEquals( "$s.symbol",
+                      bd.getParameters().get( 1 ) );
     }
 
     private Object parse( final String parserRuleName,
