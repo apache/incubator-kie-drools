@@ -37,7 +37,11 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
         if (compiledExpression == null) compile();
-        return (Boolean)MVEL.executeExpression(compiledExpression, handle.getObject());
+        try {
+            return (Boolean)MVEL.executeExpression(compiledExpression, handle.getObject());
+        } catch (ClassCastException cce) {
+            return false;
+        }
     }
 
     // Externalizable

@@ -209,7 +209,7 @@ public class Pattern
         this.source = source;
     }
 
-    public List getConstraints() {
+    public List<Constraint> getConstraints() {
         return Collections.unmodifiableList( this.constraints );
     }
 

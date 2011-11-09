@@ -36,7 +36,6 @@ import org.drools.base.DroolsQuery;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.FieldFactory;
 import org.drools.base.ValueType;
-import org.drools.base.evaluators.EvaluatorDefinition;
 import org.drools.base.evaluators.EvaluatorDefinition.Target;
 import org.drools.base.evaluators.Operator;
 import org.drools.base.mvel.ActivationPropertyHandler;
@@ -76,8 +75,6 @@ import org.drools.rule.AbstractCompositeConstraint;
 import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.From;
-import org.drools.rule.LiteralConstraint;
-import org.drools.rule.LiteralRestriction;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.MutableTypeConstraint;
 import org.drools.rule.Pattern;
@@ -94,9 +91,6 @@ import org.drools.rule.UnificationRestriction;
 import org.drools.rule.VariableConstraint;
 import org.drools.rule.VariableRestriction;
 import org.drools.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.rule.constraint.BooleanConversionHandler;
-import org.drools.rule.constraint.MvelLiteralConstraint;
-import org.drools.rule.constraint.SoundexLiteralContraint;
 import org.drools.spi.AcceptsReadAccessor;
 import org.drools.spi.Constraint;
 import org.drools.spi.Constraint.ConstraintType;
@@ -107,7 +101,6 @@ import org.drools.spi.ObjectType;
 import org.drools.spi.PatternExtractor;
 import org.drools.spi.Restriction;
 import org.drools.time.TimeUtils;
-import org.mvel2.DataConversion;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -115,21 +108,14 @@ import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 import org.mvel2.util.PropertyTools;
 
+import static org.drools.rule.builder.ConstraintBuilder.*;
+
 /**
  * A builder for patterns
  */
 public class PatternBuilder
     implements
     RuleConditionBuilder {
-
-    private static final boolean USE_MVEL_EXPRESSION = false;
-
-    static {
-        if (USE_MVEL_EXPRESSION) {
-            DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
-            DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
-        }
-    }
 
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(",
                                                                                                java.util.regex.Pattern.MULTILINE );
@@ -605,18 +591,18 @@ public class PatternBuilder
         // build a predicate if it is a constant expression or at least has a constant on the left side
         // or as a fallback when the building of a constraint fails
         if ( (!usesThisRef && value1Expr.isConstant()) ||
-                !buildConstraint( context, pattern, relDescr, expr, value1, value2, value2Expr.isConstant() )) {
+                !addConstraintToPattern( context, pattern, relDescr, expr, value1, value2, value2Expr.isConstant() )) {
             createAndBuildPredicate( context, pattern, relDescr, expr, aliases );
         }
     }
 
-    private boolean buildConstraint( final RuleBuildContext context,
-                                     final Pattern pattern,
-                                     final RelationalExprDescr relDescr,
-                                     String expr,
-                                     String value1,
-                                     String value2,
-                                     boolean isConstant ) {
+    private boolean addConstraintToPattern( final RuleBuildContext context,
+                                            final Pattern pattern,
+                                            final RelationalExprDescr relDescr,
+                                            String expr,
+                                            String value1,
+                                            String value2,
+                                            boolean isConstant ) {
         int dotPos = value1.indexOf('.');
         if (dotPos > 0) {
             String part0 = value1.substring(0, dotPos).trim();
@@ -641,18 +627,12 @@ public class PatternBuilder
         if (restrictionDescr != null) {
             FieldValue field = getFieldValue(context, vtype, restrictionDescr);
             if (field != null) {
-                if (USE_MVEL_EXPRESSION) {
-                    pattern.addConstraint( buildMVELConstraint(context, vtype, field, expr, value1, operator, value2) );
+                Constraint constraint = buildConstraint(context, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
+                if (constraint != null) {
+                    pattern.addConstraint(constraint);
                     return true;
-                } else {
-                    LiteralRestriction restriction = buildLiteralRestriction(context, extractor, restrictionDescr, field, vtype);
-                    if (restriction != null) {
-                        pattern.addConstraint( new LiteralConstraint( extractor, restriction ) );
-                        return true;
-                    }
-
                 }
-             }
+            }
         }
 
         Restriction restriction = null;
@@ -780,36 +760,6 @@ public class PatternBuilder
         pattern.addConstraint( new VariableConstraint( extractor,
                                                        restriction ) );
         return true;
-    }
-
-    private Constraint buildMVELConstraint(RuleBuildContext context,
-                                          ValueType vtype,
-                                          FieldValue field,
-                                          String expr,
-                                          String leftValue,
-                                          String operator,
-                                          String rightValue) {
-        Set<String> imports = context.getPkg().getImports().keySet();
-
-        if (operator.equals("soundslike")) {
-            return new SoundexLiteralContraint(imports, leftValue, operator, rightValue);
-        }
-
-        String mvelExpr = normalizeMVELExpression(vtype, field, expr, leftValue, operator, rightValue);
-        return new MvelLiteralConstraint(imports, vtype, mvelExpr, leftValue, operator, rightValue);
-    }
-
-    private String normalizeMVELExpression(ValueType vtype,
-                                           FieldValue field,
-                                           String expr,
-                                           String leftValue,
-                                           String operator,
-                                           String rightValue) {
-        if (vtype == ValueType.DATE_TYPE) {
-            Date date = (Date)field.getValue();
-            return leftValue + " " + operator + " new java.util.Date(" + date.getTime() + ")";
-        }
-        return expr;
     }
 
     private LiteralRestrictionDescr buildLiteralRestrictionDescr(RuleBuildContext context,
@@ -1283,34 +1233,6 @@ public class PatternBuilder
         return field;
     }
 
-    private LiteralRestriction buildLiteralRestriction( final RuleBuildContext context,
-                                                        final InternalReadAccessor extractor,
-                                                        final LiteralRestrictionDescr literalRestrictionDescr,
-                                                        final FieldValue field,
-                                                        final ValueType vtype) {
-        Target right = getRightTarget( extractor );
-        Target left = Target.FACT;
-        final Evaluator evaluator = getEvaluator( context,
-                                                  literalRestrictionDescr,
-                                                  vtype,
-                                                  literalRestrictionDescr.getEvaluator(),
-                                                  literalRestrictionDescr.isNegated(),
-                                                  literalRestrictionDescr.getParameterText(),
-                                                  left,
-                                                  right );
-        if ( evaluator == null ) {
-            return null;
-        }
-
-        return new LiteralRestriction( field,
-                                       evaluator,
-                                       extractor );
-    }
-
-    private Target getRightTarget( final InternalReadAccessor extractor ) {
-        return (extractor.isSelfReference() && !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) || Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? Target.HANDLE : Target.FACT;
-    }
-
     private ReturnValueRestriction buildRestriction( final RuleBuildContext context,
                                                      final Pattern pattern,
                                                      final InternalReadAccessor extractor,
@@ -1524,41 +1446,6 @@ public class PatternBuilder
         }
 
         return reader;
-    }
-
-    private Evaluator getEvaluator( final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final ValueType valueType,
-                                    final String evaluatorString,
-                                    final boolean isNegated,
-                                    final String parameters,
-                                    final Target left,
-                                    final Target right ) {
-
-        final EvaluatorDefinition def = context.getConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( evaluatorString );
-        if ( def == null ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          null,
-                                                          "Unable to determine the Evaluator for ID '" + evaluatorString + "'" ) );
-            return null;
-        }
-
-        final Evaluator evaluator = def.getEvaluator( valueType,
-                                                      evaluatorString,
-                                                      isNegated,
-                                                      parameters,
-                                                      left,
-                                                      right );
-
-        if ( evaluator == null ) {
-            context.getErrors().add( new DescrBuildError( context.getParentDescr(),
-                                                          descr,
-                                                          null,
-                                                          "Evaluator '" + (isNegated ? "not " : "") + evaluatorString + "' does not support type '" + valueType ) );
-        }
-
-        return evaluator;
     }
 
     @SuppressWarnings("unchecked")
