@@ -302,26 +302,30 @@ public class ResourceChangeScannerImpl
                     this.listener.info( "ResourceChangeNotification scanner has started" );
                 }
                 while ( this.scan ) {
-                    Exception exception = null;
-                    // System.out.println( "BEFORE : sync this.resources" );
-                    synchronized ( this.resources ) {
-                        // System.out.println( "DURING : sync this.resources" );
-                        // lock the resources, as we don't want this modified
-                        // while processing
-                        this.scanner.scan();
+                    try {
+                        // System.out.println( "BEFORE : sync this.resources" );
+                        synchronized ( this.resources ) {
+                            // System.out.println( "DURING : sync this.resources" );
+                            // lock the resources, as we don't want this modified
+                            // while processing
+                            this.scanner.scan();
+                        }
+                        // System.out.println( "AFTER : SCAN" );
+                    } catch (RuntimeException e) {
+                        this.listener.exception( e );
+                    } catch (Error e) {
+                        this.listener.exception( e );
                     }
-                    // System.out.println( "AFTER : SCAN" );
                     try {
                         this.listener.debug( "ResourceChangeScanner thread is waiting for " + this.interval + " seconds." );
                         wait( this.interval * 1000 );
                     } catch ( InterruptedException e ) {
-                        exception = e;
+                        if ( this.scan ) {
+                            this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted, but shutdown was not requested",
+                                                                           e ) );
+                        }
                     }
 
-                    if ( this.scan && exception != null ) {
-                        this.listener.exception( new RuntimeException( "ResourceChangeNotification ChangeSet scanning thread was interrupted, but shutdown was not requested",
-                                                                       exception ) );
-                    }
                 }
                 this.listener.info( "ResourceChangeNotification scanner has stopped" );
             }

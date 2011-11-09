@@ -30,9 +30,13 @@ public class DoNothingSystemEventListener
     }
 
     public void exception(String message, Throwable e) {
+        // Doing nothing here would effectively eat the exception
+        e.printStackTrace();
     }
 
     public void exception(Throwable e) {
+        // Doing nothing here would effectively eat the exception
+        e.printStackTrace();
     }
 
     public void info(String message) {
