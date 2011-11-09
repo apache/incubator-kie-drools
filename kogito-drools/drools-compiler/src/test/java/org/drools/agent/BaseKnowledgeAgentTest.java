@@ -128,13 +128,13 @@ public abstract class BaseKnowledgeAgentTest {
         }
         
         if ( latch.getCount() > 0 ) {
-            throw new RuntimeException( "Event for KnowlegeBase update, due to scan, was never received" );
+            throw new RuntimeException( "Event for KnowledgeBase update, due to scan, was never received" );
         }
         
         kagent.removeEventListener( l );
         
         if (!resourceCompilationFailedEvents.isEmpty()){
-            //A compilation error occured
+            //A compilation error occurred
             throw new RuntimeException("Unable to compile Knowledge"+ resourceCompilationFailedEvents.get(0).getKnowledgeBuilder().getErrors() );
         }
         
