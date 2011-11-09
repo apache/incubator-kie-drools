@@ -6571,11 +6571,10 @@ public class MiscTest {
             fact.setData( new Boolean( true ) );
             workingMemory.update( handle,
                                   fact );
-            fail( "Should not allow to compare < with a Boolean object" );
-        } catch ( ClassCastException cce ) {
-            // success, as can't use "<" to compare to a boolean
-        }
 
+            assertEquals( 2,
+                          list.size() );
+        } catch (ClassCastException cce) { }
     }
 
     @Test
@@ -6636,22 +6635,6 @@ public class MiscTest {
         assertEquals( "null object",
                       list.get( index++ ) );
 
-    }
-
-    @Test
-    public void testMvelCoercion() {
-        DataConversion.addConversionHandler(Boolean.class, BooleanConversionHandler.INSTANCE);
-        DataConversion.addConversionHandler(boolean.class, BooleanConversionHandler.INSTANCE);
-
-        String str = "Object a = true; b = a == \"true\"; System.out.println(b);";
-//        String str = "Object a = true; b = a == \"X\"; System.out.println(b);";
-//        String str = "boolean a = true; b = a == \"X\"; System.out.println(b);";
-        ParserConfiguration pconf = new ParserConfiguration();
-        ParserContext pctx = new ParserContext(pconf);
-        pctx.setStrongTyping(true);
-        pctx.setStrictTypeEnforcement(true);
-        ExecutableStatement stmt = (ExecutableStatement) MVEL.compileExpression(str, pctx);
-        MVEL.executeExpression( stmt, new HashMap() );
     }
 
     @Test

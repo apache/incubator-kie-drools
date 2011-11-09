@@ -28,6 +28,7 @@ import org.drools.rule.PredicateConstraint;
 import org.drools.rule.ReturnValueConstraint;
 import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.VariableConstraint;
+import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.FieldValue;
@@ -78,9 +79,12 @@ public class JavaDialectTest {
         assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
         
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
-        FieldValue fieldVal = (( LiteralConstraint ) alphanode.getConstraint()).getField();
-        
-        assertEquals( "xxx", fieldVal.getValue() );
+        AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
+
+        if (constraint instanceof LiteralConstraint) {
+            FieldValue fieldVal = (( LiteralConstraint ) constraint).getField();
+            assertEquals( "xxx", fieldVal.getValue() );
+        }
     }
     
 

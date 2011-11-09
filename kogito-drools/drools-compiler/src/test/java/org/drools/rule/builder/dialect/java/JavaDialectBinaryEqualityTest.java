@@ -28,6 +28,7 @@ import org.drools.rule.ReturnValueRestriction;
 import org.drools.rule.Rule;
 import org.drools.rule.VariableConstraint;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.spi.Constraint;
 import org.drools.spi.EvalExpression;
 import org.drools.spi.PredicateExpression;
 import org.drools.spi.ReturnValueExpression;
@@ -48,16 +49,16 @@ public class JavaDialectBinaryEqualityTest{
         
         // test return value
         Pattern p1 = ( Pattern ) rule1.getLhs().getChildren().get( 0 );
-        LiteralConstraint rvc1 = ( LiteralConstraint ) p1.getConstraints().get( 0 );        
+        Constraint rvc1 = p1.getConstraints().get( 0 );
         
         Pattern p2 = ( Pattern ) rule2.getLhs().getChildren().get( 0 );        
-        LiteralConstraint rvc2 = ( LiteralConstraint ) p2.getConstraints().get( 0 );        
+        Constraint rvc2 = p2.getConstraints().get( 0 );
         
         assertNotSame( rvc1, rvc2 );
         assertEquals( rvc1, rvc2 );
         
         Pattern p3 = ( Pattern ) rule3.getLhs().getChildren().get( 0 );
-        LiteralConstraint rvc3 = ( LiteralConstraint ) p3.getConstraints().get( 0 );        
+        Constraint rvc3 = p3.getConstraints().get( 0 );
         
         assertNotSame( rvc1, rvc3 );
         assertThat(rvc1, not( equalTo( rvc3 ) ) );

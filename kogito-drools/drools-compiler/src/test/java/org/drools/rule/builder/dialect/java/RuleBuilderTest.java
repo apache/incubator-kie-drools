@@ -271,9 +271,11 @@ public class RuleBuilderTest {
         final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
-        final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
-        assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
-                    fc.getField().getValue() instanceof BigDecimal );
+        if (pat.getConstraints().get(0) instanceof LiteralConstraint) {
+            final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+            assertTrue( "Wrong class. Expected java.math.BigDecimal. Found: " + fc.getField().getValue().getClass(),
+                        fc.getField().getValue() instanceof BigDecimal );
+        }
     }
 
     @Test
@@ -314,9 +316,11 @@ public class RuleBuilderTest {
         final Rule rule = pkgBuilder.getPackages()[0].getRule( "Test Rule" );
         final GroupElement and = rule.getLhs();
         final Pattern pat = (Pattern) and.getChildren().get( 0 );
-        final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
-        assertTrue( "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(),
-                    fc.getField().getValue() instanceof BigInteger );
+        if (pat.getConstraints().get(0) instanceof LiteralConstraint) {
+            final LiteralConstraint fc = (LiteralConstraint) pat.getConstraints().get( 0 );
+            assertTrue( "Wrong class. Expected java.math.BigInteger. Found: " + fc.getField().getValue().getClass(),
+                        fc.getField().getValue() instanceof BigInteger );
+        }
     }
 
 }
