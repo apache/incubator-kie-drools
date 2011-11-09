@@ -52,6 +52,7 @@ import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.api.TypeDeclarationDescrBuilder;
+import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.AttributeDescr;
 import org.drools.lang.descr.BaseDescr;
 
@@ -659,6 +660,14 @@ public class ParserHelper {
                                                             ((DeclareDescrBuilder) ctxBuilder).entryPoint();
                 pushParaphrases( DroolsParaphraseTypes.ENTRYPOINT_DECLARE );
                 beginSentence( DroolsSentenceType.ENTRYPOINT_DECLARATION );
+                setStart( declare );
+                return (T) declare;
+            } else if ( WindowDeclarationDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                WindowDeclarationDescrBuilder declare = ctxBuilder == null ?
+                                                            DescrFactory.newPackage().newDeclare().window() :
+                                                            ((DeclareDescrBuilder) ctxBuilder).window();
+                pushParaphrases( DroolsParaphraseTypes.WINDOW_DECLARE );
+                beginSentence( DroolsSentenceType.WINDOW_DECLARATION );
                 setStart( declare );
                 return (T) declare;
             } else if ( FieldDescrBuilder.class.isAssignableFrom( clazz ) ) {

@@ -52,6 +52,7 @@ import org.drools.lang.api.PatternDescrBuilder;
 import org.drools.lang.api.QueryDescrBuilder;
 import org.drools.lang.api.RuleDescrBuilder;
 import org.drools.lang.api.TypeDeclarationDescrBuilder;
+import org.drools.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.lang.descr.AndDescr;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.AttributeDescr;
@@ -67,6 +68,7 @@ import org.drools.lang.descr.OrDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
+import org.drools.lang.descr.WindowDeclarationDescr;
 
 public class DRLParser {
 
@@ -415,6 +417,7 @@ public class DRLParser {
     /**
      * declare := DECLARE 
      *               | (ENTRY-POINT) => entryPointDeclaration
+     *               | (WINDOW) => windowDeclaration
      *               | typeDeclaration
      *            END
      * 
@@ -439,6 +442,9 @@ public class DRLParser {
             if( helper.validateIdentifierKey( DroolsSoftKeywords.ENTRY ) ) {
                 // entry point declaration
                 declaration = entryPointDeclaration( declare );
+            } else if( helper.validateIdentifierKey( DroolsSoftKeywords.WINDOW ) ) {
+                // window declaration
+                declaration = windowDeclaration( declare );
             } else {
                 // type declaration
                 declaration = typeDeclaration( declare );
@@ -452,9 +458,6 @@ public class DRLParser {
 
     /**
      * entryPointDeclaration := ENTRY-POINT stringId annotation* END
-     * 
-     * NOTE: at the moment, it seems redundant to have the declaration to accept only a stringId, but
-     *       in the future, it will likely accept annotations and other parameters.
      * 
      * @return
      * @throws RecognitionException
@@ -512,6 +515,64 @@ public class DRLParser {
             reportError( re );
         } finally {
             helper.end( EntryPointDeclarationDescrBuilder.class,
+                        declare );
+        }
+        return (declare != null) ? declare.getDescr() : null;
+    }
+
+    /**
+     * windowDeclaration := WINDOW ID annotation* lhsPatternBind END
+     * 
+     * @return
+     * @throws RecognitionException
+     */
+    public WindowDeclarationDescr windowDeclaration( DeclareDescrBuilder ddb ) throws RecognitionException {
+        WindowDeclarationDescrBuilder declare = null;
+        try {
+            declare = helper.start( ddb,
+                                    WindowDeclarationDescrBuilder.class,
+                                    null );
+
+            String window = "";
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.WINDOW,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+            Token id = match( input,
+                              DRLLexer.ID,
+                              null,
+                              null,
+                              DroolsEditorType.IDENTIFIER );
+            if ( state.failed ) return null;
+            window = id.getText();
+            
+            if( state.backtracking == 0 ) {
+                declare.name( window );
+            }
+
+            while ( input.LA( 1 ) == DRLLexer.AT ) {
+                // annotation*
+                annotation( declare );
+                if ( state.failed ) return null;
+            }
+            
+            lhsPatternBind( declare, false );
+
+            match( input,
+                   DRLLexer.ID,
+                   DroolsSoftKeywords.END,
+                   null,
+                   DroolsEditorType.KEYWORD );
+            if ( state.failed ) return null;
+
+        } catch ( RecognitionException re ) {
+            reportError( re );
+        } finally {
+            helper.end( WindowDeclarationDescrBuilder.class,
                         declare );
         }
         return (declare != null) ? declare.getDescr() : null;
