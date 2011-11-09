@@ -95,6 +95,8 @@ public interface AsyncTaskService {
 
     void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, TaskSummaryResponseHandler responseHandler);
 
+    void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult, TaskSummaryResponseHandler responseHandler);
+
     void getTasksAssignedAsRecipient(String userId, String language, TaskSummaryResponseHandler responseHandler);
 
     void getTasksAssignedAsTaskInitiator(String userId, String language, TaskSummaryResponseHandler responseHandler);

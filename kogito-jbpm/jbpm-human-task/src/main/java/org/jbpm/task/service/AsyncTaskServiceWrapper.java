@@ -363,6 +363,19 @@ public class AsyncTaskServiceWrapper implements TaskService {
         }
         return responseHandler.getResults();
     }
+    
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
+    	BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();
+        taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult, responseHandler);
+        try {
+            responseHandler.waitTillDone(timeout);
+        } catch (Exception e) {
+            if (responseHandler.getError() != null) {
+                throw responseHandler.getError();
+            }
+        }
+        return responseHandler.getResults();
+    }
 
     public List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language) {
         BlockingTaskSummaryResponseHandler responseHandler = new BlockingTaskSummaryResponseHandler();

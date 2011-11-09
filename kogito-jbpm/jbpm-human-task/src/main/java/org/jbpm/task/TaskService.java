@@ -81,6 +81,8 @@ public interface TaskService {
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language);
 
+    List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult);
+    
     List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language);
 
     List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId, String language);

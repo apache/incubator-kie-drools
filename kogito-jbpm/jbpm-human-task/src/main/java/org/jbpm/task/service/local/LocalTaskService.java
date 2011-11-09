@@ -151,6 +151,10 @@ public class LocalTaskService implements TaskService {
         return taskServiceSession.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
     }
 
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResult) {
+        return taskServiceSession.getTasksAssignedAsPotentialOwner(userId, groupIds, language, firstResult, maxResult);
+    }
+
     public List<TaskSummary> getTasksAssignedAsRecipient(String userId, String language) {
         return taskServiceSession.getTasksAssignedAsRecipient(userId, language);
     }

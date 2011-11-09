@@ -253,7 +253,9 @@ public class TaskServerHandler {
                     List<TaskSummary> results = taskSession.getTasksAssignedAsPotentialOwner(
                     		(String) cmd.getArguments().get(0),
                             (List<String>) cmd.getArguments().get(1),
-                            (String) cmd.getArguments().get(2));
+                            (String) cmd.getArguments().get(2),
+                            (Integer) cmd.getArguments().get(3),
+                            (Integer) cmd.getArguments().get(4));
                     List args = new ArrayList(1);
                     args.add(results);
                     Command resultsCmnd = new Command(cmd.getId(),

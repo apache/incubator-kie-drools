@@ -471,10 +471,18 @@ public class TaskClient implements AsyncTaskService{
     public void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,
                                                  String language,
                                                  TaskSummaryResponseHandler responseHandler) {
-        List<Object> args = new ArrayList<Object>( 2 );
+    	getTasksAssignedAsPotentialOwner(userId, groupIds, language, -1, -1, responseHandler);
+    }
+    
+    public void getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds,
+                                                 String language, int firstResult, int maxResult,
+                                                 TaskSummaryResponseHandler responseHandler) {
+        List<Object> args = new ArrayList<Object>( 5 );
         args.add( userId );
         args.add( groupIds );
         args.add( language );
+        args.add( firstResult );
+        args.add( maxResult );
         Command cmd = new Command( counter.getAndIncrement(),
                                    CommandName.QueryTasksAssignedAsPotentialOwnerWithGroup,
                                    args );

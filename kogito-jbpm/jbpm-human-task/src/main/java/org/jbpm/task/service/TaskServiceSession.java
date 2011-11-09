@@ -577,19 +577,28 @@ public class TaskServiceSession {
         return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
                                                               final String language) {
+    	return getTasksAssignedAsPotentialOwner(userId, groupIds, language, -1, -1);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
+                                                              final String language, final int firstResult, int maxResults) {
         doCallbackUserOperation(userId);
         doUserGroupCallbackOperation(userId, groupIds);
         final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroups");
         tasksAssignedAsPotentialOwner.setParameter("userId", userId);
         tasksAssignedAsPotentialOwner.setParameter("groupIds", groupIds);
         tasksAssignedAsPotentialOwner.setParameter("language", language);
+        if(maxResults != -1) {
+            tasksAssignedAsPotentialOwner.setFirstResult(firstResult);
+            tasksAssignedAsPotentialOwner.setMaxResults(maxResults);
+        }
 
         return (List<TaskSummary>) tasksAssignedAsPotentialOwner.getResultList();
     }
-
 
     @SuppressWarnings("unchecked")
     public List<TaskSummary> getSubTasksAssignedAsPotentialOwner(final long parentId, final String userId,
