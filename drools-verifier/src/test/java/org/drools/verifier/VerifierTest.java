@@ -28,7 +28,6 @@ import static org.junit.Assert.*;
 
 import org.drools.builder.ResourceType;
 import org.drools.io.impl.ClassPathResource;
-import org.drools.io.impl.ReaderResource;
 import org.drools.verifier.builder.VerifierBuilder;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.drools.verifier.components.Field;
