@@ -115,4 +115,8 @@ public abstract class BaseEvaluator
         return (this.getValueType().hashCode()) ^ (this.getOperator().hashCode()) ^ (this.getClass().hashCode());
     }
 
+    public String toString() {
+        return type.getName()+" "+operator.toString();
+    }
+    
 }
