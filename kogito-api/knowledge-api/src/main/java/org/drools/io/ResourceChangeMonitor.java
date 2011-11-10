@@ -20,7 +20,7 @@ import org.drools.SystemEventListener;
 
 /**
  * <p>
- * Subscribes and unsubscribes the given notifier to the requested resource. The Monitor will inform the notifier when when results it susbcribes to are changed
+ * Subscribes and unsubscribes the given notifier to the requested resource. The Monitor will inform the notifier when when results it subscribes to are changed
  * via the ChangeSet interface.
  * </p>
  * 
