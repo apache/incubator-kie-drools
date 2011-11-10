@@ -1336,7 +1336,7 @@ public class MarshallingTest {
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap( (InternalRuleBase) ruleBase );
         assertEquals( 2,
                 nodes.size() );
-        assertEquals( "InitialFactImpl",
+        assertEquals( "InitialFact",
                 ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
                 ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
@@ -1388,7 +1388,7 @@ public class MarshallingTest {
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap( (InternalRuleBase) ruleBase );
         assertEquals( 2,
                 nodes.size() );
-        assertEquals( "InitialFactImpl",
+        assertEquals( "InitialFact",
                 ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
                 ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );

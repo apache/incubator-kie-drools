@@ -40,7 +40,7 @@ public class ClassObjectType
     ObjectType,
     Externalizable {
     
-    public static final ClassObjectType InitialFact_ObjectType = new ClassObjectType( InitialFactImpl.class );
+    public static final ClassObjectType InitialFact_ObjectType = new ClassObjectType( InitialFact.class );
     
     public static final ClassObjectType DroolsQuery_ObjectType = new ClassObjectType( DroolsQuery.class );
     
