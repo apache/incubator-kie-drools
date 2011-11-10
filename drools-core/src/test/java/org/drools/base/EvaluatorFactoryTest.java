@@ -100,13 +100,14 @@ public class EvaluatorFactoryTest {
     @Test
     public void testString() {
 
-        Collection col = Arrays.asList( new String[]{"foo", "bar", null} );
+        Collection<String> col = Arrays.asList( new String[]{"foo", "bar", null} );
 
         final Object[][] data = {{"foo", "==", "bar", Boolean.FALSE}, {"foo", "==", "foo", Boolean.TRUE}, {"foo", "!=", "bar", Boolean.TRUE}, {"something foo", "matches", ".*foo", Boolean.TRUE}, {"foo", "matches", ".*foo", Boolean.TRUE},
                 {"foo", "matches", "bar", Boolean.FALSE}, {null, "matches", ".*foo", Boolean.FALSE}, {"something", "matches", "something", Boolean.TRUE}, {"something", "matches", "hello ;=", Boolean.FALSE},
                 {"something", "not matches", "something", Boolean.FALSE}, {"something", "not matches", "hello ;=", Boolean.TRUE}, {"foo", "==", null, Boolean.FALSE}, {"foo", "!=", null, Boolean.TRUE}, {null, "==", null, Boolean.TRUE},
                 {"foo", "!=", null, Boolean.TRUE}, {null, "!=", "foo", Boolean.TRUE}, {null, "!=", null, Boolean.FALSE}, {"foo", "memberOf", col, Boolean.TRUE}, {"xyz", "memberOf", col, Boolean.FALSE}, {null, "memberOf", col, Boolean.TRUE},
                 {"foo", "memberOf", null, Boolean.FALSE}, {"foo", "not memberOf", col, Boolean.FALSE}, {"xyz", "not memberOf", col, Boolean.TRUE}, {null, "not memberOf", col, Boolean.FALSE}, {"foo", "not memberOf", null, Boolean.FALSE},
+                {"bar", "<", "foo", Boolean.TRUE}, {"foo", "<", "bar", Boolean.FALSE}, {"foo", "<=", "foo", Boolean.TRUE}, {"foo", "<=", "bar", Boolean.FALSE}, {"bar", ">", "foo", Boolean.FALSE}, {"foo", ">", "bar", Boolean.TRUE}, {"bar", ">=", "bar", Boolean.TRUE}, {"foo", ">=", "bar", Boolean.TRUE},
                 {"foobar", "soundslike", "fubar", Boolean.TRUE}, {"fubar", "soundslike", "foobar", Boolean.TRUE}, {"foobar", "soundslike", "wanklerotaryengine", Boolean.FALSE}};
 
         runEvaluatorTest( data,
@@ -447,6 +448,7 @@ public class EvaluatorFactoryTest {
                                                                                                       evaluatorStr,
                                                                                                       isNegated,
                                                                                                       null );
+            assertNotNull( "Evaluator '"+(isNegated ? "not " : "")+evaluatorStr+"' not foung for "+valueType, evaluator );
             checkEvaluatorMethodWithFieldValue( valueType,
                                                 extractor,
                                                 row,

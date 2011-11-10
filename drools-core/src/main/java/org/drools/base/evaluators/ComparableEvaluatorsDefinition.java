@@ -109,10 +109,14 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             addEvaluator( ValueType.PLONG_TYPE,         Operator.LESS_OR_EQUAL,       LongLessOrEqualEvaluator.INSTANCE );
             addEvaluator( ValueType.PLONG_TYPE,         Operator.GREATER,             LongGreaterEvaluator.INSTANCE );
             addEvaluator( ValueType.PLONG_TYPE,         Operator.GREATER_OR_EQUAL,    LongGreaterOrEqualEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        Operator.LESS,                ObjectLessEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        Operator.LESS_OR_EQUAL,       ObjectLessOrEqualEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        Operator.GREATER,             ObjectGreaterEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        Operator.GREATER_OR_EQUAL,    ObjectGreaterOrEqualEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        Operator.LESS,                ObjectLessEvaluator.OBJECT_INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        Operator.LESS_OR_EQUAL,       ObjectLessOrEqualEvaluator.OBJECT_INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        Operator.GREATER,             ObjectGreaterEvaluator.OBJECT_INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        Operator.GREATER_OR_EQUAL,    ObjectGreaterOrEqualEvaluator.OBJECT_INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        Operator.LESS,                ObjectLessEvaluator.STRING_INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        Operator.LESS_OR_EQUAL,       ObjectLessOrEqualEvaluator.STRING_INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        Operator.GREATER,             ObjectGreaterEvaluator.STRING_INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        Operator.GREATER_OR_EQUAL,    ObjectGreaterOrEqualEvaluator.STRING_INSTANCE );
             addEvaluator( ValueType.SHORT_TYPE,         Operator.LESS,                ShortLessEvaluator.INSTANCE );
             addEvaluator( ValueType.SHORT_TYPE,         Operator.LESS_OR_EQUAL,       ShortLessOrEqualEvaluator.INSTANCE );
             addEvaluator( ValueType.SHORT_TYPE,         Operator.GREATER,             ShortGreaterEvaluator.INSTANCE );
@@ -245,10 +249,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) < 0;
         }
-
-        public String toString() {
-            return "BigDecimal <";
-        }
     }
 
     public static class BigDecimalLessOrEqualEvaluator extends BaseEvaluator {
@@ -298,10 +298,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) <= 0;
         }
-
-        public String toString() {
-            return "BigDecimal <=";
-        }
     }
 
     public static class BigDecimalGreaterEvaluator extends BaseEvaluator {
@@ -350,10 +346,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final BigDecimal comp = extractor1.getBigDecimalValue( workingMemory, object1 );
             return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) > 0;
-        }
-
-        public String toString() {
-            return "BigDecimal >";
         }
     }
 
@@ -405,9 +397,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return comp.compareTo( extractor2.getBigDecimalValue( workingMemory, object2 ) ) >= 0;
         }
 
-        public String toString() {
-            return "BigDecimal >=";
-        }
     }
 
     public static class BigIntegerLessEvaluator extends BaseEvaluator {
@@ -456,10 +445,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
             return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) < 0;
-        }
-
-        public String toString() {
-            return "BigInteger <";
         }
     }
 
@@ -511,10 +496,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             final BigInteger comp =  extractor1.getBigIntegerValue( workingMemory, object1 );
             return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) <= 0;
         }
-
-        public String toString() {
-            return "BigInteger <=";
-        }
     }
 
     public static class BigIntegerGreaterEvaluator extends BaseEvaluator {
@@ -565,9 +546,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) > 0;
         }
 
-        public String toString() {
-            return "BigInteger >";
-        }
     }
 
     public static class BigIntegerGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -618,9 +596,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return comp.compareTo(  extractor2.getBigIntegerValue( workingMemory, object2 ) ) >= 0;
         }
 
-        public String toString() {
-            return "BigInteger >=";
-        }
     }
 
     public static class ByteLessEvaluator extends BaseEvaluator {
@@ -667,9 +642,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getByteValue( workingMemory, object1 ) < extractor2.getByteValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Byte <";
-        }
     }
 
     public static class ByteLessOrEqualEvaluator extends BaseEvaluator {
@@ -716,9 +688,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getByteValue( workingMemory, object1 ) <= extractor2.getByteValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Byte <=";
-        }
     }
 
     public static class ByteGreaterEvaluator extends BaseEvaluator {
@@ -765,9 +734,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getByteValue( workingMemory, object1 ) > extractor2.getByteValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Byte >";
-        }
     }
 
     public static class ByteGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -814,9 +780,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getByteValue( workingMemory, object1 ) >= extractor2.getByteValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Byte >=";
-        }
     }
 
     public static class CharacterLessEvaluator extends BaseEvaluator {
@@ -863,9 +826,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getCharValue( workingMemory, object1 ) < extractor2.getCharValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Character <";
-        }
     }
 
     public static class CharacterLessOrEqualEvaluator extends BaseEvaluator {
@@ -912,9 +872,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getCharValue( workingMemory, object1 ) <= extractor2.getCharValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Character <=";
-        }
     }
 
     public static class CharacterGreaterEvaluator extends BaseEvaluator {
@@ -961,9 +918,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getCharValue( workingMemory, object1 ) > extractor2.getCharValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Character >";
-        }
     }
 
     public static class CharacterGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -1010,9 +964,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getCharValue( workingMemory, object1 ) >= extractor2.getCharValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Character >=";
-        }
     }
 
     public static class DateLessEvaluator extends BaseEvaluator {
@@ -1068,9 +1019,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return value1.compareTo( value2 ) < 0;
         }
 
-        public String toString() {
-            return "Date <";
-        }
     }
 
     public static class DateLessOrEqualEvaluator extends BaseEvaluator {
@@ -1126,9 +1074,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return value1.compareTo( value2 ) <= 0;
         }
 
-        public String toString() {
-            return "Date <=";
-        }
     }
 
     public static class DateGreaterEvaluator extends BaseEvaluator {
@@ -1184,9 +1129,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return value1.compareTo( value2 ) > 0;
         }
 
-        public String toString() {
-            return "Date >";
-        }
     }
 
     public static class DateGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -1242,9 +1184,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return value1.compareTo( value2 ) >= 0;
         }
 
-        public String toString() {
-            return "Date >=";
-        }
     }
 
     public static class DoubleLessEvaluator extends BaseEvaluator {
@@ -1295,9 +1234,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getDoubleValue( workingMemory, object1 ) < extractor2.getDoubleValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Double <";
-        }
     }
 
     public static class DoubleLessOrEqualEvaluator extends BaseEvaluator {
@@ -1348,9 +1284,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getDoubleValue( workingMemory, object1 ) <= extractor2.getDoubleValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Double <=";
-        }
     }
 
     public static class DoubleGreaterEvaluator extends BaseEvaluator {
@@ -1401,9 +1334,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getDoubleValue( workingMemory, object1 ) > extractor2.getDoubleValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Double >";
-        }
     }
 
     public static class DoubleGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -1454,9 +1384,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getDoubleValue( workingMemory, object1 ) >= extractor2.getDoubleValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Double >=";
-        }
     }
 
     public static class FloatLessEvaluator extends BaseEvaluator {
@@ -1507,9 +1434,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getFloatValue( workingMemory, object1 ) < extractor2.getFloatValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Float <";
-        }
     }
 
     public static class FloatLessOrEqualEvaluator extends BaseEvaluator {
@@ -1560,9 +1484,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getFloatValue( workingMemory, object1 ) <= extractor2.getFloatValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Float <=";
-        }
     }
 
     public static class FloatGreaterEvaluator extends BaseEvaluator {
@@ -1613,9 +1534,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getFloatValue( workingMemory, object1 ) > extractor2.getFloatValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Float >";
-        }
     }
 
     public static class FloatGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -1666,9 +1584,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getFloatValue( workingMemory, object1 ) >= extractor2.getFloatValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Float >=";
-        }
     }
 
     public static class IntegerLessEvaluator extends BaseEvaluator {
@@ -1715,9 +1630,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getIntValue( workingMemory, object1 ) < extractor2.getIntValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Integer <";
-        }
     }
 
     public static class IntegerLessOrEqualEvaluator extends BaseEvaluator {
@@ -1764,9 +1676,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getIntValue( workingMemory, object1 ) <= extractor2.getIntValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Integer <=";
-        }
     }
 
     static public class IntegerGreaterEvaluator extends BaseEvaluator {
@@ -1813,9 +1722,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getIntValue( workingMemory, object1 ) > extractor2.getIntValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Integer >";
-        }
     }
 
     public static class IntegerGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -1862,9 +1768,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getIntValue( workingMemory, object1 ) >= extractor2.getIntValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Integer >=";
-        }
     }
 
     public static class LongLessEvaluator extends BaseEvaluator {
@@ -1911,9 +1814,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getLongValue( workingMemory, object1 ) < extractor2.getLongValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Long <";
-        }
     }
 
     public static class LongLessOrEqualEvaluator extends BaseEvaluator {
@@ -1960,9 +1860,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getLongValue( workingMemory, object1 ) <= extractor2.getLongValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Long <=";
-        }
     }
 
     public static class LongGreaterEvaluator extends BaseEvaluator {
@@ -2009,9 +1906,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getLongValue( workingMemory, object1 ) > extractor2.getLongValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Long >";
-        }
     }
 
     public static class LongGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -2058,19 +1952,17 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getLongValue( workingMemory, object1 ) >= extractor2.getLongValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Long >=";
-        }
     }
 
     public static class ObjectLessEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
-        public final static Evaluator INSTANCE         = new ObjectLessEvaluator();
+        public final static Evaluator OBJECT_INSTANCE         = new ObjectLessEvaluator(ValueType.OBJECT_TYPE);
+        public final static Evaluator STRING_INSTANCE         = new ObjectLessEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
 
 
-        public ObjectLessEvaluator() {
-            super( ValueType.OBJECT_TYPE,
+        public ObjectLessEvaluator( final ValueType valueType ) {
+            super( valueType,
                    Operator.LESS );
         }
 
@@ -2112,19 +2004,16 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
             return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) < 0;
         }
-
-        public String toString() {
-            return "Object <";
-        }
     }
 
     public static class ObjectLessOrEqualEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
-        public final static Evaluator INSTANCE         = new ObjectLessOrEqualEvaluator();
+        public final static Evaluator OBJECT_INSTANCE         = new ObjectLessOrEqualEvaluator(ValueType.OBJECT_TYPE);
+        public final static Evaluator STRING_INSTANCE         = new ObjectLessOrEqualEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
 
-        public ObjectLessOrEqualEvaluator() {
-            super( ValueType.OBJECT_TYPE,
+        public ObjectLessOrEqualEvaluator( final ValueType valueType ) {
+            super( valueType,
                    Operator.LESS_OR_EQUAL );
         }
 
@@ -2166,19 +2055,16 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
             return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) <= 0;
         }
-
-        public String toString() {
-            return "Object <=";
-        }
     }
 
     public static class ObjectGreaterEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
-        public final static Evaluator INSTANCE         = new ObjectGreaterEvaluator();
+        public final static Evaluator OBJECT_INSTANCE         = new ObjectGreaterEvaluator(ValueType.OBJECT_TYPE);
+        public final static Evaluator STRING_INSTANCE         = new ObjectGreaterEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
 
-        public ObjectGreaterEvaluator() {
-            super( ValueType.OBJECT_TYPE,
+        public ObjectGreaterEvaluator(final ValueType valueType) {
+            super( valueType,
                    Operator.GREATER );
         }
 
@@ -2220,19 +2106,16 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
             return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) > 0;
         }
-
-        public String toString() {
-            return "Object >";
-        }
     }
 
     public static class ObjectGreaterOrEqualEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
-        public final static Evaluator INSTANCE         = new ObjectGreaterOrEqualEvaluator();
+        public final static Evaluator OBJECT_INSTANCE         = new ObjectGreaterOrEqualEvaluator(ValueType.OBJECT_TYPE);
+        public final static Evaluator STRING_INSTANCE         = new ObjectGreaterOrEqualEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
 
-        public ObjectGreaterOrEqualEvaluator() {
-            super( ValueType.OBJECT_TYPE,
+        public ObjectGreaterOrEqualEvaluator( final ValueType valueType ) {
+            super( valueType,
                    Operator.GREATER_OR_EQUAL );
         }
 
@@ -2273,10 +2156,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             }
             final Comparable comp = (Comparable) extractor1.getValue( workingMemory, object1 );
             return comparator.compare( comp, extractor2.getValue( workingMemory, object2 ) ) >= 0;
-        }
-
-        public String toString() {
-            return "Object >=";
         }
     }
 
@@ -2324,9 +2203,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getShortValue( workingMemory, object1 ) < extractor2.getShortValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Short <";
-        }
     }
 
     public static class ShortLessOrEqualEvaluator extends BaseEvaluator {
@@ -2373,9 +2249,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getShortValue( workingMemory, object1 ) <= extractor2.getShortValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Boolean <=";
-        }
     }
 
     public static class ShortGreaterEvaluator extends BaseEvaluator {
@@ -2422,9 +2295,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getShortValue( workingMemory, object1 ) > extractor2.getShortValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Short >";
-        }
     }
 
     public static class ShortGreaterOrEqualEvaluator extends BaseEvaluator {
@@ -2471,9 +2341,6 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
             return extractor1.getShortValue( workingMemory, object1 ) >= extractor2.getShortValue( workingMemory, object2 );
         }
 
-        public String toString() {
-            return "Short >=";
-        }
     }
 
 
