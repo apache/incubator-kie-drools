@@ -1960,6 +1960,8 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public final static Evaluator STRING_INSTANCE         = new ObjectLessEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
 
+        public ObjectLessEvaluator() {
+        }
 
         public ObjectLessEvaluator( final ValueType valueType ) {
             super( valueType,
@@ -2012,7 +2014,10 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public final static Evaluator STRING_INSTANCE         = new ObjectLessOrEqualEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
 
-        public ObjectLessOrEqualEvaluator( final ValueType valueType ) {
+        public ObjectLessOrEqualEvaluator() {
+        }
+
+       public ObjectLessOrEqualEvaluator( final ValueType valueType ) {
             super( valueType,
                    Operator.LESS_OR_EQUAL );
         }
@@ -2062,6 +2067,9 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public final static Evaluator OBJECT_INSTANCE         = new ObjectGreaterEvaluator(ValueType.OBJECT_TYPE);
         public final static Evaluator STRING_INSTANCE         = new ObjectGreaterEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
+
+        public ObjectGreaterEvaluator() {
+        }
 
         public ObjectGreaterEvaluator(final ValueType valueType) {
             super( valueType,
@@ -2113,6 +2121,9 @@ public class ComparableEvaluatorsDefinition implements EvaluatorDefinition {
         public final static Evaluator OBJECT_INSTANCE         = new ObjectGreaterOrEqualEvaluator(ValueType.OBJECT_TYPE);
         public final static Evaluator STRING_INSTANCE         = new ObjectGreaterOrEqualEvaluator(ValueType.STRING_TYPE);
         private static final ObjectComparator comparator = new ObjectComparator();
+
+        public ObjectGreaterOrEqualEvaluator() {
+        }
 
         public ObjectGreaterOrEqualEvaluator( final ValueType valueType ) {
             super( valueType,
