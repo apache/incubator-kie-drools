@@ -57,7 +57,7 @@ public class UnmarshallingTest {
         ksession.dispose();
 
         // Re-initialize 
-        knowledgeBase = SerializationHelper.serializeObject( knowledgeBase );
+        knowledgeBase = initializeKnowledgeBase( whenBenNotVilgaxRule );
 
         // Unmarshall
         ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
