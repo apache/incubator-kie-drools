@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Table")
-public class Table extends AbstractPersistable implements Comparable<Table> {
+public class Table extends AbstractPersistable {
 
     private int tableIndex;
 
@@ -43,13 +43,6 @@ public class Table extends AbstractPersistable implements Comparable<Table> {
 
     public void setSeatList(List<Seat> seatList) {
         this.seatList = seatList;
-    }
-
-    public int compareTo(Table other) {
-        return new CompareToBuilder()
-                .append(tableIndex, other.tableIndex)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

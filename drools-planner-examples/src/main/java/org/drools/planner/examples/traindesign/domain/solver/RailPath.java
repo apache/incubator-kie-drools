@@ -24,7 +24,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.traindesign.domain.CrewSegment;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 
-public class RailPath extends AbstractPersistable implements Comparable<RailPath> {
+public class RailPath extends AbstractPersistable {
 
     private List<RailArc> railArcList;
     private int distance; // in miles * 1000 (to avoid Double rounding errors and BigDecimal)
@@ -43,12 +43,6 @@ public class RailPath extends AbstractPersistable implements Comparable<RailPath
 
     public int getDistance() {
         return distance;
-    }
-
-    public int compareTo(RailPath other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 
 @XStreamAlias("DayOnRequest")
-public class DayOnRequest extends AbstractPersistable implements Comparable<DayOnRequest> {
+public class DayOnRequest extends AbstractPersistable {
 
     private Employee employee;
     private ShiftDate shiftDate;
@@ -51,13 +51,6 @@ public class DayOnRequest extends AbstractPersistable implements Comparable<DayO
 
     public void setWeight(int weight) {
         this.weight = weight;
-    }
-
-    public int compareTo(DayOnRequest other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(shiftDate, other.shiftDate)
-                .toComparison();
     }
 
     @Override

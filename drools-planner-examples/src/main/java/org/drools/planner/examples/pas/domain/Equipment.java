@@ -24,7 +24,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
  * AKA RoomProperty
  */
 @XStreamAlias("Equipment")
-public class Equipment extends AbstractPersistable implements Comparable<Equipment> {
+public class Equipment extends AbstractPersistable {
 
     private String name;
 
@@ -34,12 +34,6 @@ public class Equipment extends AbstractPersistable implements Comparable<Equipme
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int compareTo(Equipment other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

@@ -23,7 +23,7 @@ import org.drools.planner.examples.nurserostering.domain.Employee;
 import org.drools.planner.examples.nurserostering.domain.Shift;
 
 @XStreamAlias("ShiftOnRequest")
-public class ShiftOnRequest extends AbstractPersistable implements Comparable<ShiftOnRequest> {
+public class ShiftOnRequest extends AbstractPersistable {
 
     private Employee employee;
     private Shift shift;
@@ -51,13 +51,6 @@ public class ShiftOnRequest extends AbstractPersistable implements Comparable<Sh
 
     public void setWeight(int weight) {
         this.weight = weight;
-    }
-
-    public int compareTo(ShiftOnRequest other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(shift, other.shift)
-                .toComparison();
     }
 
     @Override

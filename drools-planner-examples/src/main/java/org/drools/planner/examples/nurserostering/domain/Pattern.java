@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Pattern")
-public abstract class Pattern extends AbstractPersistable implements Comparable<Pattern> {
+public abstract class Pattern extends AbstractPersistable {
 
     protected String code;
     protected int weight;
@@ -42,12 +42,6 @@ public abstract class Pattern extends AbstractPersistable implements Comparable<
 
     public void setWeight(int weight) {
         this.weight = weight;
-    }
-
-    public int compareTo(Pattern other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

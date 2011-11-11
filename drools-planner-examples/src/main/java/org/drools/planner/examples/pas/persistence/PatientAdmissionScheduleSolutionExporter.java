@@ -18,7 +18,9 @@ package org.drools.planner.examples.pas.persistence;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.drools.planner.examples.pas.domain.PatientAdmissionSchedule;
 import org.drools.planner.examples.pas.domain.Patient;
@@ -48,7 +50,15 @@ public class PatientAdmissionScheduleSolutionExporter extends AbstractTxtSolutio
         }
 
         public void writeSolution() throws IOException {
-            Collections.sort(patientAdmissionSchedule.getBedDesignationList());
+            Collections.sort(patientAdmissionSchedule.getBedDesignationList(), new Comparator<BedDesignation>() {
+                public int compare(BedDesignation a, BedDesignation b) {
+                    return new CompareToBuilder()
+                            .append(a.getAdmissionPart(), b.getAdmissionPart())
+                            .append(a.getBed(), b.getBed())
+                            .append(a.getId(), b.getId())
+                            .toComparison();
+                }
+            });
             for (Patient patient : patientAdmissionSchedule.getPatientList()) {
                 bufferedWriter.write(Long.toString(patient.getId()));
                 for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {

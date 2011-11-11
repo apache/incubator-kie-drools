@@ -27,7 +27,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
 @XStreamAlias("SeatDesignation")
-public class SeatDesignation extends AbstractPersistable implements Comparable<SeatDesignation> {
+public class SeatDesignation extends AbstractPersistable {
 
     private Guest guest;
     private Seat seat;
@@ -48,14 +48,6 @@ public class SeatDesignation extends AbstractPersistable implements Comparable<S
 
     public void setSeat(Seat seat) {
         this.seat = seat;
-    }
-
-    public int compareTo(SeatDesignation other) {
-        return new CompareToBuilder()
-                .append(guest, other.guest)
-                .append(seat, other.seat)
-                .append(id, other.id)
-                .toComparison();
     }
 
     public SeatDesignation clone() {

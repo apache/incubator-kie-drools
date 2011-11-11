@@ -22,7 +22,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
 @XStreamAlias("Employee")
-public class Employee extends AbstractPersistable implements Comparable<Employee> {
+public class Employee extends AbstractPersistable {
 
     private String code;
     private String name;
@@ -50,12 +50,6 @@ public class Employee extends AbstractPersistable implements Comparable<Employee
 
     public void setContract(Contract contract) {
         this.contract = contract;
-    }
-
-    public int compareTo(Employee other) {
-        return new CompareToBuilder()
-                .append(name, other.name)
-                .toComparison();
     }
 
     @Override

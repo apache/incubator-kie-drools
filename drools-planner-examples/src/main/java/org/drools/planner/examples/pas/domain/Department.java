@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Department")
-public class Department extends AbstractPersistable implements Comparable<Department> {
+public class Department extends AbstractPersistable {
 
     private String name;
     private Integer minimumAge = null;
@@ -49,12 +49,6 @@ public class Department extends AbstractPersistable implements Comparable<Depart
 
     public void setMaximumAge(Integer maximumAge) {
         this.maximumAge = maximumAge;
-    }
-
-    public int compareTo(Department other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

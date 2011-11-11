@@ -26,7 +26,7 @@ import org.drools.planner.examples.traindesign.domain.solver.RailNodeShortestPat
  * A CrewSegment can be used multiple times on different trains.
  */
 @XStreamAlias("CrewSegment")
-public class CrewSegment extends AbstractPersistable implements Comparable<CrewSegment> {
+public class CrewSegment extends AbstractPersistable {
 
     private RailNode home;
     private RailNode away;
@@ -66,12 +66,6 @@ public class CrewSegment extends AbstractPersistable implements Comparable<CrewS
 
     public void setAwayHomeShortestPath(RailNodeShortestPath awayHomeShortestPath) {
         this.awayHomeShortestPath = awayHomeShortestPath;
-    }
-
-    public int compareTo(CrewSegment other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

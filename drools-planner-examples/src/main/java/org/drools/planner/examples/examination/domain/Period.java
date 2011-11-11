@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Period")
-public class Period extends AbstractPersistable implements Comparable<Period> {
+public class Period extends AbstractPersistable {
 
     private String startDateTimeString;
     private int periodIndex;
@@ -76,12 +76,6 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
 
     public void setFrontLoadLast(boolean frontLoadLast) {
         this.frontLoadLast = frontLoadLast;
-    }
-
-    public int compareTo(Period other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

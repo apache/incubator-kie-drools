@@ -22,7 +22,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.Pattern;
 
 @XStreamAlias("PatternContractLine")
-public class PatternContractLine extends AbstractPersistable implements Comparable<PatternContractLine> {
+public class PatternContractLine extends AbstractPersistable {
 
     private Contract contract;
     private Pattern pattern;
@@ -41,12 +41,6 @@ public class PatternContractLine extends AbstractPersistable implements Comparab
 
     public void setPattern(Pattern pattern) {
         this.pattern = pattern;
-    }
-
-    public int compareTo(PatternContractLine other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

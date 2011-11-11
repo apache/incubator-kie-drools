@@ -22,7 +22,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.contract.Contract;
 
 @XStreamAlias("RosterInfo")
-public class RosterInfo extends AbstractPersistable implements Comparable<RosterInfo> {
+public class RosterInfo extends AbstractPersistable {
 
     private ShiftDate firstShiftDate;
     private ShiftDate lastShiftDate;
@@ -46,13 +46,6 @@ public class RosterInfo extends AbstractPersistable implements Comparable<Roster
 
     public void setLastShiftDate(ShiftDate lastShiftDate) {
         this.lastShiftDate = lastShiftDate;
-    }
-
-    public int compareTo(RosterInfo other) {
-        return new CompareToBuilder()
-                .append(firstShiftDate, other.firstShiftDate)
-                .append(lastShiftDate, other.lastShiftDate)
-                .toComparison();
     }
 
     @Override

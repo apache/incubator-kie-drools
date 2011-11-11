@@ -21,8 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("UnavailablePeriodConstraint")
-public class UnavailablePeriodConstraint extends AbstractPersistable
-        implements Comparable<UnavailablePeriodConstraint> {
+public class UnavailablePeriodConstraint extends AbstractPersistable {
 
     private Course course;
     private Period period;
@@ -41,13 +40,6 @@ public class UnavailablePeriodConstraint extends AbstractPersistable
 
     public void setPeriod(Period period) {
         this.period = period;
-    }
-
-    public int compareTo(UnavailablePeriodConstraint other) {
-        return new CompareToBuilder()
-                .append(course, other.course)
-                .append(period, other.period)
-                .toComparison();
     }
 
     @Override

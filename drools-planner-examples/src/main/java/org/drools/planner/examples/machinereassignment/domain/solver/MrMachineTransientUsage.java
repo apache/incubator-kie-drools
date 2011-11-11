@@ -18,13 +18,14 @@ package org.drools.planner.examples.machinereassignment.domain.solver;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
-public class MrMachineTransientUsage implements Serializable {
+public class MrMachineTransientUsage implements Serializable, Comparable<MrMachineTransientUsage> {
 
     private MrMachineCapacity machineCapacity;
     private int usage;
@@ -61,6 +62,14 @@ public class MrMachineTransientUsage implements Serializable {
                 .append(machineCapacity)
                 .append(usage)
                 .toHashCode();
+    }
+
+    // Used by the GUI to sort the ConstraintOccurrence list by causes
+    public int compareTo(MrMachineTransientUsage other) {
+        return new CompareToBuilder()
+                .append(machineCapacity, other.machineCapacity)
+                .append(usage, other.usage)
+                .toComparison();
     }
 
     public MrMachine getMachine() {

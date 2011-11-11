@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("InstitutionalWeighting")
-public class InstitutionalWeighting extends AbstractPersistable implements Comparable<InstitutionalWeighting> {
+public class InstitutionalWeighting extends AbstractPersistable {
 
     private int twoInARowPenalty;
     private int twoInADayPenalty;
@@ -94,12 +94,6 @@ public class InstitutionalWeighting extends AbstractPersistable implements Compa
 
     public void setFrontLoadPenalty(int frontLoadPenalty) {
         this.frontLoadPenalty = frontLoadPenalty;
-    }
-
-    public int compareTo(InstitutionalWeighting other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
 }

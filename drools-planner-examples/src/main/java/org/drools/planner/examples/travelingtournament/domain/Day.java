@@ -19,7 +19,7 @@ package org.drools.planner.examples.travelingtournament.domain;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-public class Day extends AbstractPersistable implements Comparable<Day> {
+public class Day extends AbstractPersistable {
 
     private int index;
 
@@ -39,13 +39,6 @@ public class Day extends AbstractPersistable implements Comparable<Day> {
 
     public void setNextDay(Day nextDay) {
         this.nextDay = nextDay;
-    }
-
-    public int compareTo(Day other) {
-        return new CompareToBuilder()
-                .append(index, other.index)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

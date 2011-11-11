@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("PreferredPatientEquipment")
-public class PreferredPatientEquipment extends AbstractPersistable implements Comparable<PreferredPatientEquipment> {
+public class PreferredPatientEquipment extends AbstractPersistable {
 
     private Patient patient;
     private Equipment equipment;
@@ -40,14 +40,6 @@ public class PreferredPatientEquipment extends AbstractPersistable implements Co
 
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
-    }
-
-    public int compareTo(PreferredPatientEquipment other) {
-        return new CompareToBuilder()
-                .append(patient, other.patient)
-                .append(equipment, other.equipment)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

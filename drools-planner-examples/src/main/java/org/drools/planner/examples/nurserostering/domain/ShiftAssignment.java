@@ -30,7 +30,7 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeStrength
 
 @PlanningEntity(difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
-public class ShiftAssignment extends AbstractPersistable implements Comparable<ShiftAssignment> {
+public class ShiftAssignment extends AbstractPersistable {
 
     private Shift shift;
 
@@ -57,13 +57,6 @@ public class ShiftAssignment extends AbstractPersistable implements Comparable<S
 
     public String getLabel() {
         return shift.getShiftType().getCode();
-    }
-
-    public int compareTo(ShiftAssignment other) {
-        return new CompareToBuilder()
-                .append(shift, other.shift)
-                .append(employee, other.employee)
-                .toComparison();
     }
 
     public ShiftAssignment clone() {

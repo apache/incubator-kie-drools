@@ -21,7 +21,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
-public class Team extends AbstractPersistable implements Comparable<Team> {
+public class Team extends AbstractPersistable {
 
     private String name;
     private Map<Team, Integer> distanceToTeamMap;
@@ -40,13 +40,6 @@ public class Team extends AbstractPersistable implements Comparable<Team> {
 
     public void setDistanceToTeamMap(Map<Team, Integer> distanceToTeamMap) {
         this.distanceToTeamMap = distanceToTeamMap;
-    }
-
-    public int compareTo(Team other) {
-        return new CompareToBuilder()
-                .append(name, other.name)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

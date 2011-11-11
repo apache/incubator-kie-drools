@@ -18,6 +18,7 @@ package org.drools.planner.examples.traindesign.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,12 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
+import org.drools.planner.examples.pas.domain.BedDesignation;
 import org.drools.planner.examples.traindesign.domain.solver.RailNodeShortestPath;
 import org.drools.planner.examples.traindesign.domain.solver.RailPath;
 
 @XStreamAlias("RailNode")
-public class RailNode extends AbstractPersistable implements Comparable<RailNode> {
+public class RailNode extends AbstractPersistable {
 
     private String code;
     private int blockSwapCost;
@@ -74,12 +76,6 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
 
     public void setShortestPathMap(Map<RailNode, RailNodeShortestPath> shortestPathMap) {
         this.shortestPathMap = shortestPathMap;
-    }
-
-    public int compareTo(RailNode other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override
@@ -132,7 +128,15 @@ public class RailNode extends AbstractPersistable implements Comparable<RailNode
                     }
                 }
             }
-            Collections.sort(unvisitedShortestPathList);
+            Collections.sort(unvisitedShortestPathList, new Comparator<RailNodeShortestPath>() {
+                public int compare(RailNodeShortestPath a, RailNodeShortestPath b) {
+                    return new CompareToBuilder()
+                            .append(a.getDistance(), b.getDistance())
+                            .append(a.getRailPathList().size(), b.getRailPathList().size())
+                            .append(a.getId(), b.getId())
+                            .toComparison();
+                }
+            });
         }
     }
 

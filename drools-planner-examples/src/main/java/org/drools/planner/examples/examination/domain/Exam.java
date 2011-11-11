@@ -29,7 +29,7 @@ import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 
 @PlanningEntity
 @XStreamAlias("Exam")
-public class Exam extends AbstractPersistable implements Comparable<Exam> {
+public class Exam extends AbstractPersistable {
 
     private Topic topic;
 
@@ -88,14 +88,6 @@ public class Exam extends AbstractPersistable implements Comparable<Exam> {
     public boolean isCoincidenceLeader() {
         return examCoincidence == null
                 || examCoincidence.getFirstExam() == this;
-    }
-
-    public int compareTo(Exam other) {
-        return new CompareToBuilder()
-                .append(period, other.period)
-                .append(room, other.room)
-                .append(topic, other.topic)
-                .toComparison();
     }
 
     public Exam clone() {

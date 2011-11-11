@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Period")
-public class Period extends AbstractPersistable implements Comparable<Period> {
+public class Period extends AbstractPersistable {
 
     private Day day;
     private Timeslot timeslot;
@@ -40,13 +40,6 @@ public class Period extends AbstractPersistable implements Comparable<Period> {
 
     public void setTimeslot(Timeslot timeslot) {
         this.timeslot = timeslot;
-    }
-
-    public int compareTo(Period other) {
-        return new CompareToBuilder()
-                .append(day, other.day)
-                .append(timeslot, other.timeslot)
-                .toComparison();
     }
 
     @Override

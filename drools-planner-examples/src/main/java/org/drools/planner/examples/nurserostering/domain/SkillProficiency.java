@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("SkillProficiency")
-public class SkillProficiency extends AbstractPersistable implements Comparable<SkillProficiency> {
+public class SkillProficiency extends AbstractPersistable {
 
     private Employee employee;
     private Skill skill;
@@ -40,13 +40,6 @@ public class SkillProficiency extends AbstractPersistable implements Comparable<
 
     public void setSkill(Skill skill) {
         this.skill = skill;
-    }
-
-    public int compareTo(SkillProficiency other) {
-        return new CompareToBuilder()
-                .append(employee, other.employee)
-                .append(skill, other.skill)
-                .toComparison();
     }
 
     @Override

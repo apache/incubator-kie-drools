@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("City")
-public class City extends AbstractPersistable implements Comparable<City> {
+public class City extends AbstractPersistable {
 
     private double latitude;
     private double longitude;
@@ -50,12 +50,6 @@ public class City extends AbstractPersistable implements Comparable<City> {
         double distance = Math.sqrt(
                 (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
         return (int) (distance + 0.5);
-    }
-
-    public int compareTo(City other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

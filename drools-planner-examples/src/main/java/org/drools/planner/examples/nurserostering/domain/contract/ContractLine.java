@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ContractLine")
-public abstract class ContractLine extends AbstractPersistable implements Comparable<ContractLine> {
+public abstract class ContractLine extends AbstractPersistable {
 
     private Contract contract;
     private ContractLineType contractLineType;
@@ -43,12 +43,6 @@ public abstract class ContractLine extends AbstractPersistable implements Compar
     }
 
     public abstract boolean isEnabled();
-
-    public int compareTo(ContractLine other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
-    }
 
     @Override
     public String toString() {

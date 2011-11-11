@@ -19,12 +19,15 @@ package org.drools.planner.examples.pas.persistence;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.core.solution.Solution;
+import org.drools.planner.examples.common.domain.PersistableIdComparator;
 import org.drools.planner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.drools.planner.examples.pas.domain.AdmissionPart;
 import org.drools.planner.examples.pas.domain.Bed;
@@ -193,7 +196,7 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                     }
                 }
             }
-            Collections.sort(departmentList);
+            Collections.sort(departmentList, new PersistableIdComparator());
             patientAdmissionSchedule.setDepartmentList(departmentList);
             patientAdmissionSchedule.setDepartmentSpecialismList(departmentSpecialismList);
         }
@@ -289,7 +292,14 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                 }
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
-            Collections.sort(roomList);
+            Collections.sort(roomList, new Comparator<Room>() {
+                public int compare(Room a, Room b) {
+                    return new CompareToBuilder()
+                            .append(a.getDepartment().getId(), b.getDepartment().getId())
+                            .append(a.getId(), b.getId())
+                            .toComparison();
+                }
+            });
             patientAdmissionSchedule.setRoomList(roomList);
             patientAdmissionSchedule.setRoomSpecialismList(roomSpecialismList);
             patientAdmissionSchedule.setRoomEquipmentList(roomEquipmentList);
@@ -316,7 +326,16 @@ public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutio
                 roomToLastIndexInRoomMap.put(room, indexInRoom);
                 bedList.add(bed);
             }
-            Collections.sort(bedList);
+            Collections.sort(bedList, new Comparator<Bed>() {
+                public int compare(Bed a, Bed b) {
+                    return new CompareToBuilder()
+                            .append(a.getRoom().getDepartment().getId(), b.getRoom().getDepartment().getId())
+                            .append(a.getRoom().getId(), b.getRoom().getId())
+                            .append(a.getIndexInRoom(), b.getIndexInRoom())
+                            .append(a.getId(), b.getId())
+                            .toComparison();
+                }
+            });
             patientAdmissionSchedule.setBedList(bedList);
         }
 

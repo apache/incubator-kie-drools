@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("CarBlock")
-public class CarBlock extends AbstractPersistable implements Comparable<CarBlock> {
+public class CarBlock extends AbstractPersistable {
 
     private String code;
     private RailNode origin;
@@ -87,13 +87,6 @@ public class CarBlock extends AbstractPersistable implements Comparable<CarBlock
 
     public void setShortestDistance(int shortestDistance) {
         this.shortestDistance = shortestDistance;
-    }
-
-    public int compareTo(CarBlock other) {
-        return new CompareToBuilder()
-                .append(code, other.code)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

@@ -18,7 +18,9 @@ package org.drools.planner.examples.common.domain;
 
 import java.io.Serializable;
 
-public abstract class AbstractPersistable implements Serializable {
+import org.apache.commons.lang.builder.CompareToBuilder;
+
+public abstract class AbstractPersistable implements Serializable, Comparable<AbstractPersistable> {
 
     protected Long id;
 
@@ -53,8 +55,11 @@ public abstract class AbstractPersistable implements Serializable {
 //    }
 
     // Used by the GUI to sort the ConstraintOccurrence list by causes
-    public int compareTo(AbstractPersistable abstractPersistable) {
-        return id.compareTo(abstractPersistable.id);
+    public int compareTo(AbstractPersistable other) {
+        return new CompareToBuilder()
+                .append(getClass().getName(), other.getClass().getName())
+                .append(id, other.id)
+                .toComparison();
     }
 
     public String toString() {

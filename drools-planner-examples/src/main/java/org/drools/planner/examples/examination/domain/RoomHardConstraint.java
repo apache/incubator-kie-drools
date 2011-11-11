@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("RoomHardConstraint")
-public class RoomHardConstraint extends AbstractPersistable implements Comparable<RoomHardConstraint> {
+public class RoomHardConstraint extends AbstractPersistable {
 
     private RoomHardConstraintType roomHardConstraintType;
     private Topic topic;
@@ -40,14 +40,6 @@ public class RoomHardConstraint extends AbstractPersistable implements Comparabl
 
     public void setTopic(Topic topic) {
         this.topic = topic;
-    }
-
-    public int compareTo(RoomHardConstraint other) {
-        return new CompareToBuilder()
-                .append(roomHardConstraintType, other.roomHardConstraintType)
-                .append(topic, other.topic)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

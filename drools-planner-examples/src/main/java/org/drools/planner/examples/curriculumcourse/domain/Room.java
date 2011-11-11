@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Room")
-public class Room extends AbstractPersistable implements Comparable<Room> {
+public class Room extends AbstractPersistable {
 
     private String code;
     private int capacity;
@@ -40,12 +40,6 @@ public class Room extends AbstractPersistable implements Comparable<Room> {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public int compareTo(Room other) {
-        return new CompareToBuilder()
-                .append(code, other.code)
-                .toComparison();
     }
 
     @Override

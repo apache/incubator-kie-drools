@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("TrainDesignParametrization")
-public class TrainDesignParametrization extends AbstractPersistable implements Comparable<TrainDesignParametrization> {
+public class TrainDesignParametrization extends AbstractPersistable {
 
     private int crewImbalancePenalty;
     private int trainImbalancePenalty;
@@ -112,12 +112,6 @@ public class TrainDesignParametrization extends AbstractPersistable implements C
 
     public void setMissedCarCost(int missedCarCost) {
         this.missedCarCost = missedCarCost;
-    }
-
-    public int compareTo(TrainDesignParametrization other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
 }

@@ -24,7 +24,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Topic")
-public class Topic extends AbstractPersistable implements Comparable<Topic> {
+public class Topic extends AbstractPersistable {
 
     private int duration; // in minutes
     private List<Student> studentList;
@@ -71,12 +71,6 @@ public class Topic extends AbstractPersistable implements Comparable<Topic> {
 
     public boolean hasCoincidenceTopic() {
         return coincidenceTopicSet != null;
-    }
-
-    public int compareTo(Topic other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     public String toString() {

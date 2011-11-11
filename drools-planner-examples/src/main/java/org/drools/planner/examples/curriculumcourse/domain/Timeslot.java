@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Timeslot")
-public class Timeslot extends AbstractPersistable implements Comparable<Timeslot> {
+public class Timeslot extends AbstractPersistable {
 
     private int timeslotIndex;
 
@@ -31,12 +31,6 @@ public class Timeslot extends AbstractPersistable implements Comparable<Timeslot
 
     public void setTimeslotIndex(int timeslotIndex) {
         this.timeslotIndex = timeslotIndex;
-    }
-
-    public int compareTo(Timeslot other) {
-        return new CompareToBuilder()
-                .append(timeslotIndex, other.timeslotIndex)
-                .toComparison();
     }
 
     @Override

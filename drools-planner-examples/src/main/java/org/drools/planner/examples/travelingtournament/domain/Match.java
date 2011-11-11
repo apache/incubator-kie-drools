@@ -25,7 +25,7 @@ import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-public class Match extends AbstractPersistable implements Comparable<Match> {
+public class Match extends AbstractPersistable {
 
     private Team homeTeam;
     private Team awayTeam;
@@ -56,15 +56,6 @@ public class Match extends AbstractPersistable implements Comparable<Match> {
 
     public void setDay(Day day) {
         this.day = day;
-    }
-
-    public int compareTo(Match other) {
-        return new CompareToBuilder()
-                .append(day, other.day)
-                .append(homeTeam, other.homeTeam)
-                .append(awayTeam, other.awayTeam)
-                .append(id, other.id)
-                .toComparison();
     }
 
     public Match clone() {

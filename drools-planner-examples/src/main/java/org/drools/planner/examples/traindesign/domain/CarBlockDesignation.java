@@ -31,7 +31,7 @@ import org.drools.planner.examples.traindesign.domain.solver.RailPath;
 
 @PlanningEntity()
 @XStreamAlias("CarBlockDesignation")
-public class CarBlockDesignation extends AbstractPersistable implements Comparable<CarBlockDesignation> {
+public class CarBlockDesignation extends AbstractPersistable {
 
     private CarBlock carBlock;
     private RailPath railPath;
@@ -52,14 +52,6 @@ public class CarBlockDesignation extends AbstractPersistable implements Comparab
 
     public void setRailPath(RailPath railPath) {
         this.railPath = railPath;
-    }
-
-    public int compareTo(CarBlockDesignation other) {
-        return new CompareToBuilder()
-                .append(carBlock, other.carBlock)
-                .append(railPath, other.railPath)
-                .append(id, other.id)
-                .toComparison();
     }
 
     public CarBlockDesignation clone() {

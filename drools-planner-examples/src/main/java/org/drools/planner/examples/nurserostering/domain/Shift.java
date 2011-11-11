@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Shift")
-public class Shift extends AbstractPersistable implements Comparable<Shift> {
+public class Shift extends AbstractPersistable {
 
     private ShiftDate shiftDate;
     private ShiftType shiftType;
@@ -59,13 +59,6 @@ public class Shift extends AbstractPersistable implements Comparable<Shift> {
 
     public void setRequiredEmployeeSize(int requiredEmployeeSize) {
         this.requiredEmployeeSize = requiredEmployeeSize;
-    }
-
-    public int compareTo(Shift other) {
-        return new CompareToBuilder()
-                .append(shiftDate, other.shiftDate)
-                .append(shiftType, other.shiftType)
-                .toComparison();
     }
 
     @Override

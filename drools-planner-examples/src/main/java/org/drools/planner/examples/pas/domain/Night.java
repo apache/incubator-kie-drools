@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Night")
-public class Night extends AbstractPersistable implements Comparable<Night> {
+public class Night extends AbstractPersistable {
 
     private int index;
 
@@ -31,13 +31,6 @@ public class Night extends AbstractPersistable implements Comparable<Night> {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    public int compareTo(Night other) {
-        return new CompareToBuilder()
-                .append(index, other.index)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

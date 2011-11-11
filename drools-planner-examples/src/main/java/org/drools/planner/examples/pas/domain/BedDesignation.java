@@ -29,7 +29,7 @@ import org.drools.planner.examples.pas.domain.solver.BedStrengthComparator;
 
 @PlanningEntity(difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
 @XStreamAlias("BedDesignation")
-public class BedDesignation extends AbstractPersistable implements Comparable<BedDesignation> {
+public class BedDesignation extends AbstractPersistable {
 
     private AdmissionPart admissionPart;
     private Bed bed;
@@ -50,14 +50,6 @@ public class BedDesignation extends AbstractPersistable implements Comparable<Be
 
     public void setBed(Bed bed) {
         this.bed = bed;
-    }
-
-    public int compareTo(BedDesignation other) {
-        return new CompareToBuilder()
-                .append(admissionPart, other.admissionPart)
-                .append(bed, other.bed)
-                .append(id, other.id)
-                .toComparison();
     }
 
     public BedDesignation clone() {

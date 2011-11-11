@@ -27,7 +27,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
 @XStreamAlias("CityAssignment")
-public class CityAssignment extends AbstractPersistable implements Comparable<CityAssignment> {
+public class CityAssignment extends AbstractPersistable {
 
     private City city;
     
@@ -62,13 +62,6 @@ public class CityAssignment extends AbstractPersistable implements Comparable<Ci
 
     public void setNextCityAssignment(CityAssignment nextCityAssignment) {
         this.nextCityAssignment = nextCityAssignment;
-    }
-
-    public int compareTo(CityAssignment other) {
-        return new CompareToBuilder()
-                .append(city, other.city)
-                .append(id, other.id)
-                .toComparison();
     }
 
     /**

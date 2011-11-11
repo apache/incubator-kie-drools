@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("RailArc")
-public class RailArc extends AbstractPersistable implements Comparable<RailArc> {
+public class RailArc extends AbstractPersistable {
 
     private RailNode origin;
     private RailNode destination;
@@ -86,12 +86,6 @@ public class RailArc extends AbstractPersistable implements Comparable<RailArc> 
 
     public void setReverse(RailArc reverse) {
         this.reverse = reverse;
-    }
-
-    public int compareTo(RailArc other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

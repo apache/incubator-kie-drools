@@ -32,7 +32,7 @@ import org.drools.planner.examples.curriculumcourse.domain.solver.RoomStrengthWe
 
 @PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
-public class Lecture extends AbstractPersistable implements Comparable<Lecture> {
+public class Lecture extends AbstractPersistable {
 
     private Course course;
     private int lectureIndexInCourse;
@@ -95,14 +95,6 @@ public class Lecture extends AbstractPersistable implements Comparable<Lecture> 
 
     public int getTimeslotIndex() {
         return period.getTimeslot().getTimeslotIndex();
-    }
-
-    public int compareTo(Lecture other) {
-        return new CompareToBuilder()
-                .append(period, other.period)
-                .append(room, other.room)
-                .append(course, other.course)
-                .toComparison();
     }
 
     public Lecture clone() {

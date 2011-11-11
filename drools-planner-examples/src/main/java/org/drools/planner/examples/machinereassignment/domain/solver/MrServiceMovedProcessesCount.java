@@ -18,6 +18,7 @@ package org.drools.planner.examples.machinereassignment.domain.solver;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.examples.machinereassignment.domain.MrMachine;
@@ -25,7 +26,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
 
-public class MrServiceMovedProcessesCount implements Serializable {
+public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
 
     private MrService service;
     private int movedProcessesCount;
@@ -62,6 +63,14 @@ public class MrServiceMovedProcessesCount implements Serializable {
                 .append(service)
                 .append(movedProcessesCount)
                 .toHashCode();
+    }
+
+    // Used by the GUI to sort the ConstraintOccurrence list by causes
+    public int compareTo(MrServiceMovedProcessesCount other) {
+        return new CompareToBuilder()
+                .append(service, other.service)
+                .append(movedProcessesCount, other.movedProcessesCount)
+                .toComparison();
     }
 
     public Long getServiceId() {

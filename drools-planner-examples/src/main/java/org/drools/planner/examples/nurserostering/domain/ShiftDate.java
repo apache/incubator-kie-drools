@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ShiftDate")
-public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDate> {
+public class ShiftDate extends AbstractPersistable {
 
     private int dayIndex;
     private String dateString;
@@ -67,12 +67,6 @@ public class ShiftDate extends AbstractPersistable implements Comparable<ShiftDa
 
     public String getLabel() {
         return dateString.substring(5);
-    }
-
-    public int compareTo(ShiftDate other) {
-        return new CompareToBuilder()
-                .append(dayIndex, other.dayIndex)
-                .toComparison();
     }
 
     @Override

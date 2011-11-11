@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Curriculum")
-public class Curriculum extends AbstractPersistable implements Comparable<Curriculum> {
+public class Curriculum extends AbstractPersistable {
 
     private String code;
 
@@ -31,12 +31,6 @@ public class Curriculum extends AbstractPersistable implements Comparable<Curric
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public int compareTo(Curriculum other) {
-        return new CompareToBuilder()
-                .append(code, other.code)
-                .toComparison();
     }
 
     @Override

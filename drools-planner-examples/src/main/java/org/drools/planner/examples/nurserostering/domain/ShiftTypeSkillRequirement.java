@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ShiftTypeSkillRequirement")
-public class ShiftTypeSkillRequirement extends AbstractPersistable implements Comparable<ShiftTypeSkillRequirement> {
+public class ShiftTypeSkillRequirement extends AbstractPersistable {
 
     private ShiftType shiftType;
     private Skill skill;
@@ -40,13 +40,6 @@ public class ShiftTypeSkillRequirement extends AbstractPersistable implements Co
 
     public void setSkill(Skill skill) {
         this.skill = skill;
-    }
-
-    public int compareTo(ShiftTypeSkillRequirement other) {
-        return new CompareToBuilder()
-                .append(shiftType, other.shiftType)
-                .append(skill, other.skill)
-                .toComparison();
     }
 
     @Override

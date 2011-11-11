@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("ShiftType")
-public class ShiftType extends AbstractPersistable implements Comparable<ShiftType> {
+public class ShiftType extends AbstractPersistable {
 
     private String code;
     private int index;
@@ -78,12 +78,6 @@ public class ShiftType extends AbstractPersistable implements Comparable<ShiftTy
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int compareTo(ShiftType other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

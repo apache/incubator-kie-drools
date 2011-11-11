@@ -24,7 +24,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.nurserostering.domain.WeekendDefinition;
 
 @XStreamAlias("Contract")
-public class Contract extends AbstractPersistable implements Comparable<Contract> {
+public class Contract extends AbstractPersistable {
 
     private String code;
     private String description;
@@ -62,12 +62,6 @@ public class Contract extends AbstractPersistable implements Comparable<Contract
 
     public void setContractLineList(List<ContractLine> contractLineList) {
         this.contractLineList = contractLineList;
-    }
-
-    public int compareTo(Contract other) {
-        return new CompareToBuilder()
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

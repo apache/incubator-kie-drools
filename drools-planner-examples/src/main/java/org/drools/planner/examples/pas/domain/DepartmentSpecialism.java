@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("DepartmentSpecialism")
-public class DepartmentSpecialism extends AbstractPersistable implements Comparable<DepartmentSpecialism> {
+public class DepartmentSpecialism extends AbstractPersistable {
 
     private Department department;
     private Specialism specialism;
@@ -50,14 +50,6 @@ public class DepartmentSpecialism extends AbstractPersistable implements Compara
 
     public void setPriority(int priority) {
         this.priority = priority;
-    }
-
-    public int compareTo(DepartmentSpecialism other) {
-        return new CompareToBuilder()
-                .append(department, other.department)
-                .append(specialism, other.specialism)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

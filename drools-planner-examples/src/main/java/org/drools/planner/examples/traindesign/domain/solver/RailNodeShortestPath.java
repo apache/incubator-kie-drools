@@ -25,7 +25,7 @@ import org.drools.planner.examples.common.domain.AbstractPersistable;
 import org.drools.planner.examples.traindesign.domain.RailArc;
 import org.drools.planner.examples.traindesign.domain.RailNode;
 
-public class RailNodeShortestPath extends AbstractPersistable implements Comparable<RailNodeShortestPath> {
+public class RailNodeShortestPath extends AbstractPersistable {
 
     private RailNode origin;
     private RailNode destination;
@@ -71,15 +71,6 @@ public class RailNodeShortestPath extends AbstractPersistable implements Compara
 
     public void addRailPath(RailPath railPath) {
         railPathList.add(railPath);
-    }
-
-    public int compareTo(RailNodeShortestPath other) {
-        // Note this is relied upon by the Dijkstra algorithm in TrainDesignSolutionImporter
-        return new CompareToBuilder()
-                .append(distance, other.distance)
-                .append(railPathList.size(), other.railPathList.size())
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override

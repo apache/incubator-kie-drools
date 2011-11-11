@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("Day")
-public class Day extends AbstractPersistable implements Comparable<Day> {
+public class Day extends AbstractPersistable {
 
     private int dayIndex;
 
@@ -31,12 +31,6 @@ public class Day extends AbstractPersistable implements Comparable<Day> {
 
     public void setDayIndex(int dayIndex) {
         this.dayIndex = dayIndex;
-    }
-
-    public int compareTo(Day other) {
-        return new CompareToBuilder()
-                .append(dayIndex, other.dayIndex)
-                .toComparison();
     }
 
     @Override

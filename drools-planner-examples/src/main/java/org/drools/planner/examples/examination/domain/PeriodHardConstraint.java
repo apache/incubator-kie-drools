@@ -21,7 +21,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("PeriodHardConstraint")
-public class PeriodHardConstraint extends AbstractPersistable implements Comparable<PeriodHardConstraint> {
+public class PeriodHardConstraint extends AbstractPersistable {
 
     private PeriodHardConstraintType periodHardConstraintType;
     private Topic leftSideTopic;
@@ -49,15 +49,6 @@ public class PeriodHardConstraint extends AbstractPersistable implements Compara
 
     public void setRightSideTopic(Topic rightSideTopic) {
         this.rightSideTopic = rightSideTopic;
-    }
-
-    public int compareTo(PeriodHardConstraint other) {
-        return new CompareToBuilder()
-                .append(periodHardConstraintType, other.periodHardConstraintType)
-                .append(leftSideTopic, other.leftSideTopic)
-                .append(rightSideTopic, other.rightSideTopic)
-                .append(id, other.id)
-                .toComparison();
     }
 
     @Override
