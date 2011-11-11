@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <solverBenchmarkSuite>
   <benchmarkDirectory>local/data/machinereassignment</benchmarkDirectory>
   <solverStatisticType>BEST_SOLUTION_CHANGED</solverStatisticType>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_1.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_2.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_3.xml</unsolvedSolutionFile>
     <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_4.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a1_5.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_1.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_2.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_3.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_4.xml</unsolvedSolutionFile>
+    <unsolvedSolutionFile>data/machinereassignment/unsolved/model_a2_5.xml</unsolvedSolutionFile>
 
     <solver>
       <!--<environmentMode>DEBUG</environmentMode>-->
@@ -16,6 +25,9 @@
       <scoreDefinition>
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
     </solver>
   </inheritedSolverBenchmark>
 
@@ -29,9 +41,6 @@
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
-        <termination>
-          <maximumStepCount>100</maximumStepCount>
-        </termination>
         <selector>
           <selector>
             <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
