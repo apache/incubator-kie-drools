@@ -167,7 +167,7 @@ public class MrMachinePanel extends JPanel {
             }
             resourceField.setText(usedTotal + " / " + maximumCapacity);
             resourceField.setForeground(usedTotal > maximumCapacity? Color.RED :
-                    (usedTotal > safetyCapacity ? Color.YELLOW : Color.BLACK));
+                    (usedTotal > safetyCapacity ? Color.ORANGE : Color.BLACK));
             resourceField.setEnabled(used);
         }
         numberOfProcessesLabel.setText(processAssignmentList.size() + " processes ");
