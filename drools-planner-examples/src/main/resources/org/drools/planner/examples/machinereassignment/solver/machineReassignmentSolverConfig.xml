@@ -9,10 +9,13 @@
     <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
   </scoreDefinition>
   
-  <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-    <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
-  </constructionHeuristic>
+  <!--<constructionHeuristic>-->
+    <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
+    <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
+  <!--</constructionHeuristic>-->
+  <customSolverPhase>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+  </customSolverPhase>
   <localSearch>
     <termination>
       <maximumSecondsSpend>120</maximumSecondsSpend>
