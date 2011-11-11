@@ -79,6 +79,10 @@ public class MrMachineUsage implements Serializable {
         return machineCapacity.getMaximumCapacity() - usage;
     }
 
+    public int getSafetyAvailable() {
+        return machineCapacity.getSafetyCapacity() - usage;
+    }
+
     @Override
     public String toString() {
         return getMachine() + "-" + getResource() + "=" + usage;
