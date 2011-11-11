@@ -117,7 +117,7 @@ public class MrProcessAssignment extends AbstractPersistable {
     }
 
     public boolean isMoved() {
-        return ObjectUtils.equals(originalMachine, machine);
+        return !ObjectUtils.equals(originalMachine, machine);
     }
 
     public int getProcessMoveCost() {
