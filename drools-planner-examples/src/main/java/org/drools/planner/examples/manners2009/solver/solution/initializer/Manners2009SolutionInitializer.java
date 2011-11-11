@@ -34,7 +34,7 @@ import org.drools.planner.examples.manners2009.domain.SeatDesignation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Manners2009StartingSolutionInitializer implements CustomSolverPhaseCommand {
+public class Manners2009SolutionInitializer implements CustomSolverPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

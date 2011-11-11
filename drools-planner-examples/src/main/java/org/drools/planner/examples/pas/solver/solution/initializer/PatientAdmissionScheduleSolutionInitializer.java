@@ -39,7 +39,7 @@ import org.drools.planner.examples.pas.domain.Room;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PatientAdmissionScheduleStartingSolutionInitializer implements CustomSolverPhaseCommand {
+public class PatientAdmissionScheduleSolutionInitializer implements CustomSolverPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -544,7 +544,7 @@ INFO  Solved: time spend (13), best score (0), average calculate count per secon
 
     <para>For example:</para>
 
-    <programlisting>public class ExaminationStartingSolutionInitializer implements CustomSolverPhaseCommand {
+    <programlisting>public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand {
 
     public void changeWorkingSolution(SolutionDirector solutionDirector) {
         Examination examination = (Examination) solutionDirector.getWorkingSolution();
@@ -579,7 +579,7 @@ INFO  Solved: time spend (13), best score (0), average calculate count per secon
     <programlisting>&lt;solver&gt;
   ...
   &lt;customSolverPhase&gt;
-    &lt;customSolverPhaseCommandClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer&lt;/customSolverPhaseCommandClass&gt;
+    &lt;customSolverPhaseCommandClass&gt;org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer&lt;/customSolverPhaseCommandClass&gt;
   &lt;/customSolverPhase&gt;
   ... &lt;!-- Other phases --&gt;
 &lt;/solver&gt;</programlisting>

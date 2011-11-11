@@ -43,10 +43,10 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>StartingSolutionInitializer</name>
+    <name>SolutionInitializer</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
     </solver>
   </solverBenchmark>

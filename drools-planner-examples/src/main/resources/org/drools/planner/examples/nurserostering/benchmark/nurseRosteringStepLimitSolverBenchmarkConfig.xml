@@ -15,7 +15,7 @@
         <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
       </scoreDefinition>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>

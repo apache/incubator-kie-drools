@@ -33,7 +33,7 @@ import org.drools.planner.examples.tsp.domain.TravelingSalesmanTour;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TspStartingSolutionInitializer implements CustomSolverPhaseCommand {
+public class TspSolutionInitializer implements CustomSolverPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -15,7 +15,7 @@
     <scoreAttained>0</scoreAttained>
   </termination>
   <customSolverPhase>
-    <customSolverPhaseCommandClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009StartingSolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.manners2009.solver.solution.initializer.Manners2009SolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
     <selector>

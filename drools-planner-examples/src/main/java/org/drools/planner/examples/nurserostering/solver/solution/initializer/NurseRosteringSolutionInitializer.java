@@ -36,7 +36,7 @@ import org.drools.planner.examples.nurserostering.domain.ShiftDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NurseRosteringStartingSolutionInitializer implements CustomSolverPhaseCommand {
+public class NurseRosteringSolutionInitializer implements CustomSolverPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

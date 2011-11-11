@@ -722,7 +722,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         &lt;maximumHoursSpend&gt;1&lt;/maximumHoursSpend&gt;
     &lt;/termination&gt;</programlisting>
 
-      <para>Note that the time taken by a <literal>StartingSolutionInitializer</literal> also is taken into account by
+      <para>Note that the time taken by a <literal>SolutionInitializer</literal> also is taken into account by
       this Termination. So if you give the solver 2 minutes to solve something, but the initializer takes 1 minute, the
       local search solver will only have a minute left.</para>
 

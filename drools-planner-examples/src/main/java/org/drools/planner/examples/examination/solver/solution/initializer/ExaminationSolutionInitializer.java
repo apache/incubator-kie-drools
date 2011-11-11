@@ -44,7 +44,7 @@ import org.drools.planner.examples.examination.domain.solver.ExamCoincidence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExaminationStartingSolutionInitializer implements CustomSolverPhaseCommand {
+public class ExaminationSolutionInitializer implements CustomSolverPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

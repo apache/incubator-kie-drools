@@ -13,7 +13,7 @@
     <maximumMinutesSpend>10</maximumMinutesSpend>
   </termination>
   <customSolverPhase>
-    <customSolverPhaseCommandClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspStartingSolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.tsp.solver.solution.initializer.TspSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
     <selector>

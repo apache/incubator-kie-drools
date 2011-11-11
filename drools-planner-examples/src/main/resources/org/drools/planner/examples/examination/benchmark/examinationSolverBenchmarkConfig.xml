@@ -31,7 +31,7 @@
         <maximumSecondsSpend>429</maximumSecondsSpend>
       </termination>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
     </solver>
   </inheritedSolverBenchmark>

@@ -52,7 +52,7 @@
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <selector>
@@ -92,7 +92,7 @@
         <!--<maximumMinutesSpend>5</maximumMinutesSpend>-->
       <!--</termination>-->
       <!--<customSolverPhase>-->
-        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</customSolverPhaseCommandClass>-->
+        <!--<customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializerSolverPhaseCommandClass>-->
       <!--</customSolverPhase>-->
       <!--<localSearch>-->
         <!--<selector>-->
@@ -125,7 +125,7 @@
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <selector>
@@ -163,7 +163,7 @@
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.nurserostering.solver.solution.initializer.NurseRosteringSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
       <localSearch>
         <selector>

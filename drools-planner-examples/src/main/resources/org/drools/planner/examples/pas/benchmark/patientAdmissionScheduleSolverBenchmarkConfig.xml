@@ -39,10 +39,10 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>StartingSolutionInitializer</name>
+    <name>SolutionInitializer</name>
     <solver>
       <customSolverPhase>
-        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleStartingSolutionInitializer</customSolverPhaseCommandClass>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
     </solver>
   </solverBenchmark>

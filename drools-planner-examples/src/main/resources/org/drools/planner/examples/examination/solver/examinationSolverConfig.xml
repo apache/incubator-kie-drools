@@ -19,7 +19,7 @@
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
   </termination>
   <customSolverPhase>
-    <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationStartingSolutionInitializer</customSolverPhaseCommandClass>
+    <customSolverPhaseCommandClass>org.drools.planner.examples.examination.solver.solution.initializer.ExaminationSolutionInitializer</customSolverPhaseCommandClass>
   </customSolverPhase>
   <localSearch>
     <!--<deciderScoreComparatorFactory>-->
