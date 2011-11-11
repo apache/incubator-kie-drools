@@ -147,7 +147,20 @@ rule "loadCost"
 end
 
 // Balance cost
-// TODO
+rule "balanceCost"
+    when
+        $balancePenalty : MrBalancePenalty($originResource : originResource, $targetResource : targetResource,
+                $multiplicand : multiplicand, $weight : weight)
+        MrMachineUsage(resource == $originResource, maximumAvailable > 0,
+                $machine : machine, $originAvailable : maximumAvailable)
+        MrMachineUsage(resource == $targetResource, machine == $machine,
+                maximumAvailable < $originAvailable * $multiplicand,
+                $targetAvailable : maximumAvailable)
+    then
+        insertLogical(new IntConstraintOccurrence("balanceCost", ConstraintType.NEGATIVE_SOFT,
+                (($originAvailable * $multiplicand) - $targetAvailable) * $weight,
+                $balancePenalty, $machine));
+end
 
 // Process move cost
 rule "processMoveCost"
