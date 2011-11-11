@@ -48,6 +48,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
     public void convertAll() {
         File inputDir = getInputDir();
         File outputDir = getOutputDir();
+        outputDir.mkdirs();
         File[] inputFiles = inputDir.listFiles();
         Arrays.sort(inputFiles);
         if (inputFiles == null) {
