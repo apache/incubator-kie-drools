@@ -27,6 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.drools.planner.examples.cloudbalancing.app.CloudBalancingApp;
+import org.drools.planner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.drools.planner.examples.nqueens.app.NQueensApp;
 import org.drools.planner.examples.nurserostering.app.NurseRosteringApp;
 import org.drools.planner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -61,6 +62,11 @@ public class DroolsPlannerExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("Cloud balancing") {
             public void actionPerformed(ActionEvent e) {
                 new CloudBalancingApp().init(false);
+            }
+        }));
+        contentPane.add(new JButton(new AbstractAction("Machine reassignment (ROADEF 2012)") {
+            public void actionPerformed(ActionEvent e) {
+                new MachineReassignmentApp().init(false);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("Miss Manners 2009") {
