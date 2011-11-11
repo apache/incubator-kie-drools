@@ -60,4 +60,8 @@ public class MrMachineCapacity extends AbstractPersistable {
         this.safetyCapacity = safetyCapacity;
     }
 
+    public boolean isTransientlyConsumed() {
+        return resource.isTransientlyConsumed();
+    }
+
 }

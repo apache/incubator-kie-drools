@@ -35,6 +35,7 @@ import org.drools.planner.examples.machinereassignment.domain.MrProcessRequireme
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 import org.drools.planner.examples.machinereassignment.domain.MrService;
 import org.drools.planner.examples.machinereassignment.domain.MrServiceDependency;
+import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineTransientUsage;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
@@ -52,18 +53,42 @@ rule "machineUsage"
     then
         insertLogical(new MrMachineUsage($machineCapacity, $usageTotal.intValue()));
 end
+rule "machineTransientUsage"
+        salience 1 // Do these rules first (optional, for performance)
+    when
+        $machineCapacity : MrMachineCapacity(transientlyConsumed == true, $machine : machine, $resource : resource)
+        $usageTotal : Number() from accumulate(
+                MrProcessRequirement(resource == $resource, $process : process, $usage : usage)
+                and MrProcessAssignment(originalMachine == $machine, process == $process, moved == true),
+            sum($usage)
+        )
+    then
+        insertLogical(new MrMachineTransientUsage($machineCapacity, $usageTotal.intValue()));
+end
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
 
-// Capacity constraints
-rule "maximumCapacity"
+// Capacity constraints + Transient usage constraints
+rule "maximumCapacityNonTransientlyConsumed"
     when
-        $machineUsage : MrMachineUsage(maximumAvailable < 0, $maximumAvailable : maximumAvailable)
+        $machineUsage : MrMachineUsage(transientlyConsumed == false, maximumAvailable < 0,
+                $maximumAvailable : maximumAvailable)
     then
         insertLogical(new IntConstraintOccurrence("maximumCapacity", ConstraintType.NEGATIVE_HARD,
                 - $maximumAvailable,
+                $machineUsage));
+end
+rule "maximumCapacityTransientlyConsumed"
+    when
+        $machineUsage : MrMachineUsage(transientlyConsumed == true,
+                $maximumAvailable : maximumAvailable, $resource : resource, $machine : machine)
+        MrMachineTransientUsage(resource == $resource, machine == $machine,
+                $maximumAvailable < usage, $transientUsage : usage)
+    then
+        insertLogical(new IntConstraintOccurrence("maximumCapacityTransientlyConsumed", ConstraintType.NEGATIVE_HARD,
+                $transientUsage - $maximumAvailable,
                 $machineUsage));
 end
 
@@ -106,8 +131,6 @@ rule "serviceDependency"
                 $serviceDependency, $processAssignment));
 end
 
-// Transient usage constraints
-// TODO
 
 //rule "requiredCpuPowerTotal"
 //    when

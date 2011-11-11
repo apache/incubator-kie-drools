@@ -24,12 +24,12 @@ import org.drools.planner.examples.machinereassignment.domain.MrMachine;
 import org.drools.planner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.drools.planner.examples.machinereassignment.domain.MrResource;
 
-public class MrMachineUsage implements Serializable {
+public class MrMachineTransientUsage implements Serializable {
 
     private MrMachineCapacity machineCapacity;
     private int usage;
 
-    public MrMachineUsage(MrMachineCapacity machineCapacity, int usage) {
+    public MrMachineTransientUsage(MrMachineCapacity machineCapacity, int usage) {
         this.machineCapacity = machineCapacity;
         this.usage = usage;
     }
@@ -45,8 +45,8 @@ public class MrMachineUsage implements Serializable {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MrMachineUsage) {
-            MrMachineUsage other = (MrMachineUsage) o;
+        } else if (o instanceof MrMachineTransientUsage) {
+            MrMachineTransientUsage other = (MrMachineTransientUsage) o;
             return new EqualsBuilder()
                     .append(machineCapacity, other.machineCapacity)
                     .append(usage, other.usage)
@@ -69,14 +69,6 @@ public class MrMachineUsage implements Serializable {
 
     public MrResource getResource() {
         return machineCapacity.getResource();
-    }
-
-    public boolean isTransientlyConsumed() {
-        return machineCapacity.getResource().isTransientlyConsumed();
-    }
-
-    public int getMaximumAvailable() {
-        return machineCapacity.getMaximumCapacity() - usage;
     }
 
     @Override
