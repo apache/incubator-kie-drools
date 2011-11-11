@@ -197,22 +197,7 @@
     <get src="${designer.url}/designer-${designer.version}.war" dest="${install.home}/lib/designer-${designer.version}.war"  />
   </target>
 
-  <!-- Download jBPM Eclipse plugins -->
-  <target name="download.jBPM.eclipse.check">
-    <echo message="Checking jBPM Eclipse download ..." />
-    <condition property="jBPM.eclipse.not.available">
-      <not>
-        <available file="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" />
-      </not>
-    </condition>
-  </target>
-  <target name="download.jBPM.eclipse" depends="download.jBPM.eclipse.check" if="jBPM.eclipse.not.available">
-    <echo message="Getting jBPM Eclipse ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="http://sourceforge.net/projects/jbpm/files/jBPM%205/jbpm-5.1.0.Final/jbpm-5.1.0.Final-eclipse-all.zip/download" dest="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip"  />
-  </target>
-
-  <!-- Download Drools Eclipse plugins -->
+  <!-- Download jBPM & Drools Eclipse plugins -->
   <target name="download.drools.eclipse.check">
     <echo message="Checking Drools Eclipse download ..." />
     <condition property="drools.eclipse.not.available">
@@ -386,12 +371,6 @@
   </target>
 
   <!-- Install Eclipse plugins -->
-  <target name="install.jBPM-eclipse.into.eclipse" depends="download.jBPM.eclipse">
-    <!-- install plugins -->
-    <unzip src="${install.home}/lib/jbpm-${jBPM.version}-eclipse-all.zip" dest="${eclipse.home}" />
-  </target>
-
-  <!-- Install Eclipse plugins -->
   <target name="install.drools-eclipse.into.eclipse" depends="download.drools.eclipse">
     <!-- install plugins -->
   	<mkdir dir="${eclipse.home}/drools-update-site"/>
@@ -406,7 +385,7 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM-eclipse.into.eclipse,install.jBPM.runtime,install.drools-eclipse.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.eclipse,install.jBPM.runtime,install.drools-eclipse.into.eclipse" />
   
   <!-- Install Demo (No Eclipse) -->
   <target name="install.demo.noeclipse" depends="install.jboss,install.guvnor.into.jboss,install.designer.into.jboss,install.jBPM-gwt-console.into.jboss,install.jBPM.runtime" />

@@ -1,1 +1,1 @@
-echo org.jboss.tools.jbpm/jBPM.Runtimes=jBPM runtime#`pwd`/runtime#true# > mac.eclipse.preferences.ini
+echo org.jbpm.eclipse/jBPM.Runtimes=jBPM runtime#`pwd`/runtime#true# > mac.eclipse.preferences.ini
