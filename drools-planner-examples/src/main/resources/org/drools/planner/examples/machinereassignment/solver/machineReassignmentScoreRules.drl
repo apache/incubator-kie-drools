@@ -139,10 +139,10 @@ end
 rule "loadCost"
     when
         $machineUsage : MrMachineUsage(safetyAvailable < 0,
-                $safetyAvailable : safetyAvailable)
+                $safetyAvailable : safetyAvailable, $loadCostWeight : loadCostWeight)
     then
         insertLogical(new IntConstraintOccurrence("loadCost", ConstraintType.NEGATIVE_SOFT,
-                - $safetyAvailable,
+                - $safetyAvailable * $loadCostWeight,
                 $machineUsage));
 end
 

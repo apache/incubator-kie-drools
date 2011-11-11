@@ -17,14 +17,13 @@
 package org.drools.planner.examples.machinereassignment.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("MrResource")
 public class MrResource extends AbstractPersistable {
 
     private boolean transientlyConsumed;
-    private int weight;
+    private int loadCostWeight;
 
     public boolean isTransientlyConsumed() {
         return transientlyConsumed;
@@ -34,12 +33,12 @@ public class MrResource extends AbstractPersistable {
         this.transientlyConsumed = transientlyConsumed;
     }
 
-    public int getWeight() {
-        return weight;
+    public int getLoadCostWeight() {
+        return loadCostWeight;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public void setLoadCostWeight(int loadCostWeight) {
+        this.loadCostWeight = loadCostWeight;
     }
 
 }

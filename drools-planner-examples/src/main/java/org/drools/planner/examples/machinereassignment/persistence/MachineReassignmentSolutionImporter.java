@@ -112,7 +112,7 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 MrResource resource = new MrResource();
                 resource.setId(resourceId);
                 resource.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
-                resource.setWeight(Integer.parseInt(lineTokens[1]));
+                resource.setLoadCostWeight(Integer.parseInt(lineTokens[1]));
                 resourceList.add(resource);
                 resourceId++;
             }

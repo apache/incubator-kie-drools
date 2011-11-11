@@ -84,6 +84,10 @@ public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> 
         return machineCapacity.getResource().isTransientlyConsumed();
     }
 
+    public int getLoadCostWeight() {
+        return machineCapacity.getResource().getLoadCostWeight();
+    }
+
     public int getMaximumAvailable() {
         return machineCapacity.getMaximumCapacity() - usage;
     }
