@@ -1244,8 +1244,8 @@ After in *ScoreRules.drl:
     import org.drools.planner.core.score.buildin.simple.SimpleScoreCalculator;
     import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreCalculator;
 Before in xstreamed solution files:
-  <score class="org.drools.planner.core.score.DefaultSimpleScore" ...>
-  <score class="org.drools.planner.core.score.DefaultHardAndSoftScoreScore" ...>
+    <score class="org.drools.planner.core.score.DefaultSimpleScore" ...>
+    <score class="org.drools.planner.core.score.DefaultHardAndSoftScoreScore" ...>
 After in xstreamed solution files:
-  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" ...>
-  <score class="org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScoreScore" ...>
+    <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" ...>
+    <score class="org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScoreScore" ...>
