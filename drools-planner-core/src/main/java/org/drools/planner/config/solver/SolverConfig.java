@@ -235,7 +235,7 @@ public class SolverConfig {
             RuleBaseConfiguration ruleBaseConfiguration = new RuleBaseConfiguration();
             RuleBase ruleBase = RuleBaseFactory.newRuleBase(ruleBaseConfiguration);
             if (packageBuilder.hasErrors()) {
-                throw new IllegalStateException("There are errors in the scoreDrl's:"
+                throw new IllegalStateException("There are errors in the scoreDrl's:\n"
                         + packageBuilder.getErrors().toString());
             }
             ruleBase.addPackage(packageBuilder.getPackage());
