@@ -20,14 +20,12 @@ import java.util.Comparator;
 
 import org.drools.planner.core.localsearch.LocalSearchSolverPhaseScope;
 import org.drools.planner.core.localsearch.LocalSearchStepScope;
-import org.drools.planner.core.score.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.comparator.FlatteningHardAndSoftScoreComparator;
 import org.drools.planner.core.score.comparator.NaturalScoreComparator;
 
 /**
- * Implementation of {@link HardAndSoftScore}.
- * Compares by
  * @see DeciderScoreComparatorFactory
  */
 public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDeciderScoreComparatorFactory {
