@@ -19,7 +19,7 @@ package org.drools.planner.core.score.comparator;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.drools.planner.core.score.HardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
 import org.drools.planner.core.score.Score;
 
 /**

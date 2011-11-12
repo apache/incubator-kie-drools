@@ -18,12 +18,11 @@ package org.drools.planner.examples.nqueens.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.planner.api.domain.solution.PlanningEntityCollectionProperty;
+import org.drools.planner.core.score.buildin.simple.SimpleScore;
 import org.drools.planner.core.solution.Solution;
-import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.examples.common.domain.AbstractPersistable;
 
 public class NQueens extends AbstractPersistable implements Solution<SimpleScore> {

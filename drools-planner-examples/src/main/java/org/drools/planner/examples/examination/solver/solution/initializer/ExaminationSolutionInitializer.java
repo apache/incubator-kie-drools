@@ -28,7 +28,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;

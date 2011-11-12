@@ -19,6 +19,7 @@ package org.drools.planner.core.score.definition;
 import java.io.Serializable;
 
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
 
 /**
  * Abstract superclass for {@link ScoreDefinition}.

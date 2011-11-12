@@ -17,7 +17,7 @@
 package org.drools.planner.examples.manners2009.solver;
     dialect "java"
 
-import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.buildin.simple.SimpleScoreCalculator;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 

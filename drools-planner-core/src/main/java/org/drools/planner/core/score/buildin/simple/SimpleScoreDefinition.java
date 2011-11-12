@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.definition;
+package org.drools.planner.core.score.buildin.simple;
 
-import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.SimpleScore;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
-import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 
 public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> {
 

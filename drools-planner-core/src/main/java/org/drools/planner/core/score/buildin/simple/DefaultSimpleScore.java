@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,32 +14,34 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score;
+package org.drools.planner.core.score.buildin.simple;
+
+import org.drools.planner.core.score.AbstractScore;
 
 /**
- * Default implementation of {@link SimpleDoubleScore}.
+ * Default implementation of {@link SimpleScore}.
  * <p/>
  * This class is immutable.
- * @see SimpleDoubleScore
+ * @see SimpleScore
  */
-public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleScore>
-        implements SimpleDoubleScore {
+public final class DefaultSimpleScore extends AbstractScore<SimpleScore>
+        implements SimpleScore {
 
-    public static DefaultSimpleDoubleScore parseScore(String scoreString) {
-        return valueOf(Double.parseDouble(scoreString));
+    public static DefaultSimpleScore parseScore(String scoreString) {
+        return valueOf(Integer.parseInt(scoreString));
     }
 
-    public static DefaultSimpleDoubleScore valueOf(double score) {
-        return new DefaultSimpleDoubleScore(score);
+    public static DefaultSimpleScore valueOf(int score) {
+        return new DefaultSimpleScore(score);
     }
 
-    private final double score;
+    private final int score;
 
-    public DefaultSimpleDoubleScore(double score) {
+    public DefaultSimpleScore(int score) {
         this.score = score;
     }
 
-    public double getScore() {
+    public int getScore() {
         return score;
     }
 
@@ -47,20 +49,20 @@ public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleSc
     // Worker methods
     // ************************************************************************
 
-    public SimpleDoubleScore add(SimpleDoubleScore augment) {
-        return new DefaultSimpleDoubleScore(score + augment.getScore());
+    public SimpleScore add(SimpleScore augment) {
+        return new DefaultSimpleScore(score + augment.getScore());
     }
 
-    public SimpleDoubleScore subtract(SimpleDoubleScore subtrahend) {
-        return new DefaultSimpleDoubleScore(score - subtrahend.getScore());
+    public SimpleScore subtract(SimpleScore subtrahend) {
+        return new DefaultSimpleScore(score - subtrahend.getScore());
     }
 
-    public SimpleDoubleScore multiply(double multiplicand) {
-        return new DefaultSimpleDoubleScore(Math.floor(score * multiplicand));
+    public SimpleScore multiply(double multiplicand) {
+        return new DefaultSimpleScore((int) Math.floor(score * multiplicand));
     }
 
-    public SimpleDoubleScore divide(double divisor) {
-        return new DefaultSimpleDoubleScore(Math.floor(score / divisor));
+    public SimpleScore divide(double divisor) {
+        return new DefaultSimpleScore((int) Math.floor(score / divisor));
     }
 
     public double[] toDoubleArray() {
@@ -71,8 +73,8 @@ public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleSc
         // A direct implementation (instead of EqualsBuilder) to avoid dependencies
         if (this == o) {
             return true;
-        } else if (o instanceof SimpleDoubleScore) {
-            SimpleDoubleScore other = (SimpleDoubleScore) o;
+        } else if (o instanceof SimpleScore) {
+            SimpleScore other = (SimpleScore) o;
             return score == other.getScore();
         } else {
             return false;
@@ -81,10 +83,10 @@ public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleSc
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (17 * 37) + Double.valueOf(score).hashCode();
+        return (17 * 37) + score;
     }
 
-    public int compareTo(SimpleDoubleScore other) {
+    public int compareTo(SimpleScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (score < other.getScore()) {
             return -1;
@@ -96,7 +98,7 @@ public final class DefaultSimpleDoubleScore extends AbstractScore<SimpleDoubleSc
     }
 
     public String toString() {
-        return Double.toString(score);
+        return Integer.toString(score);
     }
 
 }

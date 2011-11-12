@@ -17,10 +17,10 @@
 package org.drools.planner.config.score.definition;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.drools.planner.core.score.definition.HardAndSoftScoreDefinition;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
 import org.drools.planner.core.score.definition.ScoreDefinition;
-import org.drools.planner.core.score.definition.SimpleDoubleScoreDefinition;
-import org.drools.planner.core.score.definition.SimpleScoreDefinition;
+import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
+import org.drools.planner.core.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
 
 @XStreamAlias("scoreDefinition")
 public class ScoreDefinitionConfig {

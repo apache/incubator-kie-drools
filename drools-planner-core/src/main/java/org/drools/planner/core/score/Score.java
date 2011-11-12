@@ -16,6 +16,8 @@
 
 package org.drools.planner.core.score;
 
+import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
  * <p/>

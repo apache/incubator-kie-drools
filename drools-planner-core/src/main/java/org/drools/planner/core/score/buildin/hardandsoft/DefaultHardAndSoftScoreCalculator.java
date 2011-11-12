@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.calculator;
+package org.drools.planner.core.score.buildin.hardandsoft;
 
-import org.drools.planner.core.score.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.calculator.AbstractScoreCalculator;
 
 public class DefaultHardAndSoftScoreCalculator extends AbstractScoreCalculator implements HardAndSoftScoreCalculator {
 

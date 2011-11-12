@@ -18,6 +18,8 @@ package org.drools.planner.core.score;
 
 import java.io.Serializable;
 
+import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+
 /**
  * Abstract superclass for {@link Score}.
  * <p/>

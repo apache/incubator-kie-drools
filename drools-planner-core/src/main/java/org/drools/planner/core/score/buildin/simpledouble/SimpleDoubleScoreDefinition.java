@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.definition;
+package org.drools.planner.core.score.buildin.simpledouble;
 
-import org.drools.planner.core.score.DefaultSimpleDoubleScore;
 import org.drools.planner.core.score.Score;
-import org.drools.planner.core.score.SimpleDoubleScore;
 import org.drools.planner.core.score.calculator.ScoreCalculator;
-import org.drools.planner.core.score.calculator.SimpleDoubleScoreCalculator;
+import org.drools.planner.core.score.definition.AbstractScoreDefinition;
 
 public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleDoubleScore> {
 

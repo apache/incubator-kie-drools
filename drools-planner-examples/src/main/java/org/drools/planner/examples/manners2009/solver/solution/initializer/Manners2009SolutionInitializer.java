@@ -23,7 +23,7 @@ import java.util.List;
 import org.drools.FactHandle;
 import org.drools.WorkingMemory;
 import org.drools.planner.core.phase.custom.CustomSolverPhaseCommand;
-import org.drools.planner.core.score.DefaultSimpleScore;
+import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
 import org.drools.planner.core.solution.director.SolutionDirector;
 import org.drools.planner.examples.common.domain.PersistableIdComparator;

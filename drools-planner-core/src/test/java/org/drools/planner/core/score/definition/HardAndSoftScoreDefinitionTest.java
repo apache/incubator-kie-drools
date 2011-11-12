@@ -16,7 +16,8 @@
 
 package org.drools.planner.core.score.definition;
 
-import org.drools.planner.core.score.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

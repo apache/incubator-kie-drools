@@ -839,7 +839,7 @@
       <row reference="68"/>
     </org.drools.planner.examples.nqueens.domain.Queen>
   </queenList>
-  <score class="org.drools.planner.core.score.DefaultSimpleScore" id="197">
+  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" id="197">
     <score>0</score>
   </score>
 </org.drools.planner.examples.nqueens.domain.NQueens>

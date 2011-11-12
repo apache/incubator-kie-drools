@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score;
+package org.drools.planner.core.score.buildin.hardandsoft;
+
+import org.drools.planner.core.score.Score;
 
 /**
  * A HardAndSoftScore is a Score based on hard constraints and soft int constraints.

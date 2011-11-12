@@ -1224,3 +1224,28 @@ Before in *ScoreRules.drl:
 After in *ScoreRules.drl:
     import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
     global HardAndSoftScoreCalculator scoreCalculator;
+
+[MAJOR] The buildin Score implementations (including their ScoreCalculator and ScoreDefinition)
+have been moved into a package per implementation functionality.
+Before in *.java:
+    import org.drools.planner.core.score.SimpleScore;
+    import org.drools.planner.core.score.DefaultSimpleScore;
+    import org.drools.planner.core.score.HardAndSoftScore;
+    import org.drools.planner.core.score.DefaultHardAndSoftScore;
+After in *.java:
+    import org.drools.planner.core.score.buildin.simple.SimpleScore;
+    import org.drools.planner.core.score.buildin.simple.DefaultSimpleScore;
+    import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScore;
+    import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
+Before in *ScoreRules.drl:
+    import org.drools.planner.core.score.calculator.SimpleScoreCalculator;
+    import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
+After in *ScoreRules.drl:
+    import org.drools.planner.core.score.buildin.simple.SimpleScoreCalculator;
+    import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreCalculator;
+Before in xstreamed solution files:
+  <score class="org.drools.planner.core.score.DefaultSimpleScore" ...>
+  <score class="org.drools.planner.core.score.DefaultHardAndSoftScoreScore" ...>
+After in xstreamed solution files:
+  <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" ...>
+  <score class="org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScoreScore" ...>

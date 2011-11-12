@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score;
+package org.drools.planner.core.score.buildin.hardandsoft;
+
+import org.drools.planner.core.score.AbstractScore;
 
 /**
  * Default implementation of {@link HardAndSoftScore}.

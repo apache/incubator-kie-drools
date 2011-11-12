@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score;
+package org.drools.planner.core.score.buildin.simple;
+
+import org.drools.planner.core.score.Score;
 
 /**
- * A SimpleScore is a Score based on double constraints.
+ * A SimpleScore is a Score based on int constraints.
  * <p/>
  * Implementations must be immutable.
  * @see Score
- * @see DefaultDoubleSimpleScore
+ * @see DefaultSimpleScore
  */
-public interface SimpleDoubleScore extends Score<SimpleDoubleScore> {
+public interface SimpleScore extends Score<SimpleScore> {
 
     /**
      * The total of the broken negative constraints and fulfilled postive hard constraints.
@@ -31,6 +33,6 @@ public interface SimpleDoubleScore extends Score<SimpleDoubleScore> {
      * The score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
-    double getScore();
+    int getScore();
 
 }

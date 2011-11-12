@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.calculator;
+package org.drools.planner.core.score.buildin.hardandsoft;
+
+import org.drools.planner.core.score.calculator.ScoreCalculator;
 
 public interface HardAndSoftScoreCalculator extends ScoreCalculator {
 

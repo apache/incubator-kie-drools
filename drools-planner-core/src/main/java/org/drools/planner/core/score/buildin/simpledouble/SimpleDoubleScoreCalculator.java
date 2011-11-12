@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.calculator;
+package org.drools.planner.core.score.buildin.simpledouble;
 
-import org.drools.planner.core.score.DefaultSimpleScore;
 import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.calculator.AbstractScoreCalculator;
 
-public class SimpleScoreCalculator extends AbstractScoreCalculator {
+public class SimpleDoubleScoreCalculator extends AbstractScoreCalculator {
 
-    private int score;
+    private double score;
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
@@ -36,7 +36,7 @@ public class SimpleScoreCalculator extends AbstractScoreCalculator {
     // ************************************************************************
 
     public Score calculateScore() {
-        return DefaultSimpleScore.valueOf(score);
+        return DefaultSimpleDoubleScore.valueOf(score);
     }
 
 }
