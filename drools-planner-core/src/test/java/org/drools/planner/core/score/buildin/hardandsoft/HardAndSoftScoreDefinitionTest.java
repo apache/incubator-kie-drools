@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.planner.core.score.definition;
+package org.drools.planner.core.score.buildin.hardandsoft;
 
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
