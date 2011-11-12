@@ -17,7 +17,7 @@
 package org.drools.planner.examples.cloudbalancing.solver;
     dialect "java"
 
-import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -25,7 +25,7 @@ import org.drools.planner.examples.cloudbalancing.domain.CloudBalance;
 import org.drools.planner.examples.cloudbalancing.domain.CloudComputer;
 import org.drools.planner.examples.cloudbalancing.domain.CloudProcess;
 
-global HardAndSoftConstraintScoreCalculator scoreCalculator;
+global HardAndSoftScoreCalculator scoreCalculator;
 
 // ############################################################################
 // Hard constraints

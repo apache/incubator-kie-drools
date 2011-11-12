@@ -17,7 +17,7 @@
 package org.drools.planner.examples.nurserostering.solver;
     dialect "java"
 
-import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -57,7 +57,7 @@ import org.drools.planner.examples.nurserostering.domain.solver.EmployeeFreeSequ
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
 import org.drools.planner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
 
-global HardAndSoftConstraintScoreCalculator scoreCalculator;
+global HardAndSoftScoreCalculator scoreCalculator;
 
 // ############################################################################
 // Hard constraints

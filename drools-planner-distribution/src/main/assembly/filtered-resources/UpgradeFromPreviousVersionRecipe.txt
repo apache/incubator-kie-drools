@@ -1216,3 +1216,11 @@ After in *SolverConfig.xml and *SolverBenchmarkConfig.xml:
     <acceptor>
       <propertyTabuSize>...</propertyTabuSize>
     </acceptor>
+
+[MAJOR] HardAndSoftConstraintScoreCalculator has been renamed to HardAndSoftScoreCalculator.
+Before in *ScoreRules.drl:
+    import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+    global HardAndSoftConstraintScoreCalculator scoreCalculator;
+After in *ScoreRules.drl:
+    import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
+    global HardAndSoftScoreCalculator scoreCalculator;

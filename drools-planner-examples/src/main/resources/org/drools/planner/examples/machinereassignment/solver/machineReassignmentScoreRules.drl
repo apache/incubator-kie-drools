@@ -17,7 +17,7 @@
 package org.drools.planner.examples.machinereassignment.solver;
     dialect "java"
 
-import org.drools.planner.core.score.calculator.HardAndSoftConstraintScoreCalculator;
+import org.drools.planner.core.score.calculator.HardAndSoftScoreCalculator;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
@@ -39,7 +39,7 @@ import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineTr
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
-global HardAndSoftConstraintScoreCalculator scoreCalculator;
+global HardAndSoftScoreCalculator scoreCalculator;
 
 rule "machineUsage"
         salience 1 // Do these rules first (optional, for performance)
