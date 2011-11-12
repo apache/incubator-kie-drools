@@ -17,8 +17,8 @@
 package org.drools.planner.examples.machinereassignment.solver;
     dialect "java"
 
-import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreCalculator;
-import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreCalculator;
+import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 
 import org.drools.planner.examples.machinereassignment.domain.MachineReassignment;
@@ -39,7 +39,7 @@ import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineTr
 import org.drools.planner.examples.machinereassignment.domain.solver.MrMachineUsage;
 import org.drools.planner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
 
-global HardAndSoftScoreCalculator scoreCalculator;
+global HardAndSoftLongScoreCalculator scoreCalculator;
 
 rule "machineUsage"
         salience 1 // Do these rules first (optional, for performance)
@@ -76,7 +76,7 @@ rule "maximumCapacityNonTransientlyConsumed"
         $machineUsage : MrMachineUsage(transientlyConsumed == false, maximumAvailable < 0,
                 $maximumAvailable : maximumAvailable)
     then
-        insertLogical(new IntConstraintOccurrence("maximumCapacity", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new LongConstraintOccurrence("maximumCapacity", ConstraintType.NEGATIVE_HARD,
                 - $maximumAvailable,
                 $machineUsage));
 end
@@ -87,7 +87,7 @@ rule "maximumCapacityTransientlyConsumed"
         MrMachineTransientUsage(resource == $resource, machine == $machine,
                 $maximumAvailable < usage, $transientUsage : usage)
     then
-        insertLogical(new IntConstraintOccurrence("maximumCapacityTransientlyConsumed", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new LongConstraintOccurrence("maximumCapacityTransientlyConsumed", ConstraintType.NEGATIVE_HARD,
                 $transientUsage - $maximumAvailable,
                 $machineUsage));
 end
@@ -98,7 +98,7 @@ rule "serviceConflict"
         $leftProcessAssignment : MrProcessAssignment($service : service, $machine : machine, $leftId : id)
         $rightProcessAssignment : MrProcessAssignment(service == $service, machine == $machine, id > $leftId)
     then
-        insertLogical(new IntConstraintOccurrence("serviceConflict", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new LongConstraintOccurrence("serviceConflict", ConstraintType.NEGATIVE_HARD,
                 1,
                 $leftProcessAssignment, $rightProcessAssignment));
 end
@@ -113,7 +113,7 @@ rule "serviceLocationSpread"
             count($location)
         )
     then
-        insertLogical(new IntConstraintOccurrence("serviceLocationSpread", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new LongConstraintOccurrence("serviceLocationSpread", ConstraintType.NEGATIVE_HARD,
                 $locationSpread - $spreadCount.intValue(),
                 $service));
 end
@@ -125,7 +125,7 @@ rule "serviceDependency"
         $processAssignment : MrProcessAssignment(service == $fromService, $neighborhood : neighborhood)
         not MrProcessAssignment(service == $toService, neighborhood == $neighborhood)
     then
-        insertLogical(new IntConstraintOccurrence("serviceDependency", ConstraintType.NEGATIVE_HARD,
+        insertLogical(new LongConstraintOccurrence("serviceDependency", ConstraintType.NEGATIVE_HARD,
                 1,
                 $serviceDependency, $processAssignment));
 end
@@ -140,7 +140,7 @@ rule "loadCost"
         $machineUsage : MrMachineUsage(safetyAvailable < 0,
                 $safetyAvailable : safetyAvailable, $loadCostWeight : loadCostWeight)
     then
-        insertLogical(new IntConstraintOccurrence("loadCost", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new LongConstraintOccurrence("loadCost", ConstraintType.NEGATIVE_SOFT,
                 - $safetyAvailable * $loadCostWeight,
                 $machineUsage));
 end
@@ -156,7 +156,7 @@ rule "balanceCost"
                 maximumAvailable < $originAvailable * $multiplicand,
                 $targetAvailable : maximumAvailable)
     then
-        insertLogical(new IntConstraintOccurrence("balanceCost", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new LongConstraintOccurrence("balanceCost", ConstraintType.NEGATIVE_SOFT,
                 (($originAvailable * $multiplicand) - $targetAvailable) * $weight,
                 $balancePenalty, $machine));
 end
@@ -167,7 +167,7 @@ rule "processMoveCost"
         MrGlobalPenaltyInfo(processMoveCostWeight > 0, $processMoveCostWeight : processMoveCostWeight)
         $processAssignment : MrProcessAssignment(moved == true, processMoveCost > 0, $processMoveCost : processMoveCost)
     then
-        insertLogical(new IntConstraintOccurrence("processMoveCost", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new LongConstraintOccurrence("processMoveCost", ConstraintType.NEGATIVE_SOFT,
                 $processMoveCost * $processMoveCostWeight,
                 $processAssignment));
 end
@@ -193,7 +193,7 @@ rule "serviceMoveCost"
         not MrServiceMovedProcessesCount(movedProcessesCount > $movedProcessesCount)
         not MrServiceMovedProcessesCount(movedProcessesCount == $movedProcessesCount, serviceId < $serviceId)
     then
-        insertLogical(new IntConstraintOccurrence("serviceMoveCost", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new LongConstraintOccurrence("serviceMoveCost", ConstraintType.NEGATIVE_SOFT,
                 $movedProcessesCount * $serviceMoveCostWeight,
                 $service));
 end
@@ -204,7 +204,7 @@ rule "machineMoveCost"
         MrGlobalPenaltyInfo(machineMoveCostWeight > 0, $machineMoveCostWeight : machineMoveCostWeight)
         $processAssignment : MrProcessAssignment(moved == true, machineMoveCost > 0, $machineMoveCost : machineMoveCost)
     then
-        insertLogical(new IntConstraintOccurrence("machineMoveCost", ConstraintType.NEGATIVE_SOFT,
+        insertLogical(new LongConstraintOccurrence("machineMoveCost", ConstraintType.NEGATIVE_SOFT,
                 $machineMoveCost * $machineMoveCostWeight,
                 $processAssignment));
 end
@@ -218,11 +218,11 @@ rule "hardConstraintsBroken"
         salience -1 // Do the other rules first (optional, for performance)
     when
         accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
+            LongConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
             $hardTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
+        scoreCalculator.setHardConstraintsBroken($hardTotal.longValue());
 end
 
 // Accumulate soft constraints
@@ -230,9 +230,9 @@ rule "softConstraintsBroken"
         salience -1 // Do the other rules first (optional, for performance)
     when
         accumulate(
-            IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
+            LongConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
             $softTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
-        scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
+        scoreCalculator.setSoftConstraintsBroken($softTotal.longValue());
 end

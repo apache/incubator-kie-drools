@@ -23,7 +23,7 @@
 
       <scoreDrl>/org/drools/planner/examples/machinereassignment/solver/machineReassignmentScoreRules.drl</scoreDrl>
       <scoreDefinition>
-        <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_AND_SOFT_LONG</scoreDefinitionType>
       </scoreDefinition>
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
