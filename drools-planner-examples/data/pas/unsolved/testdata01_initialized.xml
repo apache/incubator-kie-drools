@@ -23572,7 +23572,7 @@
       <bed reference="880"/>
     </BedDesignation>
   </bedDesignationList>
-  <score class="org.drools.planner.core.score.DefaultHardAndSoftScore" id="4958">
+  <score class="org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore" id="4958">
     <hardScore>0</hardScore>
     <softScore>-9674</softScore>
   </score>
