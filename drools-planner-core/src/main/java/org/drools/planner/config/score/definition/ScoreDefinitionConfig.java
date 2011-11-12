@@ -18,6 +18,7 @@ package org.drools.planner.config.score.definition;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.drools.planner.core.score.buildin.hardandsoft.HardAndSoftScoreDefinition;
+import org.drools.planner.core.score.buildin.hardandsoftlong.HardAndSoftLongScoreDefinition;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.score.buildin.simple.SimpleScoreDefinition;
 import org.drools.planner.core.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
@@ -78,6 +79,8 @@ public class ScoreDefinitionConfig {
                     return new SimpleDoubleScoreDefinition();
                 case HARD_AND_SOFT:
                     return new HardAndSoftScoreDefinition();
+                case HARD_AND_SOFT_LONG:
+                    return new HardAndSoftLongScoreDefinition();
                 default:
                     throw new IllegalStateException("The scoreDefinitionType (" + scoreDefinitionType
                             + ") is not implemented");
@@ -99,6 +102,7 @@ public class ScoreDefinitionConfig {
         SIMPLE,
         SIMPLE_DOUBLE,
         HARD_AND_SOFT,
+        HARD_AND_SOFT_LONG,
     }
 
 }
