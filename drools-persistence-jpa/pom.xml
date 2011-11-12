@@ -56,6 +56,32 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <!--  ensure that db files are deleted before _any_ run 
+              otherwise we get tests failing because of leftover db's -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration>
+         <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>btm*</include>
+                <include>JPADroolsFlow.h2.db</include>
+              </includes>
+            </fileset>
+         </filesets>
+        </configuration>
+        <executions>
+          <execution>
+            <id>auto-clean</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
