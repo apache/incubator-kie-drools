@@ -107,7 +107,7 @@ public class HardAndSoftScoreDefinition extends AbstractScoreDefinition<HardAndS
     }
 
     public ScoreCalculator buildScoreCalculator() {
-        return new DefaultHardAndSoftScoreCalculator();
+        return new HardAndSoftScoreCalculator();
     }
 
 }

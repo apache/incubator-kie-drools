@@ -16,16 +16,36 @@
 
 package org.drools.planner.core.score.buildin.hardandsoft;
 
-import org.drools.planner.core.score.calculator.ScoreCalculator;
+import org.drools.planner.core.score.Score;
+import org.drools.planner.core.score.calculator.AbstractScoreCalculator;
 
-public interface HardAndSoftScoreCalculator extends ScoreCalculator {
+public class HardAndSoftScoreCalculator extends AbstractScoreCalculator {
 
-    int getHardConstraintsBroken();
+    protected int hardConstraintsBroken;
+    protected int softConstraintsBroken;
 
-    void setHardConstraintsBroken(int hardConstraintsBroken);
+    public int getHardConstraintsBroken() {
+        return hardConstraintsBroken;
+    }
 
-    int getSoftConstraintsBroken();
+    public void setHardConstraintsBroken(int hardConstraintsBroken) {
+        this.hardConstraintsBroken = hardConstraintsBroken;
+    }
 
-    void setSoftConstraintsBroken(int softConstraintsBroken);
+    public int getSoftConstraintsBroken() {
+        return softConstraintsBroken;
+    }
+
+    public void setSoftConstraintsBroken(int softConstraintsBroken) {
+        this.softConstraintsBroken = softConstraintsBroken;
+    }
+
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
+
+    public Score calculateScore() {
+        return DefaultHardAndSoftScore.valueOf(-hardConstraintsBroken, -softConstraintsBroken);
+    }
 
 }
