@@ -29,6 +29,7 @@ import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.score.constraint.ConstraintType;
 import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 
 /**
@@ -78,6 +79,8 @@ public class ScoreDetail implements Comparable<ScoreDetail> {
             occurrenceScore = ((IntConstraintOccurrence) constraintOccurrence).getWeight();
         } else if (constraintOccurrence instanceof DoubleConstraintOccurrence) {
             occurrenceScore = ((DoubleConstraintOccurrence) constraintOccurrence).getWeight();
+        } else if (constraintOccurrence instanceof LongConstraintOccurrence) {
+            occurrenceScore = ((LongConstraintOccurrence) constraintOccurrence).getWeight();
         } else if (constraintOccurrence instanceof UnweightedConstraintOccurrence) {
             occurrenceScore = 1.0;
         } else {

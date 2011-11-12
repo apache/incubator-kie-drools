@@ -32,6 +32,7 @@ import org.drools.planner.core.score.calculator.ScoreCalculator;
 import org.drools.planner.core.score.constraint.ConstraintOccurrence;
 import org.drools.planner.core.score.constraint.DoubleConstraintOccurrence;
 import org.drools.planner.core.score.constraint.IntConstraintOccurrence;
+import org.drools.planner.core.score.constraint.LongConstraintOccurrence;
 import org.drools.planner.core.score.constraint.UnweightedConstraintOccurrence;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
@@ -196,6 +197,8 @@ public class DefaultSolutionDirector implements SolutionDirector {
                 summaryLine.addWeight(((IntConstraintOccurrence) occurrence).getWeight());
             } else if (occurrence instanceof DoubleConstraintOccurrence) {
                 summaryLine.addWeight(((DoubleConstraintOccurrence) occurrence).getWeight());
+            } else if (occurrence instanceof LongConstraintOccurrence) {
+                summaryLine.addWeight(((LongConstraintOccurrence) occurrence).getWeight());
             } else if (occurrence instanceof UnweightedConstraintOccurrence) {
                 summaryLine.addWeight(1);
             } else {
@@ -241,6 +244,13 @@ public class DefaultSolutionDirector implements SolutionDirector {
                 weightTotal = 0.0;
             }
             weightTotal = ((Double) weightTotal) + weight;
+        }
+
+        public void addWeight(Long weight) {
+            if (weightTotal == null) {
+                weightTotal = 0L;
+            }
+            weightTotal = ((Long) weightTotal) + weight;
         }
     }
 
