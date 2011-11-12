@@ -45,10 +45,10 @@ rule "machineUsage"
         salience 1 // Do these rules first (optional, for performance)
     when
         $machineCapacity : MrMachineCapacity($machine : machine, $resource : resource)
-        $usageTotal : Number() from accumulate(
+        accumulate(
                 MrProcessRequirement(resource == $resource, $process : process, $usage : usage)
                 and MrProcessAssignment(machine == $machine, process == $process),
-            sum($usage)
+            $usageTotal : sum($usage)
         )
     then
         insertLogical(new MrMachineUsage($machineCapacity, $usageTotal.intValue()));
@@ -57,10 +57,10 @@ rule "machineTransientUsage"
         salience 1 // Do these rules first (optional, for performance)
     when
         $machineCapacity : MrMachineCapacity(transientlyConsumed == true, $machine : machine, $resource : resource)
-        $usageTotal : Number() from accumulate(
+        accumulate(
                 MrProcessRequirement(resource == $resource, $process : process, $usage : usage)
                 and MrProcessAssignment(originalMachine == $machine, process == $process, moved == true),
-            sum($usage)
+            $usageTotal : sum($usage)
         )
     then
         insertLogical(new MrMachineTransientUsage($machineCapacity, $usageTotal.intValue()));
@@ -177,9 +177,9 @@ rule "serviceMovedProcessesCount"
         salience 1 // Do these rules first (optional, for performance)
     when
         $service : MrService()
-        $movedProcessesCount : Number() from accumulate(
+        accumulate(
                 $processAssignment : MrProcessAssignment(service == $service, moved == true),
-            count($processAssignment)
+            $movedProcessesCount : count($processAssignment)
         )
     then
         insertLogical(new MrServiceMovedProcessesCount($service, $movedProcessesCount.intValue()));
@@ -217,9 +217,9 @@ end
 rule "hardConstraintsBroken"
         salience -1 // Do the other rules first (optional, for performance)
     when
-        $hardTotal : Number() from accumulate(
+        accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_HARD, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            $hardTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
         scoreCalculator.setHardConstraintsBroken($hardTotal.intValue());
@@ -229,9 +229,9 @@ end
 rule "softConstraintsBroken"
         salience -1 // Do the other rules first (optional, for performance)
     when
-        $softTotal : Number() from accumulate(
+        accumulate(
             IntConstraintOccurrence(constraintType == ConstraintType.NEGATIVE_SOFT, $weight : weight),
-            sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+            $softTotal : sum($weight) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
         )
     then
         scoreCalculator.setSoftConstraintsBroken($softTotal.intValue());
