@@ -2,11 +2,14 @@
   <id>0</id>
   <institutionalWeighting id="2">
     <id>0</id>
-    <twoInARowPenalty>25</twoInARowPPenalty    <twoInADayPenPenalty/twoInADayPenaPenalty <periodSpreadLength>10</periodSpreadLength>
-    <periodSpreadPenaliPenaltyriodSpreadPenalitPenaltyixedDurationPenality>PenaltydDurationPenality>
-PenaltytLoadLargeTopicSize>250</frontLoadLargeTopicSize>
+    <twoInARowPenalty>25</twoInARowPenalty>
+    <twoInADayPenalty>5</twoInADayPenalty>
+    <periodSpreadLength>10</periodSpreadLength>
+    <periodSpreadPenalty>1</periodSpreadPenalty>
+    <mixedDurationPenalty>15</mixedDurationPenalty>
+    <frontLoadLargeTopicSize>250</frontLoadLargeTopicSize>
     <frontLoadLastPeriodSize>30</frontLoadLastPeriodSize>
-    <frontLoadPenality>10<PenaltyadPenality>
+    <frontLoadPenalty>10</frontLoadPenalty>
   </institutionalWeighting>
   <studentList id="3">
     <Student id="4">
