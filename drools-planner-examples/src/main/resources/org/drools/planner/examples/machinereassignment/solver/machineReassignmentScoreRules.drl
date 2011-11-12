@@ -108,9 +108,8 @@ rule "serviceLocationSpread"
     when
         $service : MrService($locationSpread : locationSpread)
         $spreadTotal : Number(intValue < $locationSpread) from accumulate(
-            MrProcessAssignment(
-                service == $service,
-                $location : location),
+                $location : MrLocation()
+                and exists MrProcessAssignment(service == $service, location == $location),
             count($location)
         )
     then
