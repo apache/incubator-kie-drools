@@ -107,14 +107,14 @@ end
 rule "serviceLocationSpread"
     when
         $service : MrService($locationSpread : locationSpread)
-        $spreadTotal : Number(intValue < $locationSpread) from accumulate(
+        $spreadCount : Number(intValue < $locationSpread) from accumulate(
                 $location : MrLocation()
                 and exists MrProcessAssignment(service == $service, location == $location),
             count($location)
         )
     then
         insertLogical(new IntConstraintOccurrence("serviceLocationSpread", ConstraintType.NEGATIVE_HARD,
-                $locationSpread - $spreadTotal.intValue(),
+                $locationSpread - $spreadCount.intValue(),
                 $service));
 end
 
