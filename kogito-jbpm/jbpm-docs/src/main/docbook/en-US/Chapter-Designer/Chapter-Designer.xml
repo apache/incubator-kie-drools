@@ -11,7 +11,7 @@
   <figure>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Designer/designer.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-Designer/designer-screenshot.png" format="PNG" role="" />
       </imageobject>
     </mediaobject>
   </figure>
@@ -92,6 +92,7 @@
       <listitem>(4) Toolbar - the toolbar contains operations which can be performed on shapes present on the Canvas. Individual operations are disabled or enabled depending on what is selected. For example, if no shapes are selected,
       the Cut/Paste/Delete operations are disabled, and become enabled once you select a shape. Hovering over the icons in the Toolbar displays the description text of the operation.</listitem>
       <listitem>(5) Footer - the footer contains operations that allow users to view the source of the process being editor in the Canvas section in various formats such as BPMN2, PNG, JSON, etc.</listitem>
+      <listitem>(6) Process Information - this section contains information about your process, such as its name, creation date, version, etc</listitem>
     </itemizedlist>
    </para>
    
@@ -462,6 +463,44 @@ designer.profile=jbpm
       	</imageobject>
     	</mediaobject>
  		 </figure>
+    </section>
+    
+    <section>
+    	<title>Importing existing BPMN2 processes</title>
+    	<para>You can easily import your existing BPMN2 processes into the designer by locating and clicking on the following
+    	dropdown selection list in the toolbar section:</para>
+    	<figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/import-from-source.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+    	</figure>
+    	<para>You will be able to either select an existing file on your filesystem or paste existing BPMN2 XML. The designer canvas
+    	will automatically import and display your process without a page refresh.</para>
+    </section>
+    
+    <section>
+    	<title>Viewing Process Information</title>
+    	<figure>
+    	<mediaobject>
+      	<imageobject>
+        	<imagedata align="center" fileref="images/Chapter-Designer/process-info-panel.png" format="PNG" role="" />
+      	</imageobject>
+    	</mediaobject>
+    	</figure>
+    	<para>The Process Information section displays important information about your process. These include the process:
+    	<itemizedlist>
+        <listitem>name</listitem>
+        <listitem>format</listitem>
+        <listitem>Guvnor package name the process belongs to</listitem>
+        <listitem>creation date</listitem>
+        <listitem>name of user that created the process</listitem>
+        <listitem>last modification date</listitem>
+        <listitem>last check-in comment</listitem>
+        <listitem>version number</listitem>
+        </itemizedlist>
+    	</para>
     </section>
     
     <section>
