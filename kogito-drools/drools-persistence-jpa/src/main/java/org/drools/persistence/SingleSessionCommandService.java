@@ -138,14 +138,18 @@ public class SingleSessionCommandService
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.sessionInfo ) );
         
+        // Use the App scoped EntityManager if the user has provided it, and it is open.
+        // - open the entity manager before the transaction begins. 
+        PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
+        
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
  
             registerRollbackSync();
 
-            // Use the App scoped EntityManager if the user has provided it, and it is open.
-            jpm.getApplicationScopedPersistenceContext().persist( this.sessionInfo );
+            persistenceContext.joinTransaction();
+            persistenceContext.persist( this.sessionInfo );
 
             txm.commit(transactionOwner);
         } catch (RuntimeException re){
@@ -174,13 +178,17 @@ public class SingleSessionCommandService
         
         initTransactionManager( this.env );
 
-        initKsession( sessionId, kbase, conf );
+        // Open the entity manager before the transaction begins. 
+        PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
         
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
             
             registerRollbackSync();            
+           
+            persistenceContext.joinTransaction();
+            initKsession( sessionId, kbase, conf, persistenceContext);
             
             txm.commit(transactionOwner);
         }catch (RuntimeException re){
@@ -192,9 +200,10 @@ public class SingleSessionCommandService
         }
     }
 
-    public void initKsession(Integer sessionId,
+    protected void initKsession(Integer sessionId,
                              KnowledgeBase kbase,
-                             KnowledgeSessionConfiguration conf) {
+                             KnowledgeSessionConfiguration conf,
+                             PersistenceContext persistenceContext) {
         if ( !doRollback && this.ksession != null ) {
             return;
             // nothing to initialise
@@ -202,7 +211,7 @@ public class SingleSessionCommandService
         
         this.doRollback = false;
         try{
-            this.sessionInfo = jpm.getApplicationScopedPersistenceContext().findSessionInfo( sessionId );
+            this.sessionInfo = persistenceContext.findSessionInfo( sessionId );
         } catch ( Exception e ) {
             throw new RuntimeException( "Could not find session data for id " + sessionId,
                     e );
@@ -314,13 +323,18 @@ public class SingleSessionCommandService
     }
 
     public synchronized <T> T execute(Command<T> command) {
+        // Open the entity manager before the transaction begins. 
+        PersistenceContext persistenceContext = this.jpm.getApplicationScopedPersistenceContext();
+
         boolean transactionOwner = false;
         try {
+            transactionOwner = txm.begin();            
+
+            persistenceContext.joinTransaction();
             initKsession( this.sessionInfo.getId(),
                           this.marshallingHelper.getKbase(),
-                          this.marshallingHelper.getConf() );
-            
-            transactionOwner = txm.begin();            
+                          this.marshallingHelper.getConf(),
+                          persistenceContext);
             
             this.jpm.beginCommandScopedEntityManager();
 
