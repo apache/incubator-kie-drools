@@ -4058,6 +4058,37 @@ public class RuleParserTest extends TestCase {
                       bd.getParameters().get( 1 ) );
     }
 
+    @Test
+    public void testWindowUsage() throws Exception {
+        final String text = "package org.drools\n" +
+                            "rule X\n" +
+                            "when\n" +
+                            "    StockTick() from window Y\n" +
+                            "then\n" +
+                            "end\n";
+        PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                 text );
+
+        assertEquals( "org.drools",
+                      pkg.getName() );
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        RuleDescr rd = pkg.getRules().get(0);
+
+        assertEquals( "X",
+                      rd.getName() );
+        assertEquals( 1,
+                      rd.getLhs().getDescrs().size() );
+
+        PatternDescr pd = (PatternDescr) rd.getLhs().getDescrs().get(0);
+        assertNotNull( pd );
+        assertEquals( "StockTick",
+                      pd.getObjectType() );
+        assertEquals( "Y",
+                      pd.getSource().getText() );
+    }
+
     private Object parse( final String parserRuleName,
                           final String text ) throws Exception {
         return execParser( parserRuleName,
