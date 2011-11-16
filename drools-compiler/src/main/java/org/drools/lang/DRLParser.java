@@ -2884,6 +2884,7 @@ public class DRLParser {
      *                ( fromAccumulate
      *                | fromCollect
      *                | fromEntryPoint
+     *                | fromWindow
      *                | fromExpression )
      * @param pattern
      * @throws RecognitionException 
@@ -2911,6 +2912,8 @@ public class DRLParser {
                                        DroolsSoftKeywords.POINT ) ) {
             fromEntryPoint( pattern );
             if ( state.failed ) return;
+        } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.WINDOW ) ) {
+            fromWindow( pattern );
         } else {
             fromExpression( pattern );
             if ( state.failed ) return;
@@ -2977,6 +2980,38 @@ public class DRLParser {
 
         if ( state.backtracking == 0 ) {
             pattern.from().entryPoint( ep );
+            if ( input.LA( 1 ) != DRLLexer.EOF ) {
+                helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
+            }
+        }
+    }
+
+    /**
+     * fromWindow := WINDOW ID
+     * 
+     * @param pattern
+     * @throws RecognitionException
+     */
+    private void fromWindow( PatternDescrBuilder< ? > pattern ) throws RecognitionException {
+        String window = "";
+
+        match( input,
+               DRLLexer.ID,
+               DroolsSoftKeywords.WINDOW,
+               null,
+               DroolsEditorType.KEYWORD );
+        if ( state.failed ) return;
+
+        Token id = match( input,
+                          DRLLexer.ID,
+                          null,
+                          null,
+                          DroolsEditorType.IDENTIFIER );
+        if ( state.failed ) return;
+        window = id.getText();
+
+        if ( state.backtracking == 0 ) {
+            pattern.from().window( window );
             if ( input.LA( 1 ) != DRLLexer.EOF ) {
                 helper.emit( Location.LOCATION_LHS_BEGIN_OF_CONDITION );
             }
