@@ -37,9 +37,13 @@ import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PersistentStatefulSessionTest {
 
+    private static Logger logger = LoggerFactory.getLogger(PersistentStatefulSessionTest.class);
+    
     private HashMap<String, Object> context;
     private Environment env;
 
@@ -197,7 +201,7 @@ public class PersistentStatefulSessionTest {
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         ksession.insert( "TestString" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -241,7 +245,7 @@ public class PersistentStatefulSessionTest {
         assertEquals( origNumObjects + 1,
                       ksession.getObjects().size() );
         for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
+            logger.debug( o.toString() );
         }
         assertNull( processInstance );
 
@@ -262,7 +266,7 @@ public class PersistentStatefulSessionTest {
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
         ksession.insert( "TestString" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -303,7 +307,7 @@ public class PersistentStatefulSessionTest {
         assertEquals( 1,
                       ksession.getObjects().size() );
         for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
+            logger.debug( o.toString() );
         }
         assertNull( processInstance );
 
@@ -335,7 +339,7 @@ public class PersistentStatefulSessionTest {
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
         processInstance = ksession.getProcessInstance( processInstance.getId() );
@@ -389,7 +393,7 @@ public class PersistentStatefulSessionTest {
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -431,50 +435,50 @@ public class PersistentStatefulSessionTest {
         final List<ProcessEvent> events = new ArrayList<ProcessEvent>();
         ProcessEventListener listener = new ProcessEventListener() {
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("After node left: " + event.getNodeInstance().getNodeName());
+                logger.debug("After node left: " + event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("After node triggered: " + event.getNodeInstance().getNodeName());
+                logger.debug("After node triggered: " + event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void afterProcessCompleted(ProcessCompletedEvent event) {
-                System.out.println("After process completed");
+                logger.debug("After process completed");
                 events.add(event);              
             }
             public void afterProcessStarted(ProcessStartedEvent event) {
-                System.out.println("After process started");
+                logger.debug("After process started");
                 events.add(event);              
             }
             public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-                System.out.println("Before node left: " + event.getNodeInstance().getNodeName());
+                logger.debug("Before node left: " + event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-                System.out.println("Before node triggered: " + event.getNodeInstance().getNodeName());
+                logger.debug("Before node triggered: " + event.getNodeInstance().getNodeName());
                 events.add(event);              
             }
             public void beforeProcessCompleted(ProcessCompletedEvent event) {
-                System.out.println("Before process completed");
+                logger.debug("Before process completed");
                 events.add(event);              
             }
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                System.out.println("Before process started");
+                logger.debug("Before process started");
                 events.add(event);              
             }
             public void afterVariableChanged(ProcessVariableChangedEvent event) {
-                System.out.println("After Variable Changed");
+                logger.debug("After Variable Changed");
                 events.add(event);  
             }
             public void beforeVariableChanged(ProcessVariableChangedEvent event) {
-                System.out.println("Before Variable Changed");
+                logger.debug("Before Variable Changed");
                 events.add(event); 
             }
         };
         ksession.addEventListener(listener);
         
         ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
         
         assertEquals(12, events.size());
         assertTrue(events.get(0) instanceof ProcessStartedEvent);
@@ -494,7 +498,7 @@ public class PersistentStatefulSessionTest {
         events.clear();
         
         processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
         
         assertTrue(events.isEmpty());
     }
@@ -513,7 +517,7 @@ public class PersistentStatefulSessionTest {
         int id = ksession.getId();
         
         ProcessInstance processInstance = ksession.startProcess( "com.sample.SuperProcess" );
-        System.out.println( "Started process instance " + processInstance.getId() );
+        logger.debug( "Started process instance " + processInstance.getId() );
 
         TestWorkItemHandler handler = TestWorkItemHandler.getInstance();
         WorkItem workItem = handler.getWorkItem();
@@ -551,7 +555,7 @@ public class PersistentStatefulSessionTest {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ClassPathResource( "VariablesProcess.rf" ), ResourceType.DRF );
         for (KnowledgeBuilderError error: kbuilder.getErrors()) {
-            System.out.println(error);
+            logger.debug(error.toString());
         }
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
