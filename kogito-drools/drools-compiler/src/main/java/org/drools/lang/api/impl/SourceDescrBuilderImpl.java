@@ -24,7 +24,7 @@ import org.drools.lang.descr.EntryPointDescr;
 import org.drools.lang.descr.FromDescr;
 import org.drools.lang.descr.MVELExprDescr;
 import org.drools.lang.descr.PatternDescr;
-import org.drools.lang.descr.WindowSourceDescr;
+import org.drools.lang.descr.WindowReferenceDescr;
 
 /**
  * A descr builder implementation for pattern sources
@@ -63,7 +63,7 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
     }
 
     public P window( String window ) {
-        WindowSourceDescr wd = new WindowSourceDescr( window );
+        WindowReferenceDescr wd = new WindowReferenceDescr( window );
         descr.setSource( wd );
         return parent;
     }

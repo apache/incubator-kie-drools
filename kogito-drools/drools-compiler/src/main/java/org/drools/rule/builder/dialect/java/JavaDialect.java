@@ -43,6 +43,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.WindowReferenceDescr;
 import org.drools.reteoo.builder.*;
 import org.drools.rule.Function;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -67,6 +68,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.WindowReferenceBuilder;
 import org.drools.rule.builder.dialect.asm.*;
 import org.drools.rule.builder.dialect.mvel.MVELEnabledBuilder;
 import org.drools.rule.builder.dialect.mvel.MVELFromBuilder;
@@ -111,6 +113,7 @@ public class JavaDialect
     private static final CollectBuilder              COLLECT_BUIDER                = new CollectBuilder();
     private static final ForallBuilder               FORALL_BUILDER                = new ForallBuilder();
     private static final EntryPointBuilder           ENTRY_POINT_BUILDER           = new EntryPointBuilder();
+    private static final WindowReferenceBuilder      WINDOW_REFERENCE_BUILDER      = new WindowReferenceBuilder();
     private static final GroupElementBuilder         GE_BUILDER                    = new GroupElementBuilder();
 
     // a map of registered builders
@@ -214,6 +217,9 @@ public class JavaDialect
 
         builders.put( EntryPointDescr.class,
                       ENTRY_POINT_BUILDER );
+        
+        builders.put( WindowReferenceDescr.class,
+                      WINDOW_REFERENCE_BUILDER );
     }
 
     public Map getBuilders() {

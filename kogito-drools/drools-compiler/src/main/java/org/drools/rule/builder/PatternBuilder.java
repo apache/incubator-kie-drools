@@ -143,7 +143,6 @@ public class PatternBuilder
      * @param prefixPattern
      * @return
      */
-    @SuppressWarnings("unchecked")
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
                                        Pattern prefixPattern ) {
@@ -402,7 +401,6 @@ public class PatternBuilder
         pattern.combineConstraints();
     }
 
-    @SuppressWarnings("unchecked")
     private void processPositional( final RuleBuildContext context,
                                     final PatternDescr patternDescr,
                                     final Pattern pattern,
@@ -550,7 +548,6 @@ public class PatternBuilder
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void buildRelationalExpression( final RuleBuildContext context,
                                             final Pattern pattern,
                                             final RelationalExprDescr relDescr,
@@ -954,7 +951,6 @@ public class PatternBuilder
         constraint.setType( type );
     }
 
-    @SuppressWarnings("unchecked")
     private void buildRuleBindings( final RuleBuildContext context,
                                     final PatternDescr patternDescr,
                                     final Pattern pattern,
