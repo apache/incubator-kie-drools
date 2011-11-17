@@ -44,6 +44,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.ProcessDescr;
 import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
+import org.drools.lang.descr.WindowReferenceDescr;
 import org.drools.rule.Declaration;
 import org.drools.rule.LineMappings;
 import org.drools.rule.MVELDialectRuntimeData;
@@ -66,6 +67,7 @@ import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleClassBuilder;
 import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.SalienceBuilder;
+import org.drools.rule.builder.WindowReferenceBuilder;
 import org.drools.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.runtime.rule.RuleContext;
 import org.drools.spi.DeclarationScopeResolver;
@@ -106,6 +108,7 @@ public class MVELDialect
 
     protected static final ForallBuilder                   FORALL_BUILDER                 = new ForallBuilder();
     protected static final EntryPointBuilder               ENTRY_POINT_BUILDER            = new EntryPointBuilder();
+    protected static final WindowReferenceBuilder          WINDOW_REFERENCE_BUILDER       = new WindowReferenceBuilder();
 
     protected static final GroupElementBuilder             GE_BUILDER                     = new GroupElementBuilder();
 
@@ -274,6 +277,9 @@ public class MVELDialect
 
         builders.put( EntryPointDescr.class,
                       ENTRY_POINT_BUILDER );
+
+        builders.put( WindowReferenceDescr.class,
+                      WINDOW_REFERENCE_BUILDER );
     }
 
     public void init(RuleDescr ruleDescr) {

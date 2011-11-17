@@ -20,14 +20,14 @@ package org.drools.lang.descr;
 /**
  * A pattern source descriptor for windows
  */
-public class WindowSourceDescr extends PatternSourceDescr {
+public class WindowReferenceDescr extends PatternSourceDescr {
 
     private static final long serialVersionUID = 150l;
     
-    public WindowSourceDescr() {
+    public WindowReferenceDescr() {
     }
     
-    public WindowSourceDescr( String name ) {
+    public WindowReferenceDescr( String name ) {
         this.setText( name );
     }
     
