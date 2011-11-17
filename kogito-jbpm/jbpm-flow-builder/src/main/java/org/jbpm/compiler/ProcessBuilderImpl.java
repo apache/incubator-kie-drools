@@ -78,8 +78,6 @@ import org.jbpm.workflow.core.node.Trigger;
 /**
  * A ProcessBuilder can be used to build processes based on XML files
  * containing a process definition.
- * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class ProcessBuilderImpl implements ProcessBuilder {
 

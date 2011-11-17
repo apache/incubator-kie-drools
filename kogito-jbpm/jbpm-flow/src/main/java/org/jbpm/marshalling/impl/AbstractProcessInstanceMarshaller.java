@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.StringUtils;
 import org.drools.definition.process.Process;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -64,9 +65,6 @@ import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 /**
  * Default implementation of a process instance marshaller.
  * 
- * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
- * @author mfossati
- * @author salaboy
  */
 public abstract class AbstractProcessInstanceMarshaller implements
         ProcessInstanceMarshaller {
@@ -156,15 +154,17 @@ public abstract class AbstractProcessInstanceMarshaller implements
             Object object = variables.get(key); 
             if(object != null){
                 stream.writeUTF(key);
-                int index = context.objectMarshallingStrategyStore.getStrategy(object);
-                stream.writeInt(index);
-                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategy(index);
-                if(strategy.accept(object)){
-                    strategy.write(stream, object);
-                }
+                // New marshalling algorithm when using strategies
+                int useNewMarshallingStrategyAlgorithm = -2;
+                stream.writeInt(useNewMarshallingStrategyAlgorithm);
+                // Choose first strategy that accepts the object (what was always done)
+                ObjectMarshallingStrategy strategy = context.objectMarshallingStrategyStore.getStrategyObject(object);
+                stream.writeUTF(strategy.getClass().getName());
+                strategy.write(stream, object);
             }
             
         }    
+
     }
 
     public void writeNodeInstance(MarshallerWriteContext context,
@@ -428,11 +428,27 @@ public abstract class AbstractProcessInstanceMarshaller implements
 			for (int i = 0; i < nbVariables; i++) {
 				String name = stream.readUTF();
 				try {
+			        ObjectMarshallingStrategy strategy = null;
 					int index = stream.readInt();
-					ObjectMarshallingStrategy strategy = context.resolverStrategyFactory
-							.getStrategy(index);
-
-					Object value = strategy.read(stream);
+			        // This is the old way of de/serializing strategy objects
+			        if ( index >= 0 ) {
+			            strategy = context.resolverStrategyFactory.getStrategy( index );
+			        }
+			        // This is the new way 
+			        else if( index == -2 ) { 
+			            String strategyClassName = context.stream.readUTF();
+			            if ( ! StringUtils.isEmpty(strategyClassName) ) { 
+			                strategy = context.resolverStrategyFactory.getStrategyObject(strategyClassName);
+			                if( strategy == null ) { 
+			                    throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
+			                }
+			            }
+			        }
+			        // If either way retrieves a strategy, use it
+			        Object value = null;
+			        if( strategy != null ) { 
+			            value = strategy.read( stream );
+			        }
 					variableScopeInstance.internalSetVariable(name, value);
 				} catch (ClassNotFoundException e) {
 					throw new IllegalArgumentException(
