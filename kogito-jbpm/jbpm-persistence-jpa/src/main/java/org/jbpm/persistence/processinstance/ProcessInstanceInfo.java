@@ -18,12 +18,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
+import org.drools.event.ProcessEventSupport;
 import org.drools.impl.InternalKnowledgeBase;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.impl.MarshallerReaderContext;
@@ -33,6 +35,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.hibernate.annotations.CollectionOfElements;
 import org.jbpm.marshalling.impl.ProcessInstanceMarshaller;
 import org.jbpm.marshalling.impl.ProcessMarshallerRegistry;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 
 @Entity
@@ -158,6 +161,20 @@ public class ProcessInstanceInfo{
         stream.writeUTF( processInstanceType );
     }
 
+    /**
+     * Adding @PrePersist breaks things, because: <ul>
+     * <li>We retrieve/generate the marshaller (see below).</li> 
+     * <li>..and the marshaller retrieves the context instance</li>
+     * <li>..which actually (re)sets all variables in {@link VariableScopeInstance}.setContextInstanceContainer(...)</li>
+     * <li>This of course causes {@link ProcessEventSupport}.fireBeforeVariableChanged(...) to fire.</li>
+     * <li>Then the {@link JPAWorkingMemoryDBLogger} ends up logging a variable change -- but the associated 
+     *     process instance hasn't been persisted yet.</li> 
+     * <li>So the variable instance change is associated with process instance "0"</li>
+     * <li>...and can never be retrieved, because "0" is not a valid id.</li>
+     * </ul>
+     * </p>
+     * Normally, the variable change is logged after the following method has completed. 
+     */
     @PreUpdate
     public void update() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

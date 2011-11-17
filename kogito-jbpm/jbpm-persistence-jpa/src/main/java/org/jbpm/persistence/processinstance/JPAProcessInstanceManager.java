@@ -2,10 +2,10 @@ package org.jbpm.persistence.processinstance;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
 import java.util.Map;
-
-import javax.persistence.EntityManager;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
@@ -16,12 +16,17 @@ import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 
+/**
+ * This is an implemenation of the {@link ProcessInstanceManager} that uses JPA.
+ * </p>
+ * Currently (11/2011), the implemenation is not totally thread-safe, but there haven't any issues yet. 
+ */
 public class JPAProcessInstanceManager
     implements
     ProcessInstanceManager {
 
     private InternalKnowledgeRuntime kruntime;
-    private transient Map<Long, ProcessInstance> processInstances;
+    private transient ConcurrentHashMap<Long, ProcessInstance> processInstances;
 
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
@@ -29,26 +34,33 @@ public class JPAProcessInstanceManager
 
     public void addProcessInstance(ProcessInstance processInstance) {
         ProcessInstanceInfo processInstanceInfo = new ProcessInstanceInfo( processInstance, this.kruntime.getEnvironment() );
-        ProcessPersistenceContext context = ((ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getProcessPersistenceContext();
+        ProcessPersistenceContext context 
+            = ((ProcessPersistenceContextManager) this.kruntime.getEnvironment()
+                    .get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ))
+                    .getProcessPersistenceContext();
+        // @PrePersist added to ProcessInstanceInfo because of this
         context.persist( processInstanceInfo );
-        //em.refresh( processInstanceInfo  );
-//        em.flush();
-        //em.getTransaction().commit();
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
         internalAddProcessInstance(processInstance);
     }
-
+    
     public void internalAddProcessInstance(ProcessInstance processInstance) {
-    	if (this.processInstances == null) {
-        	this.processInstances = new HashMap<Long, ProcessInstance>();
+        synchronized (this) {
+            if(this.processInstances == null ) { 
+                this.processInstances = new ConcurrentHashMap<Long, ProcessInstance>();
+            }
         }
-        processInstances.put(processInstance.getId(), processInstance);
+        if( processInstances.putIfAbsent(processInstance.getId(), processInstance) != null ) { 
+            throw new ConcurrentModificationException(
+                    "Duplicate process instance [" + processInstance.getProcessId() + "/" + processInstance.getId() + "]"
+                    + " added to process instance manager." );
+        }
     }
 
     public ProcessInstance getProcessInstance(long id) {
     	org.jbpm.process.instance.ProcessInstance processInstance = null;
-    	if (this.processInstances != null) {
+    	if (getProcessInstancesMap() != null) {
 	    	processInstance = (org.jbpm.process.instance.ProcessInstance) this.processInstances.get(id);
 	    	if (processInstance != null) {
 	    		return processInstance;
@@ -76,14 +88,19 @@ public class JPAProcessInstanceManager
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return new ArrayList<ProcessInstance>();
+        return Collections.unmodifiableCollection(getProcessInstancesMap().values());
+    }
+
+    private Map<Long, ProcessInstance> getProcessInstancesMap() {
+        Map<Long, ProcessInstance> processInstancesMap = null;
+        synchronized(this) { 
+            processInstancesMap = this.processInstances;
+        }
+        return processInstancesMap;
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
         ProcessPersistenceContext context = ((ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getProcessPersistenceContext();
-//        EntityManager em = (EntityManager) this.kruntime.getEnvironment().get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
-//        ProcessInstanceInfo processInstanceInfo = em.find( ProcessInstanceInfo.class,
-//                                                           processInstance.getId() );
         ProcessInstanceInfo processInstanceInfo = context.findProcessInstanceInfo( processInstance.getId() );
         
         if ( processInstanceInfo != null ) {
@@ -93,13 +110,13 @@ public class JPAProcessInstanceManager
     }
 
     public void internalRemoveProcessInstance(ProcessInstance processInstance) {
-    	if (this.processInstances != null) {
+    	if (getProcessInstancesMap() != null) {
             processInstances.remove( processInstance.getId() );
         }
     }
     
     public void clearProcessInstances() {
-    	if (processInstances != null) {
+    	if (getProcessInstancesMap() != null) {
     		for (ProcessInstance processInstance: new ArrayList<ProcessInstance>(processInstances.values())) {
     			((ProcessInstanceImpl) processInstance).disconnect();
     		}
