@@ -59,32 +59,9 @@ public class ProcessInstanceResolverStrategy implements ObjectMarshallingStrateg
 
     public void write(ObjectOutputStream os, Object object) throws IOException {
         ProcessInstance processInstance = (ProcessInstance) object;
-        ProcessInstanceManager pim = retrieveProcessInstanceManager(os);
-        
-        // Determine if the process Instance is present in the ProcessInstanceManager 
-        long processInstanceId = processInstance.getId();
-        boolean processInstanceStored = false;
-        if( processInstanceId > 0 ) { 
-            try { 
-                Collection<ProcessInstance> processInstances = pim.getProcessInstances();
-                Iterator<ProcessInstance> processInstanceIter = processInstances.iterator();
-                while( processInstanceIter.hasNext() && ! processInstanceStored ) {
-                    ProcessInstance procInst = processInstanceIter.next();
-                    if( procInst.getId() == processInstanceId ) { 
-                        processInstanceStored = true;
-                    }
-                }
-            }
-            catch( IllegalArgumentException iae ) { 
-                // do nothing, the process instance could not be found
-            }
-        }
       
         connectProcessInstanceToRuntimeAndProcess(processInstance, os);
         
-        if( ! processInstanceStored ) { 
-            pim.addProcessInstance(processInstance);
-        }
         os.writeLong(processInstance.getId());
     }
 
