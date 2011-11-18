@@ -30,6 +30,7 @@ import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Assert;
@@ -48,21 +49,21 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession ksession = createSession( kbase );
 
         // must advance time or it won't save.
-        SessionPseudoClock clock = ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );
 
         // if we do not call 'ksession.fireAllRules()', this test will run successfully.
         ksession.fireAllRules();
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );
 
@@ -79,19 +80,19 @@ public class TimerAndCalendarTest {
                                                                         ResourceType.DRL );
         kbase.addKnowledgePackages( kpackages );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 10,
                            TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 10,
                            TimeUnit.MILLISECONDS );
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 10,
                            TimeUnit.MILLISECONDS );
 
@@ -101,7 +102,7 @@ public class TimerAndCalendarTest {
         Assert.assertEquals( 0,
                              list.size() );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 1700,
                            TimeUnit.MILLISECONDS );
         Assert.assertEquals( 2,
@@ -112,7 +113,7 @@ public class TimerAndCalendarTest {
         ksession.setGlobal( "list",
                             list );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 1000,
                            TimeUnit.MILLISECONDS );
 
@@ -127,21 +128,21 @@ public class TimerAndCalendarTest {
         StatefulKnowledgeSession ksession = createSession( kbase );
 
         // must advance time or it won't save.
-        SessionPseudoClock clock = ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );
 
         // if we do not call 'ksession.fireAllRules()', this test will run successfully.
         ksession.fireAllRules();
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );
 
         ksession = disposeAndReloadSession( ksession,
                                             kbase );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 300,
                            TimeUnit.MILLISECONDS );
 
@@ -168,7 +169,7 @@ public class TimerAndCalendarTest {
                            TimeUnit.MILLISECONDS );
         ksession.fireAllRules();
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 10,
                            TimeUnit.MILLISECONDS );
 
@@ -177,14 +178,14 @@ public class TimerAndCalendarTest {
         ksession.setGlobal( "list",
                             list );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 10,
                            TimeUnit.MILLISECONDS );
 
         Assert.assertEquals( 1,
                              list.size() );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 3,
                            TimeUnit.SECONDS );
         Assert.assertEquals( 4,
@@ -195,7 +196,7 @@ public class TimerAndCalendarTest {
         ksession.setGlobal( "list",
                             list );
 
-        clock = ksession.getSessionClock();
+        clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 2,
                            TimeUnit.SECONDS );
 

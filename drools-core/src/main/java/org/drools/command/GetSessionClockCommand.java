@@ -29,7 +29,7 @@ public class GetSessionClockCommand
 
     public SessionClock execute(Context context) {
         StatefulKnowledgeSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
-        return ksession.getSessionClock();
+        return ksession.<SessionClock>getSessionClock();
     }
 
     public String toString() {

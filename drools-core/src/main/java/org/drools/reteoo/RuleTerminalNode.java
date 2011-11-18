@@ -21,15 +21,12 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.common.AgendaItem;
 import org.drools.common.BaseNode;
 import org.drools.common.DefaultAgenda;
-import org.drools.common.EventFactHandle;
 import org.drools.common.EventSupport;
 import org.drools.common.InternalAgenda;
 import org.drools.common.InternalAgendaGroup;
@@ -46,6 +43,7 @@ import org.drools.rule.GroupElement;
 import org.drools.rule.Rule;
 import org.drools.spi.Activation;
 import org.drools.spi.PropagationContext;
+import org.drools.time.SessionClock;
 import org.drools.time.impl.Timer;
 
 /**
