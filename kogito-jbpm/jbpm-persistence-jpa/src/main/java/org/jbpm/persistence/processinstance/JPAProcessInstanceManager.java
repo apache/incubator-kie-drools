@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.definition.process.Process;
+import org.drools.persistence.TransactionManager;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.persistence.ProcessPersistenceContext;
@@ -17,9 +18,9 @@ import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 
 /**
- * This is an implemenation of the {@link ProcessInstanceManager} that uses JPA.
+ * This is an implementation of the {@link ProcessInstanceManager} that uses JPA.
  * </p>
- * Currently (11/2011), the implemenation is not totally thread-safe, but there haven't any issues yet. 
+ * Currently (11/2011), the implementation is not totally thread-safe, but there haven't any issues yet. 
  */
 public class JPAProcessInstanceManager
     implements
@@ -66,8 +67,13 @@ public class JPAProcessInstanceManager
 	    		return processInstance;
 	    	}
     	}
+    
+    	// Make sure that the cmd scoped entity manager has started
+    	ProcessPersistenceContextManager ppcm 
+    	    = (ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER );
+    	ppcm.beginCommandScopedEntityManager();
     	
-        ProcessPersistenceContext context = ((ProcessPersistenceContextManager) this.kruntime.getEnvironment().get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getProcessPersistenceContext();
+        ProcessPersistenceContext context = ppcm.getProcessPersistenceContext();
         ProcessInstanceInfo processInstanceInfo = context.findProcessInstanceInfo( id );
         if ( processInstanceInfo == null ) {
             return null;
