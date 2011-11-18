@@ -83,6 +83,16 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 	}
 	
 	public InputStream getTemplate(String name) {
+        // try to find on classpath
+	    InputStream nameTaskformResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + "-taskform.ftl");
+		if (nameTaskformResult != null) {
+			return nameTaskformResult;
+		} else {
+		    InputStream nameResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
+		    if (nameResult != null) {
+		        return nameResult;
+		    }
+		}
 		// try to find in guvnor repository
         GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
         if(guvnorUtils.guvnorExists()) {
@@ -102,19 +112,8 @@ public abstract class AbstractFormDispatcher implements FormDispatcherPlugin {
 			}
         } else {
         	logger.warn("Could not connect to Guvnor.");
+        	return null;
         }
-        // try to find on classpath
-	    InputStream nameTaskformResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + "-taskform.ftl");
-		if (nameTaskformResult != null) {
-			return nameTaskformResult;
-		} else {
-		    InputStream nameResult = AbstractFormDispatcher.class.getResourceAsStream("/" + name + ".ftl");
-		    if (nameResult != null) {
-		        return nameResult;
-		    } else {
-		    	return null;
-		    }
-		}
 	}
 
 	protected DataHandler processTemplate(final String name, InputStream src, Map<String, Object> renderContext) {

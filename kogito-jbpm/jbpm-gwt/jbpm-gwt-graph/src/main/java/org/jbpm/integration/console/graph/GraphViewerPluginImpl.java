@@ -177,6 +177,18 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 	}
 
 	public byte[] getProcessImage(String processId) {
+		InputStream is = GraphViewerPluginImpl.class.getResourceAsStream("/" + processId + ".png");
+		if (is != null) {
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			try {
+				transfer(is, os);
+			} catch (IOException e) {
+				throw new RuntimeException("Could not read process image: " + e.getMessage());
+			}
+			return os.toByteArray();
+		}
+		
+		// now check guvnor
 		GuvnorConnectionUtils guvnorUtils = new GuvnorConnectionUtils();
 		if(guvnorUtils.guvnorExists()) {
 			try {
@@ -188,16 +200,6 @@ public class GraphViewerPluginImpl implements GraphViewerPlugin {
 			logger.warn("Could not connect to Guvnor.");
 		}
 		
-		InputStream is = GraphViewerPluginImpl.class.getResourceAsStream("/" + processId + ".png");
-		if (is != null) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			try {
-				transfer(is, os);
-			} catch (IOException e) {
-				throw new RuntimeException("Could not read process image: " + e.getMessage());
-			}
-			return os.toByteArray();
-		}
 		return null;
 	}
 	
