@@ -32,6 +32,15 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
+    <name>Original</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Tabu Search (untweaked)</name>
     <solver>
       <!--<constructionHeuristic>-->
         <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
