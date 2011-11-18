@@ -89,6 +89,7 @@ import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.Consequence;
 import org.drools.spi.GlobalResolver;
 import org.drools.spi.KnowledgeHelper;
+import org.drools.time.SessionClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.drools.time.impl.TrackableTimeJobFactoryManager;
@@ -2669,7 +2670,7 @@ public class MarshallingTest {
         SessionConfiguration config = new SessionConfiguration();
         config.setClockType(ClockType.PSEUDO_CLOCK);
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession(config, KnowledgeBaseFactory.newEnvironment());
-        PseudoClockScheduler scheduler = ksession.getSessionClock();
+        PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
         Marshaller marshaller = MarshallerFactory.newMarshaller(knowledgeBase);
 
 
@@ -2807,7 +2808,7 @@ public class MarshallingTest {
         cep = ksession.getWorkingMemoryEntryPoint( "c-ep" );
         assertEquals( 1, cep.getFactHandles().size() );
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();        
         timeService.advanceTime( 11, TimeUnit.SECONDS );       
 
         ksession = marsallStatefulKnowledgeSession(ksession);
@@ -2875,7 +2876,7 @@ public class MarshallingTest {
 
         ksession = marsallStatefulKnowledgeSession(ksession);
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();        
         timeService.advanceTime( 3, TimeUnit.SECONDS );  
 
         ksession = marsallStatefulKnowledgeSession(ksession);
@@ -2946,7 +2947,7 @@ public class MarshallingTest {
         ksession = marsallStatefulKnowledgeSession(ksession);
         assertEquals( 2, ((List)list.get( 0 )).size() );
 
-        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();        
         timeService.advanceTime( 15, TimeUnit.SECONDS );          
         ksession = marsallStatefulKnowledgeSession(ksession);
 
@@ -2963,7 +2964,7 @@ public class MarshallingTest {
         ksession = marsallStatefulKnowledgeSession(ksession);
         assertEquals( 4, ((List)list.get( 0 )).size() );
 
-        timeService = ( PseudoClockScheduler ) ksession.getSessionClock();        
+        timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();        
         timeService.advanceTime( 20, TimeUnit.SECONDS );
         ksession = marsallStatefulKnowledgeSession(ksession);
 
@@ -3071,7 +3072,7 @@ public class MarshallingTest {
             marshaller.marshall(o, ksession);
             ksession = marshaller.unmarshall(new ByteArrayInputStream(o.toByteArray()), config, KnowledgeBaseFactory.newEnvironment());
             ksession.fireAllRules();
-            //scheduler = ksession.getSessionClock();
+            //scheduler = ksession.<SessionClock>getSessionClock();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

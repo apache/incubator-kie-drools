@@ -39,6 +39,7 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.ExecutorServiceFactory;
 import org.drools.spi.GlobalResolver;
+import org.drools.time.SessionClock;
 
 public class DefaultMarshaller
     implements
@@ -122,7 +123,7 @@ public class DefaultMarshaller
 
     public void marshall(final OutputStream stream,
                          final StatefulKnowledgeSession ksession) throws IOException {
-        marshall(stream, ksession, ksession.getSessionClock().getCurrentTime() );
+        marshall(stream, ksession, ksession.<SessionClock>getSessionClock().getCurrentTime() );
     }
     /* (non-Javadoc)
      * @see org.drools.marshalling.Marshaller#write(java.io.OutputStream, org.drools.common.InternalRuleBase, org.drools.StatefulSession)

@@ -1,6 +1,5 @@
 package org.drools.integrationtests;
 
-import static java.lang.System.out;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,16 +10,14 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
-import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.DefaultMarshaller;
 import org.drools.reteoo.ReteooStatefulSession;
-import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.time.SessionClock;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object
@@ -110,7 +107,7 @@ public class SerializationHelper {
 
         DefaultMarshaller marshaller = ( DefaultMarshaller ) MarshallerFactory.newMarshaller( ksession.getKnowledgeBase(),
                 (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
-        long time = ksession.getSessionClock().getCurrentTime();
+        long time = ksession.<SessionClock>getSessionClock().getCurrentTime();
 
         // Serialize object
         final byte [] b1;
