@@ -17,32 +17,17 @@
  */
 package org.drools.integrationtests;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import static org.junit.internal.matchers.IsCollectionContaining.hasItems;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mvel2.MVEL;
-
-import static org.junit.Assert.*;
 
 import org.drools.ClockType;
 import org.drools.KnowledgeBase;
@@ -60,7 +45,6 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.conf.EventProcessingOption;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AgendaEventListener;
-import org.drools.event.rule.ObjectRetractedEvent;
 import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
@@ -72,7 +56,11 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
+import org.drools.time.SessionClock;
 import org.drools.time.impl.PseudoClockScheduler;
+import org.junit.Assert;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 /**
  * Tests related to the stream support features
@@ -436,7 +424,7 @@ public class StreamsTest {
         WorkingMemoryEventListener wml = mock( WorkingMemoryEventListener.class );
         ksession.addEventListener( wml );
 
-        PseudoClockScheduler clock = ksession.getSessionClock();
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
 
         final StockTickInterface st1 = new StockTick( 1,
                                                       "RHT",
@@ -485,7 +473,7 @@ public class StreamsTest {
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
-        PseudoClockScheduler clock = ksession.getSessionClock();
+        PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
 
         final StockTickInterface st1 = new StockTick( 1,
                                                       "RHT",

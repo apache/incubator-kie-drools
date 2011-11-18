@@ -61,6 +61,7 @@ import org.drools.rule.Rule;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 
 public class FirstOrderLogicTest {
@@ -1338,7 +1339,7 @@ public class FirstOrderLogicTest {
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf,
                                                                                      null );
-        final SessionPseudoClock clock = ksession.getSessionClock();
+        final SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         List<String> results = new ArrayList<String>();
         ksession.setGlobal( "results",
                             results );

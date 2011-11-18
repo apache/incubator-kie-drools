@@ -74,6 +74,7 @@ import org.drools.runtime.rule.Activation;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.spi.ObjectType;
+import org.drools.time.SessionClock;
 import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.DurationTimer;
 import org.drools.time.impl.PseudoClockScheduler;
@@ -219,7 +220,7 @@ public class CepEspTest {
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
                                                                               null );
 
-        SessionPseudoClock clock = session.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
 
         final List results = new ArrayList();
 
@@ -560,7 +561,7 @@ public class CepEspTest {
 
         WorkingMemoryEntryPoint eventStream = ksession.getWorkingMemoryEntryPoint( "Event Stream" );
 
-        SessionPseudoClock clock = ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
         final List results = new ArrayList();
         ksession.setGlobal( "results",
@@ -811,7 +812,7 @@ public class CepEspTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
                                                                                null );
 
-        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
+        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock>getSessionClock();
         clock.setStartupTime( 1000 );
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -901,7 +902,7 @@ public class CepEspTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
                                                                                null );
 
-        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.getSessionClock();
+        final PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<PseudoClockScheduler>getSessionClock();
         clock.setStartupTime( 1000 );
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -1463,7 +1464,7 @@ public class CepEspTest {
                                                                               null );
         InternalWorkingMemory iwm = ((StatefulKnowledgeSessionImpl) session).session;
 
-        SessionPseudoClock clock = session.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) session.<SessionClock>getSessionClock();
 
         final List results = new ArrayList();
 
@@ -1682,7 +1683,7 @@ public class CepEspTest {
         ksession.setGlobal( "lengthResults",
                             lengthResults );
 
-        SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
         try {
             // First interaction
@@ -1804,7 +1805,7 @@ public class CepEspTest {
         knowledgeBase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( sessionConfig,
                                                                                        KnowledgeBaseFactory.newEnvironment() );
-        PseudoClockScheduler pseudoClock = ksession.getSessionClock();
+        PseudoClockScheduler pseudoClock = ksession.<PseudoClockScheduler>getSessionClock();
 
         FactHandle h = ksession.insert( new A() );
         ksession.retract( h );
@@ -2076,7 +2077,7 @@ public class CepEspTest {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
                                                                                null );
-        SessionPseudoClock clock = ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
 
@@ -2119,7 +2120,7 @@ public class CepEspTest {
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sconf,
                                                                                null );
-        SessionPseudoClock clock = ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
         WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint( "X" );
 
@@ -2364,7 +2365,7 @@ public class CepEspTest {
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
-        SessionPseudoClock clock = ksession.getSessionClock();
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
         clock.advanceTime( 1000000,
                            TimeUnit.MILLISECONDS );
 
