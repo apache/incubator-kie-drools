@@ -89,7 +89,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         }
     }
 
-    public double calculateAcceptChance(MoveScope moveScope) {
+    public boolean isAccepted(MoveScope moveScope) {
         Collection<? extends Object> checkingTabus = findTabu(moveScope);
         int maximumTabuStepIndex = -1;
         for (Object checkingTabu : checkingTabus) {
@@ -114,25 +114,32 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         }
         if (maximumTabuStepIndex < 0) {
             // The move isn't tabu at all
-            return 1.0;
+            return true;
         }
         if (aspirationEnabled) {
             // Doesn't use the deciderScoreComparator because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
                     moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().getBestScore()) > 0) {
-                logger.trace("        Proposed move ({}) is tabu, but aspiration undoes its tabu.", moveScope.getMove());
-                return 1.0;
+                logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
+                        moveScope.getMove());
+                return true;
             }
         }
         int tabuStepCount = moveScope.getLocalSearchStepScope().getStepIndex() - maximumTabuStepIndex - 1;
         if (tabuStepCount < tabuSize) {
-            logger.trace("        Proposed move ({}) is tabu.", moveScope.getMove());
-            return 0.0;
+            logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
+            return false;
         }
         double acceptChance = calculatePartialTabuAcceptChance(tabuStepCount - tabuSize);
-        logger.trace("        Proposed move ({}) is partially tabu with accept chance ({}).",
-                moveScope.getMove(), acceptChance);
-        return acceptChance;
+        boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
+        if (accepted) {
+            logger.trace("        Proposed move ({}) is partially tabu with acceptChance ({}) and is accepted.",
+                    moveScope.getMove(), acceptChance);
+        } else {
+            logger.trace("        Proposed move ({}) is partially tabu with acceptChance ({}) and is not accepted.",
+                    moveScope.getMove(), acceptChance);
+        }
+        return accepted;
     }
 
     protected double calculatePartialTabuAcceptChance(int partialTabuTime) {

@@ -1250,7 +1250,8 @@ After in xstreamed solution files:
     <score class="org.drools.planner.core.score.buildin.simple.DefaultSimpleScore" ...>
     <score class="org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScoreScore" ...>
 
-[MINOR] DefaultHardAndSoftScoreCalculator has been replaced by HardAndSoftScoreCalculator
+[MINOR] If you implemented a custom score definition:
+DefaultHardAndSoftScoreCalculator has been replaced by HardAndSoftScoreCalculator
 Before in *ScoreDefinition.java:
     public ScoreCalculator buildScoreCalculator() {
         return new DefaultHardAndSoftScoreCalculator();
@@ -1259,3 +1260,7 @@ After in *ScoreDefinition.java:
     public ScoreCalculator buildScoreCalculator() {
         return new HardAndSoftScoreCalculator();
     }
+
+
+[MINOR] If you implemented a custom Acceptor or Forager:
+double acceptanceChance has been replaced by boolean accepted.

@@ -57,12 +57,12 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         partsLength = startingTemperatureParts.length;
     }
 
-    public double calculateAcceptChance(MoveScope moveScope) {
+    public boolean isAccepted(MoveScope moveScope) {
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope();
         Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) >= 0) {
-            return 1.0;
+            return true;
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         double acceptChance = 1.0;
@@ -80,9 +80,9 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
             acceptChance *= acceptChancePart;
         }
         if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
-            return 1.0;
+            return true;
         } else {
-            return 0.0;
+            return false;
         }
     }
 

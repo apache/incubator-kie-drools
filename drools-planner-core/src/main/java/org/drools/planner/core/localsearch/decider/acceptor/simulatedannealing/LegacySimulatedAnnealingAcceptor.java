@@ -57,25 +57,25 @@ public class LegacySimulatedAnnealingAcceptor extends AbstractAcceptor {
         temperature = startingTemperature;
     }
 
-    public double calculateAcceptChance(MoveScope moveScope) {
+    public boolean isAccepted(MoveScope moveScope) {
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope();
         Score lastStepScore = localSearchSolverPhaseScope.getLastCompletedLocalSearchStepScope().getScore();
         Score moveScore = moveScope.getScore();
         if (moveScore.compareTo(lastStepScore) > 0) {
-            return 1.0;
+            return true;
         }
         Score scoreDifference = lastStepScore.subtract(moveScore);
         // TODO don't abuse translateScoreToGraphValue
         Double diff = localSearchSolverPhaseScope.getScoreDefinition().translateScoreToGraphValue(scoreDifference);
         if (diff == null) {
             // more hard constraints broken, ignore it for now
-            return 0.0;
+            return false;
         }
         double acceptChance = Math.exp(-diff / temperature);
         if (moveScope.getWorkingRandom().nextDouble() < acceptChance) {
-            return 1.0;
+            return true;
         } else {
-            return 0.0;
+            return false;
         }
     }
 

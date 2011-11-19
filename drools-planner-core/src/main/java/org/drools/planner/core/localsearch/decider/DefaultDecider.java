@@ -154,8 +154,8 @@ public class DefaultDecider implements Decider {
                                         .getSolutionDirector().buildConstraintOccurrenceSummary());
             }
         }
-        logger.trace("        Move score ({}), accept chance ({}) for move ({}).",
-                new Object[]{moveScope.getScore(), moveScope.getAcceptChance(), moveScope.getMove()});
+        logger.trace("        Move score ({}), accepted ({}) for move ({}).",
+                new Object[]{moveScope.getScore(), moveScope.getAccepted(), moveScope.getMove()});
     }
 
     private void processMove(MoveScope moveScope) {
@@ -164,8 +164,8 @@ public class DefaultDecider implements Decider {
             moveScope.getLocalSearchStepScope().getLocalSearchSolverPhaseScope().assertWorkingScore(score);
         }
         moveScope.setScore(score);
-        double acceptChance = acceptor.calculateAcceptChance(moveScope);
-        moveScope.setAcceptChance(acceptChance);
+        boolean accepted = acceptor.isAccepted(moveScope);
+        moveScope.setAccepted(accepted);
         forager.addMove(moveScope);
     }
 

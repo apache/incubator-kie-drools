@@ -37,7 +37,6 @@ public class AcceptedMoveScopeComparator implements Comparator<MoveScope> {
     public int compare(MoveScope a, MoveScope b) {
         CompareToBuilder compareToBuilder = new CompareToBuilder();
         compareToBuilder.append(a.getScore(), b.getScore(), deciderScoreComparator);
-        compareToBuilder.append(a.getAcceptChance(), b.getAcceptChance());
         // moves are not compared
         return compareToBuilder.toComparison();
     }

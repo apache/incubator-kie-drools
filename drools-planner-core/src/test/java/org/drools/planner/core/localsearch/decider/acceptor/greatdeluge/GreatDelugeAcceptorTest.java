@@ -35,7 +35,7 @@ import static org.junit.Assert.*;
 public class GreatDelugeAcceptorTest {
 
     @Test
-    public void testCalculateAcceptChance() {
+    public void testIsAccepted() {
         // Setup
         Acceptor acceptor = new GreatDelugeAcceptor(1.20, 0.01);
         LocalSearchSolverPhaseScope localSearchSolverPhaseScope = createLocalSearchSolverPhaseScope();
@@ -52,17 +52,17 @@ public class GreatDelugeAcceptorTest {
         MoveScope c1 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-1100));
         MoveScope c2 = createMoveScope(localSearchStepScope, DefaultSimpleScore.valueOf(-120));
         // Do stuff
-        assertEquals(0.0, acceptor.calculateAcceptChance(a1), 0.0);
-        assertEquals(0.0, acceptor.calculateAcceptChance(a2), 0.0);
-        assertEquals(1.0, acceptor.calculateAcceptChance(a3), 0.0);
+        assertEquals(false, acceptor.isAccepted(a1));
+        assertEquals(false, acceptor.isAccepted(a2));
+        assertEquals(true, acceptor.isAccepted(a3));
         // TODO reable a thorough test of great deluge
 //        acceptor.stepTaken(localSearchStepScope);
-//        assertEquals(0.0, acceptor.calculateAcceptChance(b1));
-//        assertEquals(1.0, acceptor.calculateAcceptChance(b2));
+//        assertEquals(false, acceptor.isAccepted(b1));
+//        assertEquals(true, acceptor.isAccepted(b2));
 //        acceptor.stepTaken(localSearchStepScope);
-//        assertEquals(0.0, acceptor.calculateAcceptChance(c1));
+//        assertEquals(false, acceptor.isAccepted(c1));
 //        acceptor.stepTaken(localSearchStepScope);
-//        assertEquals(1.0, acceptor.calculateAcceptChance(c2));
+//        assertEquals(true, acceptor.isAccepted(c2));
 //        acceptor.stepTaken(localSearchStepScope);
 //        // Post conditions
 //        acceptor.phaseEnded(localSearchSolverPhaseScope);

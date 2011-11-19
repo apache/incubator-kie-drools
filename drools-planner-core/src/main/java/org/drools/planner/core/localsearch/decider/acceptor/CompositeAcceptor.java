@@ -24,7 +24,7 @@ import org.drools.planner.core.localsearch.decider.MoveScope;
 
 /**
  * Combines several acceptors into one.
- * Multiplies the accept chance of its acceptors.
+ * Does a logical AND over the accepted status of its acceptors.
  * For example: combine solution and property tabu to do tabu on both.
  */
 public class CompositeAcceptor extends AbstractAcceptor {
@@ -53,12 +53,14 @@ public class CompositeAcceptor extends AbstractAcceptor {
         }
     }
 
-    public double calculateAcceptChance(MoveScope moveScope) {
-        double acceptChance = 1.0;
+    public boolean isAccepted(MoveScope moveScope) {
         for (Acceptor acceptor : acceptorList) {
-            acceptChance *= acceptor.calculateAcceptChance(moveScope);
+            boolean accepted = acceptor.isAccepted(moveScope);
+            if (!accepted) {
+                return false;
+            }
         }
-        return acceptChance;
+        return true;
     }
 
     @Override

@@ -29,10 +29,9 @@ import org.drools.planner.core.localsearch.event.LocalSearchSolverPhaseLifecycle
 public interface Acceptor extends LocalSearchSolverPhaseLifecycleListener {
 
     /**
-     * TODO the use for an acceptChance between 0.0 and 1.0 is unproven. A boolean instead of a double is sufficient?
      * @param moveScope not null
-     * @return never negative; if rejected 0.0; if accepted higher than 0.0 (usually 1.0)
+     * @return true if accepted
      */
-    double calculateAcceptChance(MoveScope moveScope);
+    boolean isAccepted(MoveScope moveScope);
 
 }

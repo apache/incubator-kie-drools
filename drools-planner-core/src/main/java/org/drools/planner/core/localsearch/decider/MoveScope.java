@@ -29,7 +29,7 @@ public class MoveScope {
     private final LocalSearchStepScope localSearchStepScope;
     private Move move = null;
     private Move undoMove = null;
-    private double acceptChance = Double.NaN;
+    private Boolean accepted = null;
     private Score score = null;
 
     public MoveScope(LocalSearchStepScope localSearchStepScope) {
@@ -56,12 +56,12 @@ public class MoveScope {
         this.undoMove = undoMove;
     }
 
-    public double getAcceptChance() {
-        return acceptChance;
+    public Boolean getAccepted() {
+        return accepted;
     }
 
-    public void setAcceptChance(double acceptChance) {
-        this.acceptChance = acceptChance;
+    public void setAccepted(Boolean accepted) {
+        this.accepted = accepted;
     }
 
     public Score getScore() {

@@ -61,11 +61,11 @@ public class GreatDelugeAcceptor extends AbstractAcceptor {
         }
     }
 
-    public double calculateAcceptChance(MoveScope moveScope) {
+    public boolean isAccepted(MoveScope moveScope) {
         if (moveScope.getScore().compareTo(waterLevelScore) >= 0) {
-            return 1.0;
+            return true;
         } else {
-            return 0.0;
+            return false;
         }
     }
 

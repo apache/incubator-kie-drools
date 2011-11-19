@@ -42,9 +42,9 @@ public class AcceptedForager extends AbstractForager {
 
     protected int selectedCount;
     protected List<MoveScope> acceptedList;
+    protected List<MoveScope> maxScoreAcceptedList;
     protected boolean listSorted;
     protected Score maxScore;
-    protected double acceptChanceMaxScoreTotal;
 
     protected MoveScope earlyPickedMoveScope = null;
 
@@ -62,15 +62,15 @@ public class AcceptedForager extends AbstractForager {
         acceptedMoveScopeComparator = new AcceptedMoveScopeComparator(localSearchStepScope.getDeciderScoreComparator());
         selectedCount = 0;
         acceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
+        maxScoreAcceptedList = new ArrayList<MoveScope>(1024); // TODO use size of moveList in decider
         listSorted = false;
         maxScore = localSearchStepScope.getLocalSearchSolverPhaseScope().getScoreDefinition().getPerfectMinimumScore();
-        acceptChanceMaxScoreTotal = 0.0;
         earlyPickedMoveScope = null;
     }
 
     public void addMove(MoveScope moveScope) {
         selectedCount++;
-        if (moveScope.getAcceptChance() > 0.0) {
+        if (moveScope.getAccepted()) {
             checkPickEarly(moveScope);
             addMoveScopeToAcceptedList(moveScope);
         }
@@ -102,10 +102,11 @@ public class AcceptedForager extends AbstractForager {
         acceptedList.add(moveScope);
         listSorted = false;
         if (moveScope.getLocalSearchStepScope().getDeciderScoreComparator().compare(moveScope.getScore(), maxScore) > 0) {
-            acceptChanceMaxScoreTotal = moveScope.getAcceptChance();
             maxScore = moveScope.getScore();
+            maxScoreAcceptedList.clear();
+            maxScoreAcceptedList.add(moveScope);
         } else if (moveScope.getScore().equals(maxScore)) {
-            acceptChanceMaxScoreTotal += moveScope.getAcceptChance();
+            maxScoreAcceptedList.add(moveScope);
         }
     }
 
@@ -122,31 +123,14 @@ public class AcceptedForager extends AbstractForager {
     }
 
     protected MoveScope pickMaxScoreMoveScopeFromAcceptedList(LocalSearchStepScope localSearchStepScope) {
-        if (acceptedList.isEmpty()) {
+        if (maxScoreAcceptedList.isEmpty()) {
             return null;
         }
-        sortAcceptedList();
-        MoveScope pickedMoveScope = null;
-        double randomChance = localSearchStepScope.getWorkingRandom().nextDouble();
-        double acceptMark = acceptChanceMaxScoreTotal * randomChance;
-        for (ListIterator<MoveScope> it = acceptedList.listIterator(acceptedList.size()); it.hasPrevious();) {
-            MoveScope moveScope = it.previous();
-            acceptMark -= moveScope.getAcceptChance();
-            // TODO That underflow warn is nonsense. randomChance can be 0.0 and the last acceptMark can end up 0.0
-            // TODO so < is nonsense (do a testcase though)
-            if (acceptMark < 0.0) {
-                pickedMoveScope = moveScope;
-                break;
-            }
+        if (maxScoreAcceptedList.size() == 1) {
+            return maxScoreAcceptedList.get(0);
         }
-        if (pickedMoveScope == null) {
-            // TODO This isn't really underflow when an forager accepts only moves with acceptChance 0.0
-            logger.warn("Underflow occurred with acceptChanceMaxScoreTotal ({}) " +
-                    "and randomChance ({}).", acceptChanceMaxScoreTotal, randomChance);
-            // Deal with it anyway (no fail-fast here)
-            pickedMoveScope = acceptedList.get(acceptedList.size() - 1);
-        }
-        return pickedMoveScope;
+        int randomIndex = localSearchStepScope.getWorkingRandom().nextInt(maxScoreAcceptedList.size());
+        return maxScoreAcceptedList.get(randomIndex);
     }
 
     public int getAcceptedMovesSize() {
