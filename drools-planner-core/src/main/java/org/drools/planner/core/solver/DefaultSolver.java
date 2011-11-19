@@ -101,6 +101,7 @@ public class DefaultSolver implements Solver {
         return solverScope.getBestSolution();
     }
 
+    // TODO this shouldn't change after the solve is done
     public long getTimeMillisSpend() {
         return solverScope.calculateTimeMillisSpend();
     }

@@ -25,9 +25,10 @@ import org.drools.planner.core.score.Score;
 public class SolverBenchmarkResult {
 
     private File unsolvedSolutionFile = null;
-    private Score score = null;
-    private Long timeMillisSpend = null;
     private Integer planningEntityCount = null;
+    private Score score = null;
+    private long timeMillisSpend = -1L;
+    private long calculateCount = -1L;
     private File solvedSolutionFile = null;
 
     public File getUnsolvedSolutionFile() {
@@ -38,22 +39,6 @@ public class SolverBenchmarkResult {
         this.unsolvedSolutionFile = unsolvedSolutionFile;
     }
 
-    public Score getScore() {
-        return score;
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
-    }
-
-    public Long getTimeMillisSpend() {
-        return timeMillisSpend;
-    }
-
-    public void setTimeMillisSpend(Long timeMillisSpend) {
-        this.timeMillisSpend = timeMillisSpend;
-    }
-
     public Integer getPlanningEntityCount() {
         return planningEntityCount;
     }
@@ -62,12 +47,45 @@ public class SolverBenchmarkResult {
         this.planningEntityCount = planningEntityCount;
     }
 
+    public Score getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+    }
+
+    public long getTimeMillisSpend() {
+        return timeMillisSpend;
+    }
+
+    public void setTimeMillisSpend(long timeMillisSpend) {
+        this.timeMillisSpend = timeMillisSpend;
+    }
+
+    public long getCalculateCount() {
+        return calculateCount;
+    }
+
+    public void setCalculateCount(long calculateCount) {
+        this.calculateCount = calculateCount;
+    }
+
     public File getSolvedSolutionFile() {
         return solvedSolutionFile;
     }
 
     public void setSolvedSolutionFile(File solvedSolutionFile) {
         this.solvedSolutionFile = solvedSolutionFile;
+    }
+
+    public Long getAverageCalculateCountPerSecond() {
+        long timeMillisSpend = this.timeMillisSpend;
+        if (timeMillisSpend == 0L) {
+            // Avoid divide by zero exception on a fast CPU
+            timeMillisSpend = 1L;
+        }
+        return calculateCount * 1000L / timeMillisSpend;
     }
 
 }

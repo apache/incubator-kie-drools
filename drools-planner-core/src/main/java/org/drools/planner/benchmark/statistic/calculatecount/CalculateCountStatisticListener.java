@@ -59,6 +59,10 @@ public class CalculateCountStatisticListener extends SolverPhaseLifecycleListene
             DefaultSolverScope solverScope = stepScope.getSolverPhaseScope().getSolverScope();
             long calculateCount = solverScope.getCalculateCount();
             long calculateCountInterval = calculateCount - lastCalculateCount;
+            if (calculateCountInterval == 0L) {
+                // Avoid divide by zero exception on a fast CPU
+                calculateCountInterval = 1L;
+            }
             long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpendInterval;
             statisticPointList.add(new CalculateCountStatisticPoint(timeMillisSpend, averageCalculateCountPerSecond));
             lastCalculateCount = calculateCount;

@@ -64,6 +64,7 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.definition.ScoreDefinition;
 import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solver.DefaultSolver;
+import org.drools.planner.core.solver.DefaultSolverScope;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -350,8 +351,10 @@ public class SolverBenchmarkSuite {
                     statistic.addListener(solver, solverBenchmark.getName());
                 }
                 solver.solve();
-                result.setTimeMillisSpend(solver.getTimeMillisSpend());
                 Solution solvedSolution = solver.getBestSolution();
+                result.setTimeMillisSpend(solver.getTimeMillisSpend());
+                DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
+                result.setCalculateCount(solverScope.getCalculateCount());
                 result.setScore(solvedSolution.getScore());
                 SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
                 result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
@@ -417,6 +420,7 @@ public class SolverBenchmarkSuite {
         } finally {
             IOUtils.closeQuietly(writer);
         }
+        result.setSolvedSolutionFile(solvedSolutionFile);
     }
 
     public void benchmarkingEnded(XStream xStream, Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap) {
@@ -427,6 +431,7 @@ public class SolverBenchmarkSuite {
         htmlFragment.append(writeBestScoreSummaryChart());
         htmlFragment.append(writeTimeSpendSummaryChart());
         htmlFragment.append(writeScalabilitySummaryChart());
+        htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart());
         htmlFragment.append(writeBestScoreSummaryTable());
         htmlFragment.append("  <h1>Statistics</h1>\n");
         for (Map.Entry<File, List<SolverStatistic>> entry : unsolvedSolutionFileToStatisticMap.entrySet()) {
@@ -542,9 +547,9 @@ public class SolverBenchmarkSuite {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
-                Long timeMillisSpend = result.getTimeMillisSpend();
+                long timeMillisSpend = result.getTimeMillisSpend();
                 Integer planningEntityCount = result.getPlanningEntityCount();
-                series.add(planningEntityCount, timeMillisSpend);
+                series.add(planningEntityCount, (Long) timeMillisSpend);
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
@@ -572,6 +577,49 @@ public class SolverBenchmarkSuite {
             IOUtils.closeQuietly(out);
         }
         return "  <h2>Scalability summary chart</h2>\n"
+                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+    }
+
+    private CharSequence writeAverageCalculateCountPerSecondSummaryChart() {
+        NumberAxis xAxis = new NumberAxis("Planning entity count");
+        NumberAxis yAxis = new NumberAxis("Average calculate count per second");
+        XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
+        int seriesIndex = 0;
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            XYSeries series = new XYSeries(solverBenchmark.getName());
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
+                    .buildScoreDefinition();
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                long averageCalculateCountPerSecond = result.getAverageCalculateCountPerSecond();
+                Integer planningEntityCount = result.getPlanningEntityCount();
+                series.add(planningEntityCount, (Long) averageCalculateCountPerSecond);
+            }
+            XYSeriesCollection seriesCollection = new XYSeriesCollection();
+            seriesCollection.addSeries(series);
+            plot.setDataset(seriesIndex, seriesCollection);
+            XYItemRenderer renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
+            // Use dashed line
+            renderer.setSeriesStroke(0, new BasicStroke(
+                    1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[]{2.0f, 6.0f}, 0.0f
+            ));
+            plot.setRenderer(seriesIndex, renderer);
+            seriesIndex++;
+        }
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart("Average calculate count summary (higher is better)",
+                JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "averageCalculateCountSummary.png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartSummaryFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+        return "  <h2>Average calculate count summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 
