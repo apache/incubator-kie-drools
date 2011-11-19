@@ -149,7 +149,6 @@ public class CompareViaReflectionUtil {
             boolean primitiveBasedObjectOrCollection = false;
             if( javaPackages.contains(objClass.getPackage()) ) { 
                 primitiveBasedObjectOrCollection = true;
-                // OCRAM: Al die stomme drools impl's ook hier behandelen.. 
                 same = comparePrimitiveBasedOrCollectionInstances(context, objA, objB);
             }
             else if( objA.getClass().isArray() ) { 

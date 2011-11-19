@@ -92,8 +92,8 @@ public class TestMarshallingUtilsTest {
         }
     
         try { 
-            StatefulKnowledgeSession ksession = unmarshallSession(marshalledData); 
-            assertNotNull(ksession);
+            Object unmarshalledObject = unmarshallObject(marshalledData);
+            assertNotNull(unmarshalledObject);
         } 
         catch( Exception e ) { 
             e.printStackTrace();
@@ -110,7 +110,7 @@ public class TestMarshallingUtilsTest {
         int [] testA = { 1, 3 };
         int [] testB = { 1, 3 };
         
-        boolean same = compareArrays(testA, testB);
+        boolean same = compareInstances(testA, testA);
         assertTrue(same);
          printResult(same, testA, testB);
         
@@ -119,7 +119,7 @@ public class TestMarshallingUtilsTest {
         KnowledgeBase [] testArrA = { kbase };
         KnowledgeBase [] testArrB = { kbase, null };
         
-        same = compareArrays(testArrA, testArrB);
+        same = compareInstances(testArrA, testArrB);
         assertTrue(! same);
          printResult(same, testArrA, testArrB);
        
@@ -128,7 +128,7 @@ public class TestMarshallingUtilsTest {
        
         testEnvA[0].set(DROOLS_PERSISTENCE_UNIT_NAME, DROOLS_PERSISTENCE_UNIT_NAME);
         
-        same = compareArrays(testEnvA, testEnvB);
+        same = compareInstances(testEnvA, testEnvB);
         assertTrue(! same);
          printResult(same, testEnvA, testEnvB);
     }

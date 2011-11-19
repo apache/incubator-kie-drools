@@ -116,13 +116,15 @@ public class PersistenceUtil {
                 
             jdbcUrl = initializeTestDb(dsProps, testClass);
         }
-        else { 
-            jdbcUrl += "tcp://localhost/JPADroolsFlow";
-        }
 
         // Setup the datasource
         PoolingDataSource ds1 = setupPoolingDataSource(dsProps);
-        ds1.getDriverProperties().setProperty("url", jdbcUrl);
+        if( driverClass.startsWith("org.h2") ) { 
+            if( ! TEST_MARSHALLING ) { 
+                jdbcUrl += "tcp://localhost/JPADroolsFlow";
+            }
+            ds1.getDriverProperties().setProperty("url", jdbcUrl);
+        }
         ds1.init();
         context.put(DATASOURCE, ds1);
 
@@ -214,7 +216,11 @@ public class PersistenceUtil {
                 pds.getDriverProperties().put("driverType", "thin");
                 pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
             } else if (driverClass.startsWith("com.ibm.db2")) {
-                // placeholder for eventual future modifications
+                // http://docs.codehaus.org/display/BTM/JdbcXaSupportEvaluation#JdbcXaSupportEvaluation-IBMDB2
+                pds.getDriverProperties().put("databaseName", dsProps.getProperty("databaseName"));
+                pds.getDriverProperties().put("driverType", "4");
+                pds.getDriverProperties().put("serverName", dsProps.getProperty("serverName"));
+                pds.getDriverProperties().put("portNumber", dsProps.getProperty("portNumber"));
             } else if (driverClass.startsWith("com.microsoft")) {
                 for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));

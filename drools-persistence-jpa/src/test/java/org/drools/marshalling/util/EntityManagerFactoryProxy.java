@@ -34,9 +34,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This object 
- * 
- *
+ * This object serves as a proxy for the EntityManagerFactory and the EntityManager instances.
+ * </p>
+ * It ensures that when objects that contain marshalled data are persisted, a new MarshalledData
+ * object is also persisted with the most recent snapshot of the marshalled data. A new MarshalledData
+ * is only made when the marshalled data has changed.  
  */
 public class EntityManagerFactoryProxy implements InvocationHandler {
 
@@ -306,6 +308,10 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
     }
 
+    /**
+     * Add the object to the internal map of managed objects. 
+     * @param result The objec
+     */
     private void find(Object result) { 
         if( result == null ) { 
             return;
@@ -334,6 +340,14 @@ public class EntityManagerFactoryProxy implements InvocationHandler {
         }
     }
 
+    /**
+     * This is the method that checks whether or not (managed) objects that (can) contain
+     * marshalled data, have marshalled data fields that have been updated. If so, this method
+     * (and the methods it calls) create a new MarshalledData object to store a snapshot of
+     * the new marshalled data and persist it. 
+     * @param testMethodName The name of the test method in which the marshalled data has been created.
+     * @param em An EntityManager in order to persist the MarshalledData object. 
+     */
     protected static void updateManagedObjects(String testMethodName, EntityManager em) {
         // Update the marshalled data belonging to managed SessionInfo objects
         if( managedSessionInfoDataMap != null ) {  

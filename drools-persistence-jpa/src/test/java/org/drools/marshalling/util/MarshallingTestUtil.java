@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
@@ -38,6 +39,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.StringUtils;
@@ -64,7 +66,12 @@ public class MarshallingTestUtil {
     private static Logger logger = LoggerFactory.getLogger(MarshallingTestUtil.class);
   
     protected static boolean DO_NOT_COMPARE_MAKING_BASE_DB = false;
+    protected static boolean STORE_KNOWLEDGE_BASE = false;
     
+    protected final static String PROCESS_INSTANCE_INFO_CLASS_NAME = "org.jbpm.persistence.processinstance.ProcessInstanceInfo";
+    private final static String PROCESS_INSTANCE_MARSHALL_UTIL_CLASS_NAME = "org.jbpm.marshalling.util.MarshallingTestUtil";
+    private final static String PROCESS_INSTANCE_RESOLVER_STRATEGY = "org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy";
+
     private static MessageDigest algorithm = null;
     static { 
        if( algorithm == null ) { 
@@ -155,13 +162,6 @@ public class MarshallingTestUtil {
             }
         }
 
-        /**
-        if( testMethodName == null ) {
-            RuntimeException re = new RuntimeException("Unable to determine test method name");
-            re.setStackTrace(Thread.currentThread().getStackTrace());
-            throw re;
-        }
-        **/
         return testMethodName;
     }
             
@@ -200,6 +200,7 @@ public class MarshallingTestUtil {
         HashMap<String, Object> testContext = initializeMarshalledDataEMF(persistenceUnitName, testClass, DO_NOT_COMPARE_MAKING_BASE_DB);
         
         if( DO_NOT_COMPARE_MAKING_BASE_DB ) { 
+            logger.info( "Checking MarshalledData objects saved in base db." );
             List<MarshalledData> baseDataList = null;
             try { 
                 EntityManagerFactory testEMF = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
@@ -215,7 +216,7 @@ public class MarshallingTestUtil {
             for( MarshalledData marshalledData : baseDataList ) { 
                 try { 
                     logger.debug( "Unmarshalling snapshot: " + marshalledData.getTestMethodAndSnapshotNum() );
-                    unmarshallSession(marshalledData);
+                    unmarshallObject(marshalledData);
                 } catch( Exception e ) { 
                     e.printStackTrace();
                     fail( "Exception thrown while unmarshalling [" + marshalledData.getTestMethodAndSnapshotNum() + "] data stored in base database" );
@@ -286,22 +287,22 @@ public class MarshallingTestUtil {
     }
 
     /**
+     * We do the following in this method: <ul>
+     * <li>First, we organize the data in order to do a sanity check on the data
+     *   <ul><li>see {@link#sanityCheckMarshalledData(Class, HashMap, HashMap)}</li></ul></li>
+     * <li>Then, for every test method <i>snapshot</i> that has passed the sanity check:
+     *   <ol><li>Retrieve the marshalled data that was created during the <i>base</i> run</li>
+     *   <li>Unmarshall the base marshalled data</li>
+     *   <li>Retrieve the marshalled data that was created during the <i>test</i> run</li>
+     *   <li>Unmarshall the test marshalled data</li>
+     *   <li>Lastly, compare the base unmarshalled object to the test unmarshalled object</li>
+     *   </ol>
+     * </li>
+     * </ul>
      * 
-     *   x eerst, selecteer een test method
-     *   x pak alle snapshots from test voor die test method
-     *   x pak alle snapshots from base voor die test method
-     *   x bevestig dat je hetzelfde aantal heb
-     *       x zo niet.. waarschuw, of faal!
-     *   een voor een 
-     *   - pak de snapshot van _test
-     *     + gebruik inputMarshaller om iets te maken
-     *     + bewaar de staat (xml/dump tree-achtig??)
-     *     + reflection, anders worden toekomstige veranderingen niet gezien
-     *   - pak de snapshot van base
-     *     + gebruik inputMarshaller om iets te maken
-     *     + bewaar de staat (xml/dump tree-achtig??)
-     *     + reflection, anders worden toekomstige veranderingen niet gezien
-     *   ! verglijk de twee bewaarde staten!! 
+     * @param testClass The class of the test that this is being done in (in order to get the local marshalling db path)
+     * @param testData A list of the marshalled data created during this test
+     * @param baseData A list of the marshalled data created during the base run (or whichever version of the project)
      */
     private static void compareTestAndBaseMarshallingData(Class<?> testClass, List<MarshalledData> testData, 
             List<MarshalledData> baseData ) { 
@@ -330,32 +331,33 @@ public class MarshallingTestUtil {
          
         for( String testMethodVer : testMarshalledDataSnapshotMap.keySet() ) { 
             logger.info("Comparing marshalled info for " + testMethodVer);
-            StatefulKnowledgeSession baseKSession = null;
+            Object baseObject = null;
+            // Base 
+            MarshalledData baseMarshalledData = baseMarshalledDataSnapshotMap.get(testMethodVer);
             try { 
-                // Base 
-                MarshalledData baseMarshalledData = baseMarshalledDataSnapshotMap.get(testMethodVer);
-                baseKSession = unmarshallSession(baseMarshalledData);
+                baseObject = unmarshallObject(baseMarshalledData);
             }
             catch( Exception e) {
                 e.printStackTrace();
                 fail("Unable to unmarshall base data [" + testMethodVer +  "]: " + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
             }
            
-            StatefulKnowledgeSession testKSession = null;
+            Object testObject = null;
+            // Test
+            MarshalledData testMarshalledData = testMarshalledDataSnapshotMap.get(testMethodVer);
             try { 
-                // Test
-                MarshalledData testMarshalledData = testMarshalledDataSnapshotMap.get(testMethodVer);
-                testKSession = unmarshallSession(testMarshalledData);
+                testObject = unmarshallObject(testMarshalledData);
             }
             catch( Exception e) {
                 fail("Unable to unmarshall test data: [" + e.getClass().getSimpleName() + ": " + e.getMessage() + "]");
             }
             
-            assertNotNull("Unmarshalled test data resulted in null object!", testKSession);
-            assertNotNull("Unmarshalled base data resulted in null object!", baseKSession);
+            assertNotNull("Unmarshalled test data resulted in null object!", testObject);
+            assertNotNull("Unmarshalled base data resulted in null object!", baseObject);
             
-            assertTrue( "Unmarshalled " + baseKSession.getClass().getSimpleName() + " objects are not equal.", 
-                    CompareViaReflectionUtil.compareInstances(baseKSession, testKSession) );
+            assertTrue( "Unmarshalled " + baseObject.getClass().getSimpleName() 
+                    + " objects are not equal [" + baseMarshalledData.getTestMethodAndSnapshotNum() + "]",
+                    CompareViaReflectionUtil.compareInstances(baseObject, testObject) );
         }
         
         
@@ -475,10 +477,18 @@ public class MarshallingTestUtil {
     }
     
     protected static StatefulKnowledgeSession unmarshallSession(MarshalledData marshalledData) throws Exception { 
-    
         // Setup marshaller
-        KnowledgeBase kbase = (KnowledgeBase) DroolsStreamUtils.streamIn(marshalledData.serializedKnowledgeBase);
-        Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() } );
+        KnowledgeBase kbase;
+        if( STORE_KNOWLEDGE_BASE ) { 
+            kbase = (KnowledgeBase) DroolsStreamUtils.streamIn(marshalledData.serializedKnowledgeBase);
+        }
+        else { 
+            kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        }
+        ObjectMarshallingStrategy [] strategies 
+            = new ObjectMarshallingStrategy[] { MarshallerFactory.newSerializeMarshallingStrategy() };
+        strategies = addProcessInstanceResolverStrategyIfAvailable(strategies);
+        Marshaller marshaller = MarshallerFactory.newMarshaller( kbase, strategies );
     
         // Prepare input for marshaller
         ByteArrayInputStream bais = new ByteArrayInputStream( marshalledData.byteArray );
@@ -491,7 +501,7 @@ public class MarshallingTestUtil {
         return ksession;
     }
 
-    protected static WorkItem unmarshallWorkItem(byte [] marshalledSessionByteArray) throws Exception { 
+    private static WorkItem unmarshallWorkItem(byte [] marshalledSessionByteArray) throws Exception { 
         // Setup env/context/stream
         Environment env = EnvironmentFactory.newEnvironment();
         ByteArrayInputStream bais = new ByteArrayInputStream(marshalledSessionByteArray);
@@ -505,22 +515,17 @@ public class MarshallingTestUtil {
         return unmarshalledWorkItem;
     }
 
-    private static String PROCESS_INSTANCE_MARSHALL_UTIL_CLASS_NAME = "org.jbpm.marshalling.util.MarshallingTestUtil";
-    
-    protected static Object unmarshallProcessInstance(byte [] marshalledSessionByteArray) throws Exception { 
+    private static Object unmarshallProcessInstance(byte [] marshalledSessionByteArray) throws Exception { 
         // Get class/method..
         Class<?> processInstanceMarshallerClass = Class.forName(PROCESS_INSTANCE_MARSHALL_UTIL_CLASS_NAME);
-        Object processInstanceMarshaller = processInstanceMarshallerClass.getDeclaredField("INSTANCE");
-        Method unmarshallMethod = processInstanceMarshallerClass.getMethod("unmarshallProcessInstance", 
+        Method unmarshallMethod = processInstanceMarshallerClass.getMethod("unmarshallProcessInstances", 
                 marshalledSessionByteArray.getClass());
         
         // Unmarshall
-        Object unmarshalledProcessInstance = unmarshallMethod.invoke(processInstanceMarshaller, marshalledSessionByteArray);
+        Object unmarshalledProcessInstance = unmarshallMethod.invoke(null, marshalledSessionByteArray);
         
         return unmarshalledProcessInstance;
     }
-    
-    protected final static String PROCESS_INSTANCE_INFO_CLASS_NAME = "org.jbpm.persistence.processinstance.ProcessInstanceInfo";
     
     protected static byte [] getProcessInstanceInfoByteArray(Object processInstanceInfo) { 
         byte [] byteArray = null;
@@ -548,7 +553,7 @@ public class MarshallingTestUtil {
         return id;
     }
     
-    public static byte [] getWorkItemByteArray(WorkItemInfo workItemInfo) { 
+    protected static byte [] getWorkItemByteArray(WorkItemInfo workItemInfo) { 
         Method byteArrayMethod = null;
         byte [] byteArray = null;
         try {
@@ -571,5 +576,31 @@ public class MarshallingTestUtil {
             }
         }
         return byteArray;
+    }
+    
+    private static ObjectMarshallingStrategy [] addProcessInstanceResolverStrategyIfAvailable(
+            ObjectMarshallingStrategy [] strategies ) { 
+     
+        ObjectMarshallingStrategy processInstanceResolverStrategyObject = null;
+        try {
+            Class<?> strategyClass = Class.forName(PROCESS_INSTANCE_RESOLVER_STRATEGY);
+            Constructor<?> constructor = strategyClass.getConstructors()[0];
+            
+            processInstanceResolverStrategyObject = (ObjectMarshallingStrategy) constructor.newInstance(new Object [0]);
+        }
+        catch( Throwable t ) { 
+            // do nothing, strategy class could not be 
+        }
+       
+        ObjectMarshallingStrategy [] newStrategies = new ObjectMarshallingStrategy[strategies.length+1];
+        if( processInstanceResolverStrategyObject != null ) { 
+           for( int i = 0; i < strategies.length; ++i ) { 
+              newStrategies[i] = strategies[i]; 
+           }
+           newStrategies[strategies.length] = processInstanceResolverStrategyObject;
+           strategies = newStrategies;
+        }
+        
+        return strategies;
     }
 }
