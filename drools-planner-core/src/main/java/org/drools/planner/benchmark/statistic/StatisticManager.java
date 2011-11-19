@@ -105,13 +105,23 @@ public class StatisticManager {
                 dataset.addValue(scoreGraphValue, solverLabel, result.getUnsolvedSolutionFile().getName());
             }
         }
-        JFreeChart chart = ChartFactory.createBarChart(
-                "Best score summary (higher score is better)", "Data", "Score",
-                dataset, PlotOrientation.VERTICAL, true, true, false
-        );
-        CategoryItemRenderer renderer = ((CategoryPlot) chart.getPlot()).getRenderer();
+        CategoryAxis xAxis = new CategoryAxis("Data");
+        xAxis.setCategoryMargin(0.50d);
+        NumberAxis yAxis = new NumberAxis("Score");
+        BarRenderer renderer = new BarRenderer();
+        ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
+        renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
+        ItemLabelPosition negativeItemLabelPosition = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
+        renderer.setBaseNegativeItemLabelPosition(negativeItemLabelPosition);
         renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
         renderer.setBaseItemLabelsVisible(true);
+        CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis,
+                renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart("Best score summary (higher score is better)", JFreeChart.DEFAULT_TITLE_FONT,
+                plot, true);
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File chartSummaryFile = new File(solverStatisticFilesDirectory, "bestScoreSummary.png");
         OutputStream out = null;
