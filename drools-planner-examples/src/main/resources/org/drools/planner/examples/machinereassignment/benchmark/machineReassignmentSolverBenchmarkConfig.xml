@@ -40,12 +40,8 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Tabu Search (untweaked)</name>
+    <name>PTS5</name>
     <solver>
-      <!--<constructionHeuristic>-->
-        <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
-        <!--<constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>-->
-      <!--</constructionHeuristic>-->
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
@@ -60,7 +56,101 @@
         </selector>
         <acceptor>
           <solutionTabuSize>1000</solutionTabuSize>
-          <propertyTabuSize>7</propertyTabuSize>
+          <propertyTabuSize>5</propertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>SA5m</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/5000000soft</simulatedAnnealingStartingTemperature>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>SA5m-PT5</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/5000000soft</simulatedAnnealingStartingTemperature>
+          <propertyTabuSize>5</propertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>SA5m_PT5</name>
+    <solver>
+      <customSolverPhase>
+        <customSolverPhaseCommandClass>org.drools.planner.examples.machinereassignment.solver.solution.initializer.MrOriginalMachineSolutionInitializer</customSolverPhaseCommandClass>
+      </customSolverPhase>
+      <localSearch>
+        <termination>
+          <maximumMinutesSpend>1</maximumMinutesSpend>
+        </termination>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <simulatedAnnealingStartingTemperature>0hard/5000000soft</simulatedAnnealingStartingTemperature>
+          <propertyTabuSize>5</propertyTabuSize>
+        </acceptor>
+        <forager>
+          <minimalAcceptedSelection>4</minimalAcceptedSelection>
+        </forager>
+      </localSearch>
+      <localSearch>
+        <selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericChangeValueMoveFactory</moveFactoryClass>
+          </selector>
+          <selector>
+            <moveFactoryClass>org.drools.planner.core.move.generic.GenericSwitchAllValuesMoveFactory</moveFactoryClass>
+          </selector>
+        </selector>
+        <acceptor>
+          <solutionTabuSize>1000</solutionTabuSize>
+          <propertyTabuSize>5</propertyTabuSize>
         </acceptor>
         <forager>
           <minimalAcceptedSelection>1000</minimalAcceptedSelection>
