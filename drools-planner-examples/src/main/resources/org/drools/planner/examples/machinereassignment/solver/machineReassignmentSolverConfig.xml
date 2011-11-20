@@ -18,7 +18,7 @@
   </customSolverPhase>
   <localSearch>
     <termination>
-      <maximumSecondsSpend>120</maximumSecondsSpend>
+      <maximumMinutesSpend>5</maximumMinutesSpend>
     </termination>
     <selector>
       <selector>
