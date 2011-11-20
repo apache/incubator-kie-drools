@@ -106,7 +106,7 @@ public class StatisticManager {
             }
         }
         CategoryAxis xAxis = new CategoryAxis("Data");
-        xAxis.setCategoryMargin(0.50d);
+        xAxis.setCategoryMargin(0.40);
         NumberAxis yAxis = new NumberAxis("Score");
         BarRenderer renderer = new BarRenderer();
         ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
