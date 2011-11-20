@@ -73,6 +73,7 @@ public class StatisticManager {
         StringBuilder htmlFragment = new StringBuilder(unsolvedSolutionFileToStatisticMap.size() * 160);
         htmlFragment.append("  <h1>Summary</h1>\n");
         htmlFragment.append(writeBestScoreSummaryChart(solverBenchmarkList));
+        htmlFragment.append(writeWinningScoreDifferenceSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeTimeSpendSummaryChart(solverBenchmarkList));
         htmlFragment.append(writeScalabilitySummaryChart(solverBenchmarkList));
         htmlFragment.append(writeAverageCalculateCountPerSecondSummaryChart(solverBenchmarkList));
@@ -134,6 +135,53 @@ public class StatisticManager {
             IOUtils.closeQuietly(out);
         }
         return "  <h2>Best score summary chart</h2>\n"
+                + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
+    }
+
+    private CharSequence writeWinningScoreDifferenceSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
+                    .buildScoreDefinition();
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                Score score = result.getWinningScoreDifference();
+                Double scoreGraphValue = scoreDefinition.translateScoreToGraphValue(score);
+                String solverLabel = solverBenchmark.getName();
+                if (solverBenchmark.getRanking() == 0) {
+                    solverLabel += " (winner)";
+                }
+                dataset.addValue(scoreGraphValue, solverLabel, result.getUnsolvedSolutionFile().getName());
+            }
+        }
+        CategoryAxis xAxis = new CategoryAxis("Data");
+        xAxis.setCategoryMargin(0.40);
+        NumberAxis yAxis = new NumberAxis("Winning score difference");
+        BarRenderer renderer = new BarRenderer();
+        ItemLabelPosition positiveItemLabelPosition = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE12, TextAnchor.BOTTOM_CENTER);
+        renderer.setBasePositiveItemLabelPosition(positiveItemLabelPosition);
+        ItemLabelPosition negativeItemLabelPosition = new ItemLabelPosition(
+                ItemLabelAnchor.OUTSIDE6, TextAnchor.TOP_CENTER);
+        renderer.setBaseNegativeItemLabelPosition(negativeItemLabelPosition);
+        renderer.setBaseItemLabelGenerator(new StandardCategoryItemLabelGenerator());
+        renderer.setBaseItemLabelsVisible(true);
+        CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis,
+                renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        JFreeChart chart = new JFreeChart("Winning score difference summary (higher is better)", JFreeChart.DEFAULT_TITLE_FONT,
+                plot, true);
+        BufferedImage chartImage = chart.createBufferedImage(1024, 768);
+        File chartSummaryFile = new File(solverStatisticFilesDirectory, "winningScoreDifferenceSummary.png");
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(chartSummaryFile);
+            ImageIO.write(chartImage, "png", out);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Problem writing graphStatisticFile: " + chartSummaryFile, e);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+        return "  <h2>Winning score difference summary chart</h2>\n"
                 + "  <img src=\"" + chartSummaryFile.getName() + "\"/>\n";
     }
 

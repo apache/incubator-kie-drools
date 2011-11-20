@@ -28,6 +28,7 @@ public class SolverBenchmarkResult {
     private int planningEntityCount = -1;
     private long problemScale = -1;
     private Score score = null;
+    private Score winningScoreDifference = null; // compared to winning result (which might not be the overall winner)
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
     private File solvedSolutionFile = null;
@@ -62,6 +63,14 @@ public class SolverBenchmarkResult {
 
     public void setScore(Score score) {
         this.score = score;
+    }
+
+    public Score getWinningScoreDifference() {
+        return winningScoreDifference;
+    }
+
+    public void setWinningScoreDifference(Score winningScoreDifference) {
+        this.winningScoreDifference = winningScoreDifference;
     }
 
     public long getTimeMillisSpend() {

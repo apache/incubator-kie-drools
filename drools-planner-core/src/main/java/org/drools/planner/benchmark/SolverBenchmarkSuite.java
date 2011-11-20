@@ -395,7 +395,8 @@ public class SolverBenchmarkSuite {
     }
 
     public void benchmarkingEnded(XStream xStream, Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap) {
-        determineRankings();
+        determineWinningResultScoreDelta();
+        determineRanking();
         StatisticManager statisticManager = new StatisticManager(benchmarkInstanceDirectory.getName(),
                 solverStatisticFilesDirectory, unsolvedSolutionFileToStatisticMap);
         statisticManager.writeStatistics(solverBenchmarkList);
@@ -403,7 +404,25 @@ public class SolverBenchmarkSuite {
         // writeBenchmarkResult(xStream);
     }
 
-    private void determineRankings() {
+    private void determineWinningResultScoreDelta() {
+        Map<File, SolverBenchmarkResult> winningResultMap = new LinkedHashMap<File, SolverBenchmarkResult>();
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                SolverBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
+                if (winningResult == null || result.getScore().compareTo(winningResult.getScore()) > 0) {
+                    winningResultMap.put(result.getUnsolvedSolutionFile(), result);
+                }
+            }
+        }
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                SolverBenchmarkResult winningResult = winningResultMap.get(result.getUnsolvedSolutionFile());
+                result.setWinningScoreDifference(result.getScore().subtract(winningResult.getScore()));
+            }
+        }
+    }
+
+    private void determineRanking() {
         List<SolverBenchmark> sortedSolverBenchmarkList = new ArrayList<SolverBenchmark>(solverBenchmarkList);
         Collections.sort(sortedSolverBenchmarkList, solverBenchmarkComparator);
         Collections.reverse(sortedSolverBenchmarkList); // Best results first, worst results last
