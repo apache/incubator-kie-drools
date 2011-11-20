@@ -25,7 +25,8 @@ import org.drools.planner.core.score.Score;
 public class SolverBenchmarkResult {
 
     private File unsolvedSolutionFile = null;
-    private Integer planningEntityCount = null;
+    private int planningEntityCount = -1;
+    private long problemScale = -1;
     private Score score = null;
     private long timeMillisSpend = -1L;
     private long calculateCount = -1L;
@@ -39,12 +40,20 @@ public class SolverBenchmarkResult {
         this.unsolvedSolutionFile = unsolvedSolutionFile;
     }
 
-    public Integer getPlanningEntityCount() {
+    public int getPlanningEntityCount() {
         return planningEntityCount;
     }
 
-    public void setPlanningEntityCount(Integer planningEntityCount) {
+    public void setPlanningEntityCount(int planningEntityCount) {
         this.planningEntityCount = planningEntityCount;
+    }
+
+    public long getProblemScale() {
+        return problemScale;
+    }
+
+    public void setProblemScale(long problemScale) {
+        this.problemScale = problemScale;
     }
 
     public Score getScore() {

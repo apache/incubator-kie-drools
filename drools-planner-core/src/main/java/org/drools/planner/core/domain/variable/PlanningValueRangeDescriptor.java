@@ -18,11 +18,14 @@ package org.drools.planner.core.domain.variable;
 
 import java.util.Collection;
 
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 
 public interface PlanningValueRangeDescriptor {
 
-    Collection<?> extractValues(SolutionDirector solutionDirector, Object planningEntity);
+    Collection<?> extractValues(Solution solution, Object planningEntity);
+
+    long getProblemScale(Solution solution, Object planningEntity);
 
     boolean isValuesCacheable();
 

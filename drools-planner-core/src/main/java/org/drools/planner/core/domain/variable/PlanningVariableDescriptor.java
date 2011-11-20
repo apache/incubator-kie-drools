@@ -144,6 +144,10 @@ public class PlanningVariableDescriptor {
         return valueSorter;
     }
 
+    public long getProblemScale(Solution solution, Object planningEntity) {
+        return valueRangeDescriptor.getProblemScale(solution, planningEntity);
+    }
+
     public boolean isInitialized(Object planningEntity) {
         // TODO extract to VariableInitialized interface
         Object variable = DescriptorUtils.executeGetter(variablePropertyDescriptor, planningEntity);
@@ -163,8 +167,8 @@ public class PlanningVariableDescriptor {
         DescriptorUtils.executeSetter(variablePropertyDescriptor, planningEntity, value);
     }
 
-    public Collection<?> extractPlanningValues(SolutionDirector solutionDirector, Object planningEntity) {
-        return valueRangeDescriptor.extractValues(solutionDirector, planningEntity);
+    public Collection<?> extractPlanningValues(Solution solution, Object planningEntity) {
+        return valueRangeDescriptor.extractValues(solution, planningEntity);
     }
 
     public boolean isPlanningValuesCacheable() {

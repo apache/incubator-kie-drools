@@ -31,6 +31,8 @@ import org.drools.planner.api.domain.entity.PlanningEntityDifficultyWeightFactor
 import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.core.domain.solution.SolutionDescriptor;
 import org.drools.planner.core.domain.variable.PlanningVariableDescriptor;
+import org.drools.planner.core.solution.Solution;
+import org.drools.planner.core.solution.director.SolutionDirector;
 
 public class PlanningEntityDescriptor {
 
@@ -157,6 +159,14 @@ public class PlanningEntityDescriptor {
 
     public Collection<PlanningVariableDescriptor> getPlanningVariableDescriptors() {
         return planningVariableDescriptorMap.values();
+    }
+
+    public long getProblemScale(Solution solution, Object planningEntity) {
+        long problemScale = 1L;
+        for (PlanningVariableDescriptor planningVariableDescriptor : planningVariableDescriptorMap.values()) {
+            problemScale *= planningVariableDescriptor.getProblemScale(solution, planningEntity);
+        }
+        return problemScale;
     }
 
     public boolean isInitialized(Object planningEntity) {

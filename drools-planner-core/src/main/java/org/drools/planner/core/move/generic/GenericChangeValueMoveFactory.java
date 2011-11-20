@@ -58,7 +58,7 @@ public class GenericChangeValueMoveFactory extends CachedMoveFactory {
             for (PlanningVariableDescriptor planningVariableDescriptor
                     : planningEntityDescriptor.getPlanningVariableDescriptors()) {
                 for (Object toPlanningValue : planningVariableDescriptor.extractPlanningValues(
-                        solutionDirector, planningEntity)) {
+                        solutionDirector.getWorkingSolution(), planningEntity)) {
                     moveList.add(new GenericChangeValueMove(planningEntity, planningEntityFactHandle,
                             planningVariableDescriptor, toPlanningValue));
                 }

@@ -24,6 +24,7 @@ import org.drools.planner.api.domain.variable.ValueRangeFromPlanningEntityProper
 import org.drools.planner.api.domain.variable.ValueRangeFromSolutionProperty;
 import org.drools.planner.core.domain.common.DescriptorUtils;
 import org.drools.planner.core.domain.entity.PlanningEntityDescriptor;
+import org.drools.planner.core.solution.Solution;
 import org.drools.planner.core.solution.director.SolutionDirector;
 
 public class PlanningEntityPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
@@ -65,9 +66,13 @@ public class PlanningEntityPropertyPlanningValueRangeDescriptor extends Abstract
         }
     }
 
-    public Collection<?> extractValues(SolutionDirector solutionDirector, Object planningEntity) {
+    public Collection<?> extractValues(Solution solution, Object planningEntity) {
         return (Collection<?>) DescriptorUtils.executeGetter(rangePropertyDescriptor,
                 planningEntity);
+    }
+
+    public long getProblemScale(Solution solution, Object planningEntity) {
+        return extractValues(solution, planningEntity).size();
     }
 
 }

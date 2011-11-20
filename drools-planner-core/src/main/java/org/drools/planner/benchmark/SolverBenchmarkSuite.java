@@ -327,6 +327,7 @@ public class SolverBenchmarkSuite {
                 result.setScore(solvedSolution.getScore());
                 SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
                 result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
+                result.setProblemScale(solutionDescriptor.getProblemScale(solvedSolution));
                 for (SolverStatistic statistic : statisticList) {
                     statistic.removeListener(solver, solverBenchmark.getName());
                 }

@@ -88,7 +88,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope solverPhaseScope) {
         if (planningVariableDescriptor.isPlanningValuesCacheable()) {
             Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
-                    solverPhaseScope.getSolutionDirector(), null);
+                    solverPhaseScope.getWorkingSolution(), null);
             cachedPlanningValues = applySelectionOrder(planningValues);
         } else {
             cachedPlanningValues = null;
@@ -105,7 +105,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
             return cachedPlanningValues.iterator();
         } else {
             Collection<?> planningValues = planningVariableDescriptor.extractPlanningValues(
-                    solutionDirector, planningEntity);
+                    solutionDirector.getWorkingSolution(), planningEntity);
             planningValues = applySelectionOrder(planningValues);
             return planningValues.iterator();
         }

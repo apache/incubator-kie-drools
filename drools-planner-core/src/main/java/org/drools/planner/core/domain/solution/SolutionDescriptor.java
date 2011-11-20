@@ -156,8 +156,38 @@ public class SolutionDescriptor {
         return planningEntityList;
     }
 
+    /**
+     * @param solution never null
+     * @return >= 0
+     */
     public int getPlanningEntityCount(Solution solution) {
         return getPlanningEntityList(solution).size();
+    }
+
+    /**
+     * Calculates an indication on how big this problem instance is.
+     * This is intentionally very loosely defined for now.
+     * @param solution never null
+     * @return >= 0
+     */
+    public long getProblemScale(Solution solution) {
+        long problemScale = 0L;
+        for (PropertyDescriptor entityPropertyDescriptor : entityPropertyDescriptorMap.values()) {
+            Object entity = extractPlanningEntity(entityPropertyDescriptor, solution);
+            if (entity != null) {
+                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
+                problemScale += planningEntityDescriptor.getProblemScale(solution, entity);
+            }
+        }
+        for (PropertyDescriptor entityCollectionPropertyDescriptor : entityCollectionPropertyDescriptorMap.values()) {
+            Collection<?> entityCollection = extractPlanningEntityCollection(
+                    entityCollectionPropertyDescriptor, solution);
+            for (Object entity : entityCollection) {
+                PlanningEntityDescriptor planningEntityDescriptor = getPlanningEntityDescriptor(entity.getClass());
+                problemScale += planningEntityDescriptor.getProblemScale(solution, entity);
+            }
+        }
+        return problemScale;
     }
 
     /**

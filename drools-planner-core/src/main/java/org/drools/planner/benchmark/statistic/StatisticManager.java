@@ -180,7 +180,7 @@ public class StatisticManager {
     }
 
     private CharSequence writeScalabilitySummaryChart(List<SolverBenchmark> solverBenchmarkList) {
-        NumberAxis xAxis = new NumberAxis("Planning entity count");
+        NumberAxis xAxis = new NumberAxis("Problem scale");
         NumberAxis yAxis = new NumberAxis("Time spend");
         yAxis.setNumberFormatOverride(new MillisecondsSpendNumberFormat());
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
@@ -190,9 +190,9 @@ public class StatisticManager {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                long problemScale = result.getProblemScale();
                 long timeMillisSpend = result.getTimeMillisSpend();
-                Integer planningEntityCount = result.getPlanningEntityCount();
-                series.add(planningEntityCount, (Long) timeMillisSpend);
+                series.add((Long) problemScale, (Long) timeMillisSpend);
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
@@ -224,7 +224,7 @@ public class StatisticManager {
     }
 
     private CharSequence writeAverageCalculateCountPerSecondSummaryChart(List<SolverBenchmark> solverBenchmarkList) {
-        NumberAxis xAxis = new NumberAxis("Planning entity count");
+        NumberAxis xAxis = new NumberAxis("Problem scale");
         NumberAxis yAxis = new NumberAxis("Average calculate count per second");
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         int seriesIndex = 0;
@@ -233,9 +233,9 @@ public class StatisticManager {
             ScoreDefinition scoreDefinition = solverBenchmark.getSolverConfig().getScoreDefinitionConfig()
                     .buildScoreDefinition();
             for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                long problemScale = result.getProblemScale();
                 long averageCalculateCountPerSecond = result.getAverageCalculateCountPerSecond();
-                Integer planningEntityCount = result.getPlanningEntityCount();
-                series.add(planningEntityCount, (Long) averageCalculateCountPerSecond);
+                series.add((Long) problemScale, (Long) averageCalculateCountPerSecond);
             }
             XYSeriesCollection seriesCollection = new XYSeriesCollection();
             seriesCollection.addSeries(series);
