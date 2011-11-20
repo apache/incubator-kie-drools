@@ -257,8 +257,40 @@ public class SolverBenchmarkSuite {
 
     public void benchmark(XStream xStream) { // TODO refactor out xstream
         benchmarkingStarted();
+        warmUp(xStream);
         // LinkedHashMap because order of unsolvedSolutionFile should be respected in output
         Map<File, List<SolverStatistic>> unsolvedSolutionFileToStatisticMap = new LinkedHashMap<File, List<SolverStatistic>>();
+        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
+            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
+                // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
+                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
+                
+                File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
+                Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
+                solver.setPlanningProblem(unsolvedSolution);
+                List<SolverStatistic> statisticList = getOrCreateStatisticList(unsolvedSolutionFileToStatisticMap, unsolvedSolutionFile);
+                for (SolverStatistic statistic : statisticList) {
+                    statistic.addListener(solver, solverBenchmark.getName());
+                }
+                solver.solve();
+                Solution solvedSolution = solver.getBestSolution();
+                result.setTimeMillisSpend(solver.getTimeMillisSpend());
+                DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
+                result.setCalculateCount(solverScope.getCalculateCount());
+                result.setScore(solvedSolution.getScore());
+                SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
+                result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
+                result.setProblemScale(solutionDescriptor.getProblemScale(solvedSolution));
+                for (SolverStatistic statistic : statisticList) {
+                    statistic.removeListener(solver, solverBenchmark.getName());
+                }
+                writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
+            }
+        }
+        benchmarkingEnded(xStream, unsolvedSolutionFileToStatisticMap);
+    }
+
+    private void warmUp(XStream xStream) {
         if (warmUpTimeMillisSpend != null || warmUpSecondsSpend != null || warmUpMinutesSpend != null
                 || warmUpHoursSpend != null) {
             logger.info("================================================================================");
@@ -307,34 +339,6 @@ public class SolverBenchmarkSuite {
             logger.info("Finished warmUp");
             logger.info("================================================================================");
         }
-        for (SolverBenchmark solverBenchmark : solverBenchmarkList) {
-            for (SolverBenchmarkResult result : solverBenchmark.getSolverBenchmarkResultList()) {
-                // Intentionally create a fresh solver for every result to reset Random, tabu lists, ...
-                Solver solver = solverBenchmark.getSolverConfig().buildSolver();
-                
-                File unsolvedSolutionFile = result.getUnsolvedSolutionFile();
-                Solution unsolvedSolution = readUnsolvedSolution(xStream, unsolvedSolutionFile);
-                solver.setPlanningProblem(unsolvedSolution);
-                List<SolverStatistic> statisticList = getOrCreateStatisticList(unsolvedSolutionFileToStatisticMap, unsolvedSolutionFile);
-                for (SolverStatistic statistic : statisticList) {
-                    statistic.addListener(solver, solverBenchmark.getName());
-                }
-                solver.solve();
-                Solution solvedSolution = solver.getBestSolution();
-                result.setTimeMillisSpend(solver.getTimeMillisSpend());
-                DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-                result.setCalculateCount(solverScope.getCalculateCount());
-                result.setScore(solvedSolution.getScore());
-                SolutionDescriptor solutionDescriptor = ((DefaultSolver) solver).getSolutionDescriptor();
-                result.setPlanningEntityCount(solutionDescriptor.getPlanningEntityCount(solvedSolution));
-                result.setProblemScale(solutionDescriptor.getProblemScale(solvedSolution));
-                for (SolverStatistic statistic : statisticList) {
-                    statistic.removeListener(solver, solverBenchmark.getName());
-                }
-                writeSolvedSolution(xStream, solverBenchmark, result, solvedSolution);
-            }
-        }
-        benchmarkingEnded(xStream, unsolvedSolutionFileToStatisticMap);
     }
 
     private List<SolverStatistic> getOrCreateStatisticList(
