@@ -1,9 +1,5 @@
 package org.drools.rule.builder.dialect.asm;
 
-import com.sun.org.apache.bcel.internal.generic.ASTORE;
-import com.sun.org.apache.bcel.internal.generic.DUP;
-import com.sun.org.apache.bcel.internal.generic.MONITORENTER;
-import com.sun.org.apache.bcel.internal.generic.MONITOREXIT;
 import org.drools.WorkingMemory;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.CompiledInvoker;
