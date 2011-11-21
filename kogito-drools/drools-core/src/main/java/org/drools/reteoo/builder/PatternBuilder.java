@@ -47,7 +47,6 @@ import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.VariableConstraint;
-import org.drools.runtime.rule.Activation;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
@@ -386,8 +385,7 @@ public class PatternBuilder
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class< ? > thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            for ( final Iterator<Pattern> it = context.getObjectType().iterator(); it.hasNext(); ) {
-                final Pattern previousPattern = it.next();
+            for ( final Pattern previousPattern : context.getObjectType() ) {
                 final Class< ? > previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );

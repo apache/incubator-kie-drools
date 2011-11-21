@@ -104,6 +104,7 @@ import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
+import org.drools.lang.descr.WindowDeclarationDescr;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
@@ -115,6 +116,7 @@ import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
+import org.drools.rule.WindowDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
 import org.drools.rule.builder.dialect.DialectError;
@@ -1570,6 +1572,16 @@ public class PackageBuilder {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         for ( EntryPointDeclarationDescr epDescr : packageDescr.getEntryPointDeclarations() ) {
             pkgRegistry.getPackage().addEntryPointId( epDescr.getEntryPointId() );
+        }
+    }
+
+    private void processWindowDeclarations( final PackageDescr packageDescr ) {
+        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
+        for ( WindowDeclarationDescr wd : packageDescr.getWindowDeclarations() ) {
+            WindowDeclaration window = new WindowDeclaration( wd.getName() );
+            // process annotations
+            // process pattern
+            pkgRegistry.getPackage().addWindowDeclaration( window );
         }
     }
 

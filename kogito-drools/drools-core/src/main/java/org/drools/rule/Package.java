@@ -46,8 +46,9 @@ import org.drools.util.*;
  * @version $Id: Package.java,v 1.1 2005/07/26 01:06:31 mproctor Exp $
  */
 public class Package
-    implements
-    Externalizable {
+                    implements
+                    Externalizable {
+
     // ------------------------------------------------------------
     // Constants`
     // ------------------------------------------------------------
@@ -62,7 +63,7 @@ public class Package
     private String                         name;
 
     /** Set of all rule-names in this <code>Package</code>. */
-    private Map<String,Rule>               rules;
+    private Map<String, Rule>              rules;
 
     private Map<String, ImportDeclaration> imports;
 
@@ -80,8 +81,10 @@ public class Package
     private DialectRuntimeRegistry         dialectRuntimeRegistry;
 
     private Map<String, TypeDeclaration>   typeDeclarations;
-    
-    private Set<String>                    entryPointsIds = Collections.emptySet();
+
+    private Set<String>                    entryPointsIds   = Collections.emptySet();
+
+    private Map<String, WindowDeclaration> windowDeclarations;
 
     private ClassFieldAccessorStore        classFieldAccessorStore;
 
@@ -108,7 +111,7 @@ public class Package
      * user, as it will result in an invalid state for the instance.
      */
     public Package() {
-
+        this(null);
     }
 
     /**
@@ -123,13 +126,14 @@ public class Package
         this.typeDeclarations = new HashMap<String, TypeDeclaration>();
         this.staticImports = Collections.EMPTY_SET;
         this.rules = new LinkedHashMap<String, Rule>();
-        this.ruleFlows = Collections.EMPTY_MAP;
-        this.globals = Collections.EMPTY_MAP;
-        this.factTemplates = Collections.EMPTY_MAP;
-        this.functions = Collections.EMPTY_MAP;
+        this.ruleFlows = Collections.emptyMap();
+        this.globals = Collections.emptyMap();
+        this.factTemplates = Collections.emptyMap();
+        this.functions = Collections.emptyMap();
         this.dialectRuntimeRegistry = new DialectRuntimeRegistry();
         this.classFieldAccessorStore = new ClassFieldAccessorStore();
         this.entryPointsIds = Collections.emptySet();
+        this.windowDeclarations = Collections.emptyMap();
     }
 
     /**
@@ -143,12 +147,12 @@ public class Package
      *            out the stream to write the object to; should be an instance
      *            of DroolsObjectOutputStream or OutputStream
      */
-    public void writeExternal(ObjectOutput stream) throws IOException {
+    public void writeExternal( ObjectOutput stream ) throws IOException {
         boolean isDroolsStream = stream instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes = null;
         ObjectOutput out;
 
-        if ( isDroolsStream ) {
+        if (isDroolsStream) {
             out = stream;
         } else {
             bytes = new ByteArrayOutputStream();
@@ -167,8 +171,9 @@ public class Package
         out.writeObject( this.rules );
         out.writeObject( this.classFieldAccessorStore );
         out.writeObject( this.entryPointsIds );
+        out.writeObject( this.windowDeclarations );
         // writing the whole stream as a byte array
-        if ( !isDroolsStream ) {
+        if (!isDroolsStream) {
             bytes.flush();
             bytes.close();
             stream.writeObject( bytes.toByteArray() );
@@ -188,10 +193,13 @@ public class Package
      *            should be an instance of DroolsObjectInputStream or
      *            InputStream
      */
-    public void readExternal(ObjectInput stream) throws IOException,
-                                                ClassNotFoundException {
+    public void readExternal( ObjectInput stream ) throws IOException,
+            ClassNotFoundException {
         boolean isDroolsStream = stream instanceof DroolsObjectInputStream;
-        DroolsObjectInputStream in = isDroolsStream ? (DroolsObjectInputStream) stream : new DroolsObjectInputStream( new ByteArrayInputStream( (byte[]) stream.readObject() ) );
+        DroolsObjectInputStream in = isDroolsStream ? (DroolsObjectInputStream) stream
+                                                   : new DroolsObjectInputStream(
+                                                                                  new ByteArrayInputStream(
+                                                                                                            (byte[]) stream.readObject() ) );
 
         // setting parent classloader for dialect datas
         this.dialectRuntimeRegistry = (DialectRuntimeRegistry) in.readObject();
@@ -208,7 +216,8 @@ public class Package
         this.rules = (Map<String, Rule>) in.readObject();
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
         this.entryPointsIds = (Set<String>) in.readObject();
-        if ( !isDroolsStream ) {
+        this.windowDeclarations = (Map<String, WindowDeclaration>) in.readObject();
+        if (!isDroolsStream) {
             in.close();
         }
     }
@@ -230,12 +239,12 @@ public class Package
         return this.dialectRuntimeRegistry;
     }
 
-    public void addImport(final ImportDeclaration importDecl) {
+    public void addImport( final ImportDeclaration importDecl ) {
         this.imports.put( importDecl.getTarget(),
                           importDecl );
     }
 
-    public void removeImport(final String importEntry) {
+    public void removeImport( final String importEntry ) {
         this.imports.remove( importEntry );
     }
 
@@ -243,12 +252,12 @@ public class Package
         return this.imports;
     }
 
-    public void addTypeDeclaration(final TypeDeclaration typeDecl) {
+    public void addTypeDeclaration( final TypeDeclaration typeDecl ) {
         this.typeDeclarations.put( typeDecl.getTypeName(),
                                    typeDecl );
     }
 
-    public void removeTypeDeclaration(final String type) {
+    public void removeTypeDeclaration( final String type ) {
         this.typeDeclarations.remove( type );
     }
 
@@ -256,19 +265,19 @@ public class Package
         return this.typeDeclarations;
     }
 
-    public TypeDeclaration getTypeDeclaration(String type) {
+    public TypeDeclaration getTypeDeclaration( String type ) {
         return this.typeDeclarations.get( type );
     }
 
-    public void addStaticImport(final String functionImport) {
-        if ( this.staticImports == Collections.EMPTY_SET ) {
+    public void addStaticImport( final String functionImport ) {
+        if (this.staticImports == Collections.EMPTY_SET) {
             this.staticImports = new HashSet( 2 );
         }
         this.staticImports.add( functionImport );
     }
 
-    public void addFunction(final Function function) {
-        if ( this.functions == Collections.EMPTY_MAP ) {
+    public void addFunction( final Function function ) {
+        if (this.functions == Collections.EMPTY_MAP) {
             this.functions = new HashMap<String, Function>( 1 );
         }
 
@@ -281,7 +290,7 @@ public class Package
         return this.functions;
     }
 
-    public void removeFunctionImport(final String functionImport) {
+    public void removeFunctionImport( final String functionImport ) {
         this.staticImports.remove( functionImport );
     }
 
@@ -289,16 +298,16 @@ public class Package
         return this.staticImports;
     }
 
-    public void addGlobal(final String identifier,
-                          final Class< ? > clazz) {
-        if ( this.globals == Collections.EMPTY_MAP ) {
+    public void addGlobal( final String identifier,
+            final Class<?> clazz ) {
+        if (this.globals == Collections.EMPTY_MAP) {
             this.globals = new HashMap<String, String>( 1 );
         }
         this.globals.put( identifier,
                           clazz.getName() );
     }
 
-    public void removeGlobal(final String identifier) {
+    public void removeGlobal( final String identifier ) {
         this.globals.remove( identifier );
     }
 
@@ -306,20 +315,20 @@ public class Package
         return this.globals;
     }
 
-    public void removeFunction(final String functionName) {
+    public void removeFunction( final String functionName ) {
         Function function = this.functions.remove( functionName );
-        if ( function != null ) {
+        if (function != null) {
             this.dialectRuntimeRegistry.removeFunction( this,
                                                         function );
         }
     }
 
-    public FactTemplate getFactTemplate(final String name) {
+    public FactTemplate getFactTemplate( final String name ) {
         return (FactTemplate) this.factTemplates.get( name );
     }
 
-    public void addFactTemplate(final FactTemplate factTemplate) {
-        if ( this.factTemplates == Collections.EMPTY_MAP ) {
+    public void addFactTemplate( final FactTemplate factTemplate ) {
+        if (this.factTemplates == Collections.EMPTY_MAP) {
             this.factTemplates = new HashMap( 1 );
         }
         this.factTemplates.put( factTemplate.getName(),
@@ -338,7 +347,7 @@ public class Package
      * @throws InvalidRuleException
      *             If the <code>Rule</code> is not valid.
      */
-    public void addRule(final Rule rule) {
+    public void addRule( final Rule rule ) {
         final String name = rule.getName();
 
         this.rules.put( name,
@@ -349,8 +358,8 @@ public class Package
     /**
      * Add a rule flow to this package.
      */
-    public void addProcess(Process process) {
-        if ( this.ruleFlows == Collections.EMPTY_MAP ) {
+    public void addProcess( Process process ) {
+        if (this.ruleFlows == Collections.EMPTY_MAP) {
             this.ruleFlows = new HashMap();
         }
         this.ruleFlows.put( process.getId(),
@@ -368,14 +377,14 @@ public class Package
     /**
      * Rule flows can be removed by ID.
      */
-    public void removeRuleFlow(String id) {
-        if ( !this.ruleFlows.containsKey( id ) ) {
+    public void removeRuleFlow( String id ) {
+        if (!this.ruleFlows.containsKey( id )) {
             throw new IllegalArgumentException( "The rule flow with id [" + id + "] is not part of this package." );
         }
         this.ruleFlows.remove( id );
     }
 
-    public void removeRule(final Rule rule) {
+    public void removeRule( final Rule rule ) {
         this.rules.remove( rule.getName() );
         this.dialectRuntimeRegistry.removeRule( this,
                                                 rule );
@@ -438,7 +447,7 @@ public class Package
      *         such <code>Rule</code> has been added to this
      *         <code>Package</code>.
      */
-    public Rule getRule(final String name) {
+    public Rule getRule( final String name ) {
         return (Rule) this.rules.get( name );
     }
 
@@ -460,7 +469,7 @@ public class Package
     }
 
     /** Once this is called, the package will be marked as invalid */
-    public void setError(final String summary) {
+    public void setError( final String summary ) {
         this.errorSummary = summary;
         this.valid = false;
     }
@@ -474,7 +483,7 @@ public class Package
 
     /** This will throw an exception if the package is not valid */
     public void checkValidity() {
-        if ( !isValid() ) {
+        if (!isValid()) {
             throw new InvalidRulePackage( this.getErrorSummary() );
         }
     }
@@ -486,18 +495,18 @@ public class Package
         return this.errorSummary;
     }
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
+    public boolean equals( final Object object ) {
+        if (this == object) {
             return true;
         }
 
-        if ( object == null || !(object instanceof Package) ) {
+        if (object == null || !( object instanceof Package )) {
             return false;
         }
 
         final Package other = (Package) object;
 
-        return (this.name.equals( other.name ));
+        return ( this.name.equals( other.name ) );
     }
 
     public int hashCode() {
@@ -510,14 +519,14 @@ public class Package
      * @param clazz
      * @return true if clazz is imported as an Event class in this package
      */
-    public boolean isEvent(Class clazz) {
-        if ( clazz == null ) {
+    public boolean isEvent( Class clazz ) {
+        if (clazz == null) {
             return false;
         }
 
         // check if clazz is resolved by any of the type declarations
-        for ( TypeDeclaration type : this.typeDeclarations.values() ) {
-            if ( type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT ) {
+        for (TypeDeclaration type : this.typeDeclarations.values()) {
+            if (type.matches( clazz ) && type.getRole() == TypeDeclaration.Role.EVENT) {
                 return true;
             }
         }
@@ -535,10 +544,11 @@ public class Package
         this.globals.clear();
         this.factTemplates.clear();
         this.typeDeclarations.clear();
+        this.windowDeclarations.clear();
     }
 
-    public FactType getFactType(final String typeName) {
-        if ( typeName == null || ( this.name != null && !typeName.startsWith( this.name + "." ) ) ) {
+    public FactType getFactType( final String typeName ) {
+        if (typeName == null || ( this.name != null && !typeName.startsWith( this.name + "." ) )) {
             return null;
         }
         // in case the package name is != null, remove the package name from the
@@ -552,16 +562,16 @@ public class Package
         return classFieldAccessorStore;
     }
 
-    public void setClassFieldAccessorCache(ClassFieldAccessorCache classFieldAccessorCache) {
+    public void setClassFieldAccessorCache( ClassFieldAccessorCache classFieldAccessorCache ) {
         this.classFieldAccessorStore.setClassFieldAccessorCache( classFieldAccessorCache );
     }
 
     public Set<String> getEntryPointIds() {
         return entryPointsIds;
     }
-    
+
     public void addEntryPointId( String id ) {
-        if( entryPointsIds == Collections.EMPTY_SET ) {
+        if (entryPointsIds == Collections.EMPTY_SET) {
             entryPointsIds = new HashSet<String>();
         }
         entryPointsIds.add( id );
@@ -571,7 +581,22 @@ public class Package
         return typeResolver;
     }
 
-    public void setTypeResolver(TypeResolver typeResolver) {
+    public void setTypeResolver( TypeResolver typeResolver ) {
         this.typeResolver = typeResolver;
+    }
+
+    public void addWindowDeclaration( WindowDeclaration window ) {
+        if( windowDeclarations == Collections.EMPTY_MAP ) {
+            windowDeclarations = new HashMap<String, WindowDeclaration>();
+        }
+        this.windowDeclarations.put( window.getName(), window );
+    }
+
+    public Map<String, WindowDeclaration> getWindowDeclarations() {
+        return windowDeclarations;
+    }
+    
+    public void setWindowDeclarations( Map<String, WindowDeclaration> windowDeclarations ) {
+        this.windowDeclarations = windowDeclarations;
     }
 }
