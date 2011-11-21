@@ -31,6 +31,7 @@ import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.rule.Behavior;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
@@ -49,7 +50,7 @@ public class BuildContext {
     private ObjectSource                     objectSource;
 
     // object type cache to check for cross products
-    private LinkedList                       objectType;
+    private LinkedList<Pattern>              objectType;
 
     // offset of the pattern
     private int                              currentPatternOffset;
@@ -150,7 +151,7 @@ public class BuildContext {
 
     public void syncObjectTypesWithPatternOffset() {
         if ( this.objectType == null ) {
-            this.objectType = new LinkedList();
+            this.objectType = new LinkedList<Pattern>();
         }
         while ( this.objectType.size() > this.currentPatternOffset ) {
             this.objectType.removeLast();
@@ -174,9 +175,9 @@ public class BuildContext {
     /**
      * @return the objectType
      */
-    public LinkedList getObjectType() {
+    public LinkedList<Pattern> getObjectType() {
         if ( this.objectType == null ) {
-            this.objectType = new LinkedList();
+            this.objectType = new LinkedList<Pattern>();
         }
         return this.objectType;
     }
@@ -184,9 +185,9 @@ public class BuildContext {
     /**
      * @param objectType the objectType to set
      */
-    public void setObjectType(final LinkedList objectType) {
+    public void setObjectType(final LinkedList<Pattern> objectType) {
         if ( this.objectType == null ) {
-            this.objectType = new LinkedList();
+            this.objectType = new LinkedList<Pattern>();
         }
         this.objectType = objectType;
     }
