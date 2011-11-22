@@ -81,14 +81,14 @@ fragment
 Exponent : ('e'|'E') ('+'|'-')? ('0'..'9')+ ;
 
 fragment
-FloatTypeSuffix : ('f'|'F'|'d'|'D') ;
+FloatTypeSuffix : ('f'|'F'|'d'|'D'|'B') ;
 
 HEX 	: '0' ('x'|'X') HexDigit+ IntegerTypeSuffix? ;
 
 DECIMAL	: ('0'..'9')+ IntegerTypeSuffix? ;
 
 fragment
-IntegerTypeSuffix : ('l'|'L') ;
+IntegerTypeSuffix : ('l'|'L'|'I') ;
 
 STRING
     :  ('"' ( EscapeSequence | ~('\\'|'"') )* '"')
