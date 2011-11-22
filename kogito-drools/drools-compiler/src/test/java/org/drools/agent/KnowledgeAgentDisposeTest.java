@@ -12,10 +12,12 @@ import org.drools.runtime.StatefulKnowledgeSession;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class KnowledgeAgentDisposeTest extends BaseKnowledgeAgentTest {
 
     private int resourceChangeNotificationCount = 0;
