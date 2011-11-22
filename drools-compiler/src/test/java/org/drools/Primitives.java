@@ -16,6 +16,8 @@
 package org.drools;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 
 
@@ -51,6 +53,9 @@ public class Primitives
     private Boolean           booleanWrapper;
 
     private Object            object;
+    
+    private BigDecimal        bigDecimal;
+    private BigInteger        bigInteger;
     
     public boolean isBooleanPrimitive() {
         return this.booleanPrimitive;
@@ -280,4 +285,16 @@ public class Primitives
         return true;
     }
 
+    public BigDecimal getBigDecimal() {
+        return bigDecimal;
+    }
+    public void setBigDecimal( BigDecimal bigDecimal ) {
+        this.bigDecimal = bigDecimal;
+    }
+    public BigInteger getBigInteger() {
+        return bigInteger;
+    }
+    public void setBigInteger( BigInteger bigInteger ) {
+        this.bigInteger = bigInteger;
+    }
 }

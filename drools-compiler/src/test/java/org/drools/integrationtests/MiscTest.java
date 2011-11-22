@@ -9080,6 +9080,27 @@ public class MiscTest {
     }
 
     @Test
+    public void testBigLiterals() {
+        String str = "package org.drools\n" +
+                     "rule X\n" +
+                     "when\n" +
+                     "    Primitives( bigInteger == 10I, bigInteger < (50I), bigDecimal == 10B, bigDecimal < (50B) )\n" +
+                     "then\n" +
+                     "end\n";
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Primitives p = new Primitives();
+        p.setBigDecimal( BigDecimal.valueOf( 10 ) );
+        p.setBigInteger( BigInteger.valueOf( 10 ) );
+        ksession.insert( p );
+
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 1,
+                      rulesFired );
+    }
+
+    @Test
     public void testModifyJava() {
         String str = "package org.drools\n" +
         		     "import java.util.List\n" +

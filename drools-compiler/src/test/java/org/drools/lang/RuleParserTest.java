@@ -3835,6 +3835,34 @@ public class RuleParserTest extends TestCase {
     }
 
     @Test
+    public void testBigLiterals() throws Exception {
+        final String text = "rule X when Primitives( bigInteger == (10I), " +
+        		            "                        bigDecimal == (10B), " +
+        		            "                        bigInteger < 50I, " +
+        		            "                        bigDecimal < 50B ) then end";
+        PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
+                                                                  text )).getLhs().getDescrs().get( 0 );
+
+        assertEquals( 4,
+                      pattern.getDescrs().size() );
+        ExprConstraintDescr ecd = (ExprConstraintDescr) pattern.getDescrs().get( 0 );
+        assertEquals( "bigInteger == (10I)",
+                      ecd.getExpression() );
+
+        ecd = (ExprConstraintDescr) pattern.getDescrs().get( 1 );
+        assertEquals( "bigDecimal == (10B)",
+                      ecd.getExpression() );
+
+        ecd = (ExprConstraintDescr) pattern.getDescrs().get( 2 );
+        assertEquals( "bigInteger < 50I",
+                      ecd.getExpression() );
+
+        ecd = (ExprConstraintDescr) pattern.getDescrs().get( 3 );
+        assertEquals( "bigDecimal < 50B",
+                      ecd.getExpression() );
+    }
+
+    @Test
     public void testBindingComposite() throws Exception {
         final String text = "rule X when Person( $name : name == \"Bob\" || $loc : location == \"Montreal\" ) then end";
         PatternDescr pattern = (PatternDescr) ((RuleDescr) parse( "rule",
