@@ -1,6 +1,7 @@
 package org.drools.rule.builder.dialect.asm;
 
 import org.drools.WorkingMemory;
+import org.drools.rule.GroupElement;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.spi.CompiledInvoker;
 import org.drools.spi.Consequence;
@@ -24,13 +25,26 @@ import static org.mvel2.asm.Opcodes.MONITOREXIT;
 import static org.mvel2.asm.Opcodes.GOTO;
 import static org.mvel2.asm.Opcodes.ATHROW;
 
-public class ASMConsequenceStubBuilder extends AbstractASMConsequenceBuilder {
+public class ASMConsequenceStubBuilder extends ASMConsequenceBuilder {
 
     protected byte[] createConsequenceBytecode(final RuleBuildContext ruleContext, final Map<String, Object> consequenceContext) {
+        // If the LHS contains an OR we cannot use the optimized consequence invoker that traverses the tuple only once
+        if (isOr(ruleContext.getRule().getLhs())) {
+            return super.createConsequenceBytecode(ruleContext, consequenceContext);
+        }
+
         final InvokerDataProvider data = new InvokerContext(consequenceContext);
         final ClassGenerator generator = createInvokerStubGenerator(data, ruleContext);
         createStubConsequence(generator, data, consequenceContext);
         return generator.generateBytecode();
+    }
+
+    private boolean isOr(GroupElement groupElement) {
+        if (groupElement.isOr()) return true;
+        for (Object child : groupElement.getChildren()) {
+            if (child instanceof GroupElement && isOr((GroupElement)child)) return true;
+        }
+        return false;
     }
 
     private void createStubConsequence(final ClassGenerator generator, final InvokerDataProvider data, final Map<String, Object> vars) {

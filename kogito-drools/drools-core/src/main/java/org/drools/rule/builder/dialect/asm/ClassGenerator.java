@@ -344,16 +344,50 @@ public class ClassGenerator {
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
         }
 
+        public void print(String msg) {
+            mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+            mv.visitLdcInsn(msg);
+            mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V");
+        }
+
         public void println(String msg) {
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitLdcInsn(msg);
             mv.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V");
         }
 
+        public void printRegistryValue(int reg) {
+            Type type = storedTypes.get(reg);
+            if (type == null) {
+                printRegistryValue(reg, Object.class);
+                return;
+            }
+
+            String typeName = type.getClassName();
+            if (typeName.equals("int"))
+                printRegistryValue(reg, int.class);
+            else if (typeName.equals("boolean"))
+                printRegistryValue(reg, boolean.class);
+            else if (typeName.equals("char"))
+                printRegistryValue(reg, char.class);
+            else if (typeName.equals("byte"))
+                printRegistryValue(reg, byte.class);
+            else if (typeName.equals("short"))
+                printRegistryValue(reg, short.class);
+            else if (typeName.equals("float"))
+                printRegistryValue(reg, float.class);
+            else if (typeName.equals("long"))
+                printRegistryValue(reg, long.class);
+            else if (typeName.equals("double"))
+                printRegistryValue(reg, double.class);
+            else
+                printRegistryValue(reg, Object.class);
+        }
+
         public void printRegistryValue(int reg, Class<?> clazz) {
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitVarInsn(Type.getType(clazz).getOpcode(ILOAD), reg);
-            invokeVirtual(PrintStream.class, "println", null, clazz);
+            invokeVirtual(PrintStream.class, "print", null, clazz);
         }
 
         public void printLastRegistry(Class<?> clazz) {
@@ -361,7 +395,7 @@ public class ClassGenerator {
             mv.visitVarInsn(t.getOpcode(ISTORE), 100);
             mv.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
             mv.visitVarInsn(t.getOpcode(ILOAD), 100);
-            invokeVirtual(PrintStream.class, "println", null, clazz);
+            invokeVirtual(PrintStream.class, "print", null, clazz);
         }
 
         public void printStack() {
