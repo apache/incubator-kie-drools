@@ -76,6 +76,15 @@ public class UserGroupCallbackTwoImpl implements UserGroupCallback {
         }
         return false;
     }
+    
+    public List<String> getGroupsForUser(String userId, List<String> groupIds) {
+		return getGroupsForUser(userId);
+	}
+    
+    public List<String> getGroupsForUser(String userId, List<String> groupIds,
+			List<String> allExistingGroupIds) {
+		return getGroupsForUser(userId);
+	}
 
     public List<String> getGroupsForUser(String userId) {
         Iterator<User> iter = userGroupMapping.keySet().iterator();

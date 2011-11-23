@@ -17,6 +17,7 @@
 package org.jbpm.task.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
@@ -63,15 +64,21 @@ public class DemoTaskService {
         TaskServiceSession taskSession = taskService.createSession();
         // Add users
         Map vars = new HashMap();
-        Reader reader = new InputStreamReader( BaseTest.class.getResourceAsStream( "LoadUsers.mvel" ) );     
-        Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
-        for ( User user : users.values() ) {
-            taskSession.addUser( user );
-        }           
-        reader = new InputStreamReader( BaseTest.class.getResourceAsStream( "LoadGroups.mvel" ) );      
-        Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
-        for ( Group group : groups.values() ) {
-            taskSession.addGroup( group );
+        InputStream usersin = BaseTest.class.getResourceAsStream( "LoadUsers.mvel" );
+        if(usersin != null) {
+        	Reader reader = new InputStreamReader( usersin );   
+        	Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
+        	for ( User user : users.values() ) {
+        		taskSession.addUser( user );
+        	}           
+        }
+        InputStream groupsin = BaseTest.class.getResourceAsStream( "LoadGroups.mvel" );
+        if(groupsin != null) {
+        	Reader reader = new InputStreamReader( groupsin );      
+        	Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
+        	for ( Group group : groups.values() ) {
+        		taskSession.addGroup( group );
+        	}
         }
         // start server
         MinaTaskServer server = new MinaTaskServer(taskService);

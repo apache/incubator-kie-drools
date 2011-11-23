@@ -18,7 +18,6 @@ package org.jbpm.task.service;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.jbpm.eventmessaging.EventKeys;
 import org.jbpm.task.*;
 import org.jbpm.task.query.DeadlineSummary;
 import org.jbpm.task.query.TaskSummary;
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +39,6 @@ public class TaskServiceSession {
     private final EntityManager em;
     private Map<String, RuleBase> ruleBases;
     private Map<String, Map<String, Object>> globals;
-    private EventKeys eventKeys;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
     
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceSession.class);
@@ -342,7 +340,7 @@ public class TaskServiceSession {
                               List<String> groupIds) throws TaskException {
         OrganizationalEntity targetEntity = null;
 
-        doUserGroupCallbackOperation(userId, groupIds);
+        groupIds = doUserGroupCallbackOperation(userId, groupIds);
         doCallbackUserOperation(targetEntityId);
         if (targetEntityId != null) {
             targetEntity = getEntity(OrganizationalEntity.class, targetEntityId);
@@ -584,10 +582,10 @@ public class TaskServiceSession {
 
 
     @SuppressWarnings("unchecked")
-    public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, final List<String> groupIds,
+    public List<TaskSummary> getTasksAssignedAsPotentialOwner(final String userId, List<String> groupIds,
                                                               final String language, final int firstResult, int maxResults) {
         doCallbackUserOperation(userId);
-        doUserGroupCallbackOperation(userId, groupIds);
+        groupIds = doUserGroupCallbackOperation(userId, groupIds);
         final Query tasksAssignedAsPotentialOwner = em.createNamedQuery("TasksAssignedAsPotentialOwnerWithGroups");
         tasksAssignedAsPotentialOwner.setParameter("userId", userId);
         tasksAssignedAsPotentialOwner.setParameter("groupIds", groupIds);
@@ -884,12 +882,23 @@ public class TaskServiceSession {
         void doOperation();
     }
     
-    private void doUserGroupCallbackOperation(String userId, List<String> groupIds) {
+    private List<String> doUserGroupCallbackOperation(String userId, List<String> groupIds) {
         if(UserGroupCallbackManager.getInstance().existsCallback()) {
             doCallbackUserOperation(userId);
             doCallbackGroupsOperation(userId, groupIds);
+            // get all groups
+            @SuppressWarnings("unchecked")
+			List<Group> allGroups = ((List<Group>) em.createQuery("from Group").getResultList());
+            List<String> allGroupIds = new ArrayList<String>();
+            if(allGroups != null) {
+            	for(Group g : allGroups) {
+            		allGroupIds.add(g.getId());
+            	}
+            }
+            return UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds, allGroupIds);
         } else {
             logger.debug("UserGroupCallback has not been registered.");
+            return groupIds;
         }
     }
     
@@ -1143,8 +1152,8 @@ public class TaskServiceSession {
                 if(groupIds != null && groupIds.size() > 0) {
                     for(String groupId : groupIds) {
                         if(UserGroupCallbackManager.getInstance().getCallback().existsGroup(groupId) && 
-                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId) != null &&
-                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId).contains(groupId)) {
+                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds) != null &&
+                                UserGroupCallbackManager.getInstance().getCallback().getGroupsForUser(userId, groupIds).contains(groupId)) {
                             addGroupFromCallbackOperation(groupId);
                         }
                     }

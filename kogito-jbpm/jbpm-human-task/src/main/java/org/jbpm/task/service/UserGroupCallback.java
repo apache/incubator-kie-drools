@@ -24,4 +24,8 @@ public interface UserGroupCallback {
     boolean existsGroup(String groupId);
     
     List<String> getGroupsForUser(String userId);
+    
+    List<String> getGroupsForUser(String userId, List<String> groupIds);
+    
+    List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds);
 }

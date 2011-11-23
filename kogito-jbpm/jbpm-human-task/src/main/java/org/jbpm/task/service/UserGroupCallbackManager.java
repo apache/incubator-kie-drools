@@ -18,15 +18,20 @@ package org.jbpm.task.service;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UserGroupCallbackManager {
     public static final String USER_GROUP_CALLBACK_KEY = "jbpm.usergroup.callback";
     private static UserGroupCallbackManager instance;
     private UserGroupCallback callback = null;
+    private static final Logger logger = LoggerFactory.getLogger(UserGroupCallbackManager.class);
     
     private UserGroupCallbackManager() {
         try {
             if(System.getProperty(USER_GROUP_CALLBACK_KEY) != null) {
                 callback = (UserGroupCallback) Class.forName(System.getProperty(USER_GROUP_CALLBACK_KEY)).newInstance();
+                logger.info("UserGroupCallback registered from system property: " + callback.getClass().getName());
             } else {
                 InputStream in = getClass().getResourceAsStream(USER_GROUP_CALLBACK_KEY + ".properties");
                 if(in != null) {
@@ -34,11 +39,13 @@ public class UserGroupCallbackManager {
                     callbackproperties.load(in);
                     if (!isEmpty(callbackproperties.getProperty(USER_GROUP_CALLBACK_KEY))) {
                         callback = (UserGroupCallback) Class.forName(callbackproperties.getProperty(USER_GROUP_CALLBACK_KEY)).newInstance();
+                        logger.info("UserGroupCallback registered from properties file: " + callback.getClass().getName());
                     }
                     in.close();
                 }
             }
         } catch (Throwable t) {
+        	logger.error("Error trying to create callback: " + t.getMessage());
             callback = null;
         } 
     }
@@ -53,9 +60,22 @@ public class UserGroupCallbackManager {
     public static void resetCallback() {
         instance = null;
     }
+
+    public void setCallbackFromProperties(Properties callbackproperties) {
+    	try {
+			if (!isEmpty(callbackproperties.getProperty(USER_GROUP_CALLBACK_KEY))) {
+			    callback = (UserGroupCallback) Class.forName(callbackproperties.getProperty(USER_GROUP_CALLBACK_KEY)).newInstance();
+			    logger.info("UserGroupCallback registered from properties file: " + callback.getClass().getName());
+			}
+		} catch (Throwable t) {
+			logger.error("Error trying to create callback: " + t.getMessage());
+			callback = null;
+		}
+    }
     
     public void setCallback(UserGroupCallback callback) {
         this.callback = callback;
+        logger.info("UserGroupCallback registered: " + callback.getClass().getName());
     }
     
     public boolean existsCallback() {

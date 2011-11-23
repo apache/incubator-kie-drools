@@ -1,10 +1,12 @@
 package org.jbpm;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -31,6 +33,7 @@ import org.jbpm.task.User;
 import org.jbpm.task.query.TaskSummary;
 import org.jbpm.task.service.TaskService;
 import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.service.UserGroupCallbackManager;
 import org.jbpm.task.service.mina.MinaTaskServer;
 import org.drools.SystemEventListenerFactory;
 import org.mvel2.MVEL;
@@ -45,22 +48,43 @@ public class DemoTaskService {
         TaskServiceSession taskSession = taskService.createSession();
         // Add users
         Map vars = new HashMap();
-        Reader reader = new InputStreamReader( DemoTaskService.class.getResourceAsStream( "LoadUsers.mvel" ) );     
-        Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
-        for ( User user : users.values() ) {
-            taskSession.addUser( user );
-        }           
-        reader = new InputStreamReader( DemoTaskService.class.getResourceAsStream( "LoadGroups.mvel" ) );      
-        Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
-        for ( Group group : groups.values() ) {
-            taskSession.addGroup( group );
+        InputStream usersin = DemoTaskService.class.getResourceAsStream( "LoadUsers.mvel" );
+        if(usersin != null) {
+        	Reader reader = new InputStreamReader( usersin );   
+        	@SuppressWarnings("unchecked")
+        	Map<String, User> users = ( Map<String, User> ) eval( reader, vars );   
+        	for ( User user : users.values() ) {
+        		taskSession.addUser( user );
+        	}           
+        }
+        InputStream groupsin = DemoTaskService.class.getResourceAsStream( "LoadGroups.mvel" );
+        if(groupsin != null) {
+        	Reader reader = new InputStreamReader( groupsin );   
+        	@SuppressWarnings("unchecked")
+        	Map<String, Group> groups = ( Map<String, Group> ) eval( reader, vars );     
+        	for ( Group group : groups.values() ) {
+        		taskSession.addGroup( group );
+        	}
+        }
+        // try to get the usergroup callback properties
+        InputStream usergroupsin = DemoTaskService.class.getResourceAsStream(  "jbpm.usergroup.callback.properties" );
+        if(usergroupsin != null) {
+        	Reader reader = new InputStreamReader( usergroupsin );
+        	Properties callbackproperties = new Properties();
+        	try {
+        		callbackproperties.load(reader);
+        		UserGroupCallbackManager.getInstance().setCallbackFromProperties(callbackproperties);
+        		System.out.println("Task service registered usergroup callback ...");
+        	} catch (Exception e) {
+        		System.out.println("Task service unable to register usergroup callback ...");
+        	}
         }
         // start server
         MinaTaskServer server = new MinaTaskServer(taskService);
         Thread thread = new Thread(server);
         thread.start();
         taskSession.dispose();
-        System.out.println("Task service started correctly !");
+        System.out.println("Task service started correctly!");
         System.out.println("Task service running ...");
     }
 
