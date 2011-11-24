@@ -75,7 +75,11 @@ public class UserGroupCallbackManager {
     
     public void setCallback(UserGroupCallback callback) {
         this.callback = callback;
-        logger.info("UserGroupCallback registered: " + callback.getClass().getName());
+        if(callback != null) {
+        	logger.info("UserGroupCallback registered: " + callback.getClass().getName());
+        } else {
+        	logger.info("Unregistering UserGroupCallback");
+        }
     }
     
     public boolean existsCallback() {
