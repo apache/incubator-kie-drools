@@ -55,7 +55,7 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-gwt-shared</artifactId>
     </dependency>
-    <dependency>
+    <!--dependency>
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>provided</scope>
@@ -84,7 +84,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
-    </dependency>
+    </dependency-->
     <dependency>
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>

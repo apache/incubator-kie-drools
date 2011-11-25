@@ -10,7 +10,7 @@
 
   <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    <jta-data-source>java:jdbc/testDS1</jta-data-source>       
+    <jta-data-source>java:jboss/datasources/jbpmDS</jta-data-source>       
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
     <class>org.drools.persistence.info.SessionInfo</class>
@@ -20,8 +20,46 @@
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="create" />
       <property name="hibernate.show_sql" value="false" />	
+      <!--property name="hibernate.transaction.manager_lookup_class" value="org.jbpm.integration.console.JBPMTransactionManager" /-->
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
     </properties>        
   </persistence-unit>
     
+  <!--persistence-unit name="org.jbpm.task" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>      
+    <jta-data-source>java:jboss/datasources/jbpmDS</jta-data-source>       
+    <mapping-file>META-INF/Taskorm.xml</mapping-file>
+    <class>org.jbpm.task.Attachment</class>
+    <class>org.jbpm.task.Content</class>
+    <class>org.jbpm.task.BooleanExpression</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Comment</class>
+    <class>org.jbpm.task.Deadline</class>
+    <class>org.jbpm.task.Delegation</class>
+    <class>org.jbpm.task.Escalation</class>
+    <class>org.jbpm.task.Group</class>
+    <class>org.jbpm.task.I18NText</class>
+    <class>org.jbpm.task.Notification</class>
+    <class>org.jbpm.task.EmailNotification</class>
+    <class>org.jbpm.task.EmailNotificationHeader</class>
+    <class>org.jbpm.task.PeopleAssignments</class>
+    <class>org.jbpm.task.Reassignment</class>
+    <class>org.jbpm.task.Status</class>
+    <class>org.jbpm.task.Task</class>
+    <class>org.jbpm.task.TaskData</class>
+    <class>org.jbpm.task.SubTasksStrategy</class>
+    <class>org.jbpm.task.OnParentAbortAllSubTasksEndStrategy</class>
+    <class>org.jbpm.task.OnAllSubTasksEndParentEndStrategy</class>
+    <class>org.jbpm.task.User</class>
+    <properties>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.max_fetch_depth" value="3"/>
+      <property name="hibernate.hbm2ddl.auto" value="create" />
+      <property name="hibernate.show_sql" value="false" />
+      <!-property name="hibernate.transaction.manager_lookup_class" value="org.jbpm.integration.console.JBPMTransactionManager" /->
+      <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.JBossTransactionManagerLookup" />
+    </properties>
+  </persistence-unit-->
+
 </persistence>
