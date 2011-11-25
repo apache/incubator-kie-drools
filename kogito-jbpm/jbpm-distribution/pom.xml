@@ -82,6 +82,11 @@
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+      <type>test-jar</type>
+    </dependency>
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->
       <!--<artifactId>jbpm-bpmn2</artifactId>-->
@@ -119,6 +124,18 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
     </dependency>
 
     <!-- Javadocs and documentation -->
