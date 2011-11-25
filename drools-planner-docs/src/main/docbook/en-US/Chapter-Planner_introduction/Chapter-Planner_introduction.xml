@@ -14,7 +14,7 @@
 
     <itemizedlist>
       <listitem>
-        <para><emphasis role="bold">Employee shift rostering</emphasis>: rostering nurses, repairmen, ...</para>
+        <para><emphasis role="bold">Employee shift rostering</emphasis>: timetabling nurses, repairmen, ...</para>
       </listitem>
 
       <listitem>
@@ -43,7 +43,7 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Cutting stock</emphasis>: while minimizing waste: cutting paper, steel, carpet,
+        <para><emphasis role="bold">Cutting stock</emphasis>: minimizing waste while cutting paper, steel, carpet,
         ...</para>
       </listitem>
 
@@ -57,8 +57,8 @@
       </listitem>
     </itemizedlist>
 
-    <para>Every organization faces planning problems: they have a number of things to do and a limited set of
-    <emphasis>constrained</emphasis> resources to do them with.</para>
+    <para>Every organization faces planning problems: provide products and services with a limited set of
+    <emphasis>constrained</emphasis> resources (employees, assets, time and money).</para>
 
     <para>Drools Planner enables normal Java<superscript>TM</superscript> programmers to solve planning problems
     efficiently. Under the hood, it combines optimization algorithms (including <emphasis>Metaheuristics</emphasis> such
@@ -215,7 +215,7 @@
       <para>You can download a release zip of Drools Planner from <link
       xlink:href="http://www.jboss.org/drools/downloads.html">the Drools download site</link>. Unzip it. To run an
       example, just open the directory <filename>examples</filename> and run the script
-      (<filename>runExamples.sh</filename> on Linux and mac or <filename>runExamples.bat</filename> on windows) and pick
+      (<filename>runExamples.sh</filename> on Linux and Mac or <filename>runExamples.bat</filename> on Windows) and pick
       an example in the GUI:</para>
 
       <programlisting>$ cd examples
