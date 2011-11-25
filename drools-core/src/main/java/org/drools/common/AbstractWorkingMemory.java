@@ -66,6 +66,7 @@ import org.drools.reteoo.InitialFactImpl;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeConf;
+import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.PartitionManager;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.reteoo.RuleTerminalNode;
@@ -1223,6 +1224,9 @@ public abstract class AbstractWorkingMemory
     public void dispose() {
         if ( this.ruleBase.getConfiguration().isMBeansEnabled() ) {
             DroolsManagementAgent.getInstance().unregisterKnowledgeSession( this );
+        }
+        for( WorkingMemoryEntryPoint ep : this.entryPoints.values() ) {
+            ep.dispose();
         }
         this.workingMemoryEventSupport.reset();
         this.agendaEventSupport.reset();

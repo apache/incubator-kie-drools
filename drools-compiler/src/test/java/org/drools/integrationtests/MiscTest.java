@@ -1898,6 +1898,12 @@ public class MiscTest {
         ksesion.fireAllRules();
         assertEquals( 3,
                       ((List) session.getGlobal( "list" )).size() );
+        
+        session.dispose();
+        
+        // checks that the session removed itself from the bean listeners list
+        assertEquals( 0, 
+                      state.getPropertyChangeListeners().length );
 
     }
 
@@ -1941,6 +1947,9 @@ public class MiscTest {
 
         session.dispose();
 
+        // checks that the session removed itself from the bean listeners list
+        assertEquals( 0, 
+                      state.getPropertyChangeListeners().length );
     }
 
     @Test
