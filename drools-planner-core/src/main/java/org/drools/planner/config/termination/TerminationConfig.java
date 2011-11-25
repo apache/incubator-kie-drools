@@ -39,12 +39,12 @@ public class TerminationConfig implements Cloneable {
 
     private TerminationCompositionStyle terminationCompositionStyle = null;
 
-    private Integer maximumStepCount = null;
     private Long maximumTimeMillisSpend = null;
     private Long maximumSecondsSpend = null;
     private Long maximumMinutesSpend = null;
     private Long maximumHoursSpend = null;
     private String scoreAttained = null;
+    private Integer maximumStepCount = null;
     private Integer maximumUnimprovedStepCount = null;
 
     @XStreamImplicit(itemFieldName = "termination")
@@ -64,14 +64,6 @@ public class TerminationConfig implements Cloneable {
 
     public void setTerminationCompositionStyle(TerminationCompositionStyle terminationCompositionStyle) {
         this.terminationCompositionStyle = terminationCompositionStyle;
-    }
-
-    public Integer getMaximumStepCount() {
-        return maximumStepCount;
-    }
-
-    public void setMaximumStepCount(Integer maximumStepCount) {
-        this.maximumStepCount = maximumStepCount;
     }
 
     public Long getMaximumTimeMillisSpend() {
@@ -112,6 +104,14 @@ public class TerminationConfig implements Cloneable {
 
     public void setScoreAttained(String scoreAttained) {
         this.scoreAttained = scoreAttained;
+    }
+
+    public Integer getMaximumStepCount() {
+        return maximumStepCount;
+    }
+
+    public void setMaximumStepCount(Integer maximumStepCount) {
+        this.maximumStepCount = maximumStepCount;
     }
 
     public Integer getMaximumUnimprovedStepCount() {
@@ -155,11 +155,6 @@ public class TerminationConfig implements Cloneable {
                         + ") does not have a public no-arg constructor", e);
             }
         }
-        if (maximumStepCount != null) {
-            StepCountTermination termination = new StepCountTermination();
-            termination.setMaximumStepCount(maximumStepCount);
-            terminationList.add(termination);
-        }
         Long maximumTimeMillisSpendTotal = calculateMaximumTimeMillisSpendTotal();
         if (maximumTimeMillisSpendTotal != null) {
             TimeMillisSpendTermination termination = new TimeMillisSpendTermination();
@@ -169,6 +164,11 @@ public class TerminationConfig implements Cloneable {
         if (scoreAttained != null) {
             ScoreAttainedTermination termination = new ScoreAttainedTermination();
             termination.setScoreAttained(scoreDefinition.parseScore(scoreAttained));
+            terminationList.add(termination);
+        }
+        if (maximumStepCount != null) {
+            StepCountTermination termination = new StepCountTermination();
+            termination.setMaximumStepCount(maximumStepCount);
             terminationList.add(termination);
         }
         if (maximumUnimprovedStepCount != null) {
@@ -241,9 +241,6 @@ public class TerminationConfig implements Cloneable {
         if (terminationCompositionStyle == null) {
             terminationCompositionStyle = inheritedConfig.getTerminationCompositionStyle();
         }
-        if (maximumStepCount == null) {
-            maximumStepCount = inheritedConfig.getMaximumStepCount();
-        }
         if (maximumTimeMillisSpend == null) {
             maximumTimeMillisSpend = inheritedConfig.getMaximumTimeMillisSpend();
         }
@@ -258,6 +255,9 @@ public class TerminationConfig implements Cloneable {
         }
         if (scoreAttained == null) {
             scoreAttained = inheritedConfig.getScoreAttained();
+        }
+        if (maximumStepCount == null) {
+            maximumStepCount = inheritedConfig.getMaximumStepCount();
         }
         if (maximumUnimprovedStepCount == null) {
             maximumUnimprovedStepCount = inheritedConfig.getMaximumUnimprovedStepCount();
@@ -278,12 +278,12 @@ public class TerminationConfig implements Cloneable {
         TerminationConfig clone = new TerminationConfig();
         clone.terminationClass = terminationClass;
         clone.terminationCompositionStyle = terminationCompositionStyle;
-        clone.maximumStepCount = maximumStepCount;
         clone.maximumTimeMillisSpend = maximumTimeMillisSpend;
         clone.maximumSecondsSpend = maximumSecondsSpend;
         clone.maximumMinutesSpend = maximumMinutesSpend;
         clone.maximumHoursSpend = maximumHoursSpend;
         clone.scoreAttained = scoreAttained;
+        clone.maximumStepCount = maximumStepCount;
         clone.maximumUnimprovedStepCount = maximumUnimprovedStepCount;
         if (terminationConfigList != null) {
             List<TerminationConfig> clonedTerminationConfigList = new ArrayList<TerminationConfig>(

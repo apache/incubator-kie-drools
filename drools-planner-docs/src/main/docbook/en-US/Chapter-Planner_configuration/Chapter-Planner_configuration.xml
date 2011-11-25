@@ -1000,9 +1000,10 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
     </section>
 
     <section>
-      <title>Environment mode</title>
+      <title>Environment mode: Are there bugs in my code?</title>
 
-      <para>The environment mode allows you to detect common bugs in your implementation.</para>
+      <para>The environment mode allows you to detect common bugs in your implementation. It does not affect the logging
+      level.</para>
 
       <para>You can set the environment mode in the solver configuration XML file:</para>
 
@@ -1065,6 +1066,59 @@ public class RowStrengthWeightFactory implements PlanningValueStrengthWeightFact
         most use cases the impact of the random seed is relatively low on the result (even with simulated annealing). An
         occasional bad result is far more likely caused by another issue (such as a score trap).</para>
       </section>
+    </section>
+
+    <section>
+      <title>Logging level: What is the <literal>Solver</literal> doing?</title>
+
+      <para>The best way to illuminate the black box that is a <literal>Solver</literal>, is to play with the logging
+      level:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis role="bold">WARN</emphasis>: Log only when things go wrong.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">INFO</emphasis>: Log every phase and the solver itself.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">DEBUG</emphasis>: Log every step of every phase.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis role="bold">TRACE</emphasis>: Log every move of every step of every phase.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Set the logging level on the category <literal>org.drools.planner</literal>, for example with log4j:</para>
+
+      <programlisting>&lt;log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"&gt;
+
+    &lt;category name="org.drools.planner"&gt;
+        &lt;priority value="debug" /&gt;
+    &lt;/category&gt;
+
+    ...
+
+&lt;/log4j:configuration&gt;</programlisting>
+
+      <para>For example, set it to <literal>DEBUG</literal> logging, to see when the phases end and how fast steps are
+      taken:</para>
+
+      <programlisting>INFO  Solver started: time spend (0), score (null), new best score (null), random seed (0).
+DEBUG     Step index (0), time spend (1), score (0), initialized planning entity (2 @ 0).
+DEBUG     Step index (1), time spend (3), score (0), initialized planning entity (1 @ 2).
+DEBUG     Step index (2), time spend (4), score (0), initialized planning entity (3 @ 3).
+DEBUG     Step index (3), time spend (5), score (-1), initialized planning entity (0 @ 1).
+INFO  Phase construction heuristic finished: step total (4), time spend (6), best score (-1).
+DEBUG     Step index (0), time spend (10), score (-1),     best score (-1), accepted move size (12) for picked step (1 @ 2 =&gt; 3).
+DEBUG     Step index (1), time spend (12), score (0), new best score (0), accepted move size (12) for picked step (3 @ 3 =&gt; 2).
+INFO  Phase local search finished: step total (2), time spend (13), best score (0).
+INFO  Solved: time spend (13), best score (0), average calculate count per second (4846).</programlisting>
+
+      <para>All time spends are in milliseconds.</para>
     </section>
   </section>
 </chapter>
