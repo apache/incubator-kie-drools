@@ -47,5 +47,7 @@ public interface ObjectTypeConf {
     public void enableTMS();
     
     public EntryPoint getEntryPoint();
+    
+    public boolean isSupportsPropertyChangeListeners();
 
 }

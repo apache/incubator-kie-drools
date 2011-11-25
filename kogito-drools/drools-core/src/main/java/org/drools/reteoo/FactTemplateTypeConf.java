@@ -144,4 +144,8 @@ public class FactTemplateTypeConf
         return this.entryPoint;
     }
 
+    public boolean isSupportsPropertyChangeListeners() {
+        return false;
+    }
+
 }

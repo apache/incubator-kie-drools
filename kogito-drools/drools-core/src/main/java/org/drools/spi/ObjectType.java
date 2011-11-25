@@ -28,19 +28,6 @@ import org.drools.base.ValueType;
 public interface ObjectType
     extends
     Externalizable {
-//    /**
-//     * Determine if the passed <code>Object</code> belongs to the object type
-//     * defined by this <code>objectType</code> instance.
-//     *
-//     * @param object
-//     *            The <code>Object</code> to test.
-//     *
-//     * @return <code>true</code> if the <code>Object</code> matches this
-//     *         object type, else <code>false</code>.
-//     */
-//    boolean matches(Object object);
-
-//    boolean isAssignableFrom(Object object);
 
     boolean isAssignableFrom(ObjectType objectType);
 

@@ -21,18 +21,22 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.FactException;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.RuntimeDroolsException;
 import org.drools.WorkingMemory;
 import org.drools.WorkingMemoryEntryPoint;
-import org.drools.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.base.ClassObjectType;
+import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
+import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectTypeConf;
@@ -50,12 +54,12 @@ public class NamedEntryPoint
     InternalWorkingMemoryEntryPoint,
     WorkingMemoryEntryPoint,
     PropertyChangeListener  {
-    protected static final Class[]                               ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+    
+    protected static final Class<?>[]       ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
     
     /** The arguments used when adding/removing a property change listener. */
     protected final Object[]                addRemovePropertyChangeListenerArgs = new Object[]{this};
 
-    private static final long               serialVersionUID                    = 510l;
 
     protected ObjectStore                   objectStore;
 
@@ -71,6 +75,8 @@ public class NamedEntryPoint
     private FactHandleFactory               handleFactory;
 
     protected final ReentrantLock           lock;
+    
+    protected Set<InternalFactHandle>       dynamicFacts = null;
 
     public NamedEntryPoint(EntryPoint entryPoint,
                            EntryPointNode entryPointNode,
@@ -285,7 +291,7 @@ public class NamedEntryPoint
                 // if the dynamic parameter is true or if the user declared the fact type with the meta tag:
                 // @propertyChangeSupport
                 if ( dynamic || typeConf.isDynamic() ) {
-                    addPropertyChangeListener( object );
+                    addPropertyChangeListener( handle, dynamic );
                 }
 
                 insert( handle,
@@ -519,7 +525,14 @@ public class NamedEntryPoint
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }            
 
-            removePropertyChangeListener( handle );
+            final Object object = handle.getObject();
+            
+            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
+                                                                                object );
+
+            if( typeConf.isSupportsPropertyChangeListeners() ) {
+                removePropertyChangeListener( handle, true );
+            }
 
             if ( activation != null ) {
                 // release resources so that they can be GC'ed
@@ -533,11 +546,6 @@ public class NamedEntryPoint
                                                                                       this.wm.agenda.getActiveActivations(),
                                                                                       this.wm.agenda.getDormantActivations(),
                                                                                       this.entryPoint );
-
-            final Object object = handle.getObject();
-            
-            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                object );
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,
@@ -592,13 +600,21 @@ public class NamedEntryPoint
         }
     }
 
-    protected void addPropertyChangeListener(final Object object) {
+    protected void addPropertyChangeListener(final InternalFactHandle handle, final boolean dynamicFlag ) {
+        Object object = handle.getObject();
         try {
             final Method method = object.getClass().getMethod( "addPropertyChangeListener",
                                                                NamedEntryPoint.ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
 
             method.invoke( object,
                            this.addRemovePropertyChangeListenerArgs );
+            
+            if( dynamicFlag ) {
+                if( dynamicFacts == null ) {
+                    dynamicFacts = new HashSet<InternalFactHandle>();
+                }
+                dynamicFacts.add( handle );
+            }
         } catch ( final NoSuchMethodException e ) {
             System.err.println( "Warning: Method addPropertyChangeListener not found" + " on the class " + object.getClass() + " so Drools will be unable to process JavaBean" + " PropertyChangeEvents on the asserted Object" );
         } catch ( final IllegalArgumentException e ) {
@@ -615,10 +631,14 @@ public class NamedEntryPoint
         }
     }
 
-    protected void removePropertyChangeListener(final FactHandle handle) {
+    protected void removePropertyChangeListener(final FactHandle handle, final boolean removeFromSet ) {
         Object object = null;
         try {
             object = ((InternalFactHandle) handle).getObject();
+            
+            if ( dynamicFacts != null && removeFromSet ) {
+                dynamicFacts.remove( object );
+            }
 
             if ( object != null ) {
                 final Method mehod = object.getClass().getMethod( "removePropertyChangeListener",
@@ -785,6 +805,34 @@ public class NamedEntryPoint
                     object );
         } catch ( final FactException e ) {
             throw new RuntimeDroolsException( e.getMessage() );
+        }
+    }
+
+    public void dispose() {
+        if( dynamicFacts != null ) {
+            // first we check for facts that were inserted into the working memory
+            // using the old API and setting a per instance dynamic flag and remove the
+            // session from the listeners list in the bean
+            for( InternalFactHandle handle : dynamicFacts ) {
+                removePropertyChangeListener( handle, false );
+            }
+            dynamicFacts = null;
+        }
+        for( ObjectTypeConf conf : this.typeConfReg.values() ) {
+            // then, we check if any of the object types were configured using the 
+            // @propertyChangeSupport annotation, and clean them up
+            if( conf.isDynamic() && conf.isSupportsPropertyChangeListeners() ) {
+                // it is enough to iterate the facts on the concrete object type nodes 
+                // only, as the facts will always be in their concrete object type nodes
+                // even if they were also asserted into higher level OTNs as well
+                ObjectTypeNode otn = conf.getConcreteObjectTypeNode();
+                final ObjectHashSet memory = (ObjectHashSet) this.getInternalWorkingMemory().getNodeMemory( otn );
+                Iterator it = memory.iterator();
+                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
+                    InternalFactHandle handle = (InternalFactHandle) entry.getValue();
+                    removePropertyChangeListener( handle, false );
+                }
+            }
         }
     }
 

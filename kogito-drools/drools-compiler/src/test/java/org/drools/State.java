@@ -37,6 +37,10 @@ public class State implements Serializable {
     public void removePropertyChangeListener(final PropertyChangeListener l) {
         this.changes.removePropertyChangeListener( l );
     }
+    
+    public PropertyChangeListener[] getPropertyChangeListeners() {
+        return this.changes.getPropertyChangeListeners();
+    }
 
     public boolean isFlag() {
         return this.flag;

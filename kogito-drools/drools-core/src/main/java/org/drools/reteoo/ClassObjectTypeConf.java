@@ -16,10 +16,12 @@
 
 package org.drools.reteoo;
 
+import java.beans.PropertyChangeListener;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,8 @@ public class ClassObjectTypeConf
     ObjectTypeConf,
     Externalizable {
 
+    protected static final Class<?>[]  ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES = new Class[]{PropertyChangeListener.class};
+
     private static final long          serialVersionUID = 510l;
 
     private Class< ? >                 cls;
@@ -54,7 +58,9 @@ public class ClassObjectTypeConf
 
     private TypeDeclaration            typeDecl;
     
-    private boolean                   tmsEnabled;
+    private boolean                    tmsEnabled;
+    
+    private boolean                    supportsPropertyListeners;
 
 
     public ClassObjectTypeConf() {
@@ -95,17 +101,19 @@ public class ClassObjectTypeConf
         }
 
         defineShadowProxyData( clazz );
+        this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
     }
 
     public void readExternal(ObjectInput stream) throws IOException,
                                                 ClassNotFoundException {
         ruleBase = (InternalRuleBase) stream.readObject();
-        cls = (Class) stream.readObject();
+        cls = (Class<?>) stream.readObject();
         objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
         shadowEnabled = stream.readBoolean();
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPoint) stream.readObject();
         tmsEnabled = stream.readBoolean();
+        supportsPropertyListeners = stream.readBoolean();
         defineShadowProxyData( cls );
     }
 
@@ -116,21 +124,33 @@ public class ClassObjectTypeConf
         stream.writeBoolean( shadowEnabled );
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
-        stream.writeObject(tmsEnabled);
+        stream.writeBoolean( tmsEnabled );
+        stream.writeBoolean( supportsPropertyListeners );
     }
 
     public boolean isAssignableFrom(Object object) {
-        return this.cls.isAssignableFrom( (Class) object );
+        return this.cls.isAssignableFrom( (Class<?>) object );
     }
 
     public ObjectTypeNode getConcreteObjectTypeNode() {
         return this.concreteObjectTypeNode;
     }
 
-    private void defineShadowProxyData(Class clazz) {
+    private void defineShadowProxyData(Class<?> clazz) {
         if ( ShadowProxy.class.isAssignableFrom( cls ) ) {
             this.shadowEnabled = true;
         }
+    }
+    
+    private boolean checkPropertyListenerSupport( Class<?> clazz ) {
+        Method method = null;
+        try {
+            method = clazz.getMethod( "addPropertyChangeListener",
+                                      ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
+        } catch (Exception e) {
+            // intentionally left empty
+        }
+        return method != null;
     }
 
     /**
@@ -167,7 +187,7 @@ public class ClassObjectTypeConf
         return this.objectTypeNodes;
     }
 
-    private ObjectTypeNode[] getMatchingObjectTypes(final Class clazz) throws FactException {
+    private ObjectTypeNode[] getMatchingObjectTypes(final Class<?> clazz) throws FactException {
         final List<ObjectTypeNode> cache = new ArrayList<ObjectTypeNode>();
 
         for ( ObjectTypeNode node : ruleBase.getRete().getObjectTypeNodes( this.entryPoint ).values() ) {
@@ -210,6 +230,11 @@ public class ClassObjectTypeConf
 
     public EntryPoint getEntryPoint() {
         return entryPoint;
+    }
+
+    
+    public boolean isSupportsPropertyChangeListeners() {
+        return supportsPropertyListeners;
     }
     
 }
