@@ -83,5 +83,11 @@ public interface WorkingMemoryEntryPoint extends org.drools.runtime.rule.Working
                 Object object) throws FactException;
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
+    
+    /**
+     * Internal method called by the engine when the session is being disposed, so that the entry point
+     * can proceed with the necessary clean ups.
+     */
+    void dispose();
 
 }

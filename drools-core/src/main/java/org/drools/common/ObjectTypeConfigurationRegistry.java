@@ -57,7 +57,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         
         // first see if it's a ClassObjectTypeConf        
         ObjectTypeConf objectTypeConf = null;
-        Class cls = (object instanceof Activation) ? ClassObjectType.Activation_ObjectType.getClassType() : object.getClass();
+        Class<?> cls = (object instanceof Activation) ? ClassObjectType.Activation_ObjectType.getClassType() : object.getClass();
         Object key = ( object instanceof Fact ) ? ((Fact) object).getFactTemplate().getName() : cls;
         objectTypeConf = this.typeConfMap.get( key );
         

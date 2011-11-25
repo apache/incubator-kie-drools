@@ -25,23 +25,21 @@ import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
 import org.drools.base.DroolsQuery;
 import org.drools.base.ValueType;
+import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.BaseNode;
 import org.drools.common.DroolsObjectInputStream;
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
-import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
-import org.drools.conf.EventProcessingOption;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
 import org.drools.marshalling.impl.PersisterEnums;
-import org.drools.marshalling.impl.RightTupleKey;
 import org.drools.marshalling.impl.TimersInputMarshaller;
 import org.drools.marshalling.impl.TimersOutputMarshaller;
 import org.drools.reteoo.ReteooWorkingMemory.WorkingMemoryReteExpireAction;
@@ -51,8 +49,6 @@ import org.drools.reteoo.compiled.CompiledNetwork;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.EvalCondition;
-import org.drools.rule.SlidingTimeWindow;
-import org.drools.rule.SlidingTimeWindow.BehaviorJobContext;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -657,7 +653,7 @@ public class ObjectTypeNode extends ObjectSource
             EntryPointNode epn = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPoint( entryPointId ) );
             
             String className = inCtx.readUTF();
-            Class cls = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( className );
+            Class<?> cls = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( className );
             ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
             
             long nextTimeStamp = inCtx.readLong();
@@ -673,41 +669,6 @@ public class ObjectTypeNode extends ObjectSource
                                                                           null ) );
             jobctx.setJobHandle( handle );
             
-            
-//            SlidingTimeWindow beh = ( SlidingTimeWindow) inCtx.readObject();
-//            
-//            SlidingTimeWindowContext slCtx = new SlidingTimeWindowContext();
-//            if ( inCtx.readBoolean() ) {
-//                if ( inCtx.readBoolean() ) {
-//                    int sinkId = inCtx.readInt();
-//                    int factHandleId = inCtx.readInt();
-//                    
-//                    RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
-//                    RightTupleKey key = new RightTupleKey( factHandleId,
-//                                                           sink );  
-//                    slCtx.expiringTuple = inCtx.rightTuples.get( key );
-//                }
-//                
-//                if ( inCtx.readBoolean() ) {
-//                    int size = inCtx.readInt();
-//                    for ( int i = 0; i < size; i++ ) {
-//                        int sinkId = inCtx.readInt();
-//                        int factHandleId = inCtx.readInt();
-//                        
-//                        RightTupleSink sink =(RightTupleSink) inCtx.sinks.get( sinkId );                    
-//                        RightTupleKey key = new RightTupleKey( factHandleId,
-//                                                               sink ); 
-//                        slCtx.queue.add( inCtx.rightTuples.get( key ) );
-//                    }
-//                }
-//                
-//                if ( slCtx.queue.peek() != null ) {
-//                    updateNextExpiration( ( RightTuple) slCtx.queue.peek(),
-//                                          inCtx.wm,
-//                                          beh,
-//                                          slCtx );
-//                }              
-//            }
         }
     }        
 }
