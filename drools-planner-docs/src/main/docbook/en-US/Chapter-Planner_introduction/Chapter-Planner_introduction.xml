@@ -107,7 +107,7 @@
         </listitem>
 
         <listitem>
-          <para>A quick algorithm, for example; in bin packing, <emphasis>putting in the largest items first</emphasis>,
+          <para>A quick algorithm, for example in bin packing, <emphasis>putting in the largest items first</emphasis>,
           will return a solution that is usually far from optimal.</para>
         </listitem>
       </itemizedlist>
