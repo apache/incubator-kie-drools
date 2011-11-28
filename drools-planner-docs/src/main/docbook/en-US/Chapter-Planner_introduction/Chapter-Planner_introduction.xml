@@ -299,11 +299,18 @@ $ runExamples.bat</programlisting>
     <section>
       <title>Build it from source</title>
 
-      <para>You can also easily build it from source yourself. Clone drools from GitHub and do a maven 3 build:</para>
+      <para>You can also easily build it from source yourself.</para>
+
+      <para><link xlink:href="http://help.github.com/set-up-git-redirect">Set up Git</link> and clone
+      <literal>drools-planner</literal> from GitHub (or alternatively, download <link
+      xlink:href="https://github.com/droolsjbpm/drools-planner/zipball/master">the zipball</link>):</para>
 
       <programlisting>$ git clone git@github.com:droolsjbpm/drools-planner.git drools-planner
-...
-$ cd drools-planner
+...</programlisting>
+
+      <para>Then do a <link xlink:href="http://maven.apache.org/">Maven 3</link> build:</para>
+
+      <programlisting>$ cd drools-planner
 $ mvn -DskipTests clean install
 ...</programlisting>
 
