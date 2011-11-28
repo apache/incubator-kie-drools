@@ -16,10 +16,6 @@ public class SoundexLiteralContraint extends AbstractLiteralConstraint {
 
     public SoundexLiteralContraint() { }
 
-    public SoundexLiteralContraint(Collection<String> imports, String leftValue, String operator, String rightValue) {
-        this(imports.toArray(new String[imports.size()]), leftValue, operator, rightValue);
-    }
-
     public SoundexLiteralContraint(String[] imports, String leftValue, String operator, String rightValue) {
         super(imports, leftValue, operator, rightValue);
     }

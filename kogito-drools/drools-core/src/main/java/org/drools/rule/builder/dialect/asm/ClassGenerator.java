@@ -6,6 +6,8 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -310,9 +312,16 @@ public class ClassGenerator {
             this.mv = mv;
         }
 
+        public int store(int registry, Class<?> typeClass) {
+            return store(registry, Type.getType(typeClass));
+        }
+
         public int store(int registry, String typeName) {
+            return store(registry, cg.toType(typeName));
+        }
+
+        private int store(int registry, Type t) {
             if (storedTypes == null) storedTypes = new HashMap<Integer, Type>();
-            Type t = cg.toType(typeName);
             mv.visitVarInsn(t.getOpcode(ISTORE), registry);
             storedTypes.put(registry, t);
             return t.getSize();
@@ -448,6 +457,16 @@ public class ClassGenerator {
             mv.visitTypeInsn(INSTANCEOF, internalName(clazz));
         }
 
+        public void invoke(Method method) {
+            if ((method.getModifiers() & Modifier.STATIC) > 0) {
+                invokeStatic(method.getDeclaringClass(), method.getName(), method.getReturnType(), method.getParameterTypes());
+            } else if (method.getDeclaringClass().isInterface()) {
+                invokeInterface(method.getDeclaringClass(), method.getName(), method.getReturnType(), method.getParameterTypes());
+            } else {
+                invokeVirtual(method.getDeclaringClass(), method.getName(), method.getReturnType(), method.getParameterTypes());
+            }
+        }
+
         public void invokeThis(String methodName, Class<?> returnedType, Class<?>... paramsType) {
             mv.visitMethodInsn(INVOKEVIRTUAL, classDescriptor(), methodName, methodDescr(returnedType, paramsType));
         }
@@ -462,6 +481,13 @@ public class ClassGenerator {
 
         public void invokeInterface(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {
             invoke(INVOKEINTERFACE, clazz, methodName, returnedType, paramsType);
+        }
+
+        public void invokeConstructor(Class<?> clazz, Object[] params, Class<?>... paramsType) {
+            mv.visitTypeInsn(NEW, internalName(clazz));
+            mv.visitInsn(DUP);
+            for (Object param : params) mv.visitLdcInsn(param);
+            invokeSpecial(clazz, "<init>", null, paramsType);
         }
 
         public void invokeSpecial(Class<?> clazz, String methodName, Class<?> returnedType, Class<?>... paramsType) {

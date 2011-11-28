@@ -58,7 +58,8 @@ public class ConstraintBuilder {
                                           String operator,
                                           String rightValue,
                                           LiteralRestrictionDescr restrictionDescr) {
-        Set<String> imports = context.getPkg().getImports().keySet();
+        Set<String> importSet = context.getPkg().getImports().keySet();
+        String[] imports = importSet.toArray(new String[importSet.size()]);
 
         if (operator.equals("soundslike")) {
             return new SoundexLiteralContraint(imports, leftValue, operator, rightValue);
