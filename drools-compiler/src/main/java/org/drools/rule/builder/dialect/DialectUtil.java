@@ -42,6 +42,8 @@ import org.mvel2.CompileException;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.core.util.StringUtils.generateUUID;
+
 public final class DialectUtil {
 
     private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[ -/:-@\\[-`\\{-\\xff]");
@@ -81,13 +83,6 @@ public final class DialectUtil {
         }
         // we have duplicate file names so append counter
         return newName + "_" + counter;
-    }
-
-    private static String generateUUID() {
-        char[] uuid = new char[32];
-        char[] chars = UUID.randomUUID().toString().toCharArray();
-        for (int i = 0, j = 0; i < 32; j++) if (chars[j] != '-') uuid[i++] = chars[j];
-        return new String(uuid);
     }
 
     public static String fixBlockDescr(final RuleBuildContext context,

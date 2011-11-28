@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Ripped form commons StringUtil, unless specified:
@@ -1255,5 +1256,12 @@ public class StringUtils {
             reader.close();
         }
         return sb.toString();
+    }
+
+    public static String generateUUID() {
+        char[] uuid = new char[32];
+        char[] chars = UUID.randomUUID().toString().toCharArray();
+        for (int i = 0, j = 0; i < 32; j++) if (chars[j] != '-') uuid[i++] = chars[j];
+        return new String(uuid);
     }
 }

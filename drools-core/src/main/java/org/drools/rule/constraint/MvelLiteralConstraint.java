@@ -1,29 +1,31 @@
 package org.drools.rule.constraint;
 
 import org.drools.base.ValueType;
+import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.ContextEntry;
-import org.mvel2.MVEL;
+import org.drools.util.CompositeClassLoader;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class MvelLiteralConstraint extends AbstractLiteralConstraint {
+
+    private static final boolean TEST_JITTING = true;
+    private static final int JIT_THRESOLD = 2;
+    private AtomicInteger invocationCounter = new AtomicInteger(0);
+    private boolean jitted = false;
 
     private ValueType type;
     private String mvelExp;
 
-    private transient Serializable compiledExpression;
+    private transient ConditionEvaluator conditionEvaluator;
 
     public MvelLiteralConstraint() {}
-
-    public MvelLiteralConstraint(Collection<String> imports, ValueType type, String mvelExp, String leftValue, String operator, String rightValue) {
-        this(imports.toArray(new String[imports.size()]), type, mvelExp, leftValue, operator, rightValue);
-    }
 
     public MvelLiteralConstraint(String[] imports, ValueType type, String mvelExp, String leftValue, String operator, String rightValue) {
         super(imports, leftValue, operator, rightValue);
@@ -31,17 +33,55 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
         this.mvelExp = mvelExp;
     }
 
-    private void compile() {
-        compiledExpression = MVEL.compileExpression(getImportString() + mvelExp);
-    }
-
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
-        if (compiledExpression == null) compile();
+        if (TEST_JITTING) return isJITAllowed(handle, workingMemory, context);
+
+        if (!jitted) {
+            if (conditionEvaluator == null) {
+                conditionEvaluator = new MvelConditionEvaluator(getImportString() + mvelExp);
+            } else {
+                if (invocationCounter.getAndIncrement() == JIT_THRESOLD) {
+                    CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+                    conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getCompiledExpression(), classLoader);
+                    jitted = true;
+                }
+            }
+        }
+
         try {
-            return (Boolean)MVEL.executeExpression(compiledExpression, handle.getObject());
+            return conditionEvaluator.evaluate(handle.getObject());
         } catch (ClassCastException cce) {
             return false;
         }
+    }
+
+    public boolean isJITAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
+        boolean mvelValue = false;
+        if (conditionEvaluator == null) {
+            conditionEvaluator = new MvelConditionEvaluator(getImportString() + mvelExp);
+            try {
+                mvelValue = conditionEvaluator.evaluate(handle.getObject());
+            } catch (ClassCastException cce) {
+                System.out.println("Got ClassCastException: " + cce);
+                mvelValue = false;
+            }
+            try {
+                CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
+                conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getCompiledExpression(), classLoader);
+            } catch (Throwable t) {
+                throw new RuntimeException("Exception jitting: " + mvelExp, t);
+            }
+        }
+
+        boolean asmValue = false;
+        try {
+            asmValue = conditionEvaluator.evaluate(handle.getObject());
+        } catch (ClassCastException cce) {
+            return false;
+        }
+
+        System.out.println(mvelExp + " => mvel = " + mvelValue + "; asm = " + asmValue);
+        return asmValue;
     }
 
     // Externalizable

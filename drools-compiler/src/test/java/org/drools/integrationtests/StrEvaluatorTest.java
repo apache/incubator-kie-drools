@@ -3,8 +3,6 @@ package org.drools.integrationtests;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.drools.KnowledgeBase;
@@ -70,7 +68,7 @@ public class StrEvaluatorTest {
         ksession.insert(m);
         ksession.fireAllRules();
         assertEquals( 6, list.size() );
-        assertEquals( "Message length is 17", list.get(2) );
+        assertTrue(list.contains("Message length is 17"));
 
     }
 
