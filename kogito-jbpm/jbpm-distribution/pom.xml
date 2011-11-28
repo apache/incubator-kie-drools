@@ -83,9 +83,8 @@
       <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-bpmn2</artifactId>
-      <type>test-jar</type>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-test</artifactId>
     </dependency>
     <!--<dependency>-->
       <!--<groupId>org.jbpm</groupId>-->

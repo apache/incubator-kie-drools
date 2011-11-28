@@ -16,22 +16,42 @@
 
 package org.jbpm.task.service;
 
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.jbpm.task.*;
-import org.jbpm.task.query.DeadlineSummary;
-import org.jbpm.task.query.TaskSummary;
-import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.naming.InitialContext;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import javax.transaction.UserTransaction;
+
+import org.drools.RuleBase;
+import org.drools.StatefulSession;
+import org.jbpm.task.Attachment;
+import org.jbpm.task.Comment;
+import org.jbpm.task.Content;
+import org.jbpm.task.Deadline;
+import org.jbpm.task.Deadlines;
+import org.jbpm.task.Escalation;
+import org.jbpm.task.Group;
+import org.jbpm.task.Notification;
+import org.jbpm.task.OrganizationalEntity;
+import org.jbpm.task.PeopleAssignments;
+import org.jbpm.task.Reassignment;
+import org.jbpm.task.Status;
+import org.jbpm.task.SubTasksStrategy;
+import org.jbpm.task.Task;
+import org.jbpm.task.TaskData;
+import org.jbpm.task.User;
+import org.jbpm.task.query.DeadlineSummary;
+import org.jbpm.task.query.TaskSummary;
+import org.jbpm.task.service.TaskService.ScheduledTaskDeadline;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskServiceSession {
 
@@ -40,12 +60,17 @@ public class TaskServiceSession {
     private Map<String, RuleBase> ruleBases;
     private Map<String, Map<String, Object>> globals;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
+    private String transactionType = "default";
     
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceSession.class);
 
     public TaskServiceSession(final TaskService service, final EntityManager em) {
         this.service = service;
         this.em = em;
+    }
+    
+    public void setTransactionType(String type) {
+    	this.transactionType = type;
     }
 
     public void dispose() {
@@ -384,9 +409,19 @@ public class TaskServiceSession {
                 }
             }
         } catch (RuntimeException e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
+        	if ("default".equals(transactionType)) {
+	            if (em.getTransaction().isActive()) {
+	                em.getTransaction().rollback();
+	            }
+        	} else if ("local-JTA".equals(transactionType)) {
+        		try {
+        			UserTransaction ut = (UserTransaction)
+        				new InitialContext().lookup( "java:comp/UserTransaction" );
+        			ut.setRollbackOnly();
+        		} catch (Exception exc) {
+        			throw new RuntimeException(e);
+        		}
+        	}
 
             doOperationInTransaction(new TransactedOperation() {
                 public void doOperation() {
@@ -396,9 +431,11 @@ public class TaskServiceSession {
 
             throw e;
         } finally {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().commit();
-            }
+        	if ("default".equals(transactionType)) {
+	            if (em.getTransaction().isActive()) {
+	                em.getTransaction().commit();
+	            }
+        	}
         }
     }
 
@@ -847,11 +884,22 @@ public class TaskServiceSession {
      * Starts a transaction if there isn't one currently in progess.
      */
     private void beginOrUseExistingTransaction() {
-        final EntityTransaction tx = em.getTransaction();
-
-        if (!tx.isActive()) {
-            tx.begin();
-        }
+    	if ("default".equals(transactionType)) {
+	        final EntityTransaction tx = em.getTransaction();
+	        if (!tx.isActive()) {
+	            tx.begin();
+	        }
+    	} else if ("local-JTA".equals(transactionType)) {
+    		try {
+    			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+		    	if (ut.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION) {
+		    		ut.begin();
+		    		em.joinTransaction();
+		    	}
+    		} catch (Throwable t) {
+        		throw new RuntimeException(t);
+        	}
+    	}
     }
 
     /**
@@ -861,21 +909,35 @@ public class TaskServiceSession {
      * @param operation operation to execute
      */
     private void doOperationInTransaction(final TransactedOperation operation) {
-        final EntityTransaction tx = em.getTransaction();
-
-        try {
-            if (!tx.isActive()) {
-                tx.begin();
-            }
-
-            operation.doOperation();
-
-            tx.commit();
-        } finally {
-            if( tx.isActive() ) {
-                tx.rollback();
-            }
-        }
+    	if ("default".equals(transactionType)) {
+	        final EntityTransaction tx = em.getTransaction();
+	        try {
+	            if (!tx.isActive()) {
+	                tx.begin();
+	            }
+	            operation.doOperation();
+	            tx.commit();
+	        } finally {
+	            if( tx.isActive() ) {
+	                tx.rollback();
+	            }
+	        }
+    	} else if ("local-JTA".equals(transactionType)) {
+    		try {
+    			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+		    	if (ut.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION) {
+		    		ut.begin();
+		    		em.joinTransaction();
+				    operation.doOperation();
+				    ut.commit();
+		    	} else {
+		    		em.joinTransaction();
+		            operation.doOperation();
+		    	}
+        	} catch (Throwable t) {
+        		throw new RuntimeException(t);
+        	}
+    	}
     }
 
     private interface TransactedOperation {

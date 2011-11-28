@@ -539,12 +539,16 @@
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
+      <arg value="-perspective" />
+      <arg value="org.jbpm.eclipse.JBPMPerspective" />
     </exec>
     <exec executable="${eclipse.home}/eclipse" spawn="yes" os="Linux">
       <arg value="-data" />
       <arg value="${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="./eclipse.preferences.ini" />
+      <arg value="-perspective" />
+      <arg value="org.jbpm.eclipse.JBPMPerspective" />
     </exec>
   	<chmod perm="a+x" file="./generate.mac.eclipse.preferences.sh" />
     <exec executable="./generate.mac.eclipse.preferences.sh" osfamily="mac"/>
@@ -553,6 +557,8 @@
       <arg value="../../../../${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
       <arg value="../../../../mac.eclipse.preferences.ini" />
+      <arg value="-perspective" />
+      <arg value="org.jbpm.eclipse.JBPMPerspective" />
     </exec>
   </target>
 

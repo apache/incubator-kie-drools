@@ -21,6 +21,7 @@
         <include>jbpm-installer/**</include>
         <include>jbpm-persistence-jpa/**</include>
         <include>jbpm-workitems/**</include>
+        <include>jbpm-test/**</include>
         <include>*.xml</include>
         <include>*.txt</include>
       </includes>

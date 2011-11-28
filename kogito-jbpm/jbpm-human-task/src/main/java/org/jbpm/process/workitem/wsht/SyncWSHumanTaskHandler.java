@@ -119,13 +119,15 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
     }
 
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        if (this.manager == null) {
-            this.manager = manager;
-        } else {
-            if (this.manager != manager) {
-                throw new IllegalArgumentException(
-                        "This WSHumanTaskHandler can only be used for one WorkItemManager");
-            }
+        if (this.session == null) {
+	    	if (this.manager == null) {
+	            this.manager = manager;
+	        } else {
+	            if (this.manager != manager) {
+	                throw new IllegalArgumentException(
+	                        "This WSHumanTaskHandler can only be used for one WorkItemManager");
+	            }
+	        }
         }
         connect();
         Task task = new Task();
@@ -261,7 +263,6 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
         	Task task = client.getTask(taskId);
 			long workItemId = task.getTaskData().getWorkItemId();
 			if (task.getTaskData().getStatus() == Status.Completed) {
-				System.out.println("Notification of completed task " + workItemId);
 				String userId = task.getTaskData().getActualOwner().getId();
 				Map<String, Object> results = new HashMap<String, Object>();
 				results.put("ActorId", userId);
@@ -283,18 +284,30 @@ public class SyncWSHumanTaskHandler implements WorkItemHandler {
 								}
 							}
 						}
-						manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+						if (session != null) {
+							session.getWorkItemManager().completeWorkItem(task.getTaskData().getWorkItemId(), results);
+						} else {
+							manager.completeWorkItem(task.getTaskData().getWorkItemId(), results);
+						}
 					} catch (IOException e) {
 						e.printStackTrace();
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}
 				} else {
-					manager.completeWorkItem(workItemId, results);
+					if (session != null) {
+						session.getWorkItemManager().completeWorkItem(workItemId, results);
+					} else {
+						manager.completeWorkItem(workItemId, results);
+					}
 				}
 			} else {
 				System.out.println("Notification of aborted task " + workItemId);
-				manager.abortWorkItem(workItemId);
+				if (session != null) {
+					session.getWorkItemManager().abortWorkItem(workItemId);
+				} else {
+					manager.abortWorkItem(workItemId);
+				}
 			}
         }
         
