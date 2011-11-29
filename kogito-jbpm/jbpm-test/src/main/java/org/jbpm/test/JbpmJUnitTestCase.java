@@ -11,6 +11,7 @@ import javax.persistence.Persistence;
 import junit.framework.TestCase;
 
 import org.drools.KnowledgeBase;
+import org.drools.SystemEventListenerFactory;
 import org.drools.audit.WorkingMemoryInMemoryLogger;
 import org.drools.audit.event.LogEvent;
 import org.drools.audit.event.RuleFlowNodeLogEvent;
@@ -37,9 +38,14 @@ import org.h2.tools.Server;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
+import org.jbpm.process.workitem.wsht.SyncWSHumanTaskHandler;
 import org.jbpm.task.TaskService;
-import org.jbpm.task.service.local.LocalHumanTaskService;
+import org.jbpm.task.service.TaskServiceSession;
+import org.jbpm.task.service.local.LocalTaskService;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
+
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * Base test case for the jbpm-bpmn2 module. 
@@ -51,9 +57,12 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	
     protected final static String EOL = System.getProperty( "line.separator" );
     
-	protected boolean persistence = true;
+    private boolean setupDataSource = false;
+	private boolean sessionPersistence = false;
 	private EntityManagerFactory emf;
-	private static H2Server server = new H2Server();
+	private PoolingDataSource ds;
+	private H2Server server = new H2Server();
+	private org.jbpm.task.service.TaskService taskService;
 
 	private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 	public StatefulKnowledgeSession ksession;
@@ -65,29 +74,53 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		this(false);
 	}
 	
-	public JbpmJUnitTestCase(boolean persistence) {
+	public JbpmJUnitTestCase(boolean setupDataSource) {
 		System.setProperty("jbpm.usergroup.callback", "org.jbpm.task.service.DefaultUserGroupCallbackImpl");
-		this.persistence = persistence;
-		if (persistence) {
-            server.start();
-		}
+		this.setupDataSource = setupDataSource;
 	}
 	
+    public static PoolingDataSource setupPoolingDataSource() {
+        PoolingDataSource pds = new PoolingDataSource();
+        pds.setUniqueName("jdbc/jbpm-ds");
+        pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
+        pds.setMaxPoolSize(5);
+        pds.setAllowLocalTransactions(true);
+        pds.getDriverProperties().put("user", "sa");
+        pds.getDriverProperties().put("password", "");
+        pds.getDriverProperties().put("url", "jdbc:h2:tcp://localhost/~/jbpm-db");
+        pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
+        pds.init();
+        return pds;
+    }
+    
+    public void setPersistence(boolean sessionPersistence) {
+    	this.sessionPersistence = sessionPersistence;
+    }
+	
 	public boolean isPersistence() {
-		return persistence;
+		return sessionPersistence;
 	}
     
-    protected void setUp() {
-        if (persistence) {
+    protected void setUp() throws Exception {
+        if (setupDataSource) {
+            server.start();
+        	ds = setupPoolingDataSource();
         	emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
         }
     }
 
     protected void tearDown() {
-    	if (persistence) {
+    	if (setupDataSource) {
+    		taskService = null;
     		if (emf != null) {
     			emf.close();
+    			emf = null;
     		}
+    		if (ds != null) {
+    			ds.close();
+    			ds = null;
+    		}
+    		server.stop();
     		DeleteDbFiles.execute("~", "jbpm-db", true);
     	}
     }
@@ -156,9 +189,10 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	}
 	
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-		if (persistence) {
+		if (sessionPersistence) {
 		    Environment env = EnvironmentFactory.newEnvironment();
 		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+		    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
 		    StatefulKnowledgeSession result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
 		    new JPAWorkingMemoryDbLogger(result);
 		    if (log == null) {
@@ -166,7 +200,9 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		    }
 		    return result;
 		} else {
-			StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession();
+		    Environment env = EnvironmentFactory.newEnvironment();
+		    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+			StatefulKnowledgeSession result = kbase.newStatefulKnowledgeSession(null, env);
 			logger = new WorkingMemoryInMemoryLogger(result);
 			return result;
 		}
@@ -178,7 +214,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	}
 		
 	protected StatefulKnowledgeSession restoreSession(StatefulKnowledgeSession ksession, boolean noCache) {
-		if (persistence) {
+		if (sessionPersistence) {
 			int id = ksession.getId();
 			KnowledgeBase kbase = ksession.getKnowledgeBase();
 			Environment env = null;
@@ -187,6 +223,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			    env = EnvironmentFactory.newEnvironment();
 			    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
 			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+			    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
 			} else {
 				env = ksession.getEnvironment();
 			}
@@ -251,7 +288,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		for (String nodeName: nodeNames) {
 			names.add(nodeName);
 		}
-		if (persistence) {
+		if (sessionPersistence) {
 			List<NodeInstanceLog> logs = log.findNodeInstances(processInstanceId);
 			if (logs != null) {
 				for (NodeInstanceLog l: logs) {
@@ -281,7 +318,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 	}
 	
 	protected void clearHistory() {
-		if (persistence) {
+		if (sessionPersistence) {
 			if (log == null) {
 				log = new JPAProcessInstanceDbLog();
 			}
@@ -422,8 +459,21 @@ public abstract class JbpmJUnitTestCase extends TestCase {
     }
     
     public TaskService getTaskService(StatefulKnowledgeSession ksession) {
-    	return LocalHumanTaskService.getTaskService(ksession);
+    	if (taskService == null) {
+    		taskService = new org.jbpm.task.service.TaskService(
+				emf, SystemEventListenerFactory.getSystemEventListener());
+    	}
+		TaskServiceSession taskServiceSession = taskService.createSession();
+		taskServiceSession.setTransactionType("local-JTA");
+		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
+			new LocalTaskService(taskServiceSession), ksession);
+		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
+		return new LocalTaskService(taskServiceSession);
     }
+    
+    public org.jbpm.task.service.TaskService getService() {
+		return new org.jbpm.task.service.TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
+	}
     
     private static class H2Server {
         private Server server;
@@ -438,13 +488,16 @@ public abstract class JbpmJUnitTestCase extends TestCase {
                 }
             }
         }
-        protected synchronized void finalize() throws Throwable {
+        public synchronized void finalize() throws Throwable {
+        	stop();
+            super.finalize();
+        }
+        public void stop() {
             if (server != null) {
                 server.stop();
                 DeleteDbFiles.execute("~", "jbpm-db", true);
                 server = null;
             }
-            super.finalize();
         }
     }
     

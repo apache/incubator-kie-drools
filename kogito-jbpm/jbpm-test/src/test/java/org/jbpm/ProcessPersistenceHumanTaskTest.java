@@ -2,6 +2,9 @@ package org.jbpm;
 
 import java.util.List;
 
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.jbpm.task.TaskService;
@@ -11,10 +14,11 @@ import org.jbpm.test.JbpmJUnitTestCase;
 /**
  * This is a sample file to test a process.
  */
-public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
-	
-	public ProcessHumanTaskTest() {
+public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
+
+	public ProcessPersistenceHumanTaskTest() {
 		super(true);
+		setPersistence(true);
 	}
 
 	public void testProcess() {
@@ -45,6 +49,22 @@ public class ProcessHumanTaskTest extends JbpmJUnitTestCase {
 		assertNodeTriggered(processInstance.getId(), "End");
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		
+		ksession.dispose();
+	}
+	
+	public void testTransactions() throws Exception {
+		StatefulKnowledgeSession ksession = createKnowledgeSession("humantask.bpmn");
+		TaskService taskService = getTaskService(ksession);
+		
+		UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+        ut.begin();
+		ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+		ut.rollback();
+
+		assertNull(ksession.getProcessInstance(processInstance.getId()));
+		List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+		assertEquals(0, list.size());
+
 		ksession.dispose();
 	}
 

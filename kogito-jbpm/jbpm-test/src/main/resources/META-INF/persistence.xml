@@ -10,6 +10,7 @@
 
   <persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>jdbc/jbpm-ds</jta-data-source>        
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
@@ -50,10 +51,6 @@
       <property name="hibernate.show_sql" value="false" />	
       <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
       <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-      <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-      <property name="hibernate.connection.url" value="jdbc:h2:tcp://localhost/~/jbpm-db" />
-      <property name="hibernate.connection.username" value="sa" />
-      <property name="hibernate.connection.password" value="" />
     </properties>        
   </persistence-unit>
     
