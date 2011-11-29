@@ -123,8 +123,10 @@ public class CommandDelegate {
             if (kbase == null) {
                 kbase = KnowledgeBaseFactory.newKnowledgeBase();
             }
-            String directory = System.getProperty("jbpm.console.directory");
-            if (directory == null) {
+            
+            String directory = System.getProperty("jbpm.console.directory") == null ? jbpmconsoleproperties.getProperty("jbpm.console.directory") :
+            	System.getProperty("jbpm.console.directory");
+            if (directory == null || directory.length() < 1 ) {
                 logger.error("jbpm.console.directory property not found");
             } else {
                 File file = new File(directory);
