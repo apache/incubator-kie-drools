@@ -7,6 +7,7 @@ import org.drools.lang.descr.BaseDescr;
 import org.drools.lang.descr.LiteralRestrictionDescr;
 import org.drools.rule.LiteralConstraint;
 import org.drools.rule.LiteralRestriction;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.constraint.BooleanConversionHandler;
 import org.drools.rule.constraint.MvelLiteralConstraint;
 import org.drools.rule.constraint.SoundexLiteralContraint;
@@ -15,6 +16,7 @@ import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
 import org.mvel2.DataConversion;
+import org.mvel2.ParserConfiguration;
 
 import java.util.Date;
 import java.util.Set;
@@ -58,15 +60,15 @@ public class ConstraintBuilder {
                                           String operator,
                                           String rightValue,
                                           LiteralRestrictionDescr restrictionDescr) {
-        Set<String> importSet = context.getPkg().getImports().keySet();
-        String[] imports = importSet.toArray(new String[importSet.size()]);
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+        ParserConfiguration conf = data.getParserConfiguration();
 
         if (operator.equals("soundslike")) {
-            return new SoundexLiteralContraint(imports, leftValue, operator, rightValue);
+            return new SoundexLiteralContraint(conf, leftValue, operator, rightValue);
         }
 
         String mvelExpr = normalizeMVELExpression(vtype, field, expr, leftValue, operator, rightValue, restrictionDescr);
-        return new MvelLiteralConstraint(imports, vtype, mvelExpr, leftValue, operator, rightValue);
+        return new MvelLiteralConstraint(conf, vtype, mvelExpr, leftValue, operator, rightValue);
     }
 
     private static String normalizeMVELExpression(ValueType vtype,

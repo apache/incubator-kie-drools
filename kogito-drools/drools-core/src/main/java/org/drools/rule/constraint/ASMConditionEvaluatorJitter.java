@@ -3,7 +3,7 @@ package org.drools.rule.constraint;
 import org.drools.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
-import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExecutableStatement;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -16,8 +16,8 @@ import static org.mvel2.asm.Opcodes.*;
 
 public class ASMConditionEvaluatorJitter {
 
-    public static ConditionEvaluator jit(CompiledExpression compiledExpression, ClassLoader classLoader) {
-        return generateConditionEvaluator(new AnalyzedCondition(compiledExpression), classLoader);
+    public static ConditionEvaluator jit(ExecutableStatement executableStatement, ClassLoader classLoader) {
+        return generateConditionEvaluator(new AnalyzedCondition(executableStatement), classLoader);
     }
 
     private static ConditionEvaluator generateConditionEvaluator(AnalyzedCondition analyzedCondition, ClassLoader classLoader) {
@@ -39,7 +39,7 @@ public class ASMConditionEvaluatorJitter {
 
         public EvaluateMethodGenerator(AnalyzedCondition analyzedCondition) {
             this.analyzedCondition = analyzedCondition;
-            System.out.println("analyzedCondition = " + analyzedCondition);
+//            System.out.println("analyzedCondition = " + analyzedCondition);
         }
 
         public void body(MethodVisitor mv) {
@@ -63,9 +63,11 @@ public class ASMConditionEvaluatorJitter {
         private void jitBinary(MethodVisitor mv) {
             AnalyzedCondition.Expression left = analyzedCondition.getLeft();
             AnalyzedCondition.Expression right = analyzedCondition.getRight();
-            Class<?> commonType = findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull());
+            Class<?> commonType = analyzedCondition.getOperation().needsSameType() ?
+                    findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull()) :
+                    null;
 
-            if (commonType.isPrimitive()) {
+            if (commonType != null && commonType.isPrimitive()) {
                 jitPrimitiveBinary(mv, left, right, commonType);
             } else {
                 jitObjectBinary(mv, left, right, commonType);
@@ -86,13 +88,13 @@ public class ASMConditionEvaluatorJitter {
             Class<?> leftType = left.getType();
             Class<?> rightType = right.getType();
 
-            jitTopExpression(mv, left, type);
+            jitTopExpression(mv, left, type != null ? type : leftType);
             store(2, leftType);
 
-            jitTopExpression(mv, right, type);
+            jitTopExpression(mv, right, type != null ? type : rightType);
             store(4, rightType);
 
-            Label notNullLabel = jitLeftIsNull(mv, leftType == type ?
+            Label notNullLabel = jitLeftIsNull(mv, type == null || leftType == type ?
                     jitNullSafeOperationStart(mv) :
                     jitNullSafeCoercion(mv, leftType, type));
 
@@ -109,7 +111,9 @@ public class ASMConditionEvaluatorJitter {
             returnOnNull(mv, notNullLabel);
             loadOperands(mv, right, type, rightType);
 
-            if (operation == AnalyzedCondition.BooleanOperator.MATCHES) {
+            if (operation == AnalyzedCondition.BooleanOperator.CONTAINS) {
+                invokeStatic(EvaluatorHelper.class, "contains", boolean.class, Object.class, Object.class);
+            } else if (operation == AnalyzedCondition.BooleanOperator.MATCHES) {
                 invokeVirtual(type, "matches", boolean.class, String.class);
             } else if (operation.isEquality()) {
                 invokeVirtual(type, "equals", boolean.class, Object.class);
@@ -131,7 +135,7 @@ public class ASMConditionEvaluatorJitter {
         private void loadOperands(MethodVisitor mv, AnalyzedCondition.Expression right, Class<?> type, Class<?> rightType) {
             load(2);
             load(4);
-            if (!right.isFixed() && rightType != type) {
+            if (type != null && !right.isFixed() && rightType != type) {
                 jitRightCoercion(mv, rightType, type);
             }
         }

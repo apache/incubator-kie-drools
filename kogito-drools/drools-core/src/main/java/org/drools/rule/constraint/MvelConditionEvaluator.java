@@ -1,23 +1,26 @@
 package org.drools.rule.constraint;
 
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
+import org.mvel2.compiler.ExecutableStatement;
+
+import java.io.Serializable;
 
 public class MvelConditionEvaluator implements ConditionEvaluator {
 
-    private String expression;
-    private CompiledExpression compiledExpression;
+    private ExecutableStatement stmt;
 
-    MvelConditionEvaluator(String expression) {
-        this.expression = expression;
-        compiledExpression = (CompiledExpression)MVEL.compileExpression(expression);
+    MvelConditionEvaluator(ParserConfiguration conf, String expression) {
+        stmt = (ExecutableStatement)MVEL.compileExpression(expression, new ParserContext(conf));
     }
 
     public boolean evaluate(Object object) {
-        return (Boolean)MVEL.executeExpression(compiledExpression, object);
+        return (Boolean)MVEL.executeExpression(stmt, object);
     }
 
-    CompiledExpression getCompiledExpression() {
-        return compiledExpression;
+    ExecutableStatement getExecutableStatement() {
+        return stmt;
     }
 }

@@ -5,18 +5,22 @@ import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.util.CompositeClassLoader;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MvelLiteralConstraint extends AbstractLiteralConstraint {
 
     private static final boolean TEST_JITTING = true;
-    private static final int JIT_THRESOLD = 2;
+    private static final int JIT_THRESOLD = Integer.MAX_VALUE;
+//  private static final int JIT_THRESOLD = 2;
+
     private AtomicInteger invocationCounter = new AtomicInteger(0);
     private boolean jitted = false;
 
@@ -27,8 +31,8 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
 
     public MvelLiteralConstraint() {}
 
-    public MvelLiteralConstraint(String[] imports, ValueType type, String mvelExp, String leftValue, String operator, String rightValue) {
-        super(imports, leftValue, operator, rightValue);
+    public MvelLiteralConstraint(ParserConfiguration conf, ValueType type, String mvelExp, String leftValue, String operator, String rightValue) {
+        super(conf, leftValue, operator, rightValue);
         this.type = type;
         this.mvelExp = mvelExp;
     }
@@ -38,11 +42,11 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
 
         if (!jitted) {
             if (conditionEvaluator == null) {
-                conditionEvaluator = new MvelConditionEvaluator(getImportString() + mvelExp);
+                conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), mvelExp);
             } else {
                 if (invocationCounter.getAndIncrement() == JIT_THRESOLD) {
                     CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-                    conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getCompiledExpression(), classLoader);
+                    conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getExecutableStatement(), classLoader);
                     jitted = true;
                 }
             }
@@ -58,7 +62,7 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
     public boolean isJITAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
         boolean mvelValue = false;
         if (conditionEvaluator == null) {
-            conditionEvaluator = new MvelConditionEvaluator(getImportString() + mvelExp);
+            conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), mvelExp);
             try {
                 mvelValue = conditionEvaluator.evaluate(handle.getObject());
             } catch (ClassCastException cce) {
@@ -67,7 +71,7 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
             }
             try {
                 CompositeClassLoader classLoader = ((AbstractRuleBase)workingMemory.getRuleBase()).getRootClassLoader();
-                conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getCompiledExpression(), classLoader);
+                conditionEvaluator = ASMConditionEvaluatorJitter.jit(((MvelConditionEvaluator)conditionEvaluator).getExecutableStatement(), classLoader);
             } catch (Throwable t) {
                 throw new RuntimeException("Exception jitting: " + mvelExp, t);
             }
@@ -80,7 +84,7 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
             return false;
         }
 
-        System.out.println(mvelExp + " => mvel = " + mvelValue + "; asm = " + asmValue);
+//        System.out.println(mvelExp + " => mvel = " + mvelValue + "; asm = " + asmValue);
         return asmValue;
     }
 
@@ -99,7 +103,7 @@ public class MvelLiteralConstraint extends AbstractLiteralConstraint {
     }
 
     public Object clone() {
-        return new MvelLiteralConstraint(imports, type, mvelExp, leftValue, operator, rightValue);
+        return new MvelLiteralConstraint(conf, type, mvelExp, leftValue, operator, rightValue);
     }
 
     public int hashCode() {
