@@ -41,6 +41,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -142,9 +143,10 @@ public class XmlBPMNProcessDumper {
     	
 	    // the process itself
 		xmlDump.append("  <process processType=\"Private\" isExecutable=\"true\" ");
-        if (process.getId() != null) {
-            xmlDump.append("id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getId()) + "\" ");
+        if (process.getId() == null || process.getId().trim().length() == 0) {
+        	((ProcessImpl) process).setId("com.sample.bpmm2");
         }
+        xmlDump.append("id=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getId()) + "\" ");
         if (process.getName() != null) {
             xmlDump.append("name=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(process.getName()) + "\" ");
         }
