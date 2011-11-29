@@ -81,4 +81,25 @@
       <artifactId>junit</artifactId>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <!--  ensure that db/tx log files are deleted before runs -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.4.1</version>
+        <configuration>
+         <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>btm*</include>
+              </includes>
+            </fileset>
+         </filesets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
 </project>
