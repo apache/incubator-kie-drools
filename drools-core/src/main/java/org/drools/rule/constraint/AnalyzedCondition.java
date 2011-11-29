@@ -3,6 +3,7 @@ package org.drools.rule.constraint;
 import org.mvel2.Operator;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.BinaryOperation;
+import org.mvel2.ast.Contains;
 import org.mvel2.ast.LiteralNode;
 import org.mvel2.ast.Negation;
 import org.mvel2.ast.RegExMatch;
@@ -31,8 +32,9 @@ public class AnalyzedCondition {
     private BooleanOperator operation;
     private Expression right;
 
-    public AnalyzedCondition(CompiledExpression compiledExpression) {
-        analyzeExpression(compiledExpression);
+    public AnalyzedCondition(ExecutableStatement stmt) {
+        ASTNode node = stmt instanceof CompiledExpression ? ((CompiledExpression)stmt).getFirstNode() : ((ExecutableAccessor)stmt).getNode();
+        analyzeExpression(node);
     }
 
     public Expression getLeft() {
@@ -70,8 +72,7 @@ public class AnalyzedCondition {
         return sb.toString();
     }
 
-    private void analyzeExpression(CompiledExpression compiledExpression) {
-        ASTNode node = compiledExpression.getFirstNode();
+    private void analyzeExpression(ASTNode node) {
         while (node.nextASTNode != null) node = node.nextASTNode;
         node = analyzeNegation(node);
         node = analyzeSubstatement(node);
@@ -86,6 +87,10 @@ public class AnalyzedCondition {
             operation = BooleanOperator.MATCHES;
             Pattern pattern = getFieldValue(RegExMatch.class, "p", (RegExMatch)node);
             right = new FixedExpression(new TypedValue(String.class, pattern.pattern()));
+        } else if (node instanceof Contains) {
+            left = analyzeNode((ASTNode)getFieldValue(Contains.class, "stmt", (Contains)node));
+            operation = BooleanOperator.CONTAINS;
+            right = analyzeNode((ASTNode)getFieldValue(Contains.class, "stmt2", (Contains)node));
         } else {
             left = analyzeNode(node);
         }
@@ -267,7 +272,7 @@ public class AnalyzedCondition {
     }
 
     public enum BooleanOperator {
-        EQ("=="), NE("!="), GT(">"), GE(">="), LT("<"), LE("<="), MATCHES("~=");
+        EQ("=="), NE("!="), GT(">"), GE(">="), LT("<"), LE("<="), MATCHES("~="), CONTAINS("in");
 
         private String symbol;
 
@@ -281,6 +286,10 @@ public class AnalyzedCondition {
 
         public boolean isEquality() {
             return this == EQ || this == NE;
+        }
+
+        public boolean needsSameType() {
+            return this != CONTAINS;
         }
 
         public static BooleanOperator fromMvelOpCode(int opCode) {

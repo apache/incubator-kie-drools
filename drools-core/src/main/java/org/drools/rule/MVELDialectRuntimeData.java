@@ -55,7 +55,7 @@ public class MVELDialectRuntimeData
     private CompositeClassLoader           rootClassLoader;
 
     private List<Wireable>                 wireList = Collections.<Wireable> emptyList();
-    
+
     private Map<String, Object>           imports;
     private HashSet<String>               packageImports;
     private ParserConfiguration           parserConfiguration;

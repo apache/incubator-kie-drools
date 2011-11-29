@@ -4,6 +4,8 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.ContextEntry;
 import org.mvel2.MVEL;
+import org.mvel2.ParserConfiguration;
+import org.mvel2.ParserContext;
 import org.mvel2.util.Soundex;
 
 import java.io.Serializable;
@@ -16,22 +18,22 @@ public class SoundexLiteralContraint extends AbstractLiteralConstraint {
 
     public SoundexLiteralContraint() { }
 
-    public SoundexLiteralContraint(String[] imports, String leftValue, String operator, String rightValue) {
-        super(imports, leftValue, operator, rightValue);
+    public SoundexLiteralContraint(ParserConfiguration conf, String leftValue, String operator, String rightValue) {
+        super(conf, leftValue, operator, rightValue);
     }
 
     public Object clone() {
-        return new SoundexLiteralContraint(imports, leftValue, operator, rightValue);
+        return new SoundexLiteralContraint(conf, leftValue, operator, rightValue);
     }
 
-    private void compile() {
-        String imports = getImportString();
-        leftCompiledExpression = MVEL.compileExpression(imports + leftValue);
-        rightCompiledExpression = MVEL.compileExpression(imports + rightValue);
+    private void compile(InternalWorkingMemory workingMemory) {
+        ParserContext context = new ParserContext(getParserConfiguration(workingMemory));
+        leftCompiledExpression = MVEL.compileExpression(leftValue, context);
+        rightCompiledExpression = MVEL.compileExpression(rightValue, context);
     }
 
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
-        if (leftCompiledExpression == null) compile();
+        if (leftCompiledExpression == null) compile(workingMemory);
 
         String value1 = (String)MVEL.executeExpression(leftCompiledExpression, handle.getObject());
         if (value1 == null) {
