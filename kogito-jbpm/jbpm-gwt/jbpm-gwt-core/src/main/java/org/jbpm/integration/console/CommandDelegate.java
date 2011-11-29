@@ -239,7 +239,6 @@ public class CommandDelegate {
             ((StatefulKnowledgeSessionImpl)  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
                     .getCommandService().getContext()).getStatefulKnowledgesession() )
                     .session.addEventListener(agendaEventListener);
-            logger.info("Successfully loaded default package from Guvnor");
             return ksession;
         } catch (Throwable t) {
             throw new RuntimeException(
