@@ -210,6 +210,7 @@ public class InputMarshaller {
             clock.advanceTime( time,
                                TimeUnit.MILLISECONDS );
         }
+        SerializablePlaceholderResolverStrategy.cleanupCache();
 
         // RuleFlowGroups need to reference the session
         for (RuleFlowGroup group : agenda.getRuleFlowGroupsMap().values()) {

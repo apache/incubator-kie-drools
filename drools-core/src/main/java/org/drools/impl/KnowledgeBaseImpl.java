@@ -184,7 +184,9 @@ public class KnowledgeBaseImpl
         if (sss != null) {
             for (StatefulSession ss : sss) {
                 if (ss instanceof ReteooStatefulSession) {
-                    c.add(new StatefulKnowledgeSessionImpl((ReteooStatefulSession)ss, this));
+                    StatefulKnowledgeSession session = (StatefulKnowledgeSession) ((ReteooStatefulSession) ss).getKnowledgeRuntime();
+                    ((StatefulKnowledgeSessionImpl) session).kbase = this;
+                    c.add(session);
                 }
             }
         }

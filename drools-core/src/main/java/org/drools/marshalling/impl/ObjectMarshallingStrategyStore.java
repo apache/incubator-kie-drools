@@ -16,6 +16,8 @@
 
 package org.drools.marshalling.impl;
 
+import java.util.HashSet;
+
 import org.drools.core.util.StringUtils;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 
@@ -24,6 +26,13 @@ public class ObjectMarshallingStrategyStore {
     
     public ObjectMarshallingStrategyStore(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
+        HashSet<Class<?>> strategySet = new HashSet<Class<?>>();
+        for( int i = 0; i < strategiesList.length; ++i ) { 
+            if( ! strategySet.add(strategiesList[i].getClass()) ) { 
+               throw new RuntimeException("Two strategy instances of type " + strategiesList[i].getClass().getSimpleName() 
+                       + " are being used. Please only use one instance of each type of strategy." );
+            }
+        }
     }
    
     // Old marshalling algorithm methods
