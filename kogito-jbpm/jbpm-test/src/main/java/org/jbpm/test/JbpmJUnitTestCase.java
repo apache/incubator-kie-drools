@@ -224,8 +224,11 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 			    emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
 			    env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
 			    env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
+				log = new JPAProcessInstanceDbLog(env);
+				taskService = null;
 			} else {
 				env = ksession.getEnvironment();
+				taskService = null;
 			}
 			KnowledgeSessionConfiguration config = ksession.getSessionConfiguration();
 			ksession.dispose();
@@ -467,6 +470,7 @@ public abstract class JbpmJUnitTestCase extends TestCase {
 		taskServiceSession.setTransactionType("local-JTA");
 		SyncWSHumanTaskHandler humanTaskHandler = new SyncWSHumanTaskHandler(
 			new LocalTaskService(taskServiceSession), ksession);
+		humanTaskHandler.connect();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task", humanTaskHandler);
 		return new LocalTaskService(taskServiceSession);
     }

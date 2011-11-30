@@ -29,6 +29,10 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
 		assertProcessInstanceActive(processInstance.getId(), ksession);
 		assertNodeTriggered(processInstance.getId(), "Start", "Task 1");
+
+		// simulating a system restart
+		ksession = restoreSession(ksession, true);
+		taskService = getTaskService(ksession);
 		
 		// let john execute Task 1
 		List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -38,6 +42,10 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 		taskService.complete(task.getId(), "john", null);
 
 		assertNodeTriggered(processInstance.getId(), "Task 2");
+		
+		// simulating a system restart
+		ksession = restoreSession(ksession, true);
+		taskService = getTaskService(ksession);
 		
 		// let mary execute Task 2
 		list = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
