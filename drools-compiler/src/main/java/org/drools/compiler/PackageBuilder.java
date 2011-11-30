@@ -101,6 +101,7 @@ import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.QueryDescr;
 import org.drools.lang.descr.RuleDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
@@ -110,15 +111,18 @@ import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.reteoo.ReteooRuleBase;
 import org.drools.rule.Function;
+import org.drools.rule.GroupElement;
 import org.drools.rule.ImportDeclaration;
 import org.drools.rule.JavaDialectRuntimeData;
 import org.drools.rule.MVELDialectRuntimeData;
 import org.drools.rule.Package;
+import org.drools.rule.Pattern;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.WindowDeclaration;
 import org.drools.rule.builder.RuleBuildContext;
 import org.drools.rule.builder.RuleBuilder;
+import org.drools.rule.builder.RuleConditionBuilder;
 import org.drools.rule.builder.dialect.DialectError;
 import org.drools.runtime.pipeline.impl.DroolsJaxbHelperProviderImpl;
 import org.drools.runtime.rule.Activation;
@@ -1073,6 +1077,9 @@ public class PackageBuilder {
         processEntryPointDeclarations( packageDescr );
 
         processTypeDeclarations( packageDescr );
+        
+        processWindowDeclarations( packageDescr );
+        
         for ( FunctionDescr function : packageDescr.getFunctions() ) {
             Function existingFunc = pkgRegistry.getPackage().getFunctions().get( function.getName() );
             if ( existingFunc != null && function.getNamespace().equals( existingFunc.getNamespace() ) ) {
@@ -1579,8 +1586,29 @@ public class PackageBuilder {
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get( packageDescr.getNamespace() );
         for ( WindowDeclarationDescr wd : packageDescr.getWindowDeclarations() ) {
             WindowDeclaration window = new WindowDeclaration( wd.getName() );
-            // process annotations
+            // TODO: process annotations
+            
             // process pattern
+            Package pkg = pkgRegistry.getPackage();
+            DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
+            RuleDescr dummy = new RuleDescr(wd.getName()+" Window Declaration");
+            dummy.addAttribute( new AttributeDescr( "dialect", "java" ) );
+            RuleBuildContext context = new RuleBuildContext( this,
+                                                             dummy,
+                                                             ctr,
+                                                             pkg,
+                                                             ctr.getDialect( pkgRegistry.getDialect() ) );
+            final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( wd.getPattern().getClass() );
+            if ( builder != null ) {
+                final Pattern pattern = (Pattern) builder.build( context,
+                                                                 wd.getPattern(),
+                                                                 null );
+
+                window.setPattern( pattern );
+            } else {
+                throw new RuntimeDroolsException( "BUG: builder not found for descriptor class " + wd.getPattern().getClass() );
+            }
+            
             pkgRegistry.getPackage().addWindowDeclaration( window );
         }
     }
