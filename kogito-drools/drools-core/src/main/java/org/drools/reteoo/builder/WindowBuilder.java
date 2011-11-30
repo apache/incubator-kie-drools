@@ -40,13 +40,13 @@ import org.drools.rule.Behavior;
 import org.drools.rule.Declaration;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.GroupElement;
-import org.drools.rule.IntervalProviderConstraint;
 import org.drools.rule.InvalidPatternException;
 import org.drools.rule.Pattern;
 import org.drools.rule.PatternSource;
 import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.VariableConstraint;
+import org.drools.rule.WindowDeclaration;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
@@ -59,7 +59,7 @@ import org.mvel2.integration.PropertyHandlerFactory;
 /**
  * A builder for patterns
  */
-public class PatternBuilder
+public class WindowBuilder
     implements
     ReteooComponentBuilder {
 
@@ -70,12 +70,12 @@ public class PatternBuilder
                       final BuildUtils utils,
                       final RuleConditionElement rce) {
 
-        final Pattern pattern = (Pattern) rce;
+        final WindowDeclaration window = (WindowDeclaration) rce;
 
-        context.pushRuleComponent( pattern );
+        context.pushRuleComponent( window.getPattern() );
         this.attachPattern( context,
                             utils,
-                            pattern );
+                            window.getPattern() );
         context.popRuleComponent();
 
     }
@@ -87,7 +87,6 @@ public class PatternBuilder
         // Set pattern offset to the appropriate value
         pattern.setOffset( context.getCurrentPatternOffset() );
         
-        // this is needed for Activation patterns, to allow declarations and annotations to be used like field constraints
         if ( ClassObjectType.Activation_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
             PropertyHandler handler = PropertyHandlerFactory.getPropertyHandler( AgendaItem.class );
             if ( handler == null ) {
@@ -96,7 +95,6 @@ public class PatternBuilder
         }
 
         final List<Constraint> alphaConstraints = new LinkedList<Constraint>();
-        final List<Constraint> betaConstraints = new LinkedList<Constraint>();
         final List<Behavior> behaviors = new LinkedList<Behavior>();
 
         this.createConstraints( context,
@@ -129,11 +127,7 @@ public class PatternBuilder
                            source );
             // restoring offset
             context.setCurrentPatternOffset( currentOffset );
-        } else {
-            // default entry point
-            PatternSource source = EntryPoint.DEFAULT;
-            ReteooComponentBuilder builder = utils.getBuilderFor( source );
-            builder.build( context, utils, source );
+
         }
 
         if ( pattern.getSource() == null || context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
@@ -198,40 +192,38 @@ public class PatternBuilder
 
     private void checkDelaying(final BuildContext context,
                                final Constraint constraint) {
-        if ( constraint instanceof IntervalProviderConstraint ) {
+        if ( constraint instanceof VariableConstraint ) {
             // variable constraints always require a single declaration
             Declaration target = constraint.getRequiredDeclarations()[0];
             if ( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
-                long uplimit = ((IntervalProviderConstraint) constraint).getInterval().getUpperBound();
-                // only makes sense to add the new timer if the uplimit is not infinity (Long.MAX_VALUE)
-                if( uplimit < Long.MAX_VALUE ) {
-                    Timer timer = context.getRule().getTimer();
-                    DurationTimer durationTimer = new DurationTimer( uplimit );
+                long uplimit = ((VariableConstraint) constraint).getInterval().getUpperBound();
 
-                    if ( timer instanceof CompositeMaxDurationTimer ) {
-                        // already a composite so just add
-                        ((CompositeMaxDurationTimer) timer).addDurationTimer( durationTimer );
+                Timer timer = context.getRule().getTimer();
+                DurationTimer durationTimer = new DurationTimer( uplimit );
+
+                if ( timer instanceof CompositeMaxDurationTimer ) {
+                    // already a composite so just add
+                    ((CompositeMaxDurationTimer) timer).addDurationTimer( durationTimer );
+                } else {
+                    if ( timer == null ) {
+                        // no timer exists, so ok on it's own
+                        timer = durationTimer;
                     } else {
-                        if ( timer == null ) {
-                            // no timer exists, so ok on it's own
-                            timer = durationTimer;
+                        // timer exists so we need to make a composite
+                        CompositeMaxDurationTimer temp = new CompositeMaxDurationTimer();
+                        if ( timer instanceof DurationTimer ) {
+                            // previous timer was a duration, so add another DurationTimer
+                            temp.addDurationTimer( (DurationTimer) timer );
                         } else {
-                            // timer exists so we need to make a composite
-                            CompositeMaxDurationTimer temp = new CompositeMaxDurationTimer();
-                            if ( timer instanceof DurationTimer ) {
-                                // previous timer was a duration, so add another DurationTimer
-                                temp.addDurationTimer( (DurationTimer) timer );
-                            } else {
-                                // previous timer was not a duration, so set it as the delegate Timer.
-                                temp.setTimer( context.getRule().getTimer() );
-                            }
-                            // now add the new durationTimer
-                            temp.addDurationTimer( durationTimer );
-                            timer = temp;
+                            // previous timer was not a duration, so set it as the delegate Timer.
+                            temp.setTimer( context.getRule().getTimer() );
                         }
-                        // with the composite made, reset it on the Rule
-                        context.getRule().setTimer( timer );
+                        // now add the new durationTimer
+                        temp.addDurationTimer( durationTimer );
+                        timer = temp;
                     }
+                    // with the composite made, reset it on the Rule
+                    context.getRule().setTimer( timer );
                 }
             }
         }
@@ -324,6 +316,11 @@ public class PatternBuilder
                 context.setAlphaNodeMemoryAllowed( false );
             }
         }
+
+        context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                  new EntryPointNode( context.getNextId(),
+                                                                                      context.getRuleBase().getRete(),
+                                                                                      context ) ) );
 
         ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
                                                  (EntryPointNode) context.getObjectSource(),
