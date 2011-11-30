@@ -375,10 +375,11 @@ public class TaskServiceSession {
         
         User user = getEntity(User.class, userId);
 
+        boolean transactionStarted = false;
         try {
             final List<OperationCommand> commands = service.getCommandsForOperation(operation);
 
-            beginOrUseExistingTransaction();
+            transactionStarted = beginOrUseExistingTransaction();
 
             evalCommand(operation, commands, task, user, targetEntity, groupIds);
 
@@ -435,6 +436,16 @@ public class TaskServiceSession {
 	            if (em.getTransaction().isActive()) {
 	                em.getTransaction().commit();
 	            }
+        	} else if ("local-JTA".equals(transactionType)) {
+        		if (transactionStarted) {
+        			try {
+        				UserTransaction ut = (UserTransaction)
+        					new InitialContext().lookup( "java:comp/UserTransaction" );
+            			ut.commit();
+        			} catch (Exception e) {
+        				throw new RuntimeException(e);
+        			}
+        		}
         	}
         }
     }
@@ -883,22 +894,28 @@ public class TaskServiceSession {
     /**
      * Starts a transaction if there isn't one currently in progess.
      */
-    private void beginOrUseExistingTransaction() {
+    private boolean beginOrUseExistingTransaction() {
     	if ("default".equals(transactionType)) {
 	        final EntityTransaction tx = em.getTransaction();
 	        if (!tx.isActive()) {
 	            tx.begin();
+	            return true;
 	        }
+	        return false;
     	} else if ("local-JTA".equals(transactionType)) {
     		try {
     			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 		    	if (ut.getStatus() == javax.transaction.Status.STATUS_NO_TRANSACTION) {
 		    		ut.begin();
 		    		em.joinTransaction();
+		    		return true;
 		    	}
+		    	return false;
     		} catch (Throwable t) {
         		throw new RuntimeException(t);
         	}
+    	} else {
+    		throw new IllegalArgumentException("Unknown transaction type " + transactionType);
     	}
     }
 

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.transaction.Transaction;
 
 import junit.framework.TestCase;
 
@@ -118,10 +117,6 @@ public abstract class JbpmJUnitTestCase extends TestCase {
     			emf = null;
     		}
     		if (ds != null) {
-    		    Transaction tx = TransactionManagerServices.getTransactionManager().getCurrentTransaction();
-    		    if( tx != null ) { 
-    		       tx.rollback();
-    		    }
     			ds.close();
     			ds = null;
     		}
