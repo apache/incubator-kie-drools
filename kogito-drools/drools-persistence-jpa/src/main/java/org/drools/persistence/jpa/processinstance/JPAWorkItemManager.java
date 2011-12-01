@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 
 import org.drools.WorkItemHandlerNotFoundException;
 import org.drools.common.InternalKnowledgeRuntime;
+import org.drools.common.InternalRuleBase;
+import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.info.WorkItemInfo;
@@ -70,7 +72,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
         // work item may have been aborted
         if (workItemInfo != null) {
-            WorkItemImpl workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
+            WorkItemImpl workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
             WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.abortWorkItem(workItem, this);
@@ -110,7 +112,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         
         // work item may have been aborted
         if (workItemInfo != null) {
-            WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
+            WorkItem workItem = internalGetWorkItem(workItemInfo);
             workItem.setResults(results);
             ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.COMPLETED);
@@ -144,7 +146,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         
         // work item may have been aborted
         if (workItemInfo != null) {
-            WorkItem workItem = (WorkItemImpl) workItemInfo.getWorkItem(env);
+            WorkItem workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
             ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
             // process instance may have finished already
@@ -176,9 +178,16 @@ public class JPAWorkItemManager implements WorkItemManager {
         if (workItemInfo == null) {
             return null;
         }
-        return workItemInfo.getWorkItem(env);
+        return internalGetWorkItem(workItemInfo);
     }
 
+    private WorkItem internalGetWorkItem(WorkItemInfo workItemInfo) { 
+        Environment env = kruntime.getEnvironment();
+        InternalRuleBase ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) kruntime.getKnowledgeBase()).getRuleBase();
+        WorkItem workItem = workItemInfo.getWorkItem(env, ruleBase); 
+        return workItem;
+    }
+    
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>();
     }

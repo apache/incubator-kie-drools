@@ -16,6 +16,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 import javax.persistence.Version;
 
+import org.drools.common.InternalRuleBase;
 import org.drools.marshalling.impl.InputMarshaller;
 import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.MarshallerWriteContext;
@@ -86,13 +87,13 @@ public class WorkItemInfo  {
        return workItemByteArray;
     }
     
-    public WorkItem getWorkItem(Environment env) {
+    public WorkItem getWorkItem(Environment env, InternalRuleBase ruleBase) {
         this.env = env;
         if ( workItem == null ) {
             try {
                 ByteArrayInputStream bais = new ByteArrayInputStream( workItemByteArray );
                 MarshallerReaderContext context = new MarshallerReaderContext( bais,
-                                                                               null,
+                                                                               ruleBase,
                                                                                null,
                                                                                null,
                                                                                env);
