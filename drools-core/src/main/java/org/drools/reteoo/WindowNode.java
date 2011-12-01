@@ -31,6 +31,7 @@ import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.rule.Behavior;
 import org.drools.rule.ContextEntry;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
@@ -49,6 +50,7 @@ public class WindowNode extends ObjectSource
     private static final long              serialVersionUID = 540l;
 
     private List<AlphaNodeFieldConstraint> constraints;
+    private List<Behavior>                 behaviors;
 
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
@@ -62,10 +64,12 @@ public class WindowNode extends ObjectSource
      * 
      * @param id Node's ID
      * @param constraints Node's constraints
+     * @param behaviors list of behaviors for this window node
      * @param objectSource Node's object source
      */
     public WindowNode(final int id,
             final List<AlphaNodeFieldConstraint> constraints,
+            final List<Behavior> behaviors, 
             final ObjectSource objectSource,
             final BuildContext context) {
         super( id,
@@ -74,6 +78,7 @@ public class WindowNode extends ObjectSource
                objectSource,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.constraints = constraints;
+        this.behaviors = behaviors;
     }
 
     @SuppressWarnings("unchecked")
@@ -81,11 +86,13 @@ public class WindowNode extends ObjectSource
             ClassNotFoundException {
         super.readExternal( in );
         constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
+        behaviors = (List<Behavior>) in.readObject();
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
         out.writeObject( constraints );
+        out.writeObject( behaviors );
     }
 
     /**
@@ -95,6 +102,14 @@ public class WindowNode extends ObjectSource
      */
     public List<AlphaNodeFieldConstraint> getConstraints() {
         return this.constraints;
+    }
+
+    /**
+     * Returns the list of behaviors for this window node
+     * @return
+     */
+    public List<Behavior> getBehaviors() {
+        return behaviors;
     }
 
     /*
@@ -178,10 +193,35 @@ public class WindowNode extends ObjectSource
                                                  workingMemory );
             }
         } else {
-            if( memory.facts.remove( factHandle ) ) {
-                // have to retract fact handle
-            }
+            memory.facts.remove( factHandle );
+            // no need to propagate retract if it is no longer allowed
+            // because the algorithm will automatically retract facts
+            // based on the ModifyPreviousTuples parameters 
         }
+    }
+
+    /**
+     * Retract the <code>FactHandle</code> from the <code>WindowNode</code>.
+     * This method is for the node benefit only as the node itself will not 
+     * propagate retracts down the network, relying on the standard Rete
+     * retract algorithm implemented by the ObjectTypeNode to do it.
+     *
+     * @param factHandle    The fact handle.
+     * @param context       The propagation context
+     * @param workingMemory The working memory session.
+     */
+    public void retractObject(final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory) {
+        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory( this );
+        
+        // behavior retract
+        
+        // memory retract
+        memory.facts.remove( factHandle );
+        
+        // as noted in the javadoc, this node will not propagate retracts, relying
+        // on the standard algorithm to do it instead.
     }
 
     public void updateSink( final ObjectSink sink,
@@ -199,7 +239,7 @@ public class WindowNode extends ObjectSource
     }
 
     /**
-     * Creates a HashSet for the AlphaNode's memory.
+     * Creates the WindowNode's memory.
      */
     public Object createMemory( final RuleBaseConfiguration config ) {
         WindowMemory memory = new WindowMemory();
