@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.ClassObjectType;
+import org.drools.builder.conf.LRUnlinkingOption;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
 import org.drools.common.DefaultBetaConstraints;
@@ -41,6 +42,9 @@ import org.drools.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.util.*;
+import org.drools.core.util.FastIterator;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
