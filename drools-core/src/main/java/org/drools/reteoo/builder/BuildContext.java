@@ -35,6 +35,8 @@ import org.drools.rule.Pattern;
 import org.drools.rule.Query;
 import org.drools.rule.Rule;
 import org.drools.rule.RuleConditionElement;
+import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.RuleComponent;
 import org.drools.time.TemporalDependencyMatrix;
 
@@ -74,10 +76,10 @@ public class BuildContext {
     private LinkedList<RuleConditionElement> buildstack;
 
     // beta constraints from the last pattern attached
-    private List                             betaconstraints;
+    private List<BetaNodeFieldConstraint>    betaconstraints;
 
     // alpha constraints from the last pattern attached
-    private List                             alphaConstraints;
+    private List<AlphaNodeFieldConstraint>   alphaConstraints;
 
     // behaviors from the last pattern attached
     private List<Behavior>                   behaviors;
@@ -104,6 +106,11 @@ public class BuildContext {
     private TemporalDependencyMatrix         temporal;
 
     private ObjectTypeNode rootObjectTypeNode;
+
+    /** a flag for pattern builders to attach the alpha constraints to alpha nodes (true) 
+     *  or save them in the context alpha constraints list
+     */
+    private boolean attachAlphaNodes;
 
     public BuildContext(final InternalRuleBase rulebase,
                         final ReteooBuilder.IdGenerator idGenerator) {
@@ -132,6 +139,8 @@ public class BuildContext {
         this.partitionId = null;
         
         this.ruleComponent = new Stack<RuleComponent>();
+        
+        this.attachAlphaNodes = true;
     }
 
     /**
@@ -298,17 +307,18 @@ public class BuildContext {
     /**
      * @return the betaconstraints
      */
-    public List getBetaconstraints() {
+    public List<BetaNodeFieldConstraint> getBetaconstraints() {
         return this.betaconstraints;
     }
 
     /**
      * @param betaconstraints the betaconstraints to set
      */
-    public void setBetaconstraints(final List betaconstraints) {
+    public void setBetaconstraints(final List<BetaNodeFieldConstraint> betaconstraints) {
         this.betaconstraints = betaconstraints;
     }
 
+    @SuppressWarnings("unchecked")
     public int getNextSequence(String groupName) {
         //List list = new ArrayList();
 
@@ -326,11 +336,11 @@ public class BuildContext {
     /**
      * @return
      */
-    public List getAlphaConstraints() {
+    public List<AlphaNodeFieldConstraint> getAlphaConstraints() {
         return alphaConstraints;
     }
 
-    public void setAlphaConstraints(List alphaConstraints) {
+    public void setAlphaConstraints(List<AlphaNodeFieldConstraint> alphaConstraints) {
         this.alphaConstraints = alphaConstraints;
     }
 
@@ -485,6 +495,14 @@ public class BuildContext {
     
     public ObjectTypeNode getRootObjectTypeNode() {
         return rootObjectTypeNode;
+    }
+
+    public void setAttachAlphaNodes( boolean attachAlphaNodes ) {
+        this.attachAlphaNodes = attachAlphaNodes;
+    }
+    
+    public boolean isAttachAlphaNodes() { 
+        return this.attachAlphaNodes;
     }
 
 }

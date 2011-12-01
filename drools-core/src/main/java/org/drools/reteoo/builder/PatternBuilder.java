@@ -48,6 +48,7 @@ import org.drools.rule.RuleConditionElement;
 import org.drools.rule.TypeDeclaration;
 import org.drools.rule.VariableConstraint;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 import org.drools.spi.Constraint;
 import org.drools.spi.ObjectType;
 import org.drools.time.impl.CompositeMaxDurationTimer;
@@ -95,8 +96,8 @@ public class PatternBuilder
             }
         }
 
-        final List<Constraint> alphaConstraints = new LinkedList<Constraint>();
-        final List<Constraint> betaConstraints = new LinkedList<Constraint>();
+        final List<AlphaNodeFieldConstraint> alphaConstraints = new LinkedList<AlphaNodeFieldConstraint>();
+        final List<BetaNodeFieldConstraint> betaConstraints = new LinkedList<BetaNodeFieldConstraint>();
         final List<Behavior> behaviors = new LinkedList<Behavior>();
 
         this.createConstraints( context,
@@ -141,15 +142,6 @@ public class PatternBuilder
                               utils,
                               pattern,
                               alphaConstraints );
-
-            if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new PropagationQueuingNode( context.getNextId(),
-                                                                                                      context.getObjectSource(),
-                                                                                                      context ) ) );
-                // the entry-point specific network nodes are attached, so, set context to default entry-point 
-                context.setCurrentEntryPoint( EntryPoint.DEFAULT );
-            }
         }
 
         // last thing to do is increment the offset, since if the pattern has a source,
@@ -160,8 +152,8 @@ public class PatternBuilder
     private void createConstraints(BuildContext context,
                                    BuildUtils utils,
                                    Pattern pattern,
-                                   List<Constraint> alphaConstraints,
-                                   List<Constraint> betaConstraints) {
+                                   List<AlphaNodeFieldConstraint> alphaConstraints,
+                                   List<BetaNodeFieldConstraint> betaConstraints) {
 
         final List< ? > constraints = pattern.getConstraints();
 
@@ -183,9 +175,9 @@ public class PatternBuilder
 
             final Constraint constraint = (Constraint) object;
             if ( constraint.getType().equals( Constraint.ConstraintType.ALPHA ) ) {
-                alphaConstraints.add( constraint );
+                alphaConstraints.add( (AlphaNodeFieldConstraint) constraint );
             } else if ( constraint.getType().equals( Constraint.ConstraintType.BETA ) ) {
-                betaConstraints.add( constraint );
+                betaConstraints.add( (BetaNodeFieldConstraint) constraint );
                 if ( isNegative && context.getRuleBase().getConfiguration().getEventProcessingMode() == EventProcessingOption.STREAM && pattern.getObjectType().isEvent() && constraint.isTemporal() ) {
                     checkDelaying( context,
                                    constraint );
@@ -306,7 +298,7 @@ public class PatternBuilder
     public void attachAlphaNodes(final BuildContext context,
                                  final BuildUtils utils,
                                  final Pattern pattern,
-                                 List<Constraint> alphaConstraints) throws InvalidPatternException {
+                                 final List<AlphaNodeFieldConstraint> alphaConstraints) throws InvalidPatternException {
 
         // Drools Query ObjectTypeNode never has memory, but other ObjectTypeNode/AlphaNoesNodes may (if not in sequential), 
         //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
@@ -360,17 +352,29 @@ public class PatternBuilder
         context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                   otn ) );
 
-        for ( final Iterator<Constraint> it = alphaConstraints.iterator(); it.hasNext(); ) {
-            final AlphaNodeFieldConstraint constraint = (AlphaNodeFieldConstraint) it.next();
-
-            context.pushRuleComponent( constraint );
-            context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      new AlphaNode( context.getNextId(),
-                                                                                     (AlphaNodeFieldConstraint) constraint,
-                                                                                     context.getObjectSource(),
-                                                                                     context ) ) );
-            context.popRuleComponent();
-        }        
+        if( context.isAttachAlphaNodes() ) {
+            for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
+                context.pushRuleComponent( constraint );
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                          new AlphaNode( context.getNextId(),
+                                                                                         (AlphaNodeFieldConstraint) constraint,
+                                                                                         context.getObjectSource(),
+                                                                                         context ) ) );
+                context.popRuleComponent();
+            }        
+            
+            if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT ) {
+                context.setObjectSource( (ObjectSource) utils.attachNode( context,
+                                                                          new PropagationQueuingNode( context.getNextId(),
+                                                                                                      context.getObjectSource(),
+                                                                                                      context ) ) );
+                // the entry-point specific network nodes are attached, so, set context to default entry-point 
+                context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+            }
+            
+        } else {
+            context.setAlphaConstraints( alphaConstraints );
+        }
 
         // now restore back to original values
         context.setObjectTypeNodeMemoryEnabled( objectMemory );
@@ -385,7 +389,7 @@ public class PatternBuilder
      */
     private void checkRemoveIdentities(final BuildContext context,
                                        final Pattern pattern,
-                                       final List<Constraint> betaConstraints) {
+                                       final List<BetaNodeFieldConstraint> betaConstraints) {
         if ( context.getRuleBase().getConfiguration().isRemoveIdentities() && pattern.getObjectType().getClass() == ClassObjectType.class ) {
             // Check if this object type exists before
             // If it does we need stop instance equals cross product

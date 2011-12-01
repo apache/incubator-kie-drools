@@ -37,8 +37,9 @@ import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.RightInputAdapterNode;
 import org.drools.rule.Behavior;
 import org.drools.rule.GroupElement;
-import org.drools.rule.RuleConditionElement;
 import org.drools.rule.GroupElement.Type;
+import org.drools.rule.RuleConditionElement;
+import org.drools.spi.BetaNodeFieldConstraint;
 
 public class GroupElementBuilder
     implements
@@ -91,6 +92,7 @@ public class GroupElementBuilder
                                                rce );
     }
     
+    @SuppressWarnings("unchecked")
     private static Behavior[] createBehaviorArray(final BuildContext context) {
         Behavior[] behaviors = Behavior.EMPTY_BEHAVIOR_LIST;
         if( ! context.getBehaviors().isEmpty() ) {
@@ -252,7 +254,7 @@ public class GroupElementBuilder
 
                 // create a tuple start equals constraint and set it in the context
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List<TupleStartEqualsConstraint> predicates = new ArrayList<TupleStartEqualsConstraint>();
+                final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
                 existSubNetwort = true;
@@ -341,7 +343,7 @@ public class GroupElementBuilder
 
                 // create a tuple start equals constraint and set it in the context
                 final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List<TupleStartEqualsConstraint> predicates = new ArrayList<TupleStartEqualsConstraint>();
+                final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
                 existSubNetwort = true;                

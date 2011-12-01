@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.drools.RuntimeDroolsException;
@@ -34,7 +33,6 @@ import org.drools.common.RuleBasePartitionId;
 import org.drools.common.SingleBetaConstraints;
 import org.drools.common.TripleBetaConstraints;
 import org.drools.reteoo.EntryPointNode;
-import org.drools.reteoo.LeftInputAdapterNode;
 import org.drools.reteoo.LeftTupleSink;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.reteoo.ObjectSink;
