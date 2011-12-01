@@ -16,12 +16,15 @@
 
 package org.drools.reteoo.builder;
 
+import java.util.List;
+
 import org.drools.common.BetaConstraints;
 import org.drools.reteoo.FromNode;
 import org.drools.reteoo.LeftTupleSource;
 import org.drools.rule.From;
 import org.drools.rule.RuleConditionElement;
 import org.drools.spi.AlphaNodeFieldConstraint;
+import org.drools.spi.BetaNodeFieldConstraint;
 
 public class FromBuilder
     implements
@@ -36,7 +39,8 @@ public class FromBuilder
         final From from = (From) rce;
         context.pushRuleComponent( from );
 
-        BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, context.getBetaconstraints(), true );
+        @SuppressWarnings("unchecked")
+        BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context, (List<BetaNodeFieldConstraint>) context.getBetaconstraints(), true );
         
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                 new FromNode( context.getNextId(),
